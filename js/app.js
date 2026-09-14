@@ -1425,8 +1425,9 @@
            thêm. KHÔNG ảnh hưởng cách chấm điểm/quiz. */
         '<select class="mini-select" data-lang-select="' + p.id + '" title="Ngôn ngữ giao diện của tài khoản này">' +
           '<option value="vi"' + (p.lang === "vi" ? " selected" : "") + '>🇻🇳 Tiếng Việt</option>' +
-          '<option value="en"' + (p.lang !== "vi" && p.lang !== "zh" ? " selected" : "") + '>🇺🇸 English</option>' +
+          '<option value="en"' + (p.lang !== "vi" && p.lang !== "zh" && p.lang !== "es" ? " selected" : "") + '>🇺🇸 English</option>' +
           '<option value="zh"' + (p.lang === "zh" ? " selected" : "") + '>🇨🇳 中文</option>' +
+          '<option value="es"' + (p.lang === "es" ? " selected" : "") + '>🇪🇸 Español</option>' +
         "</select>" +
         '<button class="btn-soft" data-copy-link="' + p.id + '" title="Copy link đăng nhập của tài khoản này">📋 Copy link</button>' +
         '<button class="btn-soft" data-email-link="' + p.id + '" title="Mở email có sẵn để gửi link đăng nhập này">📧 Gửi email</button>' +
@@ -1614,7 +1615,7 @@
     var vocabOrigin = w.Context._isWebOrigin() ? "web" : "local";
 
     var parsedWords = extracted.map(function (x) {
-      return { term: x.term, level: x.level || "", pos: x.pos || "", ipa: x.ipa || "", def_en: x.def_en || "", meaning_vi: x.meaning_vi || "", meaning_zh: x.meaning_zh || "", freq: x.freq || "" };
+      return { term: x.term, level: x.level || "", pos: x.pos || "", ipa: x.ipa || "", def_en: x.def_en || "", meaning_vi: x.meaning_vi || "", meaning_zh: x.meaning_zh || "", meaning_es: x.meaning_es || "", freq: x.freq || "" };
     });
     /* "full_batch1" kiểu tên: "full_" + tên batch viết liền, không dấu
        cách (TJ yêu cầu 2026-09-12) — vd tên batch "Batch 1" -> "full_batch1". */
@@ -3203,9 +3204,9 @@
      vẫn còn) — hồ sơ Local/Khách thì lưu tạm TRONG MÁY NÀY (localStorage,
      giống hệt theme) vì local mode không có bảng profiles thật để lưu. */
   var LS_LOCAL_LANG = "tjwl_local_lang_v1";
-  var MY_LANGS = { vi: 1, en: 1, zh: 1 };
-  var LANG_ORDER = ["vi", "en", "zh"];
-  var LANG_FLAG = { vi: "🇻🇳", en: "🇺🇸", zh: "🇨🇳" };
+  var MY_LANGS = { vi: 1, en: 1, zh: 1, es: 1 };
+  var LANG_ORDER = ["vi", "en", "zh", "es"];
+  var LANG_FLAG = { vi: "🇻🇳", en: "🇺🇸", zh: "🇨🇳", es: "🇪🇸" };
 
   function applyLangDots() {
     var cur = (w.Auth && w.Auth.effectiveLang && w.Auth.effectiveLang()) || "vi";

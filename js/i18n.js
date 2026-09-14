@@ -1,7 +1,7 @@
 /* i18n.js — ĐỔI NGÔN NGỮ KHUNG GIAO DIỆN (menu/nút/tiêu đề) THEO TÀI KHOẢN
    ---------------------------------------------------------------------
-   Hỗ trợ "vi" (mặc định), "en", và "zh" (thêm 2026-09-13, theo yêu cầu
-   TJ) — share app cho bạn nước ngoài thì khung UI + cột "Nghĩa" tự đổi
+   Hỗ trợ "vi" (mặc định), "en", "zh" (thêm 2026-09-13) và "es" (thêm
+   2026-09-14, theo yêu cầu TJ) — share app cho bạn nước ngoài thì khung UI + cột "Nghĩa" tự đổi
    theo, ĐIỂM SỐ/QUIZ KHÔNG đổi. Admin gán ngôn ngữ cho từng tài khoản
    trong "👑 Quản lý tài khoản" (profiles.lang) — xem DB.setProfileLang/
    Auth.effectiveLang.
@@ -598,12 +598,290 @@
     "Chưa dán bài nào": "还没有粘贴任何文章"
   };
 
-  /* Tự sinh chiều ngược lại (en -> vi, zh -> vi) để đổi VỀ tiếng Việt
-     cũng chạy được mà không cần lưu "chữ gốc" ở đâu cả. */
+  /* Từ điển vi -> es (tiếng Tây Ban Nha, thêm 2026-09-14, theo yêu cầu TJ -
+     y hệt lý do/cách làm DICT_ZH). Khoá PHẢI khớp NGUYÊN VĂN 100% với DICT
+     ở trên (cùng bộ khoá) — nếu thêm khoá mới vào DICT mà quên thêm vào
+     đây, chuỗi đó chỉ đơn giản KHÔNG dịch khi ở chế độ "es" (không lỗi,
+     không vỡ layout) — bổ sung dần khi phát hiện thiếu. */
+  var DICT_ES = {
+    /* ---- Thanh trên cùng / menu user ---- */
+    "🏠 Trang chủ": "🏠 Inicio",
+    "📊 Journey": "📊 Recorrido",
+    "📖 Learning": "📖 Aprendizaje",
+    "Khách": "Invitado",
+    "Chưa đăng nhập": "No has iniciado sesión",
+    "Tài khoản Cloud": "Cuenta en la nube",
+    "Hồ sơ trên máy này": "Perfil en este dispositivo",
+    "Xem như user…": "Ver como usuario…",
+    "Giao diện": "Apariencia",
+    "Cỡ chữ": "Tamaño de texto",
+    "Màu nhấn": "Color de acento",
+    "Đổi / Thêm người học": "Cambiar / Añadir alumno",
+    "Đổi tên & avatar": "Editar nombre y avatar",
+    "Đăng nhập Cloud (email)": "Iniciar sesión en la nube (correo)",
+    "Quản lý tài khoản": "Administrar cuentas",
+    "Quản lý chia sẻ": "Administrar el compartir",
+    "Xem như User": "Ver como usuario",
+    "Về giao diện Admin": "Volver a la vista de Admin",
+    "Báo cáo AI (nguồn bài đọc)": "Informe de IA (fuentes de lectura)",
+    "Xuất PDF (Block/Batch/Page…)": "Exportar PDF (Bloque/Lote/Página…)",
+    "Dọn từ vựng rác (dòng tiêu đề lẫn vào)": "Limpiar palabras basura (filas de encabezado mezcladas)",
+    "Xuất dữ liệu (.json)": "Exportar datos (.json)",
+    "Nhập dữ liệu (.json)": "Importar datos (.json)",
+    "Đăng xuất": "Cerrar sesión",
+
+    /* ---- Cột Notebooks / Pages ---- */
+    "Notebooks": "Cuadernos",
+    "Pages": "Páginas",
+    "+ Notebook mới": "+ Nuevo cuaderno",
+    "+ Thêm Page": "+ Añadir página",
+    "+ Thêm section": "+ Añadir sección",
+    "Dán bài, tự trích từ": "Pegar artículo, extraer automáticamente",
+    "Paste từ mới": "Pegar palabras nuevas",
+    "Chu kỳ Tony Buzan": "Ciclo de Tony Buzan",
+    "Lần 1–2 · 10 phút / 24 giờ": "Ronda 1–2 · 10 min / 24 h",
+    "Lần 3 · 1 tuần": "Ronda 3 · 1 semana",
+    "Lần 4 · 1 tháng": "Ronda 4 · 1 mes",
+    "Lần 5–6 · 3–6 tháng": "Ronda 5–6 · 3–6 meses",
+
+    /* ---- Danh sách Block ---- */
+    "← Quay lại danh sách Block": "← Volver a la lista de Bloques",
+    "Block trước": "Bloque anterior",
+    "Block sau": "Bloque siguiente",
+    "Đến hạn ôn tập": "Repaso pendiente",
+    "Đang tính toán theo chu kỳ suy giảm trí nhớ…": "Calculando según el ciclo de decaimiento de memoria…",
+    "Ôn ngay →": "Repasar ahora →",
+    "Lần 1–2 · 10p / 24h": "Ronda 1–2 · 10m / 24h",
+    "Lần 3 · 1 Tuần Sau": "Ronda 3 · en 1 semana",
+    "Lần 4 · 1 Tháng Sau": "Ronda 4 · en 1 mes",
+    "Lần 5–6 · 3–6 Tháng": "Ronda 5–6 · en 3–6 meses",
+    "Chưa học": "No iniciado",
+    "Chưa thi": "Sin evaluar",
+    "trống": "vacío",
+    "🟢 Chưa học": "🟢 No iniciado",
+    "🟢 Chưa vào chu kỳ ôn": "🟢 Aún no entra al ciclo de repaso",
+    "🟢 Đã vào trí nhớ dài hạn 💎": "🟢 En memoria a largo plazo 💎",
+    "🔴 Đến hạn ôn ngay": "🔴 Repaso pendiente ahora",
+
+    /* ---- Tab trong Block ---- */
+    "📘 Bài học": "📘 Lección",
+    "& Đọc": "y Lectura",
+    "🔀 Nghĩa": "🔀 Significado",
+    "📋 Phiếu": "📋 Ficha",
+    "đầy đủ": "completa",
+    "🔤 Từng câu": "🔤 Frase por frase",
+    "📊 Tiến trình": "📊 Progreso",
+    "trí nhớ": "memoria",
+
+    /* ---- Bảng từ vựng ---- */
+    "📘 1. Danh sách từ vựng cần học": "📘 1. Vocabulario por aprender",
+    "▾ Thu gọn": "▾ Contraer",
+    "▸ Mở rộng": "▸ Expandir",
+    "📋 Copy": "📋 Copiar",
+    "⏹ Dừng": "⏹ Detener",
+    "🔊 Đọc tất cả từ": "🔊 Leer todas las palabras",
+    "🔊 Đọc + định nghĩa": "🔊 Leer + definición",
+    "🔊 Nghe US": "🔊 Escuchar (EE. UU.)",
+    "🎧 Nghe US": "🎧 Escuchar (EE. UU.)",
+    "Nghe US": "Escuchar (EE. UU.)",
+    "✏️ Prompt AI đang dùng cho \"🔄 Tạo lại\" (bấm để xem/sửa)": "✏️ Prompt de IA usado para \"🔄 Regenerar\" (toca para ver/editar)",
+    " — chữ sẽ sáng theo giọng đọc (karaoke). Bấm vào bất kỳ từ nào để xem nghĩa và lưu lại.":
+      " — el texto se resalta al leerse (karaoke). Toca cualquier palabra para ver su significado y guardarla.",
+    "Xoá từ khỏi kho": "Quitar palabra",
+
+    /* ---- Bài đọc ---- */
+    "📖 2. Đoạn văn ngữ cảnh (tự sinh)": "📖 2. Pasaje de contexto (autogenerado)",
+    "🔄 Tạo lại": "🔄 Regenerar",
+    "📄 Cả bài": "📄 Pasaje completo",
+    "🔤 Từng câu ": "🔤 Frase por frase ",
+    "📑 Từng đoạn": "📑 Párrafo por párrafo",
+    "← Trước": "← Atrás",
+    "Bài đọc này còn trống — chọn 1 nguồn bên dưới.": "Este pasaje está vacío — elige una fuente abajo.",
+    "📝 Dán": "📝 Pegar",
+    "✅ Dùng bài này": "✅ Usar este pasaje",
+    "🗑 Xoá bài này": "🗑 Eliminar este pasaje",
+    "Câu tiếp →": "Siguiente →",
+    "Hiểu rồi, vào kiểm tra →": "Entendido, empezar el examen →",
+
+    /* ---- Tiến trình / thống kê ---- */
+    "Tổng từ vựng": "Total de palabras",
+    "Đã thuộc": "Dominadas",
+    "Độ nhớ TB": "Retención promedio",
+    "Chu kỳ hiện tại": "Ciclo actual",
+    "📊 Lịch ôn theo chu kỳ": "📊 Calendario de repaso",
+    "🔍 Chi tiết từng từ": "🔍 Detalle por palabra",
+    "Từ vựng": "Palabra",
+    "Nghĩa": "Significado",
+    "Lần ôn": "Repasos",
+    "Đúng": "Correctas",
+    "Tỷ lệ": "Tasa",
+    "Trạng thái": "Estado",
+
+    /* ---- Home / Journey / Leaderboard ---- */
+    "← Về học tiếp": "← Volver a aprender",
+    "⟳ Tải lại": "⟳ Recargar",
+    "🏆 Xếp hạng": "🏆 Clasificación",
+    "Điểm = độ khó từ vựng trong Block (A1/A2=1 · B1=2 · B2=3 · C1=5 · C2=8) × hệ số loại bài đã Done qua (🔀 Nghĩa = ×1 · 📋 Phiếu đầy đủ/🔤 Từng câu = ×1.5). Chỉ tính Block đã Done (đạt ≥ 80% ở bất kỳ 1 trong các bài kiểm tra).":
+      "Puntaje = dificultad del vocabulario del Bloque (A1/A2=1 · B1=2 · B2=3 · C1=5 · C2=8) × multiplicador del tipo de prueba aprobada (🔀 Significado = ×1 · 📋 Ficha completa/🔤 Frase por frase = ×1.5). Solo cuentan los Bloques completados (≥ 80% en cualquiera de las pruebas).",
+    "Điểm = độ khó từ vựng trong Block (A1/A2=1 · B1=2 · B2=3 · C1=5 · C2=8) × hệ số loại bài đã Done qua (🔀 Nghĩa = ×1 · 📋 Phiếu đầy đủ/🔤 Từng câu = ×1.5).":
+      "Puntaje = dificultad del vocabulario del Bloque (A1/A2=1 · B1=2 · B2=3 · C1=5 · C2=8) × multiplicador del tipo de prueba aprobada (🔀 Significado = ×1 · 📋 Ficha completa/🔤 Frase por frase = ×1.5).",
+    "Chưa ai học xong Block nào trong phạm vi này cả.": "Nadie ha terminado ningún Bloque en este ámbito todavía.",
+    "Chưa có ai Done Block nào trong khoảng thời gian này (hoặc dữ liệu cũ chưa có mốc ngày, xem 'Từ đầu').":
+      "Nadie ha completado un Bloque en este período todavía (o los datos antiguos no tienen fecha, revisa 'Desde el inicio').",
+    "🏆 Bảng xếp hạng": "🏆 Tabla de clasificación",
+    "Xem xếp hạng": "Ver clasificación",
+    "Tuần": "Semana",
+    "Tháng": "Mes",
+    "Từ đầu": "Desde el inicio",
+    "🗓️ Lịch học theo tháng (toàn app)": "🗓️ Calendario de estudio mensual (toda la app)",
+    "🚦 Theo tiến độ Tony Buzan": "🚦 Por progreso de Tony Buzan",
+    "🗂 Theo cây thư mục": "🗂 Por árbol de carpetas",
+
+    /* ---- Nghĩa của bạn / mức độ thuộc ---- */
+    "Nghe phát âm": "Escuchar",
+    "Ghim bảng nghĩa lại": "Fijar panel de significado",
+    "Đóng": "Cerrar",
+    "Nghĩa của bạn": "Tu significado",
+    "Mức độ thuộc — bấm để lưu": "Nivel de dominio — toca para guardar",
+    "Bỏ khỏi kho": "Quitar del banco",
+    "Mới hoàn toàn": "Totalmente nuevo",
+    "Còn mơ hồ": "Aún confuso",
+    "Nhớ được": "Lo recuerdo",
+    "Gần thuộc": "Casi dominado",
+    "Đã thuộc ": "Dominado ",
+
+    /* ---- Journey ---- */
+    "🌐 Toàn bộ": "🌐 Todo",
+    "Toàn bộ": "Todo",
+    "T2": "Lun", "T3": "Mar", "T4": "Mié", "T5": "Jue", "T6": "Vie", "T7": "Sáb", "CN": "Dom",
+    "+N = số từ đã học hôm đó": "+N = palabras estudiadas ese día",
+    "⚠N = số từ quá hạn ôn hôm đó": "⚠N = palabras atrasadas ese día",
+    "Cả hai": "Ambos",
+    "Lần 1–2": "Ronda 1–2", "Lần 3": "Ronda 3", "Lần 4": "Ronda 4", "Lần 5–6": "Ronda 5–6",
+    "Không có Block nào": "No hay Bloques",
+
+    /* ---- Menu ⋯ (Notebook/Section/Page/Batch/Block) ---- */
+    "Đổi tên": "Renombrar",
+    "Chuyển lên": "Subir",
+    "Chuyển xuống": "Bajar",
+    "Lên đầu": "Mover al principio",
+    "Xuống cuối": "Mover al final",
+    "Chuyển sang Hub khác": "Mover a otro Hub",
+    "Chia sẻ / Ẩn Notebook này…": "Compartir / Ocultar este cuaderno…",
+    "Đặt vào trong Notebook khác": "Anidar dentro de otro cuaderno",
+    "Đưa ra ngoài (bỏ làm Notebook con)": "Sacar (dejar de ser subcuaderno)",
+    "Bung 1 nhánh": "Expandir 1 nivel",
+    "Bung hết (mọi cấp con)": "Expandir todo (todos los niveles)",
+    "Thu 1 nhánh": "Contraer 1 nivel",
+    "Thu hết (mọi cấp con)": "Contraer todo (todos los niveles)",
+    "Chuyển sang Notebook khác": "Mover a otro cuaderno",
+    "Chuyển sang Section khác": "Mover a otra sección",
+    "Chuyển sang Page khác": "Mover a otra página",
+    "Nhân bản Page": "Duplicar página",
+    "Nhân bản Notebook…": "Duplicar cuaderno…",
+    "Gộp tất cả Notebook về đây": "Fusionar todos los cuadernos aquí",
+    "Xoá tiến trình học": "Restablecer progreso",
+    "Xoá Notebook": "Eliminar cuaderno",
+    "Xoá Section": "Eliminar sección",
+    "Xoá Page": "Eliminar página",
+    "Xoá Batch": "Eliminar lote",
+    "Xoá Block": "Eliminar bloque",
+    "Xoá Hub": "Eliminar Hub",
+    "Thao tác": "Acciones",
+
+    /* ---- Modal chung ---- */
+    "Hủy": "Cancelar", "Huỷ": "Cancelar", "Đóng ": "Cerrar ", "Xác nhận": "Confirmar",
+    "Đồng ý": "Aceptar", "Chọn": "Elegir", "Nhập tên": "Escribe un nombre",
+    "💾 Lưu": "💾 Guardar",
+
+    /* ---- Chia sẻ ---- */
+    "🔗 Chia sẻ Notebook": "🔗 Compartir cuaderno",
+    "Chỉ người được chia sẻ bên dưới (+ Admin) mới thấy Notebook này": "Solo las personas compartidas abajo (+ Admin) pueden ver este cuaderno",
+    "🔐 Quản lý chia sẻ": "🔐 Administrar el compartir",
+    "🔒 Riêng tư tất cả": "🔒 Privar todo",
+    "🚫 Không chia sẻ": "🚫 No compartido",
+    "👁️ Chỉ xem": "👁️ Solo ver",
+    "✏️ Toàn quyền": "✏️ Acceso completo",
+    "Tất cả Hub": "Todos los Hubs",
+
+    /* ---- Quản lý tài khoản ---- */
+    "👑 Quản lý tài khoản": "👑 Administrar cuentas",
+    "+ Tạo tài khoản mới": "+ Crear nueva cuenta",
+    "👑 Admin": "👑 Admin",
+    "✏️ Sửa đoạn văn": "✏️ Editar pasaje",
+    "📋 Copy link": "📋 Copiar enlace",
+    "📧 Gửi email": "📧 Enviar correo",
+
+    /* ---- Người học trên máy ---- */
+    "👥 Người học trên máy này": "👥 Alumnos en este dispositivo",
+    "+ Thêm người học mới": "+ Añadir nuevo alumno",
+
+    /* ---- Xuất PDF ---- */
+    "🖨️ Xuất PDF": "🖨️ Exportar PDF",
+    "Xuất theo cấp nào?": "¿Exportar en qué nivel?",
+    "Tên / tiêu đề": "Nombre / título",
+    "Cỡ chữ khi in": "Tamaño de letra al imprimir",
+    "Vừa": "Mediano", "Lớn": "Grande", "Rất lớn (đọc điện thoại)": "Muy grande (para móvil)",
+    "In / Xuất PDF →": "Imprimir / Exportar PDF →",
+
+    /* ---- Khối "Đến hạn ôn tập" ---- */
+    "Đến hạn ôn tập — đừng để trí nhớ rơi": "Repaso pendiente — no dejes que se te olvide",
+    "Tất cả đều đúng lịch 🎉": "Todo va según lo previsto 🎉",
+    "Chu kỳ ôn tập chưa bắt đầu": "El ciclo de repaso aún no ha comenzado",
+    "Bắt đầu học →": "Empezar a aprender →",
+    "Học block mới →": "Aprender un bloque nuevo →",
+    "chưa block nào vào chu kỳ": "ningún bloque en el ciclo todavía",
+    "chưa học. Học xong và đạt ≥ 80% ở bài kiểm tra thì Block mới vào lịch ôn Tony Buzan.":
+      "sin estudiar. Termina y obtén ≥ 80% en la prueba para que el Bloque entre al ciclo de repaso de Tony Buzan.",
+
+    /* ---- Modal "✨ Dán bài, tự trích từ" ---- */
+    "✨ Dán bài, tự trích từ vựng B1+": "✨ Pegar artículo, extraer vocabulario B1+",
+    "Dán 1 bài báo, đoạn văn, hoặc transcript video (YouTube: bấm":
+      "Pega un artículo, pasaje o transcripción de video (YouTube: haz clic en",
+    "\"Hiện bản ghi\"": "\"Mostrar transcripción\"",
+    "dưới video rồi copy toàn bộ; Yglish: copy phần lời thoại) — AI sẽ tự tìm các từ vựng cấp độ":
+      "debajo del video y copia todo; Yglish: copia el diálogo) — la IA buscará automáticamente vocabulario de nivel",
+    "B1 trở lên": "B1 en adelante",
+    ", chia thành Block 10 từ để học, và giữ NGUYÊN chính bài bạn dán làm bài đọc (không sinh bài khác). Cần đã có key Gemini trong":
+      ", dividido en Bloques de 10 palabras para estudiar, y conserva EXACTAMENTE el artículo que pegaste como pasaje de lectura (no genera otro texto). Requiere tener configurada una clave de Gemini en",
+    "Tên Batch (tuỳ chọn)": "Nombre del lote (opcional)",
+    "Ví dụ: Báo VnExpress 06/09": "Ej.: Artículo de VnExpress 06/09",
+    "Hoặc dán LINK bài báo — thử tải tự động (không phải trang nào cũng được, nhiều báo chặn)":
+      "O pega el ENLACE del artículo — intenta cargarlo automáticamente (no funciona en todos los sitios, muchos lo bloquean)",
+    "🔗 Thử tải": "🔗 Intentar cargar",
+    "Dán bài vào đây (hoặc để nút Thử tải tự điền)": "Pega el artículo aquí (o deja que \"Intentar cargar\" lo rellene)",
+    "Dán bài báo / đoạn văn / transcript vào đây… (tối đa ~12.000 ký tự)":
+      "Pega el artículo / pasaje / transcripción aquí… (máx. ~12.000 caracteres)",
+    "✨ Trích từ vựng & tạo Block": "✨ Extraer vocabulario y crear Bloque",
+    "⏳ Đang phân tích...": "⏳ Analizando...",
+    "📚 Hoặc upload cả 1 quyển sách (PDF) — tự chia theo Chapter": "📚 O sube un libro completo (PDF) — se divide en Capítulos automáticamente",
+    "Mỗi Chapter nhận diện được (\"Chapter 1\"/\"Chương 2\"...) sẽ ra":
+      "Cada Capítulo detectado (\"Chapter 1\"/\"Chương 2\"...) se convierte en",
+    "1 Batch riêng": "un lote aparte",
+    "(kèm 1 Block \"full\" chứa toàn bài + các Block 10 từ như bình thường) — xử lý lần lượt từng Chapter, tốn kha khá quota AI nếu sách nhiều chương, xem lại danh sách trước khi bấm xử lý.":
+      "(más 1 Bloque \"full\" con el texto completo + los Bloques de 10 palabras habituales) — procesa los Capítulos uno por uno, consume bastante cuota de IA si el libro tiene muchos capítulos, revisa la lista antes de procesar.",
+    "📖 Đọc PDF & chia Chapter": "📖 Leer PDF y dividir en Capítulos",
+    "Huỷ danh sách này": "Descartar esta lista",
+    "🚀 Xử lý các phần đã chọn": "🚀 Procesar las partes seleccionadas",
+    "Chưa chọn phần nào": "Aún no se ha seleccionado ninguna parte",
+    "Không đọc được nội dung từ PDF này": "No se pudo leer contenido de este PDF",
+    "Chưa nạp được thư viện đọc PDF (pdf.js) — kiểm tra mạng/CDN trong index.html":
+      "No se pudo cargar la librería de lectura de PDF (pdf.js) — revisa la red/el CDN en index.html",
+    /* ---- 3 toast dùng chung ---- */
+    "Hãy tạo/chọn một Page trước": "Crea/elige una página primero",
+    "Cần key OpenAI (js/keys.local.js) hoặc chạy Cloud mode để dùng tính năng này":
+      "Necesitas una clave de OpenAI (js/keys.local.js) o el modo Nube para usar esta función",
+    "Chưa dán bài nào": "Aún no se ha pegado nada"
+  };
+
+  /* Tự sinh chiều ngược lại (en -> vi, zh -> vi, es -> vi) để đổi VỀ tiếng
+     Việt cũng chạy được mà không cần lưu "chữ gốc" ở đâu cả. */
   var REV = {};
   Object.keys(DICT).forEach(function (k) { REV[DICT[k]] = k; });
   var REV_ZH = {};
   Object.keys(DICT_ZH).forEach(function (k) { REV_ZH[DICT_ZH[k]] = k; });
+  var REV_ES = {};
+  Object.keys(DICT_ES).forEach(function (k) { REV_ES[DICT_ES[k]] = k; });
 
   /* ---- Cụm chèn số/ngày (không thể so khớp NGUYÊN VĂN vì luôn dính số
      liệu động) — thay bằng SUBSTRING (không cần khớp cả câu), phần số
@@ -656,6 +934,28 @@
   var PARTIAL_ZH_REV = {};
   Object.keys(PARTIAL_ZH).forEach(function (k) { PARTIAL_ZH_REV[PARTIAL_ZH[k]] = k; });
 
+  var PARTIAL_ES = {
+    "⭐ Từ đã lưu": "⭐ Palabras guardadas",
+    "🕒 Cập nhật:": "🕒 Actualizado:",
+    "phút trước": "min atrás",
+    "giờ trước": "h atrás",
+    "ngày trước": "d atrás",
+    "tháng trước": "meses atrás",
+    " chưa học": " sin estudiar",
+    " đã đạt bài thi": " aprobó la prueba",
+    "CÂU ": "PREGUNTA ",
+    "đã làm ": "hechas ",
+    "Tháng ": "Mes ",
+    "🏆 Xếp hạng — ": "🏆 Clasificación — ",
+    "🔴 Đến hạn ôn ngay (": "🔴 Repaso pendiente ahora (",
+    "🟢 Đã ôn, chưa tới hạn kế tiếp (": "🟢 Repasado, próxima ronda no vencida (",
+    "Đã trích ": "Extraídas ",
+    " từ B1+ → ": " palabras B1+ → ",
+    " block 10 từ + 1 block đầy đủ (": " bloques de 10 palabras + 1 bloque completo ("
+  };
+  var PARTIAL_ES_REV = {};
+  Object.keys(PARTIAL_ES).forEach(function (k) { PARTIAL_ES_REV[PARTIAL_ES[k]] = k; });
+
   var SKIP_TAGS = { SCRIPT: 1, STYLE: 1, TEXTAREA: 1, INPUT: 1 };
   var ATTRS = ["title", "placeholder", "aria-label"];
 
@@ -667,23 +967,23 @@
      cách viết xuống dòng trong file. */
   function normWs(s) { return String(s || "").replace(/\s+/g, " ").trim(); }
 
-  /* target "vi" = quay VỀ tiếng Việt — DOM lúc đó có thể đang là "en" HAY
-     "zh" (không track riêng trạng thái hiện tại), nên thử CẢ 2 chiều
+  /* target "vi" = quay VỀ tiếng Việt — DOM lúc đó có thể đang là "en", "zh"
+     HAY "es" (không track riêng trạng thái hiện tại), nên thử CẢ 3 chiều
      ngược, chiều nào khớp trước dùng chiều đó. */
   function translateText(s, target) {
     var trimmed = String(s || "").trim();
     if (!trimmed) return null;
-    var map = target === "en" ? DICT : target === "zh" ? DICT_ZH : null;
+    var map = target === "en" ? DICT : target === "zh" ? DICT_ZH : target === "es" ? DICT_ES : null;
     if (map) {
       var hit = map[trimmed];
       if (hit) return hit;
       var norm = normWs(trimmed);
       return norm !== trimmed ? (map[norm] || null) : null;
     }
-    var hitVi = REV[trimmed] || REV_ZH[trimmed];
+    var hitVi = REV[trimmed] || REV_ZH[trimmed] || REV_ES[trimmed];
     if (hitVi) return hitVi;
     var normVi = normWs(trimmed);
-    if (normVi !== trimmed) return REV[normVi] || REV_ZH[normVi] || null;
+    if (normVi !== trimmed) return REV[normVi] || REV_ZH[normVi] || REV_ES[normVi] || null;
     return null;
   }
 
@@ -692,10 +992,11 @@
      học") mà so khớp nguyên văn không bao giờ trúng. Có thể thay NHIỀU
      cụm trong cùng 1 text node (vd vừa có "phút trước" vừa có gì khác). */
   function applyPartial(text, target) {
-    /* target "vi": DOM có thể đang "en" HAY "zh" — chạy CẢ 2 bảng REV lần
-       lượt (không xung đột vì .indexOf từng cụm riêng biệt của mỗi ngôn
-       ngữ, khó trùng nhau). */
-    var maps = target === "en" ? [PARTIAL] : target === "zh" ? [PARTIAL_ZH] : [PARTIAL_REV, PARTIAL_ZH_REV];
+    /* target "vi": DOM có thể đang "en", "zh" HAY "es" — chạy CẢ 3 bảng REV
+       lần lượt (không xung đột vì .indexOf từng cụm riêng biệt của mỗi
+       ngôn ngữ, khó trùng nhau). */
+    var maps = target === "en" ? [PARTIAL] : target === "zh" ? [PARTIAL_ZH] : target === "es" ? [PARTIAL_ES]
+      : [PARTIAL_REV, PARTIAL_ZH_REV, PARTIAL_ES_REV];
     var out = text;
     maps.forEach(function (map) {
       Object.keys(map).forEach(function (k) {
@@ -760,21 +1061,21 @@
   I18N.apply = function (root) {
     if (!(w.Auth && w.Auth.effectiveLang)) return;
     var target = w.Auth.effectiveLang();
-    var normTarget = (target === "en" || target === "zh") ? target : "vi";
+    var normTarget = (target === "en" || target === "zh" || target === "es") ? target : "vi";
     var r = root || document.body;
     walk(r, "vi");
     if (normTarget !== "vi") walk(r, normTarget);
   };
 
   /* Quan sát DOM để dịch NGAY nội dung mới render (menu ⋯, modal, danh
-     sách Block…) — CHỈ thật sự quét khi ngôn ngữ hiện tại là "en"/"zh"
+     sách Block…) — CHỈ thật sự quét khi ngôn ngữ hiện tại là "en"/"zh"/"es"
      (đa số user vẫn "vi" — early-return ngay từ đầu, gần như miễn phí,
      không ảnh hưởng hiệu năng render bình thường của TJ). Khi đổi NGÔN
      NGỮ (không phải mỗi lần render) thì luôn chạy apply() 1 lượt đầy đủ
      để xử lý cả chiều đổi VỀ tiếng Việt, xem Auth.onChange bên dưới. */
   var observer = new MutationObserver(function (mutations) {
     var lang = w.Auth && w.Auth.effectiveLang && w.Auth.effectiveLang();
-    if (lang !== "en" && lang !== "zh") return;
+    if (lang !== "en" && lang !== "zh" && lang !== "es") return;
     mutations.forEach(function (m) {
       m.addedNodes && m.addedNodes.forEach(function (n) { walk(n, lang); });
     });

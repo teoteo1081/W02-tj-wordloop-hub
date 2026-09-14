@@ -180,12 +180,13 @@
   function detectLocalLang() {
     try {
       var saved = localStorage.getItem(LS_LOCAL_LANG);
-      if (saved === "vi" || saved === "en" || saved === "zh") return saved;
+      if (saved === "vi" || saved === "en" || saved === "zh" || saved === "es") return saved;
     } catch (e) {}
     try {
       var nav = String((w.navigator && (w.navigator.language || w.navigator.userLanguage)) || "").toLowerCase();
       if (nav.indexOf("vi") === 0) return "vi";
       if (nav.indexOf("zh") === 0) return "zh";
+      if (nav.indexOf("es") === 0) return "es";
     } catch (e) {}
     return "en";
   }
@@ -295,9 +296,29 @@
     }
   }
 
+  /* Ghi nhận 1 lượt mở app hôm nay (bảng site_visits, 2026-09-14) - CHỈ
+     Cloud mode (user local trên máy không có gì để gộp lại giữa các
+     người), fire-and-forget - KHÔNG BAO GIỜ được làm chậm/chặn đăng nhập
+     nếu lỗi mạng. Đọc dòng hôm nay trước để CỘNG DỒN visit_count (upsert
+     thẳng sẽ GHI ĐÈ chứ không cộng) - dùng để tools/manage_users_ai_usage.py
+     đếm "còn hoạt động không mỗi ngày", KHÔNG liên quan gì tới quota AI. */
+  async function logSiteVisit(uid) {
+    if (!(w.DB && w.DB.sb && uid)) return;
+    try {
+      var today = new Date().toISOString().slice(0, 10);
+      var r = await w.DB.sb.from("site_visits").select("visit_count")
+        .eq("user_id", uid).eq("date_key", today).maybeSingle();
+      var nextCount = ((r.data && r.data.visit_count) || 0) + 1;
+      await w.DB.sb.from("site_visits").upsert(
+        { user_id: uid, date_key: today, visit_count: nextCount, last_visit_at: new Date().toISOString() },
+        { onConflict: "user_id,date_key" }
+      );
+    } catch (e) { /* không chặn app vì lỗi ghi log lượt truy cập */ }
+  }
+
   Auth.init = async function () {
     var linked = await tryLinkLogin();
-    if (linked) return Auth.user;
+    if (linked) { logSiteVisit(Auth.user && Auth.user.id); return Auth.user; }
 
     if (w.DB && w.DB.mode === "cloud" && w.DB.sb) {
       try {
@@ -310,6 +331,7 @@
       loadLocalCurrent();
     }
     if (!Auth.user) loadLocalCurrent();
+    if (Auth.user && Auth.user.cloud) logSiteVisit(Auth.user.id);
     return Auth.user;
   };
 

@@ -85,13 +85,39 @@ async function checkQuota(userId: string | null, blockId: string | null): Promis
   }
 }
 
-async function recordUsage(userId: string | null, blockId: string | null) {
+// 2026-09-14: nhận thêm usage token (prompt/completion/total) từ response
+// OpenAI để CỘNG DỒN vào dòng user/block/ngày đã có (không ghi đè) — 1
+// Block có thể được nhờ viết lại nhiều lần/ngày dù chỉ tính 1 "lượt" quota,
+// nên phải đọc dòng cũ (nếu có) rồi cộng thêm, không thể dùng thẳng
+// "resolution=merge-duplicates" (nó GHI ĐÈ toàn bộ cột trùng khoá, không
+// cộng). Âm thầm bỏ qua mọi lỗi — KHÔNG được làm hỏng response OpenAI đã
+// trả về, ghi log usage chỉ là "cố gắng tốt nhất".
+async function recordUsage(
+  userId: string | null,
+  blockId: string | null,
+  usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number },
+) {
   if (!userId || !blockId || !SERVICE_ROLE_KEY || !SUPABASE_URL) return;
+  const dateKey = new Date().toISOString().slice(0, 10);
+  const pIn = usage?.prompt_tokens || 0;
+  const pOut = usage?.completion_tokens || 0;
+  const pTot = usage?.total_tokens || (pIn + pOut);
   try {
+    const existingRes = await sb(
+      `ai_usage_daily?user_id=eq.${encodeURIComponent(userId)}&block_id=eq.${encodeURIComponent(blockId)}&date_key=eq.${dateKey}&select=call_count,prompt_tokens,completion_tokens,total_tokens`,
+    );
+    const existingRows = existingRes.ok ? await existingRes.json() : [];
+    const prev = existingRows[0] || { call_count: 0, prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 };
     await sb("ai_usage_daily", {
       method: "POST",
       headers: { "Prefer": "resolution=merge-duplicates" },
-      body: JSON.stringify({ user_id: userId, block_id: blockId, date_key: new Date().toISOString().slice(0, 10), provider: "openai" }),
+      body: JSON.stringify({
+        user_id: userId, block_id: blockId, date_key: dateKey, provider: "openai",
+        call_count: (prev.call_count || 0) + 1,
+        prompt_tokens: (prev.prompt_tokens || 0) + pIn,
+        completion_tokens: (prev.completion_tokens || 0) + pOut,
+        total_tokens: (prev.total_tokens || 0) + pTot,
+      }),
     });
   } catch (_e) { /* không chặn response vì lỗi ghi log */ }
 }
@@ -132,7 +158,11 @@ Deno.serve(async (req: Request) => {
       body: upstreamBody,
     });
     const text = await res.text();
-    if (res.ok) await recordUsage(userId, blockId);
+    if (res.ok) {
+      let usage: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number } | undefined;
+      try { usage = JSON.parse(text)?.usage; } catch (_e) { /* body không phải JSON hợp lệ -> bỏ qua usage, vẫn trả response gốc */ }
+      await recordUsage(userId, blockId, usage);
+    }
     // Trả NGUYÊN status + body của OpenAI — client (_callOpenAI) đã có sẵn
     // logic parse choices[0].message.content + usage token, giữ proxy càng
     // "trong suốt" càng ít chỗ để lệch hành vi so với gọi thẳng trước đây.

@@ -1567,7 +1567,7 @@ textarea:focus{border-color:var(--blue);}
 .lb-gap td{text-align:center;color:var(--text-3);padding:.25rem;}
 
 /* Tab "Nghĩa" — chọn kiểm tra theo Nghĩa VN (mặc định) hay Meaning EN */
-.meaning-lang-tabs{display:flex;gap:.4rem;margin:0 0 .6rem;}
+.meaning-lang-tabs{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 .6rem;}
 .mn-lang-tab{
   background:var(--bg-soft);border:1px solid var(--border);color:var(--text-2);
   font-size:.8rem;font-weight:600;padding:.4rem .9rem;border-radius:999px;cursor:pointer;

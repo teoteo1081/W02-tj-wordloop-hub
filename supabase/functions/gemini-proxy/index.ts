@@ -106,13 +106,35 @@ async function checkQuota(userId: string | null, blockId: string | null): Promis
 // Ghi nhận 1 lượt dùng (user_id, block_id, hôm nay) — upsert, không lỗi gì
 // nếu đã có sẵn (đúng 1 dòng/user/block/ngày dù sinh lại bao nhiêu lần).
 // Âm thầm bỏ qua nếu lỗi (KHÔNG được làm hỏng response Gemini đã trả về).
-async function recordUsage(userId: string | null, blockId: string | null) {
+// 2026-09-14: CỘNG DỒN token (đọc dòng cũ rồi ghi tổng mới) thay vì ghi đè
+// - y hệt lý do/cách làm ở openai-proxy (xem ghi chú bên đó, giữ 2 proxy
+// đồng bộ vì dùng chung 1 bảng ai_usage_daily/1 hạn mức).
+async function recordUsage(
+  userId: string | null,
+  blockId: string | null,
+  usage?: { promptTokenCount?: number; candidatesTokenCount?: number; totalTokenCount?: number },
+) {
   if (!userId || !blockId || !SERVICE_ROLE_KEY || !SUPABASE_URL) return;
+  const dateKey = new Date().toISOString().slice(0, 10);
+  const pIn = usage?.promptTokenCount || 0;
+  const pOut = usage?.candidatesTokenCount || 0;
+  const pTot = usage?.totalTokenCount || (pIn + pOut);
   try {
+    const existingRes = await sb(
+      `ai_usage_daily?user_id=eq.${encodeURIComponent(userId)}&block_id=eq.${encodeURIComponent(blockId)}&date_key=eq.${dateKey}&select=call_count,prompt_tokens,completion_tokens,total_tokens`,
+    );
+    const existingRows = existingRes.ok ? await existingRes.json() : [];
+    const prev = existingRows[0] || { call_count: 0, prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 };
     await sb("ai_usage_daily", {
       method: "POST",
       headers: { "Prefer": "resolution=merge-duplicates" },
-      body: JSON.stringify({ user_id: userId, block_id: blockId, date_key: new Date().toISOString().slice(0, 10), provider: "gemini" }),
+      body: JSON.stringify({
+        user_id: userId, block_id: blockId, date_key: dateKey, provider: "gemini",
+        call_count: (prev.call_count || 0) + 1,
+        prompt_tokens: (prev.prompt_tokens || 0) + pIn,
+        completion_tokens: (prev.completion_tokens || 0) + pOut,
+        total_tokens: (prev.total_tokens || 0) + pTot,
+      }),
     });
   } catch (_e) { /* không chặn response vì lỗi ghi log */ }
 }
@@ -156,7 +178,11 @@ Deno.serve(async (req: Request) => {
       body: upstreamBody,
     });
     const text = await res.text();
-    if (res.ok) await recordUsage(userId, blockId);   // chỉ ghi nhận khi Google trả OK thật sự, không tính lượt lỗi
+    if (res.ok) {   // chỉ ghi nhận khi Google trả OK thật sự, không tính lượt lỗi
+      let usage: { promptTokenCount?: number; candidatesTokenCount?: number; totalTokenCount?: number } | undefined;
+      try { usage = JSON.parse(text)?.usageMetadata; } catch (_e) { /* body không phải JSON hợp lệ -> bỏ qua usage, vẫn trả response gốc */ }
+      await recordUsage(userId, blockId, usage);
+    }
     // Trả NGUYÊN status + body của Google — client (_callGemini) đã có sẵn
     // logic phân loại lỗi/retry dựa trên status code thật (503/429...), giữ
     // proxy càng "trong suốt" càng ít chỗ để lệch hành vi so với trước.

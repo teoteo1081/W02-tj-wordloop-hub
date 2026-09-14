@@ -84,12 +84,14 @@ create table if not exists words (
   def_en text default '',
   meaning_vi text default '',
   freq text default '',  -- "common" (thông dụng) | "uncommon" (ít thông dụng) | "" (chưa chấm) — AI tự điền, xem Context.extractVocab/enrichWords
-  meaning_zh text default ''  -- nghĩa tiếng Trung — CHỈ dùng cho tab "Nghĩa" (D.buildMeaningQuiz khi D.meaningLang()==="zh"), KHÔNG phải cột hiển thị trong bảng từ vựng chính (đó vẫn chỉ VI/EN như cũ, TJ chốt 2026-09-13)
+  meaning_zh text default '', -- nghĩa tiếng Trung — CHỈ dùng cho tab "Nghĩa" (D.buildMeaningQuiz khi D.meaningLang()==="zh"), KHÔNG phải cột hiển thị trong bảng từ vựng chính (đó vẫn chỉ VI/EN như cũ, TJ chốt 2026-09-13)
+  meaning_es text default ''  -- nghĩa tiếng Tây Ban Nha — y hệt meaning_zh, thêm 2026-09-14, D.meaningLang()==="es"
 );
 -- Project cũ đã tạo bảng words từ trước (chưa có cột freq) -> thêm cột này
 -- vào, KHÔNG phá dữ liệu đã có (mọi dòng cũ tự nhận default '').
 alter table words add column if not exists freq text default '';
 alter table words add column if not exists meaning_zh text default '';
+alter table words add column if not exists meaning_es text default '';
 
 -- Tên dịch sẵn (EN/ZH) cho Hub/Notebook/Section/Page/Batch — TÊN DO NGƯỜI
 -- DÙNG TỰ ĐẶT (khác từ vựng/bài đọc), khi đổi giao diện sang en/zh thì
@@ -352,6 +354,38 @@ create table if not exists ai_usage_daily (
 );
 alter table ai_usage_daily enable row level security;
 create index if not exists idx_ai_usage_daily_lookup on ai_usage_daily(user_id, date_key);
+
+-- 2026-09-14: thêm cột token — gemini-proxy/openai-proxy tự CỘNG DỒN
+-- (read-modify-write, không phải ghi đè) vào 4 cột này mỗi lần gọi AI
+-- THÀNH CÔNG cho đúng 1 dòng user/block/ngày đã có sẵn ở trên (1 Block có
+-- thể được nhờ viết lại nhiều lần trong ngày dù chỉ tính 1 "lượt" quota -
+-- call_count đếm đúng số lần gọi thật, tokens cộng dồn theo). Dùng để
+-- tools/manage_users_ai_usage.py tính tổng token + ước tính chi phí USD.
+alter table ai_usage_daily add column if not exists call_count integer not null default 1;
+alter table ai_usage_daily add column if not exists prompt_tokens integer not null default 0;
+alter table ai_usage_daily add column if not exists completion_tokens integer not null default 0;
+alter table ai_usage_daily add column if not exists total_tokens integer not null default 0;
+
+-- ══════════════════════════════════════════════════════════════════
+-- LƯỢT TRUY CẬP APP — 1 dòng/user/ngày, đếm số lần mở app (Cloud mode),
+-- ĐỘC LẬP với quota AI ở trên (mở app không tốn AI). Ghi bởi CLIENT
+-- (js/auth.js, ngay sau đăng nhập Cloud thành công) bằng anon key trực
+-- tiếp -> CẦN policy mở (shared_all), khác ai_usage_daily (chỉ proxy ghi
+-- được) vì việc này không nhạy cảm/không có gì để "lách" bằng cách tự
+-- xoá. Khớp mô hình bảo mật trust-based sẵn có của app (xem js/auth.js).
+-- ══════════════════════════════════════════════════════════════════
+create table if not exists site_visits (
+  user_id text not null,
+  date_key text not null,          -- "YYYY-MM-DD" giờ UTC server, khớp ai_usage_daily
+  visit_count integer not null default 1,
+  first_visit_at timestamptz not null default now(),
+  last_visit_at timestamptz not null default now(),
+  primary key (user_id, date_key)
+);
+alter table site_visits enable row level security;
+drop policy if exists "shared_all" on site_visits;
+create policy "shared_all" on site_visits for all to anon, authenticated using (true) with check (true);
+create index if not exists idx_site_visits_lookup on site_visits(user_id, date_key);
 
 -- ══════════════════════════════════════════════════════════════════
 -- CHỈ MỤC — cho nhanh khi bảng words/blocks lớn (9000+ dòng)
