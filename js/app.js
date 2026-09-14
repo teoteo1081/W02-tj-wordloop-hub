@@ -2375,6 +2375,17 @@
 
         w.toast("Đang nhân bản Notebook…");
         var newNb = await w.DB.duplicateNotebook(id, newName, targetParentId, progressScope);
+        /* Cùng bug với addNotebook (xem comment ở đó, sửa 2026-09-14):
+           bản sao ĐỨNG ĐỘC LẬP (không targetParentId) cũng mặc định
+           "restricted" mà không tự cấp quyền cho người tạo. */
+        if (!targetParentId) {
+          var myUidDup = w.Auth.effectiveUserId ? w.Auth.effectiveUserId() : (w.Auth.user && w.Auth.user.id);
+          if (myUidDup && !w.Auth.isAdmin()) {
+            await w.DB.grantNotebookAccess(newNb.id, myUidDup, "edit");
+            myGrantedIds.add(newNb.id);
+            notebookAccessAll.push({ notebook_id: newNb.id, user_id: myUidDup, role: "edit" });
+          }
+        }
         await App.reloadCurrent();
         w.toast('Đã tạo "' + newNb.name + '" — bản sao Section/Page/Batch/Block/Từ vựng' + (progressScope ? ", kèm tiến trình học" : ""), "ok");
       }
@@ -3569,6 +3580,20 @@
       var curNb = S.notebooks.find(function (n) { return n.id === S.notebookId; });
       var parentId = curNb ? (curNb.parent_notebook_id || null) : null;
       var nb = await w.DB.addNotebook(S.hubId, r.text, r.emoji || "📓", parentId);
+      /* BUG FIX 2026-09-14: Notebook cấp gốc (parentId rỗng) mặc định tạo
+         "restricted" (xem addNotebook trong db.js) nhưng KHÔNG tự cấp
+         quyền cho chính người vừa tạo -> loadNotebooksFiltered (gọi mỗi
+         lần chuyển Hub) lọc mất nó khỏi chính người tạo (nếu không phải
+         Admin), y hệt như tạo không thành công. Tự cấp "edit" cho người
+         tạo ngay + thêm vào myGrantedIds tại chỗ để không cần load lại. */
+      if (!parentId) {
+        var myUid = w.Auth.effectiveUserId ? w.Auth.effectiveUserId() : (w.Auth.user && w.Auth.user.id);
+        if (myUid && !w.Auth.isAdmin()) {
+          await w.DB.grantNotebookAccess(nb.id, myUid, "edit");
+          myGrantedIds.add(nb.id);
+          notebookAccessAll.push({ notebook_id: nb.id, user_id: myUid, role: "edit" });
+        }
+      }
       S.notebooks.push(nb); S.notebookId = nb.id;
       await loadNotebook(nb.id);
       saveSel(); renderAll();
