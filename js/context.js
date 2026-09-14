@@ -225,6 +225,12 @@
       "gpt-4.1-mini": { in: 0.40, out: 1.60 },
       "gpt-4.1": { in: 2.00, out: 8.00 }
     },
+
+    /* Riêng tài khoản TJ (profile id thật, KHÔNG đổi được qua UI) luôn ưu
+       tiên OpenAI trước Gemini — TJ yêu cầu 2026-09-13, áp dụng CẢ web lẫn
+       local (khác các user khác vẫn Gemini-trước như thường). Xem
+       _callProvider bên dưới. */
+    TJ_USER_ID: "f3fd95c9-06e8-4d39-b6f2-efc113d436cf",
     /* Chi phí ước tính (USD) của LẦN GỌI OPENAI THÀNH CÔNG GẦN NHẤT — null
        nếu lần thành công gần nhất là Gemini (free) hoặc chưa gọi lần nào.
        generateAI() đọc biến này ngay sau _callProvider() để ghi vào
@@ -411,10 +417,18 @@
        GEMINI_API_KEY client-side) — OpenAI CHỈ còn là DỰ PHÒNG khi Gemini
        lỗi (hoặc dùng thẳng nếu máy không có Cloud mode nhưng có
        OPENAI_API_KEY riêng, xem _callOpenAI).
-       Trừ đúng 1 trường hợp: Gemini từ chối vì "quota_user" (user thường
-       đã dùng đủ 3 Block AI hôm nay — quota CHUNG cho cả 2 nhà cung cấp,
-       xem checkQuota() trong cả 2 proxy) thì KHÔNG rơi qua OpenAI — nếu
-       không, giới hạn đó vô nghĩa với máy có sẵn OPENAI_API_KEY.
+       NGOẠI LỆ THÊM 2026-09-13 (cùng ngày, TJ yêu cầu thêm sau đó): riêng
+       đúng account TJ (so quotaCtx.userId với Context.TJ_USER_ID — id
+       thật, không đổi được qua UI) thì lật ngược lại, OpenAI thử TRƯỚC,
+       Gemini là dự phòng — áp dụng CẢ web lẫn local (miễn có OPENAI_API_KEY
+       khả dụng, local qua js/keys.local.js hoặc web qua openai-proxy nếu
+       đã set secret). Mọi account khác vẫn Gemini-trước như trên, không
+       đổi gì.
+       Trừ đúng 1 trường hợp (áp dụng cho nhánh Gemini-trước, KHÔNG áp dụng
+       cho nhánh TJ ở trên): Gemini từ chối vì "quota_user" (user thường đã
+       dùng đủ 3 Block AI hôm nay — quota CHUNG cho cả 2 nhà cung cấp, xem
+       checkQuota() trong cả 2 proxy) thì KHÔNG rơi qua OpenAI — nếu không,
+       giới hạn đó vô nghĩa với máy có sẵn OPENAI_API_KEY.
        Không có cả 2 thì báo rõ "chưa cấu hình" (kind: "no_key").
        Ghi lại _lastProvider ("gemini"/"openai") NGAY KHI THÀNH CÔNG — để
        generateAI() lưu vào meta.provider, giúp TJ biết bài nào tốn tiền
@@ -427,6 +441,27 @@
         var noKey = new Error("Chưa cấu hình OpenAI key (js/keys.local.js) và cũng chưa chạy Cloud mode để gọi Gemini qua proxy");
         noKey.kind = "no_key";
         throw noKey;
+      }
+
+      var isTJ = !!(quotaCtx && quotaCtx.userId === w.Context.TJ_USER_ID);
+      if (isTJ && hasOpenAI) {
+        try {
+          var rTJ = await w.Context._callOpenAI(cfg, sys, user, quotaCtx);
+          w.Context._lastProvider = "openai";
+          return rTJ;
+        } catch (eOpenAI0) {
+          if (!hasGeminiProxy) throw eOpenAI0;
+          try {
+            var rTJ2 = await w.Context._callGemini(cfg, sys, user, quotaCtx);
+            w.Context._lastProvider = "gemini";
+            return rTJ2;
+          } catch (eGemini0) {
+            /* Cả 2 đều lỗi -> báo lỗi của OpenAI (nhà cung cấp CHÍNH của TJ),
+               kèm ghi chú để không mất thông tin Gemini. */
+            eOpenAI0.message += " (Gemini dự phòng cũng lỗi: " + eGemini0.message + ")";
+            throw eOpenAI0;
+          }
+        }
       }
 
       if (hasGeminiProxy) {
