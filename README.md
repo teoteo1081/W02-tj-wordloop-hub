@@ -113,7 +113,7 @@ Icon 📊 "Journey" trên thanh trên cùng. Số liệu ở đây **LUÔN là c
 
 ## Cách thêm từ vựng mới
 - **"+ Paste từ mới"**: dán danh sách từ (mỗi dòng 1 từ, các cột cách nhau `|` hoặc tab) → tự cắt Block 10 từ/batch mới, đánh số lại từ 1. Có key AI thì tự tra điền nốt cột thiếu (level/pos/ipa/def_en/meaning_vi).
-- **"✨ Dán bài, tự trích từ"**: dán bài báo/transcript YouTube (`.txt` hoặc nguyên file phụ đề `.srt` — tự nhận diện, bỏ số thứ tự/mốc giờ) → AI trích từ vựng B1+ → tự tạo Block. Bài dài hơn ~12.000 ký tự/lượt **tự động chia nhiều phần** (`Context.splitChapters`, cùng cơ chế với "Dán cả sách" bên dưới) — không cần tự cắt tay, chỉ cần xem/sửa tên từng phần rồi bấm xử lý.
+- **"✨ Dán bài, tự trích từ"**: dán bài báo/transcript YouTube (`.txt` hoặc nguyên file phụ đề `.srt` — tự nhận diện, bỏ số thứ tự/mốc giờ) → AI trích từ vựng B1+ → tự tạo Block. Bài dài hơn ~12.000 ký tự/lượt **tự động chia nhiều phần** (`Context.splitChapters`, cùng cơ chế với "Dán cả sách" bên dưới, cắt tầng đoạn văn→câu→dòng→từ nên luôn cắt được kể cả bài không có dấu câu) — không cần tự cắt tay, chỉ cần xem/sửa tên từng phần rồi bấm xử lý. Transcript tự động (YouTube auto-generated) thường **không có dấu câu** — app tự phát hiện và nhờ CHÍNH lệnh AI trích từ vựng chấm câu lại luôn (không tốn thêm lượt gọi AI riêng), bài dài thì tự chia phần nhỏ hơn (5000 ký tự thay vì 11000) để lượt AI nào cũng kịp trả lời trong 25 giây.
 - **Lưu từ khi đọc** (kiểu LingQ): bôi/bấm từ trong bài đọc → lưu vào Batch "⭐ Từ đã lưu" của Page hiện tại, đủ 10 từ tự sang Block mới (đánh số tiếp theo Block cũ nhất trong batch đó, không nhảy về 1 nếu batch đã có số).
 
 ## AI Framework — phân tích & luyện nói theo khung
