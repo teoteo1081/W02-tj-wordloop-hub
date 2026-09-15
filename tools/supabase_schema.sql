@@ -94,6 +94,12 @@ alter table words add column if not exists freq text default '';
 alter table words add column if not exists meaning_zh text default '';
 alter table blocks add column if not exists framework_data jsonb default null;
 alter table words add column if not exists meaning_es text default '';
+-- Lịch sử "🔄 Tạo lại" panel Framework (2026-09-15) — mảng, mới nhất ở
+-- đầu, tối đa 5 bản (FW_HISTORY_MAX trong detail.js), mỗi phần tử là 1
+-- bản framework_data cũ NGUYÊN VẸN (kèm _meta:{provider,cost_usd,
+-- generated_at} đóng dấu lúc sinh) — bấm chip "🕐 Phiên bản trước" để
+-- khôi phục, xem detail.js #fw-history-slot / #btn-fw-regen.
+alter table blocks add column if not exists framework_data_history jsonb default '[]'::jsonb;
 
 -- Tên dịch sẵn (EN/ZH) cho Hub/Notebook/Section/Page/Batch — TÊN DO NGƯỜI
 -- DÙNG TỰ ĐẶT (khác từ vựng/bài đọc), khi đổi giao diện sang en/zh thì

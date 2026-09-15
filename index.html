@@ -15,7 +15,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon.svg">
-<link rel="stylesheet" href="css/app.css?v=25">
+<link rel="stylesheet" href="css/app.css?v=26">
 </head>
 <body>
 
@@ -324,6 +324,10 @@
             </div>
           </div>
           <div class="fw-question" id="fw-question-echo"></div>
+          <!-- Chip "phiên bản trước" (2026-09-15) — chỉ hiện khi đã bấm
+               "🔄 Tạo lại" ít nhất 1 lần (có framework_data_history).
+               detail.js D.renderFrameworkPanel() vẽ động vào đây. -->
+          <div id="fw-history-slot"></div>
 
           <!-- Hàng tab đổi CÁCH XEM (2026-09-15) — TJ yêu cầu tab "sáng
                lên" khi active thay vì 1 nút đổi qua lại. 3 kiểu xem:
@@ -1101,13 +1105,13 @@ mitigate | giảm nhẹ"></textarea>
 <script src="js/keys.local.js?v=1"></script>
 <script src="js/util.js?v=1"></script>
 <script src="js/srs.js?v=1"></script>
-<script src="js/context.js?v=23"></script>
+<script src="js/context.js?v=24"></script>
 <script src="js/speech.js?v=3"></script>
 <script src="js/db.js?v=11"></script>
 <script src="js/auth.js?v=5"></script>
 <script src="js/i18n.js?v=4"></script>
 <script src="js/reader.js?v=1"></script>
-<script src="js/detail.js?v=29"></script>
+<script src="js/detail.js?v=30"></script>
 <script src="js/export.js?v=2"></script>
 <script src="js/journey.js?v=5"></script>
 <script src="js/home.js?v=2"></script>

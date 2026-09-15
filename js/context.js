@@ -997,7 +997,14 @@
         writingPassageStorable: writingPassageStorable,
         speakingTitle: p2.speaking_title || "",
         writingTitle: p2.writing_title || "",
-        frameworkData: { question: q, frameworks: frameworks }
+        /* _meta (2026-09-15) — TJ muốn khi khôi phục bản cũ phải "rõ
+           nguồn AI nào, chi phí nhiêu" (giống các nguồn bài đọc đã có
+           sẵn kiểu này) — đóng dấu ngay lúc sinh, đi kèm theo
+           frameworkData khi lưu lịch sử (xem detail.js #btn-fw-regen). */
+        frameworkData: {
+          question: q, frameworks: frameworks,
+          _meta: { provider: w.Context._lastProvider || "", cost_usd: totalCost, generated_at: Date.now() }
+        }
       };
     },
 

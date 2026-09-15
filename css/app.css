@@ -2095,6 +2095,17 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
    ngôn ngữ hình ảnh với .dtab/.dtab.active (tab Bài học/Nghĩa/Quiz...)
    cho quen mắt, nhưng tách class riêng vì đây là tab NỘI BỘ 1 card, nhỏ
    hơn tab cấp trang. */
+/* Chip "phiên bản trước" (2026-09-15) — hàng nhỏ, gọn, chỉ hiện khi đã
+   có lịch sử (đã bấm "🔄 Tạo lại" ít nhất 1 lần). */
+.fw-history{display:flex;align-items:center;gap:.35rem;flex-wrap:wrap;margin:.4rem 0;font-size:.72rem;}
+.fw-history-lbl{color:var(--text-3);flex-shrink:0;}
+.fw-history-chip{
+  background:none;border:1px dashed var(--border);color:var(--text-2);
+  font-size:.7rem;padding:.25rem .55rem;border-radius:99px;cursor:pointer;white-space:nowrap;
+}
+.fw-history-chip:hover{border-color:var(--blue);color:var(--blue-l);}
+.fw-history-chip:disabled{opacity:.5;cursor:default;}
+
 .fw-view-tabs{display:flex;gap:.35rem;flex-wrap:wrap;margin:.6rem 0;}
 .fw-view-tab{
   background:var(--bg-soft);border:1px solid var(--border);color:var(--text-2);

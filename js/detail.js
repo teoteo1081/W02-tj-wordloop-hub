@@ -482,6 +482,7 @@
      phương pháp giao tiếp, 2026-09-15). */
   var LS_FW_VIEW = "tjwl_fw_panel_view_v1";
   var FW_VIEWS = ["list", "table", "method", "tj"];
+  var FW_HISTORY_MAX = 5;   /* số bản cũ tối đa giữ lại khi "🔄 Tạo lại" panel Framework */
   function fwPanelView() {
     try {
       var v = localStorage.getItem(LS_FW_VIEW);
@@ -580,6 +581,38 @@
       '</div>';
   }
 
+  /* Chip "phiên bản trước" (2026-09-15) — TJ yêu cầu rõ NGUỒN AI + CHI
+     PHÍ từng bản khi khôi phục (giống cách chọn nguồn bài đọc đã có),
+     và giữ NHIỀU bản chứ không chỉ 1. Mỗi chip hiện provider + chi phí +
+     "X phút/giờ trước" — bấm 1 chip = khôi phục NGAY bản đó (không có
+     bước xem trước riêng — an toàn vì bản đang dùng cũng tự đẩy vào
+     lịch sử lúc khôi phục, bấm lại chip khác vẫn lấy lại được). */
+  function fwRelTime(ts) {
+    if (!ts) return "";
+    var mins = Math.round((Date.now() - ts) / 60000);
+    if (mins < 1) return "vừa xong";
+    if (mins < 60) return mins + " phút trước";
+    var hrs = Math.round(mins / 60);
+    if (hrs < 24) return hrs + " giờ trước";
+    return Math.round(hrs / 24) + " ngày trước";
+  }
+  function fwHistoryChipsHtml(history) {
+    if (!history || !history.length) return "";
+    return '<div class="fw-history" id="fw-history">' +
+      '<span class="fw-history-lbl">🕐 Phiên bản trước:</span>' +
+      history.map(function (h, i) {
+        var meta = h._meta || {};
+        var provLabel = meta.provider === "openai" ? "✨ OpenAI" : meta.provider === "gemini" ? "✨ Gemini" : "AI";
+        var costLabel = typeof meta.cost_usd === "number" && meta.cost_usd > 0 ? " · ~$" + meta.cost_usd.toFixed(4) : "";
+        var timeLabel = fwRelTime(meta.generated_at);
+        return '<button type="button" class="fw-history-chip" data-history-idx="' + i + '" ' +
+          'title="Bấm để khôi phục lại bản này">' +
+          provLabel + costLabel + (timeLabel ? " · " + timeLabel : "") +
+        '</button>';
+      }).join("") +
+    '</div>';
+  }
+
   D.renderFrameworkPanel = function () {
     var panel = w.$("#fw-panel");
     if (!panel) return;
@@ -592,6 +625,8 @@
     panel.hidden = false;
     var echo = w.$("#fw-question-echo");
     if (echo) echo.textContent = fd.question || "";
+    var historySlot = w.$("#fw-history-slot");
+    if (historySlot) historySlot.innerHTML = fwHistoryChipsHtml(b.framework_data_history);
     var view = fwPanelView();
 
     w.$$("#fw-view-tabs .fw-view-tab").forEach(function (t) {
@@ -2346,9 +2381,12 @@
        (xem DB.addFrameworkBlockPair) rồi mở lại phạm vi ở đây sau.
 
        TJ chốt thêm 2026-09-15 (3 việc gộp vào cùng 1 lần bấm):
-       1. GIỮ BẢN CŨ: đè framework_data mới lên nhưng lưu bản cũ vào field
-          riêng framework_data_prev TRƯỚC (chỉ 1 bản gần nhất, không phải
-          lịch sử nhiều bản — chưa có UI khôi phục, chỉ là lưới an toàn).
+       1. GIỮ BẢN CŨ: đè framework_data mới lên nhưng đẩy bản cũ vào
+          framework_data_history TRƯỚC (mảng, mới nhất ở đầu, tối đa
+          FW_HISTORY_MAX bản — TJ yêu cầu rõ nguồn AI/chi phí từng bản,
+          giống các nguồn bài đọc — xem _meta đóng dấu trong
+          generateFrameworkAnalysis, và fwHistoryChipsHtml bên dưới để
+          hiện + bấm khôi phục lại 1 bản cũ bất kỳ).
        2. LIÊN TỤC TỪ VỰNG: truyền tập term ĐANG CÓ trong Block vào
           generateFrameworkAnalysis (previousWords) để AI ưu tiên giữ
           nguyên/chỉ đổi dạng ngữ pháp hoặc từ đồng nghĩa, không nhảy sang
@@ -2376,10 +2414,14 @@
           var previousTerms = existingWords.map(function (x) { return x.term; });
           var out = await w.Context.generateFrameworkAnalysis(fd.question, cfg, quotaCtx, previousTerms);
 
-          /* 1. Giữ bản cũ trước khi đè (best-effort — lỗi lưu backup không
-             chặn việc lưu bản mới, chỉ mất lưới an toàn lần này). */
-          try { await w.DB.saveContext(b.id, fd, "framework_data_prev"); } catch (e) {}
-          b.framework_data_prev = fd;
+          /* 1. Đẩy bản cũ vào đầu lịch sử trước khi đè (best-effort — lỗi
+             lưu lịch sử không chặn việc lưu bản mới, chỉ mất lưới an
+             toàn lần này). Cắt bớt nếu vượt FW_HISTORY_MAX. */
+          var history = (b.framework_data_history || []).slice();
+          history.unshift(fd);
+          if (history.length > FW_HISTORY_MAX) history.length = FW_HISTORY_MAX;
+          try { await w.DB.saveContext(b.id, history, "framework_data_history"); } catch (e) {}
+          b.framework_data_history = history;
 
           await w.DB.saveContext(b.id, out.frameworkData, "framework_data");
           b.framework_data = out.frameworkData;
@@ -2407,6 +2449,42 @@
           btn.textContent = oldText;
         }
       };
+    }
+    /* Bấm 1 chip "phiên bản trước" (2026-09-15) — khôi phục NGAY bản đó
+       (không qua bước xem trước riêng). AN TOÀN 2 CHIỀU: bản ĐANG DÙNG
+       trước khi khôi phục cũng tự đẩy vào đúng vị trí trong lịch sử (thế
+       chỗ bản vừa lấy ra) — bấm nhầm vẫn bấm chip khác để quay lại được,
+       không mất dữ liệu, chỉ đổi thứ tự trong danh sách. Không cần AI,
+       không tốn quota. */
+    var fwHistorySlot = w.$("#fw-history-slot");
+    if (fwHistorySlot) {
+      fwHistorySlot.addEventListener("click", async function (e) {
+        var chip = e.target.closest && e.target.closest(".fw-history-chip");
+        if (!chip) return;
+        if (!canEditPassage()) { w.toast("Bạn không có quyền khôi phục Framework", "err"); return; }
+        var idx = parseInt(chip.dataset.historyIdx, 10);
+        var b = block();
+        var history = (b.framework_data_history || []).slice();
+        if (!history[idx]) return;
+        var chosen = history[idx];
+        var current = b.framework_data;
+        history.splice(idx, 1, current);   /* current thế đúng chỗ bản vừa lấy ra */
+        if (history.length > FW_HISTORY_MAX) history.length = FW_HISTORY_MAX;
+        chip.disabled = true;
+        try {
+          await w.DB.saveContext(b.id, chosen, "framework_data");
+          await w.DB.saveContext(b.id, history, "framework_data_history");
+          b.framework_data = chosen;
+          b.framework_data_history = history;
+          D._fwMethodSel = null;
+          D.renderFrameworkPanel();
+          if (D._tickStickyFw) D._tickStickyFw();
+          w.toast("Đã khôi phục phiên bản trước ✔", "ok");
+        } catch (err) {
+          w.toast("Lỗi: " + (err.message || err), "err");
+          chip.disabled = false;
+        }
+      });
     }
     /* Mỗi hàng framework tự mở/đóng riêng (không phụ thuộc panel thu gọn
        chung ở trên) — bấm vào phần đầu hàng (.fw-row-head) toggle class
