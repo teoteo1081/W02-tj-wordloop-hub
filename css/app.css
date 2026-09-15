@@ -2123,6 +2123,11 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
 .fw-method-info-chain{font-size:.76rem;color:var(--text-3);margin:.15rem 0 .4rem;}
 .fw-method-info-desc{font-size:.8rem;color:var(--text-2);line-height:1.55;margin:0;}
 
+/* Tab "TJ" (2026-09-15) — khối trống trước khi bấm sinh bảng chi tiết
+   (Context.generateMethodBreakdown, tốn AI nên KHÔNG tự gọi). */
+.fw-tj-empty{padding:1.2rem 1rem;text-align:center;border:1px dashed var(--border);border-radius:10px;background:var(--bg-soft);}
+.fw-tj-empty p{margin:0 0 .7rem;color:var(--text-2);font-size:.85rem;}
+
 /* ══════ Bảng so sánh 7 framework "hàng dọc" (2026-09-14) ══════
    TJ tham khảo 1 Google Sheet của chị: cột = từng framework, hàng = từng
    mục (why/method/mở đầu/từ khoá/kết luận/viết/paraphrase/từ vựng/bài

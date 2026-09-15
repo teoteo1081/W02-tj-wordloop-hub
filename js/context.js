@@ -779,20 +779,36 @@
        lời giải thích tiếng Việt hiển thị tĩnh (không phải AI sinh) khi
        user chọn xem theo phương pháp đó. */
     METHOD_BANK: [
-      { key: "scqa", name: "SCQA", chain: "Situation → Complication → Question → Answer",
-        desc: "Bối cảnh (Situation) → Vấn đề phát sinh (Complication) → Câu hỏi cần giải quyết (Question) → Câu trả lời (Answer). Hợp mở đầu thuyết trình/báo cáo — kéo người nghe vào vấn đề trước khi đưa giải pháp." },
-      { key: "pyramid", name: "Pyramid Principle", chain: "Kết luận trước → Luận điểm phụ → Bằng chứng",
-        desc: "Nêu KẾT LUẬN/luận điểm chính TRƯỚC, rồi mới giải thích bằng các luận điểm phụ, mỗi luận điểm phụ có bằng chứng riêng — đi từ tổng quát xuống chi tiết (top-down), ngược cách kể chuyện thông thường. Hợp báo cáo cho sếp/stakeholder muốn biết kết quả ngay." },
+      { key: "scqa", name: "SCQA", chain: "Situation → Complication → Question → Answer → Conclusion/Resolution",
+        desc: "Bối cảnh (Situation) → Vấn đề phát sinh (Complication) → Câu hỏi cần giải quyết (Question) → Câu trả lời (Answer) → Kết luận (Conclusion/Resolution). Hợp mở đầu thuyết trình/báo cáo — kéo người nghe vào vấn đề trước khi đưa giải pháp.",
+        stages: ["Situation", "Complication", "Question", "Answer", "Conclusion/Resolution"] },
+      { key: "pyramid", name: "Pyramid Matrix (Pyramid Principle)", chain: "Key Insight → 3 Supporting Insight (mỗi cái có Evidence riêng) → Conclusion",
+        desc: "Nêu KẾT LUẬN/luận điểm chính (Key Insight) TRƯỚC, rồi 3 luận điểm phụ (Supporting Insight), mỗi luận điểm phụ có 2-3 bằng chứng riêng (Evidence) — đi từ tổng quát xuống chi tiết (top-down), ngược cách kể chuyện thông thường. Hợp báo cáo cho sếp/stakeholder muốn biết kết quả ngay. TJ đưa nguyên cấu trúc lồng nhau từ Google Sheet (2026-09-15) — bảng \"TJ\" liệt kê phẳng theo đúng thứ tự Sheet, tiền tố SI1/SI2/SI3 để phân biệt Evidence của từng Supporting Insight.",
+        stages: ["Dimension/Question", "Punchlines", "Key Insight",
+          "Supporting Insight 1", "SI1 → Evidence 1", "SI1 → Evidence 2", "SI1 → Evidence 3",
+          "Supporting Insight 2", "SI2 → Evidence 1", "SI2 → Evidence 2",
+          "Supporting Insight 3", "SI3 → Evidence 1", "SI3 → Evidence 2", "SI3 → Evidence 3",
+          "Conclusion/Resolution"] },
       { key: "bluf", name: "BLUF (Bottom Line Up Front)", chain: "Kết luận/hành động → Giải thích lý do",
-        desc: "Câu ĐẦU TIÊN nói thẳng kết luận/hành động cần làm, rồi mới giải thích lý do — giống Pyramid nhưng đơn giản, ngắn gọn hơn. Hay dùng trong email/report công sở." },
+        desc: "Câu ĐẦU TIÊN nói thẳng kết luận/hành động cần làm, rồi mới giải thích lý do — giống Pyramid nhưng đơn giản, ngắn gọn hơn. Hay dùng trong email/report công sở.",
+        stages: ["Bottom Line (Kết luận ngay)", "Lý do/Chi tiết 1", "Lý do/Chi tiết 2"] },
       { key: "prep", name: "PREP", chain: "Point → Reason → Example → Point",
-        desc: "Nêu quan điểm (Point) → Lý do (Reason) → Ví dụ minh hoạ (Example) → Lặp lại quan điểm để chốt (Point). Rất hợp trả lời câu hỏi ý kiến (opinion) trong phỏng vấn." },
-      { key: "5w1h", name: "5W-1H", chain: "Who → What → When → Where → Why → How",
-        desc: "Khai thác đầy đủ khía cạnh 1 vấn đề/sự kiện bằng cách trả lời đủ 6 câu hỏi Who/What/When/Where/Why/How — hợp khi cần phân tích/tường thuật đầy đủ." },
+        desc: "Nêu quan điểm (Point) → Lý do (Reason) → Ví dụ minh hoạ (Example) → Lặp lại quan điểm để chốt (Point). Rất hợp trả lời câu hỏi ý kiến (opinion) trong phỏng vấn.",
+        stages: ["Point (Quan điểm)", "Reason (Lý do)", "Example (Ví dụ)", "Point — chốt lại"] },
+      { key: "5w1h", name: "5W-1H (Critical Thinking)", chain: "Who → What → Which → When → Why → How → Where → Whom",
+        desc: "Khai thác đầy đủ khía cạnh 1 vấn đề/sự kiện bằng cách trả lời đủ 8 câu hỏi Who/What/Which/When/Why/How/Where/Whom — hợp khi cần phân tích/tường thuật đầy đủ, tư duy phản biện (Critical Thinking) về vấn đề trước khi kết luận.",
+        stages: ["Who", "What", "Which", "When", "Why", "How", "Where", "Whom"] },
       { key: "claim_evidence", name: "Claim → Evidence → Reasoning", chain: "Luận điểm → Dẫn chứng → Giải thích",
-        desc: "Đưa ra luận điểm (Claim) → Dẫn chứng cụ thể, số liệu/quan sát (Evidence) → Giải thích TẠI SAO dẫn chứng đó ủng hộ luận điểm (Reasoning). Gốc là khung lập luận khoa học (CER, hay dạy trong môn Khoa học ở Mỹ — chuẩn NGSS), không phải khung giao tiếp kinh doanh thuần, nhưng hợp khi lập luận có số liệu/bằng chứng — đúng kiểu framework DATA ANALYSIS." },
+        desc: "Đưa ra luận điểm (Claim) → Dẫn chứng cụ thể, số liệu/quan sát (Evidence) → Giải thích TẠI SAO dẫn chứng đó ủng hộ luận điểm (Reasoning). Gốc là khung lập luận khoa học (CER, hay dạy trong môn Khoa học ở Mỹ — chuẩn NGSS), không phải khung giao tiếp kinh doanh thuần, nhưng hợp khi lập luận có số liệu/bằng chứng — đúng kiểu framework DATA ANALYSIS.",
+        stages: ["Claim (Luận điểm)", "Evidence (Dẫn chứng)", "Reasoning (Giải thích)"] },
       { key: "star", name: "STAR", chain: "Situation → Task → Action → Result",
-        desc: "Bối cảnh (Situation) → Nhiệm vụ/mục tiêu (Task) → Hành động đã làm (Action) → Kết quả đạt được (Result). Cực phổ biến khi trả lời câu hỏi phỏng vấn HÀNH VI (\"Kể 1 lần bạn từng...\") — kể lại 1 tình huống thực tế có đầu có cuối, khác SCQA/Pyramid vốn thiên về trình bày lập luận/báo cáo hơn là kể chuyện trải nghiệm." }
+        desc: "Bối cảnh (Situation) → Nhiệm vụ/mục tiêu (Task) → Hành động đã làm (Action) → Kết quả đạt được (Result). Cực phổ biến khi trả lời câu hỏi phỏng vấn HÀNH VI (\"Kể 1 lần bạn từng...\") — kể lại 1 tình huống thực tế có đầu có cuối, khác SCQA/Pyramid vốn thiên về trình bày lập luận/báo cáo hơn là kể chuyện trải nghiệm.",
+        stages: ["Situation (Bối cảnh)", "Task (Nhiệm vụ)", "Action (Hành động)", "Result (Kết quả)"] },
+      { key: "take_action", name: "TAKE ACTION", chain: "3 Resolution, mỗi cái theo Purpose → Fact → Insight → Action",
+        desc: "3 đề xuất hành động (Resolution) song song, MỖI Resolution đi qua đủ 4 bước: Purpose (mục đích) → Fact (dữ kiện) → Insight (nhận định) → Action (hành động cụ thể). TJ đưa nguyên từ Google Sheet (2026-09-15) — chỉ có trong bảng \"TJ\", không nằm trong 6 phương pháp AI có thể tự gán ở panel 7-framework (method_key), vì đây là khung RIÊNG để khai triển 1 Resolution cụ thể, không phải cách mở đầu câu trả lời.",
+        stages: ["R1 → Resolution", "R1 → Purpose", "R1 → Fact", "R1 → Insight", "R1 → Action",
+          "R2 → Resolution", "R2 → Purpose", "R2 → Fact", "R2 → Insight", "R2 → Action",
+          "R3 → Resolution", "R3 → Purpose", "R3 → Fact", "R3 → Insight", "R3 → Action"] }
     ],
 
     /* Ép cứng ĐÚNG 3 "top" / 2 "ok" / 2 "stretch" bằng cách xếp hạng
@@ -983,6 +999,64 @@
         writingTitle: p2.writing_title || "",
         frameworkData: { question: q, frameworks: frameworks }
       };
+    },
+
+    /* ═══════════ Bảng "Theo phương pháp" kiểu Excel (2026-09-15) ═══════
+       TJ tham khảo 1 Google Sheet của chị: hàng = ĐÚNG các giai đoạn
+       RIÊNG của 1 phương pháp (vd SCQA: Situation/Complication/Question/
+       Answer), cột = cả 7 master framework — khác hẳn view "So sánh"
+       (cột=framework, hàng=mục chung why/mở đầu/kết luận...) vì ở đây
+       hàng phải khớp ĐÚNG tên giai đoạn của phương pháp đang chọn.
+       Dữ liệu 7-framework gốc (why/opening_lines/...) không có sẵn dạng
+       này — cần 1 LỆNH GỌI AI RIÊNG mỗi khi user bấm xem 1 phương pháp
+       (KHÔNG tự động gọi lúc mở/tạo Block, tốn thêm tiền mỗi phương pháp
+       — chỉ gọi khi user chủ động bấm "✨ Tạo bảng chi tiết", xem
+       detail.js). Kết quả cache vào framework_data.method_breakdowns[key]
+       (lưu DB), lần sau xem lại phương pháp đó không gọi AI nữa trừ khi
+       bấm "🔄 Tạo lại" riêng bảng đó. */
+    generateMethodBreakdown: async function (question, frameworks, methodDef, cfg, quotaCtx) {
+      var q = String(question || "").trim();
+      if (!q) throw new Error("Thiếu câu hỏi/tình huống gốc");
+      var stages = methodDef.stages || [];
+      if (!stages.length) throw new Error("Phương pháp này chưa có danh sách giai đoạn (stages)");
+
+      var fwList = frameworks.map(function (f) { return "- key=\"" + f.key + "\" (" + f.name + ")"; }).join("\n");
+      var stageList = stages.map(function (s, i) { return (i + 1) + ". " + s; }).join("\n");
+      var sys = "Bạn là huấn luyện viên giao tiếp tiếng Anh chuyên nghiệp, giúp người Việt học cách " +
+        "TRẢ LỜI có cấu trúc bằng tiếng Anh. Luôn trả lời DUY NHẤT 1 object JSON đúng schema yêu cầu, " +
+        "không thêm chữ nào khác, không dùng markdown code fence.";
+      var user =
+        "CÂU HỎI/TÌNH HUỐNG cần phân tích:\n\"\"\"\n" + q + "\n\"\"\"\n\n" +
+        "PHƯƠNG PHÁP GIAO TIẾP đang áp dụng: " + methodDef.name + " — theo ĐÚNG " + stages.length +
+        " giai đoạn cố định sau (không đổi tên/số lượng):\n" + stageList + "\n\n" +
+        "7 MASTER FRAMEWORK cần áp dụng phương pháp trên (không thiếu, không thừa — đếm lại trước khi " +
+        "trả lời):\n" + fwList + "\n\n" +
+        "Với MỖI framework (cả 7), viết 1 mảng ĐÚNG " + stages.length + " phần tử (theo thứ tự giai " +
+        "đoạn ở trên) — mỗi phần tử là 1 câu tiếng Anh NGẮN (10-20 từ), TỰ NHIÊN/CHUYÊN NGHIỆP như " +
+        "người bản xứ viết, thể hiện NỘI DUNG của giai đoạn đó khi trả lời câu hỏi/tình huống trên theo " +
+        "góc nhìn riêng của framework đó (framework khác nhau thì nội dung câu trả lời khác nhau, dù " +
+        "cùng đi qua các giai đoạn của phương pháp này).\n\n" +
+        "Trả về đúng schema JSON sau, PHẢI CÓ ĐỦ 7 KEY framework, mỗi key ĐÚNG " + stages.length +
+        " phần tử, không thêm trường khác:\n" +
+        '{"breakdown":{"<framework_key>":["...","..."]}}';
+
+      w.Context._lastCostUsd = null;
+      var raw = await w.Context._callProvider(cfg, sys, user, quotaCtx);
+      var parsed = JSON.parse(raw);
+      var bd = parsed.breakdown;
+      if (!bd || typeof bd !== "object") throw new Error("AI thiếu 'breakdown' — thử lại");
+      /* KHOAN DUNG số phần tử mỗi framework thay vì fail cứng bắt gọi lại
+         (tốn quota) — model đôi khi lệch 1-2 phần tử dù prompt đã yêu cầu
+         đúng số, nhất là các phương pháp nhiều giai đoạn (Pyramid Matrix/
+         TAKE ACTION, 15 giai đoạn). Thiếu thì đệm "—" (hiện như ô trống
+         trong fwTjTableHtml), thừa thì cắt bớt — không đổi thứ tự đã có. */
+      frameworks.forEach(function (f) {
+        var arr = Array.isArray(bd[f.key]) ? bd[f.key].slice() : [];
+        while (arr.length < stages.length) arr.push("—");
+        if (arr.length > stages.length) arr = arr.slice(0, stages.length);
+        bd[f.key] = arr;
+      });
+      return { stages: stages, breakdown: bd, cost_usd: w.Context._lastCostUsd || 0 };
     },
 
     /* Dọn nhiễu trước khi phân tích/hiển thị — để dán được nhiều nguồn:

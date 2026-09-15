@@ -481,7 +481,7 @@
      hàng) / "table" (bảng so sánh ngang) / "method" (dashboard theo
      phương pháp giao tiếp, 2026-09-15). */
   var LS_FW_VIEW = "tjwl_fw_panel_view_v1";
-  var FW_VIEWS = ["list", "table", "method"];
+  var FW_VIEWS = ["list", "table", "method", "tj"];
   function fwPanelView() {
     try {
       var v = localStorage.getItem(LS_FW_VIEW);
@@ -525,6 +525,61 @@
       '</div>' : "";
     return info + fwCompareTableHtml(matched);
   }
+
+  /* ═══════════ TAB "TJ" — bảng kiểu Excel (2026-09-15) ═══════════
+     TJ yêu cầu: giữ NGUYÊN view "Theo phương pháp" ở trên, làm 1 TAB
+     RIÊNG tên "TJ" theo đúng format Google Sheet chị tham khảo — hàng =
+     giai đoạn RIÊNG của phương pháp đang chọn (vd SCQA: Situation/
+     Complication/Question/Answer), cột = CẢ 7 master framework (không
+     lọc theo method_key như view "Theo phương pháp"). Cần dữ liệu MỚI
+     (Context.generateMethodBreakdown, 1 lệnh AI riêng mỗi phương pháp) —
+     KHÔNG tự gọi lúc mở panel (tốn tiền ngoài ý muốn), chỉ gọi khi bấm
+     nút "✨ Tạo bảng chi tiết", rồi cache vào fd.method_breakdowns[key]
+     (lưu DB qua saveContext) để lần sau xem lại không tốn thêm. */
+  function fwTjTableHtml(methodDef, allFrameworks, bdEntry) {
+    var stages = bdEntry.stages;
+    var headCells = allFrameworks.map(function (f) {
+      return '<th class="fw-compare-col fw-' + f.fit_tier + '"><div class="fw-name">' + w.esc(f.name) + '</div></th>';
+    }).join("");
+    var bodyRows = stages.map(function (stage, i) {
+      var cells = allFrameworks.map(function (f) {
+        var arr = bdEntry.breakdown[f.key] || [];
+        return "<td>" + w.esc(arr[i] || "—") + "</td>";
+      }).join("");
+      return '<tr><th class="fw-compare-rowhead">' + w.esc(stage) + '</th>' + cells + '</tr>';
+    }).join("");
+    return (
+      '<div class="fw-compare-wrap"><table class="fw-compare">' +
+        '<thead><tr><th class="fw-compare-rowhead"></th>' + headCells + '</tr></thead>' +
+        '<tbody>' + bodyRows + '</tbody>' +
+      '</table></div>'
+    );
+  }
+  function fwTjContentHtml(fd, selectedKey) {
+    var m = fwMethodByKey(selectedKey);
+    if (!m) return "";
+    var info =
+      '<div class="fw-method-info">' +
+        '<div class="fw-method-info-name">' + w.esc(m.name) + '</div>' +
+        '<div class="fw-method-info-chain">' + w.esc(m.chain) + '</div>' +
+        '<p class="fw-method-info-desc">' + w.esc(m.desc) + '</p>' +
+      '</div>';
+    var cached = fd.method_breakdowns && fd.method_breakdowns[selectedKey];
+    if (cached) {
+      return info + fwTjTableHtml(m, fd.frameworks, cached) +
+        '<button type="button" class="btn-soft fw-tj-gen-btn" data-method="' + w.esc(selectedKey) + '" style="margin-top:.6rem">' +
+          '🔄 Tạo lại bảng này' +
+        '</button>';
+    }
+    return info +
+      '<div class="fw-tj-empty">' +
+        '<p>Chưa có bảng chi tiết theo ' + w.esc(m.name) + ' cho câu hỏi này.</p>' +
+        '<button type="button" class="btn-primary fw-tj-gen-btn" data-method="' + w.esc(selectedKey) + '">' +
+          '✨ Tạo bảng chi tiết (1 lượt gọi AI)' +
+        '</button>' +
+      '</div>';
+  }
+
   D.renderFrameworkPanel = function () {
     var panel = w.$("#fw-panel");
     if (!panel) return;
@@ -555,6 +610,26 @@
       methodDash.innerHTML = fwMethodDashHtml(fd.frameworks, D._fwMethodSel);
       legend.hidden = true;
       w.$("#fw-table").innerHTML = fwMethodContentHtml(fd.frameworks, D._fwMethodSel);
+    } else if (view === "tj") {
+      /* Dash của tab "TJ" liệt kê TOÀN BỘ Context.METHOD_BANK (kể cả
+         "take_action" — key này AI không bao giờ tự gán ở panel 7-
+         framework, chỉ dùng để khai triển ở đây) — khác dash của view
+         "method" (chỉ hiện phương pháp THẬT SỰ có mặt, kèm đếm số
+         framework). D._fwTjMethodSel giữ riêng, không dùng chung
+         D._fwMethodSel để đổi tab "Theo phương pháp" không ảnh hưởng tab
+         "TJ" và ngược lại. */
+      var allMethods = w.Context.METHOD_BANK || [];
+      if (!allMethods.some(function (m) { return m.key === D._fwTjMethodSel; })) {
+        D._fwTjMethodSel = allMethods[0] && allMethods[0].key;
+      }
+      methodDash.hidden = false;
+      methodDash.innerHTML = allMethods.map(function (m) {
+        return '<button type="button" class="fw-method-pill' + (m.key === D._fwTjMethodSel ? " active" : "") + '" data-tj-method="' + w.esc(m.key) + '">' +
+          w.esc(m.name) +
+        '</button>';
+      }).join("");
+      legend.hidden = true;
+      w.$("#fw-table").innerHTML = fwTjContentHtml(fd, D._fwTjMethodSel);
     } else {
       methodDash.hidden = true;
       legend.hidden = view !== "list";
@@ -566,6 +641,7 @@
     panel.classList.toggle("collapsed", fwPanelCollapsed());
     panel.classList.toggle("view-table", view === "table");
     panel.classList.toggle("view-method", view === "method");
+    panel.classList.toggle("view-tj", view === "tj");
     var toggleBtn = w.$("#btn-toggle-fw");
     if (toggleBtn) toggleBtn.textContent = fwPanelCollapsed() ? "▸ Mở rộng" : "▾ Thu gọn";
     var regenBtn = w.$("#btn-fw-regen");
@@ -2212,8 +2288,51 @@
       fwMethodDash.addEventListener("click", function (e) {
         var p = e.target.closest && e.target.closest(".fw-method-pill");
         if (!p) return;
-        D._fwMethodSel = p.dataset.method;
+        /* [data-method] = dash view "method" (lọc theo framework thật sự
+           dùng), [data-tj-method] = dash tab "TJ" (đủ cả METHOD_BANK) —
+           2 state riêng, xem renderFrameworkPanel. */
+        if (p.dataset.method != null) D._fwMethodSel = p.dataset.method;
+        else if (p.dataset.tjMethod != null) D._fwTjMethodSel = p.dataset.tjMethod;
         D.renderFrameworkPanel();
+      });
+    }
+    /* "✨ Tạo bảng chi tiết" / "🔄 Tạo lại bảng này" (tab "TJ", 2026-09-15)
+       — 1 lệnh AI RIÊNG cho ĐÚNG phương pháp đang chọn (Context.
+       generateMethodBreakdown), cache vào framework_data.method_breakdowns
+       [key] rồi lưu DB — bấm lại phương pháp ĐÃ có cache không tốn thêm
+       tiền, chỉ nút "Tạo lại" mới gọi AI lần nữa. Gắn trên #fw-table
+       (vùng vẽ lại mỗi lần renderFrameworkPanel, giống các nơi khác)
+       thay vì #fw-method-dash vì nút này nằm trong nội dung, không phải
+       dash. */
+    var fwTableForTj = w.$("#fw-table");
+    if (fwTableForTj) {
+      fwTableForTj.addEventListener("click", async function (e) {
+        var g = e.target.closest && e.target.closest(".fw-tj-gen-btn");
+        if (!g) return;
+        var key = g.dataset.method;
+        var m = (w.Context.METHOD_BANK || []).filter(function (x) { return x.key === key; })[0];
+        if (!m) return;
+        var b = block();
+        var fd = b && b.framework_data;
+        if (!fd || !fd.question) return;
+        var cfg = w.APP_CONFIG || {};
+        g.disabled = true;
+        var oldText = g.textContent;
+        g.textContent = "⏳ Đang tạo (" + m.stages.length + " giai đoạn × 7 framework)...";
+        try {
+          var quotaCtx = { userId: (w.Auth.user && w.Auth.user.id) || null, blockId: w.uid("aiframe") };
+          var out = await w.Context.generateMethodBreakdown(fd.question, fd.frameworks, m, cfg, quotaCtx);
+          fd.method_breakdowns = fd.method_breakdowns || {};
+          fd.method_breakdowns[key] = { stages: out.stages, breakdown: out.breakdown };
+          await w.DB.saveContext(b.id, fd, "framework_data");
+          D.renderFrameworkPanel();
+          w.toast("Đã tạo bảng " + m.name + " ✔", "ok");
+        } catch (err) {
+          if (err && err.kind && w.App && w.App.showAiError) w.App.showAiError(err);
+          w.toast("Lỗi: " + (err.message || err), "err");
+          g.disabled = false;
+          g.textContent = oldText;
+        }
       });
     }
     /* "🔄 Tạo lại" — sinh lại TOÀN BỘ 7 framework bằng AI, giữ nguyên câu
