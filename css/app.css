@@ -1435,6 +1435,27 @@ textarea:focus{border-color:var(--blue);}
 .sp-bar-fill{height:100%;background:var(--blue);width:0%;transition:width .25s linear;}
 .sp-jump{width:32px;height:32px;border-radius:9px;font-size:.95rem;opacity:.85;}
 .sp-close{width:32px;height:32px;border-radius:9px;font-size:.85rem;opacity:.6;}
+/* "Quay lại Framework" nổi (2026-09-14) — pill nhỏ, KHÔNG đụng vùng
+   sticky-player (đáy, giữa màn hình) nên đặt góc dưới-phải. */
+.sticky-fw{
+  position:fixed;right:16px;bottom:18px;z-index:59;
+  display:flex;align-items:center;gap:.3rem;
+  background:var(--green);color:#08251a;font-weight:700;font-size:.78rem;
+  border:none;border-radius:99px;padding:.5rem .85rem;cursor:pointer;
+  box-shadow:0 8px 22px rgba(0,0,0,.3);
+  animation:sp-pop-in .18s ease-out;
+  max-width:min(60vw,320px);
+}
+.sticky-fw:hover{filter:brightness(1.08);}
+.sticky-fw[hidden]{display:none;}
+#sticky-fw-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px;}
+/* Khi CẢ 2 thanh nổi cùng hiện (đang nghe + đang cuộn xa framework), đẩy
+   pill framework lên trên thanh nghe để khỏi chồng nhau. */
+.sticky-player:not([hidden]) ~ .sticky-fw{bottom:78px;}
+@media (max-width:480px){
+  .sticky-fw{right:10px;bottom:14px;font-size:.74rem;padding:.45rem .7rem;}
+  .sticky-player:not([hidden]) ~ .sticky-fw{bottom:74px;}
+}
 @media (max-width:480px){
   .sticky-player{width:calc(100vw - 24px);padding:.45rem .55rem;gap:.5rem;}
   .sp-jump{display:none;}
@@ -2058,3 +2079,44 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
 .fit-stretch{color:var(--text-3);}
 .fw-mark{background:var(--amber-sub);color:var(--amber-l);padding:0 .15rem;border-radius:3px;font-weight:600;}
 .fw-mini-passage p{white-space:pre-line;}
+
+/* Header 2 nút (Bảng so sánh / Thu gọn) của panel Framework — bọc riêng
+   để cùng co giãn/xuống dòng gọn ở mobile mà KHÔNG phá layout card-title-row
+   chung (title vẫn 1 hàng riêng với cụm nút, xem index.html:20). */
+.fw-header-btns{display:flex;gap:.4rem;flex-wrap:wrap;}
+
+/* ══════ Bảng so sánh 7 framework "hàng dọc" (2026-09-14) ══════
+   TJ tham khảo 1 Google Sheet của chị: cột = từng framework, hàng = từng
+   mục (why/method/mở đầu/từ khoá/kết luận/viết/paraphrase/từ vựng/bài
+   đọc) — nhìn ngang 1 hàng là so sánh được ngay 7 framework xử lý mục đó
+   khác nhau thế nào, thay vì phải mở từng hàng 1 như bản danh sách gốc.
+   fwCompareTableHtml() trong detail.js dựng bảng này từ ĐÚNG data đang có
+   (fd.frameworks), không cần đổi AI/DB. Cuộn ngang khi tràn (7 cột nội
+   dung dài chắc chắn tràn màn hình, kể cả desktop) — cột đầu (nhãn hàng)
+   dán cố định bên trái để luôn biết đang xem hàng nào lúc cuộn. */
+.fw-compare-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border);}
+.fw-compare{border-collapse:collapse;width:100%;font-size:.78rem;}
+.fw-compare th,.fw-compare td{
+  border:1px solid var(--border);padding:.55rem .7rem;text-align:left;vertical-align:top;
+}
+.fw-compare thead th{background:var(--bg-soft);position:sticky;top:0;z-index:2;}
+.fw-compare-rowhead{
+  font-weight:700;color:var(--text-2);white-space:nowrap;
+  background:var(--bg-soft);position:sticky;left:0;z-index:1;min-width:140px;
+}
+.fw-compare thead .fw-compare-rowhead{z-index:3;}   /* góc trên-trái: cả 2 chiều sticky đè lên nhau */
+.fw-compare td{min-width:220px;max-width:320px;line-height:1.5;}
+.fw-compare th.fw-compare-col{min-width:220px;max-width:320px;}
+.fw-compare th.fw-compare-col.fw-top{border-top:3px solid var(--green);}
+.fw-compare th.fw-compare-col.fw-ok{border-top:3px solid var(--warn);}
+.fw-compare th.fw-compare-col.fw-stretch{border-top:3px solid var(--text-3);}
+.fw-compare .fw-name{font-weight:700;font-size:.84rem;white-space:normal;}
+.fw-compare .fw-tier{font-size:.68rem;color:var(--text-2);margin-top:.1rem;}
+.fw-compare .fw-chain{font-size:.68rem;color:var(--text-3);margin-top:.15rem;white-space:normal;}
+.fw-compare td ul{margin:0;padding-left:1.1rem;}
+.fw-compare td p{margin:0 0 .4rem;white-space:pre-line;}
+.fw-compare td p:last-child{margin-bottom:0;}
+.fw-compare .fw-stage{margin:.15rem 0;}
+/* Kiểu bảng thì panel KHÔNG cần bảng chú giải 3 màu (fw-legend) lặp lại
+   nữa — đã tô ngay viền trên mỗi cột — ẩn bớt cho gọn, dữ liệu vẫn y hệt. */
+.fw-panel.view-table .fw-legend{display:none;}

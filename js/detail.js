@@ -212,6 +212,13 @@
       D.renderDictation();
     }
     if (name !== "study") w.Speech.stop();
+    /* Pill "🧭 Framework" (nếu có) chỉ có ý nghĩa ở tab "Bài học & Đọc"
+       (nơi #fw-panel thật sự hiện) — rời tab đó thì ẩn ngay (panel đứng
+       trong #pane-study bị display:none, getBoundingClientRect() trả về
+       toàn 0 nên nếu không ẩn tay sẽ hiểu nhầm là "đã cuộn khuất" và hiện
+       pill vô nghĩa); quay lại tab "study" thì tính lại theo đúng vị trí
+       cuộn hiện tại. */
+    if (D._tickStickyFw) { if (name === "study") D._tickStickyFw(); else w.$("#sticky-fw").hidden = true; }
     saveLastBlock(name);
   };
 
@@ -347,6 +354,10 @@
     applyVocabCollapse();
     D.renderFrameworkPanel();
     D.renderPassage();
+    /* Đổi Block (kể cả bấm ◀/▶ giữa Speaking/Writing) đổi luôn panel này
+       có/không + về đầu trang (renderStudy chỉ vẽ lại nội dung, không tự
+       cuộn) — tính lại pill "🧭 Framework" ngay để khỏi trễ 1 nhịp cuộn. */
+    if (D._tickStickyFw) D._tickStickyFw();
   };
 
   /* ══════════════ "AI FRAMEWORK" PANEL (2026-09-14) ══════════════
@@ -366,23 +377,48 @@
   function markUpPassage(text) {
     return w.esc(String(text || "")).replace(/\[([^\]]+)\]/g, '<mark class="fw-mark">$1</mark>');
   }
-  function fwRowHtml(f) {
-    var tierLabel = f.fit_tier === "top" ? "🟢 Fit nhất" : f.fit_tier === "stretch" ? "⚪ Gượng ép" : "🟡 Vẫn ổn (paraphrase)";
-    var stages = (f.keywords_by_stage || []).map(function (s) {
+  function fwTierLabel(tier) {
+    return tier === "top" ? "🟢 Fit nhất" : tier === "stretch" ? "⚪ Gượng ép" : "🟡 Vẫn ổn (paraphrase)";
+  }
+  /* Các mảnh render dùng chung giữa 2 KIỂU XEM panel (danh sách xổ xuống
+     fwRowHtml / bảng so sánh fwCompareTableHtml bên dưới — TJ yêu cầu
+     2026-09-14 thêm bản "hàng dọc" để so 7 framework cạnh nhau như 1 bảng
+     tính, tham khảo 1 Google Sheet chị làm sẵn: framework = cột, các
+     mục/giai đoạn = hàng, xem cùng lúc thay vì mở từng hàng 1). Tách
+     riêng để KHÔNG lặp code build stages/opens/closes/writing/wordsChips
+     ở 2 nơi. */
+  function fwStagesHtml(f) {
+    return (f.keywords_by_stage || []).map(function (s) {
       return '<div class="fw-stage"><b>' + w.esc(s.stage || "") + ':</b> ' +
         (s.keywords || []).map(function (k) { return '<span class="fw-kw">' + w.esc(k) + '</span>'; }).join(" ") +
         "</div>";
     }).join("");
-    var opens = (f.opening_lines || []).map(function (s) { return "<li>" + w.esc(s) + "</li>"; }).join("");
-    var closes = (f.closing_lines || []).map(function (s) { return "<li>" + w.esc(s) + "</li>"; }).join("");
+  }
+  function fwOpensHtml(f) {
+    return (f.opening_lines || []).map(function (s) { return "<li>" + w.esc(s) + "</li>"; }).join("");
+  }
+  function fwClosesHtml(f) {
+    return (f.closing_lines || []).map(function (s) { return "<li>" + w.esc(s) + "</li>"; }).join("");
+  }
+  function fwWritingHtml(f) {
     var wm = f.writing_material || {};
-    var wordsChips = (f.words || []).map(function (t) { return '<span class="fw-kw">' + w.esc(t) + '</span>'; }).join(" ");
+    if (!wm.introduction && !wm.body && !wm.conclusion) return "";
+    return (wm.introduction ? '<p><i>Introduction:</i> ' + w.esc(wm.introduction) + '</p>' : "") +
+      (wm.body ? '<p><i>Body:</i> ' + w.esc(wm.body) + '</p>' : "") +
+      (wm.conclusion ? '<p><i>Conclusion:</i> ' + w.esc(wm.conclusion) + '</p>' : "");
+  }
+  function fwWordsChipsHtml(f) {
+    return (f.words || []).map(function (t) { return '<span class="fw-kw">' + w.esc(t) + '</span>'; }).join(" ");
+  }
+  function fwRowHtml(f) {
+    var stages = fwStagesHtml(f), opens = fwOpensHtml(f), closes = fwClosesHtml(f);
+    var writing = fwWritingHtml(f), wordsChips = fwWordsChipsHtml(f);
     return (
       '<div class="fw-row fw-' + f.fit_tier + '" data-key="' + w.esc(f.key) + '">' +
         '<button class="fw-row-head" type="button">' +
           '<span class="fw-dot"></span>' +
           '<span class="fw-name">' + w.esc(f.name) + '</span>' +
-          '<span class="fw-tier">' + tierLabel + '</span>' +
+          '<span class="fw-tier">' + fwTierLabel(f.fit_tier) + '</span>' +
           '<span class="fw-chain">' + w.esc(f.chain) + '</span>' +
           '<span class="fw-caret">▾</span>' +
         '</button>' +
@@ -392,18 +428,60 @@
           (opens ? '<div class="fw-block"><b>🗣️ Mở đầu (nói):</b><ul>' + opens + '</ul></div>' : "") +
           (stages ? '<div class="fw-block"><b>🔑 Từ khoá theo mạch:</b>' + stages + '</div>' : "") +
           (closes ? '<div class="fw-block"><b>🏁 Kết luận (nói):</b><ul>' + closes + '</ul></div>' : "") +
-          ((wm.introduction || wm.body || wm.conclusion) ?
-            '<div class="fw-block fw-writing"><b>✍️ Bản viết:</b>' +
-              (wm.introduction ? '<p><i>Introduction:</i> ' + w.esc(wm.introduction) + '</p>' : "") +
-              (wm.body ? '<p><i>Body:</i> ' + w.esc(wm.body) + '</p>' : "") +
-              (wm.conclusion ? '<p><i>Conclusion:</i> ' + w.esc(wm.conclusion) + '</p>' : "") +
-            '</div>' : "") +
+          (writing ? '<div class="fw-block fw-writing"><b>✍️ Bản viết:</b>' + writing + '</div>' : "") +
           (f.paraphrase ? '<p class="fw-paraphrase"><b>🔄 Paraphrase:</b> "' + w.esc(f.paraphrase) + '"</p>' : "") +
           (wordsChips ? '<div class="fw-block"><b>📖 Từ vựng:</b> ' + wordsChips + '</div>' : "") +
           (f.passage ? '<div class="fw-block fw-mini-passage"><b>📗 Bài đọc — cách framework này hoạt động:</b><p>' + markUpPassage(f.passage) + '</p></div>' : "") +
         '</div>' +
       '</div>'
     );
+  }
+  /* Bảng so sánh "hàng dọc" (2026-09-14) — cột = 7 framework (giữ đúng
+     thứ tự AI xếp hạng, cột đầu cố định = tên hàng, cuộn ngang được khi
+     tràn màn hình nhỏ, xem .fw-compare-wrap trong app.css). Mỗi framework
+     vốn ĐÃ CÙNG 1 SCHEMA (why/method/opening/keywords/closing/writing/
+     paraphrase/words/passage — xem Context.generateFrameworkAnalysis) dù
+     tên giai đoạn riêng (chain) khác nhau, nên ghép thành hàng chung được
+     ngay mà KHÔNG cần đổi gì ở AI/DB — chỉ là 1 cách trình bày khác của
+     đúng dữ liệu fd.frameworks đang có. */
+  var FW_COMPARE_ROWS = [
+    { label: "❓ Tại sao phù hợp", render: function (f) { return w.esc(f.why || "—"); } },
+    { label: "🧩 Communication method", render: function (f) { return w.esc(f.communication_method || "—"); } },
+    { label: "🗣️ Mở đầu (nói)", render: function (f) { var h = fwOpensHtml(f); return h ? "<ul>" + h + "</ul>" : "—"; } },
+    { label: "🔑 Từ khoá theo mạch", render: function (f) { return fwStagesHtml(f) || "—"; } },
+    { label: "🏁 Kết luận (nói)", render: function (f) { var h = fwClosesHtml(f); return h ? "<ul>" + h + "</ul>" : "—"; } },
+    { label: "✍️ Bản viết", render: function (f) { return fwWritingHtml(f) || "—"; } },
+    { label: "🔄 Paraphrase", render: function (f) { return f.paraphrase ? '"' + w.esc(f.paraphrase) + '"' : "—"; } },
+    { label: "📖 Từ vựng", render: function (f) { return fwWordsChipsHtml(f) || "—"; } },
+    { label: "📗 Bài đọc riêng", render: function (f) { return f.passage ? "<p>" + markUpPassage(f.passage) + "</p>" : "—"; } }
+  ];
+  function fwCompareTableHtml(frameworks) {
+    var headCells = frameworks.map(function (f) {
+      return '<th class="fw-compare-col fw-' + f.fit_tier + '">' +
+        '<div class="fw-name">' + w.esc(f.name) + '</div>' +
+        '<div class="fw-tier">' + fwTierLabel(f.fit_tier) + '</div>' +
+        '<div class="fw-chain">' + w.esc(f.chain) + '</div>' +
+      '</th>';
+    }).join("");
+    var bodyRows = FW_COMPARE_ROWS.map(function (row) {
+      var cells = frameworks.map(function (f) {
+        return '<td>' + row.render(f) + '</td>';
+      }).join("");
+      return '<tr><th class="fw-compare-rowhead">' + w.esc(row.label) + '</th>' + cells + '</tr>';
+    }).join("");
+    return (
+      '<div class="fw-compare-wrap"><table class="fw-compare">' +
+        '<thead><tr><th class="fw-compare-rowhead"></th>' + headCells + '</tr></thead>' +
+        '<tbody>' + bodyRows + '</tbody>' +
+      '</table></div>'
+    );
+  }
+  /* Nhớ theo máy (không phải theo tài khoản — dùng localStorage như
+     LS_FW_COLLAPSE) đang xem panel ở kiểu nào: "list" (mặc định, xổ từng
+     hàng) hay "table" (bảng so sánh ngang). */
+  var LS_FW_VIEW = "tjwl_fw_panel_view_v1";
+  function fwPanelView() {
+    try { return localStorage.getItem(LS_FW_VIEW) === "table" ? "table" : "list"; } catch (e) { return "list"; }
   }
   D.renderFrameworkPanel = function () {
     var panel = w.$("#fw-panel");
@@ -417,10 +495,16 @@
     panel.hidden = false;
     var echo = w.$("#fw-question-echo");
     if (echo) echo.textContent = fd.question || "";
-    w.$("#fw-table").innerHTML = fd.frameworks.map(fwRowHtml).join("");
+    var view = fwPanelView();
+    w.$("#fw-table").innerHTML = view === "table"
+      ? fwCompareTableHtml(fd.frameworks)
+      : fd.frameworks.map(fwRowHtml).join("");
     panel.classList.toggle("collapsed", fwPanelCollapsed());
+    panel.classList.toggle("view-table", view === "table");
     var toggleBtn = w.$("#btn-toggle-fw");
     if (toggleBtn) toggleBtn.textContent = fwPanelCollapsed() ? "▸ Mở rộng" : "▾ Thu gọn";
+    var viewBtn = w.$("#btn-fw-view");
+    if (viewBtn) viewBtn.textContent = view === "table" ? "📋 Xem danh sách" : "📊 Xem bảng so sánh";
   };
 
   /* Mỗi Block có ĐÚNG 1 bài đọc đang dùng (context_passage). Ngoài ra
@@ -1929,6 +2013,38 @@
       hideStickyPlayer();
     };
 
+    /* ══════ "Quay lại Framework" nổi (2026-09-14) ══════
+       TJ báo: cuộn xa khỏi panel 🧭 Framework phù hợp (bảng từ vựng/bài
+       đọc dài bên dưới) thì mất dấu đang xem câu hỏi/framework nào, không
+       có cách nhanh quay lại panel. Chỉ hiện khi Block hiện tại CÓ panel
+       này (framework_data tồn tại, #fw-panel không hidden) VÀ panel đã
+       cuộn khỏi tầm nhìn — dùng lại đúng controlsOutOfView() ở trên (đo
+       theo #workspace, không phải viewport, vì #workspace mới là khung
+       cuộn thật). Không cần setInterval như sticky player (không có gì
+       animate ngoài việc cuộn) — chỉ cần lắng nghe "scroll", throttle bằng
+       requestAnimationFrame cho mượt. */
+    var fwTickQueued = false;
+    function tickStickyFw() {
+      fwTickQueued = false;
+      var panel = w.$("#fw-panel");
+      var pill = w.$("#sticky-fw");
+      if (!panel || panel.hidden || !controlsOutOfView(panel)) { pill.hidden = true; return; }
+      pill.hidden = false;
+      /* Đang mở chi tiết đúng 1 framework nào đó (bấm vào hàng) thì hiện
+         TÊN framework đó (D.gotoAdjacentBlock/mở hàng set .fw-row.open),
+         không có hàng nào mở thì hiện tên chung của panel. */
+      var openRow = panel.querySelector(".fw-row.open .fw-name");
+      w.$("#sticky-fw-label").textContent = openRow ? openRow.textContent : "Framework phù hợp";
+    }
+    w.$("#workspace").addEventListener("scroll", function () {
+      if (!fwTickQueued) { fwTickQueued = true; requestAnimationFrame(tickStickyFw); }
+    }, { passive: true });
+    w.$("#sticky-fw").onclick = function () {
+      var panel = w.$("#fw-panel");
+      if (panel) panel.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+    D._tickStickyFw = tickStickyFw;   /* gọi lại lúc đổi tab/đổi Block, xem showTab() */
+
     w.$("#btn-read").onclick = function () {
       D._autoRead = true;
       readCurrent();
@@ -2007,6 +2123,14 @@
         D.renderFrameworkPanel();
       };
     }
+    var btnFwView = w.$("#btn-fw-view");
+    if (btnFwView) {
+      btnFwView.onclick = function () {
+        try { localStorage.setItem(LS_FW_VIEW, fwPanelView() === "table" ? "list" : "table"); } catch (e) {}
+        D.renderFrameworkPanel();
+        if (D._tickStickyFw) D._tickStickyFw();   /* đổi kiểu xem đổi cả chiều cao panel */
+      };
+    }
     /* Mỗi hàng framework tự mở/đóng riêng (không phụ thuộc panel thu gọn
        chung ở trên) — bấm vào phần đầu hàng (.fw-row-head) toggle class
        "open" trên .fw-row cha. Gắn 1 lần trên #fw-table (event delegation)
@@ -2018,6 +2142,10 @@
         if (!head) return;
         var row = head.closest(".fw-row");
         if (row) row.classList.toggle("open");
+        /* Cập nhật NGAY nhãn pill "🧭 Framework" nếu đang hiện (đã cuộn
+           khuất panel từ trước rồi mới mở/đóng 1 hàng) — không đợi user
+           cuộn thêm mới thấy đúng tên framework đang xem. */
+        if (D._tickStickyFw) D._tickStickyFw();
       });
     }
     w.$("#btn-copy-passage").onclick = function () { copyText(this, D._passagePlain || ""); };

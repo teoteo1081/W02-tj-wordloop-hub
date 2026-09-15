@@ -923,23 +923,33 @@
 
   /* ══════════════ "AI FRAMEWORK" (2026-09-14, Notebook TJ_DATA ANALYST) ══
      TJ chốt 2026-09-14: 1 câu hỏi/tình huống dán vào = ĐÚNG 2 Block
-     "Speaking" + "Writing" trong CÙNG 1 Batch — KHÔNG chia Block lẻ
-     10-từ (dù nhiều hơn 10 từ vẫn không chia). Cả 2 Block dùng CHUNG 1
-     bộ từ vựng (fullWords, insert riêng cho mỗi block — 1 dòng "words"
-     chỉ thuộc 1 block_id, xem addBatchFromWordsWithFull ở trên) và CHUNG
-     1 bản phân tích framework_data (7-framework, giống hệt nhau ở cả 2
-     Block) — chỉ khác bài đọc: speakingPassageStorable (văn nói) cho
-     Block "Speaking", writingPassageStorable (Introduction/Body/
-     Conclusion) cho Block "Writing". */
-  DB.createFrameworkBlocks = async function (pageId, batchName, fullWords, speakingPassageStorable, writingPassageStorable, frameworkData, startGlobalIndex) {
-    if (!fullWords || !fullWords.length) throw new Error("Không có từ nào hợp lệ");
+     "Speaking" + "Writing" — KHÔNG chia Block lẻ 10-từ (dù nhiều hơn 10 từ
+     vẫn không chia). Cả 2 Block dùng CHUNG 1 bộ từ vựng (fullWords, insert
+     riêng cho mỗi block — 1 dòng "words" chỉ thuộc 1 block_id, xem
+     addBatchFromWordsWithFull ở trên) và CHUNG 1 bản phân tích
+     framework_data (7-framework, giống hệt nhau ở cả 2 Block) — chỉ khác
+     bài đọc: speakingPassageStorable (văn nói) cho Block "Speaking",
+     writingPassageStorable (Introduction/Body/Conclusion) cho Block
+     "Writing".
 
-    var batch = await insertOne("batches", {
+     TJ chốt thêm 2026-09-14 (sau, cùng ngày): dán NHIỀU câu hỏi 1 lúc
+     (mỗi dòng 1 câu) → CHỈ 1 Batch chung, mỗi câu hỏi thêm 1 CẶP block
+     Speaking+Writing riêng vào batch đó (không gộp từ vựng rồi chia lại
+     theo 10 từ/block như flow dán bài thường) — xem addFrameworkBlockPair
+     bên dưới, tách khỏi việc tạo Batch để app.js gọi lặp qua từng câu hỏi
+     nhưng chỉ tạo Batch đúng 1 lần. */
+  DB.createFrameworkBatch = async function (pageId, batchName) {
+    return insertOne("batches", {
       page_id: pageId, name: batchName, sort: Date.now() % 100000, created_at: Date.now()
     });
+  };
+
+  DB.addFrameworkBlockPair = async function (batchId, fullWords, speakingPassageStorable, writingPassageStorable, frameworkData, startGlobalIndex, namePrefix) {
+    if (!fullWords || !fullWords.length) throw new Error("Không có từ nào hợp lệ");
 
     var gi = startGlobalIndex || 1;
     var blocks = [], words = [];
+    var prefix = namePrefix ? namePrefix + " — " : "";
 
     async function insertWords(blockId, list) {
       var rows = list.map(function (x, j) {
@@ -960,7 +970,7 @@
     }
 
     var speakingBlock = await insertOne("blocks", {
-      batch_id: batch.id, name: "🗣️ Speaking", global_index: gi, sort: 0,
+      batch_id: batchId, name: prefix + "🗣️ Speaking", global_index: gi, sort: gi,
       context_passage: speakingPassageStorable, framework_data: frameworkData
     });
     gi++;
@@ -968,13 +978,22 @@
     words = words.concat(await insertWords(speakingBlock.id, fullWords));
 
     var writingBlock = await insertOne("blocks", {
-      batch_id: batch.id, name: "✍️ Writing", global_index: gi, sort: 1,
+      batch_id: batchId, name: prefix + "✍️ Writing", global_index: gi, sort: gi,
       context_passage: writingPassageStorable, framework_data: frameworkData
     });
+    gi++;
     blocks.push(writingBlock);
     words = words.concat(await insertWords(writingBlock.id, fullWords));
 
-    return { batch: batch, blocks: blocks, words: words, speakingBlockId: speakingBlock.id, writingBlockId: writingBlock.id };
+    return { blocks: blocks, words: words, speakingBlockId: speakingBlock.id, writingBlockId: writingBlock.id, nextGlobalIndex: gi };
+  };
+
+  /* Giữ hàm cũ (1 câu hỏi = 1 Batch mới + 1 cặp block) làm tiện ích gộp,
+     tương thích code cũ nếu còn nơi nào gọi trực tiếp. */
+  DB.createFrameworkBlocks = async function (pageId, batchName, fullWords, speakingPassageStorable, writingPassageStorable, frameworkData, startGlobalIndex) {
+    var batch = await DB.createFrameworkBatch(pageId, batchName);
+    var pair = await DB.addFrameworkBlockPair(batch.id, fullWords, speakingPassageStorable, writingPassageStorable, frameworkData, startGlobalIndex);
+    return { batch: batch, blocks: pair.blocks, words: pair.words, speakingBlockId: pair.speakingBlockId, writingBlockId: pair.writingBlockId };
   };
 
   /* ══════════════ LƯU TỪ KIỂU LingQ ══════════════
