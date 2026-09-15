@@ -13,6 +13,7 @@ App học từ vựng tiếng Anh cá nhân, dùng phương pháp lặp lại ng
 - [Chu kỳ ôn tập (Tony Buzan)](#chu-kỳ-ôn-tập-tony-buzan)
 - [Journey — thống kê học theo ngày](#journey--thống-kê-học-theo-ngày)
 - [Cách thêm từ vựng mới](#cách-thêm-từ-vựng-mới)
+- [AI Framework — phân tích & luyện nói theo khung](#ai-framework--phân-tích--luyện-nói-theo-khung)
 - [Khoá API / bí mật](#khoá-api--bí-mật)
 - [Việc còn dang dở](#việc-còn-dang-dở)
 
@@ -114,6 +115,26 @@ Icon 📊 "Journey" trên thanh trên cùng. Số liệu ở đây **LUÔN là c
 - **"+ Paste từ mới"**: dán danh sách từ (mỗi dòng 1 từ, các cột cách nhau `|` hoặc tab) → tự cắt Block 10 từ/batch mới, đánh số lại từ 1. Có key AI thì tự tra điền nốt cột thiếu (level/pos/ipa/def_en/meaning_vi).
 - **"✨ Dán bài, tự trích từ"**: dán bài báo/transcript YouTube → AI trích từ vựng B1+ → tự tạo Block.
 - **Lưu từ khi đọc** (kiểu LingQ): bôi/bấm từ trong bài đọc → lưu vào Batch "⭐ Từ đã lưu" của Page hiện tại, đủ 10 từ tự sang Block mới (đánh số tiếp theo Block cũ nhất trong batch đó, không nhảy về 1 nếu batch đã có số).
+
+## AI Framework — phân tích & luyện nói theo khung
+Nút **"🧭 AI Framework"** trên toolbar Notebook (`app.js` `doAiFramework`) — chỉ cho Notebook nào bật, hiện đang dùng ở **TJ_DATA ANALYST**. Dán 1 hoặc NHIỀU câu hỏi/tình huống (mỗi dòng 1 câu) → AI phân tích từng câu theo **7 Master Framework cố định** (`Context.FRAMEWORK_BANK`: opinion/why/story/self_intro/problem_solving/presentation/data_analysis) → mỗi câu tạo ra 1 cặp Block **🗣️ Speaking + ✍️ Writing** (chung 1 Batch, chung bộ từ vựng `full_words`, khác bài đọc), lưu vào `blocks.framework_data` (JSON).
+
+**2 lệnh gọi AI/câu hỏi** (`Context.generateFrameworkAnalysis`): Call 1 (nhẹ) = fit_tier/why/communication_method/method_key/opening_lines/keywords_by_stage/linking_words/closing_lines/paraphrase cho cả 7 framework; Call 2 (nặng) = từ vựng dùng chung + 2 bài đọc tổng quan (nói/viết) + bài đọc riêng từng framework. Cả 2 lệnh bọc qua `Context._callProviderJSONValidated` — **tự động gọi lại AI 1 lần** (không chỉ parse lại chuỗi cũ) nếu JSON hỏng cú pháp **hoặc** JSON hợp lệ nhưng sai schema (vd thiếu framework, sai số lượng 7) — 2 loại lỗi AI-flaky khác nhau, cùng 1 cơ chế retry. Nếu vẫn lỗi sau khi thử lại: `doAiFramework` **tự xoá Batch rỗng vừa tạo** (không để lại rác "0/0" nếu user bấm lại nhiều lần).
+
+**Panel Framework** (`detail.js` `D.renderFrameworkPanel`, hiện trong màn học 1 Block) có **5 tab xem** (`#fw-view-tabs`, nhớ theo máy qua `localStorage`):
+| Tab | Nội dung |
+|---|---|
+| 📋 Danh sách | Xổ từng framework theo hàng, xem chi tiết why/mở đầu/từ khoá/linking words/kết luận/bài viết/paraphrase/từ vựng/bài đọc riêng. |
+| 📊 So sánh | Bảng Excel-kiểu: cột = 7 framework, hàng = từng mục ở trên — cuộn 2 chiều, cột nhãn + hàng tiêu đề đều sticky (`.fw-compare-wrap`). |
+| 🧩 Theo phương pháp | Dashboard lọc theo `method_key` AI tự gán mỗi framework (1 trong `Context.METHOD_BANK`: SCQA/Pyramid/BLUF/PREP/5W-1H/Claim-Evidence/STAR/TAKE ACTION) — chỉ hiện phương pháp THẬT SỰ có mặt trong 7 framework của câu hỏi này. |
+| TJ | Bảng kiểu Google Sheet của TJ — hàng = ĐÚNG các giai đoạn riêng của 1 phương pháp (vd SCQA: Situation/Complication/Question/Answer), cột = cả 7 master framework. Cần **1 lệnh AI riêng mỗi phương pháp** (`Context.generateMethodBreakdown`, nút "✨ Tạo bảng chi tiết" — KHÔNG tự gọi lúc mở panel), cache vào `framework_data.method_breakdowns[method_key]`. |
+| 🎯 Bảo | Deep-dive kiểu tài liệu mẫu "anh Bảo" (`\\...\a Bảo-high level communication.pdf`) — khác tab TJ: AI **tự đặt 1 "chain" 4 bước riêng** cho từng framework (không có trục phương pháp cố định để chọn) + 1 bài SPOKEN ANSWER đầy đủ + 1 "Recall Path". 1 lệnh AI DUY NHẤT cho cả 7 framework (`Context.generateBaoAnswers`), cache vào `framework_data.bao_breakdown`. Phần "cách luyện tập 4 bước"/"câu nối tự nhiên" trong tab này là NỘI DUNG TĨNH (không AI sinh). |
+
+**"🔄 Tạo lại tất cả"** (đầu panel) sinh lại CẢ 7 framework — giữ **liên tục từ vựng** (truyền `previousWords` vào Call 2, AI ưu tiên giữ/chỉ đổi dạng ngữ pháp hoặc từ đồng nghĩa thay vì nhảy chủ đề), từ MỚI thật sự tự chạy xuống bảng từ vựng Block (`DB.addWordsToBlock`), bản cũ đẩy vào `framework_data_history` (mảng, tối đa 5 bản, mỗi bản có `_meta.{provider,cost_usd,generated_at}`) — chip lịch sử bấm khôi phục ngay. Tab TJ có nút **"🔄 Tạo lại bảng"** nhỏ RIÊNG mỗi phương pháp (`method_breakdown_history[key]`), tab Bảo có nút **"🔄 Tạo lại"** riêng cho `bao_breakdown_history` — 3 cơ chế lịch sử độc lập, đừng nhầm.
+
+Mỗi Block card trong danh sách Block (chưa mở) có **preview nhanh** (`app.js` `fwCardPreviewHtml`) — framework fit nhất (`fit_tier==="top"` đầu tiên) + tên phương pháp ngắn (qua `method_key`→`METHOD_BANK`) + câu mở/kết mẫu + linking words, gói CHUNG hàng với dải icon tab tắt nhanh (`.block-tabs-row`) vì luôn có chỗ trống bên phải dải icon.
+
+**Khác với nội dung THẬT đã viết sẵn** (không qua AI Framework): Section **"A THIÊN BẢO"** (Notebook TJ_DATA ANALYST) là 20 Page — mỗi Page 1 câu hỏi thật của anh Bảo, dùng NGUYÊN VĂN bài trả lời + từ vựng đã trích sẵn từ PDF gốc (copy lại từ batch "A Bảo N" trong section `File1_TJ_Communication`, không gọi AI thêm), có thêm Recall Path + Target time. Không liên quan tab "🎯 Bảo" ở trên (tab đó dùng AI tự viết MỚI cho câu hỏi bất kỳ TJ dán vào; Section này là thư viện nội dung THẬT cố định 20 câu của anh Bảo).
 
 ## Khoá API / bí mật
 - `js/config.js` — **có commit** (repo **Public** trên GitHub — mọi key trong file này coi như công khai). Chỉ chứa `SUPABASE_URL`/`SUPABASE_ANON_KEY` — an toàn để lộ (chặn bởi RLS trong `tools/supabase_schema.sql`). **Tuyệt đối không** đặt `service_role`/`sb_secret_...` vào đây.
