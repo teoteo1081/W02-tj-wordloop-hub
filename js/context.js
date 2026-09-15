@@ -769,6 +769,32 @@
       { key: "data_analysis", name: "DATA ANALYSIS", chain: "Number/Data → Insight → Implication → Action" }
     ],
 
+    /* 6 "communication method" CHUẨN (2026-09-15, TJ yêu cầu — xem view
+       "Theo phương pháp giao tiếp" trong detail.js) — trước đây AI chỉ
+       viết `communication_method` dạng CÂU VĂN TỰ DO (không có tên chuẩn),
+       nên không nhóm chính xác theo phương pháp được (chuỗi tự do không
+       khớp nhau dù cùng ý). Giờ bắt AI GÁN THÊM đúng 1 `method_key` trong
+       6 key cố định này cho mỗi framework (xem generateFrameworkAnalysis
+       Call 1 bên dưới) — cùng 1 lệnh gọi, không tốn thêm tiền. `desc` là
+       lời giải thích tiếng Việt hiển thị tĩnh (không phải AI sinh) khi
+       user chọn xem theo phương pháp đó. */
+    METHOD_BANK: [
+      { key: "scqa", name: "SCQA", chain: "Situation → Complication → Question → Answer",
+        desc: "Bối cảnh (Situation) → Vấn đề phát sinh (Complication) → Câu hỏi cần giải quyết (Question) → Câu trả lời (Answer). Hợp mở đầu thuyết trình/báo cáo — kéo người nghe vào vấn đề trước khi đưa giải pháp." },
+      { key: "pyramid", name: "Pyramid Principle", chain: "Kết luận trước → Luận điểm phụ → Bằng chứng",
+        desc: "Nêu KẾT LUẬN/luận điểm chính TRƯỚC, rồi mới giải thích bằng các luận điểm phụ, mỗi luận điểm phụ có bằng chứng riêng — đi từ tổng quát xuống chi tiết (top-down), ngược cách kể chuyện thông thường. Hợp báo cáo cho sếp/stakeholder muốn biết kết quả ngay." },
+      { key: "bluf", name: "BLUF (Bottom Line Up Front)", chain: "Kết luận/hành động → Giải thích lý do",
+        desc: "Câu ĐẦU TIÊN nói thẳng kết luận/hành động cần làm, rồi mới giải thích lý do — giống Pyramid nhưng đơn giản, ngắn gọn hơn. Hay dùng trong email/report công sở." },
+      { key: "prep", name: "PREP", chain: "Point → Reason → Example → Point",
+        desc: "Nêu quan điểm (Point) → Lý do (Reason) → Ví dụ minh hoạ (Example) → Lặp lại quan điểm để chốt (Point). Rất hợp trả lời câu hỏi ý kiến (opinion) trong phỏng vấn." },
+      { key: "5w1h", name: "5W-1H", chain: "Who → What → When → Where → Why → How",
+        desc: "Khai thác đầy đủ khía cạnh 1 vấn đề/sự kiện bằng cách trả lời đủ 6 câu hỏi Who/What/When/Where/Why/How — hợp khi cần phân tích/tường thuật đầy đủ." },
+      { key: "claim_evidence", name: "Claim → Evidence → Reasoning", chain: "Luận điểm → Dẫn chứng → Giải thích",
+        desc: "Đưa ra luận điểm (Claim) → Dẫn chứng cụ thể, số liệu/quan sát (Evidence) → Giải thích TẠI SAO dẫn chứng đó ủng hộ luận điểm (Reasoning). Gốc là khung lập luận khoa học (CER, hay dạy trong môn Khoa học ở Mỹ — chuẩn NGSS), không phải khung giao tiếp kinh doanh thuần, nhưng hợp khi lập luận có số liệu/bằng chứng — đúng kiểu framework DATA ANALYSIS." },
+      { key: "star", name: "STAR", chain: "Situation → Task → Action → Result",
+        desc: "Bối cảnh (Situation) → Nhiệm vụ/mục tiêu (Task) → Hành động đã làm (Action) → Kết quả đạt được (Result). Cực phổ biến khi trả lời câu hỏi phỏng vấn HÀNH VI (\"Kể 1 lần bạn từng...\") — kể lại 1 tình huống thực tế có đầu có cuối, khác SCQA/Pyramid vốn thiên về trình bày lập luận/báo cáo hơn là kể chuyện trải nghiệm." }
+    ],
+
     /* Ép cứng ĐÚNG 3 "top" / 2 "ok" / 2 "stretch" bằng cách xếp hạng
        theo điểm AI đã gán (top=2đ/ok=1đ/stretch=0đ, giữ nguyên thứ tự
        mảng gốc khi đồng điểm) — không gọi lại AI chỉ vì lệch số lượng. */
@@ -784,13 +810,21 @@
       return items;
     },
 
-    generateFrameworkAnalysis: async function (question, cfg, quotaCtx) {
+    /* previousWords (tuỳ chọn, 2026-09-15) — TJ yêu cầu: bấm "🔄 Tạo lại"
+       thì từ vựng chủ chốt KHÔNG được đổi lung tung sang chủ đề khác, chỉ
+       nên đổi dạng ngữ pháp (danh từ/động từ/tính từ) hoặc từ đồng nghĩa
+       gần nghĩa của bộ từ ĐANG CÓ trong Block (giữ tính liên tục cho
+       người học đã quen mặt chữ cũ) — truyền mảng term cũ vào đây (xem
+       detail.js #btn-fw-regen), CHỈ dùng để nhắc AI, không ép cứng schema. */
+    generateFrameworkAnalysis: async function (question, cfg, quotaCtx, previousWords) {
       var q = String(question || "").trim();
       if (!q) throw new Error("Chưa dán câu hỏi/tình huống nào");
       if (q.length > 2000) throw new Error("Câu hỏi/tình huống dài " + q.length + " ký tự, quá giới hạn 2000 — cắt bớt rồi dán lại");
 
       var bank = w.Context.FRAMEWORK_BANK;
       var bankList = bank.map(function (f) { return "- key=\"" + f.key + "\", tên=\"" + f.name + "\", chuỗi=\"" + f.chain + "\""; }).join("\n");
+      var methodBank = w.Context.METHOD_BANK;
+      var methodList = methodBank.map(function (m) { return "- method_key=\"" + m.key + "\" (" + m.name + ")"; }).join("\n");
       var sys = "Bạn là huấn luyện viên giao tiếp tiếng Anh chuyên nghiệp (business/data communication " +
         "coach), giúp người Việt học cách TRẢ LỜI có cấu trúc bằng tiếng Anh. " +
         "Luôn trả lời DUY NHẤT một object JSON đúng schema được yêu cầu, không thêm chữ nào khác, " +
@@ -810,6 +844,8 @@
         "- communication_method: 1 phương pháp tổ chức câu trả lời phù hợp đi kèm framework này " +
         "(vd Pyramid Principle, SCQA, SCQA+Pyramid, BLUF, PREP, Claim→Evidence→Reasoning), kèm 1 câu " +
         "giải thích ngắn tại sao hợp.\n" +
+        "- method_key: BẮT BUỘC đúng 1 trong các key CỐ ĐỊNH sau (khớp với communication_method vừa " +
+        "chọn ở trên, không tự bịa key khác):\n" + methodList + "\n\n" +
         "- opening_lines: 2 câu tiếng Anh mẫu để MỞ ĐẦU câu trả lời theo framework này khi NÓI.\n" +
         "- keywords_by_stage: chia framework thành các giai đoạn theo đúng chuỗi đã cho, mỗi giai đoạn " +
         "liệt kê 2-4 từ khoá/cụm từ tiếng Anh (chunk) tự nhiên nên dùng ở giai đoạn đó.\n" +
@@ -818,6 +854,7 @@
         "framework này (giúp người học vẫn dùng được framework này dù câu hỏi gốc có vẻ không khớp).\n\n" +
         "Trả về đúng schema JSON sau, PHẢI CÓ ĐỦ 7 PHẦN TỬ trong mảng \"frameworks\", không thêm trường khác:\n" +
         '{"frameworks":[{"key":"...","fit_tier":"top|ok|stretch","why":"...","communication_method":"...",' +
+        '"method_key":"scqa|pyramid|bluf|prep|5w1h|claim_evidence|star",' +
         '"opening_lines":["...","..."],"keywords_by_stage":[{"stage":"...","keywords":["...","..."]}],' +
         '"closing_lines":["...","..."],"paraphrase":"..."}]}';
 
@@ -827,12 +864,30 @@
       if (!Array.isArray(p1.frameworks) || p1.frameworks.length !== 7) {
         throw new Error("AI (lượt 1) trả về " + (p1.frameworks ? p1.frameworks.length : 0) + " framework, cần đúng 7 — thử lại");
       }
+      /* method_key phòng hờ sai/thiếu (AI bịa key lạ, hoặc model yếu bỏ
+         sót trường) — KHÔNG coi là lỗi cần gọi lại (tốn quota vô ích),
+         tự rơi về "scqa" (phổ biến nhất) để view "Theo phương pháp" luôn
+         nhóm được, không bao giờ crash vì thiếu method_key. */
+      var validMethodKeys = {};
+      methodBank.forEach(function (m) { validMethodKeys[m.key] = true; });
+      p1.frameworks.forEach(function (f) {
+        if (!validMethodKeys[f.method_key]) f.method_key = "scqa";
+      });
       var costCall1 = w.Context._lastCostUsd || 0;
 
       /* ── CALL 2: từ vựng + 2 bài đọc tổng quan + bài đọc/writing riêng từng framework — nặng nội dung ── */
       var keysInOrder = p1.frameworks.map(function (f) { return f.key; }).join(", ");
+      /* Nhắc AI giữ liên tục từ vựng khi "Tạo lại" (xem ghi chú previousWords
+         ở trên) — chỉ 1 đoạn hướng dẫn thêm vào Call 2, không đổi schema. */
+      var continuityNote = (previousWords && previousWords.length) ?
+        ("\nLƯU Ý QUAN TRỌNG (đang TẠO LẠI, không phải lần đầu): người học đã quen với bộ từ vựng " +
+         "cũ sau đây, đừng đổi sang chủ đề từ vựng khác hẳn — ƯU TIÊN GIỮ LẠI các từ này nếu còn hợp " +
+         "ngữ cảnh, chỉ được đổi DẠNG NGỮ PHÁP (danh từ/động từ/tính từ/trạng từ) hoặc thay bằng " +
+         "TỪ ĐỒNG NGHĨA sát nghĩa, miễn ĐÚNG NGỮ PHÁP và TỰ NHIÊN/CHUYÊN NGHIỆP như người bản xứ viết. " +
+         "Không bắt buộc dùng y hệt 100%, nhưng full_words mới phải VẪN LÀ CÙNG 1 CHỦ ĐỀ TỪ VỰNG:\n" +
+         previousWords.join(", ") + "\n") : "";
       var user2 =
-        "CÂU HỎI/TÌNH HUỐNG cần phân tích:\n\"\"\"\n" + q + "\n\"\"\"\n\n" +
+        "CÂU HỎI/TÌNH HUỐNG cần phân tích:\n\"\"\"\n" + q + "\n\"\"\"\n" + continuityNote + "\n" +
         "7 framework (key, theo đúng thứ tự cần trả về): " + keysInOrder + "\n\n" +
         "YÊU CẦU (PHẢI CÓ ĐỦ 7 PHẦN TỬ trong mảng \"frameworks\", đếm lại trước khi trả lời):\n" +
         "Với MỖI framework (cả 7), viết:\n" +
@@ -909,6 +964,7 @@
           key: def.key, name: def.name, chain: def.chain,
           fit_tier: (f1.fit_tier === "top" || f1.fit_tier === "ok" || f1.fit_tier === "stretch") ? f1.fit_tier : "ok",
           why: f1.why || "", communication_method: f1.communication_method || "",
+          method_key: f1.method_key || "scqa",
           opening_lines: Array.isArray(f1.opening_lines) ? f1.opening_lines : [],
           keywords_by_stage: Array.isArray(f1.keywords_by_stage) ? f1.keywords_by_stage : [],
           closing_lines: Array.isArray(f1.closing_lines) ? f1.closing_lines : [],

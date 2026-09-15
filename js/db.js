@@ -988,6 +988,33 @@
     return { blocks: blocks, words: words, speakingBlockId: speakingBlock.id, writingBlockId: writingBlock.id, nextGlobalIndex: gi };
   };
 
+  /* Thêm từ MỚI vào 1 Block ĐÃ CÓ, nối tiếp sau các từ hiện có (không
+     xoá/động tới từ cũ) — TJ yêu cầu 2026-09-15: bấm "🔄 Tạo lại" panel
+     Framework thì từ vựng MỚI xuất hiện (full_words của lần sinh mới)
+     phải "chạy xuống" bảng từ vựng của Block, không chỉ nằm trong
+     framework_data. Gọi từ detail.js #btn-fw-regen, TỰ LỌC BỎ từ đã có
+     sẵn (so khớp không phân biệt hoa/thường) trước khi gọi hàm này —
+     hàm này chỉ lo phần chèn, không tự dedupe. */
+  DB.addWordsToBlock = async function (blockId, existingWords, newWords) {
+    if (!newWords || !newWords.length) return [];
+    var startSort = existingWords.reduce(function (mx, w2) { return Math.max(mx, w2.sort || 0); }, -1) + 1;
+    var rows = newWords.map(function (x, j) {
+      return {
+        block_id: blockId, sort: startSort + j, term: x.term, level: x.level || "",
+        pos: x.pos || "", ipa: x.ipa || "", def_en: x.def_en || "", meaning_vi: x.meaning_vi || "",
+        meaning_zh: x.meaning_zh || "", meaning_es: x.meaning_es || "", freq: x.freq || ""
+      };
+    });
+    if (DB.mode === "local") {
+      rows.forEach(function (r) { r.id = w.uid("wd"); local().words.push(r); });
+      saveLocal();
+      return rows;
+    }
+    var res = await DB.sb.from("words").insert(rows).select();
+    if (res.error) throw res.error;
+    return res.data || [];
+  };
+
   /* Giữ hàm cũ (1 câu hỏi = 1 Batch mới + 1 cặp block) làm tiện ích gộp,
      tương thích code cũ nếu còn nơi nào gọi trực tiếp. */
   DB.createFrameworkBlocks = async function (pageId, batchName, fullWords, speakingPassageStorable, writingPassageStorable, frameworkData, startGlobalIndex) {

@@ -478,10 +478,52 @@
   }
   /* Nhớ theo máy (không phải theo tài khoản — dùng localStorage như
      LS_FW_COLLAPSE) đang xem panel ở kiểu nào: "list" (mặc định, xổ từng
-     hàng) hay "table" (bảng so sánh ngang). */
+     hàng) / "table" (bảng so sánh ngang) / "method" (dashboard theo
+     phương pháp giao tiếp, 2026-09-15). */
   var LS_FW_VIEW = "tjwl_fw_panel_view_v1";
+  var FW_VIEWS = ["list", "table", "method"];
   function fwPanelView() {
-    try { return localStorage.getItem(LS_FW_VIEW) === "table" ? "table" : "list"; } catch (e) { return "list"; }
+    try {
+      var v = localStorage.getItem(LS_FW_VIEW);
+      return FW_VIEWS.indexOf(v) >= 0 ? v : "list";
+    } catch (e) { return "list"; }
+  }
+  function fwMethodByKey(key) {
+    return (w.Context.METHOD_BANK || []).filter(function (m) { return m.key === key; })[0] || null;
+  }
+  /* Dashboard "Theo phương pháp" — chỉ hiện các nút PHƯƠNG PHÁP THẬT SỰ
+     có mặt trong 7 framework của câu hỏi này (không phải cố định luôn 7
+     nút — tuỳ AI gán method_key cho từng framework), số trong ngoặc =
+     bao nhiêu framework đang dùng phương pháp đó. */
+  function fwMethodDashHtml(frameworks, selectedKey) {
+    var counts = {}, order = [];
+    frameworks.forEach(function (f) {
+      if (!counts[f.method_key]) order.push(f.method_key);
+      counts[f.method_key] = (counts[f.method_key] || 0) + 1;
+    });
+    return order.map(function (key) {
+      var m = fwMethodByKey(key);
+      return '<button type="button" class="fw-method-pill' + (key === selectedKey ? " active" : "") + '" data-method="' + w.esc(key) + '">' +
+        w.esc(m ? m.name : key) + ' <span class="fw-method-count">(' + counts[key] + ')</span>' +
+      '</button>';
+    }).join("");
+  }
+  /* Nội dung chính khi ở view "method": 1 khối giải thích TĨNH (không
+     phải AI sinh — lấy từ Context.METHOD_BANK, xem thẩm định lại
+     2026-09-15) về phương pháp đang chọn, rồi tới BẢNG SO SÁNH (hàng
+     ngang dọc kiểu Excel, TJ yêu cầu 2026-09-15 — tái dùng ĐÚNG
+     fwCompareTableHtml() của view "So sánh", chỉ khác input là tập con
+     framework ĐANG DÙNG phương pháp này thay vì cả 7). */
+  function fwMethodContentHtml(frameworks, selectedKey) {
+    var m = fwMethodByKey(selectedKey);
+    var matched = frameworks.filter(function (f) { return f.method_key === selectedKey; });
+    var info = m ?
+      '<div class="fw-method-info">' +
+        '<div class="fw-method-info-name">' + w.esc(m.name) + '</div>' +
+        '<div class="fw-method-info-chain">' + w.esc(m.chain) + '</div>' +
+        '<p class="fw-method-info-desc">' + w.esc(m.desc) + '</p>' +
+      '</div>' : "";
+    return info + fwCompareTableHtml(matched);
   }
   D.renderFrameworkPanel = function () {
     var panel = w.$("#fw-panel");
@@ -496,15 +538,38 @@
     var echo = w.$("#fw-question-echo");
     if (echo) echo.textContent = fd.question || "";
     var view = fwPanelView();
-    w.$("#fw-table").innerHTML = view === "table"
-      ? fwCompareTableHtml(fd.frameworks)
-      : fd.frameworks.map(fwRowHtml).join("");
+
+    w.$$("#fw-view-tabs .fw-view-tab").forEach(function (t) {
+      t.classList.toggle("active", t.dataset.view === view);
+    });
+    var methodDash = w.$("#fw-method-dash");
+    var legend = w.$("#fw-legend");
+    if (view === "method") {
+      /* D._fwMethodSel giữ lựa chọn qua các lần vẽ lại trong CÙNG 1 Block
+         (vd bấm Thu gọn/Mở rộng) — nhưng đổi Block khác (method_key đang
+         chọn không còn tồn tại trong data mới) thì tự rơi về framework
+         đầu tiên, không giữ lựa chọn lạc từ Block cũ sang. */
+      var hasCurrentSel = fd.frameworks.some(function (f) { return f.method_key === D._fwMethodSel; });
+      if (!hasCurrentSel) D._fwMethodSel = fd.frameworks[0].method_key;
+      methodDash.hidden = false;
+      methodDash.innerHTML = fwMethodDashHtml(fd.frameworks, D._fwMethodSel);
+      legend.hidden = true;
+      w.$("#fw-table").innerHTML = fwMethodContentHtml(fd.frameworks, D._fwMethodSel);
+    } else {
+      methodDash.hidden = true;
+      legend.hidden = view !== "list";
+      w.$("#fw-table").innerHTML = view === "table"
+        ? fwCompareTableHtml(fd.frameworks)
+        : fd.frameworks.map(fwRowHtml).join("");
+    }
+
     panel.classList.toggle("collapsed", fwPanelCollapsed());
     panel.classList.toggle("view-table", view === "table");
+    panel.classList.toggle("view-method", view === "method");
     var toggleBtn = w.$("#btn-toggle-fw");
     if (toggleBtn) toggleBtn.textContent = fwPanelCollapsed() ? "▸ Mở rộng" : "▾ Thu gọn";
-    var viewBtn = w.$("#btn-fw-view");
-    if (viewBtn) viewBtn.textContent = view === "table" ? "📋 Xem danh sách" : "📊 Xem bảng so sánh";
+    var regenBtn = w.$("#btn-fw-regen");
+    if (regenBtn) regenBtn.hidden = !canEditPassage();
   };
 
   /* Mỗi Block có ĐÚNG 1 bài đọc đang dùng (context_passage). Ngoài ra
@@ -2123,12 +2188,105 @@
         D.renderFrameworkPanel();
       };
     }
-    var btnFwView = w.$("#btn-fw-view");
-    if (btnFwView) {
-      btnFwView.onclick = function () {
-        try { localStorage.setItem(LS_FW_VIEW, fwPanelView() === "table" ? "list" : "table"); } catch (e) {}
+    /* Hàng tab đổi cách xem panel Framework (2026-09-15) — thay nút toggle
+       1-cái cũ, mỗi tab "sáng" (.active) khi đang chọn, xem CSS
+       .fw-view-tab.active. Gắn 1 lần trên #fw-view-tabs (event delegation,
+       các nút không bị vẽ lại như #fw-table nên gắn trực tiếp cũng được,
+       nhưng dùng delegation cho nhất quán với các nơi khác trong file). */
+    var fwViewTabs = w.$("#fw-view-tabs");
+    if (fwViewTabs) {
+      fwViewTabs.addEventListener("click", function (e) {
+        var t = e.target.closest && e.target.closest(".fw-view-tab");
+        if (!t) return;
+        try { localStorage.setItem(LS_FW_VIEW, t.dataset.view); } catch (e2) {}
         D.renderFrameworkPanel();
         if (D._tickStickyFw) D._tickStickyFw();   /* đổi kiểu xem đổi cả chiều cao panel */
+      });
+    }
+    /* Dashboard "Theo phương pháp" — bấm 1 pill = đổi D._fwMethodSel rồi
+       vẽ lại panel (renderFrameworkPanel tự đọc lại D._fwMethodSel). Vẽ
+       lại MỖI LẦN đổi view/Block nên cũng dùng delegation trên vùng cha
+       cố định #fw-method-dash. */
+    var fwMethodDash = w.$("#fw-method-dash");
+    if (fwMethodDash) {
+      fwMethodDash.addEventListener("click", function (e) {
+        var p = e.target.closest && e.target.closest(".fw-method-pill");
+        if (!p) return;
+        D._fwMethodSel = p.dataset.method;
+        D.renderFrameworkPanel();
+      });
+    }
+    /* "🔄 Tạo lại" — sinh lại TOÀN BỘ 7 framework bằng AI, giữ nguyên câu
+       hỏi gốc (fd.question), đè vào framework_data của ĐÚNG Block đang
+       xem rồi lưu DB (DB.saveContext tái dùng, field thứ 3 tuỳ chỉnh
+       được). LƯU Ý phạm vi: chỉ cập nhật framework_data của Block này —
+       KHÔNG tự động đồng bộ sang Block cặp còn lại (Speaking<->Writing
+       vốn được tạo với CÙNG framework_data lúc đầu, nhưng không có liên
+       kết ngược nào giữa 2 block để tìm lại nhau) — nếu TJ muốn đồng bộ
+       cả cặp, cần thêm bước lưu speakingBlockId/writingBlockId khi tạo
+       (xem DB.addFrameworkBlockPair) rồi mở lại phạm vi ở đây sau.
+
+       TJ chốt thêm 2026-09-15 (3 việc gộp vào cùng 1 lần bấm):
+       1. GIỮ BẢN CŨ: đè framework_data mới lên nhưng lưu bản cũ vào field
+          riêng framework_data_prev TRƯỚC (chỉ 1 bản gần nhất, không phải
+          lịch sử nhiều bản — chưa có UI khôi phục, chỉ là lưới an toàn).
+       2. LIÊN TỤC TỪ VỰNG: truyền tập term ĐANG CÓ trong Block vào
+          generateFrameworkAnalysis (previousWords) để AI ưu tiên giữ
+          nguyên/chỉ đổi dạng ngữ pháp hoặc từ đồng nghĩa, không nhảy sang
+          chủ đề từ vựng khác hẳn — xem context.js continuityNote.
+       3. TỪ MỚI CHẠY XUỐNG BẢNG TỪ: full_words của lần sinh mới có thể
+          có vài từ CHƯA từng có trong Block (do đổi đồng nghĩa) — so khớp
+          không phân biệt hoa/thường với words() hiện tại, từ nào thật sự
+          mới mới thêm (DB.addWordsToBlock), từ đã có giữ nguyên (không
+          xoá/không sửa đè) để không mất tiến trình học (SRS) đã có. */
+    var btnFwRegen = w.$("#btn-fw-regen");
+    if (btnFwRegen) {
+      btnFwRegen.onclick = async function () {
+        if (!canEditPassage()) { w.toast("Bạn không có quyền tạo lại Framework", "err"); return; }
+        var b = block();
+        var fd = b && b.framework_data;
+        if (!fd || !fd.question) return;
+        var cfg = w.APP_CONFIG || {};
+        var btn = btnFwRegen;
+        btn.disabled = true;
+        var oldText = btn.textContent;
+        btn.textContent = "⏳ Đang phân tích lại...";
+        try {
+          var quotaCtx = { userId: (w.Auth.user && w.Auth.user.id) || null, blockId: w.uid("aiframe") };
+          var existingWords = words();   /* words() = hàm đọc sẵn ở đầu file, đúng từ của Block đang xem */
+          var previousTerms = existingWords.map(function (x) { return x.term; });
+          var out = await w.Context.generateFrameworkAnalysis(fd.question, cfg, quotaCtx, previousTerms);
+
+          /* 1. Giữ bản cũ trước khi đè (best-effort — lỗi lưu backup không
+             chặn việc lưu bản mới, chỉ mất lưới an toàn lần này). */
+          try { await w.DB.saveContext(b.id, fd, "framework_data_prev"); } catch (e) {}
+          b.framework_data_prev = fd;
+
+          await w.DB.saveContext(b.id, out.frameworkData, "framework_data");
+          b.framework_data = out.frameworkData;
+
+          /* 3. Thêm từ THẬT SỰ MỚI (chưa có, so không phân biệt hoa/thường)
+             vào bảng từ vựng của Block — giữ nguyên từ cũ + tiến trình học. */
+          var existingLower = {};
+          existingWords.forEach(function (x) { existingLower[String(x.term || "").toLowerCase()] = true; });
+          var newTerms = (out.fullWords || []).filter(function (x) {
+            return x.term && !existingLower[String(x.term).toLowerCase()];
+          });
+          if (newTerms.length) {
+            var added = await w.DB.addWordsToBlock(b.id, existingWords, newTerms);
+            S().words = S().words.concat(added);
+          }
+
+          D._fwMethodSel = null;   /* data mới, để renderFrameworkPanel tự chọn lại mặc định */
+          D.renderStudy();         /* vẽ lại CẢ bảng từ vựng (có từ mới) lẫn panel Framework */
+          w.toast("Đã tạo lại 7 framework" + (newTerms.length ? " + " + newTerms.length + " từ mới" : "") + " ✔", "ok");
+        } catch (e) {
+          if (e && e.kind && w.App && w.App.showAiError) w.App.showAiError(e);
+          w.toast("Lỗi: " + (e.message || e), "err");
+        } finally {
+          btn.disabled = false;
+          btn.textContent = oldText;
+        }
       };
     }
     /* Mỗi hàng framework tự mở/đóng riêng (không phụ thuộc panel thu gọn

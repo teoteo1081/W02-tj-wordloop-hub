@@ -15,7 +15,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon.svg">
-<link rel="stylesheet" href="css/app.css?v=21">
+<link rel="stylesheet" href="css/app.css?v=24">
 </head>
 <body>
 
@@ -314,16 +314,34 @@
           <div class="card-title-row">
             <div class="card-title">🧭 Framework phù hợp</div>
             <div class="fw-header-btns">
-              <!-- "Bảng so sánh" (2026-09-14) — TJ muốn xem 7 framework
-                   cạnh nhau kiểu bảng tính (cột=framework, hàng=mục), thay
-                   vì chỉ xổ từng hàng 1 — xem fwCompareTableHtml trong
-                   detail.js. Giữ NGUYÊN bản danh sách cũ làm mặc định. -->
-              <button class="btn-soft" id="btn-fw-view" title="Đổi cách xem panel Framework">📊 Xem bảng so sánh</button>
+              <!-- "Tạo lại" (2026-09-15) — sinh lại TOÀN BỘ 7 framework
+                   bằng AI (giữ nguyên câu hỏi gốc), giống hệt cơ chế nút
+                   "🔄 Tạo lại" của bài đọc (canEditPassage gate) — chỉ
+                   cập nhật framework_data (panel này), KHÔNG đụng bài đọc
+                   chính context_passage của Block (đã có nút riêng). -->
+              <button class="btn-soft" id="btn-fw-regen" title="Sinh lại toàn bộ 7 framework bằng AI (giữ nguyên câu hỏi)" hidden>🔄 Tạo lại</button>
               <button class="btn-soft" id="btn-toggle-fw" title="Thu gọn / mở rộng panel Framework">▾ Thu gọn</button>
             </div>
           </div>
           <div class="fw-question" id="fw-question-echo"></div>
-          <div class="fw-legend">
+
+          <!-- Hàng tab đổi CÁCH XEM (2026-09-15) — TJ yêu cầu tab "sáng
+               lên" khi active thay vì 1 nút đổi qua lại. 3 kiểu xem:
+               danh sách (gốc) / bảng so sánh 7 framework / theo phương
+               pháp giao tiếp (dashboard hàng 2 bên dưới). detail.js
+               D.renderFrameworkPanel() tô .active đúng tab đang chọn. -->
+          <div class="fw-view-tabs" id="fw-view-tabs">
+            <button class="fw-view-tab" type="button" data-view="list">📋 Danh sách</button>
+            <button class="fw-view-tab" type="button" data-view="table">📊 So sánh</button>
+            <button class="fw-view-tab" type="button" data-view="method">🧩 Theo phương pháp</button>
+          </div>
+          <!-- Dashboard hàng 2 — CHỈ hiện ở view "method": 1 nút/phương
+               pháp giao tiếp THẬT SỰ xuất hiện trong 7 framework câu hỏi
+               này (không phải cố định 7 nút, tuỳ AI gán), bấm 1 nút =
+               nhảy nội dung theo đúng phương pháp đó. -->
+          <div class="fw-method-dash" id="fw-method-dash" hidden></div>
+
+          <div class="fw-legend" id="fw-legend">
             <span class="fw-chip fw-top">🟢 Fit nhất (3)</span>
             <span class="fw-chip fw-ok">🟡 Vẫn ổn nếu paraphrase (2)</span>
             <span class="fw-chip fw-stretch">⚪ Khá gượng ép (2)</span>
@@ -1077,13 +1095,13 @@ mitigate | giảm nhẹ"></textarea>
 <script src="js/keys.local.js?v=1"></script>
 <script src="js/util.js?v=1"></script>
 <script src="js/srs.js?v=1"></script>
-<script src="js/context.js?v=18"></script>
+<script src="js/context.js?v=21"></script>
 <script src="js/speech.js?v=3"></script>
-<script src="js/db.js?v=10"></script>
+<script src="js/db.js?v=11"></script>
 <script src="js/auth.js?v=5"></script>
 <script src="js/i18n.js?v=4"></script>
 <script src="js/reader.js?v=1"></script>
-<script src="js/detail.js?v=25"></script>
+<script src="js/detail.js?v=28"></script>
 <script src="js/export.js?v=2"></script>
 <script src="js/journey.js?v=5"></script>
 <script src="js/home.js?v=2"></script>
