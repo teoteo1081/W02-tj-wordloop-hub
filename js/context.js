@@ -1124,6 +1124,64 @@
       };
     },
 
+    /* ═══════════ Tab "Bảo" — kiểu deep-dive của anh Bảo (2026-09-15) ═════
+       TJ gửi 1 PDF mẫu của anh Bảo ("20 Deep-Dive Answers — Structured
+       Speaking Practice"), khác hẳn METHOD_BANK/TJ tab: mỗi câu hỏi KHÔNG
+       gán 1 phương pháp cố định (SCQA/Pyramid/...) mà AI tự CHỌN/ĐẶT 1
+       "chain" 4 bước RIÊNG cho từng câu hỏi (vd "Definition -> Contrast ->
+       Example -> Takeaway", "Problem -> System -> Example -> Lesson"),
+       kèm 1 bài SPOKEN ANSWER đầy đủ (75-105 giây khi đọc to, ~130-190
+       từ, văn nói tự nhiên có contraction/signpost, KHÔNG phải văn viết
+       trang trọng) và 1 RECALL PATH (4 cụm từ ngắn cách nhau " | ", dùng
+       để tập nói lại KHÔNG nhìn bài, không phải tóm tắt nghĩa). Không có
+       trục "phương pháp" để chọn như tab TJ — SINH LUÔN cho cả 7 master
+       framework trong 1 lệnh gọi AI DUY NHẤT (không tự động gọi lúc mở
+       panel, chỉ khi bấm nút — xem detail.js fwBaoContentHtml), cache vào
+       framework_data.bao_breakdown (không lồng theo method_key vì không
+       có trục đó). Phần "cách luyện tập"/"guardrail câu nối" trong PDF là
+       NỘI DUNG TĨNH (không đổi theo câu hỏi) — hiển thị cứng trong
+       detail.js, không cần AI sinh. */
+    generateBaoAnswers: async function (question, frameworks, cfg, quotaCtx) {
+      var q = String(question || "").trim();
+      if (!q) throw new Error("Thiếu câu hỏi/tình huống gốc");
+      var fwList = frameworks.map(function (f) { return "- key=\"" + f.key + "\" (" + f.name + ": " + f.chain + ")"; }).join("\n");
+      var sys = "Bạn là huấn luyện viên giao tiếp tiếng Anh chuyên nghiệp, chuyên soạn bài luyện NÓI kiểu " +
+        "'deep-dive' cho người học trình độ cao (phong cách 1 tài liệu mẫu tên 'Structured Speaking' — " +
+        "câu trả lời tự nhiên như nói chuyện với sếp/nhà sáng lập, không phải bài luận trang trọng). " +
+        "Luôn trả lời DUY NHẤT 1 object JSON đúng schema yêu cầu, không thêm chữ nào khác, không dùng " +
+        "markdown code fence.";
+      var user =
+        "CÂU HỎI/TÌNH HUỐNG gốc cần phân tích:\n\"\"\"\n" + q + "\n\"\"\"\n\n" +
+        "7 MASTER FRAMEWORK cần áp dụng (không thiếu, không thừa — đếm lại trước khi trả lời):\n" + fwList + "\n\n" +
+        "Với MỖI framework (cả 7), đứng trên góc nhìn RIÊNG của framework đó để viết:\n" +
+        "- chain: TỰ ĐẶT 1 chuỗi 4 BƯỚC tiếng Anh ngắn gọn (mỗi bước 1-3 từ, nối bằng ' -> '), PHÙ HỢP " +
+        "với góc nhìn framework này cho câu hỏi này — vd 'Definition -> Contrast -> Example -> Takeaway', " +
+        "'Problem -> System -> Example -> Lesson', 'Position -> Trade-off -> Rule -> Close', 'Observation " +
+        "-> Pattern -> Diagnosis -> Adjustment' — ĐƯỢC TỰ SÁNG TẠO chain khác nếu hợp hơn, không bắt " +
+        "buộc dùng đúng các ví dụ trên, miễn đúng 4 bước và hợp lý với framework/câu hỏi.\n" +
+        "- spoken_answer: 1 bài trả lời tiếng Anh 130-190 từ theo ĐÚNG 4 bước của chain vừa đặt, VĂN NÓI " +
+        "chuyên nghiệp nhưng tự nhiên (có contraction như 'I'm'/'don't', câu ngắn, có thể dùng vài " +
+        "signpost tự nhiên như 'The way I see it is...', 'A good example is...', 'What I learned from " +
+        "that is...' — KHÔNG phải văn viết/email, không liệt kê gạch đầu dòng), nghe như người bản xứ " +
+        "trả lời thật trong 1 buổi nói chuyện nghiêm túc với quản lý/nhà sáng lập/đồng nghiệp cấp cao.\n" +
+        "- recall_path: 4 CỤM TỪ tiếng Anh RẤT NGẮN (2-5 từ mỗi cụm), mỗi cụm ứng với ĐÚNG 1 bước trong " +
+        "chain, cách nhau bởi ' | ' — dùng để người học nhìn lướt rồi tự nói lại KHÔNG đọc nguyên văn " +
+        "spoken_answer (không phải bản tóm tắt nghĩa, mà là 'mỏ neo trí nhớ' ngắn nhất có thể).\n\n" +
+        "Trả về đúng schema JSON sau, PHẢI CÓ ĐỦ 7 PHẦN TỬ trong mảng \"frameworks\", không thêm trường khác:\n" +
+        '{"frameworks":[{"key":"...","chain":"...","spoken_answer":"...","recall_path":"..."}]}';
+
+      w.Context._lastCostUsd = null;
+      var parsed = await w.Context._callProviderJSONValidated(cfg, sys, user, quotaCtx, function (p) {
+        if (!Array.isArray(p.frameworks) || p.frameworks.length !== 7) {
+          throw new Error("AI trả về " + (p.frameworks ? p.frameworks.length : 0) + " framework, cần đúng 7 — đã tự thử lại vẫn không đủ, thử lại sau hoặc rút ngắn câu hỏi.");
+        }
+      });
+      return {
+        frameworks: parsed.frameworks,
+        _meta: { provider: w.Context._lastProvider || "", cost_usd: w.Context._lastCostUsd || 0, generated_at: Date.now() }
+      };
+    },
+
     /* Dọn nhiễu trước khi phân tích/hiển thị — để dán được nhiều nguồn:
          · Bài báo: thường dính link, quảng cáo, "Read more", "Share"...
            -> phần này để AI tự bỏ qua (nêu rõ trong prompt), khó lọc bằng

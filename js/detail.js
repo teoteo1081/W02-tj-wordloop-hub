@@ -489,7 +489,7 @@
      hàng) / "table" (bảng so sánh ngang) / "method" (dashboard theo
      phương pháp giao tiếp, 2026-09-15). */
   var LS_FW_VIEW = "tjwl_fw_panel_view_v1";
-  var FW_VIEWS = ["list", "table", "method", "tj"];
+  var FW_VIEWS = ["list", "table", "method", "tj", "bao"];
   var FW_HISTORY_MAX = 5;   /* số bản cũ tối đa giữ lại khi "🔄 Tạo lại" panel Framework */
   function fwPanelView() {
     try {
@@ -594,6 +594,89 @@
       '</div>';
   }
 
+  /* ═══════════ TAB "Bảo" — deep-dive kiểu anh Bảo (2026-09-15) ═══════════
+     TJ gửi 1 PDF mẫu của anh Bảo, yêu cầu thêm 1 view "tự thiết kế" sau
+     tab TJ. Khác tab TJ (hàng=giai đoạn CỐ ĐỊNH của 1 phương pháp đang
+     chọn, cột=7 framework): ở đây KHÔNG có trục phương pháp để chọn —
+     AI tự đặt 1 "chain" 4 bước RIÊNG cho từng framework (xem
+     Context.generateBaoAnswers) — nên chỉ có 1 nút sinh/tạo lại DUY
+     NHẤT cho cả 7 framework, không có dash pill nào. Phần giới thiệu
+     "cách luyện tập" + "câu nối tự nhiên" bên dưới là NỘI DUNG TĨNH lấy
+     nguyên văn tinh thần từ PDF của anh Bảo (không phải AI sinh, không
+     đổi theo câu hỏi). */
+  var BAO_ROUTINE = [
+    { step: "1. Đọc lấy âm (Read for sound)", min: "20 phút", desc: "Đọc to tự nhiên, chú ý trọng âm/nối âm/ngắt ý — đừng vội đọc nhanh cho ra vẻ trôi chảy." },
+    { step: "2. Đọc lấy cấu trúc (Read for structure)", min: "15 phút", desc: "Đọc lượt 2, để ý chỗ nào là vị trí (position), chỗ nào là ví dụ, câu trả lời kết ra sao." },
+    { step: "3. Che bài + dựng lại (Look away + rebuild)", min: "15 phút", desc: "Che hết bài, chỉ nhìn Recall Path rồi tự nói lại — giữ lý lẽ, đổi cách diễn đạt. Đây là bước cấu trúc thật sự trở thành phản xạ." },
+    { step: "4. Nén ngắn + biến tấu (Compress + vary)", min: "10 phút", desc: "Nói lại cùng câu trả lời trong 30-45 giây, rồi nói lại 1 lần nữa với ví dụ khác — luyện cấu trúc linh hoạt, không học thuộc lòng." }
+  ];
+  var BAO_SIGNPOSTS = ["The way I see it is...", "I'd separate that into two parts...", "A good example is...", "What I learned from that is..."];
+  function fwBaoInfoHtml() {
+    var routineRows = BAO_ROUTINE.map(function (r) {
+      return '<tr><th>' + w.esc(r.step) + '<br><span class="fw-bao-min">' + w.esc(r.min) + '</span></th><td>' + w.esc(r.desc) + '</td></tr>';
+    }).join("");
+    var chips = BAO_SIGNPOSTS.map(function (s) { return '<span class="fw-kw">' + w.esc(s) + '</span>'; }).join("");
+    return (
+      '<div class="fw-method-info">' +
+        '<div class="fw-method-info-name">🎯 Deep-Dive kiểu anh Bảo</div>' +
+        '<p class="fw-method-info-desc">Mục tiêu: nghe SÂU SẮC mà KHÔNG NGHE NHƯ HỌC THUỘC LÒNG. Mỗi framework tự có 1 ' +
+        '"chain" 4 bước riêng + 1 bài trả lời nói đầy đủ + 1 "Recall Path" (mỏ neo trí nhớ ngắn) để tập nói lại ' +
+        'không nhìn bài.</p>' +
+      '</div>' +
+      '<table class="fw-bao-routine"><tbody>' + routineRows + '</tbody></table>' +
+      '<div class="fw-method-info" style="margin-top:.6rem">' +
+        '<div class="fw-method-info-name">🔗 Câu nối tự nhiên nên giữ</div>' +
+        '<div class="fw-kw-wrap">' + chips + '</div>' +
+        '<p class="fw-method-info-desc">Thay filler vô thức (um/à) bằng 1 khoảng lặng ngắn — nói chuyên nghiệp tự nhiên ' +
+        'thường ĐƠN GIẢN hơn văn viết trang trọng.</p>' +
+      '</div>'
+    );
+  }
+  function fwBaoTableHtml(allFrameworks, bdEntry) {
+    var byKey = {};
+    (bdEntry.frameworks || []).forEach(function (x) { byKey[x.key] = x; });
+    var rows = [
+      { label: "⛓️ Chain (tự đặt)", render: function (f) { var e = byKey[f.key]; return e && e.chain ? w.esc(e.chain) : "—"; } },
+      { label: "🗣️ Spoken answer", render: function (f) { var e = byKey[f.key]; return e && e.spoken_answer ? "<p>" + w.esc(e.spoken_answer) + "</p>" : "—"; } },
+      { label: "🧠 Recall path", render: function (f) { var e = byKey[f.key]; return e && e.recall_path ? w.esc(e.recall_path) : "—"; } }
+    ];
+    var headCells = allFrameworks.map(function (f) {
+      return '<th class="fw-compare-col fw-' + f.fit_tier + '"><div class="fw-name">' + w.esc(f.name) + '</div></th>';
+    }).join("");
+    var bodyRows = rows.map(function (row) {
+      var cells = allFrameworks.map(function (f) { return "<td>" + row.render(f) + "</td>"; }).join("");
+      return '<tr><th class="fw-compare-rowhead">' + w.esc(row.label) + '</th>' + cells + '</tr>';
+    }).join("");
+    return (
+      '<div class="fw-compare-wrap"><table class="fw-compare">' +
+        '<thead><tr><th class="fw-compare-rowhead"></th>' + headCells + '</tr></thead>' +
+        '<tbody>' + bodyRows + '</tbody>' +
+      '</table></div>'
+    );
+  }
+  function fwBaoContentHtml(fd) {
+    var info = fwBaoInfoHtml();
+    var cached = fd.bao_breakdown;
+    if (cached) {
+      var baoHistory = fd.bao_breakdown_history || [];
+      return info + fwBaoTableHtml(fd.frameworks, cached) +
+        '<div class="fw-tj-footer">' +
+          '<button type="button" class="btn-soft fw-bao-gen-btn fw-tj-gen-btn-sm" ' +
+            'title="Sinh lại cả 7 framework kiểu anh Bảo">' +
+            '🔄 Tạo lại' +
+          '</button>' +
+          fwHistoryChipsHtml(cached._meta, baoHistory, "data-bao-history-idx") +
+        '</div>';
+    }
+    return info +
+      '<div class="fw-tj-empty">' +
+        '<p>Chưa có bài luyện nói kiểu anh Bảo cho câu hỏi này.</p>' +
+        '<button type="button" class="btn-primary fw-bao-gen-btn">' +
+          '✨ Tạo bài luyện nói (1 lượt gọi AI)' +
+        '</button>' +
+      '</div>';
+  }
+
   /* Chip "phiên bản trước" (2026-09-15) — TJ yêu cầu rõ NGUỒN AI + CHI
      PHÍ từng bản khi khôi phục (giống cách chọn nguồn bài đọc đã có),
      và giữ NHIỀU bản chứ không chỉ 1. Mỗi chip hiện provider + chi phí +
@@ -690,6 +773,10 @@
       }).join("");
       legend.hidden = true;
       w.$("#fw-table").innerHTML = fwTjContentHtml(fd, D._fwTjMethodSel);
+    } else if (view === "bao") {
+      methodDash.hidden = true;   /* không có trục phương pháp để chọn — xem ghi chú fwBaoContentHtml */
+      legend.hidden = true;
+      w.$("#fw-table").innerHTML = fwBaoContentHtml(fd);
     } else {
       methodDash.hidden = true;
       legend.hidden = view !== "list";
@@ -702,6 +789,7 @@
     panel.classList.toggle("view-table", view === "table");
     panel.classList.toggle("view-method", view === "method");
     panel.classList.toggle("view-tj", view === "tj");
+    panel.classList.toggle("view-bao", view === "bao");
     var toggleBtn = w.$("#btn-toggle-fw");
     if (toggleBtn) toggleBtn.textContent = fwPanelCollapsed() ? "▸ Mở rộng" : "▾ Thu gọn";
     var regenBtn = w.$("#btn-fw-regen");
@@ -2434,6 +2522,74 @@
           w.toast("Lỗi: " + (err.message || err), "err");
           g.disabled = false;
           g.textContent = oldText;
+        }
+      });
+    }
+    /* "✨ Tạo bài luyện nói" / "🔄 Tạo lại" (tab "Bảo", 2026-09-15) — 1
+       lệnh AI DUY NHẤT cho cả 7 framework (Context.generateBaoAnswers,
+       không lồng theo method_key vì tab này không có trục phương pháp),
+       cache vào framework_data.bao_breakdown + lịch sử bao_breakdown_
+       history (mảng phẳng, giống framework_data_history của panel chính,
+       khác cơ chế "theo key" của tab TJ). Gắn trên #fw-table (đã có 1
+       listener async ở trên cho tab TJ — thêm nhánh riêng vào CÙNG hàm
+       đó thay vì gắn thêm 1 listener nữa, tránh 2 listener cùng bắt click
+       trên cùng vùng). */
+    if (fwTableForTj) {
+      fwTableForTj.addEventListener("click", async function (e) {
+        var baoChip = e.target.closest && e.target.closest("[data-bao-history-idx]");
+        if (baoChip) {
+          if (!canEditPassage()) { w.toast("Bạn không có quyền khôi phục", "err"); return; }
+          var b3 = block();
+          var fd3 = b3 && b3.framework_data;
+          if (!fd3 || !fd3.bao_breakdown) return;
+          var hist3 = (fd3.bao_breakdown_history || []).slice();
+          var idx3 = parseInt(baoChip.dataset.baoHistoryIdx, 10);
+          if (!hist3[idx3]) return;
+          var chosen3 = hist3[idx3];
+          var current3 = fd3.bao_breakdown;
+          hist3.splice(idx3, 1, current3);
+          if (hist3.length > FW_HISTORY_MAX) hist3.length = FW_HISTORY_MAX;
+          baoChip.disabled = true;
+          try {
+            fd3.bao_breakdown = chosen3;
+            fd3.bao_breakdown_history = hist3;
+            await w.DB.saveContext(b3.id, fd3, "framework_data");
+            D.renderFrameworkPanel();
+            w.toast("Đã khôi phục bài luyện nói kiểu anh Bảo ✔", "ok");
+          } catch (err) {
+            w.toast("Lỗi: " + (err.message || err), "err");
+            baoChip.disabled = false;
+          }
+          return;
+        }
+        var gb = e.target.closest && e.target.closest(".fw-bao-gen-btn");
+        if (!gb) return;
+        var b4 = block();
+        var fd4 = b4 && b4.framework_data;
+        if (!fd4 || !fd4.question) return;
+        var cfg4 = w.APP_CONFIG || {};
+        gb.disabled = true;
+        var oldText4 = gb.textContent;
+        gb.textContent = "⏳ Đang tạo (7 framework)...";
+        try {
+          var quotaCtx4 = { userId: (w.Auth.user && w.Auth.user.id) || null, blockId: w.uid("aiframe") };
+          var out4 = await w.Context.generateBaoAnswers(fd4.question, fd4.frameworks, cfg4, quotaCtx4);
+          var oldEntry4 = fd4.bao_breakdown;
+          if (oldEntry4) {
+            var baoHist4 = (fd4.bao_breakdown_history || []).slice();
+            baoHist4.unshift(oldEntry4);
+            if (baoHist4.length > FW_HISTORY_MAX) baoHist4.length = FW_HISTORY_MAX;
+            fd4.bao_breakdown_history = baoHist4;
+          }
+          fd4.bao_breakdown = { frameworks: out4.frameworks, _meta: out4._meta };
+          await w.DB.saveContext(b4.id, fd4, "framework_data");
+          D.renderFrameworkPanel();
+          w.toast("Đã tạo bài luyện nói kiểu anh Bảo ✔", "ok");
+        } catch (err) {
+          if (err && err.kind && w.App && w.App.showAiError) w.App.showAiError(err);
+          w.toast("Lỗi: " + (err.message || err), "err");
+          gb.disabled = false;
+          gb.textContent = oldText4;
         }
       });
     }

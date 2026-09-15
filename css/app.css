@@ -2175,6 +2175,16 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
 .fw-tj-empty{padding:1.2rem 1rem;text-align:center;border:1px dashed var(--border);border-radius:10px;background:var(--bg-soft);}
 .fw-tj-empty p{margin:0 0 .7rem;color:var(--text-2);font-size:.85rem;}
 
+/* Tab "Bảo" (2026-09-15) — khối giới thiệu tĩnh (cách luyện tập 4 bước +
+   câu nối tự nhiên), tái dùng .fw-compare cho bảng 4-bước nhưng không
+   cần cuộn ngang nên KHÔNG bọc trong .fw-compare-wrap. */
+.fw-bao-routine{width:100%;margin:.5rem 0;border-collapse:collapse;font-size:.78rem;}
+.fw-bao-routine th,.fw-bao-routine td{border:1px solid var(--border);padding:.5rem .65rem;text-align:left;vertical-align:top;}
+.fw-bao-routine th{width:38%;font-weight:700;color:var(--text-2);background:var(--bg-soft);white-space:normal;}
+.fw-bao-routine td{color:var(--text-2);line-height:1.5;}
+.fw-bao-min{font-weight:400;color:var(--text-3);font-size:.72rem;}
+.fw-kw-wrap{display:flex;flex-wrap:wrap;gap:.15rem;}
+
 /* ══════ Bảng so sánh 7 framework "hàng dọc" (2026-09-14) ══════
    TJ tham khảo 1 Google Sheet của chị: cột = từng framework, hàng = từng
    mục (why/method/mở đầu/từ khoá/kết luận/viết/paraphrase/từ vựng/bài
