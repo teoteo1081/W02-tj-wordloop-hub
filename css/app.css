@@ -2080,7 +2080,7 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
 .fw-writing{border-top:1px dashed var(--border);padding-top:.5rem;}
 .fw-writing p{margin:.25rem 0;}
 .fw-paraphrase{color:var(--text-2);}
-.fw-question{font-weight:400;color:var(--text-2);font-size:.78rem;margin:-.4rem 0 .7rem;line-height:1.4;}
+.fw-question{font-weight:400;color:var(--text-2);font-size:.78rem;margin:-.4rem 0 .45rem;line-height:1.4;}
 .fw-question:empty{display:none;}
 .fw-question::before{content:"“";margin-right:.15rem;opacity:.6;}
 .fw-question::after{content:"”";margin-left:.15rem;opacity:.6;}
@@ -2101,7 +2101,7 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
    hơn tab cấp trang. */
 /* Chip "phiên bản trước" (2026-09-15) — hàng nhỏ, gọn, chỉ hiện khi đã
    có lịch sử (đã bấm "🔄 Tạo lại" ít nhất 1 lần). */
-.fw-history{display:flex;align-items:center;gap:.35rem;flex-wrap:wrap;margin:.4rem 0;font-size:.72rem;}
+.fw-history{display:flex;align-items:center;gap:.35rem;flex-wrap:wrap;margin:.25rem 0;font-size:.72rem;}
 .fw-history-lbl{color:var(--text-3);flex-shrink:0;}
 .fw-history-chip{
   background:none;border:1px dashed var(--border);color:var(--text-2);
@@ -2120,7 +2120,7 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
 .fw-tj-gen-btn-sm{font-size:.72rem;padding:.3rem .6rem;}
 .fw-tj-footer .fw-history{margin:0;}
 
-.fw-view-tabs{display:flex;gap:.35rem;flex-wrap:wrap;margin:.6rem 0;}
+.fw-view-tabs{display:flex;gap:.35rem;flex-wrap:wrap;margin:.4rem 0;}
 .fw-view-tab{
   background:var(--bg-soft);border:1px solid var(--border);color:var(--text-2);
   font-weight:600;font-size:.76rem;padding:.35rem .7rem;border-radius:99px;cursor:pointer;
@@ -2132,7 +2132,7 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
    pill = 1 phương pháp giao tiếp THẬT SỰ có mặt trong 7 framework của
    câu hỏi đang xem (không cố định), bấm để lọc nội dung bên dưới theo
    đúng phương pháp đó. */
-.fw-method-dash{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem;}
+.fw-method-dash{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.5rem;}
 .fw-method-pill{
   background:none;border:1px solid var(--border);color:var(--text-2);
   font-size:.78rem;padding:.4rem .8rem;border-radius:10px;cursor:pointer;font-weight:600;
