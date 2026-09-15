@@ -932,14 +932,6 @@
            chung App.bindDrag/applyDrop) — hữu ích khi 1 Batch lẻ 1-2 từ
            dư ra sau khi chia đủ 10/Block, dồn qua Block khác cho chẵn rồi
            tự xoá Block rỗng qua menu "⋯". */
-        /* TJ yêu cầu 2026-09-15: preview framework KHÔNG xuống hàng riêng
-           (từng chiếm hẳn 1 hàng, "chiếm diện tích quá") mà đứng CẠNH
-           chips từ vựng — tận dụng khoảng trống bên phải chips (thường
-           chỉ 8-10 từ, chưa hết hàng). Bọc 2 khối vào 1 hàng flex CHỈ khi
-           Block có framework_data, Block thường (không có preview) giữ
-           nguyên layout cũ (.vocab-chips đứng 1 mình, không bọc thêm gì
-           để khỏi đổi hành vi/CSS của mọi Block khác trong app). */
-        (fwPreview ? '<div class="block-mid-row">' : "") +
         '<div class="vocab-chips">' + ws.map(function (x) {
           var ok = S.wp[x.id] && S.wp[x.id].mastered;
           /* Hover xem nhanh nghĩa tiếng Việt (theo yêu cầu TJ — hướng dẫn
@@ -955,10 +947,15 @@
           return '<span class="vchip' + (ok ? " ok" : "") + '" draggable="true" data-word="' + x.id + '" title="' + w.esc(tip) + '">' + w.esc(x.term) +
             (canDeleteWord ? '<button class="vchip-del" data-delword="' + x.id + '" title="Xoá từ khỏi kho">×</button>' : "") + "</span>";
         }).join("") + "</div>" +
-        (fwPreview ? fwPreview + "</div>" : "") +
         '<div class="block-bottom">' +
           '<span class="progress-bar"><i style="width:' + w.pct(mastered, ws.length) + '%"></i></span>' +
-          quickTabsHtml(b.id) +
+          /* TJ chốt 2026-09-15 (đổi ý so với bản "cạnh chips từ vựng"):
+             gói preview framework CHUNG hàng với dải icon nút tắt — hàng
+             đó vốn chỉ 7 icon nhỏ (~250px), luôn còn trống nhiều bên phải
+             dù Block bao nhiêu từ (khác vocab-chips, độ dài phụ thuộc số
+             từ nên không đoán trước được chỗ trống). fw-preview (nếu có)
+             lấp đúng phần trống CỐ ĐỊNH này — xem .block-tabs-row CSS. */
+          '<div class="block-tabs-row">' + quickTabsHtml(b.id) + fwPreview + "</div>" +
         "</div>" +
       "</div>";
     }).join("");

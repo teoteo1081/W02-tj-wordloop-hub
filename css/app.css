@@ -774,32 +774,23 @@ body.resizing-left,body.resizing-right{cursor:col-resize;user-select:none;}
    thì không có cách nào bấm được nút "×" này cả. */
 @media(hover:none){.vchip-del{opacity:1;}}
 /* Xem nhanh "AI Framework" trên Block card (2026-09-15) — chỉ hiện ở
-   Block có framework_data, framework FIT NHẤT + câu mở đầu/kết luận mẫu,
-   xem fwCardPreviewHtml trong app.js. TJ chốt: đứng CẠNH chips từ vựng
-   (tận dụng khoảng trống bên phải, thường chỉ 8-10 từ chưa hết hàng),
-   không xuống hàng riêng như bản đầu ("chiếm diện tích quá") — bọc
-   .vocab-chips + .block-fw-preview vào .block-mid-row (flex ngang),
-   vocab-chips vẫn tự xuống dòng bên trong nếu nhiều từ (flex-wrap cũ
-   không đổi), preview chiếm phần còn lại bên phải. */
-.block-mid-row{display:flex;gap:.75rem;align-items:flex-end;}
-.block-mid-row .vocab-chips{flex:1 1 auto;min-width:0;}
+   Block có framework_data, framework FIT NHẤT + method + câu mở đầu mẫu,
+   xem fwCardPreviewHtml trong app.js. TJ đổi ý 2 lần trước khi chốt: thử
+   đứng cạnh chips từ vựng (độ dài chips phụ thuộc số từ, chỗ trống không
+   cố định, dễ lệch) → giờ đứng CẠNH DẢI ICON NÚT TẮT (.block-quick-tabs)
+   trong CÙNG .block-tabs-row — dải icon luôn ~250px cố định (7 icon nhỏ)
+   nên chỗ trống bên phải nó LUÔN CÓ, không phụ thuộc Block bao nhiêu từ. */
+.block-tabs-row{flex:0 0 100%;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;}
 .block-fw-preview{
-  flex:1 1 320px;min-width:240px;max-width:480px;
-  padding:.3rem .6rem;border-radius:8px;overflow:hidden;
+  flex:1 1 260px;min-width:200px;overflow:hidden;
+  padding:.25rem .6rem;border-radius:8px;
   background:var(--bg-soft);border-left:3px solid var(--green);font-size:.74rem;
 }
-/* ĐÚNG 2 dòng cố định, mỗi dòng tự cắt "…" nếu dài hơn khung — chiều cao
-   preview gần bằng 1 hàng .vocab-chips (TJ yêu cầu, xem fwCardPreviewHtml
-   trong app.js), xem full text qua title (hover) khi bị cắt. */
+/* ĐÚNG 2 dòng cố định, mỗi dòng tự cắt "…" nếu dài hơn khung — xem full
+   text qua title (hover) khi bị cắt, xem fwCardPreviewHtml trong app.js. */
 .bfw-line1,.bfw-line2{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.5;}
 .bfw-line1 b{color:var(--amber-l);}
 .bfw-line2{color:var(--text-3);}
-/* Màn hẹp (điện thoại/tablet dọc) — chips + preview không đủ chỗ đứng
-   cạnh nhau nữa, cho xuống chồng lên nhau như trước đây. */
-@media(max-width:720px){
-  .block-mid-row{flex-direction:column;}
-  .block-fw-preview{max-width:none;width:100%;}
-}
 
 /* Giờ chỉ còn progress-bar (nút Học/Ôn lại đã dời lên block-top) */
 .block-bottom{display:flex;align-items:center;flex-wrap:wrap;border-top:1px solid var(--border-soft);padding-top:.55rem;gap:.5rem;}
@@ -808,8 +799,10 @@ body.resizing-left,body.resizing-right{cursor:col-resize;user-select:none;}
 
 /* Hàng nút tắt 7 tab dưới thanh tiến độ mỗi Block card — bấm thẳng vào
    đúng tab của Block đó (xem quickTabsHtml/#blocks-list click trong
-   app.js). flex-basis:100% ép xuống dòng riêng, dưới progress-bar. */
-.block-quick-tabs{flex:0 0 100%;display:flex;gap:.3rem;flex-wrap:wrap;}
+   app.js). Bọc trong .block-tabs-row (flex-basis:100% ép xuống dòng
+   riêng dưới progress-bar) cùng .block-fw-preview nếu có — ở đây chỉ
+   cần giữ chiều rộng tự nhiên (flex:0 0 auto), không ép full-width nữa. */
+.block-quick-tabs{flex:0 0 auto;display:flex;gap:.3rem;flex-wrap:wrap;}
 .bq-tab{
   background:var(--bg-soft);border:1px solid var(--border-soft);color:var(--text-2);
   font-size:.85rem;line-height:1;padding:.3rem .45rem;border-radius:6px;cursor:pointer;flex-shrink:0;
