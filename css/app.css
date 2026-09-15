@@ -610,6 +610,10 @@ body.resizing-left,body.resizing-right{cursor:col-resize;user-select:none;}
 }
 .crumb b{color:var(--text-2);font-weight:600;}
 .crumb .sep{opacity:.4;flex-shrink:0;}
+/* Câu hỏi/tình huống gốc của Block "AI Framework" (2026-09-15) — nối
+   vào cuối breadcrumb (đã sticky sẵn) để luôn thấy đang ở câu hỏi nào dù
+   cuộn sâu tới đâu, không cần thêm thanh sticky riêng nào khác. */
+.crumb-fw-q{color:var(--amber-l);font-style:italic;}
 
 /* Sticky luôn — trước đây chỉ .detail-tabs dính, còn hàng này (nút "Quay
    lại"/Block trước-sau/tab Batch) cuộn thường -> lúc cuộn qua đúng khoảng

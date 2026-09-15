@@ -647,10 +647,21 @@
     var openBlock = (w.Detail && w.Detail.blockId)
       ? S.blocks.find(function (x) { return x.id === w.Detail.blockId; }) : null;
     if (openBlock) parts.push(openBlock.name);
+    /* Câu hỏi/tình huống gốc của Block "AI Framework" (2026-09-15, TJ yêu
+       cầu — "cố định khi cuộn xuống... không chiếm diện tích... đường
+       dẫn rõ ràng full câu hỏi luôn") — nối thêm vào ĐÚNG breadcrumb này
+       (đã sticky top:0 sẵn, xem bindStickyBars) thay vì làm riêng 1 thanh
+       sticky mới, vừa luôn thấy được khi cuộn sâu vừa không tốn thêm
+       chiều cao ngoài breadcrumb vốn đã có. Không phải field riêng — đọc
+       thẳng framework_data.question, không cần AI sinh gì thêm. */
+    var fwQuestion = openBlock && openBlock.framework_data && openBlock.framework_data.question;
 
     var html = "<b>" + w.esc(parts[0]) + "</b>" + parts.slice(1).map(function (p) {
       return '<span class="sep">›</span>' + w.esc(p);
     }).join("");
+    if (fwQuestion) {
+      html += '<span class="sep">›</span><span class="crumb-fw-q">🧭 “' + w.esc(fwQuestion) + '”</span>';
+    }
     w.$("#crumb").innerHTML = html;
   }
 
