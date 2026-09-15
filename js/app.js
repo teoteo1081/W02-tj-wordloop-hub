@@ -1673,8 +1673,13 @@
        cái mới nếu gọi lẻ (doPasteExtract — 1 lượt dán = 1 "Block"). Xem
        ghi chú Context.extractVocab. */
     if (!quotaCtx) quotaCtx = { userId: (w.Auth.user && w.Auth.user.id) || null, blockId: w.uid("pasteq") };
-    var extracted = await w.Context.extractVocab(rawInput, cfg2, quotaCtx);
-    var cleanText = w.Context.stripPasteNoise(rawInput);
+    var extractRes = await w.Context.extractVocab(rawInput, cfg2, quotaCtx);
+    var extracted = extractRes.words;
+    /* Bài đọc dùng bản ĐÃ CHẤM CÂU nếu AI trả về (transcript gốc không
+       dấu câu, xem ghi chú needsPunct/punctuatedText trong extractVocab
+       của context.js) — KHÔNG có (bài đã có dấu câu sẵn, đa số trường
+       hợp) thì giữ nguyên hành vi cũ (chỉ dọn nhiễu, không đổi câu chữ). */
+    var cleanText = extractRes.punctuatedText || w.Context.stripPasteNoise(rawInput);
 
     /* Đọc lại provider/chi phí NGAY sau extractVocab — Context._callProvider
        tự ghi 2 biến này làm side-channel (y hệt cách generateAI/enrichWords

@@ -1251,6 +1251,21 @@
         }
       }
 
+      /* MAX nhỏ hơn hẳn (5000 thay vì 11000) khi CẢ BÀI gần như không có
+         dấu câu (transcript tự động, xem needsPunct trong extractVocab) —
+         2026-09-15, TJ đưa file mẫu THẬT: 1 phần 10995 ký tự KHÔNG dấu
+         câu nhờ AI chấm câu lại (punctuated_text) bị TIMEOUT (25 giây,
+         cả OpenAI lẫn Gemini dự phòng) vì AI phải ECHO LẠI gần 11000 ký
+         tự output thêm — chậm hơn hẳn lượt trích từ vựng bình thường
+         (chỉ trả JSON từ, không phải cả đoạn văn). Cắt phần nhỏ hơn để
+         lượt gọi nào cũng đủ nhanh xong trong 25 giây, dù tốn nhiều lượt
+         AI hơn (vẫn rẻ — mỗi lượt vẫn tính 1 "Block" quota như cũ, số
+         lượt AI không đổi giá). Bài ĐÃ có dấu câu bình thường giữ MAX
+         11000 như cũ (extractVocab không cần echo lại toàn bài). */
+      var wcAll = raw.trim().split(/\s+/).filter(Boolean).length;
+      var punctCountAll = (raw.match(/[.!?]/g) || []).length;
+      var lowPunctAll = wcAll > 40 && punctCountAll < wcAll * 0.01;
+
       /* Sub-split phần nào > MAX ký tự theo ranh giới đoạn văn (dòng trống
          \n\n) — chừa lề dưới 12000 thật của extractVocab vì stripPasteNoise
          gọi lần 2 trong đó có thể đổi độ dài đôi chút. Có nguồn dán vào
@@ -1258,22 +1273,61 @@
          dính thành 1 khối) — 1 "đoạn văn" tách được theo \n{2,} vẫn có thể
          TỰ NÓ dài hơn MAX, lúc đó cắt tiếp theo CÂU (. ! ? + khoảng trắng)
          thay vì để lọt 1 phần vẫn vượt giới hạn ra ngoài. */
-      var MAX = 11000;
+      var MAX = lowPunctAll ? 5000 : 11000;
+      /* 2026-09-15 — TJ đưa file mẫu THẬT (transcript YouTube auto-gen,
+         .txt/.srt) dài >12000 ký tự nhưng KHÔNG có 1 dấu chấm/phẩy/xuống
+         dòng đôi nào cả (mỗi dòng phụ đề chỉ cách nhau 1 \n, không phải
+         đoạn văn \n\n) — bậc cắt theo CÂU (.!?) cũ chỉ ra ĐÚNG 1 mảnh
+         (không tìm thấy dấu câu nào để cắt), mảnh đó vẫn dài hơn MAX,
+         lọt ra ngoài giới hạn 12000 ký tự của extractVocab -> lỗi thẳng.
+         Sửa thành CẮT TẦNG (cascade), tầng sau chỉ chạy khi tầng trước
+         "không cắt được gì" (trả về đúng 1 mảnh y hệt input): đoạn văn
+         (\n\n) -> câu (.!?) -> dòng đơn (\n) -> cắt cứng theo TỪ (luôn
+         cắt được, đảm bảo không bao giờ lọt phần nào vượt MAX). */
+      function hardSplitByWords(text, max) {
+        var words = text.split(/\s+/).filter(Boolean);
+        var parts = [], cur = "";
+        words.forEach(function (wd) {
+          if (cur && (cur.length + wd.length + 1) > max) { parts.push(cur); cur = wd; }
+          else { cur = cur ? cur + " " + wd : wd; }
+        });
+        if (cur) parts.push(cur);
+        return parts.length ? parts : [text];
+      }
+      function regroup(pieces, sep, max, nextSplitter) {
+        var out = [], buf = "";
+        pieces.forEach(function (p) {
+          if (p.length > max) {
+            if (buf) { out.push(buf); buf = ""; }
+            out = out.concat(nextSplitter(p, max));
+            return;
+          }
+          if (buf && (buf.length + p.length + sep.length) > max) { out.push(buf); buf = p; }
+          else { buf = buf ? buf + sep + p : p; }
+        });
+        if (buf) out.push(buf);
+        return out;
+      }
+      function splitBySentence(text, max) {
+        var sentences = text.split(/(?<=[.!?])\s+/);
+        if (sentences.length <= 1) return splitByLine(text, max);   /* không cắt được gì -> tầng kế */
+        return regroup(sentences, " ", max, splitBySentence);
+      }
+      function splitByLine(text, max) {
+        var lines = text.split(/\n+/).filter(Boolean);
+        if (lines.length <= 1) return hardSplitByWords(text, max);   /* vẫn không cắt được -> cắt cứng */
+        return regroup(lines, "\n", max, splitByLine);
+      }
       function splitByLimit(text, max) {
         var paras = text.split(/\n{2,}/);
         var parts = [], part = "";
         function flush() { if (part.trim()) parts.push(part.trim()); part = ""; }
         paras.forEach(function (p) {
           if (p.length > max) {
-            /* Gộp phần đang giữ (vd dòng tiêu đề ngắn) vào ĐẦU câu đầu
-               tiên thay vì tách rời thành 1 mảnh lẻ tí hon. */
-            var buf = part; part = "";
-            var sentences = p.split(/(?<=[.!?])\s+/);
-            sentences.forEach(function (s) {
-              if (buf && (buf.length + s.length + 1) > max) { parts.push(buf.trim()); buf = s; }
-              else { buf = buf ? buf + " " + s : s; }
+            if (part.trim()) { parts.push(part.trim()); part = ""; }
+            splitBySentence(p, max).forEach(function (piece) {
+              if (piece.trim()) parts.push(piece.trim());
             });
-            if (buf.trim()) parts.push(buf.trim());
             return;
           }
           if (part && (part.length + p.length + 2) > max) { flush(); part = p; }
@@ -1330,6 +1384,24 @@
          tránh bỏ sót, không ép số lượng. */
       var wordCount = raw.trim().split(/\s+/).filter(Boolean).length;
 
+      /* Transcript tự động (YouTube auto-generated) THƯỜNG không có dấu
+         câu (TJ báo 2026-09-15, kèm file mẫu .txt/.srt thật — toàn bộ
+         bài ~2400 từ không 1 dấu chấm/phẩy nào). Chỉ nhờ AI TRẢ THÊM 1
+         bản có dấu câu (KHÔNG gọi thêm lệnh AI riêng — tốn thêm tiền,
+         nhét chung vào CÙNG lệnh trích từ vựng này) khi phát hiện bài
+         gần như KHÔNG có dấu câu (mật độ .!? cực thấp) — bài đã có dấu
+         câu bình thường thì bỏ qua hẳn phần này, không đổi hành vi/giá. */
+      var punctCount = (raw.match(/[.!?]/g) || []).length;
+      var needsPunct = wordCount > 40 && punctCount < wordCount * 0.01;
+      var punctInstruction = needsPunct ?
+        ("\n\nĐOẠN VĂN TRÊN GẦN NHƯ KHÔNG CÓ DẤU CÂU (dấu chấm/phẩy) — có vẻ là transcript " +
+         "video tự động. Ngoài danh sách từ vựng, HÃY VIẾT LẠI TOÀN BỘ đoạn văn đó vào trường " +
+         "\"punctuated_text\": GIỮ NGUYÊN 100% TỪ NGỮ VÀ THỨ TỰ TỪ (không đổi từ, không paraphrase, " +
+         "không thêm/bớt từ nào) — CHỈ được thêm dấu câu (. , ! ?), viết hoa chữ đầu câu, và ngắt " +
+         "đoạn văn hợp lý (dòng trống giữa các đoạn). Đây là việc CHẤM CÂU LẠI, không phải viết lại " +
+         "nội dung.") : "";
+      var punctSchemaField = needsPunct ? ',"punctuated_text":"..."' : "";
+
       var sys = "Bạn là trợ lý phân tích văn bản tiếng Anh để giúp người Việt học từ vựng. " +
         "Luôn trả lời DUY NHẤT một object JSON đúng schema được yêu cầu, không thêm chữ nào khác, " +
         "không dùng markdown code fence.";
@@ -1377,9 +1449,11 @@
         "suất xuất hiện trong riêng đoạn văn này. Chỉ trả về ĐÚNG 1 trong 2 giá trị \"common\" " +
         "(thông dụng, người bản ngữ dùng/gặp thường xuyên trong đời sống) hoặc \"uncommon\" (ít " +
         "thông dụng, hiếm gặp hơn trong đời sống thật dù có thể đoạn văn này lặp lại nhiều lần), " +
-        "không suy từ cấp độ CEFR (từ B2/C1 vẫn có thể rất thông dụng ngoài đời)\n\n" +
+        "không suy từ cấp độ CEFR (từ B2/C1 vẫn có thể rất thông dụng ngoài đời)" +
+        punctInstruction + "\n\n" +
         "Trả về đúng schema JSON sau, không thêm trường khác:\n" +
-        '{"words":[{"term":"...","level":"...","pos":"...","ipa":"...","def_en":"...","meaning_vi":"...","sentence_vi":"...","freq":"common|uncommon"}]}';
+        '{"words":[{"term":"...","level":"...","pos":"...","ipa":"...","def_en":"...","meaning_vi":"...","sentence_vi":"...","freq":"common|uncommon"}]' +
+        punctSchemaField + '}';
 
       var raw2 = await w.Context._callProvider(cfg, sys, user, quotaCtx);
       var parsed = JSON.parse(raw2);
@@ -1394,7 +1468,20 @@
         return true;
       });
       if (!words.length) throw new Error("Không tìm thấy từ B1+ nào trong đoạn văn này");
-      return words;
+
+      /* Chấm câu lại (nếu có yêu cầu) — CHỈ tin dùng nếu số từ ra gần
+         bằng bản gốc (cho phép lệch ±15%, dấu câu/viết hoa không đổi số
+         từ đáng kể) — AI lỡ paraphrase/rút gọn thì lệch nhiều, tự rơi về
+         bản KHÔNG dấu câu (raw) như hành vi cũ, không vỡ gì cả. */
+      var punctuatedText = null;
+      if (needsPunct && parsed.punctuated_text) {
+        var candidate = String(parsed.punctuated_text);
+        var normOrig = raw.toLowerCase().replace(/[^a-z0-9']+/g, " ").trim().split(/\s+/).filter(Boolean);
+        var normCand = candidate.toLowerCase().replace(/[^a-z0-9']+/g, " ").trim().split(/\s+/).filter(Boolean);
+        var ratio = normCand.length / (normOrig.length || 1);
+        if (ratio > 0.9 && ratio < 1.15) punctuatedText = candidate;
+      }
+      return { words: words, punctuatedText: punctuatedText };
     },
 
     /* ═══════════ TỰ ĐIỀN CÁC CỘT CÒN THIẾU CHO 1 DANH SÁCH TỪ ═══════════
