@@ -758,9 +758,12 @@ mitigate | giảm nhẹ"></textarea>
     <h3>✨ Dán bài, tự trích từ vựng B1+</h3>
     <p class="modal-desc">
       Dán 1 bài báo, đoạn văn, hoặc transcript video (YouTube: bấm <b>"Hiện bản ghi"</b> dưới
-      video rồi copy toàn bộ; Yglish: copy phần lời thoại) — AI sẽ tự tìm các từ vựng cấp độ
-      <b>B1 trở lên</b>, chia thành Block 10 từ để học, và giữ NGUYÊN chính bài bạn dán làm bài
-      đọc (không sinh bài khác). Cần đã có key Gemini trong <code>js/keys.local.js</code>.
+      video rồi copy toàn bộ, hoặc dán nguyên file phụ đề <b>.srt</b> tự tải về — app tự nhận
+      diện và bỏ số thứ tự/mốc giờ; Yglish: copy phần lời thoại) — AI sẽ tự tìm các từ vựng cấp
+      độ <b>B1 trở lên</b>, chia thành Block 10 từ để học, và giữ NGUYÊN chính bài bạn dán làm
+      bài đọc (không sinh bài khác). Bài dài hơn ~12.000 ký tự/lượt sẽ <b>tự động chia thành
+      nhiều phần</b> (xem danh sách xác nhận bên dưới trước khi xử lý), không cần tự cắt tay.
+      Cần đã có key Gemini trong <code>js/keys.local.js</code>.
     </p>
 
     <div class="wp-lbl">Tên Batch (tuỳ chọn)</div>
@@ -772,8 +775,8 @@ mitigate | giảm nhẹ"></textarea>
       <button class="btn-soft" id="btn-fetch-url">🔗 Thử tải</button>
     </div>
 
-    <div class="wp-lbl mt">Dán bài vào đây (hoặc để nút Thử tải tự điền)</div>
-    <textarea id="extract-input" spellcheck="false" placeholder="Dán bài báo / đoạn văn / transcript vào đây… (tối đa ~12.000 ký tự)"></textarea>
+    <div class="wp-lbl mt">Dán bài vào đây — .txt hay .srt đều được (hoặc để nút Thử tải tự điền)</div>
+    <textarea id="extract-input" spellcheck="false" placeholder="Dán bài báo / đoạn văn / transcript / nội dung file .srt vào đây… (dài quá ~12.000 ký tự sẽ tự chia phần)"></textarea>
 
     <div class="modal-actions">
       <button class="btn-ghost" data-close="modal-extract">Hủy</button>
@@ -1111,7 +1114,7 @@ mitigate | giảm nhẹ"></textarea>
 <script src="js/keys.local.js?v=1"></script>
 <script src="js/util.js?v=1"></script>
 <script src="js/srs.js?v=1"></script>
-<script src="js/context.js?v=29"></script>
+<script src="js/context.js?v=30"></script>
 <script src="js/speech.js?v=3"></script>
 <script src="js/db.js?v=11"></script>
 <script src="js/auth.js?v=5"></script>
@@ -1121,6 +1124,6 @@ mitigate | giảm nhẹ"></textarea>
 <script src="js/export.js?v=2"></script>
 <script src="js/journey.js?v=5"></script>
 <script src="js/home.js?v=2"></script>
-<script src="js/app.js?v=40"></script>
+<script src="js/app.js?v=41"></script>
 </body>
 </html>

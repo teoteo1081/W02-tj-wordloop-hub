@@ -1190,8 +1190,20 @@
            "0:12", "[00:12]", "(1:23:45)" đứng đầu -> lọc được bằng regex,
            làm sạch để bài đọc không lộ số thời gian lung tung khi hiển thị. */
     stripPasteNoise: function (text) {
-      return String(text || "")
-        .replace(/^[ \t]*[\[(]?\d{1,2}:\d{2}(?::\d{2})?[\])]?[ \t]*[-–—]?[ \t]*/gm, "")
+      var t = String(text || "")
+        /* File .srt THẬT (TJ tự tải sub YouTube về vì app chưa có ô dán
+           link video, 2026-09-15) — mỗi khối là 1 dòng SỐ THỨ TỰ riêng,
+           rồi 1 dòng mốc giờ "00:00:00,000 --> 00:00:02,480" (định dạng
+           SRT chuẩn, dấu phẩy phần mili giây — chấp nhận cả dấu chấm kiểu
+           VTT phòng khi TJ tải nhầm .vtt), rồi mới tới dòng lời thoại —
+           khác hẳn kiểu "0:12 nội dung" (1 mốc giờ + chữ CÙNG 1 dòng, xem
+           regex bên dưới) mà YouTube "Hiện bản ghi" hay tạo ra. Xoá 2 dòng
+           đầu mỗi khối, GIỮ LẠI dòng lời thoại. */
+        .replace(/^\d+[ \t]*\r?\n\d{1,2}:\d{2}:\d{2}[,.]\d{3}[ \t]*-->[ \t]*\d{1,2}:\d{2}:\d{2}[,.]\d{3}.*\r?\n/gm, "")
+        /* Kiểu "0:12 nội dung câu" / "[00:12] nội dung" (mốc giờ + chữ
+           chung 1 dòng) — YouTube "Hiện bản ghi" copy tay, hoặc Yglish. */
+        .replace(/^[ \t]*[\[(]?\d{1,2}:\d{2}(?::\d{2})?[\])]?[ \t]*[-–—]?[ \t]*/gm, "");
+      return t
         .replace(/[ \t]+\n/g, "\n")
         .replace(/\n{3,}/g, "\n\n")
         .trim();
