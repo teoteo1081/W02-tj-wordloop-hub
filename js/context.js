@@ -1063,7 +1063,13 @@
         if (arr.length > stages.length) arr = arr.slice(0, stages.length);
         bd[f.key] = arr;
       });
-      return { stages: stages, breakdown: bd, cost_usd: w.Context._lastCostUsd || 0 };
+      /* _meta (2026-09-15) — TJ muốn bảng "TJ" cũng giữ NHIỀU phiên bản
+         như panel chính (rõ nguồn AI/chi phí mỗi bản), không chỉ đè mất
+         bản cũ — xem detail.js #fw-table .fw-tj-gen-btn. */
+      return {
+        stages: stages, breakdown: bd,
+        _meta: { provider: w.Context._lastProvider || "", cost_usd: w.Context._lastCostUsd || 0, generated_at: Date.now() }
+      };
     },
 
     /* Dọn nhiễu trước khi phân tích/hiển thị — để dán được nhiều nguồn:

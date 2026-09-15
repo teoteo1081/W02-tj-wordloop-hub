@@ -2109,6 +2109,16 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
 }
 .fw-history-chip:hover{border-color:var(--blue);color:var(--blue-l);}
 .fw-history-chip:disabled{opacity:.5;cursor:default;}
+/* Badge "bản đang dùng" (2026-09-15) — không bấm được (đang dùng rồi),
+   viền liền + chấm xanh phân biệt với các chip bấm-để-khôi-phục (viền
+   đứt) đứng cạnh nó. */
+.fw-history-current{border-style:solid;border-color:var(--green);color:var(--green-l);cursor:default;}
+
+/* Chân bảng tab "TJ" (2026-09-15) — nút "Tạo lại" NHỎ + hàng chip phiên
+   bản cùng 1 hàng, TJ yêu cầu gọn hơn bản "Tạo lại bảng này" cũ. */
+.fw-tj-footer{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-top:.6rem;}
+.fw-tj-gen-btn-sm{font-size:.72rem;padding:.3rem .6rem;}
+.fw-tj-footer .fw-history{margin:0;}
 
 .fw-view-tabs{display:flex;gap:.35rem;flex-wrap:wrap;margin:.6rem 0;}
 .fw-view-tab{

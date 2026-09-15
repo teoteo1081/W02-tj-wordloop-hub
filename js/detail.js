@@ -567,10 +567,14 @@
       '</div>';
     var cached = fd.method_breakdowns && fd.method_breakdowns[selectedKey];
     if (cached) {
+      var tjHistory = (fd.method_breakdown_history && fd.method_breakdown_history[selectedKey]) || [];
       return info + fwTjTableHtml(m, fd.frameworks, cached) +
-        '<button type="button" class="btn-soft fw-tj-gen-btn" data-method="' + w.esc(selectedKey) + '" style="margin-top:.6rem">' +
-          '🔄 Tạo lại bảng này' +
-        '</button>';
+        '<div class="fw-tj-footer">' +
+          '<button type="button" class="btn-soft fw-tj-gen-btn fw-tj-gen-btn-sm" data-method="' + w.esc(selectedKey) + '">' +
+            '🔄 Tạo lại' +
+          '</button>' +
+          fwHistoryChipsHtml(cached._meta, tjHistory, "data-tj-history-idx") +
+        '</div>';
     }
     return info +
       '<div class="fw-tj-empty">' +
@@ -596,18 +600,30 @@
     if (hrs < 24) return hrs + " giờ trước";
     return Math.round(hrs / 24) + " ngày trước";
   }
-  function fwHistoryChipsHtml(history) {
+  function fwVersionLabel(meta) {
+    meta = meta || {};
+    var provLabel = meta.provider === "openai" ? "✨ OpenAI" : meta.provider === "gemini" ? "✨ Gemini" : "AI";
+    var costLabel = typeof meta.cost_usd === "number" && meta.cost_usd > 0 ? " · ~$" + meta.cost_usd.toFixed(4) : "";
+    var timeLabel = fwRelTime(meta.generated_at);
+    return provLabel + costLabel + (timeLabel ? " · " + timeLabel : "");
+  }
+  /* Dùng chung cho CẢ panel chính (framework_data_history) LẪN mỗi
+     phương pháp ở tab "TJ" (method_breakdowns[key]._history) — TJ yêu
+     cầu 2026-09-15: hiện rõ "version hiện tại, version cũ..." cạnh nhau,
+     không chỉ lịch sử. Bản HIỆN TẠI là badge tĩnh (không bấm được, đang
+     dùng rồi); các bản CŨ là chip bấm khôi phục — `dataAttr` đổi tên
+     thuộc tính data-* để 2 nơi dùng chung hàm này không đụng event
+     delegation của nhau (xem 2 handler click riêng bên dưới). */
+  function fwHistoryChipsHtml(currentMeta, history, dataAttr) {
     if (!history || !history.length) return "";
-    return '<div class="fw-history" id="fw-history">' +
-      '<span class="fw-history-lbl">🕐 Phiên bản trước:</span>' +
+    return '<div class="fw-history">' +
+      '<span class="fw-history-chip fw-history-current" title="Bản đang dùng">' +
+        "● " + fwVersionLabel(currentMeta) +
+      '</span>' +
       history.map(function (h, i) {
-        var meta = h._meta || {};
-        var provLabel = meta.provider === "openai" ? "✨ OpenAI" : meta.provider === "gemini" ? "✨ Gemini" : "AI";
-        var costLabel = typeof meta.cost_usd === "number" && meta.cost_usd > 0 ? " · ~$" + meta.cost_usd.toFixed(4) : "";
-        var timeLabel = fwRelTime(meta.generated_at);
-        return '<button type="button" class="fw-history-chip" data-history-idx="' + i + '" ' +
+        return '<button type="button" class="fw-history-chip" ' + dataAttr + '="' + i + '" ' +
           'title="Bấm để khôi phục lại bản này">' +
-          provLabel + costLabel + (timeLabel ? " · " + timeLabel : "") +
+          fwVersionLabel(h._meta) +
         '</button>';
       }).join("") +
     '</div>';
@@ -626,7 +642,7 @@
     var echo = w.$("#fw-question-echo");
     if (echo) echo.textContent = fd.question || "";
     var historySlot = w.$("#fw-history-slot");
-    if (historySlot) historySlot.innerHTML = fwHistoryChipsHtml(b.framework_data_history);
+    if (historySlot) historySlot.innerHTML = fwHistoryChipsHtml(fd._meta, b.framework_data_history, "data-history-idx");
     var view = fwPanelView();
 
     w.$$("#fw-view-tabs .fw-view-tab").forEach(function (t) {
@@ -2342,6 +2358,37 @@
     var fwTableForTj = w.$("#fw-table");
     if (fwTableForTj) {
       fwTableForTj.addEventListener("click", async function (e) {
+        /* Chip "version cũ" của tab TJ — khôi phục NGAY bản đó cho ĐÚNG
+           phương pháp đang chọn (D._fwTjMethodSel), giống hệt cơ chế
+           chip panel chính nhưng lồng trong method_breakdowns[key]. */
+        var tjChip = e.target.closest && e.target.closest("[data-tj-history-idx]");
+        if (tjChip) {
+          if (!canEditPassage()) { w.toast("Bạn không có quyền khôi phục", "err"); return; }
+          var key2 = D._fwTjMethodSel;
+          var b2 = block();
+          var fd2 = b2 && b2.framework_data;
+          if (!fd2 || !key2) return;
+          var hist2 = ((fd2.method_breakdown_history && fd2.method_breakdown_history[key2]) || []).slice();
+          var idx2 = parseInt(tjChip.dataset.tjHistoryIdx, 10);
+          if (!hist2[idx2]) return;
+          var chosen2 = hist2[idx2];
+          var current2 = fd2.method_breakdowns[key2];
+          hist2.splice(idx2, 1, current2);
+          if (hist2.length > FW_HISTORY_MAX) hist2.length = FW_HISTORY_MAX;
+          tjChip.disabled = true;
+          try {
+            fd2.method_breakdowns[key2] = chosen2;
+            fd2.method_breakdown_history = fd2.method_breakdown_history || {};
+            fd2.method_breakdown_history[key2] = hist2;
+            await w.DB.saveContext(b2.id, fd2, "framework_data");
+            D.renderFrameworkPanel();
+            w.toast("Đã khôi phục bảng " + (fwMethodByKey(key2) || {}).name + " ✔", "ok");
+          } catch (err) {
+            w.toast("Lỗi: " + (err.message || err), "err");
+            tjChip.disabled = false;
+          }
+          return;
+        }
         var g = e.target.closest && e.target.closest(".fw-tj-gen-btn");
         if (!g) return;
         var key = g.dataset.method;
@@ -2358,7 +2405,18 @@
           var quotaCtx = { userId: (w.Auth.user && w.Auth.user.id) || null, blockId: w.uid("aiframe") };
           var out = await w.Context.generateMethodBreakdown(fd.question, fd.frameworks, m, cfg, quotaCtx);
           fd.method_breakdowns = fd.method_breakdowns || {};
-          fd.method_breakdowns[key] = { stages: out.stages, breakdown: out.breakdown };
+          /* Đẩy bản cũ (nếu có) vào lịch sử RIÊNG của phương pháp này
+             trước khi đè — TJ yêu cầu 2026-09-15: "version hiện tại,
+             version cũ... cứ có là lưu lại". */
+          var oldEntry = fd.method_breakdowns[key];
+          if (oldEntry) {
+            fd.method_breakdown_history = fd.method_breakdown_history || {};
+            var tjHist = (fd.method_breakdown_history[key] || []).slice();
+            tjHist.unshift(oldEntry);
+            if (tjHist.length > FW_HISTORY_MAX) tjHist.length = FW_HISTORY_MAX;
+            fd.method_breakdown_history[key] = tjHist;
+          }
+          fd.method_breakdowns[key] = { stages: out.stages, breakdown: out.breakdown, _meta: out._meta };
           await w.DB.saveContext(b.id, fd, "framework_data");
           D.renderFrameworkPanel();
           w.toast("Đã tạo bảng " + m.name + " ✔", "ok");
@@ -2459,7 +2517,7 @@
     var fwHistorySlot = w.$("#fw-history-slot");
     if (fwHistorySlot) {
       fwHistorySlot.addEventListener("click", async function (e) {
-        var chip = e.target.closest && e.target.closest(".fw-history-chip");
+        var chip = e.target.closest && e.target.closest("[data-history-idx]");
         if (!chip) return;
         if (!canEditPassage()) { w.toast("Bạn không có quyền khôi phục Framework", "err"); return; }
         var idx = parseInt(chip.dataset.historyIdx, 10);
