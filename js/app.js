@@ -777,6 +777,29 @@
     }).join("") + "</div>";
   }
 
+  /* Xem nhanh "AI Framework" ngay trên Block card (2026-09-15, TJ yêu
+     cầu — "bên ngoài hãy hiện framework và communication tốt nhất và
+     một câu dẫn, câu chốt... nhìn nhanh cũng biết đường mà trả lời") —
+     Block nào có framework_data (chỉ Notebook TJ_DATA ANALYST) hiện 1
+     dải gọn: tên framework FIT NHẤT (fit_tier="top", cái đầu tiên trong
+     mảng — _normalizeFitTiers đã xếp thứ hạng, đầu mảng "top" = cao
+     điểm nhất) + method + câu mở đầu/kết luận mẫu của framework đó,
+     lấp khoảng trống bên phải chips từ vựng (bấm vẫn mở thẳng Block như
+     bấm chỗ khác trên card, không chặn gì thêm). */
+  function fwCardPreviewHtml(b) {
+    var fd = b.framework_data;
+    if (!fd || !Array.isArray(fd.frameworks) || !fd.frameworks.length) return "";
+    var best = fd.frameworks.filter(function (f) { return f.fit_tier === "top"; })[0] || fd.frameworks[0];
+    var opening = (best.opening_lines || [])[0];
+    var closing = (best.closing_lines || [])[0];
+    return '<div class="block-fw-preview">' +
+      '<span class="bfw-name">🧭 ' + w.esc(best.name) + "</span>" +
+      (best.communication_method ? '<span class="bfw-method">· ' + w.esc(best.communication_method) + "</span>" : "") +
+      (opening ? '<div class="bfw-line"><b>Mở:</b> “' + w.esc(opening) + '”</div>' : "") +
+      (closing ? '<div class="bfw-line"><b>Chốt:</b> “' + w.esc(closing) + '”</div>' : "") +
+    "</div>";
+  }
+
   App.renderBlocks = function () {
     var batch = S.batches.find(function (b) { return b.id === S.batchId; });
     var list = S.batchId ? App.blocksOf(S.batchId) : [];
@@ -910,6 +933,7 @@
           return '<span class="vchip' + (ok ? " ok" : "") + '" draggable="true" data-word="' + x.id + '" title="' + w.esc(tip) + '">' + w.esc(x.term) +
             (canDeleteWord ? '<button class="vchip-del" data-delword="' + x.id + '" title="Xoá từ khỏi kho">×</button>' : "") + "</span>";
         }).join("") + "</div>" +
+        fwCardPreviewHtml(b) +
         '<div class="block-bottom">' +
           '<span class="progress-bar"><i style="width:' + w.pct(mastered, ws.length) + '%"></i></span>' +
           quickTabsHtml(b.id) +

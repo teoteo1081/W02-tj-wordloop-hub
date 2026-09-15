@@ -773,6 +773,19 @@ body.resizing-left,body.resizing-right{cursor:col-resize;user-select:none;}
 /* Thiết bị chạm (điện thoại/tablet) không có hover - luôn hiện sẵn, không
    thì không có cách nào bấm được nút "×" này cả. */
 @media(hover:none){.vchip-del{opacity:1;}}
+/* Xem nhanh "AI Framework" trên Block card (2026-09-15) — chỉ hiện ở
+   Block có framework_data, lấp khoảng trống dưới chips từ vựng bằng
+   framework FIT NHẤT + câu mở đầu/kết luận mẫu, xem fwCardPreviewHtml
+   trong app.js. */
+.block-fw-preview{
+  margin-top:.5rem;padding:.5rem .65rem;border-radius:8px;
+  background:var(--bg-soft);border-left:3px solid var(--green);font-size:.76rem;
+}
+.bfw-name{font-weight:700;color:var(--amber-l);}
+.bfw-method{color:var(--text-3);margin-left:.3rem;}
+.bfw-line{color:var(--text-2);margin-top:.2rem;line-height:1.4;}
+.bfw-line b{color:var(--text-3);font-weight:600;}
+
 /* Giờ chỉ còn progress-bar (nút Học/Ôn lại đã dời lên block-top) */
 .block-bottom{display:flex;align-items:center;flex-wrap:wrap;border-top:1px solid var(--border-soft);padding-top:.55rem;gap:.5rem;}
 .progress-bar{height:4px;border-radius:4px;background:var(--border-soft);overflow:hidden;flex:1;}
