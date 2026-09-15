@@ -127,7 +127,7 @@ Deno.serve(async (req: Request) => {
   if (req.method !== "POST") return json({ error: "Method not allowed, dùng POST" }, 405);
   if (!OPENAI_KEY) return json({ error: "OPENAI_API_KEY chưa được đặt (supabase secrets set)" }, 500);
 
-  let body: { model?: string; sys?: string; user?: string; user_id?: string | null; block_id?: string | null };
+  let body: { model?: string; sys?: string; user?: string; user_id?: string | null; block_id?: string | null; temperature?: number };
   try {
     body = await req.json();
   } catch (_e) {
@@ -139,6 +139,11 @@ Deno.serve(async (req: Request) => {
   const user = body.user || "";
   const userId = body.user_id || null;
   const blockId = body.block_id || null;
+  // 2026-09-14: cho client tự truyền temperature (vd Context.generateFrameworkAnalysis
+  // dùng thấp hơn để JSON schema phức tạp/nhiều phần tử ra đúng đủ, đã test thật
+  // 0.9 làm model bỏ sót phần tử mảng "frameworks" dù chỉ thị "ĐÚNG 7") — KHÔNG đổi
+  // mặc định 0.9 cho các lệnh gọi cũ (generateAI/extractVocab) không truyền field này.
+  const temperature = typeof body.temperature === "number" ? body.temperature : 0.9;
   if (!user) return json({ error: "Thiếu field 'user' (nội dung yêu cầu gửi cho AI)" }, 400);
 
   const quota = await checkQuota(userId, blockId);
@@ -146,7 +151,7 @@ Deno.serve(async (req: Request) => {
 
   const upstreamBody = JSON.stringify({
     model,
-    temperature: 0.9,
+    temperature,
     response_format: { type: "json_object" },
     messages: [{ role: "system", content: sys }, { role: "user", content: user }],
   });
