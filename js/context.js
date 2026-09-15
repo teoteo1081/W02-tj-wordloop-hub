@@ -489,6 +489,31 @@
       return r3;
     },
 
+    /* Gọi AI + JSON.parse, TỰ ĐỘNG GỌI LẠI 1 LẦN nếu model trả JSON hỏng
+       (2026-09-15 — bug thật TJ gặp: dán câu hỏi "What does discipline
+       mean to you?" cho generateFrameworkAnalysis, gpt-4o-mini thỉnh
+       thoảng trả JSON lỗi cú pháp giữa chừng — response CÀNG dài/CÀNG
+       nhiều field (7 framework × ~9 field từ khi thêm linking_words) thì
+       càng dễ gặp, không tái hiện được ổn định (thử lại y hệt input có
+       lúc ra JSON hợp lệ, có lúc không — bản chất xác suất của LLM, không
+       phải lỗi cú pháp cố định trong prompt). GỌI LẠI (không phải parse
+       lại chuỗi cũ — chuỗi hỏng thì hỏng luôn) là cách chuẩn xử lý kiểu
+       lỗi này thay vì bắt user tự bấm lại (mỗi lần bấm lại tạo 1 Batch
+       rỗng mới nếu lỗi, xem doAiFramework rollback trong app.js). */
+    _callProviderJSON: async function (cfg, sys, user, quotaCtx, retries) {
+      retries = retries == null ? 1 : retries;
+      var lastErr;
+      for (var attempt = 0; attempt <= retries; attempt++) {
+        var raw = await w.Context._callProvider(cfg, sys, user, quotaCtx);
+        try {
+          return JSON.parse(raw);
+        } catch (e) {
+          lastErr = e;
+        }
+      }
+      throw new Error("AI trả JSON không hợp lệ (đã tự thử lại " + (retries + 1) + " lần) — " + lastErr.message + ". Thử lại sau hoặc rút ngắn câu hỏi.");
+    },
+
     /* Vietnamese-hoá 1 lỗi AI để in thẳng lên giao diện cho người dùng
        thấy (không chỉ console) — dùng ở mọi nơi gọi generateAI/extractVocab/
        enrichWords. Trả về {title, detail} — title ngắn để làm tiêu đề
@@ -880,8 +905,7 @@
         '"closing_lines":["...","..."],"paraphrase":"..."}]}';
 
       w.Context._lastCostUsd = null;
-      var raw1 = await w.Context._callProvider(cfg, sys, user1, quotaCtx);
-      var p1 = JSON.parse(raw1);
+      var p1 = await w.Context._callProviderJSON(cfg, sys, user1, quotaCtx);
       if (!Array.isArray(p1.frameworks) || p1.frameworks.length !== 7) {
         throw new Error("AI (lượt 1) trả về " + (p1.frameworks ? p1.frameworks.length : 0) + " framework, cần đúng 7 — thử lại");
       }
@@ -940,8 +964,7 @@
         '"frameworks":[{"key":"...","words":["...","..."],"passage_en":"...",' +
         '"writing_material":{"introduction":"...","body":"...","conclusion":"..."}}]}';
 
-      var raw2 = await w.Context._callProvider(cfg, sys, user2, quotaCtx);
-      var p2 = JSON.parse(raw2);
+      var p2 = await w.Context._callProviderJSON(cfg, sys, user2, quotaCtx);
       if (!p2.speaking_passage_en) throw new Error("AI (lượt 2) thiếu 'speaking_passage_en' — thử lại");
       if (!p2.writing_passage_en) throw new Error("AI (lượt 2) thiếu 'writing_passage_en' — thử lại");
       if (!Array.isArray(p2.full_words) || !p2.full_words.length) throw new Error("AI (lượt 2) thiếu 'full_words' — thử lại");
@@ -1054,8 +1077,7 @@
         '{"breakdown":{"<framework_key>":["...","..."]}}';
 
       w.Context._lastCostUsd = null;
-      var raw = await w.Context._callProvider(cfg, sys, user, quotaCtx);
-      var parsed = JSON.parse(raw);
+      var parsed = await w.Context._callProviderJSON(cfg, sys, user, quotaCtx);
       var bd = parsed.breakdown;
       if (!bd || typeof bd !== "object") throw new Error("AI thiếu 'breakdown' — thử lại");
       /* KHOAN DUNG số phần tử mỗi framework thay vì fail cứng bắt gọi lại

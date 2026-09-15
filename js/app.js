@@ -1848,7 +1848,21 @@
     } catch (e) {
       if (e && e.kind && w.App && w.App.showAiError) w.App.showAiError(e);
       w.toast("Lỗi: " + (e.message || e), "err");
-      renderBatches(); renderPages(); App.renderBlocks();   /* giữ lại các cặp đã tạo thành công trước lỗi */
+      /* Dọn Batch RỖNG nếu đã tạo được Batch nhưng KHÔNG cặp block nào
+         thành công (AI lỗi ngay từ câu đầu) — TJ gặp thật 2026-09-15:
+         AI thỉnh thoảng trả JSON hỏng (đã thêm tự-gọi-lại ở context.js,
+         nhưng vẫn có thể lỗi lần 2), bấm lại nút nhiều lần mỗi lần đều
+         tạo Batch mới → 3 Batch rỗng trùng tên "01. What does..." còn
+         sót lại. Có cặp nào thành công thì GIỮ LẠI (đúng hành vi cũ,
+         hữu ích khi lỗi giữa chừng danh sách nhiều câu). */
+      if (typeof batch !== "undefined" && batch && (!allBlocks || !allBlocks.length)) {
+        try {
+          await w.DB.remove("batches", batch.id);
+          S.batches = S.batches.filter(function (x) { return x.id !== batch.id; });
+          if (S.batchId === batch.id) S.batchId = null;
+        } catch (e2) { /* best-effort, không chặn báo lỗi chính */ }
+      }
+      renderBatches(); renderPages(); App.renderBlocks();
     } finally {
       btn.disabled = false; btn.textContent = "🧭 Phân tích Framework & tạo Block";
     }
