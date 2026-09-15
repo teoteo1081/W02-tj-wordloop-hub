@@ -788,9 +788,9 @@ body.resizing-left,body.resizing-right{cursor:col-resize;user-select:none;}
 }
 /* ĐÚNG 2 dòng cố định, mỗi dòng tự cắt "…" nếu dài hơn khung — xem full
    text qua title (hover) khi bị cắt, xem fwCardPreviewHtml trong app.js. */
-.bfw-line1,.bfw-line2{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.5;}
+.bfw-line1,.bfw-line2,.bfw-line3{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.5;}
 .bfw-line1 b{color:var(--amber-l);}
-.bfw-line2{color:var(--text-3);}
+.bfw-line2,.bfw-line3{color:var(--text-3);}
 
 /* Giờ chỉ còn progress-bar (nút Học/Ôn lại đã dời lên block-top) */
 .block-bottom{display:flex;align-items:center;flex-wrap:wrap;border-top:1px solid var(--border-soft);padding-top:.55rem;gap:.5rem;}
