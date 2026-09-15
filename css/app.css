@@ -781,17 +781,19 @@ body.resizing-left,body.resizing-right{cursor:col-resize;user-select:none;}
    .vocab-chips + .block-fw-preview vào .block-mid-row (flex ngang),
    vocab-chips vẫn tự xuống dòng bên trong nếu nhiều từ (flex-wrap cũ
    không đổi), preview chiếm phần còn lại bên phải. */
-.block-mid-row{display:flex;gap:.75rem;align-items:flex-start;}
+.block-mid-row{display:flex;gap:.75rem;align-items:center;}
 .block-mid-row .vocab-chips{flex:1 1 auto;min-width:0;}
 .block-fw-preview{
   flex:1 1 320px;min-width:240px;max-width:480px;
-  padding:.5rem .65rem;border-radius:8px;
-  background:var(--bg-soft);border-left:3px solid var(--green);font-size:.76rem;
+  padding:.3rem .6rem;border-radius:8px;overflow:hidden;
+  background:var(--bg-soft);border-left:3px solid var(--green);font-size:.74rem;
 }
-.bfw-name{font-weight:700;color:var(--amber-l);}
-.bfw-method{color:var(--text-3);margin-left:.3rem;}
-.bfw-line{color:var(--text-2);margin-top:.2rem;line-height:1.4;}
-.bfw-line b{color:var(--text-3);font-weight:600;}
+/* ĐÚNG 2 dòng cố định, mỗi dòng tự cắt "…" nếu dài hơn khung — chiều cao
+   preview gần bằng 1 hàng .vocab-chips (TJ yêu cầu, xem fwCardPreviewHtml
+   trong app.js), xem full text qua title (hover) khi bị cắt. */
+.bfw-line1,.bfw-line2{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.5;}
+.bfw-line1 b{color:var(--amber-l);}
+.bfw-line2{color:var(--text-3);}
 /* Màn hẹp (điện thoại/tablet dọc) — chips + preview không đủ chỗ đứng
    cạnh nhau nữa, cho xuống chồng lên nhau như trước đây. */
 @media(max-width:720px){

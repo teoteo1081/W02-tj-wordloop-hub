@@ -792,11 +792,23 @@
     var best = fd.frameworks.filter(function (f) { return f.fit_tier === "top"; })[0] || fd.frameworks[0];
     var opening = (best.opening_lines || [])[0];
     var closing = (best.closing_lines || [])[0];
-    return '<div class="block-fw-preview">' +
-      '<span class="bfw-name">🧭 ' + w.esc(best.name) + "</span>" +
-      (best.communication_method ? '<span class="bfw-method">· ' + w.esc(best.communication_method) + "</span>" : "") +
-      (opening ? '<div class="bfw-line"><b>Mở:</b> “' + w.esc(opening) + '”</div>' : "") +
-      (closing ? '<div class="bfw-line"><b>Chốt:</b> “' + w.esc(closing) + '”</div>' : "") +
+    /* Nén còn ĐÚNG 2 dòng cố định (mỗi dòng tự cắt "…" nếu dài, xem CSS
+       .bfw-line1/.bfw-line2 white-space:nowrap) — TJ chốt 2026-09-15:
+       preview cao gần bằng hàng chips từ vựng, KHÔNG được cao hơn đẩy
+       hàng icon bên dưới xuống. Bản đầu 4 dòng (tên/method/mở/chốt tách
+       riêng) quá cao so với chips — gộp mở+chốt chung 1 dòng, full text
+       vẫn xem được qua title (hover). */
+    var full = best.name + (best.communication_method ? " · " + best.communication_method : "") +
+      (opening ? "\nMở: " + opening : "") + (closing ? "\nChốt: " + closing : "");
+    return '<div class="block-fw-preview" title="' + w.esc(full) + '">' +
+      '<div class="bfw-line1"><b>🧭 ' + w.esc(best.name) + "</b>" +
+        (best.communication_method ? " · " + w.esc(best.communication_method) : "") +
+      "</div>" +
+      '<div class="bfw-line2">' +
+        (opening ? "“" + w.esc(opening) + "”" : "") +
+        (opening && closing ? " → " : "") +
+        (closing ? "“" + w.esc(closing) + "”" : "") +
+      "</div>" +
     "</div>";
   }
 
