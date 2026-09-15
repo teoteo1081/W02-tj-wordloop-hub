@@ -781,7 +781,7 @@ body.resizing-left,body.resizing-right{cursor:col-resize;user-select:none;}
    .vocab-chips + .block-fw-preview vào .block-mid-row (flex ngang),
    vocab-chips vẫn tự xuống dòng bên trong nếu nhiều từ (flex-wrap cũ
    không đổi), preview chiếm phần còn lại bên phải. */
-.block-mid-row{display:flex;gap:.75rem;align-items:center;}
+.block-mid-row{display:flex;gap:.75rem;align-items:flex-end;}
 .block-mid-row .vocab-chips{flex:1 1 auto;min-width:0;}
 .block-fw-preview{
   flex:1 1 320px;min-width:240px;max-width:480px;

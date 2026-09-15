@@ -792,23 +792,24 @@
     var best = fd.frameworks.filter(function (f) { return f.fit_tier === "top"; })[0] || fd.frameworks[0];
     var opening = (best.opening_lines || [])[0];
     var closing = (best.closing_lines || [])[0];
-    /* Nén còn ĐÚNG 2 dòng cố định (mỗi dòng tự cắt "…" nếu dài, xem CSS
-       .bfw-line1/.bfw-line2 white-space:nowrap) — TJ chốt 2026-09-15:
-       preview cao gần bằng hàng chips từ vựng, KHÔNG được cao hơn đẩy
-       hàng icon bên dưới xuống. Bản đầu 4 dòng (tên/method/mở/chốt tách
-       riêng) quá cao so với chips — gộp mở+chốt chung 1 dòng, full text
-       vẫn xem được qua title (hover). */
-    var full = best.name + (best.communication_method ? " · " + best.communication_method : "") +
+    /* TJ báo bản trước "kỳ, mất chữ" — communication_method là CẢ CÂU
+       tiếng Việt dài (vd "PREP là một phương pháp hiệu quả để trình bày
+       ý kiến..."), nhét chung dòng 1 với tên framework rồi cắt "…" giữa
+       chừng nhìn gãy chữ. Đổi sang lấy TÊN NGẮN chuẩn qua method_key
+       (Context.METHOD_BANK, vd "PREP" — đã có sẵn từ lúc AI gán, xem
+       generateFrameworkAnalysis) thay vì cả câu — ngắn, hiếm khi phải
+       cắt. Dòng 2 cũng bớt xuống CHỈ còn câu MỞ ĐẦU (bỏ câu chốt khỏi
+       dòng hiện — vẫn xem đủ qua title hover) để 1 câu trọn vẹn dễ đọc
+       hơn 2 câu nối nhau bị cắt cụt. */
+    var methodDef = (w.Context.METHOD_BANK || []).filter(function (m) { return m.key === best.method_key; })[0];
+    var methodShort = methodDef ? methodDef.name : (best.communication_method || "").split(/[.,]/)[0];
+    var full = best.name + (methodDef ? " · " + methodDef.name : (best.communication_method ? " · " + best.communication_method : "")) +
       (opening ? "\nMở: " + opening : "") + (closing ? "\nChốt: " + closing : "");
     return '<div class="block-fw-preview" title="' + w.esc(full) + '">' +
       '<div class="bfw-line1"><b>🧭 ' + w.esc(best.name) + "</b>" +
-        (best.communication_method ? " · " + w.esc(best.communication_method) : "") +
+        (methodShort ? " · " + w.esc(methodShort) : "") +
       "</div>" +
-      '<div class="bfw-line2">' +
-        (opening ? "“" + w.esc(opening) + "”" : "") +
-        (opening && closing ? " → " : "") +
-        (closing ? "“" + w.esc(closing) + "”" : "") +
-      "</div>" +
+      (opening ? '<div class="bfw-line2">Mở: “' + w.esc(opening) + '”</div>' : "") +
     "</div>";
   }
 
