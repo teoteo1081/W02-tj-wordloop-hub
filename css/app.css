@@ -2049,7 +2049,10 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
 .fw-writing{border-top:1px dashed var(--border);padding-top:.5rem;}
 .fw-writing p{margin:.25rem 0;}
 .fw-paraphrase{color:var(--text-2);}
-#fw-question-echo{font-weight:400;color:var(--text-2);font-size:.78rem;}
+.fw-question{font-weight:400;color:var(--text-2);font-size:.78rem;margin:-.4rem 0 .7rem;line-height:1.4;}
+.fw-question:empty{display:none;}
+.fw-question::before{content:"“";margin-right:.15rem;opacity:.6;}
+.fw-question::after{content:"”";margin-left:.15rem;opacity:.6;}
 .fit-top{color:var(--green-l);}
 .fit-ok{color:var(--warn-hi);}
 .fit-stretch{color:var(--text-3);}
