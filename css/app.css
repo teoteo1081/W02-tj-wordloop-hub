@@ -774,17 +774,30 @@ body.resizing-left,body.resizing-right{cursor:col-resize;user-select:none;}
    thì không có cách nào bấm được nút "×" này cả. */
 @media(hover:none){.vchip-del{opacity:1;}}
 /* Xem nhanh "AI Framework" trên Block card (2026-09-15) — chỉ hiện ở
-   Block có framework_data, lấp khoảng trống dưới chips từ vựng bằng
-   framework FIT NHẤT + câu mở đầu/kết luận mẫu, xem fwCardPreviewHtml
-   trong app.js. */
+   Block có framework_data, framework FIT NHẤT + câu mở đầu/kết luận mẫu,
+   xem fwCardPreviewHtml trong app.js. TJ chốt: đứng CẠNH chips từ vựng
+   (tận dụng khoảng trống bên phải, thường chỉ 8-10 từ chưa hết hàng),
+   không xuống hàng riêng như bản đầu ("chiếm diện tích quá") — bọc
+   .vocab-chips + .block-fw-preview vào .block-mid-row (flex ngang),
+   vocab-chips vẫn tự xuống dòng bên trong nếu nhiều từ (flex-wrap cũ
+   không đổi), preview chiếm phần còn lại bên phải. */
+.block-mid-row{display:flex;gap:.75rem;align-items:flex-start;}
+.block-mid-row .vocab-chips{flex:1 1 auto;min-width:0;}
 .block-fw-preview{
-  margin-top:.5rem;padding:.5rem .65rem;border-radius:8px;
+  flex:1 1 320px;min-width:240px;max-width:480px;
+  padding:.5rem .65rem;border-radius:8px;
   background:var(--bg-soft);border-left:3px solid var(--green);font-size:.76rem;
 }
 .bfw-name{font-weight:700;color:var(--amber-l);}
 .bfw-method{color:var(--text-3);margin-left:.3rem;}
 .bfw-line{color:var(--text-2);margin-top:.2rem;line-height:1.4;}
 .bfw-line b{color:var(--text-3);font-weight:600;}
+/* Màn hẹp (điện thoại/tablet dọc) — chips + preview không đủ chỗ đứng
+   cạnh nhau nữa, cho xuống chồng lên nhau như trước đây. */
+@media(max-width:720px){
+  .block-mid-row{flex-direction:column;}
+  .block-fw-preview{max-width:none;width:100%;}
+}
 
 /* Giờ chỉ còn progress-bar (nút Học/Ôn lại đã dời lên block-top) */
 .block-bottom{display:flex;align-items:center;flex-wrap:wrap;border-top:1px solid var(--border-soft);padding-top:.55rem;gap:.5rem;}

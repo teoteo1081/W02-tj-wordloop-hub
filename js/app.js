@@ -869,6 +869,7 @@
 
     box.innerHTML = list.map(function (b, idx) {
       var ws = App.wordsOf(b.id);
+      var fwPreview = fwCardPreviewHtml(b);
       var bp = S.bp[b.id] || {};
       var st = w.SRS.state(S.bp[b.id]);
       var mastered = ws.filter(function (x) { return S.wp[x.id] && S.wp[x.id].mastered; }).length;
@@ -918,6 +919,14 @@
            chung App.bindDrag/applyDrop) — hữu ích khi 1 Batch lẻ 1-2 từ
            dư ra sau khi chia đủ 10/Block, dồn qua Block khác cho chẵn rồi
            tự xoá Block rỗng qua menu "⋯". */
+        /* TJ yêu cầu 2026-09-15: preview framework KHÔNG xuống hàng riêng
+           (từng chiếm hẳn 1 hàng, "chiếm diện tích quá") mà đứng CẠNH
+           chips từ vựng — tận dụng khoảng trống bên phải chips (thường
+           chỉ 8-10 từ, chưa hết hàng). Bọc 2 khối vào 1 hàng flex CHỈ khi
+           Block có framework_data, Block thường (không có preview) giữ
+           nguyên layout cũ (.vocab-chips đứng 1 mình, không bọc thêm gì
+           để khỏi đổi hành vi/CSS của mọi Block khác trong app). */
+        (fwPreview ? '<div class="block-mid-row">' : "") +
         '<div class="vocab-chips">' + ws.map(function (x) {
           var ok = S.wp[x.id] && S.wp[x.id].mastered;
           /* Hover xem nhanh nghĩa tiếng Việt (theo yêu cầu TJ — hướng dẫn
@@ -933,7 +942,7 @@
           return '<span class="vchip' + (ok ? " ok" : "") + '" draggable="true" data-word="' + x.id + '" title="' + w.esc(tip) + '">' + w.esc(x.term) +
             (canDeleteWord ? '<button class="vchip-del" data-delword="' + x.id + '" title="Xoá từ khỏi kho">×</button>' : "") + "</span>";
         }).join("") + "</div>" +
-        fwCardPreviewHtml(b) +
+        (fwPreview ? fwPreview + "</div>" : "") +
         '<div class="block-bottom">' +
           '<span class="progress-bar"><i style="width:' + w.pct(mastered, ws.length) + '%"></i></span>' +
           quickTabsHtml(b.id) +
