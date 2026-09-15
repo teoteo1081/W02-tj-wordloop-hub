@@ -792,6 +792,7 @@
     var best = fd.frameworks.filter(function (f) { return f.fit_tier === "top"; })[0] || fd.frameworks[0];
     var opening = (best.opening_lines || [])[0];
     var closing = (best.closing_lines || [])[0];
+    var linking = (best.linking_words || []).slice(0, 3).join(" · ");
     /* TJ báo bản trước "kỳ, mất chữ" — communication_method là CẢ CÂU
        tiếng Việt dài (vd "PREP là một phương pháp hiệu quả để trình bày
        ý kiến..."), nhét chung dòng 1 với tên framework rồi cắt "…" giữa
@@ -802,14 +803,26 @@
        TJ xác nhận), TÁCH LẠI câu Mở/Chốt thành 2 dòng riêng (mỗi dòng
        đủ chữ, tự "…" nếu dài) thay vì gộp/bỏ bớt như bản trước. */
     var methodDef = (w.Context.METHOD_BANK || []).filter(function (m) { return m.key === best.method_key; })[0];
+    /* Block CŨ (sinh trước lúc method_key được thêm vào schema) không có
+       method_key -> rơi về nhánh dự phòng lấy communication_method (CẢ
+       CÂU dài) làm dòng 1 -> nặng/dài hẳn so với Block khác có method_key
+       (chỉ "PREP" ngắn gọn), 2 Block cạnh nhau nhìn lệch hẳn ("lởm chởm",
+       TJ báo 2026-09-15). Cắt ngắn nhánh dự phòng về tối đa 30 ký tự cho
+       ĐỒNG ĐỀU với trường hợp có method_key, dù data cũ hay mới. */
     var methodShort = methodDef ? methodDef.name : (best.communication_method || "").split(/[.,]/)[0];
+    if (!methodDef && methodShort.length > 30) methodShort = methodShort.slice(0, 30) + "…";
     var full = best.name + (methodDef ? " · " + methodDef.name : (best.communication_method ? " · " + best.communication_method : "")) +
-      (opening ? "\nMở: " + opening : "") + (closing ? "\nChốt: " + closing : "");
+      (opening ? "\nMở: " + opening : "") + (linking ? "\nNối: " + linking : "") + (closing ? "\nChốt: " + closing : "");
     return '<div class="block-fw-preview" title="' + w.esc(full) + '">' +
       '<div class="bfw-line1"><b>🧭 ' + w.esc(best.name) + "</b>" +
         (methodShort ? " · " + w.esc(methodShort) : "") +
       "</div>" +
       (opening ? '<div class="bfw-line2">Mở: “' + w.esc(opening) + '”</div>' : "") +
+      /* Linking words (2026-09-15, TJ: "có mở có kết mà chưa có linking
+         words") — 2-3 từ/cụm nối câu tự nhiên (best.linking_words, xem
+         context.js Call 1 prompt), Block cũ chưa "Tạo lại" thì chưa có
+         field này, dòng tự ẩn (không phá layout). */
+      (linking ? '<div class="bfw-line-link">🔗 ' + w.esc(linking) + '</div>' : "") +
       (closing ? '<div class="bfw-line3">Kết: “' + w.esc(closing) + '”</div>' : "") +
     "</div>";
   }

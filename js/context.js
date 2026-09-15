@@ -865,6 +865,10 @@
         "- opening_lines: 2 câu tiếng Anh mẫu để MỞ ĐẦU câu trả lời theo framework này khi NÓI.\n" +
         "- keywords_by_stage: chia framework thành các giai đoạn theo đúng chuỗi đã cho, mỗi giai đoạn " +
         "liệt kê 2-4 từ khoá/cụm từ tiếng Anh (chunk) tự nhiên nên dùng ở giai đoạn đó.\n" +
+        "- linking_words: 3-4 LINKING WORD/cụm nối câu tiếng Anh TỰ NHIÊN nên dùng để CHUYỂN Ý giữa " +
+        "các giai đoạn của CHÍNH framework này khi nói (vd \"Firstly,\", \"As a result,\", \"On top of " +
+        "that,\", \"To sum up,\") — ưu tiên chọn linking word PHÙ HỢP với đúng thứ tự các giai đoạn " +
+        "trong chuỗi (chain) của framework này, không phải danh sách chung chung.\n" +
         "- closing_lines: 2 câu tiếng Anh mẫu để KẾT LUẬN câu trả lời theo framework này khi NÓI.\n" +
         "- paraphrase: 1 câu tiếng Anh diễn đạt lại câu hỏi/tình huống gốc theo góc nhìn phù hợp với " +
         "framework này (giúp người học vẫn dùng được framework này dù câu hỏi gốc có vẻ không khớp).\n\n" +
@@ -872,6 +876,7 @@
         '{"frameworks":[{"key":"...","fit_tier":"top|ok|stretch","why":"...","communication_method":"...",' +
         '"method_key":"scqa|pyramid|bluf|prep|5w1h|claim_evidence|star",' +
         '"opening_lines":["...","..."],"keywords_by_stage":[{"stage":"...","keywords":["...","..."]}],' +
+        '"linking_words":["...","..."],' +
         '"closing_lines":["...","..."],"paraphrase":"..."}]}';
 
       w.Context._lastCostUsd = null;
@@ -983,6 +988,7 @@
           method_key: f1.method_key || "scqa",
           opening_lines: Array.isArray(f1.opening_lines) ? f1.opening_lines : [],
           keywords_by_stage: Array.isArray(f1.keywords_by_stage) ? f1.keywords_by_stage : [],
+          linking_words: Array.isArray(f1.linking_words) ? f1.linking_words : [],
           closing_lines: Array.isArray(f1.closing_lines) ? f1.closing_lines : [],
           writing_material: { introduction: wm.introduction || "", body: wm.body || "", conclusion: wm.conclusion || "" },
           paraphrase: f1.paraphrase || "",

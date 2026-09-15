@@ -400,6 +400,12 @@
   function fwClosesHtml(f) {
     return (f.closing_lines || []).map(function (s) { return "<li>" + w.esc(s) + "</li>"; }).join("");
   }
+  /* Linking words (2026-09-15, TJ yêu cầu — "có mở có kết mà chưa có
+     linking words") — 3-4 từ/cụm nối câu TỰ NHIÊN để chuyển ý GIỮA các
+     giai đoạn của framework, xem prompt Call 1 trong context.js. */
+  function fwLinkingHtml(f) {
+    return (f.linking_words || []).map(function (s) { return '<span class="fw-kw">' + w.esc(s) + '</span>'; }).join(" ");
+  }
   function fwWritingHtml(f) {
     var wm = f.writing_material || {};
     if (!wm.introduction && !wm.body && !wm.conclusion) return "";
@@ -412,7 +418,7 @@
   }
   function fwRowHtml(f) {
     var stages = fwStagesHtml(f), opens = fwOpensHtml(f), closes = fwClosesHtml(f);
-    var writing = fwWritingHtml(f), wordsChips = fwWordsChipsHtml(f);
+    var writing = fwWritingHtml(f), wordsChips = fwWordsChipsHtml(f), linking = fwLinkingHtml(f);
     return (
       '<div class="fw-row fw-' + f.fit_tier + '" data-key="' + w.esc(f.key) + '">' +
         '<button class="fw-row-head" type="button">' +
@@ -427,6 +433,7 @@
           '<p class="fw-method"><b>🧩 Communication method:</b> ' + w.esc(f.communication_method || "") + '</p>' +
           (opens ? '<div class="fw-block"><b>🗣️ Mở đầu (nói):</b><ul>' + opens + '</ul></div>' : "") +
           (stages ? '<div class="fw-block"><b>🔑 Từ khoá theo mạch:</b>' + stages + '</div>' : "") +
+          (linking ? '<div class="fw-block"><b>🔗 Linking words (chuyển ý):</b> ' + linking + '</div>' : "") +
           (closes ? '<div class="fw-block"><b>🏁 Kết luận (nói):</b><ul>' + closes + '</ul></div>' : "") +
           (writing ? '<div class="fw-block fw-writing"><b>✍️ Bản viết:</b>' + writing + '</div>' : "") +
           (f.paraphrase ? '<p class="fw-paraphrase"><b>🔄 Paraphrase:</b> "' + w.esc(f.paraphrase) + '"</p>' : "") +
@@ -449,6 +456,7 @@
     { label: "🧩 Communication method", render: function (f) { return w.esc(f.communication_method || "—"); } },
     { label: "🗣️ Mở đầu (nói)", render: function (f) { var h = fwOpensHtml(f); return h ? "<ul>" + h + "</ul>" : "—"; } },
     { label: "🔑 Từ khoá theo mạch", render: function (f) { return fwStagesHtml(f) || "—"; } },
+    { label: "🔗 Linking words", render: function (f) { return fwLinkingHtml(f) || "—"; } },
     { label: "🏁 Kết luận (nói)", render: function (f) { var h = fwClosesHtml(f); return h ? "<ul>" + h + "</ul>" : "—"; } },
     { label: "✍️ Bản viết", render: function (f) { return fwWritingHtml(f) || "—"; } },
     { label: "🔄 Paraphrase", render: function (f) { return f.paraphrase ? '"' + w.esc(f.paraphrase) + '"' : "—"; } },
