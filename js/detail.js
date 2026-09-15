@@ -570,8 +570,9 @@
       var tjHistory = (fd.method_breakdown_history && fd.method_breakdown_history[selectedKey]) || [];
       return info + fwTjTableHtml(m, fd.frameworks, cached) +
         '<div class="fw-tj-footer">' +
-          '<button type="button" class="btn-soft fw-tj-gen-btn fw-tj-gen-btn-sm" data-method="' + w.esc(selectedKey) + '">' +
-            '🔄 Tạo lại' +
+          '<button type="button" class="btn-soft fw-tj-gen-btn fw-tj-gen-btn-sm" data-method="' + w.esc(selectedKey) + '" ' +
+            'title="CHỈ sinh lại bảng ' + w.esc(m.name) + ' này — khác nút &quot;Tạo lại&quot; ở đầu panel (sinh lại cả 7 framework)">' +
+            '🔄 Tạo lại bảng' +
           '</button>' +
           fwHistoryChipsHtml(cached._meta, tjHistory, "data-tj-history-idx") +
         '</div>';
