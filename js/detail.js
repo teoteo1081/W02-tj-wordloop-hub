@@ -345,7 +345,82 @@
     }).join("") || '<tr><td colspan="6" style="text-align:center;color:var(--text-3)">Block này chưa có từ nào.</td></tr>';
 
     applyVocabCollapse();
+    D.renderFrameworkPanel();
     D.renderPassage();
+  };
+
+  /* ══════════════ "AI FRAMEWORK" PANEL (2026-09-14) ══════════════
+     Chỉ hiện khi block.framework_data tồn tại (block do nút "🧭 AI
+     Framework" tạo ra — xem app.js doAiFramework/db.js
+     createFrameworkBlocks). 7 hàng cố định theo Context.FRAMEWORK_BANK,
+     tô theo fit_tier: top=xanh (mặc định mở), ok=vàng, stretch=xám (mặc
+     định thu gọn) — bấm vào hàng để mở/đóng chi tiết. */
+  var LS_FW_COLLAPSE = "tjwl_fw_panel_collapsed_v1";
+  function fwPanelCollapsed() {
+    try { return localStorage.getItem(LS_FW_COLLAPSE) === "1"; } catch (e) { return false; }
+  }
+  /* Bài đọc RIÊNG của từng framework (f.passage, đã có sẵn [term] đánh
+     dấu từ Context._markTerms lúc sinh) — chỉ tô đậm tĩnh (không karaoke/
+     TTS như bài đọc chính ở dưới, panel này chỉ để đọc nhanh, không phải
+     bài học riêng), giữ nhẹ cho v1. */
+  function markUpPassage(text) {
+    return w.esc(String(text || "")).replace(/\[([^\]]+)\]/g, '<mark class="fw-mark">$1</mark>');
+  }
+  function fwRowHtml(f) {
+    var tierLabel = f.fit_tier === "top" ? "🟢 Fit nhất" : f.fit_tier === "stretch" ? "⚪ Gượng ép" : "🟡 Vẫn ổn (paraphrase)";
+    var stages = (f.keywords_by_stage || []).map(function (s) {
+      return '<div class="fw-stage"><b>' + w.esc(s.stage || "") + ':</b> ' +
+        (s.keywords || []).map(function (k) { return '<span class="fw-kw">' + w.esc(k) + '</span>'; }).join(" ") +
+        "</div>";
+    }).join("");
+    var opens = (f.opening_lines || []).map(function (s) { return "<li>" + w.esc(s) + "</li>"; }).join("");
+    var closes = (f.closing_lines || []).map(function (s) { return "<li>" + w.esc(s) + "</li>"; }).join("");
+    var wm = f.writing_material || {};
+    var wordsChips = (f.words || []).map(function (t) { return '<span class="fw-kw">' + w.esc(t) + '</span>'; }).join(" ");
+    return (
+      '<div class="fw-row fw-' + f.fit_tier + '" data-key="' + w.esc(f.key) + '">' +
+        '<button class="fw-row-head" type="button">' +
+          '<span class="fw-dot"></span>' +
+          '<span class="fw-name">' + w.esc(f.name) + '</span>' +
+          '<span class="fw-tier">' + tierLabel + '</span>' +
+          '<span class="fw-chain">' + w.esc(f.chain) + '</span>' +
+          '<span class="fw-caret">▾</span>' +
+        '</button>' +
+        '<div class="fw-row-body">' +
+          '<p class="fw-why">' + w.esc(f.why || "") + '</p>' +
+          '<p class="fw-method"><b>🧩 Communication method:</b> ' + w.esc(f.communication_method || "") + '</p>' +
+          (opens ? '<div class="fw-block"><b>🗣️ Mở đầu (nói):</b><ul>' + opens + '</ul></div>' : "") +
+          (stages ? '<div class="fw-block"><b>🔑 Từ khoá theo mạch:</b>' + stages + '</div>' : "") +
+          (closes ? '<div class="fw-block"><b>🏁 Kết luận (nói):</b><ul>' + closes + '</ul></div>' : "") +
+          ((wm.introduction || wm.body || wm.conclusion) ?
+            '<div class="fw-block fw-writing"><b>✍️ Bản viết:</b>' +
+              (wm.introduction ? '<p><i>Introduction:</i> ' + w.esc(wm.introduction) + '</p>' : "") +
+              (wm.body ? '<p><i>Body:</i> ' + w.esc(wm.body) + '</p>' : "") +
+              (wm.conclusion ? '<p><i>Conclusion:</i> ' + w.esc(wm.conclusion) + '</p>' : "") +
+            '</div>' : "") +
+          (f.paraphrase ? '<p class="fw-paraphrase"><b>🔄 Paraphrase:</b> "' + w.esc(f.paraphrase) + '"</p>' : "") +
+          (wordsChips ? '<div class="fw-block"><b>📖 Từ vựng:</b> ' + wordsChips + '</div>' : "") +
+          (f.passage ? '<div class="fw-block fw-mini-passage"><b>📗 Bài đọc — cách framework này hoạt động:</b><p>' + markUpPassage(f.passage) + '</p></div>' : "") +
+        '</div>' +
+      '</div>'
+    );
+  }
+  D.renderFrameworkPanel = function () {
+    var panel = w.$("#fw-panel");
+    if (!panel) return;
+    var b = block();
+    var fd = b && b.framework_data;
+    if (!fd || !Array.isArray(fd.frameworks) || !fd.frameworks.length) {
+      panel.hidden = true;
+      return;
+    }
+    panel.hidden = false;
+    var echo = w.$("#fw-question-echo");
+    if (echo) echo.textContent = fd.question || "";
+    w.$("#fw-table").innerHTML = fd.frameworks.map(fwRowHtml).join("");
+    panel.classList.toggle("collapsed", fwPanelCollapsed());
+    var toggleBtn = w.$("#btn-toggle-fw");
+    if (toggleBtn) toggleBtn.textContent = fwPanelCollapsed() ? "▸ Mở rộng" : "▾ Thu gọn";
   };
 
   /* Mỗi Block có ĐÚNG 1 bài đọc đang dùng (context_passage). Ngoài ra
@@ -1925,6 +2000,26 @@
       try { localStorage.setItem(LS_PASSAGE_COLLAPSE, passageCollapsed() ? "0" : "1"); } catch (e) {}
       applyPassageCollapse();
     };
+    var btnToggleFw = w.$("#btn-toggle-fw");
+    if (btnToggleFw) {
+      btnToggleFw.onclick = function () {
+        try { localStorage.setItem(LS_FW_COLLAPSE, fwPanelCollapsed() ? "0" : "1"); } catch (e) {}
+        D.renderFrameworkPanel();
+      };
+    }
+    /* Mỗi hàng framework tự mở/đóng riêng (không phụ thuộc panel thu gọn
+       chung ở trên) — bấm vào phần đầu hàng (.fw-row-head) toggle class
+       "open" trên .fw-row cha. Gắn 1 lần trên #fw-table (event delegation)
+       vì nội dung bên trong được vẽ lại mỗi lần renderFrameworkPanel(). */
+    var fwTable = w.$("#fw-table");
+    if (fwTable) {
+      fwTable.addEventListener("click", function (e) {
+        var head = e.target.closest && e.target.closest(".fw-row-head");
+        if (!head) return;
+        var row = head.closest(".fw-row");
+        if (row) row.classList.toggle("open");
+      });
+    }
     w.$("#btn-copy-passage").onclick = function () { copyText(this, D._passagePlain || ""); };
     w.$("#btn-copy-vocab").onclick = function () {
       var text = words().map(function (x) {

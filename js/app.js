@@ -1286,6 +1286,11 @@
     if (extractBtn) extractBtn.hidden = !canAddContent;
     var pasteNewBtn = w.$("#btn-paste-new");
     if (pasteNewBtn) pasteNewBtn.hidden = !canAddContent;
+    /* "🧭 AI Framework" — CHỈ hiện ở đúng Notebook TJ_DATA ANALYST (so ID
+       trực tiếp, TJ chốt 2026-09-14 "chỉ có tác dụng trong TJ_data
+       analyst Framework Speaking thôi"), ẩn ở mọi Notebook khác. */
+    var frameworkBtnTb = w.$("#btn-ai-framework");
+    if (frameworkBtnTb) frameworkBtnTb.hidden = !canAddContent || S.notebookId !== TJ_DATA_ANALYST_NOTEBOOK_ID;
     /* Nút "🔄 Xem như User"/"🔄 Về giao diện Admin" — CHỈ Admin THẬT thấy
        (u.admin, không phải isAdmin() — nếu không, bật xong thì chính nút
        để quay lại cũng biến mất, kẹt luôn trong chế độ xem thử). */
@@ -1699,6 +1704,54 @@
       w.toast("Lỗi: " + (e.message || e), "err");
     } finally {
       btn.disabled = false; btn.textContent = "✨ Trích từ vựng & tạo Block";
+    }
+  }
+
+  /* ══════════════ "AI FRAMEWORK" (2026-09-14) ══════════════
+     Chỉ hiện nút ở Notebook TJ_DATA ANALYST (so ID trực tiếp, xem
+     renderTopbar/updateToolbarVisibility) — dán 1 câu hỏi/tình huống, tạo
+     1 Batch + 2 Block "🗣️ Speaking"/"✍️ Writing" MỚI trong Page đang xem
+     (không tạo Page mới), kèm panel framework riêng (block.framework_data)
+     hiển thị ở detail.js — giống nhau ở cả 2 Block, chỉ khác bài đọc. */
+  var TJ_DATA_ANALYST_NOTEBOOK_ID = "415e8215-9f45-4dd6-9adf-27839c7aa538";
+
+  async function doAiFramework() {
+    if (!S.pageId) { w.toast("Hãy tạo/chọn một Page trước", "err"); return; }
+    var cfg2 = w.APP_CONFIG || {};
+    if (!cfg2.OPENAI_API_KEY && !(cfg2.SUPABASE_URL && cfg2.SUPABASE_ANON_KEY)) {
+      w.toast("Cần key OpenAI (js/keys.local.js) hoặc chạy Cloud mode để dùng tính năng này", "err");
+      return;
+    }
+    if (w.App && w.App.hideAiError) w.App.hideAiError();
+    var question = w.$("#framework-input").value;
+    if (!question.trim()) { w.toast("Chưa dán câu hỏi/tình huống nào", "err"); return; }
+
+    var btn = w.$("#btn-do-framework");
+    btn.disabled = true; btn.textContent = "⏳ Đang phân tích 7 framework...";
+
+    try {
+      var name = w.$("#framework-name").value.trim() || ("AI Framework " + (batchesOfPage(S.pageId).length + 1));
+      var quotaCtx = { userId: (w.Auth.user && w.Auth.user.id) || null, blockId: w.uid("aiframe") };
+      var out = await w.Context.generateFrameworkAnalysis(question, cfg2, quotaCtx);
+      var res = await w.DB.createFrameworkBlocks(S.pageId, name, out.fullWords,
+        out.speakingPassageStorable, out.writingPassageStorable, out.frameworkData, nextGlobalIndex());
+
+      S.batches.push(res.batch);
+      S.blocks = S.blocks.concat(res.blocks);
+      S.words = S.words.concat(res.words);
+      S.batchId = res.batch.id;
+      saveSel();
+
+      w.$("#modal-framework").hidden = true;
+      w.$("#framework-input").value = "";
+      w.$("#framework-name").value = "";
+      renderBatches(); renderPages(); App.renderBlocks();
+      w.toast("Đã phân tích 7 framework + " + out.fullWords.length + " từ B1+ → 2 block (🗣️ Speaking + ✍️ Writing) ✔", "ok");
+    } catch (e) {
+      if (e && e.kind && w.App && w.App.showAiError) w.App.showAiError(e);
+      w.toast("Lỗi: " + (e.message || e), "err");
+    } finally {
+      btn.disabled = false; btn.textContent = "🧭 Phân tích Framework & tạo Block";
     }
   }
 
@@ -3633,6 +3686,16 @@
       setTimeout(function () { w.$("#extract-input").focus(); }, 50);
     };
     w.$("#btn-do-extract").onclick = doPasteExtract;
+
+    var frameworkBtn = w.$("#btn-ai-framework");
+    if (frameworkBtn) {
+      frameworkBtn.onclick = function () {
+        w.$("#modal-framework").hidden = false;
+        setTimeout(function () { w.$("#framework-input").focus(); }, 50);
+      };
+    }
+    var doFrameworkBtn = w.$("#btn-do-framework");
+    if (doFrameworkBtn) doFrameworkBtn.onclick = doAiFramework;
     w.$("#btn-fetch-url").onclick = async function () {
       var url = w.$("#extract-url").value.trim();
       if (!url) { w.toast("Dán link vào trước đã", "err"); return; }

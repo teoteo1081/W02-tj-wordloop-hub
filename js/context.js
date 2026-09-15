@@ -728,6 +728,172 @@
       return marked + w.Context.META_SEP + JSON.stringify(meta);
     },
 
+    /* ═══════════ "AI FRAMEWORK" — dán 1 câu hỏi/tình huống, AI phân tích
+       theo 7 framework của TJ (xem Framework Primer, Notebook TJ_DATA
+       ANALYST) rồi tự sinh từ vựng + bài đọc cho ĐÚNG 2 Block "Speaking"
+       + "Writing" trong cùng 1 Batch (TJ chốt 2026-09-14). CHỈ 1 lệnh gọi
+       AI DUY NHẤT (đúng nguyên tắc kiểm soát chi phí AI của app) trả về:
+         - full_words: TOÀN BỘ từ vựng dùng chung cho CẢ 2 Block (bảng từ
+           giống hệt nhau ở cả Speaking lẫn Writing).
+         - speaking_passage_en/writing_passage_en: 2 bài đọc RIÊNG — bản
+           Speaking văn nói tự nhiên/hội thoại (câu ngắn, chunk dễ nói ra
+           miệng); bản Writing có cấu trúc rõ Introduction/Body/Conclusion
+           (câu văn viết, không phải văn nói). Cả 2 vẫn cùng 1 bộ từ vựng
+           full_words, dùng cho DB.createFrameworkBlock (xem db.js).
+         - frameworks[7]: phần MỞ RỘNG, mỗi framework có why/communication
+           method/mở đầu/từ khoá theo mạch/kết luận/paraphrase + 1 tập con
+           từ vựng + 1 bài đọc RIÊNG giải thích cách framework đó hoạt
+           động — hiển thị trong panel riêng (xem detail.js), KHÔNG đi qua
+           context_passage/words như block thường, mà lưu trong 1 cột
+           JSONB riêng blocks.framework_data — GẮN GIỐNG NHAU trên CẢ 2
+           Block Speaking/Writing (cùng 1 phân tích framework, chỉ khác
+           bài đọc tổng quan ở trên là văn nói/văn viết).
+       fit_tier: "top" (3 framework fit nhất, tô xanh) | "ok" (tô vàng,
+       vẫn dùng được nếu paraphrase câu hỏi) | "stretch" (tô xám, khá
+       gượng ép). Luôn ĐÚNG 7 phần tử, đúng 3 "top". */
+    FRAMEWORK_BANK: [
+      { key: "opinion", name: "OPINION (O-R-R-E-C)", chain: "Opinion → Reason → Reason → Example → Conclusion" },
+      { key: "why", name: "WHY", chain: "Why → 3 Reasons → Personal Example → Future" },
+      { key: "story", name: "STORY (S-C-A-R-L)", chain: "Situation → Complication → Action → Result → Link" },
+      { key: "self_intro", name: "SELF-INTRODUCTION", chain: "Present → Past → Strength → Future" },
+      { key: "problem_solving", name: "PROBLEM SOLVING", chain: "Problem → Impact → Cause → Solution → Next Step" },
+      { key: "presentation", name: "PRESENTATION (T-3P-I-A)", chain: "Topic → 3 Points → Insight → Action" },
+      { key: "data_analysis", name: "DATA ANALYSIS", chain: "Number/Data → Insight → Implication → Action" }
+    ],
+
+    generateFrameworkAnalysis: async function (question, cfg, quotaCtx) {
+      var q = String(question || "").trim();
+      if (!q) throw new Error("Chưa dán câu hỏi/tình huống nào");
+      if (q.length > 2000) throw new Error("Câu hỏi/tình huống dài " + q.length + " ký tự, quá giới hạn 2000 — cắt bớt rồi dán lại");
+
+      var bank = w.Context.FRAMEWORK_BANK;
+      var bankList = bank.map(function (f) { return "- key=\"" + f.key + "\", tên=\"" + f.name + "\", chuỗi=\"" + f.chain + "\""; }).join("\n");
+
+      var sys = "Bạn là huấn luyện viên giao tiếp tiếng Anh chuyên nghiệp (business/data communication " +
+        "coach), giúp người Việt học cách TRẢ LỜI có cấu trúc bằng tiếng Anh. " +
+        "Luôn trả lời DUY NHẤT một object JSON đúng schema được yêu cầu, không thêm chữ nào khác, " +
+        "không dùng markdown code fence.";
+
+      var user =
+        "CÂU HỎI/TÌNH HUỐNG cần phân tích:\n\"\"\"\n" + q + "\n\"\"\"\n\n" +
+        "Đây là 7 MASTER FRAMEWORK cố định (không được đổi tên/key, không được thêm/bớt framework " +
+        "nào khác):\n" + bankList + "\n\n" +
+        "YÊU CẦU:\n\n" +
+        "1. Với ĐÚNG 7 framework trên (không thiếu, không thừa), đánh giá mức độ PHÙ HỢP với câu " +
+        "hỏi/tình huống trên. Gán fit_tier: ĐÚNG 3 framework fit nhất -> \"top\", 2 framework tiếp " +
+        "theo (vẫn dùng ổn nếu paraphrase lại câu hỏi cho khớp) -> \"ok\", 2 framework còn lại (khá " +
+        "gượng ép, ít khuyến khích) -> \"stretch\".\n\n" +
+        "2. Với MỖI framework (cả 7), viết:\n" +
+        "- why: 1-2 câu tiếng Việt giải thích TẠI SAO framework này fit/không fit với câu hỏi này.\n" +
+        "- communication_method: 1 phương pháp tổ chức câu trả lời phù hợp đi kèm framework này " +
+        "(vd Pyramid Principle, SCQA, SCQA+Pyramid, BLUF, PREP, Claim→Evidence→Reasoning), kèm 1 câu " +
+        "giải thích ngắn tại sao hợp.\n" +
+        "- opening_lines: 2 câu tiếng Anh mẫu để MỞ ĐẦU câu trả lời theo framework này.\n" +
+        "- keywords_by_stage: chia framework thành các giai đoạn theo đúng chuỗi đã cho (vd với WHY " +
+        "là 4 giai đoạn: Why/3 Reasons/Personal Example/Future), mỗi giai đoạn liệt kê 2-4 từ khoá/cụm " +
+        "từ tiếng Anh (chunk) tự nhiên nên dùng ở giai đoạn đó.\n" +
+        "- closing_lines: 2 câu tiếng Anh mẫu để KẾT LUẬN câu trả lời theo framework này (dùng khi " +
+        "NÓI — văn nói tự nhiên, câu ngắn).\n" +
+        "- writing_material: BẢN VIẾT của CHÍNH framework này (không phải nói, mà viết — email/report/ " +
+        "memo chuyên nghiệp), gồm 3 phần: introduction (1-2 câu văn viết mở bài, nêu thẳng ý chính " +
+        "kiểu BLUF-Bottom Line Up Front), body (2-3 câu văn viết triển khai ý theo đúng chuỗi framework " +
+        "này), conclusion (1 câu văn viết chốt lại/đề xuất bước tiếp theo). Văn phong TRANG TRỌNG hơn " +
+        "văn nói, câu đầy đủ, không dùng kiểu nói chuyện (không \"so\", \"well\", \"you know\"...).\n" +
+        "- paraphrase: 1 câu tiếng Anh diễn đạt lại câu hỏi/tình huống gốc theo góc nhìn phù hợp với " +
+        "framework này (giúp người học vẫn dùng được framework này dù câu hỏi gốc có vẻ không khớp).\n" +
+        "- words: liệt kê 3-6 TỪ/CỤM TỪ tiếng Anh B1 trở lên xuất hiện NGUYÊN VĂN trong toàn bộ nội " +
+        "dung của framework này (opening_lines + keywords_by_stage + closing_lines + writing_material + " +
+        "paraphrase gộp lại) — đây LÀ TẬP CON của full_words bên dưới, phải trùng term y hệt (không đổi dạng).\n" +
+        "- passage_en: 1 đoạn văn tiếng Anh 100-160 từ GIẢI THÍCH CÁCH framework này hoạt động cho " +
+        "chính câu hỏi/tình huống trên (không phải bài mẫu trả lời, mà là bài giải thích khung tư " +
+        "duy), có dùng tự nhiên các từ trong words ở trên.\n\n" +
+        "3. Ngoài ra, tổng hợp:\n" +
+        "- full_words: TOÀN BỘ từ vựng B1+ xuất hiện trong TẤT CẢ 7 framework ở trên gộp lại, KHÔNG " +
+        "trùng lặp (nếu 1 từ xuất hiện ở nhiều framework thì chỉ liệt kê 1 lần ở đây) — với mỗi từ ghi " +
+        "term/level(CEFR B1-C2)/pos/ipa/def_en/meaning_vi/freq(\"common\"|\"uncommon\").\n" +
+        "- speaking_title: 1 tiêu đề tiếng Anh ngắn (5-8 từ) tóm tắt câu hỏi/tình huống này.\n" +
+        "- speaking_passage_en: 1 đoạn văn tiếng Anh 150-220 từ, VĂN NÓI tự nhiên (câu ngắn, giọng hội " +
+        "thoại), TỔNG QUAN giới thiệu câu hỏi này nên tiếp cận thế nào khi NÓI (không đi sâu 1 framework " +
+        "cụ thể), dùng tự nhiên càng nhiều từ trong full_words càng tốt.\n" +
+        "- writing_title: 1 tiêu đề tiếng Anh ngắn (5-8 từ) cho bản viết (có thể khác speaking_title).\n" +
+        "- writing_passage_en: 1 đoạn văn tiếng Anh 150-220 từ, VĂN VIẾT trang trọng, có cấu trúc RÕ " +
+        "Introduction/Body/Conclusion (dùng luôn từ \"Introduction:\"/\"Body:\"/\"Conclusion:\" làm nhãn " +
+        "đầu mỗi đoạn), TỔNG QUAN giới thiệu câu hỏi này nên tiếp cận thế nào khi VIẾT (không đi sâu 1 " +
+        "framework cụ thể), dùng tự nhiên càng nhiều từ trong full_words càng tốt.\n\n" +
+        "Trả về đúng schema JSON sau, không thêm trường khác:\n" +
+        '{"speaking_title":"...","speaking_passage_en":"...","writing_title":"...","writing_passage_en":"...",' +
+        '"full_words":[{"term":"...","level":"...","pos":"...","ipa":"...","def_en":"...","meaning_vi":"...","freq":"common|uncommon"}],' +
+        '"frameworks":[{"key":"...","fit_tier":"top|ok|stretch","why":"...","communication_method":"...",' +
+        '"opening_lines":["...","..."],"keywords_by_stage":[{"stage":"...","keywords":["...","..."]}],' +
+        '"closing_lines":["...","..."],"writing_material":{"introduction":"...","body":"...","conclusion":"..."},' +
+        '"paraphrase":"...","words":["...","..."],"passage_en":"..."}]}';
+
+      w.Context._lastCostUsd = null;
+      var raw = await w.Context._callProvider(cfg, sys, user, quotaCtx);
+      var parsed = JSON.parse(raw);
+      if (!parsed.speaking_passage_en) throw new Error("Thiếu 'speaking_passage_en' trong JSON trả về");
+      if (!parsed.writing_passage_en) throw new Error("Thiếu 'writing_passage_en' trong JSON trả về");
+      if (!Array.isArray(parsed.full_words) || !parsed.full_words.length) throw new Error("Thiếu 'full_words' trong JSON trả về");
+      if (!Array.isArray(parsed.frameworks) || parsed.frameworks.length !== 7) {
+        throw new Error("AI trả về " + (parsed.frameworks ? parsed.frameworks.length : 0) + " framework, cần đúng 7 — thử lại");
+      }
+      var topCount = parsed.frameworks.filter(function (f) { return f.fit_tier === "top"; }).length;
+      if (topCount !== 3) throw new Error("AI gán " + topCount + " framework \"top\" (cần đúng 3) — thử lại");
+
+      var fullTerms = parsed.full_words.map(function (x) { return x.term; }).filter(Boolean);
+      var origin = w.Context._isWebOrigin() ? "web" : "local";
+
+      function buildStorable(passageEn, title, sourceNote) {
+        var marked = w.Context._markTerms(passageEn, fullTerms);
+        var meta = {
+          ai: true, vi: {}, title: title || "",
+          source: sourceNote,
+          provider: w.Context._lastProvider || "", origin: origin, cost_usd: w.Context._lastCostUsd
+        };
+        return marked + w.Context.META_SEP + JSON.stringify(meta);
+      }
+      var speakingPassageStorable = buildStorable(parsed.speaking_passage_en, parsed.speaking_title,
+        "AI Framework — bản NÓI, tổng quan 7 framework cho câu hỏi/tình huống này.");
+      var writingPassageStorable = buildStorable(parsed.writing_passage_en, parsed.writing_title,
+        "AI Framework — bản VIẾT (Introduction/Body/Conclusion), tổng quan 7 framework cho câu hỏi/tình huống này.");
+
+      /* Mỗi framework tự đánh dấu [term] trong bài đọc riêng của nó — chỉ
+         đánh dấu từ thuộc CHÍNH framework đó (f.words), không phải toàn
+         bộ fullTerms, để panel framework không tô nhầm từ của framework
+         khác. bank[i] giữ đúng thứ tự 7 framework cố định (name/chain) —
+         nối vào kết quả AI trả về (AI chỉ cần trả "key", không cần lặp
+         lại name/chain, tránh AI tự đổi chữ). */
+      var byKey = {};
+      bank.forEach(function (f) { byKey[f.key] = f; });
+      var frameworks = parsed.frameworks.map(function (f) {
+        var def = byKey[f.key];
+        if (!def) throw new Error("AI trả về key framework lạ: " + f.key);
+        var words = Array.isArray(f.words) ? f.words : [];
+        var wm = f.writing_material || {};
+        return {
+          key: f.key, name: def.name, chain: def.chain,
+          fit_tier: (f.fit_tier === "top" || f.fit_tier === "ok" || f.fit_tier === "stretch") ? f.fit_tier : "ok",
+          why: f.why || "", communication_method: f.communication_method || "",
+          opening_lines: Array.isArray(f.opening_lines) ? f.opening_lines : [],
+          keywords_by_stage: Array.isArray(f.keywords_by_stage) ? f.keywords_by_stage : [],
+          closing_lines: Array.isArray(f.closing_lines) ? f.closing_lines : [],
+          writing_material: { introduction: wm.introduction || "", body: wm.body || "", conclusion: wm.conclusion || "" },
+          paraphrase: f.paraphrase || "",
+          words: words,
+          passage: w.Context._markTerms(f.passage_en || "", words)
+        };
+      });
+
+      return {
+        fullWords: parsed.full_words,
+        speakingPassageStorable: speakingPassageStorable,
+        writingPassageStorable: writingPassageStorable,
+        speakingTitle: parsed.speaking_title || "",
+        writingTitle: parsed.writing_title || "",
+        frameworkData: { question: q, frameworks: frameworks }
+      };
+    },
+
     /* Dọn nhiễu trước khi phân tích/hiển thị — để dán được nhiều nguồn:
          · Bài báo: thường dính link, quảng cáo, "Read more", "Share"...
            -> phần này để AI tự bỏ qua (nêu rõ trong prompt), khó lọc bằng

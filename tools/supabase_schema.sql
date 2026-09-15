@@ -70,7 +70,8 @@ create table if not exists blocks (
   global_index integer,
   sort integer default 0,
   context_passage text default '',                    -- bài đọc đang dùng (1 bài duy nhất)
-  context_passage_candidates jsonb default '[]'::jsonb -- tối đa 3 bài Claude viết sẵn để chọn thử, chưa dùng luôn
+  context_passage_candidates jsonb default '[]'::jsonb, -- tối đa 3 bài Claude viết sẵn để chọn thử, chưa dùng luôn
+  framework_data jsonb default null  -- "AI Framework" (2026-09-14, chỉ Notebook TJ_DATA ANALYST): { full_title, frameworks:[{key,name,fit_tier,why,communication_method,opening_lines,keywords_by_stage,closing_lines,paraphrase,words:[term,...],passage} x7] } — chỉ gắn trên block "full" đầu batch, xem js/context.js Context.generateFrameworkAnalysis
 );
 
 create table if not exists words (
@@ -91,6 +92,7 @@ create table if not exists words (
 -- vào, KHÔNG phá dữ liệu đã có (mọi dòng cũ tự nhận default '').
 alter table words add column if not exists freq text default '';
 alter table words add column if not exists meaning_zh text default '';
+alter table blocks add column if not exists framework_data jsonb default null;
 alter table words add column if not exists meaning_es text default '';
 
 -- Tên dịch sẵn (EN/ZH) cho Hub/Notebook/Section/Page/Batch — TÊN DO NGƯỜI

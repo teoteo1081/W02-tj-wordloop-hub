@@ -921,6 +921,62 @@
     return { batch: batch, blocks: blocks, words: words, fullBlockId: fullBlock.id };
   };
 
+  /* ══════════════ "AI FRAMEWORK" (2026-09-14, Notebook TJ_DATA ANALYST) ══
+     TJ chốt 2026-09-14: 1 câu hỏi/tình huống dán vào = ĐÚNG 2 Block
+     "Speaking" + "Writing" trong CÙNG 1 Batch — KHÔNG chia Block lẻ
+     10-từ (dù nhiều hơn 10 từ vẫn không chia). Cả 2 Block dùng CHUNG 1
+     bộ từ vựng (fullWords, insert riêng cho mỗi block — 1 dòng "words"
+     chỉ thuộc 1 block_id, xem addBatchFromWordsWithFull ở trên) và CHUNG
+     1 bản phân tích framework_data (7-framework, giống hệt nhau ở cả 2
+     Block) — chỉ khác bài đọc: speakingPassageStorable (văn nói) cho
+     Block "Speaking", writingPassageStorable (Introduction/Body/
+     Conclusion) cho Block "Writing". */
+  DB.createFrameworkBlocks = async function (pageId, batchName, fullWords, speakingPassageStorable, writingPassageStorable, frameworkData, startGlobalIndex) {
+    if (!fullWords || !fullWords.length) throw new Error("Không có từ nào hợp lệ");
+
+    var batch = await insertOne("batches", {
+      page_id: pageId, name: batchName, sort: Date.now() % 100000, created_at: Date.now()
+    });
+
+    var gi = startGlobalIndex || 1;
+    var blocks = [], words = [];
+
+    async function insertWords(blockId, list) {
+      var rows = list.map(function (x, j) {
+        return {
+          block_id: blockId, sort: j, term: x.term, level: x.level || "",
+          pos: x.pos || "", ipa: x.ipa || "", def_en: x.def_en || "", meaning_vi: x.meaning_vi || "",
+          meaning_zh: x.meaning_zh || "", meaning_es: x.meaning_es || "", freq: x.freq || ""
+        };
+      });
+      if (DB.mode === "local") {
+        rows.forEach(function (r) { r.id = w.uid("wd"); local().words.push(r); });
+        saveLocal();
+        return rows;
+      }
+      var res = await DB.sb.from("words").insert(rows).select();
+      if (res.error) throw res.error;
+      return res.data || [];
+    }
+
+    var speakingBlock = await insertOne("blocks", {
+      batch_id: batch.id, name: "🗣️ Speaking", global_index: gi, sort: 0,
+      context_passage: speakingPassageStorable, framework_data: frameworkData
+    });
+    gi++;
+    blocks.push(speakingBlock);
+    words = words.concat(await insertWords(speakingBlock.id, fullWords));
+
+    var writingBlock = await insertOne("blocks", {
+      batch_id: batch.id, name: "✍️ Writing", global_index: gi, sort: 1,
+      context_passage: writingPassageStorable, framework_data: frameworkData
+    });
+    blocks.push(writingBlock);
+    words = words.concat(await insertWords(writingBlock.id, fullWords));
+
+    return { batch: batch, blocks: blocks, words: words, speakingBlockId: speakingBlock.id, writingBlockId: writingBlock.id };
+  };
+
   /* ══════════════ LƯU TỪ KIỂU LingQ ══════════════
      Bôi/bấm một từ trong bài đọc rồi lưu -> từ được đưa vào batch "⭐ Từ đã lưu"
      của Page hiện tại. Cứ đủ 10 từ thì tự ngắt sang Block kế tiếp. */

@@ -15,7 +15,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon.svg">
-<link rel="stylesheet" href="css/app.css?v=18">
+<link rel="stylesheet" href="css/app.css?v=19">
 </head>
 <body>
 
@@ -173,6 +173,7 @@
   <div class="section-actions">
     <button class="tab-add" id="btn-add-section" title="Thêm section">+</button>
     <button class="btn-soft" id="btn-paste-extract" title="Dán bài báo / transcript — AI tự trích từ B1+ và tạo Block">✨<span class="dt-long"> Dán bài, tự trích từ</span></button>
+    <button class="btn-soft" id="btn-ai-framework" title="Dán 1 câu hỏi/tình huống — AI phân tích 7 framework, tạo 2 Block Speaking + Writing" hidden>🧭<span class="dt-long"> AI Framework</span></button>
     <button class="btn-primary" id="btn-paste-new">+<span class="dt-long"> Paste từ mới</span></button>
   </div>
 
@@ -305,6 +306,23 @@
 
       <!-- TAB 1: BÀI HỌC -->
       <div class="tab-pane active" id="pane-study">
+        <!-- "AI Framework" panel (2026-09-14) — CHỈ hiện khi block.framework_data
+             tồn tại (block do nút "🧭 AI Framework" tạo ra), nằm TRƯỚC bảng từ
+             vựng theo đúng thứ tự chị chốt: Framework → Từ vựng → Bài đọc.
+             Nội dung do detail.js D.renderFrameworkPanel() vẽ động. -->
+        <div class="card fw-panel" id="fw-panel" hidden>
+          <div class="card-title-row">
+            <div class="card-title">🧭 Framework phù hợp — <span id="fw-question-echo"></span></div>
+            <button class="btn-soft" id="btn-toggle-fw" title="Thu gọn / mở rộng panel Framework">▾ Thu gọn</button>
+          </div>
+          <div class="fw-legend">
+            <span class="fw-chip fw-top">🟢 Fit nhất (3)</span>
+            <span class="fw-chip fw-ok">🟡 Vẫn ổn nếu paraphrase (2)</span>
+            <span class="fw-chip fw-stretch">⚪ Khá gượng ép (2)</span>
+          </div>
+          <div class="fw-table" id="fw-table"><!-- JS --></div>
+        </div>
+
         <div class="card">
           <div class="card-title-row">
             <div class="card-title">📘 1. Danh sách từ vựng cần học <span class="ai-cost muted" id="vocab-fill-badge" title="Chi phí ước tính AI đã tốn để tự điền các cột còn thiếu cho Block này"></span></div>
@@ -745,6 +763,31 @@ mitigate | giảm nhẹ"></textarea>
   </div>
 </div>
 
+<!-- "AI Framework" (2026-09-14) — CHỈ hiện ở Notebook TJ_DATA ANALYST -->
+<div class="modal-overlay" id="modal-framework" hidden>
+  <div class="modal-box wide">
+    <h3>🧭 AI Framework — phân tích câu hỏi/tình huống</h3>
+    <p class="modal-desc">
+      Dán 1 câu hỏi phỏng vấn/tình huống công việc — AI sẽ chấm mức độ phù hợp với ĐÚNG 7
+      Master Framework (tô <b class="fit-top">xanh</b> 3 cái fit nhất, <b class="fit-ok">vàng</b> 2 cái
+      vẫn dùng được nếu paraphrase, <b class="fit-stretch">xám</b> 2 cái gượng ép), kèm cách mở đầu/từ
+      khoá/kết luận/paraphrase cho từng framework, rồi tạo <b>2 Block</b> — 🗣️ <b>Speaking</b> (văn
+      nói) và ✍️ <b>Writing</b> (Introduction/Body/Conclusion) — trong Batch mới của Page đang xem.
+    </p>
+
+    <div class="wp-lbl">Tên Batch (tuỳ chọn)</div>
+    <input type="text" id="framework-name" class="text-input" autocomplete="off" placeholder="Ví dụ: Why are you leaving your current job?">
+
+    <div class="wp-lbl mt">Dán câu hỏi/tình huống vào đây (tối đa ~2.000 ký tự)</div>
+    <textarea id="framework-input" spellcheck="false" placeholder="Ví dụ: Why are you looking for an international work environment? / Sales dropped 15% last month, how would you investigate?"></textarea>
+
+    <div class="modal-actions">
+      <button class="btn-ghost" data-close="modal-framework">Hủy</button>
+      <button class="btn-primary" id="btn-do-framework">🧭 Phân tích Framework &amp; tạo Block</button>
+    </div>
+  </div>
+</div>
+
 <!-- Hộp nhập tên chung (notebook / section / page …) -->
 <div class="modal-overlay" id="modal-prompt" hidden>
   <div class="modal-box">
@@ -1015,16 +1058,16 @@ mitigate | giảm nhẹ"></textarea>
 <script src="js/keys.local.js?v=1"></script>
 <script src="js/util.js?v=1"></script>
 <script src="js/srs.js?v=1"></script>
-<script src="js/context.js?v=17"></script>
+<script src="js/context.js?v=18"></script>
 <script src="js/speech.js?v=3"></script>
-<script src="js/db.js?v=8"></script>
+<script src="js/db.js?v=9"></script>
 <script src="js/auth.js?v=5"></script>
 <script src="js/i18n.js?v=4"></script>
 <script src="js/reader.js?v=1"></script>
-<script src="js/detail.js?v=22"></script>
+<script src="js/detail.js?v=23"></script>
 <script src="js/export.js?v=2"></script>
 <script src="js/journey.js?v=5"></script>
 <script src="js/home.js?v=2"></script>
-<script src="js/app.js?v=28"></script>
+<script src="js/app.js?v=29"></script>
 </body>
 </html>

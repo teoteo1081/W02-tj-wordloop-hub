@@ -2001,3 +2001,57 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
   60%{left:100%;}
   100%{left:100%;}
 }
+
+/* ══════════════ "AI FRAMEWORK" PANEL (2026-09-14) ══════════════
+   Chỉ hiện ở Block do nút "🧭 AI Framework" tạo (Notebook TJ_DATA
+   ANALYST) — panel 7-framework, tô theo fit_tier: top=xanh (var(--green)),
+   ok=vàng (var(--warn)), stretch=xám (var(--text-3)). Dùng lại đúng token
+   màu đã có trong app (không tự bịa màu mới), khớp light/dark theme. */
+.fw-panel{border-left:3px solid var(--green);}
+.fw-panel.collapsed .fw-table{display:none;}
+.fw-panel.collapsed .fw-legend{display:none;}
+.fw-legend{display:flex;flex-wrap:wrap;gap:.5rem;margin:.2rem 0 .8rem;}
+.fw-chip{font-size:.68rem;padding:.15rem .55rem;border-radius:99px;border:1px solid var(--border);color:var(--text-2);}
+.fw-chip.fw-top{border-color:rgba(16,185,129,.4);color:var(--green-l);background:var(--green-sub);}
+.fw-chip.fw-ok{border-color:rgba(217,160,60,.4);color:var(--warn-hi);background:rgba(217,160,60,.1);}
+.fw-chip.fw-stretch{border-color:var(--border);color:var(--text-3);}
+
+.fw-table{display:flex;flex-direction:column;gap:.5rem;}
+.fw-row{border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--bg-soft);}
+.fw-row.fw-top{border-left:4px solid var(--green);}
+.fw-row.fw-ok{border-left:4px solid var(--warn);}
+.fw-row.fw-stretch{border-left:4px solid var(--text-3);opacity:.82;}
+.fw-row-head{
+  display:flex;align-items:center;gap:.5rem;width:100%;text-align:left;
+  background:none;border:none;cursor:pointer;padding:.6rem .8rem;font:inherit;color:inherit;
+}
+.fw-row-head:hover{background:rgba(127,127,127,.06);}
+.fw-dot{width:8px;height:8px;border-radius:50%;flex:none;background:var(--text-3);}
+.fw-row.fw-top .fw-dot{background:var(--green);}
+.fw-row.fw-ok .fw-dot{background:var(--warn);}
+.fw-name{font-weight:700;font-size:.86rem;white-space:nowrap;}
+.fw-tier{font-size:.68rem;color:var(--text-2);white-space:nowrap;}
+.fw-chain{font-size:.72rem;color:var(--text-3);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.fw-caret{margin-left:auto;flex:none;color:var(--text-3);transition:transform .15s;}
+.fw-row.open .fw-caret{transform:rotate(180deg);}
+.fw-row-body{display:none;padding:0 .8rem .8rem;font-size:.8rem;line-height:1.55;}
+.fw-row.open .fw-row-body{display:block;}
+.fw-row-body p{margin:.3rem 0;}
+.fw-row-body ul{margin:.2rem 0;padding-left:1.1rem;}
+.fw-why{color:var(--text-2);font-style:italic;}
+.fw-block{margin:.5rem 0;}
+.fw-block > b{display:block;margin-bottom:.2rem;font-size:.74rem;color:var(--text-2);}
+.fw-stage{margin:.15rem 0;}
+.fw-kw{
+  display:inline-block;font-size:.72rem;padding:.08rem .45rem;margin:.1rem .2rem .1rem 0;
+  border-radius:6px;background:rgba(127,127,127,.12);color:var(--text);
+}
+.fw-writing{border-top:1px dashed var(--border);padding-top:.5rem;}
+.fw-writing p{margin:.25rem 0;}
+.fw-paraphrase{color:var(--text-2);}
+#fw-question-echo{font-weight:400;color:var(--text-2);font-size:.78rem;}
+.fit-top{color:var(--green-l);}
+.fit-ok{color:var(--warn-hi);}
+.fit-stretch{color:var(--text-3);}
+.fw-mark{background:var(--amber-sub);color:var(--amber-l);padding:0 .15rem;border-radius:3px;font-weight:600;}
+.fw-mini-passage p{white-space:pre-line;}
