@@ -514,6 +514,28 @@
       throw new Error("AI trả JSON không hợp lệ (đã tự thử lại " + (retries + 1) + " lần) — " + lastErr.message + ". Thử lại sau hoặc rút ngắn câu hỏi.");
     },
 
+    /* Như _callProviderJSON, nhưng validateFn(parsed) được gọi thêm sau khi
+       JSON.parse OK — validateFn throw Error thì coi như lượt gọi này hỏng,
+       GỌI LẠI TOÀN BỘ (không chỉ parse lại) y như lỗi JSON hỏng cú pháp.
+       (2026-09-15 — bug thật thứ 2 TJ gặp SAU KHI đã có _callProviderJSON:
+       lượt gọi trả JSON HỢP LỆ nhưng chỉ có 4/7 framework — cùng bản chất
+       xác suất LLM như JSON hỏng cú pháp, chỉ khác chỗ hỏng, nên xử lý
+       giống nhau: gọi lại toàn bộ, không bắt user tự bấm lại.) */
+    _callProviderJSONValidated: async function (cfg, sys, user, quotaCtx, validateFn, retries) {
+      retries = retries == null ? 1 : retries;
+      var lastErr;
+      for (var attempt = 0; attempt <= retries; attempt++) {
+        try {
+          var parsed = await w.Context._callProviderJSON(cfg, sys, user, quotaCtx, 0);
+          validateFn(parsed);
+          return parsed;
+        } catch (e) {
+          lastErr = e;
+        }
+      }
+      throw lastErr;
+    },
+
     /* Vietnamese-hoá 1 lỗi AI để in thẳng lên giao diện cho người dùng
        thấy (không chỉ console) — dùng ở mọi nơi gọi generateAI/extractVocab/
        enrichWords. Trả về {title, detail} — title ngắn để làm tiêu đề
@@ -905,10 +927,11 @@
         '"closing_lines":["...","..."],"paraphrase":"..."}]}';
 
       w.Context._lastCostUsd = null;
-      var p1 = await w.Context._callProviderJSON(cfg, sys, user1, quotaCtx);
-      if (!Array.isArray(p1.frameworks) || p1.frameworks.length !== 7) {
-        throw new Error("AI (lượt 1) trả về " + (p1.frameworks ? p1.frameworks.length : 0) + " framework, cần đúng 7 — thử lại");
-      }
+      var p1 = await w.Context._callProviderJSONValidated(cfg, sys, user1, quotaCtx, function (p) {
+        if (!Array.isArray(p.frameworks) || p.frameworks.length !== 7) {
+          throw new Error("AI (lượt 1) trả về " + (p.frameworks ? p.frameworks.length : 0) + " framework, cần đúng 7 — đã tự thử lại vẫn không đủ, thử lại sau hoặc rút ngắn câu hỏi.");
+        }
+      });
       /* method_key phòng hờ sai/thiếu (AI bịa key lạ, hoặc model yếu bỏ
          sót trường) — KHÔNG coi là lỗi cần gọi lại (tốn quota vô ích),
          tự rơi về "scqa" (phổ biến nhất) để view "Theo phương pháp" luôn
@@ -964,13 +987,14 @@
         '"frameworks":[{"key":"...","words":["...","..."],"passage_en":"...",' +
         '"writing_material":{"introduction":"...","body":"...","conclusion":"..."}}]}';
 
-      var p2 = await w.Context._callProviderJSON(cfg, sys, user2, quotaCtx);
-      if (!p2.speaking_passage_en) throw new Error("AI (lượt 2) thiếu 'speaking_passage_en' — thử lại");
-      if (!p2.writing_passage_en) throw new Error("AI (lượt 2) thiếu 'writing_passage_en' — thử lại");
-      if (!Array.isArray(p2.full_words) || !p2.full_words.length) throw new Error("AI (lượt 2) thiếu 'full_words' — thử lại");
-      if (!Array.isArray(p2.frameworks) || p2.frameworks.length !== 7) {
-        throw new Error("AI (lượt 2) trả về " + (p2.frameworks ? p2.frameworks.length : 0) + " framework, cần đúng 7 — thử lại");
-      }
+      var p2 = await w.Context._callProviderJSONValidated(cfg, sys, user2, quotaCtx, function (p) {
+        if (!p.speaking_passage_en) throw new Error("AI (lượt 2) thiếu 'speaking_passage_en' — đã tự thử lại vẫn thiếu, thử lại sau.");
+        if (!p.writing_passage_en) throw new Error("AI (lượt 2) thiếu 'writing_passage_en' — đã tự thử lại vẫn thiếu, thử lại sau.");
+        if (!Array.isArray(p.full_words) || !p.full_words.length) throw new Error("AI (lượt 2) thiếu 'full_words' — đã tự thử lại vẫn thiếu, thử lại sau.");
+        if (!Array.isArray(p.frameworks) || p.frameworks.length !== 7) {
+          throw new Error("AI (lượt 2) trả về " + (p.frameworks ? p.frameworks.length : 0) + " framework, cần đúng 7 — đã tự thử lại vẫn không đủ, thử lại sau hoặc rút ngắn câu hỏi.");
+        }
+      });
       /* Tổng chi phí = cả 2 lệnh cộng lại (call 2 vừa gọi xong đã ghi đè
          _lastCostUsd, cộng thêm phần đã lưu tạm của call 1 ở trên). */
       var totalCost = costCall1 + (w.Context._lastCostUsd || 0);
