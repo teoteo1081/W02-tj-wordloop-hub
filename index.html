@@ -817,11 +817,13 @@ mitigate | giảm nhẹ"></textarea>
   <div class="modal-box wide">
     <h3>➕ Bổ sung từ vựng cho Block này</h3>
     <p class="modal-desc">
-      Dán thêm đoạn văn/bài mới (hoặc phần còn lại của bài cũ) — AI sẽ trích từ B1+ (kể cả
-      collocation/phrasal verb/idiom), <b>tự loại từ đã trùng</b> với bảng từ hiện có của Block
-      này, rồi thêm các từ THỰC SỰ MỚI vào bảng — không đụng đến từ cũ hay tiến trình học đã có.
+      Nhận 2 kiểu dán, tự nhận diện: <b>(1) danh sách "term | nghĩa"</b> mỗi dòng 1 từ (AI chỉ tự
+      điền các cột còn thiếu — level/pos/phiên âm/định nghĩa..., GIỮ NGUYÊN nghĩa bạn đã gõ sẵn),
+      hoặc <b>(2) cả đoạn văn/bài liền mạch</b> (AI tự trích từ B1+, kể cả collocation/phrasal
+      verb/idiom). Cả 2 kiểu đều <b>tự loại từ đã trùng</b> với bảng từ hiện có của Block này,
+      chỉ thêm từ THỰC SỰ MỚI — không đụng đến từ cũ hay tiến trình học đã có.
     </p>
-    <textarea id="add-vocab-input" spellcheck="false" placeholder="Dán đoạn văn/bài mới vào đây…"></textarea>
+    <textarea id="add-vocab-input" spellcheck="false" placeholder="Dán danh sách 'term | nghĩa' (mỗi dòng 1 từ) HOẶC cả đoạn văn/bài vào đây…"></textarea>
     <div class="modal-actions">
       <button class="btn-ghost" data-close="modal-add-vocab">Hủy</button>
       <button class="btn-primary" id="btn-do-add-vocab">➕ Trích & thêm vào Block</button>

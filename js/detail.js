@@ -2742,9 +2742,25 @@
     /* "➕ Bổ sung từ vựng" (2026-09-16) — khác "✨ Dán bài, tự trích từ"
        (app.js doPasteExtract, tạo Batch/Block MỚI ở cấp Page): cái này
        CHỈ thêm từ vào bảng từ của ĐÚNG Block đang xem, không tạo gì mới.
-       Dùng lại extractVocab (đã tự cắt nhỏ để trích đầy đủ hơn, xem
-       context.js) rồi lọc trùng + addWordsToBlock giống hệt cơ chế "từ
-       mới chạy xuống bảng từ" của nút "🔄 Tạo lại" AI Framework. */
+       TỰ NHẬN DIỆN 2 kiểu dán (TJ hỏi 2026-09-16 "dán đúng 2 cột term|
+       nghĩa thì có tự gen cột thiếu không") — ĐA SỐ dòng có dấu phân
+       cách kiểu "term | nghĩa" (giống parseVocabText ở util.js dùng cho
+       "+ Paste từ mới") thì coi là DANH SÁCH TỪ có sẵn: parse rồi
+       enrichWords() CHỈ điền cột đang trống, GIỮ NGUYÊN nghĩa/level/pos...
+       đã có sẵn trong lúc dán — không đè lên dữ liệu tự gõ. Ngược lại
+       (dán cả đoạn văn/bài báo liền mạch, không có dấu phân cách theo
+       dòng) thì dùng extractVocab (đã tự cắt nhỏ để trích đầy đủ hơn,
+       xem context.js) để AI tự tìm từ B1+ trong bài. Cả 2 nhánh đều lọc
+       trùng so với từ ĐANG CÓ trong Block rồi addWordsToBlock giống hệt
+       cơ chế "từ mới chạy xuống bảng từ" của nút "🔄 Tạo lại" AI Framework. */
+    function looksLikeVocabList(text) {
+      var lines = String(text || "").split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean);
+      if (!lines.length) return false;
+      var hits = lines.filter(function (l) {
+        return l.indexOf("|") >= 0 || l.indexOf("\t") >= 0 || /\s+[-–—=:]\s+/.test(l);
+      }).length;
+      return hits / lines.length > 0.6;
+    }
     var addVocabBtnEl = w.$("#btn-add-vocab");
     if (addVocabBtnEl) {
       addVocabBtnEl.onclick = function () {
@@ -2772,23 +2788,46 @@
         var oldText = btn.textContent;
         btn.disabled = true; btn.textContent = "⏳ Đang phân tích...";
         try {
-          var quotaCtx = { userId: (w.Auth.user && w.Auth.user.id) || null, blockId: w.uid("addvocab") };
-          var extractRes = await w.Context.extractVocab(rawInput, cfg2, quotaCtx);
-
           var existingWords = words();
           var existingLower = {};
           existingWords.forEach(function (x) { existingLower[String(x.term || "").toLowerCase()] = true; });
-          var newTerms = extractRes.words.filter(function (x) {
-            return x.term && !existingLower[String(x.term).toLowerCase()];
-          });
+          var newTerms, fillCost = null;
 
-          if (!newTerms.length) {
-            w.toast("Không có từ nào mới — tất cả từ B1+ trong đoạn vừa dán đều đã có trong bảng", "ok");
-            return;
+          if (looksLikeVocabList(rawInput)) {
+            var parsed = w.parseVocabText(rawInput).filter(function (x) {
+              return x.term && !existingLower[String(x.term).toLowerCase()];
+            });
+            if (!parsed.length) {
+              w.toast("Không có từ nào mới — tất cả từ trong danh sách vừa dán đều đã có trong bảng", "ok");
+              return;
+            }
+            var quotaCtx1 = { userId: (w.Auth.user && w.Auth.user.id) || null, blockId: w.uid("addvocab") };
+            var r1 = await w.Context.enrichWords(parsed, cfg2, quotaCtx1);
+            if (r1.filled) w.toast("AI đã tự điền " + r1.filled + " ô còn thiếu", "ok");
+            newTerms = parsed;
+            if (r1.cost_usd || Object.keys(r1.providers || {}).length) {
+              var domP = null, domC = -1;
+              Object.keys(r1.providers || {}).forEach(function (p) { if (r1.providers[p] > domC) { domC = r1.providers[p]; domP = p; } });
+              fillCost = { provider: domP, cost_usd: r1.cost_usd || 0, at: Date.now() };
+            }
+          } else {
+            var quotaCtx2 = { userId: (w.Auth.user && w.Auth.user.id) || null, blockId: w.uid("addvocab") };
+            var extractRes = await w.Context.extractVocab(rawInput, cfg2, quotaCtx2);
+            newTerms = extractRes.words.filter(function (x) {
+              return x.term && !existingLower[String(x.term).toLowerCase()];
+            });
+            if (!newTerms.length) {
+              w.toast("Không có từ nào mới — tất cả từ B1+ trong đoạn vừa dán đều đã có trong bảng", "ok");
+              return;
+            }
           }
 
           var added = await w.DB.addWordsToBlock(b.id, existingWords, newTerms);
           S().words = S().words.concat(added);
+          if (fillCost) {
+            b.vocab_fill_meta = fillCost;
+            try { await w.DB.saveContext(b.id, fillCost, "vocab_fill_meta"); } catch (e) {}
+          }
 
           w.$("#modal-add-vocab").hidden = true;
           w.$("#add-vocab-input").value = "";
