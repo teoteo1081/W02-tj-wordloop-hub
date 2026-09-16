@@ -1761,38 +1761,56 @@
     var name = w.$("#extract-name").value.trim() || ("Batch " + (batchesOfPage(S.pageId).length + 1));
 
     /* Bài dán DÀI hơn giới hạn 1 lượt AI (extractVocab throw ở 12000 ký
-       tự) — TJ báo 2026-09-15 ("kiểm tra cửa sổ đang thao tác nó báo quá
-       lố số từ"): trước đây chỉ báo lỗi rồi bắt tự cắt tay. Giờ TỰ NGẮT
-       RA NHIỀU PHẦN (tái dùng ĐÚNG Context.splitChapters — vốn làm sẵn
-       cho "Dán cả sách" bên dưới, tự cắt theo Chapter nếu có, không thì
-       cắt theo đoạn văn/câu dưới 11000 ký tự/phần) rồi đẩy sang CHÍNH khu
-       xem-trước-danh-sách-Chapter đã có sẵn (#book-chapters-box, dùng
-       chung nút "🚀 Xử lý các phần đã chọn" -> doBookStart ở dưới) — TJ
-       xem/sửa tên từng phần rồi tự bấm xử lý, không cần thao tác gì khác,
-       không tạo Batch/gọi AI nào cho tới lúc đó. */
+       tự) — tự ngắt ra nhiều phần (tái dùng Context.splitChapters, tự cắt
+       theo Chapter nếu có, không thì cắt theo đoạn văn/câu dưới 11000 ký
+       tự/phần) rồi XỬ LÝ LUÔN TỪNG PHẦN, không dừng lại chờ người dùng
+       bấm thêm nút xác nhận nào — TJ báo 2026-09-16: bấm "Trích từ vựng
+       & tạo Block" 1 lần phải tự làm hết, không được bắt bấm thêm nút
+       "🚀 Xử lý các phần đã chọn" riêng, và xong việc phải tự đóng modal,
+       không để lại màn hình dở dang không có nút đóng. (Khác nút "📖 Đọc
+       PDF & chia Chapter" bên dưới — flow đó xử lý CẢ 1 CUỐN SÁCH, vẫn
+       giữ nguyên bước xem-trước/bỏ chọn Chapter qua #book-chapters-box +
+       doBookStart vì hợp lý để duyệt trước khi tốn quota AI cho nhiều
+       chương; ở đây chỉ 1 bài lỡ dài hơn giới hạn kỹ thuật, không cần
+       duyệt tay.) */
     var cleanedForCheck = w.Context.stripPasteNoise(rawInput);
-    if (cleanedForCheck.length > 12000) {
-      var chapters = w.Context.splitChapters(rawInput);
-      /* Có tên Batch riêng thì gắn làm tiền tố mỗi phần (thay vì tên
-         chung chung "Phần 1"/"(phần 2)" từ splitChapters) — dễ nhận ra
-         đây là 1 bài bị TỰ CẮT, không phải nhiều Chapter khác nhau. */
-      var typedName = w.$("#extract-name").value.trim();
-      if (typedName) {
-        chapters = chapters.map(function (c, i) {
-          return { title: typedName + (chapters.length > 1 ? " (phần " + (i + 1) + ")" : ""), text: c.text };
-        });
-      }
-      renderBookChapters(chapters);
-      w.$("#book-chapters-box").scrollIntoView({ behavior: "smooth", block: "start" });
-      w.toast("Bài dài " + cleanedForCheck.length + " ký tự, quá 12.000/lượt — đã tự chia thành " +
-        chapters.length + " phần, xem danh sách bên dưới rồi bấm \"🚀 Xử lý các phần đã chọn\"", "ok");
-      return;
-    }
-
     var btn = w.$("#btn-do-extract");
     btn.disabled = true; btn.textContent = "⏳ Đang phân tích...";
 
     try {
+      if (cleanedForCheck.length > 12000) {
+        var chapters = w.Context.splitChapters(rawInput);
+        var typedName = w.$("#extract-name").value.trim();
+        if (typedName) {
+          chapters = chapters.map(function (c, i) {
+            return { title: typedName + (chapters.length > 1 ? " (phần " + (i + 1) + ")" : ""), text: c.text };
+          });
+        }
+        /* Cả bài (dù bị tự chia nhiều phần) tính đúng 1 "Block" quota,
+           giống doBookStart — không trừ quota riêng từng phần. */
+        var quotaCtx2 = { userId: (w.Auth.user && w.Auth.user.id) || null, blockId: w.uid("pasteq") };
+        var doneN = 0, failedN = [];
+        for (var ci = 0; ci < chapters.length; ci++) {
+          btn.textContent = "⏳ Đang xử lý " + (ci + 1) + "/" + chapters.length + "...";
+          try {
+            await processArticleToBatch(chapters[ci].text, chapters[ci].title, quotaCtx2);
+            doneN++;
+          } catch (e) {
+            failedN.push(chapters[ci].title + " — " + (e.message || e));
+            if (e && e.kind === "quota_user") break;   /* hết quota hôm nay -> dừng hẳn, phần sau chắc chắn lỗi y hệt */
+          }
+        }
+        w.$("#modal-extract").hidden = true;
+        w.$("#extract-input").value = "";
+        w.$("#extract-name").value = "";
+        renderBatches(); renderPages(); App.renderBlocks();
+        var summaryN = "Bài dài " + cleanedForCheck.length + " ký tự — đã tự chia " + chapters.length +
+          " phần, xử lý xong " + doneN + "/" + chapters.length + " ✔";
+        if (failedN.length) summaryN += " (lỗi: " + failedN.join("; ") + ")";
+        w.toast(summaryN, failedN.length ? "err" : "ok");
+        return;
+      }
+
       var out = await processArticleToBatch(rawInput, name);
 
       w.$("#modal-extract").hidden = true;

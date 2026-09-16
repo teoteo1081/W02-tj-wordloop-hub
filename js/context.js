@@ -1349,14 +1349,82 @@
       return out;
     },
 
+    /* ═══════════ CẮT NHỎ ĐỂ TRÍCH TỪ VỰNG ĐẦY ĐỦ HƠN ═══════════
+       TJ báo 2026-09-16 (kèm đối chiếu tay 1 bài thật): bài dán dù CHƯA
+       chạm giới hạn 12000 ký tự vẫn hay bị model BỎ SÓT rất nhiều từ
+       B1+/collocation — không phải do prompt giới hạn số lượng (đã bỏ
+       từ 2026-09-12) mà do model rẻ (gpt-4o-mini/gemini-flash-lite) tự
+       "lười" liệt kê hết khi văn bản dài — cùng 1 model xử lý đoạn NGẮN
+       đầy đủ hơn hẳn đoạn DÀI. Cắt bài thành nhiều đoạn nhỏ (~CHUNK_MAX
+       ký tự, ưu tiên cắt theo đoạn văn/câu, không cắt giữa câu) rồi gọi
+       extractVocab RIÊNG từng đoạn, gộp kết quả — tốn nhiều lượt AI hơn
+       nhưng vẫn tính đúng 1 "Block" quota (dùng CHUNG quotaCtx, xem ghi
+       chú extractVocab bên dưới), đổi lại recall cao hơn hẳn. Cùng kiểu
+       cắt tầng (đoạn văn -> câu -> dòng -> cắt cứng theo từ) như
+       splitChapters() ở trên, chỉ khác KHÔNG nhận diện chapter, luôn cắt
+       nếu vượt max (kể cả bài chỉ 1 đoạn văn duy nhất dài). */
+    _CHUNK_MAX_EXTRACT: 2200,
+    splitForExtraction: function (text, max) {
+      max = max || w.Context._CHUNK_MAX_EXTRACT;
+      var raw = w.Context.stripPasteNoise(text);
+      if (!raw) return [];
+      if (raw.length <= max) return [raw];
+
+      function hardSplitByWords(t) {
+        var ws = t.split(/\s+/).filter(Boolean);
+        var parts = [], cur = "";
+        ws.forEach(function (wd) {
+          if (cur && (cur.length + wd.length + 1) > max) { parts.push(cur); cur = wd; }
+          else { cur = cur ? cur + " " + wd : wd; }
+        });
+        if (cur) parts.push(cur);
+        return parts.length ? parts : [t];
+      }
+      function regroup(pieces, sep, nextSplitter) {
+        var out = [], buf = "";
+        pieces.forEach(function (p) {
+          if (p.length > max) {
+            if (buf) { out.push(buf); buf = ""; }
+            out = out.concat(nextSplitter(p));
+            return;
+          }
+          if (buf && (buf.length + p.length + sep.length) > max) { out.push(buf); buf = p; }
+          else { buf = buf ? buf + sep + p : p; }
+        });
+        if (buf) out.push(buf);
+        return out;
+      }
+      function splitByLine(t) {
+        var lines = t.split(/\n+/).filter(Boolean);
+        if (lines.length <= 1) return hardSplitByWords(t);
+        return regroup(lines, "\n", splitByLine);
+      }
+      function splitBySentence(t) {
+        var sentences = t.split(/(?<=[.!?])\s+/);
+        if (sentences.length <= 1) return splitByLine(t);
+        return regroup(sentences, " ", splitBySentence);
+      }
+      function splitByPara(t) {
+        var paras = t.split(/\n{2,}/);
+        if (paras.length <= 1) return splitBySentence(t);
+        return regroup(paras, "\n\n", splitByPara);
+      }
+      return splitByPara(raw);
+    },
+
     /* ═══════════ DÁN 1 ĐOẠN VĂN CÓ SẴN -> TRÍCH TỪ B1+ ═══════════
        Không có sẵn từ điển CEFR offline trong app này, nên nhờ AI đọc
-       đoạn văn và tự chấm cấp độ từng từ. Trả về mảng
-       [{term, level, pos, def_en, meaning_vi, sentence_vi}] — term LUÔN
-       là chuỗi con thật sự có trong đoạn văn gốc (lọc bỏ từ AI bịa thêm
-       không có trong bài, để bước đánh dấu [..] sau này luôn tìm thấy).
-       Nhận nhiều nguồn: bài báo dán nguyên trang, transcript YouTube/
-       Yglish (còn dính mốc thời gian), ghi chú tự gõ…
+       đoạn văn và tự chấm cấp độ từng từ. Trả về
+       {words:[{term, level, pos, def_en, meaning_vi, sentence_vi}],
+       punctuatedText} — term LUÔN là chuỗi con thật sự có trong đoạn văn
+       gốc (lọc bỏ từ AI bịa thêm không có trong bài, để bước đánh dấu
+       [..] sau này luôn tìm thấy). Nhận nhiều nguồn: bài báo dán nguyên
+       trang, transcript YouTube/Yglish (còn dính mốc thời gian), ghi chú
+       tự gõ…
+       Đây là WRAPPER (2026-09-16) — tự cắt nhỏ qua splitForExtraction()
+       nếu bài quá 1 đoạn, gọi _extractVocabOnce() riêng từng đoạn rồi
+       gộp/loại trùng (xem ghi chú splitForExtraction phía trên) — bài
+       ngắn (≤ CHUNK_MAX) thì gọi thẳng 1 lượt như cũ, không đổi hành vi.
        quotaCtx: { userId, blockId } — 2026-09-13 (TJ yêu cầu "chỉ giới
        hạn lại gemini lượt xài của user thôi", sau khi đã mở "Dán bài, tự
        trích từ"/"Dán cả sách" cho MỌI user) — dùng CHUNG cơ chế quota
@@ -1365,9 +1433,61 @@
        tính năng này CHƯA có Block thật lúc gọi AI (Block chỉ được tạo
        SAU khi trích xong), gọi nơi dùng (processArticleToBatch) tự sinh
        1 blockId GIẢ dùng CHUNG cho MỌI lượt gọi bên trong CÙNG 1 lượt
-       dán/1 cuốn sách — mỗi lượt dán tính đúng 1 "Block" quota, không bị
-       tính nhiều lần dù bên trong gọi AI bao nhiêu lượt. */
+       dán/1 cuốn sách — mỗi lượt dán (dù giờ bị chia thành nhiều đoạn
+       nhỏ để gọi AI nhiều lượt) tính đúng 1 "Block" quota, không bị tính
+       nhiều lần dù bên trong gọi AI bao nhiêu lượt. */
     extractVocab: async function (text, cfg, quotaCtx) {
+      var raw0 = w.Context.stripPasteNoise(text);
+      if (!raw0) throw new Error("Chưa dán đoạn văn nào");
+      if (raw0.length > 12000) {
+        throw new Error("Đoạn văn dài " + raw0.length + " ký tự, quá giới hạn 12000 (~1 bài báo dài / ~15 phút transcript) — cắt bớt rồi dán lại");
+      }
+      var chunks = w.Context.splitForExtraction(raw0);
+      if (chunks.length <= 1) return w.Context._extractVocabOnce(raw0, cfg, quotaCtx);
+
+      /* Nhiều lượt gọi AI (1/đoạn) -> CỘNG DỒN chi phí + đếm nhà cung cấp
+         ở ĐÂY (giống enrichWords khi >25 từ) thay vì chỉ đọc _lastProvider/
+         _lastCostUsd 1 lần cuối cùng (side-channel đó chỉ giữ lượt gọi
+         CUỐI, mất thông tin các lượt trước) — rồi GHI ĐÈ LẠI 2 biến đó
+         bằng tổng thật trước khi trả về, để processArticleToBatch (đọc
+         ngay sau extractVocab) vẫn hiện đúng tổng chi phí/nguồn chủ đạo,
+         không bị lệch chỉ theo đoạn cuối. */
+      var allWords = [], seen = {}, punctPieces = [], anyPunct = false;
+      var totalCost = 0, providers = {};
+      for (var i = 0; i < chunks.length; i++) {
+        var r;
+        try {
+          r = await w.Context._extractVocabOnce(chunks[i], cfg, quotaCtx);
+        } catch (e) {
+          /* 1 đoạn không có từ B1+ nào (đoạn toàn A1/A2, câu chào hỏi...)
+             -> bỏ qua, vẫn thử các đoạn còn lại thay vì fail cả bài. Lỗi
+             khác (hết quota, JSON hỏng...) thì ném ra ngoài như cũ. */
+          if (e && e.message && e.message.indexOf("Không tìm thấy từ B1+") >= 0) {
+            punctPieces.push(chunks[i]);
+            continue;
+          }
+          throw e;
+        }
+        if (w.Context._lastProvider) providers[w.Context._lastProvider] = (providers[w.Context._lastProvider] || 0) + 1;
+        if (typeof w.Context._lastCostUsd === "number") totalCost += w.Context._lastCostUsd;
+        r.words.forEach(function (x) {
+          var t = String(x.term).toLowerCase();
+          if (seen[t]) return;
+          seen[t] = 1;
+          allWords.push(x);
+        });
+        if (r.punctuatedText) anyPunct = true;
+        punctPieces.push(r.punctuatedText || chunks[i]);
+      }
+      if (!allWords.length) throw new Error("Không tìm thấy từ B1+ nào trong đoạn văn này");
+      var domProvider = null, domCount = -1;
+      Object.keys(providers).forEach(function (p) { if (providers[p] > domCount) { domCount = providers[p]; domProvider = p; } });
+      w.Context._lastProvider = domProvider;
+      w.Context._lastCostUsd = totalCost;
+      return { words: allWords, punctuatedText: anyPunct ? punctPieces.join("\n\n") : null };
+    },
+
+    _extractVocabOnce: async function (text, cfg, quotaCtx) {
       var raw = w.Context.stripPasteNoise(text);
       if (!raw) throw new Error("Chưa dán đoạn văn nào");
       /* Không tự check "chưa có key" ở đây — xem lý do ở generateAI() phía trên. */

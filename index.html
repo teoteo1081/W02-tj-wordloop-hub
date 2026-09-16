@@ -382,6 +382,7 @@
                 <option value="3">3x</option>
               </select>
               <button class="btn-soft" id="btn-copy-vocab" title="Copy bảng từ vựng">📋 Copy</button>
+              <button class="btn-soft" id="btn-add-vocab" title="Dán thêm bài/đoạn văn — AI tự trích từ B1+ MỚI (chưa có trong bảng) và thêm vào Block này">➕ Bổ sung từ</button>
               <button class="btn-soft" id="btn-stop-all">⏹ Dừng</button>
               <button class="btn-primary" id="btn-read-all">🔊 Đọc tất cả từ</button>
               <button class="btn-primary" id="btn-read-all-full" title="Đọc từng từ kèm định nghĩa tiếng Anh (chêm &quot;it means&quot;), không đọc nghĩa tiếng Việt">🔊 Đọc + định nghĩa</button>
@@ -760,9 +761,9 @@ mitigate | giảm nhẹ"></textarea>
       Dán 1 bài báo, đoạn văn, hoặc transcript video (YouTube: bấm <b>"Hiện bản ghi"</b> dưới
       video rồi copy toàn bộ, hoặc dán nguyên file phụ đề <b>.srt</b> tự tải về — app tự nhận
       diện và bỏ số thứ tự/mốc giờ; Yglish: copy phần lời thoại) — AI sẽ tự tìm các từ vựng cấp
-      độ <b>B1 trở lên</b>, chia thành Block 10 từ để học, và giữ NGUYÊN chính bài bạn dán làm
-      bài đọc (không sinh bài khác). Bài dài hơn ~12.000 ký tự/lượt sẽ <b>tự động chia thành
-      nhiều phần</b> (xem danh sách xác nhận bên dưới trước khi xử lý), không cần tự cắt tay.
+      độ <b>B1 trở lên</b> (kể cả collocation/phrasal verb/idiom), chia thành Block 10 từ để học,
+      và giữ NGUYÊN chính bài bạn dán làm bài đọc (không sinh bài khác). Bài dài hơn ~12.000 ký
+      tự/lượt sẽ <b>tự động chia phần và xử lý luôn</b>, không cần bấm thêm nút nào khác.
       Cần đã có key Gemini trong <code>js/keys.local.js</code>.
     </p>
 
@@ -804,6 +805,26 @@ mitigate | giảm nhẹ"></textarea>
         <button class="btn-primary" id="btn-book-start">🚀 Xử lý các phần đã chọn</button>
       </div>
       <div id="book-progress" class="book-progress" hidden></div>
+    </div>
+  </div>
+</div>
+
+<!-- "➕ Bổ sung từ vựng" (2026-09-16) — khác "Dán bài, tự trích từ" ở trên: KHÔNG
+     tạo Batch/Block mới, chỉ THÊM từ B1+ MỚI (chưa có, so không phân biệt hoa
+     thường) vào bảng từ của ĐÚNG Block đang xem, từ cũ + tiến trình SRS giữ
+     nguyên. Áp dụng cho MỌI Block trong app, không riêng Notebook nào. -->
+<div class="modal-overlay" id="modal-add-vocab" hidden>
+  <div class="modal-box wide">
+    <h3>➕ Bổ sung từ vựng cho Block này</h3>
+    <p class="modal-desc">
+      Dán thêm đoạn văn/bài mới (hoặc phần còn lại của bài cũ) — AI sẽ trích từ B1+ (kể cả
+      collocation/phrasal verb/idiom), <b>tự loại từ đã trùng</b> với bảng từ hiện có của Block
+      này, rồi thêm các từ THỰC SỰ MỚI vào bảng — không đụng đến từ cũ hay tiến trình học đã có.
+    </p>
+    <textarea id="add-vocab-input" spellcheck="false" placeholder="Dán đoạn văn/bài mới vào đây…"></textarea>
+    <div class="modal-actions">
+      <button class="btn-ghost" data-close="modal-add-vocab">Hủy</button>
+      <button class="btn-primary" id="btn-do-add-vocab">➕ Trích & thêm vào Block</button>
     </div>
   </div>
 </div>

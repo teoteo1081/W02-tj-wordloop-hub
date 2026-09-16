@@ -332,6 +332,12 @@
       }
     }
 
+    /* "➕ Bổ sung từ" — cùng quyền với "🔄 Tạo lại" bài đọc (canEditPassage)
+       vì đây cũng là sửa nội dung CHUNG của Block, ảnh hưởng mọi người
+       học chung Block đó. */
+    var addVocabBtn = w.$("#btn-add-vocab");
+    if (addVocabBtn) addVocabBtn.hidden = !canEditPassage();
+
     w.$("#vocab-tbody").innerHTML = ws.map(function (x) {
       /* Đã BỎ badge "100%"/"✓ thuộc" cạnh từ (theo yêu cầu — rối mắt ở
          giao diện học). Tiến trình % vẫn còn xem đầy đủ ở tab "📊 Tiến
@@ -2733,6 +2739,69 @@
       }).join("\n");
       copyText(this, text);
     };
+    /* "➕ Bổ sung từ vựng" (2026-09-16) — khác "✨ Dán bài, tự trích từ"
+       (app.js doPasteExtract, tạo Batch/Block MỚI ở cấp Page): cái này
+       CHỈ thêm từ vào bảng từ của ĐÚNG Block đang xem, không tạo gì mới.
+       Dùng lại extractVocab (đã tự cắt nhỏ để trích đầy đủ hơn, xem
+       context.js) rồi lọc trùng + addWordsToBlock giống hệt cơ chế "từ
+       mới chạy xuống bảng từ" của nút "🔄 Tạo lại" AI Framework. */
+    var addVocabBtnEl = w.$("#btn-add-vocab");
+    if (addVocabBtnEl) {
+      addVocabBtnEl.onclick = function () {
+        if (!canEditPassage()) { w.toast("Bạn không có quyền bổ sung từ vựng cho Block này", "err"); return; }
+        w.$("#add-vocab-input").value = "";
+        w.$("#modal-add-vocab").hidden = false;
+        setTimeout(function () { w.$("#add-vocab-input").focus(); }, 50);
+      };
+    }
+    var btnDoAddVocab = w.$("#btn-do-add-vocab");
+    if (btnDoAddVocab) {
+      btnDoAddVocab.onclick = async function () {
+        var b = block();
+        if (!b) return;
+        var cfg2 = w.APP_CONFIG || {};
+        if (!cfg2.OPENAI_API_KEY && !(cfg2.SUPABASE_URL && cfg2.SUPABASE_ANON_KEY)) {
+          w.toast("Cần key OpenAI (js/keys.local.js) hoặc chạy Cloud mode để dùng tính năng này", "err");
+          return;
+        }
+        var rawInput = w.$("#add-vocab-input").value;
+        if (!rawInput.trim()) { w.toast("Chưa dán đoạn văn nào", "err"); return; }
+        if (w.App && w.App.hideAiError) w.App.hideAiError();
+
+        var btn = btnDoAddVocab;
+        var oldText = btn.textContent;
+        btn.disabled = true; btn.textContent = "⏳ Đang phân tích...";
+        try {
+          var quotaCtx = { userId: (w.Auth.user && w.Auth.user.id) || null, blockId: w.uid("addvocab") };
+          var extractRes = await w.Context.extractVocab(rawInput, cfg2, quotaCtx);
+
+          var existingWords = words();
+          var existingLower = {};
+          existingWords.forEach(function (x) { existingLower[String(x.term || "").toLowerCase()] = true; });
+          var newTerms = extractRes.words.filter(function (x) {
+            return x.term && !existingLower[String(x.term).toLowerCase()];
+          });
+
+          if (!newTerms.length) {
+            w.toast("Không có từ nào mới — tất cả từ B1+ trong đoạn vừa dán đều đã có trong bảng", "ok");
+            return;
+          }
+
+          var added = await w.DB.addWordsToBlock(b.id, existingWords, newTerms);
+          S().words = S().words.concat(added);
+
+          w.$("#modal-add-vocab").hidden = true;
+          w.$("#add-vocab-input").value = "";
+          D.renderStudy();
+          w.toast("Đã thêm " + added.length + " từ mới vào Block ✔", "ok");
+        } catch (e) {
+          if (e && e.kind && w.App && w.App.showAiError) w.App.showAiError(e);
+          w.toast("Lỗi: " + (e.message || e), "err");
+        } finally {
+          btn.disabled = false; btn.textContent = oldText;
+        }
+      };
+    }
     /* 2 tốc độ ĐỘC LẬP — bài đọc và bảng từ vựng chỉnh riêng, không ảnh
        hưởng lẫn nhau. */
     w.$("#speed-select").onchange = function (e) { w.Speech.setRate(e.target.value); };
