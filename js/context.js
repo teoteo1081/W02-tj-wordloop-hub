@@ -1624,6 +1624,43 @@
       return { words: words, punctuatedText: punctuatedText };
     },
 
+    /* ═══════════ TRA 1 TỪ/CỤM TỪ THEO NGỮ CẢNH (bảng tra từ trong bài đọc) ═══════════
+       2026-09-24, TJ hỏi "sao nó hong có đề xuất tiếng Việt... ko tra google
+       hoặc từ điển dc hả?" — trước đó Reader.suggest CHỈ tìm trong kho từ
+       của Notebook đang mở, từ mới hoàn toàn không có gợi ý nào. Đã thử
+       Google Translate (endpoint không chính thức translate_a/single — bị
+       429 chặn) và dictionaryapi.dev (lúc được lúc 522, không có tiếng
+       Việt) -> không tin cậy. Dùng Gemini qua proxy sẵn có: ra nghĩa ĐÚNG
+       THEO CÂU trong bài (từ nhiều nghĩa), kèm IPA/loại từ/định nghĩa EN.
+       quotaCtx CỐ Ý null: proxy chỉ chấm quota khi có userId+blockId, và
+       _callProvider chỉ đi OpenAI (trả phí) trước khi nhận ra TJ qua
+       quotaCtx — tra từ là thao tác nhỏ, bấm liên tục, không nên ăn vào
+       hạn mức "3 Block AI/ngày" hay tốn tiền OpenAI. Cache theo term+câu. */
+    _lookupCache: {},
+    lookupWord: async function (term, sentence, cfg) {
+      var key = String(term).toLowerCase().trim() + "||" + String(sentence || "").trim();
+      if (w.Context._lookupCache[key]) return w.Context._lookupCache[key];
+      var sys = "Bạn là từ điển Anh-Việt cho người Việt học tiếng Anh. Trả lời DUY NHẤT 1 object JSON " +
+        "đúng schema, không thêm chữ nào khác, không dùng markdown code fence.";
+      var user =
+        "Tra từ/cụm từ tiếng Anh: \"" + term + "\"" +
+        (sentence ? "\nCâu chứa nó trong bài đọc: \"" + sentence + "\"" : "") + "\n\n" +
+        "Cho biết:\n" +
+        "- meaning_vi: nghĩa tiếng Việt ĐÚNG THEO NGỮ CẢNH câu trên (ngắn gọn, kiểu từ điển, 2-8 chữ)" +
+        (sentence ? "" : " — không có câu thì lấy nghĩa phổ biến nhất") + ".\n" +
+        "- other_vi: tối đa 3 nghĩa tiếng Việt KHÁC thường gặp của từ này (mảng, có thể rỗng).\n" +
+        "- base: dạng gốc/từ điển nếu từ đang chia (vd \"running\" -> \"run\"), không chia thì để giống term.\n" +
+        "- pos (Verb/Noun/Adjective/Adverb/Phrase/Idiom…), ipa (kiểu từ điển, có / /), level (CEFR A1-C2), " +
+        "def_en (định nghĩa tiếng Anh ngắn đúng nghĩa trong câu), explain_vi (1 câu tiếng Việt giải thích " +
+        "vì sao trong câu này nó mang nghĩa đó).\n\n" +
+        'Schema: {"meaning_vi":"...","other_vi":["..."],"base":"...","pos":"...","ipa":"...","level":"...","def_en":"...","explain_vi":"..."}';
+      var parsed = await w.Context._callProviderJSON(cfg, sys, user, null, 1);
+      if (!parsed || !parsed.meaning_vi) throw new Error("AI không trả về nghĩa");
+      parsed.other_vi = Array.isArray(parsed.other_vi) ? parsed.other_vi.filter(Boolean).slice(0, 3) : [];
+      w.Context._lookupCache[key] = parsed;
+      return parsed;
+    },
+
     /* ═══════════ TỰ ĐIỀN CÁC CỘT CÒN THIẾU CHO 1 DANH SÁCH TỪ ═══════════
        Dùng khi người dùng dán vào chỉ có term (+ có thể vài cột khác),
        thiếu level/pos/ipa/def_en/meaning_vi. CHỈ điền vào chỗ ĐANG RỖNG —

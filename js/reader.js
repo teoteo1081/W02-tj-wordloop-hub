@@ -205,10 +205,7 @@
                    (s.def ? '<span class="sg-def">' + w.esc(s.def) + "</span>" : "") +
                  "</button>";
         }).join("") + "</div>"
-      : (hit ? "" :
-         '<div class="wp-lbl mt">Đề xuất nghĩa</div>' +
-         '<div class="sg-empty">Kho từ chưa có gì gần với ' +
-         (nWords > 1 ? "cụm" : "từ") + " này — bạn tự gõ nghĩa bên dưới nhé.</div>");
+      : "";   /* kho từ không có gì gần -> phần "✨ Tra nghĩa (AI)" phía trên lo */
 
     /* nhắc rõ đang lưu 1 từ hay cả cụm */
     w.$("#wp-scope").textContent = nWords > 1
@@ -217,6 +214,9 @@
 
     var inp = w.$("#wp-meaning");
     inp.value = hit && hit.meaning_vi ? hit.meaning_vi : (sg.length ? sg[0].vi : "");
+    /* "auto" = ô đang chứa nghĩa app tự điền (chưa do người dùng gõ) — kết
+       quả tra AI về sau được phép thay; người dùng gõ tay thì giữ nguyên. */
+    inp.dataset.auto = hit && hit.meaning_vi ? "0" : "1";
     inp.placeholder = hit ? "Sửa lại nghĩa nếu muốn…" : "Gõ nghĩa tiếng Việt rồi bấm mức độ để lưu";
 
     w.$$("#wp-levels .lvl-btn").forEach(function (b) {
@@ -224,10 +224,77 @@
     });
     w.$("#wp-del").style.display = hit ? "" : "none";
 
+    /* Link tra thêm bên ngoài (luôn dùng được, không tốn gì) */
+    var q = encodeURIComponent(R.term);
+    w.$("#wp-links").innerHTML = "Tra thêm: " +
+      '<a href="https://translate.google.com/?sl=en&tl=vi&op=translate&text=' + q + '" target="_blank" rel="noopener">Google Dịch ↗</a> · ' +
+      '<a href="https://dictionary.cambridge.org/dictionary/english-vietnamese/' + encodeURIComponent(R.term.toLowerCase().replace(/\s+/g, "-")) + '" target="_blank" rel="noopener">Cambridge ↗</a>';
+
+    /* ✨ Tra AI theo ngữ cảnh: từ chưa có nghĩa trong kho -> tự tra luôn;
+       đã có nghĩa -> chỉ hiện nút, bấm mới tra (đỡ gọi AI thừa). */
+    R._lookup = null;
+    var seq = R._openSeq = (R._openSeq || 0) + 1;
+    if (!hit || !hit.meaning_vi) R.lookupAI(seq);
+    else w.$("#wp-lookup").innerHTML = '<button class="btn-soft wp-lookup-btn" id="wp-lookup-btn" type="button">✨ Tra nghĩa theo câu này (AI)</button>';
+
     w.$("#word-panel").classList.add("open");
     /* Ghim rồi thì không cần nền mờ — vẫn đọc và cuộn bài bình thường,
        bấm từ khác là bảng tự đổi nội dung tại chỗ. */
     w.$("#panel-backdrop").hidden = R.pinned;
+  };
+
+  /* Gọi Context.lookupWord rồi vẽ kết quả vào #wp-lookup. seq: chống kết
+     quả về TRỄ của từ cũ đè lên bảng khi người dùng đã bấm sang từ khác. */
+  R.lookupAI = async function (seq) {
+    var box = w.$("#wp-lookup");
+    var cfg = w.APP_CONFIG || {};
+    if (!(cfg.SUPABASE_URL && cfg.SUPABASE_ANON_KEY) && !cfg.OPENAI_API_KEY) {
+      box.innerHTML = '<div class="sg-empty">Chưa kết nối AI (cần Cloud mode) — dùng link Google Dịch/Cambridge bên dưới.</div>';
+      return;
+    }
+    var term = R.term, ctx = R.ctx;
+    box.innerHTML = '<div class="sg-empty">⏳ Đang tra nghĩa theo câu trong bài…</div>';
+    var r;
+    try {
+      r = await w.Context.lookupWord(term, ctx, cfg);
+    } catch (e) {
+      if (seq !== R._openSeq) return;
+      console.warn("[Reader] lookupWord lỗi:", e);
+      box.innerHTML = '<div class="sg-empty">Không tra được (' + w.esc(e.message || String(e)) + ') — ' +
+        '<button class="btn-link" id="wp-lookup-btn" type="button">thử lại</button> hoặc dùng link bên dưới.</div>';
+      return;
+    }
+    if (seq !== R._openSeq) return;
+    R._lookup = r;
+
+    var rows = [{ vi: r.meaning_vi, why: "✨ nghĩa theo câu này" }].concat(
+      r.other_vi.map(function (v) { return { vi: v, why: "nghĩa khác" }; }));
+    box.innerHTML =
+      '<div class="wp-lbl mt">✨ Nghĩa tra được (AI)</div>' +
+      '<div class="sg-list">' + rows.map(function (s, i) {
+        return '<button class="sg-row' + (i === 0 ? " ai" : "") + '" data-vi="' + w.esc(s.vi) + '">' +
+          '<span class="sg-vi">' + w.esc(s.vi) + "</span>" +
+          '<span class="sg-why">' + w.esc(s.why) + "</span>" +
+          (i === 0 && r.explain_vi ? '<span class="sg-def">' + w.esc(r.explain_vi) + "</span>" : "") +
+        "</button>";
+      }).join("") + "</div>" +
+      (r.def_en ? '<div class="wp-lbl mt">English definition (AI)</div><div class="wp-val">' + w.esc(r.def_en) + "</div>" : "") +
+      (r.base && r.base.toLowerCase() !== term.toLowerCase() ? '<div class="sg-empty">Dạng gốc: <b>' + w.esc(r.base) + "</b></div>" : "");
+
+    /* Từ mới: bổ sung phiên âm/loại từ lên đầu bảng + điền sẵn ô nghĩa nếu
+       người dùng chưa tự gõ gì (hoặc ô đang là đề xuất tự điền từ kho). */
+    var hit = R.lookup(term);
+    if (!hit) {
+      if (r.ipa && !w.$("#wp-ipa").textContent) w.$("#wp-ipa").textContent = r.ipa;
+      var tagBox = w.$("#wp-tags");
+      if (!tagBox.textContent.trim()) {
+        tagBox.innerHTML = [r.pos, r.level].filter(Boolean).map(function (t) {
+          return '<span class="pos-badge">' + w.esc(t) + "</span>";
+        }).join("");
+      }
+      var inp = w.$("#wp-meaning");
+      if (!inp.value.trim() || inp.dataset.auto === "1") { inp.value = r.meaning_vi; inp.dataset.auto = "1"; }
+    }
   };
 
   R.close = function () {
@@ -270,8 +337,11 @@
         if (!S().pageId) { w.toast("Hãy chọn một Page trước", "err"); return; }
         var gi = 0;
         S().blocks.forEach(function (b) { gi = Math.max(gi, b.global_index || 0); });
+        /* Có kết quả tra AI (R._lookup) thì lưu luôn phiên âm/định nghĩa/
+           loại từ/cấp độ — từ lưu vào kho đủ cột như từ dán bằng "+ Paste". */
+        var lk = (R._lookup && R._openSeq) ? R._lookup : {};
         var res = await w.DB.saveWordToExtra(S().pageId,
-          { term: R.term, meaning_vi: meaning, def_en: "", ipa: "", pos: "", level: "" },
+          { term: R.term, meaning_vi: meaning, def_en: lk.def_en || "", ipa: lk.ipa || "", pos: lk.pos || "", level: lk.level || "" },
           { nextGlobalIndex: gi + 1 });
 
         /* nạp vào bộ nhớ để hiện ngay, khỏi phải tải lại trang */
@@ -294,6 +364,18 @@
         user_id: w.Auth.user.id, word_id: hit.id
       });
       try { await w.DB.saveFamiliarity(w.Auth.user.id, hit.id, level); } catch (e) {}
+
+      /* Lưu mức 1–4 (chưa thuộc) = tự thêm vào ⭐ Yêu thích để ôn riêng
+         (TJ 2026-09-24: "bấm lưu 1 trong 4 lựa chọn thì nó ko ghi nhận vào
+         bookmark"). "✓ Đã thuộc" (5) giữ nguyên trạng thái bookmark cũ. */
+      if (level >= 1 && level <= 4 && w.Detail && !w.Detail.isBookmarked(hit.id)) {
+        try {
+          var bmRes = await w.DB.setBookmark(w.Auth.user.id, hit.id, true);
+          if (!bmRes.fallback) S().wp[hit.id] = Object.assign({}, S().wp[hit.id], { bookmarked: true });
+          if (w.WordSet && w.WordSet.onBookmarkChanged) w.WordSet.onBookmarkChanged(hit.id, true);
+          w.toast("Đã lưu mức " + level + " · ⭐ thêm vào Yêu thích (xem ở \"⭐ Ôn riêng\")", "ok");
+        } catch (e) { console.warn("[Reader] setBookmark lỗi:", e); }
+      }
 
       R.decorate();
       if (!R.pinned) R.forceClose();
@@ -467,13 +549,19 @@
     w.$("#wp-pin").onclick = R.togglePin;
     R.applyPin();
 
-    /* bấm một dòng đề xuất -> điền vào ô nghĩa */
-    w.$("#wp-suggest").addEventListener("click", function (e) {
+    /* bấm một dòng đề xuất (từ kho HOẶC từ AI) -> điền vào ô nghĩa */
+    function pickSuggestion(e) {
+      if (e.target.closest("#wp-lookup-btn")) { R.lookupAI(R._openSeq); return; }
       var row = e.target.closest("[data-vi]");
       if (!row) return;
-      w.$("#wp-meaning").value = row.dataset.vi;
-      w.$$("#wp-suggest .sg-row").forEach(function (b) { b.classList.toggle("sel", b === row); });
-    });
+      var inp = w.$("#wp-meaning");
+      inp.value = row.dataset.vi;
+      inp.dataset.auto = "0";
+      w.$$("#wp-suggest .sg-row, #wp-lookup .sg-row").forEach(function (b) { b.classList.toggle("sel", b === row); });
+    }
+    w.$("#wp-suggest").addEventListener("click", pickSuggestion);
+    w.$("#wp-lookup").addEventListener("click", pickSuggestion);
+    w.$("#wp-meaning").addEventListener("input", function () { this.dataset.auto = "0"; });
     w.$("#wp-say").onclick = function () { w.Speech.speakWord(R.term); };
     w.$("#wp-del").onclick = function () { R.removeWord(); };
     w.$$("#wp-levels .lvl-btn").forEach(function (b) {

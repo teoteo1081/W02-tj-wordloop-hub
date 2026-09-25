@@ -359,12 +359,51 @@
     }).join("") || '<tr><td colspan="6" style="text-align:center;color:var(--text-3)">Block này chưa có từ nào.</td></tr>';
 
     applyVocabCollapse();
+    D.renderSummary();
     D.renderFrameworkPanel();
     D.renderPassage();
     /* Đổi Block (kể cả bấm ◀/▶ giữa Speaking/Writing) đổi luôn panel này
        có/không + về đầu trang (renderStudy chỉ vẽ lại nội dung, không tự
        cuộn) — tính lại pill "🧭 Framework" ngay để khỏi trễ 1 nhịp cuộn. */
     if (D._tickStickyFw) D._tickStickyFw();
+  };
+
+  /* ══════════════ 📈 TỔNG QUAN ĐÃ HỌC BAO NHIÊU LẦN (đầu tab Bài học) ══════════════
+     2026-09-24, TJ hỏi "trong block lúc học ko thể hiện tổng quan là đã
+     học bao nhiêu lần hả?" — trước đó chỉ tab "📊 Tiến trình" mới có (phải
+     tự bấm sang). Không có cột đếm số lần làm bài riêng cho Block, nên
+     "Đã làm bài" = attempts LỚN NHẤT trong các từ của Block (mỗi lượt Nghĩa/
+     Phiếu/Từng câu cộng 1 attempt cho mỗi từ có trong đề) — đúng với Block
+     10 từ; Block "full_" >10 từ đề chỉ bốc 10 nên là con số gần đúng ("~"). */
+  D.renderSummary = function () {
+    var box = w.$("#study-summary");
+    if (!box) return;
+    var ws = words(), wp = S().wp, bp = S().bp[D.blockId] || {};
+    var maxAtt = 0, att = 0, ok = 0, mastered = 0;
+    ws.forEach(function (x) {
+      var p = wp[x.id];
+      if (!p) return;
+      maxAtt = Math.max(maxAtt, p.attempts || 0);
+      att += p.attempts || 0; ok += p.correct || 0;
+      if (p.mastered) mastered++;
+    });
+    var cycle = bp.cycle || 0;
+    var best = Math.max(bp.best_score || 0, bp.meaning_best || 0);
+    var st = w.SRS.state(S().bp[D.blockId]);
+    var approx = ws.length > (cfg.WORDS_PER_BLOCK || 10) ? "~" : "";
+    var chips = [
+      ["📝", "Đã làm bài", maxAtt ? approx + maxAtt + " lần" : "chưa lần nào"],
+      ["🔁", "Đã ôn chu kỳ", cycle + "/" + w.SRS.MAX_CYCLE + " lần" +
+        (bp.last_reviewed_at ? " · lần cuối " + w.humanTime(bp.last_reviewed_at) : "")],
+      ["⏰", "Lịch ôn", st.label],
+      ["🏆", "Điểm cao nhất", best ? best + "%" : "—"],
+      ["🎯", "Độ nhớ", att ? w.pct(ok, att) + "% (" + ok + "/" + att + " câu đúng)" : "—"],
+      ["✓", "Đã thuộc", mastered + "/" + ws.length + " từ"]
+    ];
+    box.innerHTML = chips.map(function (c) {
+      return '<span class="ss-chip"><span class="ss-ico">' + c[0] + '</span><span class="ss-lbl">' + w.esc(c[1]) +
+        '</span><b class="ss-val">' + w.esc(c[2]) + "</b></span>";
+    }).join("");
   };
 
   /* ══════════════ "AI FRAMEWORK" PANEL (2026-09-14) ══════════════
@@ -2291,6 +2330,11 @@
   D.bind = function () {
     w.Reader.bind();
     w.$("#btn-back").onclick = function () { D.close(); w.App.renderBlocks(); };
+    var ss = w.$("#study-summary");
+    if (ss) {
+      ss.onclick = function () { D.showTab("progress"); };
+      ss.onkeydown = function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); D.showTab("progress"); } };
+    }
 
     w.$("#bn-prev").onclick = function () { D.gotoAdjacentBlock(-1); };
     w.$("#bn-next").onclick = function () { D.gotoAdjacentBlock(1); };

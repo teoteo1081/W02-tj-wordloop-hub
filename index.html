@@ -15,7 +15,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon.svg">
-<link rel="stylesheet" href="css/app.css?v=38">
+<link rel="stylesheet" href="css/app.css?v=39">
 </head>
 <body>
 
@@ -313,6 +313,10 @@
 
       <!-- TAB 1: BÀI HỌC -->
       <div class="tab-pane active" id="pane-study">
+        <!-- 📈 Tổng quan Block đã học bao nhiêu lần (2026-09-24, TJ hỏi "trong
+             block lúc học ko thể hiện tổng quan là đã học bao nhiêu lần hả?")
+             — D.renderSummary, bấm để mở tab Tiến trình xem chi tiết. -->
+        <div class="study-summary" id="study-summary" role="button" tabindex="0" title="Bấm để xem chi tiết ở tab Tiến trình"></div>
         <!-- "AI Framework" panel (2026-09-14) — CHỈ hiện khi block.framework_data
              tồn tại (block do nút "🧭 AI Framework" tạo ra), nằm TRƯỚC bảng từ
              vựng theo đúng thứ tự chị chốt: Framework → Từ vựng → Bài đọc.
@@ -715,14 +719,18 @@
     <div id="wp-def"></div>
     <div id="wp-usage"></div>
 
+    <!-- ✨ Tra nghĩa theo câu bằng AI (Context.lookupWord, 2026-09-24) —
+         tự chạy khi từ chưa có nghĩa trong kho; từ đã có thì có nút tra thêm. -->
+    <div id="wp-lookup"></div>
     <div id="wp-suggest"></div>
 
     <div class="wp-lbl mt">Nghĩa của bạn</div>
     <input type="text" id="wp-meaning" class="text-input" autocomplete="off">
+    <div class="wp-links" id="wp-links"></div>
   </div>
 
   <div class="wp-foot">
-    <div class="wp-lbl">Mức độ thuộc — bấm để lưu</div>
+    <div class="wp-lbl">Mức độ thuộc — bấm để lưu <span class="wp-bm-hint">(1–4 tự thêm vào ⭐ Yêu thích)</span></div>
     <div class="wp-levels" id="wp-levels">
       <button class="lvl-btn" data-lv="1" title="Mới hoàn toàn">1</button>
       <button class="lvl-btn" data-lv="2" title="Còn mơ hồ">2</button>
@@ -1173,13 +1181,13 @@ mitigate | giảm nhẹ"></textarea>
 <script src="js/keys.local.js?v=1"></script>
 <script src="js/util.js?v=1"></script>
 <script src="js/srs.js?v=1"></script>
-<script src="js/context.js?v=33"></script>
+<script src="js/context.js?v=34"></script>
 <script src="js/speech.js?v=4"></script>
 <script src="js/db.js?v=12"></script>
 <script src="js/auth.js?v=5"></script>
 <script src="js/i18n.js?v=4"></script>
-<script src="js/reader.js?v=1"></script>
-<script src="js/detail.js?v=35"></script>
+<script src="js/reader.js?v=2"></script>
+<script src="js/detail.js?v=36"></script>
 <script src="js/export.js?v=2"></script>
 <script src="js/journey.js?v=6"></script>
 <script src="js/home.js?v=3"></script>

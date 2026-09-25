@@ -106,6 +106,8 @@ Sau khi học xong bài + đọc bài, có 3 tab kiểm tra độc lập, mỗi 
 - Nút **"⭐ Ôn riêng"** trên thanh trên cùng (`js/wordset.js`) mở 2 danh sách trên TOÀN APP: **⭐ Yêu thích** (bỏ Bookmark ngay tại đây được) và **❌ Hay sai** (từ từng trả lời sai mà chưa thuộc — suy từ `attempts`/`correct` có sẵn, làm đúng đủ nhiều thì tự rời danh sách). Mỗi danh sách có 🔊 Đọc tất cả + 🔀 Kiểm tra nghĩa (ghi độ nhớ từng từ, không đụng SRS của Block) + nút ↗ nhảy về đúng Block.
 - **Cần chạy 1 dòng SQL** (`tools/supabase_schema.sql`, dòng `alter table word_progress add column ... bookmarked`) để Bookmark đồng bộ giữa các máy — chưa chạy thì Bookmark lưu tạm trên máy đó, chạy xong mở "⭐ Ôn riêng" là tự đẩy lên.
 - **🔊 Đọc cả Batch** / **+ định nghĩa** ở đầu màn danh sách Block — đọc mọi từ của mọi Block trong Batch (bỏ từ trùng của Block `full_…`), Block đang đọc sáng lên, bấm lại để dừng.
+- Trong **bài đọc**, bấm/bôi 1 từ → bảng tra: lưu mức **1–4** là tự thêm vào ⭐ Yêu thích; từ chưa có trong kho tự **✨ tra nghĩa theo câu bằng AI** (Gemini free, không tính quota), kèm link Google Dịch/Cambridge.
+- Đầu tab **Bài học** có dải tổng quan: đã làm bài mấy lần, đã ôn mấy/6 chu kỳ, lịch ôn, điểm cao nhất, độ nhớ, số từ đã thuộc (bấm để xem tab Tiến trình).
 - Bài **Nghĩa** có nút **🔊** nghe từ trước khi chọn đáp án + nút **"🔊 Có tiếng / 🔇 Đã tắt tiếng"** (tắt HẾT âm thanh khi làm bài; dùng chung cho Từng câu và màn Ôn riêng).
 
 ## Chu kỳ ôn tập (Tony Buzan)

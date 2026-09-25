@@ -2261,3 +2261,19 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
   .batch-audio{margin-left:0;width:100%;}
   .ws-head .audio-toolbar{width:100%;}
 }
+/* Bảng tra từ trong bài đọc — ✨ tra AI theo câu + link tra thêm (2026-09-24) */
+.sg-row.ai{border-color:var(--blue);}
+.wp-lookup-btn{margin-top:.8rem;font-size:.78rem;}
+.wp-links{margin-top:.45rem;font-size:.75rem;color:var(--text-3);}
+.wp-links a{color:var(--blue-l);text-decoration:none;}
+.wp-links a:hover{text-decoration:underline;}
+.wp-bm-hint{text-transform:none;letter-spacing:0;font-weight:500;opacity:.8;}
+.btn-link{background:none;border:none;padding:0;color:var(--blue-l);cursor:pointer;font:inherit;text-decoration:underline;}
+/* 📈 Tổng quan Block đã học bao nhiêu lần — đầu tab Bài học (D.renderSummary) */
+.study-summary{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 .8rem;cursor:pointer;}
+.study-summary:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:10px;}
+.ss-chip{display:inline-flex;align-items:center;gap:.3rem;background:var(--bg-soft);border:1px solid var(--border);
+  border-radius:999px;padding:.3rem .7rem;font-size:.75rem;color:var(--text-2);}
+.study-summary:hover .ss-chip{border-color:var(--text-3);}
+.ss-lbl{color:var(--text-3);}
+.ss-val{color:var(--text);font-weight:700;}
