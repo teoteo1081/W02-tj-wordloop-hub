@@ -234,9 +234,10 @@
 
   WS.render = function () {
     paintCounts();
+    w.$("#ws-quiz-btn").textContent = WS.tab === "wrong" ? "🎯 Làm lại câu sai" : "🔀 Kiểm tra nghĩa";
     var note = w.$("#ws-note");
     if (WS.tab === "wrong") {
-      note.textContent = "Từ bạn đang trả lời sai ở bất kỳ bài kiểm tra nào. Làm đúng lại từ đó (ở đây hoặc trong Block) là tự bỏ ra khỏi danh sách.";
+      note.textContent = "Từ bạn đang làm sai ở bất kỳ bài kiểm tra nào. \"🎯 Làm lại câu sai\" hỏi lại ĐÚNG câu đã sai (điền từ hoặc nghĩa), từng từ riêng lẻ — đúng là tự bỏ ra khỏi danh sách.";
     } else {
       note.textContent = "Từ bạn đã bấm ☆ ở bảng từ vựng/bài Nghĩa, và từ lưu khi đọc bài (mức 1–4). Bấm ★ để bỏ khỏi danh sách.";
     }
@@ -264,7 +265,8 @@
     var rows = list.map(function (x, i) {
       var wr = wrongById[x.id];
       var wrongCell = wr
-        ? '<span class="ws-wrong" title="Sai ' + wr.wrong + " / " + wr.attempts + ' lần làm">✗ ' + wr.wrong + "/" + wr.attempts + "</span>"
+        ? '<span class="ws-wrong" title="Sai ' + wr.wrong + " / " + wr.attempts + ' lần làm">✗ ' + wr.wrong + "/" + wr.attempts + "</span>" +
+          (WS.tab === "wrong" ? '<div class="ws-ctx">' + w.esc(WS.ctxLabel(wr.ctx)) + "</div>" : "")
         : (x.mastered ? '<span class="ws-ok">✓ Đã thuộc</span>' : "");
       return "<tr data-i=\"" + i + "\">" +
         '<td><div class="term-cell">' +
@@ -288,25 +290,86 @@
   }
 
   /* ══════════════ KIỂM TRA NGHĨA ══════════════ */
-  function buildQuiz() {
-    var pool = currentWords().filter(function (x) { return x.meaning_vi; });
-    if (!pool.length) return null;
-    /* Đáp án nhiễu: ưu tiên từ trong chính danh sách, thiếu (danh sách
-       < 4 từ) thì mượn thêm nghĩa từ Notebook đang mở (S.words). */
-    var extra = ((w.S && w.S.words) || []).filter(function (y) { return y.meaning_vi; });
-    var picked = shuffle(pool).slice(0, Math.min(QUIZ_CAP, pool.length));
-    var mc = picked.map(function (x) {
-      var seen = {}; seen[x.meaning_vi] = true;
-      var others = [];
-      shuffle(pool).concat(shuffle(extra)).forEach(function (y) {
-        if (others.length >= 3 || y.id === x.id || seen[y.meaning_vi]) return;
-        seen[y.meaning_vi] = true;
-        others.push(y.meaning_vi);
-      });
-      return { term: x.term, wordId: x.id, answer: x.meaning_vi,
-               options: shuffle([x.meaning_vi].concat(others)), given: null };
+  /* Dựng đề. Tab "Fix lỗi sai": MỖI TỪ hỏi lại ĐÚNG câu đã làm sai (TJ
+     2026-09-25: "lôi đúng câu sai ra kiểm lại... tách lẻ ra để kiểm tra
+     đúng từ đó... ko phải làm full block") — ctx do Detail ghi lúc chấm:
+       gap     -> đúng câu điền từ đó + đúng 4 đáp án cũ
+       meaning -> đúng câu hỏi nghĩa đó (đúng ngôn ngữ VN/EN/CN/ES) + 4 đáp án cũ
+     Không có ctx (dữ liệu cũ) hoặc tab ⭐ -> hỏi nghĩa tiếng Việt như trước. */
+  var FIELD = { vi: "meaning_vi", en: "def_en", zh: "meaning_zh", es: "meaning_es" };
+  var LANG_LBL = { vi: "Nghĩa VN", en: "Nghĩa EN", zh: "Nghĩa CN", es: "Nghĩa ES" };
+  function ctxOf(wordId) {
+    if (WS.tab !== "wrong" || !WS.data) return null;
+    var hit = WS.data.wrong.find(function (x) { return x.word.id === wordId; });
+    return hit && hit.ctx ? hit.ctx : null;
+  }
+  WS.ctxLabel = function (ctx) {
+    if (!ctx) return "Nghĩa VN";
+    return ctx.t === "gap" ? "Điền từ vào câu" : (LANG_LBL[ctx.lang] || "Nghĩa");
+  };
+  function meaningDistractors(x, field, pool, extra) {
+    var seen = {}; seen[x[field]] = true;
+    var others = [];
+    shuffle(pool).concat(shuffle(extra)).forEach(function (y) {
+      if (others.length >= 3 || y.id === x.id || !y[field] || seen[y[field]]) return;
+      seen[y[field]] = true;
+      others.push(y[field]);
     });
+    return others;
+  }
+  function buildQuiz() {
+    var list = currentWords();
+    var extra = ((w.S && w.S.words) || []);
+    var picked = shuffle(list).slice(0, Math.min(QUIZ_CAP, list.length));
+    var mc = [];
+    picked.forEach(function (x) {
+      var ctx = ctxOf(x.id);
+      if (ctx && ctx.t === "gap" && ctx.text && ctx.text.indexOf("{{GAP}}") >= 0) {
+        var opts = (ctx.opts || []).filter(Boolean);
+        if (opts.indexOf(x.term) < 0 || opts.length < 2) {
+          var terms = shuffle(list.concat(extra).map(function (y) { return y.term; })
+            .filter(function (t, i, a) { return t && a.indexOf(t) === i && w.normalizeAnswer(t) !== w.normalizeAnswer(x.term); })).slice(0, 3);
+          opts = [x.term].concat(terms);
+        }
+        mc.push({ kind: "gap", term: x.term, wordId: x.id, text: ctx.text, answer: x.term,
+                  options: shuffle(opts), given: null, ctx: ctx });
+        return;
+      }
+      var lang = ctx && ctx.t === "meaning" && FIELD[ctx.lang] ? ctx.lang : "vi";
+      var field = FIELD[lang];
+      var answer = (ctx && ctx.t === "meaning" && ctx.answer) || x[field] || (lang !== "vi" ? x.meaning_vi : "");
+      if (!answer) return;
+      if (!x[field]) { lang = "vi"; field = "meaning_vi"; }
+      var mopts = ctx && ctx.t === "meaning" && (ctx.opts || []).indexOf(answer) >= 0 && ctx.opts.length >= 2
+        ? ctx.opts.slice() : [answer].concat(meaningDistractors(Object.assign({}, x, (function () { var o = {}; o[field] = answer; return o; })()), field, list, extra));
+      mc.push({ kind: "meaning", lang: lang, term: x.term, wordId: x.id, answer: answer,
+                options: shuffle(mopts), given: null,
+                ctx: { t: "meaning", lang: lang, answer: answer, opts: mopts } });
+    });
+    if (!mc.length) return null;
     return { mc: mc, total: mc.length, graded: false };
+  }
+
+  /* Câu điền từ (kind "gap") — trình bày giống tab "Từng câu". */
+  function gapQuestionHtml(q, optClass) {
+    var shown = !!q.shown, parts = q.text.split("{{GAP}}");
+    var optsHtml = q.options.map(function (t, j) {
+      return '<button class="' + optClass(t) + '" data-pick="' + w.esc(t) + '"' + (shown ? " disabled" : "") +
+        '><span class="mk">' + "ABCD".charAt(j) + ".</span>" + w.esc(t) + "</button>";
+    }).join("");
+    var explain = shown
+      ? '<div class="quiz-feedback ' + (q.ok ? "ok" : "no") + '">' +
+          (q.ok ? "✅ Chính xác! Đã gỡ khỏi Fix lỗi sai." : "❌ Đáp án đúng: <b>" + w.esc(q.answer) + "</b>") + "</div>" +
+        (w.Detail.answerNote ? w.Detail.answerNote(q.term, q.text) : "")
+      : "";
+    return '<div class="gap-card">' +
+        '<div class="gap-label">Chọn từ đúng điền vào chỗ trống</div>' +
+        '<div class="gap-sentence">' + w.esc(parts[0] || "") +
+          '<span class="blank' + (q.given ? " has" : "") + (shown ? (q.ok ? " ok" : " no") : "") + '">' +
+            (q.given ? w.esc(q.given) : "_ _ _") + "</span>" + w.esc(parts[1] || "") +
+        "</div>" +
+      "</div>" +
+      '<div class="single-grid"><div class="opt-list">' + optsHtml + '</div><div class="single-explain">' + explain + "</div></div>";
   }
 
   function renderQuiz() {
@@ -353,7 +416,8 @@
           '<span class="exam-score">đã làm ' + answered + "/" + ex.total + "</span>" +
         "</div>" +
         '<div class="quiz-bar"><i style="width:' + pctDone + '%"></i></div>' +
-        w.Detail.mcQuestionHtml(q, optClass) +
+        (WS.tab === "wrong" ? '<div class="ws-qtype">🎯 Câu bạn từng sai · ' + w.esc(q.kind === "gap" ? "Điền từ vào câu" : (LANG_LBL[q.lang] || "Nghĩa")) + "</div>" : "") +
+        (q.kind === "gap" ? gapQuestionHtml(q, optClass) : w.Detail.mcQuestionHtml(q, optClass)) +
         '<div class="exam-actions">' +
           '<button class="btn-soft" id="ws-prev"' + (WS.qi === 0 ? " disabled" : "") + ">← Trước</button>" +
           (last
@@ -367,7 +431,7 @@
       b.onclick = function () {
         if (q.shown) return;
         q.given = b.dataset.pick;
-        q.ok = q.given === q.answer;
+        q.ok = q.kind === "gap" ? w.normalizeAnswer(q.given) === w.normalizeAnswer(q.answer) : q.given === q.answer;
         q.shown = true;
         saveAnswer(q);
         renderQuiz();
@@ -411,7 +475,13 @@
     try {
       await w.DB.saveWordProgress(u.id, q.wordId, patch);
       /* ❌ Fix lỗi sai: đúng -> bỏ khỏi danh sách, sai -> (vẫn) nằm trong. */
-      await w.DB.markResults(u.id, [{ wordId: q.wordId, ok: !!q.ok }]);
+      /* sai lại -> giữ đúng câu đó (cập nhật lựa chọn vừa chọn) để lần sau hỏi lại y vậy */
+      var ctx = q.ctx ? Object.assign({}, q.ctx, { given: q.given || "" }) : null;
+      await w.DB.markResults(u.id, [{ wordId: q.wordId, ok: !!q.ok, ctx: ctx }]);
+      if (!q.ok && WS.data) {
+        var wi = WS.data.wrong.find(function (x) { return x.word.id === q.wordId; });
+        if (wi && ctx) wi.ctx = ctx;
+      }
       if (WS.data) {
         var i = WS.data.wrong.findIndex(function (x) { return x.word.id === q.wordId; });
         if (q.ok && i >= 0) WS.data.wrong.splice(i, 1);

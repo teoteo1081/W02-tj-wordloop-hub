@@ -1427,12 +1427,13 @@
      — giống câu UPDATE trong migration, để danh sách không trống trơn. */
   var LS_BM = "tjwl_bookmarks_v1";    /* {userId: {wordId: true}} */
   var LS_WO = "tjwl_wrong_open_v1";   /* {userId: {wordId: true|false}} */
+  var LS_WCTX = "tjwl_wrong_ctx_v1";  /* {userId: {wordId: ctx}} — câu đã làm sai, xem DB.markResults */
   DB.flagColumnMissing = { bookmarked: false, wrong_open: false };
   function readLS(key) { try { return JSON.parse(localStorage.getItem(key)) || {}; } catch (e) { return {}; } }
   function saveLS(key, all) { try { localStorage.setItem(key, JSON.stringify(all)); } catch (e) {} }
   function isMissingColumnErr(e) {
     var s = String((e && e.code) || "") + " " + String((e && e.message) || "");
-    return /42703|PGRST204/.test(s) || /bookmarked|wrong_open/.test(s);
+    return /42703|PGRST204/.test(s) || /bookmarked|wrong_open|wrong_ctx/.test(s);
   }
   /* true = từ này đang nằm trong "Fix lỗi sai" */
   function isWrongOpen(r, localMap) {
@@ -1458,6 +1459,14 @@
   }
   DB.isBookmarked = function (userId, wordId, wpRow, isSavedWord) {
     return bmState(userId, wordId, wpRow, isSavedWord);
+  };
+  /* Câu hỏi đã làm SAI gần nhất của 1 từ (để "Fix lỗi sai" hỏi lại ĐÚNG câu
+     đó thay vì hỏi nghĩa chung chung — TJ 2026-09-25). null = dữ liệu cũ
+     chưa ghi ngữ cảnh -> màn Ôn riêng hỏi nghĩa tiếng Việt như trước. */
+  DB.wrongCtx = function (userId, wordId, wpRow) {
+    if (wpRow && wpRow.wrong_ctx) return wpRow.wrong_ctx;
+    var mine = readLS(LS_WCTX)[userId];
+    return (mine && mine[wordId]) || null;
   };
   DB.isWrongOpen = function (userId, wpRow) {
     return !!wpRow && isWrongOpen(wpRow, readLS(LS_WO)[userId] || {});
@@ -1508,7 +1517,9 @@
 
   /* Ghi kết quả đúng/sai MỚI NHẤT của nhiều từ 1 lượt (gọi SAU khi đã lưu
      attempts/correct — dòng word_progress chắc chắn đã tồn tại). results:
-     [{wordId, ok}]. Cloud: 1 request upsert cả mảng (mọi object cùng bộ
+     [{wordId, ok, ctx}] — ctx = câu hỏi vừa làm (chỉ lưu khi SAI):
+       {t:"gap", text:"...{{GAP}}...", opts:[4 từ], given}  (Phiếu/Từng câu)
+       {t:"meaning", lang:"vi|en|zh|es", answer, opts:[4 nghĩa], given} (Nghĩa) Cloud: 1 request upsert cả mảng (mọi object cùng bộ
      khoá — PostgREST đòi vậy). Riêng lẻ, KHÔNG gộp vào saveWordProgress:
      thiếu cột thì chỉ phần này rơi về lưu tạm, còn điểm vẫn lưu bình thường. */
   DB.markResults = async function (userId, results) {
@@ -1518,14 +1529,18 @@
       var arr = local().word_progress;
       results.forEach(function (x) {
         var r = arr.find(function (y) { return y.user_id === userId && y.word_id === x.wordId; });
-        if (r) r.wrong_open = !x.ok; else arr.push({ user_id: userId, word_id: x.wordId, wrong_open: !x.ok });
+        if (!r) { r = { user_id: userId, word_id: x.wordId }; arr.push(r); }
+        r.wrong_open = !x.ok;
+        r.wrong_ctx = x.ok ? null : (x.ctx || null);
       });
       saveLocal();
       return { fallback: false };
     }
     if (!DB.flagColumnMissing.wrong_open) {
       try {
-        var rows = results.map(function (x) { return { user_id: userId, word_id: x.wordId, wrong_open: !x.ok }; });
+        var rows = results.map(function (x) {
+          return { user_id: userId, word_id: x.wordId, wrong_open: !x.ok, wrong_ctx: x.ok ? null : (x.ctx || null) };
+        });
         var r = await DB.sb.from("word_progress").upsert(rows, { onConflict: "user_id,word_id" });
         if (r.error) throw r.error;
         return { fallback: false };
@@ -1535,9 +1550,13 @@
       }
     }
     var all = readLS(LS_WO), mine = all[userId] || {};
-    results.forEach(function (x) { mine[x.wordId] = !x.ok; });
-    all[userId] = mine;
-    saveLS(LS_WO, all);
+    var allC = readLS(LS_WCTX), mineC = allC[userId] || {};
+    results.forEach(function (x) {
+      mine[x.wordId] = !x.ok;
+      if (x.ok || !x.ctx) delete mineC[x.wordId]; else mineC[x.wordId] = x.ctx;
+    });
+    all[userId] = mine; allC[userId] = mineC;
+    saveLS(LS_WO, all); saveLS(LS_WCTX, allC);
     return { fallback: true };
   };
 
@@ -1546,11 +1565,13 @@
   async function myProgressRows(userId) {
     if (progressLocal()) return local().word_progress.filter(function (r) { return r.user_id === userId; });
     var rows = await sbListAll("word_progress", function (q) { return q.eq("user_id", userId); }, "word_id");
-    var cols = ["bookmarked", "wrong_open"];
+    var cols = ["bookmarked", "wrong_open", "wrong_ctx"];
     for (var c = 0; c < cols.length; c++) {
       var probe = await DB.sb.from("word_progress").select(cols[c]).limit(1);
       DB.flagColumnMissing[cols[c]] = !!(probe.error && isMissingColumnErr(probe.error));
     }
+    /* wrong_open + wrong_ctx ghi CHUNG 1 lượt upsert -> thiếu 1 trong 2 là coi như thiếu */
+    if (DB.flagColumnMissing.wrong_ctx) DB.flagColumnMissing.wrong_open = true;
     var allBm = readLS(LS_BM), bm = allBm[userId] || {};
     if (!DB.flagColumnMissing.bookmarked && Object.keys(bm).length) {
       var ids = Object.keys(bm);
@@ -1567,14 +1588,16 @@
     }
     var allWo = readLS(LS_WO), wo = allWo[userId] || {};
     if (!DB.flagColumnMissing.wrong_open && Object.keys(wo).length) {
-      var pend = Object.keys(wo).map(function (id) { return { wordId: id, ok: !wo[id] }; });
+      var ctxs = readLS(LS_WCTX)[userId] || {};
+      var pend = Object.keys(wo).map(function (id) { return { wordId: id, ok: !wo[id], ctx: ctxs[id] || null }; });
       try {
         await DB.markResults(userId, pend);
         pend.forEach(function (x) {
           var r = rows.find(function (y) { return y.word_id === x.wordId; });
-          if (r) r.wrong_open = !x.ok;
+          if (r) { r.wrong_open = !x.ok; r.wrong_ctx = x.ok ? null : x.ctx; }
         });
         delete allWo[userId]; saveLS(LS_WO, allWo);
+        var allCx = readLS(LS_WCTX); delete allCx[userId]; saveLS(LS_WCTX, allCx);
       } catch (e) { console.warn("[DB] đẩy lỗi sai tạm lỗi:", e); }
     }
     return rows;
@@ -1675,7 +1698,7 @@
       .sort(function (a, b) { return String(a.term).localeCompare(String(b.term)); });
     var wrong = c.wrongRows.filter(function (r) { return wordsById[r.word_id]; }).map(function (r) {
       return { word: withBlock(wordsById[r.word_id]), wrong: (r.attempts || 0) - (r.correct || 0),
-               attempts: r.attempts || 0, correct: r.correct || 0 };
+               attempts: r.attempts || 0, correct: r.correct || 0, ctx: DB.wrongCtx(userId, r.word_id, r) };
     }).sort(function (a, b) {
       return b.wrong - a.wrong || (a.correct / (a.attempts || 1)) - (b.correct / (b.attempts || 1));
     });

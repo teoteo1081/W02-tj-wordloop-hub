@@ -2315,3 +2315,7 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
 .ws-scope.active{background:var(--blue-sub);color:var(--blue-l);border-color:var(--blue);}
 .ws-scope-n{opacity:.8;font-weight:700;margin-left:.2rem;}
 @media (max-width:640px){ .batch-ws{margin-left:0;width:100%;} }
+
+/* Fix lỗi sai: hỏi lại đúng câu đã sai (2026-09-25) */
+.ws-qtype{font-size:.72rem;font-weight:700;color:var(--red-l);margin:.1rem 0 .4rem;}
+.ws-ctx{font-size:.68rem;color:var(--text-3);margin-top:.15rem;white-space:nowrap;}

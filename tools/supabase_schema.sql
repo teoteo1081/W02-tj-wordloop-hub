@@ -140,6 +140,9 @@ alter table word_progress add column if not exists bookmarked boolean;
 -- lúc thêm cột: đưa các từ đã từng sai mà chưa thuộc vào danh sách luôn
 -- (khớp đúng quy tắc app dùng khi chưa có cột — xem isWrongOpen trong db.js).
 alter table word_progress add column if not exists wrong_open boolean;
+-- Câu hỏi đã làm SAI gần nhất (để "Fix lỗi sai" hỏi lại ĐÚNG câu đó):
+-- {t:"gap", text, opts, given} | {t:"meaning", lang, answer, opts, given}
+alter table word_progress add column if not exists wrong_ctx jsonb;
 update word_progress set wrong_open = (attempts > correct and not mastered) where wrong_open is null;
 alter table word_progress alter column wrong_open set default false;
 
