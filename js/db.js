@@ -1412,89 +1412,165 @@
     return r.data;
   };
 
-  /* ══════════════ ⭐ BOOKMARK + ❌ TỪ HAY SAI (2026-09-24) ══════════════
-     Bookmark = cột word_progress.bookmarked (boolean, theo từng user).
-     Cột này cần chạy migration (tools/supabase_schema.sql) — chưa chạy thì
-     Supabase báo 42703/PGRST204; lúc đó KHÔNG làm vỡ tính năng mà lưu tạm
-     bookmark vào máy này (LS_BM), lần sau DB.loadWordSets thấy cột đã có
-     thì tự đẩy hết bookmark tạm lên rồi xoá bản tạm.
-     "Từ hay sai" KHÔNG cần cột mới: word_progress đã có attempts/correct
-     (mọi bài kiểm tra đều cộng vào) — từ nào attempts > correct (từng sai
-     ít nhất 1 lần) và CHƯA mastered thì nằm trong danh sách; ôn đúng đủ
-     nhiều (mastered, xem MASTER_THRESHOLD) là tự rời danh sách. */
-  var LS_BM = "tjwl_bookmarks_v1";   /* {userId: {wordId: true}} — CHỈ dùng khi thiếu cột */
-  DB.bookmarkColumnMissing = false;
-  function readBmLocal() { try { return JSON.parse(localStorage.getItem(LS_BM)) || {}; } catch (e) { return {}; } }
-  function saveBmLocal(all) { try { localStorage.setItem(LS_BM, JSON.stringify(all)); } catch (e) {} }
+  /* ══════════════ ⭐ BOOKMARK + ❌ FIX LỖI SAI (2026-09-24) ══════════════
+     2 cột MỚI trên word_progress (theo từng user), cần chạy migration trong
+     tools/supabase_schema.sql:
+       · bookmarked  — ⭐ Yêu thích (bấm ☆, hoặc lưu mức 1–4 trong bài đọc).
+       · wrong_open  — ❌ "đang sai, chưa sửa": trả lời SAI ở bất kỳ bài kiểm
+         tra nào -> true; trả lời ĐÚNG lại từ đó -> false (TJ: "nào đã đúng
+         rồi thì bỏ ra"). Danh sách "Fix lỗi sai" = wrong_open = true.
+     Chưa chạy migration (Supabase báo 42703/PGRST204) thì KHÔNG làm vỡ tính
+     năng: lưu tạm vào máy này (LS_BM / LS_WO), lần sau myProgressRows thấy
+     cột đã có thì tự đẩy bản tạm lên rồi xoá. Từ chưa từng có kết quả mới
+     (dữ liệu trước khi có cột) thì suy ra từ attempts > correct && !mastered
+     — giống câu UPDATE trong migration, để danh sách không trống trơn. */
+  var LS_BM = "tjwl_bookmarks_v1";    /* {userId: {wordId: true}} */
+  var LS_WO = "tjwl_wrong_open_v1";   /* {userId: {wordId: true|false}} */
+  DB.flagColumnMissing = { bookmarked: false, wrong_open: false };
+  function readLS(key) { try { return JSON.parse(localStorage.getItem(key)) || {}; } catch (e) { return {}; } }
+  function saveLS(key, all) { try { localStorage.setItem(key, JSON.stringify(all)); } catch (e) {} }
   function isMissingColumnErr(e) {
     var s = String((e && e.code) || "") + " " + String((e && e.message) || "");
-    return /42703|PGRST204/.test(s) || /bookmarked/.test(s);
+    return /42703|PGRST204/.test(s) || /bookmarked|wrong_open/.test(s);
+  }
+  /* true = từ này đang nằm trong "Fix lỗi sai" */
+  function isWrongOpen(r, localMap) {
+    if (r && typeof r.wrong_open === "boolean") return r.wrong_open;
+    if (localMap && typeof localMap[r.word_id] === "boolean") return localMap[r.word_id];
+    return !!r && (r.attempts || 0) - (r.correct || 0) > 0 && !r.mastered;
   }
 
   DB.isBookmarked = function (userId, wordId, wpRow) {
     if (wpRow && wpRow.bookmarked) return true;
-    var mine = readBmLocal()[userId];
+    var mine = readLS(LS_BM)[userId];
     return !!(mine && mine[wordId]);
   };
 
   /* Trả về {fallback: true} nếu vừa phải lưu tạm vào máy (thiếu cột). */
   DB.setBookmark = async function (userId, wordId, on) {
-    var all = readBmLocal(), mine = all[userId] || {};
-    if (progressLocal() || !DB.bookmarkColumnMissing) {
+    var all = readLS(LS_BM), mine = all[userId] || {};
+    if (progressLocal() || !DB.flagColumnMissing.bookmarked) {
       try {
         await DB.saveWordProgress(userId, wordId, { bookmarked: !!on });
-        if (mine[wordId]) { delete mine[wordId]; all[userId] = mine; saveBmLocal(all); }
+        if (mine[wordId]) { delete mine[wordId]; all[userId] = mine; saveLS(LS_BM, all); }
         return { fallback: false };
       } catch (e) {
         if (!isMissingColumnErr(e)) throw e;
-        DB.bookmarkColumnMissing = true;
+        DB.flagColumnMissing.bookmarked = true;
       }
     }
     if (on) mine[wordId] = true; else delete mine[wordId];
     all[userId] = mine;
-    saveBmLocal(all);
+    saveLS(LS_BM, all);
     return { fallback: true };
   };
 
-  /* Tải 2 danh sách "⭐ Yêu thích" + "❌ Hay sai" của 1 user trên TOÀN APP
-     (không chỉ Notebook đang mở — S.words chỉ có Notebook hiện tại).
-     Trả về { bookmarks: [word], wrong: [{word, wrong, attempts, correct}],
-     fallback } — word kèm block_name để hiện chỗ đứng. */
-  DB.loadWordSets = async function (userId) {
-    var rows = [], wordsById = {}, blockName = {};
-    if (!userId) return { bookmarks: [], wrong: [], fallback: false };
-
+  /* Ghi kết quả đúng/sai MỚI NHẤT của nhiều từ 1 lượt (gọi SAU khi đã lưu
+     attempts/correct — dòng word_progress chắc chắn đã tồn tại). results:
+     [{wordId, ok}]. Cloud: 1 request upsert cả mảng (mọi object cùng bộ
+     khoá — PostgREST đòi vậy). Riêng lẻ, KHÔNG gộp vào saveWordProgress:
+     thiếu cột thì chỉ phần này rơi về lưu tạm, còn điểm vẫn lưu bình thường. */
+  DB.markResults = async function (userId, results) {
+    results = (results || []).filter(function (x) { return x && x.wordId; });
+    if (!userId || !results.length) return { fallback: false };
     if (progressLocal()) {
-      rows = local().word_progress.filter(function (r) { return r.user_id === userId; });
-    } else {
-      rows = await sbListAll("word_progress", function (q) { return q.eq("user_id", userId); }, "word_id");
-      var probe = await DB.sb.from("word_progress").select("bookmarked").limit(1);
-      DB.bookmarkColumnMissing = !!(probe.error && isMissingColumnErr(probe.error));
-      /* Cột vừa có (đã chạy migration) mà máy còn bookmark tạm -> đẩy lên. */
-      var all = readBmLocal(), mine = all[userId] || {}, pending = Object.keys(mine);
-      if (!DB.bookmarkColumnMissing && pending.length) {
-        for (var i = 0; i < pending.length; i++) {
-          try {
-            await DB.saveWordProgress(userId, pending[i], { bookmarked: true });
-            var hit = rows.find(function (r) { return r.word_id === pending[i]; });
-            if (hit) hit.bookmarked = true; else rows.push({ user_id: userId, word_id: pending[i], bookmarked: true });
-            delete mine[pending[i]];
-          } catch (e) { console.warn("[DB] đẩy bookmark tạm lỗi:", e); }
-        }
-        all[userId] = mine;
-        saveBmLocal(all);
+      var arr = local().word_progress;
+      results.forEach(function (x) {
+        var r = arr.find(function (y) { return y.user_id === userId && y.word_id === x.wordId; });
+        if (r) r.wrong_open = !x.ok; else arr.push({ user_id: userId, word_id: x.wordId, wrong_open: !x.ok });
+      });
+      saveLocal();
+      return { fallback: false };
+    }
+    if (!DB.flagColumnMissing.wrong_open) {
+      try {
+        var rows = results.map(function (x) { return { user_id: userId, word_id: x.wordId, wrong_open: !x.ok }; });
+        var r = await DB.sb.from("word_progress").upsert(rows, { onConflict: "user_id,word_id" });
+        if (r.error) throw r.error;
+        return { fallback: false };
+      } catch (e) {
+        if (!isMissingColumnErr(e)) throw e;
+        DB.flagColumnMissing.wrong_open = true;
       }
     }
+    var all = readLS(LS_WO), mine = all[userId] || {};
+    results.forEach(function (x) { mine[x.wordId] = !x.ok; });
+    all[userId] = mine;
+    saveLS(LS_WO, all);
+    return { fallback: true };
+  };
 
-    var bmSet = {};
-    rows.forEach(function (r) { if (r.bookmarked) bmSet[r.word_id] = true; });
-    Object.keys(readBmLocal()[userId] || {}).forEach(function (id) { bmSet[id] = true; });
-    var wrongRows = rows.filter(function (r) {
-      return (r.attempts || 0) - (r.correct || 0) > 0 && !r.mastered;
-    });
+  /* Toàn bộ dòng word_progress của 1 user (+ dò 2 cột mới có chưa, có rồi
+     thì đẩy bản lưu tạm trên máy lên). */
+  async function myProgressRows(userId) {
+    if (progressLocal()) return local().word_progress.filter(function (r) { return r.user_id === userId; });
+    var rows = await sbListAll("word_progress", function (q) { return q.eq("user_id", userId); }, "word_id");
+    var cols = ["bookmarked", "wrong_open"];
+    for (var c = 0; c < cols.length; c++) {
+      var probe = await DB.sb.from("word_progress").select(cols[c]).limit(1);
+      DB.flagColumnMissing[cols[c]] = !!(probe.error && isMissingColumnErr(probe.error));
+    }
+    var allBm = readLS(LS_BM), bm = allBm[userId] || {};
+    if (!DB.flagColumnMissing.bookmarked && Object.keys(bm).length) {
+      var ids = Object.keys(bm);
+      for (var i = 0; i < ids.length; i++) {
+        try {
+          await DB.saveWordProgress(userId, ids[i], { bookmarked: true });
+          var hit = rows.find(function (r) { return r.word_id === ids[i]; });
+          if (hit) hit.bookmarked = true; else rows.push({ user_id: userId, word_id: ids[i], bookmarked: true });
+          delete bm[ids[i]];
+        } catch (e) { console.warn("[DB] đẩy bookmark tạm lỗi:", e); }
+      }
+      allBm[userId] = bm; saveLS(LS_BM, allBm);
+    }
+    var allWo = readLS(LS_WO), wo = allWo[userId] || {};
+    if (!DB.flagColumnMissing.wrong_open && Object.keys(wo).length) {
+      var pend = Object.keys(wo).map(function (id) { return { wordId: id, ok: !wo[id] }; });
+      try {
+        await DB.markResults(userId, pend);
+        pend.forEach(function (x) {
+          var r = rows.find(function (y) { return y.word_id === x.wordId; });
+          if (r) r.wrong_open = !x.ok;
+        });
+        delete allWo[userId]; saveLS(LS_WO, allWo);
+      } catch (e) { console.warn("[DB] đẩy lỗi sai tạm lỗi:", e); }
+    }
+    return rows;
+  }
 
-    var ids = Object.keys(bmSet);
-    wrongRows.forEach(function (r) { if (!bmSet[r.word_id]) ids.push(r.word_id); });
+  function classify(userId, rows) {
+    var bmSet = {}, woLocal = readLS(LS_WO)[userId] || {}, byId = {};
+    rows.forEach(function (r) { byId[r.word_id] = r; if (r.bookmarked) bmSet[r.word_id] = true; });
+    Object.keys(readLS(LS_BM)[userId] || {}).forEach(function (id) { bmSet[id] = true; });
+    var wrongRows = rows.filter(function (r) { return isWrongOpen(r, woLocal); });
+    return { bmSet: bmSet, wrongRows: wrongRows, byId: byId };
+  }
+
+  /* Số liệu nhanh cho 2 nút "⭐ Ôn riêng" / "❌ Fix lỗi sai" trên thanh trên
+     cùng — CHỈ đọc word_progress (không tải bảng words). */
+  DB.getWordSetCounts = async function (userId) {
+    if (!userId) return { bm: 0, bmMastered: 0, wrong: 0 };
+    var c = classify(userId, await myProgressRows(userId));
+    var ids = Object.keys(c.bmSet);
+    return {
+      bm: ids.length,
+      bmMastered: ids.filter(function (id) { return c.byId[id] && c.byId[id].mastered; }).length,
+      wrong: c.wrongRows.length
+    };
+  };
+
+  /* Tải 2 danh sách "⭐ Yêu thích" + "❌ Fix lỗi sai" của 1 user trên TOÀN
+     APP (không chỉ Notebook đang mở — S.words chỉ có Notebook hiện tại).
+     Trả về { bookmarks: [word], wrong: [{word, wrong, attempts, correct}],
+     progress, fallback } — word kèm block_name + mastered. */
+  DB.loadWordSets = async function (userId) {
+    var wordsById = {}, blockName = {};
+    if (!userId) return { bookmarks: [], wrong: [], progress: {}, fallback: false };
+    var rows = await myProgressRows(userId);
+    var c = classify(userId, rows);
+
+    var ids = Object.keys(c.bmSet);
+    c.wrongRows.forEach(function (r) { if (!c.bmSet[r.word_id]) ids.push(r.word_id); });
 
     if (progressLocal() || DB.mode === "local") {
       var d = local();
@@ -1513,23 +1589,27 @@
         });
       }
     }
-    function withBlock(x) { return Object.assign({}, x, { block_name: blockName[x.block_id] || "" }); }
+    function withBlock(x) {
+      var p = c.byId[x.id];
+      return Object.assign({}, x, { block_name: blockName[x.block_id] || "", mastered: !!(p && p.mastered) });
+    }
 
-    var bookmarks = Object.keys(bmSet).filter(function (id) { return wordsById[id]; })
+    var bookmarks = Object.keys(c.bmSet).filter(function (id) { return wordsById[id]; })
       .map(function (id) { return withBlock(wordsById[id]); })
       .sort(function (a, b) { return String(a.term).localeCompare(String(b.term)); });
-    var wrong = wrongRows.filter(function (r) { return wordsById[r.word_id]; }).map(function (r) {
+    var wrong = c.wrongRows.filter(function (r) { return wordsById[r.word_id]; }).map(function (r) {
       return { word: withBlock(wordsById[r.word_id]), wrong: (r.attempts || 0) - (r.correct || 0),
                attempts: r.attempts || 0, correct: r.correct || 0 };
     }).sort(function (a, b) {
       return b.wrong - a.wrong || (a.correct / (a.attempts || 1)) - (b.correct / (b.attempts || 1));
     });
-    /* progress: số attempts/correct HIỆN TẠI của mọi từ trong 2 danh sách —
-       màn Ôn riêng cộng dồn vào đây khi ghi kết quả (từ ở Notebook khác
-       không có trong S.wp, thiếu số này sẽ ghi đè attempts về 1). */
+    /* progress: số attempts/correct HIỆN TẠI của mọi từ — màn Ôn riêng cộng
+       dồn vào đây khi ghi kết quả (từ ở Notebook khác không có trong S.wp,
+       thiếu số này sẽ ghi đè attempts về 1). */
     var progress = {};
     rows.forEach(function (r) { progress[r.word_id] = { attempts: r.attempts || 0, correct: r.correct || 0 }; });
-    return { bookmarks: bookmarks, wrong: wrong, progress: progress, fallback: DB.bookmarkColumnMissing };
+    return { bookmarks: bookmarks, wrong: wrong, progress: progress,
+             fallback: DB.flagColumnMissing.bookmarked || DB.flagColumnMissing.wrong_open };
   };
 
   /* Đường dẫn đầy đủ tới 1 Block (Hub/Notebook/Section/Page/Batch) — cho

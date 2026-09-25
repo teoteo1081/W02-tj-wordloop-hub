@@ -1220,11 +1220,33 @@
     el.textContent = "📚 " + (mastered || 0).toLocaleString("vi-VN") + " / " + (total || 0).toLocaleString("vi-VN");
   };
   App.refreshWordCounter = async function () {
+    App.refreshWordSetBadges();
     if (!w.Auth.user) { App.setWordCounter(0, 0); return; }
     try {
       var s = await w.DB.getJourneySummary(w.Auth.user.id);
       App.setWordCounter(s.mastered, s.totalWords);
     } catch (e) { /* offline/lỗi mạng -> giữ số cũ, không chặn app */ }
+  };
+
+  /* Số liệu nhỏ tầng 2 trên nút "⭐ Ôn riêng" (đã thuộc/tổng từ Bookmark) và
+     "❌ Fix lỗi sai" (số từ đang sai) — TJ yêu cầu 2026-09-24 ("hiển thị
+     nhanh số từ... thống kê nhẹ đang có bao nhiêu từ sai để biết mà chú
+     ý"). refresh* đọc DB (gọi lúc boot, rời Block, sau mỗi lần chấm bài/
+     bấm ⭐); set* chỉ sơn lại DOM (màn Ôn riêng gọi với số vừa tải). */
+  App.setWordSetBadges = function (c) {
+    var bm = w.$("#ws-top-bm"), wr = w.$("#ws-top-wrong"), fixBtn = w.$("#btn-fixwrong");
+    if (bm) bm.textContent = c.bm ? c.bmMastered + "/" + c.bm + " từ thuộc" : "chưa có từ";
+    if (wr) wr.textContent = c.wrong ? c.wrong + " từ sai" : "0 từ sai 🎉";
+    if (fixBtn) fixBtn.classList.toggle("has-wrong", c.wrong > 0);
+  };
+  App.refreshWordSetBadges = function () {
+    clearTimeout(App._wsBadgeTimer);
+    /* gom nhiều lần gọi sát nhau (chấm bài + rời Block...) thành 1 lượt đọc */
+    App._wsBadgeTimer = setTimeout(async function () {
+      if (!w.Auth.user) return;
+      try { App.setWordSetBadges(await w.DB.getWordSetCounts(w.Auth.user.id)); }
+      catch (e) { /* lỗi mạng -> giữ số cũ */ }
+    }, 400);
   };
 
   /* Dòng "🕒 Data cập nhật lần cuối" ở CHÂN SIDEBAR TRÁI (#sidebar-data-updated,

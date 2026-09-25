@@ -15,7 +15,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon.svg">
-<link rel="stylesheet" href="css/app.css?v=39">
+<link rel="stylesheet" href="css/app.css?v=43">
 </head>
 <body>
 
@@ -46,7 +46,9 @@
   <div class="topbar-right">
     <button class="theme-btn btn-journey-label" id="btn-home" title="Trang chủ — toàn bộ cây thư mục">🏠 Trang chủ</button>
     <button class="theme-btn btn-journey-label" id="btn-journey" title="Journey — thống kê học theo ngày">📊 Journey</button>
-    <button class="theme-btn btn-journey-label" id="btn-wordset" title="Ôn riêng — từ đã ⭐ Bookmark và từ hay làm sai">⭐ Ôn riêng</button>
+    <!-- 2 nút ôn riêng, chữ 2 tầng (tên + số liệu nhỏ) để đỡ chiếm bề ngang — số liệu do App.refreshWordSetBadges điền. -->
+    <button class="theme-btn btn-journey-label ws-top" id="btn-wordset" title="Ôn riêng — từ đã ⭐ Bookmark"><span class="ws-top-main">⭐<span class="ws-top-txt"> Ôn riêng</span></span><span class="ws-top-sub" id="ws-top-bm"></span></button>
+    <button class="theme-btn btn-journey-label ws-top" id="btn-fixwrong" title="Fix lỗi sai — từ đang trả lời sai; làm đúng lại là tự bỏ ra"><span class="ws-top-main">❌<span class="ws-top-txt"> Fix lỗi sai</span></span><span class="ws-top-sub" id="ws-top-wrong"></span></button>
     <button class="btn-learning" id="btn-learning" title="Quay lại trang đang học" hidden>📖 Learning</button>
     <button class="theme-btn" id="theme-btn" title="Đổi giao diện sáng / tối" aria-label="Đổi giao diện sáng / tối">🌙</button>
     <!-- Nút nhanh đổi ngôn ngữ giao diện — sát nút sáng/tối (TJ yêu cầu
@@ -627,7 +629,7 @@
         <div class="ws-head">
           <div class="meaning-lang-tabs ws-tabs" id="ws-tabs">
             <button class="mn-lang-tab active" data-ws="bm">⭐ Yêu thích <span class="ws-n" id="ws-n-bm"></span></button>
-            <button class="mn-lang-tab" data-ws="wrong">❌ Hay sai <span class="ws-n" id="ws-n-wrong"></span></button>
+            <button class="mn-lang-tab" data-ws="wrong">❌ Fix lỗi sai <span class="ws-n" id="ws-n-wrong"></span></button>
           </div>
           <div class="audio-toolbar" id="ws-toolbar">
             <button class="btn-soft" id="ws-stop">⏹ Dừng</button>
@@ -1183,15 +1185,15 @@ mitigate | giảm nhẹ"></textarea>
 <script src="js/srs.js?v=1"></script>
 <script src="js/context.js?v=34"></script>
 <script src="js/speech.js?v=4"></script>
-<script src="js/db.js?v=12"></script>
+<script src="js/db.js?v=13"></script>
 <script src="js/auth.js?v=5"></script>
 <script src="js/i18n.js?v=4"></script>
-<script src="js/reader.js?v=2"></script>
-<script src="js/detail.js?v=36"></script>
+<script src="js/reader.js?v=3"></script>
+<script src="js/detail.js?v=37"></script>
 <script src="js/export.js?v=2"></script>
 <script src="js/journey.js?v=6"></script>
 <script src="js/home.js?v=3"></script>
-<script src="js/wordset.js?v=1"></script>
-<script src="js/app.js?v=43"></script>
+<script src="js/wordset.js?v=2"></script>
+<script src="js/app.js?v=45"></script>
 </body>
 </html>

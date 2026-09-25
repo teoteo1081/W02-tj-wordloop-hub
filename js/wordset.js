@@ -35,9 +35,13 @@
   }
 
   /* ══════════════ MỞ / ĐÓNG ══════════════ */
-  WS.open = async function () {
+  /* tab: "bm" (nút ⭐ Ôn riêng) | "wrong" (nút ❌ Fix lỗi sai) — không
+     truyền thì mở lại tab dùng lần trước. */
+  WS.open = async function (tab) {
     w.Speech.stop();
-    try { WS.tab = localStorage.getItem(LS_TAB) === "wrong" ? "wrong" : "bm"; } catch (e) {}
+    if (tab) WS.tab = tab;
+    else { try { WS.tab = localStorage.getItem(LS_TAB) === "wrong" ? "wrong" : "bm"; } catch (e) {} }
+    try { localStorage.setItem(LS_TAB, WS.tab); } catch (e) {}
     WS._prevWasDetail = !w.$("#screen-detail").hidden;
     ["#screen-blocks", "#screen-detail", "#screen-leaderboard", "#screen-journey", "#screen-home"].forEach(function (s) {
       w.$(s).hidden = true;
@@ -99,6 +103,14 @@
     var d = WS.data || { bookmarks: [], wrong: [] };
     w.$("#ws-n-bm").textContent = d.bookmarks.length;
     w.$("#ws-n-wrong").textContent = d.wrong.length;
+    /* số trên 2 nút thanh trên cùng khớp luôn với danh sách vừa tải */
+    if (w.App && w.App.setWordSetBadges && WS.data) {
+      w.App.setWordSetBadges({
+        bm: d.bookmarks.length,
+        bmMastered: d.bookmarks.filter(function (x) { return x.mastered; }).length,
+        wrong: d.wrong.length
+      });
+    }
     w.$$("#ws-tabs [data-ws]").forEach(function (b) { b.classList.toggle("active", b.dataset.ws === WS.tab); });
   }
 
@@ -106,7 +118,7 @@
     paintCounts();
     var note = w.$("#ws-note");
     if (WS.tab === "wrong") {
-      note.textContent = "Từ bạn từng trả lời sai ở bất kỳ bài kiểm tra nào mà chưa thuộc. Kiểm tra đúng đủ nhiều lần là từ tự rời khỏi danh sách này.";
+      note.textContent = "Từ bạn đang trả lời sai ở bất kỳ bài kiểm tra nào. Làm đúng lại từ đó (ở đây hoặc trong Block) là tự bỏ ra khỏi danh sách.";
     } else {
       note.textContent = "Từ bạn đã bấm ☆ Bookmark ở bảng từ vựng hoặc trong bài Nghĩa. Bấm ★ để bỏ Bookmark.";
     }
@@ -135,7 +147,7 @@
       var wr = wrongById[x.id];
       var wrongCell = wr
         ? '<span class="ws-wrong" title="Sai ' + wr.wrong + " / " + wr.attempts + ' lần làm">✗ ' + wr.wrong + "/" + wr.attempts + "</span>"
-        : "";
+        : (x.mastered ? '<span class="ws-ok">✓ Đã thuộc</span>' : "");
       return "<tr data-i=\"" + i + "\">" +
         '<td><div class="term-cell">' +
           '<button class="spk" data-ws-say="' + w.esc(x.term) + '" title="Nghe">🔊</button>' +
@@ -277,8 +289,18 @@
     };
     rememberProgress(q.wordId, patch);
     if (w.S && w.S.wp) w.S.wp[q.wordId] = Object.assign({}, prev, patch, { user_id: u.id, word_id: q.wordId });
-    try { await w.DB.saveWordProgress(u.id, q.wordId, patch); }
-    catch (e) {
+    try {
+      await w.DB.saveWordProgress(u.id, q.wordId, patch);
+      /* ❌ Fix lỗi sai: đúng -> bỏ khỏi danh sách, sai -> (vẫn) nằm trong. */
+      await w.DB.markResults(u.id, [{ wordId: q.wordId, ok: !!q.ok }]);
+      if (WS.data) {
+        var i = WS.data.wrong.findIndex(function (x) { return x.word.id === q.wordId; });
+        if (q.ok && i >= 0) WS.data.wrong.splice(i, 1);
+        var bmHit = WS.data.bookmarks.find(function (x) { return x.id === q.wordId; });
+        if (bmHit) bmHit.mastered = patch.mastered;
+        paintCounts();
+      }
+    } catch (e) {
       console.warn("[WordSet] saveWordProgress lỗi:", e);
       w.toast("⚠️ Chưa lưu được kết quả lên máy chủ (mất mạng?)", "err");
     }
@@ -294,7 +316,8 @@
   }
 
   /* ══════════════ GẮN SỰ KIỆN (1 lần lúc tải trang) ══════════════ */
-  w.$("#btn-wordset").onclick = function () { WS.open(); };
+  w.$("#btn-wordset").onclick = function () { WS.open("bm"); };
+  w.$("#btn-fixwrong").onclick = function () { WS.open("wrong"); };
   w.$("#btn-wordset-back").onclick = function () { WS.close(); };
   w.$("#wordset-refresh").onclick = function () { WS.quiz = null; WS.load(); };
   w.$$("#ws-tabs [data-ws]").forEach(function (b) {

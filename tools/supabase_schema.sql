@@ -133,6 +133,13 @@ create table if not exists word_progress (
 -- Chưa chạy dòng này thì app vẫn chạy: bookmark lưu tạm trên máy, chạy
 -- xong mở "⭐ Ôn riêng" là tự đẩy lên (xem DB.loadWordSets trong js/db.js).
 alter table word_progress add column if not exists bookmarked boolean default false;
+-- ❌ Fix lỗi sai (2026-09-24): true = lần gần nhất trả lời SAI từ này, đúng
+-- lại thì app tự set false (bỏ khỏi danh sách). Câu UPDATE chỉ chạy 1 lần
+-- lúc thêm cột: đưa các từ đã từng sai mà chưa thuộc vào danh sách luôn
+-- (khớp đúng quy tắc app dùng khi chưa có cột — xem isWrongOpen trong db.js).
+alter table word_progress add column if not exists wrong_open boolean;
+update word_progress set wrong_open = (attempts > correct and not mastered) where wrong_open is null;
+alter table word_progress alter column wrong_open set default false;
 
 create table if not exists block_progress (
   user_id uuid not null references auth.users(id) on delete cascade,

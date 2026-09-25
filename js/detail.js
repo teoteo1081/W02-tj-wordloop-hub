@@ -1819,7 +1819,7 @@
     catch (e) { saveFailed = true; console.warn("[Detail] saveBlockProgress lỗi:", e); }
 
     /* kết quả cũng tính vào độ nhớ từng từ */
-    var byTerm = {};
+    var byTerm = {}, fixResults = [];
     words().forEach(function (x) { byTerm[x.term.toLowerCase()] = x; });
     for (var i = 0; i < ex.gaps.length; i++) {
       var g = ex.gaps[i];
@@ -1835,9 +1835,13 @@
         last_reviewed_at: Date.now()
       };
       S().wp[x.id] = Object.assign({}, prev, wpatch, { user_id: w.Auth.user.id, word_id: x.id });
+      fixResults.push({ wordId: x.id, ok: !!g.ok });
       try { await w.DB.saveWordProgress(w.Auth.user.id, x.id, wpatch); }
       catch (e) { saveFailed = true; console.warn("[Detail] saveWordProgress lỗi:", e); }
     }
+    /* ❌ Fix lỗi sai: sai -> vào danh sách, đúng lại -> ra khỏi (DB.markResults). */
+    try { await w.DB.markResults(w.Auth.user.id, fixResults); } catch (e) { console.warn("[Detail] markResults lỗi:", e); }
+    if (w.App && w.App.refreshWordSetBadges) w.App.refreshWordSetBadges();
 
     /* Đạt ≥ 80% -> tính vào "số từ học hôm nay" cho màn Journey. */
     if (passed) { try { await w.DB.bumpLearnedToday(w.Auth.user.id, ex.total); } catch (e) {} }
@@ -1933,6 +1937,7 @@
       }
       w.toast(on ? "⭐ Đã thêm vào Yêu thích" : "Đã bỏ khỏi Yêu thích", "ok");
       if (w.WordSet && w.WordSet.onBookmarkChanged) w.WordSet.onBookmarkChanged(wordId, on);
+      if (w.App && w.App.refreshWordSetBadges && !(w.WordSet && w.WordSet.isOpen())) w.App.refreshWordSetBadges();
     } catch (e) {
       paint(!on);
       console.warn("[Detail] setBookmark lỗi:", e);
@@ -2123,7 +2128,7 @@
        ở submitFinal phía trên — gom lỗi lưu lại báo 1 lần, không im lặng
        nuốt hết như trước (bug thật phát hiện qua subagent review). */
     var saveFailed = false;
-    var byTerm = {};
+    var byTerm = {}, fixResults = [];
     words().forEach(function (x) { byTerm[x.term.toLowerCase()] = x; });
     for (var i = 0; i < ex.mc.length; i++) {
       var q = ex.mc[i];
@@ -2139,9 +2144,13 @@
         last_reviewed_at: Date.now()
       };
       S().wp[x.id] = Object.assign({}, prev, wpatch, { user_id: w.Auth.user.id, word_id: x.id });
+      fixResults.push({ wordId: x.id, ok: !!q.ok });
       try { await w.DB.saveWordProgress(w.Auth.user.id, x.id, wpatch); }
       catch (e) { saveFailed = true; console.warn("[Detail] saveWordProgress lỗi:", e); }
     }
+    /* ❌ Fix lỗi sai: sai -> vào danh sách, đúng lại -> ra khỏi (DB.markResults). */
+    try { await w.DB.markResults(w.Auth.user.id, fixResults); } catch (e) { console.warn("[Detail] markResults lỗi:", e); }
+    if (w.App && w.App.refreshWordSetBadges) w.App.refreshWordSetBadges();
 
     /* Đạt ≥ 80% -> tính vào "số từ học hôm nay" cho màn Journey, VÀ giờ
        cũng đẩy chu kỳ ôn Tony Buzan y hệt Phiếu đầy đủ/Từng câu — theo

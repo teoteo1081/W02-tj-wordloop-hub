@@ -373,6 +373,7 @@
           var bmRes = await w.DB.setBookmark(w.Auth.user.id, hit.id, true);
           if (!bmRes.fallback) S().wp[hit.id] = Object.assign({}, S().wp[hit.id], { bookmarked: true });
           if (w.WordSet && w.WordSet.onBookmarkChanged) w.WordSet.onBookmarkChanged(hit.id, true);
+          if (w.App && w.App.refreshWordSetBadges) w.App.refreshWordSetBadges();
           w.toast("Đã lưu mức " + level + " · ⭐ thêm vào Yêu thích (xem ở \"⭐ Ôn riêng\")", "ok");
         } catch (e) { console.warn("[Reader] setBookmark lỗi:", e); }
       }

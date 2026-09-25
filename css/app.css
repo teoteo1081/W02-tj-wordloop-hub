@@ -2277,3 +2277,20 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
 .study-summary:hover .ss-chip{border-color:var(--text-3);}
 .ss-lbl{color:var(--text-3);}
 .ss-val{color:var(--text);font-weight:700;}
+/* 2 nút "⭐ Ôn riêng" / "❌ Fix lỗi sai" trên thanh trên cùng — chữ 2 tầng
+   (tên + số liệu nhỏ) thay vì 1 dòng dài, đỡ chiếm bề ngang (TJ 2026-09-24). */
+.ws-top{height:34px;flex-direction:column;align-items:flex-start;justify-content:center;gap:0;padding:0 .55rem;line-height:1.1;}
+.ws-top-main{font-size:.74rem;font-weight:700;white-space:nowrap;}
+.ws-top-sub{font-size:.62rem;font-weight:600;color:var(--text-3);white-space:nowrap;}
+.ws-top-sub:empty{display:none;}
+#btn-fixwrong.has-wrong{border-color:var(--red);}
+#btn-fixwrong.has-wrong .ws-top-sub{color:var(--red-l);}
+.ws-ok{color:var(--green-l);font-weight:700;font-size:.8rem;white-space:nowrap;}
+@media (max-width:960px){
+  .ws-top-txt{display:none;}
+  .ws-top{align-items:center;padding:0 .4rem;}
+}
+/* Thêm 2 nút ⭐/❌ làm thanh trên cùng tràn ở màn ~1024px (đo thật: nút
+   tài khoản bị đẩy ra ngoài 45px) -> ≤1280px ẩn chữ "TJ WordLoop" cạnh
+   logo (icon 🔁 vẫn còn) để nhường chỗ, giữ nguyên chữ trên các nút. */
+@media (max-width:1280px){ .brand-text{display:none;} }
