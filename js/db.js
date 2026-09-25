@@ -457,7 +457,14 @@
   };
 
   /* Nạp toàn bộ nội dung của 1 notebook (sections -> words) */
+  /* Notebook "⭐ Ôn riêng" (xem DB.syncOnRiengBlocks) -> nạp thêm bản sao từ
+     GỐC vào đúng Block qua ref_word_ids. Notebook thường: y như cũ. */
   DB.loadNotebook = async function (notebookId) {
+    var d = await loadNotebookRaw(notebookId);
+    if (DB.isOnRiengNotebook(notebookId)) d.words = d.words.concat(await onrRefWords(d.blocks));
+    return d;
+  };
+  async function loadNotebookRaw(notebookId) {
     if (DB.mode === "local") {
       var d = local();
       var sections = where(d.sections, "notebook_id", notebookId).sort(bySort);
@@ -507,7 +514,7 @@
       });
     });
     return { sections: sections, pages: pages, batches: batches, blocks: blocks, words: words };
-  };
+  }
 
   /* ══════════════ THÊM MỚI ══════════════ */
   async function insertOne(table, row) {
@@ -1734,6 +1741,183 @@
     return { bookmarks: bookmarks, wrong: wrong, progress: progress, rows: c.byId,
              fallback: DB.flagColumnMissing.bookmarked || DB.flagColumnMissing.wrong_open };
   };
+
+  /* ══════════════ HUB "⭐ ÔN RIÊNG" — Block 10 từ THẬT từ danh sách ⭐ (2026-09-25) ══════════════
+     TJ: "Trong thiết kế ôn riêng cũng gom đủ 10 từ làm 1 block... có cấu
+     trúc bài đọc để tự gen và các giao diện khác giống như các block khác...
+     học xong mình unbookmark thì gỡ ra. Bài đọc đã tạo thì vẫn giữ nguyên
+     trong block đó, nếu tạo lại thì... chỉ canh trên các từ trong block".
+     TJ chọn: 1 Hub riêng "⭐ ÔN RIÊNG", mỗi người 1 Notebook riêng tư, gom
+     theo THỨ TỰ LƯU.
+     Cấu trúc (id cố định theo user): hub_onrieng > nb_onr_<uid> > sec_onr_<uid>
+     > pg_onr_<uid> > bt_onr_<uid> > Block 1..n (bl_onr_<uid>_<n>).
+     Block KHÔNG chứa từ thật: cột blocks.ref_word_ids (jsonb, cần migration)
+     = mảng id từ GỐC. DB.loadNotebook nạp bản sao từ gốc vào S.words với
+     block_id = Block Ôn riêng (_ref:true) -> Detail/bài đọc/quiz chạy y như
+     Block thường, còn word_progress vẫn ghi đúng vào từ GỐC (cùng id) nên
+     ⭐/Fix/độ nhớ dùng chung với chỗ gốc. Bài đọc/tiến trình Block là dòng
+     blocks/block_progress THẬT của Block Ôn riêng -> giữ nguyên qua các lần
+     đồng bộ (chỉ ref_word_ids đổi). */
+  DB.ONR_HUB_ID = "hub_onrieng";
+  DB.onrIds = function (uid) {
+    return { nb: "nb_onr_" + uid, sec: "sec_onr_" + uid, pg: "pg_onr_" + uid, bt: "bt_onr_" + uid };
+  };
+  DB.isOnRiengNotebook = function (id) { return /^nb_onr_/.test(String(id || "")); };
+  /* Chỉ tạo Ôn riêng khi tiến trình lưu ĐÚNG chỗ với kho: Local hoàn toàn,
+     hoặc Cloud + đăng nhập thật. Hồ sơ máy dùng kho Cloud (id "us_...")
+     KHÔNG được tạo Notebook lên kho dùng chung (rác cho mọi khách). */
+  DB.canOnRieng = function () { return DB.mode === "local" || !!DB.progressCloud; };
+  var ONR_PER = cfg.WORDS_PER_BLOCK || 10;
+  var onrEnsured = {};
+
+  /* Tạo (nếu chưa có) Hub + Notebook/Section/Page/Batch Ôn riêng của user.
+     Trả về true nếu vừa tạo mới Hub (nơi gọi nạp lại danh sách Hub). */
+  DB.ensureOnRieng = async function (user) {
+    if (!user || !user.id || onrEnsured[user.id] || !DB.canOnRieng()) return false;
+    var ids = DB.onrIds(user.id);
+    var rows = [
+      ["hubs", { id: DB.ONR_HUB_ID, code: "ONRIENG", name: "⭐ ÔN RIÊNG", sort: 9999 }],
+      ["notebooks", { id: ids.nb, hub_id: DB.ONR_HUB_ID, name: "⭐ Ôn riêng — " + (user.name || "tôi"), sort: 0, visibility: "restricted" }],
+      ["sections", { id: ids.sec, notebook_id: ids.nb, name: "⭐ Từ đã lưu", sort: 0 }],
+      ["pages", { id: ids.pg, section_id: ids.sec, name: "Tất cả", sort: 0 }],
+      ["batches", { id: ids.bt, page_id: ids.pg, name: "Batch 1", sort: 0, created_at: Date.now() }]
+    ];
+    var hubNew = false;
+    if (DB.mode === "local") {
+      var d = local();
+      rows.forEach(function (r) {
+        if (!d[r[0]].some(function (x) { return x.id === r[1].id; })) {
+          d[r[0]].push(r[1]);
+          if (r[0] === "hubs") hubNew = true;
+        }
+      });
+      saveLocal();
+    } else {
+      var hr = await DB.sb.from("hubs").select("id").eq("id", DB.ONR_HUB_ID).maybeSingle();
+      hubNew = !(hr.data);
+      for (var i = 0; i < rows.length; i++) {
+        var r = await DB.sb.from(rows[i][0]).upsert(rows[i][1], { onConflict: "id", ignoreDuplicates: true });
+        if (r.error) throw r.error;
+      }
+      /* Notebook "restricted" -> người thường chỉ thấy nếu được share: tự
+         share cho CHÍNH chủ (chỉ user Cloud thật — id là uuid). */
+      if (DB.progressCloud && /^[0-9a-f-]{36}$/i.test(user.id)) {
+        try { await DB.grantNotebookAccess(ids.nb, user.id, "edit"); } catch (e) { console.warn("[DB] grant Ôn riêng lỗi:", e); }
+      }
+    }
+    onrEnsured[user.id] = true;
+    return hubNew;
+  };
+
+  /* Đồng bộ các Block Ôn riêng với danh sách ⭐ hiện tại:
+       · từ đã bỏ ⭐ -> gỡ khỏi Block của nó (bài đọc của Block GIỮ NGUYÊN);
+       · Block không còn từ nào -> xoá;
+       · từ ⭐ mới -> lấp vào Block CUỐI cho đủ 10, rồi mở Block mới (thứ tự
+         lưu ~ last_reviewed_at tăng dần — không có cột "lúc bấm ⭐").
+     Không xếp lại Block cũ (bài đọc đã tạo vẫn khớp đúng từ của nó).
+     Ném lỗi kind "need_sql" nếu chưa có cột blocks.ref_word_ids. */
+  DB.syncOnRiengBlocks = async function (userId) {
+    var ids = DB.onrIds(userId);
+    var data = await DB.loadWordSets(userId);
+    var canon = {}, order = [];
+    data.bookmarks.forEach(function (x) {
+      if (x.loc && DB.isOnRiengNotebook(x.loc.notebookId)) return;   /* từ tự lưu NGAY trong Notebook Ôn riêng */
+      (x.dup_ids || [x.id]).forEach(function (id) { canon[id] = x.id; });
+      order.push(x.id);
+    });
+    var rowsById = data.rows || {};
+
+    var blocks;
+    if (DB.mode === "local") {
+      blocks = local().blocks.filter(function (b) { return b.batch_id === ids.bt; }).sort(bySort);
+    } else {
+      var rb = await DB.sb.from("blocks").select("id,name,sort,global_index,ref_word_ids").eq("batch_id", ids.bt).order("sort");
+      if (rb.error) {
+        if (isMissingColumnErr(rb.error) || /ref_word_ids/.test(rb.error.message || "")) { var e1 = new Error("Chưa chạy SQL thêm cột blocks.ref_word_ids"); e1.kind = "need_sql"; throw e1; }
+        throw rb.error;
+      }
+      blocks = rb.data || [];
+    }
+
+    var placed = {}, changes = [], dels = [];
+    blocks.forEach(function (b) {
+      var old = Array.isArray(b.ref_word_ids) ? b.ref_word_ids : [];
+      var keep = [];
+      old.forEach(function (id) {
+        var c = canon[id];
+        if (c && !placed[c]) { placed[c] = 1; keep.push(c); }
+      });
+      b._new = keep;
+      b._changed = JSON.stringify(keep) !== JSON.stringify(old);
+    });
+    var fresh = order.filter(function (id) { return !placed[id]; }).sort(function (a, b) {
+      return ((rowsById[a] && rowsById[a].last_reviewed_at) || 0) - ((rowsById[b] && rowsById[b].last_reviewed_at) || 0);
+    });
+    var alive = blocks.filter(function (b) { return b._new.length; });
+    var last = alive[alive.length - 1];
+    while (fresh.length && last && last._new.length < ONR_PER) { last._new.push(fresh.shift()); last._changed = true; }
+    var maxGi = blocks.reduce(function (m, b) { return Math.max(m, b.global_index || 0); }, 0);
+    var created = [];
+    while (fresh.length) {
+      maxGi++;
+      created.push({ id: "bl_onr_" + userId + "_" + maxGi, batch_id: ids.bt, name: "Block " + maxGi,
+                     global_index: maxGi, sort: maxGi, context_passage: "", ref_word_ids: fresh.splice(0, ONR_PER) });
+    }
+    blocks.forEach(function (b) {
+      if (!b._new.length) dels.push(b.id);
+      else if (b._changed) changes.push({ id: b.id, ref_word_ids: b._new });
+    });
+
+    if (DB.mode === "local") {
+      var d = local();
+      changes.forEach(function (c) { var b = d.blocks.find(function (x) { return x.id === c.id; }); if (b) b.ref_word_ids = c.ref_word_ids; });
+      d.blocks = d.blocks.filter(function (b) { return dels.indexOf(b.id) < 0; });
+      created.forEach(function (c) { d.blocks.push(c); });
+      saveLocal();
+    } else {
+      for (var i = 0; i < changes.length; i++) {
+        var ru = await DB.sb.from("blocks").update({ ref_word_ids: changes[i].ref_word_ids }).eq("id", changes[i].id);
+        if (ru.error) throw ru.error;
+      }
+      if (dels.length) {
+        var rd = await DB.sb.from("blocks").delete().in("id", dels);
+        if (rd.error) throw rd.error;
+      }
+      if (created.length) {
+        var ri = await DB.sb.from("blocks").insert(created);
+        if (ri.error) throw ri.error;
+      }
+    }
+    return { changed: changes.length, deleted: dels.length, created: created.length };
+  };
+
+  /* Bản sao từ GỐC cho các Block Ôn riêng (gọi trong DB.loadNotebook). */
+  async function onrRefWords(blocks) {
+    var ids = [];
+    blocks.forEach(function (b) { (Array.isArray(b.ref_word_ids) ? b.ref_word_ids : []).forEach(function (id) { if (ids.indexOf(id) < 0) ids.push(id); }); });
+    if (!ids.length) return [];
+    var byId = {};
+    if (DB.mode === "local") {
+      local().words.forEach(function (x) { if (ids.indexOf(x.id) >= 0) byId[x.id] = x; });
+    } else {
+      for (var j = 0; j < ids.length; j += 200) {
+        var r = await DB.sb.from("words").select("*").in("id", ids.slice(j, j + 200));
+        if (r.error) throw r.error;
+        (r.data || []).forEach(function (x) { byId[x.id] = x; });
+      }
+    }
+    var saved = {};
+    try { saved = await DB.savedWordIds(); } catch (e) {}
+    var out = [];
+    blocks.forEach(function (b) {
+      (Array.isArray(b.ref_word_ids) ? b.ref_word_ids : []).forEach(function (id, k) {
+        var x = byId[id];
+        if (!x) return;
+        out.push(Object.assign({}, x, { block_id: b.id, sort: k, orig_block_id: x.block_id, _ref: true, _saved: !!saved[id] }));
+      });
+    });
+    return out;
+  }
 
   /* Đường dẫn đầy đủ tới 1 Block (Hub/Notebook/Section/Page/Batch) — cho
      nút "↗" nhảy từ danh sách Ôn riêng về đúng Block của từ đó (App.jumpTo).

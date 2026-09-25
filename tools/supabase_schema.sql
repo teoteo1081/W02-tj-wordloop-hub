@@ -143,6 +143,9 @@ alter table word_progress add column if not exists wrong_open boolean;
 -- Câu hỏi đã làm SAI gần nhất (để "Fix lỗi sai" hỏi lại ĐÚNG câu đó):
 -- {t:"gap", text, opts, given} | {t:"meaning", lang, answer, opts, given}
 alter table word_progress add column if not exists wrong_ctx jsonb;
+-- ⭐ Hub "Ôn riêng" (2026-09-25): Block Ôn riêng không chứa từ thật mà THAM
+-- CHIẾU từ gốc (mảng id) — xem DB.syncOnRiengBlocks trong js/db.js.
+alter table blocks add column if not exists ref_word_ids jsonb;
 update word_progress set wrong_open = (attempts > correct and not mastered) where wrong_open is null;
 alter table word_progress alter column wrong_open set default false;
 

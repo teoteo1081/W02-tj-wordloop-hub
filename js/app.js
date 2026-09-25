@@ -186,7 +186,49 @@
     S.wp = {}; S.bp = {};
   }
 
+  /* ══════════════ HUB "⭐ ÔN RIÊNG" (2026-09-25) — xem DB.syncOnRiengBlocks ══════════════ */
+  App.ensureOnRieng = async function () {
+    if (!w.Auth.user) return;
+    try {
+      await w.DB.ensureOnRieng(w.Auth.user);
+      if (w.DB.progressCloud) await loadNotebookAccess();   /* vừa tự share Notebook cho chính mình */
+    } catch (e) { console.warn("[App] ensureOnRieng lỗi:", e); }
+  };
+  /* Hub Ôn riêng chỉ hiện khi user này dùng được (xem DB.canOnRieng). */
+  async function getHubsForUser() {
+    var hubs = await w.DB.getHubs();
+    return w.DB.canOnRieng() ? hubs : hubs.filter(function (h) { return h.id !== w.DB.ONR_HUB_ID; });
+  }
+  App.isOnRieng = function () { return w.DB.isOnRiengNotebook(S.notebookId); };
+  /* Bỏ/thêm ⭐ lúc ĐANG ở Notebook Ôn riêng -> đồng bộ Block + nạp lại ngay
+     (gỡ từ khỏi Block, lấp từ mới) — gom nhiều lần bấm liền nhau làm 1. */
+  App.reloadOnRieng = function () {
+    if (!App.isOnRieng()) return;
+    clearTimeout(App._onrTimer);
+    App._onrTimer = setTimeout(async function () {
+      var openId = w.Detail && w.Detail.blockId, tabEl = w.$(".dtab.active");
+      var tab = tabEl ? tabEl.dataset.tab : "study";
+      try { await loadNotebook(S.notebookId); } catch (e) { w.toast("Không tải lại được Ôn riêng: " + (e.message || e), "err"); return; }
+      renderAll();
+      if (openId) {
+        if (S.blocks.some(function (b) { return b.id === openId; })) w.Detail.open(openId, tab);
+        else { leaveDetail(); w.toast("Block này đã hết từ ⭐ nên được gỡ khỏi Ôn riêng", "ok"); }
+      }
+    }, 600);
+  };
+
   async function loadNotebook(notebookId) {
+    /* Mở Notebook Ôn riêng của CHÍNH MÌNH -> đồng bộ Block với danh sách ⭐
+       trước (gỡ từ đã bỏ ⭐, thêm từ mới), rồi mới nạp như Notebook thường. */
+    if (w.DB.isOnRiengNotebook(notebookId) && w.Auth.user && notebookId === w.DB.onrIds(w.Auth.user.id).nb) {
+      try { await w.DB.syncOnRiengBlocks(w.Auth.user.id); }
+      catch (e) {
+        console.warn("[App] syncOnRiengBlocks lỗi:", e);
+        w.toast(e.kind === "need_sql"
+          ? "⭐ Ôn riêng cần chạy 1 dòng SQL (blocks.ref_word_ids) trên Supabase trước — xem tools/supabase_schema.sql"
+          : "Chưa đồng bộ được Ôn riêng: " + (e.message || e), "err");
+      }
+    }
     var d = await w.DB.loadNotebook(notebookId);
     S.sections = d.sections; S.pages = d.pages;
     S.batches = d.batches; S.blocks = d.blocks; S.words = d.words;
@@ -329,6 +371,11 @@
      được lớp trong cùng). nbList (tuỳ chọn) — mảng để tra parent chain,
      dùng khi đang lọc 1 danh sách MỚI TẢI (chưa gán vào S.notebooks). */
   function notebookAllowedForUser(notebookId, nbList) {
+    /* Notebook "⭐ Ôn riêng" của AI NẤY THẤY — kể cả Admin cũng chỉ thấy của
+       mình (không lẫn Ôn riêng của người khác vào cây/Trang chủ/Journey). */
+    if (w.DB.isOnRiengNotebook(notebookId)) {
+      return !!(w.Auth.user && notebookId === w.DB.onrIds(w.Auth.user.id).nb);
+    }
     if (w.Auth.isAdmin()) return true;
     var list = nbList || S.notebooks;
     var cur = list.find(function (n) { return n.id === notebookId; });
@@ -1478,7 +1525,9 @@
        NGOẠI TRỪ: role "Chỉ xem" (Share, Mức A) trong Notebook đang mở —
        ẩn cả 2 nút thêm/tạo Block mới, cùng "+ Paste từ mới" cạnh nó. */
     var myRole = S.notebookId ? myRoleInNotebook(S.notebookId) : "edit";
-    var canAddContent = myRole !== "view";
+    /* Notebook "⭐ Ôn riêng": từ chỉ là THAM CHIẾU tới từ gốc (⭐) — không
+       dán/trích/tạo từ mới vào đây (thêm từ = bấm ⭐ ở chỗ gốc). */
+    var canAddContent = myRole !== "view" && !App.isOnRieng();
     var extractBtn = w.$("#btn-paste-extract");
     if (extractBtn) extractBtn.hidden = !canAddContent;
     var pasteNewBtn = w.$("#btn-paste-new");
@@ -3365,7 +3414,7 @@
 
   /* Nạp lại notebook đang mở rồi vẽ lại — dùng chung sau mọi thao tác quản lý */
   App.reloadCurrent = async function () {
-    S.hubs = await w.DB.getHubs();
+    S.hubs = await getHubsForUser();
     if (!S.hubs.some(function (h) { return h.id === S.hubId; })) {
       S.hubId = S.hubs.length ? S.hubs[0].id : null;
     }
@@ -3845,6 +3894,13 @@
         }
         var wordId = delBtn.dataset.delword;
         var word = S.words.find(function (x) { return x.id === wordId; });
+        /* Ôn riêng: từ chỉ là tham chiếu -> "×" = BỎ ⭐ (gỡ khỏi Block), KHÔNG
+           xoá từ gốc khỏi kho. */
+        if (App.isOnRieng()) {
+          if (w.Detail.isBookmarked(wordId)) await w.Detail.toggleBookmark(wordId);
+          App.reloadOnRieng();
+          return;
+        }
         var ok = await App.askConfirm({
           title: "🗑 Bỏ từ khỏi kho",
           desc: "Xoá hẳn '" + (word ? word.term : "từ này") + "' khỏi kho từ vựng? Không hoàn tác được."
@@ -4682,6 +4738,8 @@
     await loadNotebookAccess();   /* PHẢI xong TRƯỚC lần loadNotebooksFiltered() đầu tiên bên dưới, không thì lọc sai (myGrantedIds rỗng) */
 
     w.Auth.onChange(async function () {
+      await App.ensureOnRieng();
+      S.hubs = await getHubsForUser();
       await loadNotebookAccess();   /* đổi user -> myGrantedIds đổi theo -> phải nạp lại TRƯỚC khi lọc lại cây bên dưới */
       S.notebooks = await loadNotebooksFiltered(S.hubId);   /* S.notebooks đang lọc theo user CŨ -> lọc lại theo user MỚI */
       if (!S.notebooks.some(function (n) { return n.id === S.notebookId; })) {
@@ -4701,7 +4759,8 @@
       App.renderSidebarLbMini(true);   /* đổi user -> điểm/quyền thấy khác, tải lại chắc chắn */
     });
 
-    S.hubs = await w.DB.getHubs();
+    await App.ensureOnRieng();
+    S.hubs = await getHubsForUser();
     var sel = readSel();
     S.hubId = pick(S.hubs, sel.hubId);
 

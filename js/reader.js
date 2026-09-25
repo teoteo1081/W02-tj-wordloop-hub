@@ -407,6 +407,12 @@
   R.removeWord = async function () {
     var hit = R.lookup(R.term);
     if (!hit) return;
+    /* Ôn riêng: 🗑 = bỏ ⭐ (gỡ khỏi Block), không xoá từ gốc khỏi kho */
+    if (w.App && w.App.isOnRieng && w.App.isOnRieng() && hit._ref) {
+      if (w.Detail.isBookmarked(hit.id)) await w.Detail.toggleBookmark(hit.id);
+      R.forceClose();
+      return;
+    }
     try {
       await w.DB.remove("words", hit.id);
       S().words = S().words.filter(function (x) { return x.id !== hit.id; });

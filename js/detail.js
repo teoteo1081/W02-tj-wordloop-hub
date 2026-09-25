@@ -351,7 +351,8 @@
        vì đây cũng là sửa nội dung CHUNG của Block, ảnh hưởng mọi người
        học chung Block đó. */
     var addVocabBtn = w.$("#btn-add-vocab");
-    if (addVocabBtn) addVocabBtn.hidden = !canEditPassage();
+    /* Ôn riêng: thêm từ = bấm ⭐ ở chỗ gốc, không bổ sung thẳng vào đây */
+    if (addVocabBtn) addVocabBtn.hidden = !canEditPassage() || (w.App && w.App.isOnRieng && w.App.isOnRieng());
 
     w.$("#vocab-tbody").innerHTML = ws.map(function (x) {
       /* Đã BỎ badge "100%"/"✓ thuộc" cạnh từ (theo yêu cầu — rối mắt ở
@@ -878,7 +879,9 @@
      tách riêng, CHỈ Admin, không theo cờ này, để không ai vô tình tốn
      quota AI chung). Xem #modal-admin trong app.js. */
   function canEditPassage() {
-    return w.Auth.hasPassageEdit();
+    /* Notebook "⭐ Ôn riêng" là của RIÊNG người học -> ai cũng tự tạo/đổi
+       bài đọc cho Block Ôn riêng của mình được (không cần quyền sửa chung). */
+    return w.Auth.hasPassageEdit() || !!(w.App && w.App.isOnRieng && w.App.isOnRieng());
   }
 
   D.renderPassage = async function () {
@@ -994,7 +997,7 @@
   D.generatePassage = async function () {
     var b = block(), ws = words();
     if (!b) return;
-    if (!w.Auth.hasPassageEdit()) { w.toast("Bạn chưa có quyền đổi bài đọc chung của Block", "err"); return; }
+    if (!canEditPassage()) { w.toast("Bạn chưa có quyền đổi bài đọc chung của Block", "err"); return; }
     var myBlockId = b.id;
 
     var cfg2 = w.APP_CONFIG || {};
@@ -1976,6 +1979,7 @@
   D.isSavedWord = function (wordId) {
     if (D._savedHint[wordId] != null) return D._savedHint[wordId];
     var x = (S().words || []).find(function (y) { return y.id === wordId; });
+    if (x && x._ref) return !!x._saved;   /* bản sao trong Block Ôn riêng */
     var b = x && S().blocks.find(function (y) { return y.id === x.block_id; });
     var bt = b && S().batches.find(function (y) { return y.id === b.batch_id; });
     return !!(bt && bt.name === w.DB.SAVED_BATCH_NAME);
@@ -2024,6 +2028,7 @@
       if (w.WordSet && w.WordSet.onBookmarkChanged) w.WordSet.onBookmarkChanged(wordId, on);
       if (w.App && w.App.refreshWordSetBadges && !(w.WordSet && w.WordSet.isOpen())) w.App.refreshWordSetBadges();
       if (D.blockId) D.renderSummary();   /* chip "⭐ Từ đã lưu N" của Block đổi theo */
+      if (w.App && w.App.reloadOnRieng) w.App.reloadOnRieng();   /* đang ở Ôn riêng -> gỡ/thêm từ vào Block ngay */
     } catch (e) {
       paint(!on);
       console.warn("[Detail] setBookmark lỗi:", e);
