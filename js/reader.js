@@ -154,6 +154,10 @@
   }
 
   R.open = function (term, ctx) {
+    /* Bấm 1 từ trong bài -> ô .kw mang cả dấu câu dính liền ("exhilarating,",
+       "cabinet.") — bug thật 2026-09-25: lưu nguyên dấu phẩy/chấm vào kho.
+       Cắt mọi ký tự không phải chữ/số ở 2 đầu (giữ ' và - bên trong từ). */
+    term = String(term || "").replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, "");
     if (!term) return;
     R.term = term.trim();
     R.ctx = ctx || findUsage(R.term);
@@ -238,6 +242,8 @@
     else w.$("#wp-lookup").innerHTML = '<button class="btn-soft wp-lookup-btn" id="wp-lookup-btn" type="button">✨ Tra nghĩa theo câu này (AI)</button>';
 
     w.$("#word-panel").classList.add("open");
+    /* bài đang đọc vừa tạm dừng vì tra từ -> nút đổi sang "▶ Đọc tiếp" */
+    if (w.Detail && w.Detail.paintReadBtn) w.Detail.paintReadBtn();
     /* Ghim rồi thì không cần nền mờ — vẫn đọc và cuộn bài bình thường,
        bấm từ khác là bảng tự đổi nội dung tại chỗ. */
     w.$("#panel-backdrop").hidden = R.pinned;
@@ -305,6 +311,14 @@
   R.forceClose = function () {
     w.$("#word-panel").classList.remove("open");
     w.$("#panel-backdrop").hidden = true;
+    R.continueReading();
+  };
+
+  /* Bài đang đọc bị tạm dừng vì bấm tra 1 từ (Speech.speakWord) -> đóng
+     bảng tra / lưu từ / xoá từ xong thì đọc tiếp từ câu đang dở. Người
+     dùng đã tự bấm ⏹ thì KHÔNG tự đọc lại (Speech.resumeAfterWord). */
+  R.continueReading = function () {
+    if (w.Speech.resumeAfterWord() && w.Detail && w.Detail.paintReadBtn) w.Detail.paintReadBtn();
   };
 
   /* ══════════ GHIM BẢNG NGHĨA ══════════ */
@@ -379,8 +393,9 @@
       }
 
       R.decorate();
+      if (w.Detail && w.Detail.blockId && w.Detail.renderSummary) w.Detail.renderSummary();   /* chip "⭐ Từ đã lưu N" của Block */
       if (!R.pinned) R.forceClose();
-      else R.open(R.term, R.ctx);          /* đang ghim -> cập nhật tại chỗ */
+      else { R.open(R.term, R.ctx); R.continueReading(); }   /* đang ghim -> cập nhật tại chỗ + đọc tiếp */
       if (w.App && w.App.renderAll) w.App.renderAll();
     } catch (e) {
       w.toast("Lỗi khi lưu: " + (e.message || e), "err");
@@ -490,9 +505,8 @@
        kẻo nó đọc một đằng mà màn hình hiện một nẻo. */
     function stopReading() {
       w.Speech.stop();
-      if (w.Detail) w.Detail._autoRead = false;
-      var btn = w.$("#btn-read");
-      if (btn) btn.textContent = "🎧 Nghe US";
+      w.Speech.clearResume();   /* đổi chế độ/lật trang -> điểm đọc dở cũ không còn khớp */
+      if (w.Detail) { w.Detail._autoRead = false; if (w.Detail.paintReadBtn) w.Detail.paintReadBtn(); }
     }
 
     w.$$("#read-modes .rm-btn").forEach(function (b) {

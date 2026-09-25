@@ -2294,3 +2294,24 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
    tài khoản bị đẩy ra ngoài 45px) -> ≤1280px ẩn chữ "TJ WordLoop" cạnh
    logo (icon 🔁 vẫn còn) để nhường chỗ, giữ nguyên chữ trên các nút. */
 @media (max-width:1280px){ .brand-text{display:none;} }
+/* ⭐/❌ theo phạm vi — chip đầu Block (dải tổng quan), đầu Batch, thẻ Block,
+   hàng "Phạm vi" trong màn Ôn riêng (2026-09-25) */
+.ss-ws{cursor:pointer;font:inherit;font-size:.75rem;}
+.ss-ws:hover{border-color:var(--amber);}
+.ss-ws.bad{border-color:var(--red);}
+.ss-ws.bad .ss-val{color:var(--red-l);}
+.batch-ws{display:flex;flex-wrap:wrap;gap:.4rem;margin-left:auto;}
+.batch-ws .btn-soft{font-size:.78rem;}
+.batch-ws .btn-soft.ws-bad{border-color:var(--red);color:var(--red-l);}
+.batch-ws + .batch-audio{margin-left:0;}
+.tag-ws{background:var(--amber-sub);border:1px solid var(--amber);color:var(--amber-l);font-size:.7rem;font-weight:700;
+  padding:.05rem .45rem;border-radius:999px;cursor:pointer;}
+.tag-ws.bad{background:var(--red-sub);border-color:var(--red);color:var(--red-l);}
+.ws-scopes{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem;margin:.6rem 0 0;}
+.ws-scope-lbl{font-size:.75rem;color:var(--text-3);margin-right:.1rem;}
+.ws-scope{background:var(--bg-soft);border:1px solid var(--border);color:var(--text-2);font-size:.74rem;font-weight:600;
+  padding:.3rem .65rem;border-radius:999px;cursor:pointer;max-width:16rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ws-scope:hover{color:var(--text);}
+.ws-scope.active{background:var(--blue-sub);color:var(--blue-l);border-color:var(--blue);}
+.ws-scope-n{opacity:.8;font-weight:700;margin-left:.2rem;}
+@media (max-width:640px){ .batch-ws{margin-left:0;width:100%;} }

@@ -28,20 +28,134 @@
     return a;
   }
 
-  /* Danh sách từ (dạng word row) của tab đang chọn. */
+  /* ══════════════ PHẠM VI: Block / Batch / Page / Section / Notebook / Hub ══════════════
+     2026-09-25, TJ: "ra ngoài Batch thì cũng có tương tự Từ đã lưu và Fix
+     lỗi sai cho từng Block, batch, page, section, notebook, hub... tuỳ giao
+     diện mà hiện lên sao cho hợp lý". Màn này có 1 hàng chọn phạm vi dựng
+     theo ĐÚNG chỗ đang đứng lúc mở (breadcrumb), mỗi nút kèm số ⭐/❌.
+     Page trở lên: lọc theo word.loc (DB.loadWordSets gắn sẵn đường dẫn).
+     Block/Batch: ngoài từ của chính Block, còn tính các từ LƯU TỪ BÀI ĐỌC
+     của Block đó — từ lưu nằm ở batch "⭐ Từ đã lưu" chung của cả Page
+     (không có cột nào ghi "lưu từ bài của Block nào"), nên gán theo: từ đã
+     lưu của CÙNG Page mà có xuất hiện trong bài đọc của Block. */
+  WS.scope = { kind: "all" };
+  var SCOPE_ICON = { all: "🌐", hub: "🏢", notebook: "📓", section: "📑", page: "📄", batch: "📦", block: "📕" };
+
+  function nameIn(list, id) { var x = (list || []).find(function (y) { return y.id === id; }); return x ? x.name : ""; }
+
+  /* Các phạm vi đang có ý nghĩa ở vị trí hiện tại (Tất cả → ... → Block). */
+  function scopeOptions() {
+    var S = w.S || {}, out = [{ kind: "all", id: null, label: "Tất cả" }];
+    if (S.hubId) out.push({ kind: "hub", id: S.hubId, label: nameIn(S.hubs, S.hubId) || "Hub" });
+    if (S.notebookId) out.push({ kind: "notebook", id: S.notebookId, label: nameIn(S.notebooks, S.notebookId) || "Notebook" });
+    if (S.sectionId) out.push({ kind: "section", id: S.sectionId, label: nameIn(S.sections, S.sectionId) || "Section" });
+    if (S.pageId) out.push({ kind: "page", id: S.pageId, label: nameIn(S.pages, S.pageId) || "Page" });
+    if (S.batchId) out.push({ kind: "batch", id: S.batchId, label: nameIn(S.batches, S.batchId) || "Batch" });
+    var bid = WS._openedFromBlock;
+    if (bid) out.push({ kind: "block", id: bid, label: nameIn(S.blocks, bid) || "Block" });
+    return out;
+  }
+
+  var passCache = {};
+  function passageNorm(b) {
+    var raw = (b && b.context_passage) || "";
+    var key = b.id + ":" + raw.length;
+    if (passCache[key] == null) {
+      var marked = raw ? w.Context.parseMeta(raw).marked : "";
+      passCache[key] = " " + w.normalizeAnswer(marked).replace(/[^\p{L}\p{N}'\- ]+/gu, " ").replace(/\s+/g, " ") + " ";
+    }
+    return passCache[key];
+  }
+
+  /* Id các từ thuộc 1 Block/Batch (Notebook đang mở) — gồm từ của chính
+     Block + từ đã lưu cùng Page có xuất hiện trong bài đọc của Block. */
+  WS.localScopeIds = function (kind, id) {
+    var S = w.S, ids = {};
+    if (!S || !id) return ids;
+    var blocks = kind === "block" ? S.blocks.filter(function (b) { return b.id === id; })
+               : kind === "batch" ? w.App.blocksOf(id) : [];
+    if (!blocks.length) return ids;
+    var inScope = {};
+    blocks.forEach(function (b) { inScope[b.id] = 1; });
+    S.words.forEach(function (x) { if (inScope[x.block_id]) ids[x.id] = true; });
+    var bt = S.batches.find(function (x) { return x.id === blocks[0].batch_id; });
+    if (!bt || bt.name === w.DB.SAVED_BATCH_NAME) return ids;
+    var savedBlocks = {};
+    S.batches.forEach(function (x) {
+      if (x.page_id === bt.page_id && x.name === w.DB.SAVED_BATCH_NAME) {
+        w.App.blocksOf(x.id).forEach(function (b) { savedBlocks[b.id] = 1; });
+      }
+    });
+    var texts = blocks.map(passageNorm).filter(function (t) { return t.trim(); });
+    if (!texts.length) return ids;
+    S.words.forEach(function (x) {
+      if (!savedBlocks[x.block_id]) return;
+      var t = " " + w.normalizeAnswer(x.term) + " ";
+      if (t.trim() && texts.some(function (p) { return p.indexOf(t) >= 0; })) ids[x.id] = true;
+    });
+    return ids;
+  };
+
+  /* Số ⭐ Từ đã lưu / ❌ Fix lỗi sai của 1 Block/Batch — tính ngay từ S (không
+     gọi mạng), dùng cho chip đầu Block, đầu Batch và từng thẻ Block. */
+  WS.localCounts = function (kind, id) {
+    var u = w.Auth.user, S = w.S, ids = WS.localScopeIds(kind, id), bm = 0, wrong = 0;
+    if (!u) return { bm: 0, wrong: 0 };
+    Object.keys(ids).forEach(function (wid) {
+      if (w.Detail.isBookmarked(wid)) bm++;
+      if (w.DB.isWrongOpen(u.id, S.wp[wid])) wrong++;
+    });
+    return { bm: bm, wrong: wrong };
+  };
+
+  function inScope(x, sc) {
+    if (!sc || sc.kind === "all") return true;
+    if (sc.kind === "block" || sc.kind === "batch") {
+      sc._ids = sc._ids || WS.localScopeIds(sc.kind, sc.id);
+      return !!sc._ids[x.id];
+    }
+    return !!(x.loc && x.loc[sc.kind + "Id"] === sc.id);
+  }
+  function listsFor(sc) {
+    var d = WS.data || { bookmarks: [], wrong: [] };
+    return {
+      bookmarks: d.bookmarks.filter(function (x) { return inScope(x, sc); }),
+      wrong: d.wrong.filter(function (x) { return inScope(x.word, sc); })
+    };
+  }
+
+  /* Danh sách từ (dạng word row) của tab + phạm vi đang chọn. */
   function currentWords() {
     if (!WS.data) return [];
-    return WS.tab === "wrong" ? WS.data.wrong.map(function (x) { return x.word; }) : WS.data.bookmarks;
+    var l = listsFor(WS.scope);
+    return WS.tab === "wrong" ? l.wrong.map(function (x) { return x.word; }) : l.bookmarks;
+  }
+
+  function renderScopes() {
+    var bar = w.$("#ws-scopes");
+    if (!bar) return;
+    bar.innerHTML = '<span class="ws-scope-lbl">Phạm vi:</span>' + WS._scopes.map(function (sc, i) {
+      var l = listsFor(sc);
+      var on = sc.kind === WS.scope.kind && sc.id === WS.scope.id;
+      return '<button class="ws-scope' + (on ? " active" : "") + '" data-scope-i="' + i + '" type="button" title="' +
+          w.esc(sc.label) + '">' + SCOPE_ICON[sc.kind] + " " + w.esc(sc.label) +
+          ' <span class="ws-scope-n">⭐' + l.bookmarks.length + " · ❌" + l.wrong.length + "</span></button>";
+    }).join("");
   }
 
   /* ══════════════ MỞ / ĐÓNG ══════════════ */
-  /* tab: "bm" (nút ⭐ Ôn riêng) | "wrong" (nút ❌ Fix lỗi sai) — không
-     truyền thì mở lại tab dùng lần trước. */
-  WS.open = async function (tab) {
+  /* tab: "bm" (⭐ Từ đã lưu) | "wrong" (❌ Fix lỗi sai) — không truyền thì
+     mở lại tab dùng lần trước. scope: {kind, id} — mở từ chip Block/Batch
+     thì lọc sẵn đúng chỗ đó; mở từ thanh trên cùng thì "Tất cả". */
+  WS.open = async function (tab, scope) {
     w.Speech.stop();
     if (tab) WS.tab = tab;
     else { try { WS.tab = localStorage.getItem(LS_TAB) === "wrong" ? "wrong" : "bm"; } catch (e) {} }
     try { localStorage.setItem(LS_TAB, WS.tab); } catch (e) {}
+    WS._openedFromBlock = (w.Detail && !w.$("#screen-detail").hidden && w.Detail.blockId) ||
+                          (scope && scope.kind === "block" ? scope.id : null);
+    WS._scopes = scopeOptions();
+    WS.scope = scope ? { kind: scope.kind, id: scope.id } : { kind: "all", id: null };
     WS._prevWasDetail = !w.$("#screen-detail").hidden;
     ["#screen-blocks", "#screen-detail", "#screen-leaderboard", "#screen-journey", "#screen-home"].forEach(function (s) {
       w.$(s).hidden = true;
@@ -87,7 +201,9 @@
   /* Gọi từ Detail.toggleBookmark — bấm ☆/★ ở bất kỳ đâu. Đang mở màn này
      thì cập nhật luôn danh sách ⭐ (bỏ ★ là biến khỏi danh sách ngay). */
   WS.onBookmarkChanged = function (wordId, on) {
-    if (!WS.data || !WS.isOpen()) return;
+    if (!WS.data) return;
+    if (WS.data.rows) WS.data.rows[wordId] = Object.assign({}, WS.data.rows[wordId] || { word_id: wordId }, { bookmarked: on });
+    if (!WS.isOpen()) return;
     var bm = WS.data.bookmarks;
     var idx = bm.findIndex(function (x) { return x.id === wordId; });
     if (!on && idx >= 0) bm.splice(idx, 1);
@@ -101,8 +217,10 @@
   /* ══════════════ VẼ ══════════════ */
   function paintCounts() {
     var d = WS.data || { bookmarks: [], wrong: [] };
-    w.$("#ws-n-bm").textContent = d.bookmarks.length;
-    w.$("#ws-n-wrong").textContent = d.wrong.length;
+    var l = listsFor(WS.scope);
+    w.$("#ws-n-bm").textContent = l.bookmarks.length;
+    w.$("#ws-n-wrong").textContent = l.wrong.length;
+    renderScopes();
     /* số trên 2 nút thanh trên cùng khớp luôn với danh sách vừa tải */
     if (w.App && w.App.setWordSetBadges && WS.data) {
       w.App.setWordSetBadges({
@@ -120,7 +238,7 @@
     if (WS.tab === "wrong") {
       note.textContent = "Từ bạn đang trả lời sai ở bất kỳ bài kiểm tra nào. Làm đúng lại từ đó (ở đây hoặc trong Block) là tự bỏ ra khỏi danh sách.";
     } else {
-      note.textContent = "Từ bạn đã bấm ☆ Bookmark ở bảng từ vựng hoặc trong bài Nghĩa. Bấm ★ để bỏ Bookmark.";
+      note.textContent = "Từ bạn đã bấm ☆ ở bảng từ vựng/bài Nghĩa, và từ lưu khi đọc bài (mức 1–4). Bấm ★ để bỏ khỏi danh sách.";
     }
     if (WS.data && WS.data.fallback && WS.tab === "bm") {
       note.textContent += " (Bookmark đang lưu tạm trên máy này — cần chạy cập nhật CSDL để đồng bộ giữa các máy.)";
@@ -152,7 +270,7 @@
         '<td><div class="term-cell">' +
           '<button class="spk" data-ws-say="' + w.esc(x.term) + '" title="Nghe">🔊</button>' +
           "<b>" + w.esc(x.term) + "</b>" +
-          w.Detail.bmBtnHtml(x.id) +
+          w.Detail.bmBtnHtml(x.id, x.saved) +
         "</div></td>" +
         '<td class="ipa" data-label="Phonetic">' + w.esc(x.ipa || "—") + "</td>" +
         '<td class="vi-cell" data-label="Nghĩa Việt">' + w.esc(x.meaning_vi || "—") + "</td>" +
@@ -288,7 +406,8 @@
       last_reviewed_at: Date.now()
     };
     rememberProgress(q.wordId, patch);
-    if (w.S && w.S.wp) w.S.wp[q.wordId] = Object.assign({}, prev, patch, { user_id: u.id, word_id: q.wordId });
+    if (w.S && w.S.wp) w.S.wp[q.wordId] = Object.assign({}, prev, patch, { user_id: u.id, word_id: q.wordId, wrong_open: !q.ok });
+    if (WS.data && WS.data.rows) WS.data.rows[q.wordId] = Object.assign({}, WS.data.rows[q.wordId], patch, { wrong_open: !q.ok });
     try {
       await w.DB.saveWordProgress(u.id, q.wordId, patch);
       /* ❌ Fix lỗi sai: đúng -> bỏ khỏi danh sách, sai -> (vẫn) nằm trong. */
@@ -318,6 +437,32 @@
   /* ══════════════ GẮN SỰ KIỆN (1 lần lúc tải trang) ══════════════ */
   w.$("#btn-wordset").onclick = function () { WS.open("bm"); };
   w.$("#btn-fixwrong").onclick = function () { WS.open("wrong"); };
+  w.$("#ws-scopes").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-scope-i]");
+    if (!b) return;
+    var sc = WS._scopes[+b.dataset.scopeI];
+    if (!sc) return;
+    clearTimeout(WS._autoNext);
+    w.Speech.stop();
+    WS.scope = { kind: sc.kind, id: sc.id };
+    WS.quiz = null;
+    WS.render();
+  });
+  /* Chip "⭐ N / ❌ M" ở đầu Block, đầu Batch, trên từng thẻ Block
+     (data-ws-open="bm|wrong", data-ws-kind, data-ws-id) — capture để không
+     lọt xuống thẻ Block (bấm thẻ = mở Block) hay dải tổng quan (= tab
+     Tiến trình). */
+  document.addEventListener("click", function (e) {
+    var chip = e.target.closest && e.target.closest("[data-ws-open]");
+    if (!chip) return;
+    e.preventDefault();
+    e.stopPropagation();
+    WS.open(chip.dataset.wsOpen, { kind: chip.dataset.wsKind, id: chip.dataset.wsId });
+  }, true);
+
+  /* Dòng word_progress của từ ở Notebook KHÁC (không có trong S.wp) — để
+     Detail.isBookmarked biết đúng trạng thái ⭐ đã bấm của từ đó. */
+  WS.rowOf = function (wordId) { return WS.data && WS.data.rows && WS.data.rows[wordId]; };
   w.$("#btn-wordset-back").onclick = function () { WS.close(); };
   w.$("#wordset-refresh").onclick = function () { WS.quiz = null; WS.load(); };
   w.$$("#ws-tabs [data-ws]").forEach(function (b) {

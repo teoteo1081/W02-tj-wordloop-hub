@@ -133,9 +133,40 @@
   /* ---------- đọc 1 từ đơn lẻ (nút loa trong bảng) ---------- */
   S.speakWord = function (text) {
     if (!synth || !text) return;
+    /* Đang đọc bài mà bấm nghe 1 từ (tra từ trong bài) -> TẠM DỪNG bài,
+       nhớ câu đang đọc, đọc từ; đóng bảng tra/lưu từ xong thì Reader gọi
+       S.resumeAfterWord() đọc tiếp từ ĐÚNG câu đó (TJ 2026-09-25: "lúc tra
+       thì nó đọc từ, dừng đoạn văn và sau khi đóng thì lại tiếp tục"). */
+    if (S.passageActive()) { S._rememberResume(); S._pausedForWord = true; }
+    S._passTok = (S._passTok || 0) + 1;   /* chặn onend trễ của câu bài đọc vừa bị cắt */
     synth.cancel();
     S.stopHighlight();
     synth.speak(makeUtterance(text, S.vocabRate));
+  };
+
+  /* ---------- ĐỌC TIẾP / ĐỌC LẠI TỪ ĐẦU bài đọc ----------
+     _resume = {opts, qi}: câu đang đọc dở lúc bị dừng (nút ⏹ Dừng, tra từ,
+     đổi tab...). Nút chính đổi thành "▶ Đọc tiếp", "⏮ Từ đầu" mới đọc lại. */
+  S.passageActive = function () { return !!(S._passOpts && S._queue.length && S._qi < S._queue.length); };
+  S._rememberResume = function () {
+    if (!S.passageActive()) return;
+    S._resume = { opts: S._passOpts, qi: S._qi };
+  };
+  S.hasResume = function () { return !!S._resume; };
+  S.clearResume = function () { S._resume = null; S._pausedForWord = false; };
+  S.pausedForWord = function () { return !!S._pausedForWord; };
+  S.resumePassage = function () {
+    var r = S._resume;
+    if (!r) return false;
+    S._pausedForWord = false;
+    S.readPassage(Object.assign({}, r.opts, { startQi: r.qi }));
+    return true;
+  };
+  /* Chỉ đọc tiếp nếu bài bị dừng VÌ tra từ (không tự đọc lại khi người
+     dùng đã chủ động bấm ⏹ Dừng). */
+  S.resumeAfterWord = function () {
+    if (!S._pausedForWord) return false;
+    return S.resumePassage();
   };
 
   /* ---------- 🔇 tắt tiếng lúc làm bài kiểm tra (2026-09-24) ----------
@@ -363,8 +394,12 @@
     S._offset = opts.offset || 0;
     S._onEnd = opts.onEnd || null;
     S._queue = splitSentences(opts.plain);
-    S._qi = 0;
+    S._qi = Math.min(Math.max(opts.startQi || 0, 0), Math.max(S._queue.length - 1, 0));
     S._boundaryFired = false;
+    S._passOpts = opts;
+    S._resume = null;
+    S._pausedForWord = false;
+    var tok = S._passTok = (S._passTok || 0) + 1;
 
     /* Mốc bắt đầu + ước tính tổng thời gian — dùng cho thanh điều khiển
        nghe nổi (S.getProgress ở trên). Đặt SAU S.stop() (đã reset về 0)
@@ -372,14 +407,20 @@
     S._startedAt = Date.now();
     S._pausedAt = null; S._pausedMs = 0;
     S._estTotalMs = ((opts.plain || "").length / 14.5) * 1000 / (S.rate || 1);
+    /* đọc tiếp giữa bài -> thanh tiến độ bắt đầu đúng chỗ, không về 0 */
+    var startChar = S._queue[S._qi] ? S._queue[S._qi].start : 0;
+    if (startChar && opts.plain) S._startedAt -= S._estTotalMs * (startChar / opts.plain.length);
 
-    speakNext();
+    speakNext(tok);
   };
 
-  function speakNext() {
+  function speakNext(tok) {
+    if (tok !== S._passTok) return;   /* lượt đọc này đã bị dừng/thay thế */
     if (S._qi >= S._queue.length) {
       S.stopHighlight();
-      if (S._onEnd) S._onEnd();
+      S._passOpts = null;
+      var done = S._onEnd; S._onEnd = null;
+      if (done) done({ finished: true });
       return;
     }
     var sentence = S._queue[S._qi];
@@ -399,8 +440,8 @@
       if (S._timer) { clearInterval(S._timer); S._timer = null; }
       lightAt(S._offset + sentence.start + e.charIndex);
     };
-    u.onend = function () { S._qi++; speakNext(); };
-    u.onerror = function () { S._qi++; speakNext(); };
+    u.onend = function () { if (tok !== S._passTok) return; S._qi++; speakNext(tok); };
+    u.onerror = function () { if (tok !== S._passTok) return; S._qi++; speakNext(tok); };
 
     synth.speak(u);
 
@@ -412,9 +453,17 @@
 
   S.stop = function () {
     S._listStop = true;
+    /* Dừng giữa bài -> nhớ câu đang đọc (nút "▶ Đọc tiếp"), báo onEnd
+       {stopped:true} NGAY để nơi gọi đổi nhãn nút — trước đây onEnd tới
+       trễ qua onend của câu bị cắt; giờ token chặn onend đó rồi. */
+    var wasPassage = S.passageActive(), cb = S._onEnd;
+    if (wasPassage) S._rememberResume();
+    S._passTok = (S._passTok || 0) + 1;
+    S._onEnd = null; S._passOpts = null;
     if (synth) synth.cancel();
     S.stopHighlight();
     S._queue = []; S._qi = 0; S._current = null;
+    if (wasPassage && cb) { try { cb({ stopped: true }); } catch (e) {} }
     S._startedAt = null; S._pausedAt = null; S._pausedMs = 0; S._estTotalMs = 0;
   };
 

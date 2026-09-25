@@ -55,7 +55,22 @@
     return true;
   };
 
+  /* Nhãn nút đọc bài theo trạng thái Speech: đang đọc / ▶ Đọc tiếp (có
+     điểm dừng dở — kể cả đang tạm dừng vì tra từ) / 🎧 Nghe US. Nút
+     "⏮ Từ đầu" chỉ hiện khi có điểm dừng dở. */
+  D.paintReadBtn = function () {
+    var btn = w.$("#btn-read"), rs = w.$("#btn-read-restart");
+    if (!btn) return;
+    var reading = w.Speech.passageActive() && !w.Speech.pausedForWord();
+    var canResume = w.Speech.hasResume();
+    btn.textContent = reading ? "🔊 Đang đọc…" : canResume ? "▶ Đọc tiếp" : "🎧 Nghe US";
+    btn.title = canResume && !reading ? "Đọc tiếp từ câu đang dừng" : "";
+    if (rs) rs.hidden = !(canResume || reading);
+  };
+
   D.open = function (blockId, tab) {
+    /* Đổi Block -> dừng bài đọc của Block cũ + bỏ điểm "Đọc tiếp" của nó */
+    if (w.Speech) { w.Speech.stop(); w.Speech.clearResume(); }
     /* Hẹn giờ tự chấm câu cuối (Từng câu/Nghĩa) đặt cho Block ĐANG RỜI ĐI —
        nếu không clear ở đây, chuyển Block nhanh trong lúc hẹn giờ (1.1-1.7s)
        còn đang chờ sẽ khiến nó chạy SAU khi D._exam/D._meaningQuiz đã đổi
@@ -400,7 +415,15 @@
       ["🎯", "Độ nhớ", att ? w.pct(ok, att) + "% (" + ok + "/" + att + " câu đúng)" : "—"],
       ["✓", "Đã thuộc", mastered + "/" + ws.length + " từ"]
     ];
-    box.innerHTML = chips.map(function (c) {
+    /* ⭐ Từ đã lưu / ❌ Fix lỗi sai CỦA RIÊNG Block này (gồm cả từ lưu khi
+       đọc bài của Block — xem WordSet.localScopeIds) — bấm mở màn Ôn riêng
+       lọc sẵn đúng Block. */
+    var wsc = (w.WordSet && w.WordSet.localCounts) ? w.WordSet.localCounts("block", D.blockId) : null;
+    var wsHtml = wsc
+      ? '<button class="ss-chip ss-ws" type="button" data-ws-open="bm" data-ws-kind="block" data-ws-id="' + w.esc(D.blockId) + '" title="Xem từ đã lưu của Block này">⭐ <span class="ss-lbl">Từ đã lưu</span><b class="ss-val">' + wsc.bm + "</b></button>" +
+        '<button class="ss-chip ss-ws' + (wsc.wrong ? " bad" : "") + '" type="button" data-ws-open="wrong" data-ws-kind="block" data-ws-id="' + w.esc(D.blockId) + '" title="Sửa các từ đang làm sai của Block này">❌ <span class="ss-lbl">Fix lỗi sai</span><b class="ss-val">' + wsc.wrong + "</b></button>"
+      : "";
+    box.innerHTML = wsHtml + chips.map(function (c) {
       return '<span class="ss-chip"><span class="ss-ico">' + c[0] + '</span><span class="ss-lbl">' + w.esc(c[1]) +
         '</span><b class="ss-val">' + w.esc(c[2]) + "</b></span>";
     }).join("");
@@ -934,6 +957,8 @@
     }
 
     var built = w.Context.build(meta.marked);
+    /* Bài đọc đổi nội dung -> điểm "▶ Đọc tiếp" cũ không còn đúng chỗ nữa */
+    if (D._passagePlain !== built.plain) { w.Speech.clearResume(); D.paintReadBtn(); }
     D._passagePlain = built.plain;
     w.$("#passage").innerHTML = built.html;
 
@@ -1836,6 +1861,7 @@
       };
       S().wp[x.id] = Object.assign({}, prev, wpatch, { user_id: w.Auth.user.id, word_id: x.id });
       fixResults.push({ wordId: x.id, ok: !!g.ok });
+      S().wp[x.id].wrong_open = !g.ok;   /* để chip ❌ đếm đúng ngay, khỏi tải lại */
       try { await w.DB.saveWordProgress(w.Auth.user.id, x.id, wpatch); }
       catch (e) { saveFailed = true; console.warn("[Detail] saveWordProgress lỗi:", e); }
     }
@@ -1906,11 +1932,24 @@
      thiếu cột thì DB tự lưu tạm trên máy). Mọi nút ⭐ của CÙNG 1 từ trên
      màn hình đổi theo ngay (data-bm = word id). Bấm được nhờ 1 listener
      chung trên document (xem cuối D.bind) — khỏi gắn lại mỗi lần vẽ. */
+  /* Từ nằm trong batch "⭐ Từ đã lưu" (lưu từ bài đọc) — chưa bấm ☆/★ lần
+     nào thì mặc định LÀ ⭐ (xem bmState trong db.js). Từ ở Notebook khác
+     (màn Ôn riêng) không có trong S -> nơi gọi báo qua D._savedHint. */
+  D._savedHint = {};
+  D.isSavedWord = function (wordId) {
+    if (D._savedHint[wordId] != null) return D._savedHint[wordId];
+    var x = (S().words || []).find(function (y) { return y.id === wordId; });
+    var b = x && S().blocks.find(function (y) { return y.id === x.block_id; });
+    var bt = b && S().batches.find(function (y) { return y.id === b.batch_id; });
+    return !!(bt && bt.name === w.DB.SAVED_BATCH_NAME);
+  };
   D.isBookmarked = function (wordId) {
     var u = w.Auth.user;
-    return !!(u && w.DB.isBookmarked(u.id, wordId, S().wp[wordId]));
+    var row = S().wp[wordId] || (w.WordSet && w.WordSet.rowOf && w.WordSet.rowOf(wordId));
+    return !!(u && w.DB.isBookmarked(u.id, wordId, row, D.isSavedWord(wordId)));
   };
-  D.bmBtnHtml = function (wordId) {
+  D.bmBtnHtml = function (wordId, isSaved) {
+    if (isSaved != null) D._savedHint[wordId] = !!isSaved;
     var on = D.isBookmarked(wordId);
     return '<button class="bm-btn' + (on ? " on" : "") + '" data-bm="' + w.esc(wordId) + '" type="button"' +
       ' title="' + (on ? "Bỏ khỏi ⭐ Yêu thích" : "Thêm vào ⭐ Yêu thích để học riêng") + '"' +
@@ -1938,6 +1977,7 @@
       w.toast(on ? "⭐ Đã thêm vào Yêu thích" : "Đã bỏ khỏi Yêu thích", "ok");
       if (w.WordSet && w.WordSet.onBookmarkChanged) w.WordSet.onBookmarkChanged(wordId, on);
       if (w.App && w.App.refreshWordSetBadges && !(w.WordSet && w.WordSet.isOpen())) w.App.refreshWordSetBadges();
+      if (D.blockId) D.renderSummary();   /* chip "⭐ Từ đã lưu N" của Block đổi theo */
     } catch (e) {
       paint(!on);
       console.warn("[Detail] setBookmark lỗi:", e);
@@ -2145,6 +2185,7 @@
       };
       S().wp[x.id] = Object.assign({}, prev, wpatch, { user_id: w.Auth.user.id, word_id: x.id });
       fixResults.push({ wordId: x.id, ok: !!q.ok });
+      S().wp[x.id].wrong_open = !q.ok;
       try { await w.DB.saveWordProgress(w.Auth.user.id, x.id, wpatch); }
       catch (e) { saveFailed = true; console.warn("[Detail] saveWordProgress lỗi:", e); }
     }
@@ -2359,22 +2400,25 @@
        đọc xong sẽ TỰ LẬT sang phần kế tiếp rồi đọc tiếp, tới hết bài mới dừng. */
     function readCurrent() {
       var sc = w.Reader.readScope();
-      w.$("#btn-read").textContent = "🔊 Đang đọc…";
       w.Speech.readPassage({
         container: w.$("#passage"),
         plain: sc.plain,
         offset: sc.offset,
-        onEnd: function () {
-          if (D._autoRead && w.Reader.mode !== "full" && w.Reader.hasNext()) {
+        onEnd: function (info) {
+          /* info.stopped: bị dừng giữa chừng (⏹, đổi tab...) -> giữ điểm
+             đọc tiếp, KHÔNG tự lật sang câu/đoạn sau. */
+          if (!(info && info.stopped) && D._autoRead && w.Reader.mode !== "full" && w.Reader.hasNext()) {
             w.Reader.step(1);
             setTimeout(readCurrent, 400);
           } else {
-            D._autoRead = false;
-            w.$("#btn-read").textContent = "🎧 Nghe US";
+            if (!(info && info.stopped)) D._autoRead = false;
+            D.paintReadBtn();
           }
         }
       });
+      D.paintReadBtn();
     }
+    D._readCurrent = readCurrent;
 
     /* ══════════ THANH ĐIỀU KHIỂN NGHE NỔI (sticky player) ══════════
        TJ yêu cầu 2026-09-12 — giống mini-player "Listen to Page" của
@@ -2451,7 +2495,7 @@
     w.$("#sp-close").onclick = function () {
       D._autoRead = false;
       w.Speech.stop();
-      w.$("#btn-read").textContent = "🎧 Nghe US";
+      D.paintReadBtn();
       w.$("#btn-read-all").textContent = "🔊 Đọc tất cả từ";
       w.$("#btn-read-all-full").textContent = "🔊 Đọc + định nghĩa";
       w.$$("#vocab-tbody tr").forEach(function (tr) { tr.classList.remove("reading"); });
@@ -2490,7 +2534,20 @@
     };
     D._tickStickyFw = tickStickyFw;   /* gọi lại lúc đổi tab/đổi Block, xem showTab() */
 
+    /* Nút chính: có điểm đọc dở -> "▶ Đọc tiếp" từ đúng câu đang dừng;
+       "⏮ Từ đầu" mới đọc lại cả bài (TJ 2026-09-25: "lúc nào muốn đọc lại
+       từ đầu thì mình sẽ bấm"). */
     w.$("#btn-read").onclick = function () {
+      D._autoRead = true;
+      if (w.Speech.passageActive() && !w.Speech.pausedForWord()) return;   /* đang đọc rồi */
+      if (!w.Speech.resumePassage()) readCurrent();
+      D.paintReadBtn();
+      startStickyPlayer(w.$("#btn-read").closest(".audio-toolbar"), w.$("#passage-title").textContent);
+    };
+    w.$("#btn-read-restart").onclick = function () {
+      w.Speech.stop();
+      w.Speech.clearResume();
+      if (w.Reader.mode !== "full") { w.Reader.idx = 0; w.Reader.applyMode(); }
       D._autoRead = true;
       readCurrent();
       startStickyPlayer(w.$("#btn-read").closest(".audio-toolbar"), w.$("#passage-title").textContent);
@@ -2498,7 +2555,7 @@
     w.$("#btn-stop").onclick = function () {
       D._autoRead = false;
       w.Speech.stop();
-      w.$("#btn-read").textContent = "🎧 Nghe US";
+      D.paintReadBtn();
       hideStickyPlayer();
     };
 

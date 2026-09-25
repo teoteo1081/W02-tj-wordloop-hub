@@ -132,7 +132,9 @@ create table if not exists word_progress (
 -- ⭐ Bookmark từ yêu thích (2026-09-24) — theo từng user, màn "⭐ Ôn riêng".
 -- Chưa chạy dòng này thì app vẫn chạy: bookmark lưu tạm trên máy, chạy
 -- xong mở "⭐ Ôn riêng" là tự đẩy lên (xem DB.loadWordSets trong js/db.js).
-alter table word_progress add column if not exists bookmarked boolean default false;
+-- KHÔNG đặt default: null = chưa từng bấm ☆/★ -> từ trong batch "⭐ Từ đã lưu"
+-- mặc định tính là ⭐ (xem bmState trong db.js); false = đã chủ động bỏ ⭐.
+alter table word_progress add column if not exists bookmarked boolean;
 -- ❌ Fix lỗi sai (2026-09-24): true = lần gần nhất trả lời SAI từ này, đúng
 -- lại thì app tự set false (bỏ khỏi danh sách). Câu UPDATE chỉ chạy 1 lần
 -- lúc thêm cột: đưa các từ đã từng sai mà chưa thuộc vào danh sách luôn

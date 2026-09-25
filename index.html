@@ -15,7 +15,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon.svg">
-<link rel="stylesheet" href="css/app.css?v=43">
+<link rel="stylesheet" href="css/app.css?v=44">
 </head>
 <body>
 
@@ -249,6 +249,8 @@
         <div class="muted" id="batch-sub"></div>
         <!-- Đọc lần lượt MỌI từ của MỌI Block trong Batch đang chọn (TJ yêu
              cầu 2026-09-24) — xem App.readBatch trong app.js. -->
+        <!-- ⭐ Từ đã lưu / ❌ Fix lỗi sai của cả Batch — App.renderBatchWsChips -->
+        <div class="batch-ws" id="batch-ws"></div>
         <div class="batch-audio">
           <button class="btn-soft" id="btn-read-batch" title="Đọc lần lượt tất cả từ vựng của mọi Block trong Batch này">🔊 Đọc cả Batch</button>
           <button class="btn-soft" id="btn-read-batch-full" title="Đọc từng từ kèm định nghĩa tiếng Anh">🔊 + định nghĩa</button>
@@ -438,6 +440,7 @@
               <button class="btn-soft" id="btn-regen">🔄 Tạo lại</button>
               <button class="btn-soft" id="btn-copy-passage" title="Copy đoạn văn">📋 Copy</button>
               <button class="btn-soft" id="btn-stop">⏹ Dừng</button>
+              <button class="btn-soft" id="btn-read-restart" title="Đọc lại bài từ câu đầu tiên" hidden>⏮ Từ đầu</button>
               <button class="btn-primary" id="btn-read">🎧 Nghe US</button>
             </div>
           </div>
@@ -628,7 +631,7 @@
       <div class="card">
         <div class="ws-head">
           <div class="meaning-lang-tabs ws-tabs" id="ws-tabs">
-            <button class="mn-lang-tab active" data-ws="bm">⭐ Yêu thích <span class="ws-n" id="ws-n-bm"></span></button>
+            <button class="mn-lang-tab active" data-ws="bm">⭐ Từ đã lưu <span class="ws-n" id="ws-n-bm"></span></button>
             <button class="mn-lang-tab" data-ws="wrong">❌ Fix lỗi sai <span class="ws-n" id="ws-n-wrong"></span></button>
           </div>
           <div class="audio-toolbar" id="ws-toolbar">
@@ -637,6 +640,8 @@
             <button class="btn-primary" id="ws-quiz-btn">🔀 Kiểm tra nghĩa</button>
           </div>
         </div>
+        <!-- Hàng chọn phạm vi (Tất cả/Hub/Notebook/Section/Page/Batch/Block) — WordSet renderScopes -->
+        <div class="ws-scopes" id="ws-scopes"></div>
         <div class="muted ws-note" id="ws-note"></div>
         <div id="ws-body"></div>
       </div>
@@ -1184,16 +1189,16 @@ mitigate | giảm nhẹ"></textarea>
 <script src="js/util.js?v=1"></script>
 <script src="js/srs.js?v=1"></script>
 <script src="js/context.js?v=34"></script>
-<script src="js/speech.js?v=4"></script>
-<script src="js/db.js?v=13"></script>
+<script src="js/speech.js?v=5"></script>
+<script src="js/db.js?v=15"></script>
 <script src="js/auth.js?v=5"></script>
 <script src="js/i18n.js?v=4"></script>
-<script src="js/reader.js?v=3"></script>
-<script src="js/detail.js?v=37"></script>
+<script src="js/reader.js?v=5"></script>
+<script src="js/detail.js?v=39"></script>
 <script src="js/export.js?v=2"></script>
 <script src="js/journey.js?v=6"></script>
 <script src="js/home.js?v=3"></script>
-<script src="js/wordset.js?v=2"></script>
-<script src="js/app.js?v=45"></script>
+<script src="js/wordset.js?v=3"></script>
+<script src="js/app.js?v=46"></script>
 </body>
 </html>

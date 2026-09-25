@@ -1087,6 +1087,7 @@
       freq: item.freq || ""
     });
 
+    if (DB.invalidateSavedWords) DB.invalidateSavedWords();   /* từ mới vào "⭐ Từ đã lưu" -> đếm lại */
     return { batch: batch, block: target, word: word, isNewBlock: count === 0 };
   };
 
@@ -1440,11 +1441,51 @@
     return !!r && (r.attempts || 0) - (r.correct || 0) > 0 && !r.mastered;
   }
 
-  DB.isBookmarked = function (userId, wordId, wpRow) {
-    if (wpRow && wpRow.bookmarked) return true;
+  /* Trạng thái ⭐ của 1 từ: giá trị ĐÃ BẤM (cột bookmarked true/false, hoặc
+     bản lưu tạm trên máy) thắng; CHƯA từng bấm (null) thì từ nằm trong
+     batch "⭐ Từ đã lưu" (lưu từ bài đọc — kể cả lưu TRƯỚC khi có tính năng
+     Bookmark) mặc định LÀ ⭐, trừ khi đã đánh dấu "✓ Đã thuộc" (mức 5).
+     Vì vậy cột bookmarked KHÔNG có default (null = chưa bấm). */
+  function bmState(userId, wordId, wpRow, isSavedWord) {
+    if (wpRow && typeof wpRow.bookmarked === "boolean") return wpRow.bookmarked;
     var mine = readLS(LS_BM)[userId];
-    return !!(mine && mine[wordId]);
+    if (mine && typeof mine[wordId] === "boolean") return mine[wordId];
+    /* Mặc định ⭐ CHỈ khi CHÍNH user này có dòng tiến trình với từ đó (đã
+       lưu/học nó) — batch "⭐ Từ đã lưu" là nội dung DÙNG CHUNG, thiếu điều
+       kiện này thì mọi user thấy ⭐ cả những từ NGƯỜI KHÁC lưu (bug bắt
+       được lúc test 2026-09-25 với 1 hồ sơ mới tinh). */
+    return !!isSavedWord && !!wpRow && wpRow.familiarity !== 5;
+  }
+  DB.isBookmarked = function (userId, wordId, wpRow, isSavedWord) {
+    return bmState(userId, wordId, wpRow, isSavedWord);
   };
+  DB.isWrongOpen = function (userId, wpRow) {
+    return !!wpRow && isWrongOpen(wpRow, readLS(LS_WO)[userId] || {});
+  };
+  DB.SAVED_BATCH_NAME = "⭐ Từ đã lưu";
+
+  /* Mọi từ nằm trong batch "⭐ Từ đã lưu" (của MỌI Page) -> {wordId: true}.
+     Cache 30 giây — gọi lại nhiều lần liền nhau (đếm số + tải danh sách). */
+  var savedCache = null;
+  DB.savedWordIds = async function (force) {
+    if (!force && savedCache && Date.now() - savedCache.at < 30000) return savedCache.ids;
+    var ids = {};
+    if (DB.mode === "local") {
+      var d = local(), bset = {}, blset = {};
+      d.batches.forEach(function (b) { if (b.name === DB.SAVED_BATCH_NAME) bset[b.id] = 1; });
+      d.blocks.forEach(function (b) { if (bset[b.batch_id]) blset[b.id] = 1; });
+      d.words.forEach(function (x) { if (blset[x.block_id]) ids[x.id] = true; });
+    } else {
+      var r = await DB.sb.from("batches").select("id,blocks(id,words(id))").eq("name", DB.SAVED_BATCH_NAME);
+      if (r.error) throw r.error;
+      (r.data || []).forEach(function (bt) {
+        (bt.blocks || []).forEach(function (bl) { (bl.words || []).forEach(function (x) { ids[x.id] = true; }); });
+      });
+    }
+    savedCache = { at: Date.now(), ids: ids };
+    return ids;
+  };
+  DB.invalidateSavedWords = function () { savedCache = null; };
 
   /* Trả về {fallback: true} nếu vừa phải lưu tạm vào máy (thiếu cột). */
   DB.setBookmark = async function (userId, wordId, on) {
@@ -1459,7 +1500,7 @@
         DB.flagColumnMissing.bookmarked = true;
       }
     }
-    if (on) mine[wordId] = true; else delete mine[wordId];
+    mine[wordId] = !!on;   /* lưu CẢ false — bỏ ⭐ 1 từ "Từ đã lưu" phải nhớ được là đã bỏ */
     all[userId] = mine;
     saveLS(LS_BM, all);
     return { fallback: true };
@@ -1515,9 +1556,10 @@
       var ids = Object.keys(bm);
       for (var i = 0; i < ids.length; i++) {
         try {
-          await DB.saveWordProgress(userId, ids[i], { bookmarked: true });
+          var val = bm[ids[i]] !== false;
+          await DB.saveWordProgress(userId, ids[i], { bookmarked: val });
           var hit = rows.find(function (r) { return r.word_id === ids[i]; });
-          if (hit) hit.bookmarked = true; else rows.push({ user_id: userId, word_id: ids[i], bookmarked: true });
+          if (hit) hit.bookmarked = val; else rows.push({ user_id: userId, word_id: ids[i], bookmarked: val });
           delete bm[ids[i]];
         } catch (e) { console.warn("[DB] đẩy bookmark tạm lỗi:", e); }
       }
@@ -1538,10 +1580,14 @@
     return rows;
   }
 
-  function classify(userId, rows) {
-    var bmSet = {}, woLocal = readLS(LS_WO)[userId] || {}, byId = {};
-    rows.forEach(function (r) { byId[r.word_id] = r; if (r.bookmarked) bmSet[r.word_id] = true; });
-    Object.keys(readLS(LS_BM)[userId] || {}).forEach(function (id) { bmSet[id] = true; });
+  function classify(userId, rows, savedIds) {
+    var bmSet = {}, woLocal = readLS(LS_WO)[userId] || {}, byId = {}, cand = {};
+    rows.forEach(function (r) { byId[r.word_id] = r; cand[r.word_id] = 1; });
+    Object.keys(readLS(LS_BM)[userId] || {}).forEach(function (id) { cand[id] = 1; });
+    Object.keys(savedIds || {}).forEach(function (id) { cand[id] = 1; });
+    Object.keys(cand).forEach(function (id) {
+      if (bmState(userId, id, byId[id], savedIds && savedIds[id])) bmSet[id] = true;
+    });
     var wrongRows = rows.filter(function (r) { return isWrongOpen(r, woLocal); });
     return { bmSet: bmSet, wrongRows: wrongRows, byId: byId };
   }
@@ -1550,7 +1596,8 @@
      cùng — CHỈ đọc word_progress (không tải bảng words). */
   DB.getWordSetCounts = async function (userId) {
     if (!userId) return { bm: 0, bmMastered: 0, wrong: 0 };
-    var c = classify(userId, await myProgressRows(userId));
+    var saved = await DB.savedWordIds();
+    var c = classify(userId, await myProgressRows(userId), saved);
     var ids = Object.keys(c.bmSet);
     return {
       bm: ids.length,
@@ -1567,23 +1614,51 @@
     var wordsById = {}, blockName = {};
     if (!userId) return { bookmarks: [], wrong: [], progress: {}, fallback: false };
     var rows = await myProgressRows(userId);
-    var c = classify(userId, rows);
+    var saved = await DB.savedWordIds(true);
+    var c = classify(userId, rows, saved);
 
     var ids = Object.keys(c.bmSet);
     c.wrongRows.forEach(function (r) { if (!c.bmSet[r.word_id]) ids.push(r.word_id); });
 
-    if (progressLocal() || DB.mode === "local") {
-      var d = local();
-      d.blocks.forEach(function (b) { blockName[b.id] = b.name; });
-      d.words.forEach(function (x) { if (ids.indexOf(x.id) >= 0) wordsById[x.id] = x; });
+    /* loc: đường dẫn đầy đủ tới từ — để màn Ôn riêng lọc theo phạm vi
+       Block/Batch/Page/Section/Notebook/Hub. Notebook con không có hub_id
+       -> lần ngược lên Notebook cha (giống DB.locateBlock). */
+    var locOf = {}, nbHub = {};
+    function hubOfNb(nbs, id) {
+      var byId = {}; nbs.forEach(function (n) { byId[n.id] = n; });
+      var n = byId[id], guard = 0;
+      while (n && !n.hub_id && n.parent_notebook_id && guard++ < 10) n = byId[n.parent_notebook_id];
+      return n ? n.hub_id : null;
     }
-    if (DB.mode === "cloud") {
+    if (DB.mode === "local") {
+      var d = local(), bById = {}, btById = {}, pgById = {}, scById = {};
+      d.blocks.forEach(function (b) { blockName[b.id] = b.name; bById[b.id] = b; });
+      d.batches.forEach(function (b) { btById[b.id] = b; });
+      d.pages.forEach(function (p) { pgById[p.id] = p; });
+      d.sections.forEach(function (s2) { scById[s2.id] = s2; });
+      d.notebooks.forEach(function (n) { nbHub[n.id] = hubOfNb(d.notebooks, n.id); });
+      d.words.forEach(function (x) {
+        if (ids.indexOf(x.id) < 0) return;
+        wordsById[x.id] = x;
+        var bl = bById[x.block_id], bt = bl && btById[bl.batch_id], pg = bt && pgById[bt.page_id], sc = pg && scById[pg.section_id];
+        locOf[x.id] = { blockId: x.block_id, batchId: bt && bt.id, pageId: pg && pg.id, sectionId: sc && sc.id,
+                        notebookId: sc && sc.notebook_id, hubId: sc && nbHub[sc.notebook_id] };
+      });
+    } else {
+      var rn = await DB.sb.from("notebooks").select("id,hub_id,parent_notebook_id");
+      if (rn.error) throw rn.error;
+      (rn.data || []).forEach(function (n) { nbHub[n.id] = hubOfNb(rn.data, n.id); });
       for (var j = 0; j < ids.length; j += 200) {
         var part = ids.slice(j, j + 200);
-        var r2 = await DB.sb.from("words").select("*, blocks(name)").in("id", part);
+        var r2 = await DB.sb.from("words")
+          .select("*, blocks(name,batch_id,batches(page_id,pages(section_id,sections(notebook_id))))").in("id", part);
         if (r2.error) throw r2.error;
         (r2.data || []).forEach(function (x) {
-          blockName[x.block_id] = x.blocks && x.blocks.name;
+          var bl = x.blocks, bt = bl && bl.batches, pg = bt && bt.pages, sc = pg && pg.sections;
+          blockName[x.block_id] = bl && bl.name;
+          locOf[x.id] = { blockId: x.block_id, batchId: bl && bl.batch_id, pageId: bt && bt.page_id,
+                          sectionId: pg && pg.section_id, notebookId: sc && sc.notebook_id,
+                          hubId: sc && nbHub[sc.notebook_id] };
           delete x.blocks;
           wordsById[x.id] = x;
         });
@@ -1591,7 +1666,8 @@
     }
     function withBlock(x) {
       var p = c.byId[x.id];
-      return Object.assign({}, x, { block_name: blockName[x.block_id] || "", mastered: !!(p && p.mastered) });
+      return Object.assign({}, x, { block_name: blockName[x.block_id] || "", mastered: !!(p && p.mastered),
+                                    saved: !!saved[x.id], loc: locOf[x.id] || { blockId: x.block_id } });
     }
 
     var bookmarks = Object.keys(c.bmSet).filter(function (id) { return wordsById[id]; })
@@ -1608,7 +1684,7 @@
        thiếu số này sẽ ghi đè attempts về 1). */
     var progress = {};
     rows.forEach(function (r) { progress[r.word_id] = { attempts: r.attempts || 0, correct: r.correct || 0 }; });
-    return { bookmarks: bookmarks, wrong: wrong, progress: progress,
+    return { bookmarks: bookmarks, wrong: wrong, progress: progress, rows: c.byId,
              fallback: DB.flagColumnMissing.bookmarked || DB.flagColumnMissing.wrong_open };
   };
 

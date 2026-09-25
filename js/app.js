@@ -874,6 +874,29 @@
     "</div>";
   }
 
+  /* ⭐/❌ theo phạm vi (2026-09-25, TJ: "ra ngoài Batch thì cũng có tương
+     tự Từ đã lưu và Fix lỗi sai cho từng Block, batch...") — số tính ngay
+     từ S qua WordSet.localCounts (không gọi mạng). Bấm = mở màn Ôn riêng
+     lọc sẵn đúng Batch/Block (listener data-ws-open trong wordset.js).
+     Page/Section/Notebook/Hub: chọn ở hàng "Phạm vi" trong màn Ôn riêng. */
+  function blockWsBadgeHtml(b) {
+    if (!w.WordSet || !w.WordSet.localCounts) return "";
+    var c = w.WordSet.localCounts("block", b.id);
+    var out = "";
+    if (c.bm) out += '<button class="tag-ws" type="button" data-ws-open="bm" data-ws-kind="block" data-ws-id="' + w.esc(b.id) + '" title="Từ đã lưu của Block này">⭐ ' + c.bm + "</button>";
+    if (c.wrong) out += '<button class="tag-ws bad" type="button" data-ws-open="wrong" data-ws-kind="block" data-ws-id="' + w.esc(b.id) + '" title="Từ đang làm sai của Block này — bấm để sửa">❌ ' + c.wrong + "</button>";
+    return out;
+  }
+  App.renderBatchWsChips = function () {
+    var box = w.$("#batch-ws");
+    if (!box) return;
+    if (!S.batchId || !w.WordSet || !w.WordSet.localCounts) { box.innerHTML = ""; return; }
+    var c = w.WordSet.localCounts("batch", S.batchId);
+    box.innerHTML =
+      '<button class="btn-soft" type="button" data-ws-open="bm" data-ws-kind="batch" data-ws-id="' + w.esc(S.batchId) + '" title="Từ đã lưu của cả Batch này">⭐ Từ đã lưu ' + c.bm + "</button>" +
+      '<button class="btn-soft' + (c.wrong ? " ws-bad" : "") + '" type="button" data-ws-open="wrong" data-ws-kind="batch" data-ws-id="' + w.esc(S.batchId) + '" title="Từ đang làm sai của cả Batch này — bấm để sửa">❌ Fix lỗi sai ' + c.wrong + "</button>";
+  };
+
   App.renderBlocks = function () {
     var batch = S.batches.find(function (b) { return b.id === S.batchId; });
     var list = S.batchId ? App.blocksOf(S.batchId) : [];
@@ -907,6 +930,7 @@
     }
 
     w.$("#batch-title").textContent = batch ? batch.name : "Chưa chọn Batch";
+    App.renderBatchWsChips();
 
     var totalWords = 0, doneBlocks = 0;
     list.forEach(function (b) {
@@ -969,7 +993,7 @@
         blockPathHtml(b) +
         '<div class="block-top">' +
           '<div class="block-left">' +
-            '<span class="block-title">' + w.esc(b.name) + "</span>" + tags +
+            '<span class="block-title">' + w.esc(b.name) + "</span>" + tags + blockWsBadgeHtml(b) +
             '<button class="dots" data-menu="blocks" data-id="' + b.id + '" title="Thao tác" aria-label="Thao tác với ' + w.esc(b.name) + '">⋯</button>' +
             '<span class="tag-time' + (st.due ? " due" : "") + '">' +
               (st.due ? "🔴 " : "🟢 ") + w.esc(st.label) + "</span>" +
