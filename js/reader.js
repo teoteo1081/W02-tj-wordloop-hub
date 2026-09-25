@@ -382,6 +382,8 @@
       /* Lưu mức 1–4 (chưa thuộc) = tự thêm vào ⭐ Yêu thích để ôn riêng
          (TJ 2026-09-24: "bấm lưu 1 trong 4 lựa chọn thì nó ko ghi nhận vào
          bookmark"). "✓ Đã thuộc" (5) giữ nguyên trạng thái bookmark cũ. */
+      /* số "⭐ Ôn riêng" nhảy ngay — kể cả từ mới lưu (mặc định đã là ⭐, không cần ghi) */
+      if (level >= 1 && level <= 4 && w.App && w.App.wsMark) w.App.wsMark("bm", hit.term, true);
       if (level >= 1 && level <= 4 && w.Detail && !w.Detail.isBookmarked(hit.id)) {
         try {
           var bmRes = await w.DB.setBookmark(w.Auth.user.id, hit.id, true);

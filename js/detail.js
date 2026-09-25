@@ -1732,6 +1732,7 @@
         g.given = v;
         g.ok = w.normalizeAnswer(v) === w.normalizeAnswer(g.term);
         g.shown = true;
+        D.instantFix(g.term, !!g.ok, { t: "gap", text: g.text, opts: g.options || [], given: v });
         D.renderSingle();
         if (g.ok) w.Speech.speakQuiz(g.term);
 
@@ -1793,6 +1794,22 @@
      SAI thì luôn ghi đè bằng câu mới nhất. Cập nhật S.wp ngay để chip ❌ đếm
      đúng, khỏi tải lại. */
   function sameKind(a, b) { return a && b && a.t === b.t && (a.t !== "meaning" || a.lang === b.lang); }
+  D.sameKind = sameKind;
+
+  /* Ghi NGAY kết quả 1 câu vừa chọn (Nghĩa/Từng câu) — số "❌ Fix lỗi sai"
+     trên thanh trên cùng nhảy liền, và thoát giữa bài cũng không mất (lúc
+     chấm cả bài vẫn ghi lại lần nữa, vô hại). */
+  D.instantFix = function (term, ok, ctx) {
+    var u = w.Auth.user;
+    if (!u) return;
+    var x = words().find(function (y) { return w.normalizeAnswer(y.term) === w.normalizeAnswer(term); });
+    if (!x) return;
+    var list = [];
+    D.pushFixResult(list, x.id, ok, ctx);
+    if (!list.length) return;   /* đúng ở loại câu khác -> giữ nguyên trong Fix */
+    if (w.App && w.App.wsMark) w.App.wsMark("wrong", x.term, !ok);
+    w.DB.markResults(u.id, list).catch(function (e) { console.warn("[Detail] markResults lỗi:", e); });
+  };
   D.pushFixResult = function (list, wordId, ok, ctx) {
     var u = w.Auth.user, row = S().wp[wordId];
     if (ok && u && w.DB.isWrongOpen(u.id, row)) {
@@ -1800,7 +1817,10 @@
       if (old && !sameKind(old, ctx)) return;   /* đúng ở loại câu KHÁC -> vẫn giữ trong Fix */
     }
     list.push({ wordId: wordId, ok: ok, ctx: ctx });
-    if (row) { row.wrong_open = !ok; row.wrong_ctx = ok ? null : ctx; }
+    /* Từ chưa từng học chưa có dòng trong S.wp -> tạo luôn, không thì lần
+       chấm sau không biết từ này đang sai (bug bắt được khi test). */
+    if (!row) row = S().wp[wordId] = { user_id: u && u.id, word_id: wordId, attempts: 0, correct: 0 };
+    row.wrong_open = !ok; row.wrong_ctx = ok ? null : ctx;
   };
 
   /* ---------- Khối kết quả dùng chung cho Phiếu đầy đủ & Từng câu ---------- */
@@ -1877,7 +1897,8 @@
         last_reviewed_at: Date.now()
       };
       S().wp[x.id] = Object.assign({}, prev, wpatch, { user_id: w.Auth.user.id, word_id: x.id });
-      D.pushFixResult(fixResults, x.id, !!g.ok, { t: "gap", text: g.text, opts: g.options || [], given: g.given || "" });
+      /* câu BỎ TRỐNG (chưa chọn gì) không tính là "sai" cho Fix lỗi sai */
+      if (g.given) D.pushFixResult(fixResults, x.id, !!g.ok, { t: "gap", text: g.text, opts: g.options || [], given: g.given || "" });
       try { await w.DB.saveWordProgress(w.Auth.user.id, x.id, wpatch); }
       catch (e) { saveFailed = true; console.warn("[Detail] saveWordProgress lỗi:", e); }
     }
@@ -1984,6 +2005,10 @@
       });
     }
     paint(on);
+    /* số trên nút "⭐ Ôn riêng" đổi NGAY, DB ghi sau */
+    var tx = (S().words || []).find(function (y) { return y.id === wordId; }) ||
+             (w.WordSet && w.WordSet.data && w.WordSet.data.bookmarks.find(function (y) { return y.id === wordId; }));
+    if (tx && w.App && w.App.wsMark) w.App.wsMark("bm", tx.term, on);
     try {
       /* bản trùng cùng chữ (màn Ôn riêng gộp lại 1 dòng) -> bỏ/thêm ⭐ cho TẤT CẢ */
       var dups = (w.WordSet && w.WordSet.dupIdsOf) ? w.WordSet.dupIdsOf(wordId) : [wordId];
@@ -2117,6 +2142,7 @@
         q.given = v;
         q.ok = v === q.answer;
         q.shown = true;
+        D.instantFix(q.term, !!q.ok, { t: "meaning", lang: D.meaningLang(), answer: q.answer, opts: q.options || [], given: v });
         D.renderMeaning();
         if (q.ok) w.Speech.speakQuiz(q.term);
 
@@ -2205,7 +2231,7 @@
         last_reviewed_at: Date.now()
       };
       S().wp[x.id] = Object.assign({}, prev, wpatch, { user_id: w.Auth.user.id, word_id: x.id });
-      D.pushFixResult(fixResults, x.id, !!q.ok, { t: "meaning", lang: D.meaningLang(), answer: q.answer, opts: q.options || [], given: q.given || "" });
+      if (q.given) D.pushFixResult(fixResults, x.id, !!q.ok, { t: "meaning", lang: D.meaningLang(), answer: q.answer, opts: q.options || [], given: q.given || "" });
       try { await w.DB.saveWordProgress(w.Auth.user.id, x.id, wpatch); }
       catch (e) { saveFailed = true; console.warn("[Detail] saveWordProgress lỗi:", e); }
     }

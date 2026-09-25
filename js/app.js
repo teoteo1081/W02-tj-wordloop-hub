@@ -1263,14 +1263,48 @@
     if (wr) wr.textContent = c.wrong ? c.wrong + " từ sai" : "0 từ sai 🎉";
     if (fixBtn) fixBtn.classList.toggle("has-wrong", c.wrong > 0);
   };
+
+  /* Số nhảy NGAY lúc bấm (TJ 2026-09-25: "vừa làm sai là Fix lỗi sai nhảy
+     số đếm tăng liền... vừa bookmark xong là Ôn riêng... cũng tăng") — giữ
+     3 tập CHỮ (không đếm trùng) từ lần tải gần nhất, mỗi thao tác (chọn
+     sai 1 câu, bấm ⭐...) sửa tập rồi sơn lại tức thì qua App.wsMark; DB
+     vẫn đọc lại ở nền (refreshWordSetBadges) để chốt số đúng. */
+  var wsSets = null;   /* {bm:{term:1}, mastered:{term:1}, wrong:{term:1}} */
+  function paintWsSets() {
+    if (!wsSets) return;
+    var bm = Object.keys(wsSets.bm);
+    App.setWordSetBadges({
+      bm: bm.length,
+      bmMastered: bm.filter(function (k) { return wsSets.mastered[k]; }).length,
+      wrong: Object.keys(wsSets.wrong).length
+    });
+  }
+  App.applyWordSetData = function (d) {
+    if (!d) return;
+    var sets = { bm: {}, mastered: {}, wrong: {} };
+    d.bookmarks.forEach(function (x) {
+      var k = w.normalizeAnswer(x.term);
+      sets.bm[k] = 1; if (x.mastered) sets.mastered[k] = 1;
+    });
+    d.wrong.forEach(function (x) { sets.wrong[w.normalizeAnswer(x.word.term)] = 1; });
+    wsSets = sets;
+    paintWsSets();
+  };
+  /* kind: "bm" | "wrong" | "mastered"; term: chữ của từ; on: thêm/bỏ */
+  App.wsMark = function (kind, term, on) {
+    if (!wsSets || !term) return;
+    var k = w.normalizeAnswer(term);
+    if (on) wsSets[kind][k] = 1; else delete wsSets[kind][k];
+    paintWsSets();
+  };
   App.refreshWordSetBadges = function () {
     clearTimeout(App._wsBadgeTimer);
     /* gom nhiều lần gọi sát nhau (chấm bài + rời Block...) thành 1 lượt đọc */
     App._wsBadgeTimer = setTimeout(async function () {
       if (!w.Auth.user) return;
-      try { App.setWordSetBadges(await w.DB.getWordSetCounts(w.Auth.user.id)); }
+      try { App.applyWordSetData(await w.DB.loadWordSets(w.Auth.user.id)); }
       catch (e) { /* lỗi mạng -> giữ số cũ */ }
-    }, 400);
+    }, 1500);
   };
 
   /* Dòng "🕒 Data cập nhật lần cuối" ở CHÂN SIDEBAR TRÁI (#sidebar-data-updated,

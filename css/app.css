@@ -2319,3 +2319,8 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
 /* Fix lỗi sai: hỏi lại đúng câu đã sai (2026-09-25) */
 .ws-qtype{font-size:.72rem;font-weight:700;color:var(--red-l);margin:.1rem 0 .4rem;}
 .ws-ctx{font-size:.68rem;color:var(--text-3);margin-top:.15rem;white-space:nowrap;}
+/* Fix lỗi sai chia nhóm 10 từ + nút 🎯 làm lại từng từ (2026-09-25) */
+.ws-group-row td{background:var(--bg-soft);padding:.45rem .6rem !important;}
+.ws-group-head{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;}
+.ws-group-head .ws-fix-group{margin-left:auto;font-size:.76rem;padding:.3rem .8rem;}
+.ws-fix-one{display:block;margin-top:.3rem;font-size:.7rem;padding:.15rem .5rem;white-space:nowrap;}

@@ -237,22 +237,16 @@
     w.$("#ws-n-wrong").textContent = l.wrong.length;
     renderScopes();
     /* số trên 2 nút thanh trên cùng khớp luôn với danh sách vừa tải */
-    if (w.App && w.App.setWordSetBadges && WS.data) {
-      w.App.setWordSetBadges({
-        bm: d.bookmarks.length,
-        bmMastered: d.bookmarks.filter(function (x) { return x.mastered; }).length,
-        wrong: d.wrong.length
-      });
-    }
+    if (w.App && w.App.applyWordSetData && WS.data) w.App.applyWordSetData(d);
     w.$$("#ws-tabs [data-ws]").forEach(function (b) { b.classList.toggle("active", b.dataset.ws === WS.tab); });
   }
 
   WS.render = function () {
     paintCounts();
-    w.$("#ws-quiz-btn").textContent = WS.tab === "wrong" ? "🎯 Làm lại câu sai" : "🔀 Kiểm tra nghĩa";
+    w.$("#ws-quiz-btn").textContent = WS.tab === "wrong" ? "🎯 Làm lại tất cả" : "🔀 Kiểm tra nghĩa";
     var note = w.$("#ws-note");
     if (WS.tab === "wrong") {
-      note.textContent = "Từ bạn đang làm sai ở bất kỳ bài kiểm tra nào. \"🎯 Làm lại câu sai\" hỏi lại ĐÚNG câu đã sai (điền từ hoặc nghĩa), từng từ riêng lẻ — đúng là tự bỏ ra khỏi danh sách.";
+      note.textContent = "Từ bạn đang làm sai ở bất kỳ bài kiểm tra nào, chia nhóm 10 từ. Làm theo nhóm (🎯 Làm nhóm này), từng từ (🎯 Làm lại) hoặc tất cả — hỏi lại ĐÚNG câu đã sai, đúng là tự bỏ ra ngay.";
     } else {
       note.textContent = "Từ bạn đã bấm ☆ ở bảng từ vựng/bài Nghĩa, và từ lưu khi đọc bài (mức 1–4). Bấm ★ để bỏ khỏi danh sách.";
     }
@@ -277,7 +271,7 @@
     }
     var wrongById = {};
     if (WS.data) WS.data.wrong.forEach(function (x) { wrongById[x.word.id] = x; });
-    var rows = list.map(function (x, i) {
+    function rowHtml(x, i) {
       var wr = wrongById[x.id];
       var wrongCell = wr
         ? '<span class="ws-wrong" title="Sai ' + wr.wrong + " / " + wr.attempts + ' lần làm">✗ ' + wr.wrong + "/" + wr.attempts + "</span>" +
@@ -292,17 +286,38 @@
         '<td class="ipa" data-label="Phonetic">' + w.esc(x.ipa || "—") + "</td>" +
         '<td class="vi-cell" data-label="Nghĩa Việt">' + w.esc(x.meaning_vi || "—") + "</td>" +
         '<td class="def-en" data-label="Definition">' + w.esc(x.def_en || "—") + "</td>" +
-        '<td data-label="Sai">' + (wrongCell || "—") + "</td>" +
+        '<td data-label="Sai">' + (wrongCell || "—") +
+          (WS.tab === "wrong" ? '<button class="btn-soft ws-fix-one" type="button" data-ws-fix-one="' + w.esc(x.id) + '" title="Làm lại đúng câu đã sai của riêng từ này">🎯 Làm lại</button>' : "") +
+        "</td>" +
         '<td data-label="Block"><button class="btn-ghost ws-jump" data-ws-jump="' + w.esc(x.block_id) + '" title="Mở Block chứa từ này">' +
           w.esc(x.block_name || "Block") + " ↗</button></td>" +
       "</tr>";
-    }).join("");
+    }
+    /* Fix lỗi sai chia NHÓM 10 TỪ (TJ 2026-09-25: "lỗi sai cũng hiện 10 từ 1
+       block... chia nhỏ ra để giải quyết hoặc là từng từ sẽ là làm lại bài
+       test. Linh hoạt lên") — mỗi nhóm 1 nút làm riêng, mỗi từ 1 nút 🎯. */
+    var rows;
+    if (WS.tab === "wrong") {
+      WS._groups = [];
+      for (var g = 0; g < list.length; g += GROUP) WS._groups.push(list.slice(g, g + GROUP));
+      rows = WS._groups.map(function (grp, gi) {
+        return '<tr class="ws-group-row"><td colspan="6"><div class="ws-group-head">' +
+            "<b>📦 Nhóm " + (gi + 1) + '</b><span class="muted">' + grp.length + " từ</span>" +
+            '<button class="btn-primary ws-fix-group" type="button" data-ws-fix-group="' + gi + '">🎯 Làm nhóm này</button>' +
+          "</div></td></tr>" +
+          grp.map(function (x, k) { return rowHtml(x, gi * GROUP + k); }).join("");
+      }).join("");
+    } else {
+      rows = list.map(rowHtml).join("");
+    }
     w.$("#ws-body").innerHTML =
       '<div class="table-wrap"><table class="vocab-table ws-table">' +
         "<thead><tr><th>Vocabulary</th><th>Phonetic</th><th>Nghĩa Việt</th><th>English Definition</th><th>Sai</th><th>Block</th></tr></thead>" +
         "<tbody>" + rows + "</tbody>" +
       "</table></div>";
   }
+
+  var GROUP = 10;
 
   /* ══════════════ KIỂM TRA NGHĨA ══════════════ */
   /* Dựng đề. Tab "Fix lỗi sai": MỖI TỪ hỏi lại ĐÚNG câu đã làm sai (TJ
@@ -332,10 +347,12 @@
     });
     return others;
   }
-  function buildQuiz() {
+  /* only: chỉ làm đúng các từ này (1 nhóm / 1 từ) — không giới hạn số câu,
+     giữ đúng thứ tự; không truyền = cả danh sách, bốc ngẫu nhiên tối đa 20. */
+  function buildQuiz(only) {
     var list = currentWords();
     var extra = ((w.S && w.S.words) || []);
-    var picked = shuffle(list).slice(0, Math.min(QUIZ_CAP, list.length));
+    var picked = only ? only.slice() : shuffle(list).slice(0, Math.min(QUIZ_CAP, list.length));
     var mc = [];
     picked.forEach(function (x) {
       var ctx = ctxOf(x.id);
@@ -404,7 +421,12 @@
             '<button class="btn-primary" id="ws-to-list">📋 Về danh sách</button>' +
           "</div>" +
         "</div>";
-      w.$("#ws-again").onclick = function () { WS.quiz = buildQuiz(); WS.qi = 0; WS.render(); };
+      w.$("#ws-again").onclick = function () {
+        /* làm lại đúng nhóm/từ vừa làm — chỉ những từ CÒN sai (đúng rồi thì đã gỡ ra) */
+        var only = WS._quizOnly ? WS._quizOnly.filter(function (x) { return currentWords().some(function (y) { return y.id === x.id; }); }) : null;
+        if (only && !only.length) { WS.quiz = null; WS.load(); w.toast("🎉 Đã sửa hết lỗi sai của nhóm này", "ok"); return; }
+        startQuiz(only);
+      };
       w.$("#ws-to-list").onclick = function () { WS.quiz = null; WS.load(); };
       return;
     }
@@ -484,23 +506,34 @@
       mastered: attempts >= (cfg.MASTER_MIN_ATTEMPTS || 3) && (okCount / attempts) >= (cfg.MASTER_THRESHOLD || 0.8),
       last_reviewed_at: Date.now()
     };
+    /* ❌ Fix lỗi sai: đúng -> bỏ khỏi danh sách, sai -> (vẫn) nằm trong; sai
+       lại -> giữ đúng câu đó (cập nhật lựa chọn vừa chọn). Đúng ở loại câu
+       KHÁC câu đã sai (vd tab ⭐ hỏi nghĩa, nhưng từ đang sai ở câu điền từ)
+       -> KHÔNG gỡ (cùng quy tắc D.pushFixResult). PHẢI tính TRƯỚC khi sửa
+       S.wp/rows bên dưới (sửa rồi thì wrong_open đã là kết quả mới). */
+    var ctx = q.ctx ? Object.assign({}, q.ctx, { given: q.given || "" }) : null;
+    var row0 = (w.S && w.S.wp && w.S.wp[q.wordId]) || WS.rowOf(q.wordId);
+    var old = w.DB.wrongCtx(u.id, q.wordId, row0);
+    var skipFix = !!(q.ok && w.DB.isWrongOpen(u.id, row0) && old && !w.Detail.sameKind(old, q.ctx));
+    /* số trên nút "❌ Fix lỗi sai" đổi NGAY (real time, trước khi chờ ghi DB) */
+    if (!skipFix && w.App && w.App.wsMark) w.App.wsMark("wrong", q.term, !q.ok);
+    var flag = skipFix ? {} : { wrong_open: !q.ok, wrong_ctx: q.ok ? null : ctx };
     rememberProgress(q.wordId, patch);
-    if (w.S && w.S.wp) w.S.wp[q.wordId] = Object.assign({}, prev, patch, { user_id: u.id, word_id: q.wordId, wrong_open: !q.ok });
-    if (WS.data && WS.data.rows) WS.data.rows[q.wordId] = Object.assign({}, WS.data.rows[q.wordId], patch, { wrong_open: !q.ok });
+    if (w.S && w.S.wp) w.S.wp[q.wordId] = Object.assign({}, prev, patch, { user_id: u.id, word_id: q.wordId }, flag);
+    if (WS.data && WS.data.rows) WS.data.rows[q.wordId] = Object.assign({}, WS.data.rows[q.wordId], patch, flag);
     try {
       await w.DB.saveWordProgress(u.id, q.wordId, patch);
-      /* ❌ Fix lỗi sai: đúng -> bỏ khỏi danh sách, sai -> (vẫn) nằm trong. */
-      /* sai lại -> giữ đúng câu đó (cập nhật lựa chọn vừa chọn) để lần sau hỏi lại y vậy */
-      var ctx = q.ctx ? Object.assign({}, q.ctx, { given: q.given || "" }) : null;
-      /* mọi bản trùng cùng chữ (dup_ids) nhận chung kết quả — xem dedupe trong DB.loadWordSets */
-      await w.DB.markResults(u.id, WS.dupIdsOf(q.wordId).map(function (id) { return { wordId: id, ok: !!q.ok, ctx: ctx }; }));
+      if (!skipFix) {
+        /* mọi bản trùng cùng chữ (dup_ids) nhận chung kết quả — xem dedupe trong DB.loadWordSets */
+        await w.DB.markResults(u.id, WS.dupIdsOf(q.wordId).map(function (id) { return { wordId: id, ok: !!q.ok, ctx: ctx }; }));
+      }
       if (!q.ok && WS.data) {
         var wi = WS.data.wrong.find(function (x) { return x.word.id === q.wordId; });
         if (wi && ctx) wi.ctx = ctx;
       }
       if (WS.data) {
         var i = WS.data.wrong.findIndex(function (x) { return x.word.id === q.wordId; });
-        if (q.ok && i >= 0) WS.data.wrong.splice(i, 1);
+        if (q.ok && i >= 0 && !skipFix) WS.data.wrong.splice(i, 1);
         var bmHit = WS.data.bookmarks.find(function (x) { return x.id === q.wordId; });
         if (bmHit) bmHit.mastered = patch.mastered;
         paintCounts();
@@ -562,13 +595,17 @@
       WS.render();
     };
   });
-  w.$("#ws-quiz-btn").onclick = function () {
+  function startQuiz(only) {
     w.Speech.stop();
-    WS.quiz = buildQuiz();
+    clearTimeout(WS._autoNext);
+    WS.quiz = buildQuiz(only);
+    WS._quizOnly = only || null;
     WS.qi = 0;
-    if (!WS.quiz) { w.toast("Danh sách này chưa có từ nào có nghĩa tiếng Việt để kiểm tra", "err"); return; }
+    if (!WS.quiz) { w.toast("Chưa có câu nào để kiểm tra (từ chưa có nghĩa?)", "err"); return; }
     WS.render();
-  };
+  }
+  WS.startQuiz = startQuiz;
+  w.$("#ws-quiz-btn").onclick = function () { startQuiz(null); };
   function readAll(withDef) {
     var list = currentWords();
     if (!list.length) return;
@@ -590,6 +627,14 @@
     w.$$("#ws-body tbody tr").forEach(function (tr) { tr.classList.remove("reading"); });
   };
   w.$("#ws-body").addEventListener("click", async function (e) {
+    var grpBtn = e.target.closest("[data-ws-fix-group]");
+    if (grpBtn) { startQuiz((WS._groups || [])[+grpBtn.dataset.wsFixGroup] || null); return; }
+    var oneBtn = e.target.closest("[data-ws-fix-one]");
+    if (oneBtn) {
+      var one = currentWords().filter(function (x) { return x.id === oneBtn.dataset.wsFixOne; });
+      if (one.length) startQuiz(one);
+      return;
+    }
     var say = e.target.closest("[data-ws-say]");
     if (say) { w.Speech.speakWord(say.dataset.wsSay); return; }
     var jump = e.target.closest("[data-ws-jump]");
