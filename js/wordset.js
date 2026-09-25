@@ -99,13 +99,28 @@
   /* Số ⭐ Từ đã lưu / ❌ Fix lỗi sai của 1 Block/Batch — tính ngay từ S (không
      gọi mạng), dùng cho chip đầu Block, đầu Batch và từng thẻ Block. */
   WS.localCounts = function (kind, id) {
-    var u = w.Auth.user, S = w.S, ids = WS.localScopeIds(kind, id), bm = 0, wrong = 0;
+    var u = w.Auth.user, S = w.S, ids = WS.localScopeIds(kind, id), bm = {}, wrong = {};
     if (!u) return { bm: 0, wrong: 0 };
+    var termOf = {};
+    S.words.forEach(function (x) { if (ids[x.id]) termOf[x.id] = w.normalizeAnswer(x.term); });
+    /* đếm theo CHỮ khác nhau — không đếm trùng */
     Object.keys(ids).forEach(function (wid) {
-      if (w.Detail.isBookmarked(wid)) bm++;
-      if (w.DB.isWrongOpen(u.id, S.wp[wid])) wrong++;
+      var k = termOf[wid] || wid;
+      if (w.Detail.isBookmarked(wid)) bm[k] = 1;
+      if (w.DB.isWrongOpen(u.id, S.wp[wid])) wrong[k] = 1;
     });
-    return { bm: bm, wrong: wrong };
+    return { bm: Object.keys(bm).length, wrong: Object.keys(wrong).length };
+  };
+
+  /* Mọi id bản trùng cùng chữ với wordId trong danh sách đã tải (gồm chính nó). */
+  WS.dupIdsOf = function (wordId) {
+    var d = WS.data;
+    if (!d) return [wordId];
+    var hit = d.bookmarks.find(function (x) { return x.dup_ids && x.dup_ids.indexOf(wordId) >= 0; }) ||
+              (d.wrong.find(function (x) { return x.word.dup_ids && x.word.dup_ids.indexOf(wordId) >= 0; }) || {}).word;
+    var ids = (hit && hit.dup_ids) ? hit.dup_ids.slice() : [wordId];
+    if (ids.indexOf(wordId) < 0) ids.push(wordId);
+    return ids;
   };
 
   function inScope(x, sc) {
@@ -477,7 +492,8 @@
       /* ❌ Fix lỗi sai: đúng -> bỏ khỏi danh sách, sai -> (vẫn) nằm trong. */
       /* sai lại -> giữ đúng câu đó (cập nhật lựa chọn vừa chọn) để lần sau hỏi lại y vậy */
       var ctx = q.ctx ? Object.assign({}, q.ctx, { given: q.given || "" }) : null;
-      await w.DB.markResults(u.id, [{ wordId: q.wordId, ok: !!q.ok, ctx: ctx }]);
+      /* mọi bản trùng cùng chữ (dup_ids) nhận chung kết quả — xem dedupe trong DB.loadWordSets */
+      await w.DB.markResults(u.id, WS.dupIdsOf(q.wordId).map(function (id) { return { wordId: id, ok: !!q.ok, ctx: ctx }; }));
       if (!q.ok && WS.data) {
         var wi = WS.data.wrong.find(function (x) { return x.word.id === q.wordId; });
         if (wi && ctx) wi.ctx = ctx;

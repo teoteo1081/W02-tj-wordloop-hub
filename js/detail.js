@@ -1985,6 +1985,11 @@
     }
     paint(on);
     try {
+      /* bản trùng cùng chữ (màn Ôn riêng gộp lại 1 dòng) -> bỏ/thêm ⭐ cho TẤT CẢ */
+      var dups = (w.WordSet && w.WordSet.dupIdsOf) ? w.WordSet.dupIdsOf(wordId) : [wordId];
+      for (var di = 0; di < dups.length; di++) {
+        if (dups[di] !== wordId) await w.DB.setBookmark(u.id, dups[di], on);
+      }
       var res = await w.DB.setBookmark(u.id, wordId, on);
       if (!res.fallback) {
         var prev = S().wp[wordId];

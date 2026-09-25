@@ -511,6 +511,7 @@
 
   /* ══════════════ THÊM MỚI ══════════════ */
   async function insertOne(table, row) {
+    if (table === "words" && DB.invalidateDistinctWords) DB.invalidateDistinctWords();   /* tổng từ khác nhau đổi */
     if (DB.mode === "local") {
       row.id = row.id || w.uid(table.slice(0, 2));
       local()[table].push(row);
@@ -561,6 +562,7 @@
 
   async function insertMany(table, rows) {
     if (!rows.length) return [];
+    if (table === "words" && DB.invalidateDistinctWords) DB.invalidateDistinctWords();
     if (DB.mode === "local") {
       rows.forEach(function (r) { r.id = r.id || w.uid(table.slice(0, 2)); });
       local()[table] = local()[table].concat(rows);
@@ -1619,13 +1621,13 @@
      cùng — CHỈ đọc word_progress (không tải bảng words). */
   DB.getWordSetCounts = async function (userId) {
     if (!userId) return { bm: 0, bmMastered: 0, wrong: 0 };
-    var saved = await DB.savedWordIds();
-    var c = classify(userId, await myProgressRows(userId), saved);
-    var ids = Object.keys(c.bmSet);
+    /* Dùng đúng danh sách đã GỘP TRÙNG của loadWordSets — số trên nút phải
+       khớp số dòng trong màn Ôn riêng (không đếm trùng). */
+    var d = await DB.loadWordSets(userId);
     return {
-      bm: ids.length,
-      bmMastered: ids.filter(function (id) { return c.byId[id] && c.byId[id].mastered; }).length,
-      wrong: c.wrongRows.length
+      bm: d.bookmarks.length,
+      bmMastered: d.bookmarks.filter(function (x) { return x.mastered; }).length,
+      wrong: d.wrong.length
     };
   };
 
@@ -1707,6 +1709,28 @@
        thiếu số này sẽ ghi đè attempts về 1). */
     var progress = {};
     rows.forEach(function (r) { progress[r.word_id] = { attempts: r.attempts || 0, correct: r.correct || 0 }; });
+    /* KHÔNG ĐẾM TRÙNG (TJ 2026-09-25): cùng 1 chữ lưu 2 lần ("immense" x2)
+       hoặc nằm ở nhiều Block -> gộp thành 1 dòng. dup_ids giữ mọi id bản
+       trùng để làm đúng/bỏ ⭐ áp dụng cho TẤT CẢ, khỏi còn 1 bản sót lại. */
+    function dedupe(list, wordOf) {
+      var seen = {}, out = [];
+      list.forEach(function (it) {
+        var x = wordOf(it), k = w.normalizeAnswer(x.term);
+        if (!k) return;
+        if (seen[k]) {
+          var keep = wordOf(seen[k]);
+          keep.dup_ids.push(x.id);
+          if (x.mastered) keep.mastered = true;
+          if (it.wrong != null && it.wrong > seen[k].wrong) { seen[k].wrong = it.wrong; seen[k].attempts = it.attempts; seen[k].correct = it.correct; }
+          return;
+        }
+        x.dup_ids = [x.id];
+        seen[k] = it; out.push(it);
+      });
+      return out;
+    }
+    bookmarks = dedupe(bookmarks, function (x) { return x; });
+    wrong = dedupe(wrong, function (x) { return x.word; });
     return { bookmarks: bookmarks, wrong: wrong, progress: progress, rows: c.byId,
              fallback: DB.flagColumnMissing.bookmarked || DB.flagColumnMissing.wrong_open };
   };
@@ -1830,6 +1854,28 @@
 
   /* Tổng quan toàn app cho màn Journey: tổng từ, đã thuộc, block đã xong,
      và số từ đang quá hạn ôn tập — kèm ngày quá hạn (để tô đỏ lịch). */
+  function distinctCount(words) {
+    var set = {};
+    words.forEach(function (x) { var k = w.normalizeAnswer(x.term); if (k) set[k] = 1; });
+    return Object.keys(set).length;
+  }
+  var distinctCache = null;
+  async function distinctWordIndex() {
+    if (distinctCache && Date.now() - distinctCache.at < 10 * 60 * 1000) return distinctCache;
+    var all = await sbListAll("words", function (q) { return q.select("id,term"); });
+    var termOf = {};
+    all.forEach(function (x) { termOf[x.id] = w.normalizeAnswer(x.term); });
+    distinctCache = { at: Date.now(), total: distinctCount(all), termOf: termOf };
+    return distinctCache;
+  }
+  DB.invalidateDistinctWords = function () { distinctCache = null; };
+  async function distinctMastered(userId, termOf) {
+    var rows = await sbListAll("word_progress", function (q) { return q.select("word_id").eq("user_id", userId).eq("mastered", true); }, "word_id");
+    var set = {};
+    rows.forEach(function (r) { var k = termOf[r.word_id]; if (k) set[k] = 1; });
+    return Object.keys(set).length;
+  }
+
   DB.getJourneySummary = async function (userId) {
     if (progressLocal()) {
       var d = local();
@@ -1853,9 +1899,13 @@
         if (bp.passed || bp.meaning_passed) learnedWords += wordsByBlock[bp.block_id] || 0;
       });
 
+      var termOf = {};
+      d.words.forEach(function (x) { termOf[x.id] = w.normalizeAnswer(x.term); });
+      var mset = {};
+      wpByUser.forEach(function (r) { if (r.mastered && termOf[r.word_id]) mset[termOf[r.word_id]] = 1; });
       return {
-        totalWords: d.words.length,
-        mastered: wpByUser.filter(function (r) { return r.mastered; }).length,
+        totalWords: distinctCount(d.words),
+        mastered: Object.keys(mset).length,
         learnedWords: learnedWords,
         totalBlocks: d.blocks.length,
         blocksDone: bpByUser.filter(function (r) { return r.passed || r.meaning_passed; }).length,
@@ -1868,10 +1918,11 @@
        block nên tạm coi mỗi block quá hạn là 10 từ (chuẩn WORDS_PER_BLOCK). */
     try {
       var perBlock = (w.APP_CONFIG && w.APP_CONFIG.WORDS_PER_BLOCK) || 10;
-      var qWords = await DB.sb.from("words").select("id", { count: "exact", head: true });
+      /* Tổng từ + đã thuộc đếm theo CHỮ KHÁC NHAU (không đếm trùng: cùng 1 từ
+         ở nhiều Block, Block "full_" chép lại cả Batch, từ lưu 2 lần) —
+         tải id+term toàn kho (~12k dòng) nên cache 10 phút. */
+      var dw = await distinctWordIndex();
       var qBlocks = await DB.sb.from("blocks").select("id", { count: "exact", head: true });
-      var qMastered = await DB.sb.from("word_progress").select("word_id", { count: "exact", head: true })
-        .eq("user_id", userId).eq("mastered", true);
       var qDone = await DB.sb.from("block_progress").select("block_id", { count: "exact", head: true })
         .eq("user_id", userId).or("passed.eq.true,meaning_passed.eq.true");
       var qBp = await DB.sb.from("block_progress").select("block_id,cycle,next_review_at,passed").eq("user_id", userId).eq("passed", true);
@@ -1887,7 +1938,7 @@
       });
 
       return {
-        totalWords: qWords.count || 0, mastered: qMastered.count || 0,
+        totalWords: dw.total, mastered: await distinctMastered(userId, dw.termOf),
         learnedWords: (qDone.count || 0) * perBlock,   /* ước tính, chưa có số từ chính xác/block */
         totalBlocks: qBlocks.count || 0, blocksDone: qDone.count || 0,
         overdueWords: overdueWords2, overdueByDate: overdueByDate2
