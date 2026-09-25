@@ -244,6 +244,10 @@
   WS.render = function () {
     paintCounts();
     w.$("#ws-quiz-btn").textContent = WS.tab === "wrong" ? "🎯 Làm lại tất cả" : "🔀 Kiểm tra nghĩa";
+    /* ✨ Điền thông tin thiếu — sửa kho DÙNG CHUNG nên chỉ người có quyền sửa nội dung */
+    var fillBtn = w.$("#ws-fill");
+    if (fillBtn) fillBtn.hidden = !(w.Auth.hasPassageEdit && w.Auth.hasPassageEdit()) ||
+      !currentWords().some(function (x) { return FILL_FIELDS.some(function (k) { return !x[k]; }) || cleanTerm(x.term) !== x.term; });
     var note = w.$("#ws-note");
     if (WS.tab === "wrong") {
       note.textContent = "Từ bạn đang làm sai ở bất kỳ bài kiểm tra nào, chia nhóm 10 từ. Làm theo nhóm (🎯 Làm nhóm này), từng từ (🎯 Làm lại) hoặc tất cả — hỏi lại ĐÚNG câu đã sai, đúng là tự bỏ ra ngay.";
@@ -605,6 +609,55 @@
     WS.render();
   }
   WS.startQuiz = startQuiz;
+
+  /* ✨ Điền thông tin thiếu (TJ 2026-09-25: "một số từ chưa có thông tin kìa,
+     fullfill cho chúng đi") — Context.enrichWords CHỈ điền cột đang trống,
+     không đè dữ liệu có sẵn; cắt luôn dấu câu dính ở 2 đầu term (lỗi lưu
+     từ cũ "cabinet.", "protocol,"). Chia 5 từ/lượt + thử lại 3 lần: 1 lượt
+     nhiều từ × 8 cột dễ bị Gemini trả JSON hỏng (đã gặp thật). */
+  var FILL_FIELDS = ["meaning_vi", "def_en", "ipa", "pos", "level"];
+  var ALL_FIELDS = FILL_FIELDS.concat(["freq", "meaning_zh", "meaning_es"]);
+  function cleanTerm(t) { return String(t || "").replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, ""); }
+  w.$("#ws-fill").onclick = async function () {
+    var btn = this;
+    var todo = currentWords().filter(function (x) {
+      return ALL_FIELDS.some(function (k) { return !x[k]; }) || cleanTerm(x.term) !== x.term;
+    });
+    if (!todo.length) { w.toast("Danh sách này đã đủ thông tin", "ok"); return; }
+    btn.disabled = true;
+    var done = 0, failed = 0;
+    for (var c = 0; c < todo.length; c += 5) {
+      btn.textContent = "⏳ Đang điền " + Math.min(c + 5, todo.length) + "/" + todo.length + "…";
+      var chunk = todo.slice(c, c + 5);
+      var items = chunk.map(function (x) {
+        var o = { term: cleanTerm(x.term) };
+        ALL_FIELDS.forEach(function (k) { if (x[k]) o[k] = x[k]; });
+        return o;
+      });
+      var ok = false;
+      for (var t = 0; t < 3 && !ok; t++) {
+        try { await w.Context.enrichWords(items, w.APP_CONFIG || {}, null); ok = true; } catch (e) { console.warn("[WordSet] enrich lỗi:", e); }
+      }
+      if (!ok) { failed += chunk.length; continue; }
+      for (var i = 0; i < chunk.length; i++) {
+        var x = chunk[i], it = items[i], patch = {};
+        if (it.term && it.term !== x.term) patch.term = it.term;
+        ALL_FIELDS.forEach(function (k) { if (!x[k] && it[k]) patch[k] = it[k]; });
+        if (!Object.keys(patch).length) continue;
+        var ids = WS.dupIdsOf(x.id);
+        try {
+          for (var j = 0; j < ids.length; j++) await w.DB.patch("words", ids[j], patch);
+          Object.assign(x, patch);
+          (w.S && w.S.words || []).forEach(function (y) { if (ids.indexOf(y.id) >= 0) Object.assign(y, patch); });
+          done++;
+        } catch (e) { failed++; console.warn("[WordSet] patch lỗi:", e); }
+      }
+    }
+    btn.disabled = false;
+    btn.textContent = "✨ Điền thông tin thiếu";
+    w.toast("Đã điền " + done + " từ" + (failed ? " · " + failed + " từ chưa điền được, bấm lại để thử" : ""), failed ? "err" : "ok");
+    WS.render();
+  };
   w.$("#ws-quiz-btn").onclick = function () { startQuiz(null); };
   function readAll(withDef) {
     var list = currentWords();
