@@ -103,8 +103,8 @@ Sau khi học xong bài + đọc bài, có 3 tab kiểm tra độc lập, mỗi 
 
 ## ⭐ Ôn riêng — Bookmark & từ hay sai
 - **☆/★ Bookmark** cạnh từ ở bảng từ vựng (tab Bài học) và cạnh từ đang hỏi trong bài **Nghĩa** — lưu theo từng người (`word_progress.bookmarked`).
-- Nút **"⭐ Ôn riêng"** trên thanh trên cùng (`js/wordset.js`) mở 2 danh sách trên TOÀN APP: **⭐ Yêu thích** (bỏ Bookmark ngay tại đây được) và **❌ Hay sai** (từ từng trả lời sai mà chưa thuộc — suy từ `attempts`/`correct` có sẵn, làm đúng đủ nhiều thì tự rời danh sách). Mỗi danh sách có 🔊 Đọc tất cả + 🔀 Kiểm tra nghĩa (ghi độ nhớ từng từ, không đụng SRS của Block) + nút ↗ nhảy về đúng Block.
-- **Cần chạy 1 dòng SQL** (`tools/supabase_schema.sql`, dòng `alter table word_progress add column ... bookmarked`) để Bookmark đồng bộ giữa các máy — chưa chạy thì Bookmark lưu tạm trên máy đó, chạy xong mở "⭐ Ôn riêng" là tự đẩy lên.
+- 2 nút **"⭐ Ôn riêng"** (dòng nhỏ: số từ đã thuộc/tổng từ Bookmark) và **"❌ Fix lỗi sai"** (dòng nhỏ: số từ đang sai, viền đỏ khi còn) trên thanh trên cùng (`js/wordset.js`) mở 2 danh sách trên TOÀN APP: **⭐ Yêu thích** (bỏ Bookmark ngay tại đây được) và **❌ Fix lỗi sai** (từ đang trả lời sai ở bất kỳ bài kiểm tra nào — làm đúng lại 1 lần là tự bỏ ra). Mỗi danh sách có 🔊 Đọc tất cả + 🔀 Kiểm tra nghĩa (ghi độ nhớ từng từ, không đụng SRS của Block) + nút ↗ nhảy về đúng Block.
+- **Cần chạy SQL** (`tools/supabase_schema.sql`, các dòng `bookmarked` + `wrong_open` ngay sau bảng word_progress) để Bookmark/Fix lỗi sai đồng bộ giữa các máy — chưa chạy thì lưu tạm trên máy đó, chạy xong mở "⭐ Ôn riêng" là tự đẩy lên.
 - **🔊 Đọc cả Batch** / **+ định nghĩa** ở đầu màn danh sách Block — đọc mọi từ của mọi Block trong Batch (bỏ từ trùng của Block `full_…`), Block đang đọc sáng lên, bấm lại để dừng.
 - Trong **bài đọc**, bấm/bôi 1 từ → bảng tra: lưu mức **1–4** là tự thêm vào ⭐ Yêu thích; từ chưa có trong kho tự **✨ tra nghĩa theo câu bằng AI** (Gemini free, không tính quota), kèm link Google Dịch/Cambridge.
 - Đầu tab **Bài học** có dải tổng quan: đã làm bài mấy lần, đã ôn mấy/6 chu kỳ, lịch ôn, điểm cao nhất, độ nhớ, số từ đã thuộc (bấm để xem tab Tiến trình).
