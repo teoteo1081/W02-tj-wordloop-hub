@@ -1412,6 +1412,162 @@
     return r.data;
   };
 
+  /* ══════════════ ⭐ BOOKMARK + ❌ TỪ HAY SAI (2026-09-24) ══════════════
+     Bookmark = cột word_progress.bookmarked (boolean, theo từng user).
+     Cột này cần chạy migration (tools/supabase_schema.sql) — chưa chạy thì
+     Supabase báo 42703/PGRST204; lúc đó KHÔNG làm vỡ tính năng mà lưu tạm
+     bookmark vào máy này (LS_BM), lần sau DB.loadWordSets thấy cột đã có
+     thì tự đẩy hết bookmark tạm lên rồi xoá bản tạm.
+     "Từ hay sai" KHÔNG cần cột mới: word_progress đã có attempts/correct
+     (mọi bài kiểm tra đều cộng vào) — từ nào attempts > correct (từng sai
+     ít nhất 1 lần) và CHƯA mastered thì nằm trong danh sách; ôn đúng đủ
+     nhiều (mastered, xem MASTER_THRESHOLD) là tự rời danh sách. */
+  var LS_BM = "tjwl_bookmarks_v1";   /* {userId: {wordId: true}} — CHỈ dùng khi thiếu cột */
+  DB.bookmarkColumnMissing = false;
+  function readBmLocal() { try { return JSON.parse(localStorage.getItem(LS_BM)) || {}; } catch (e) { return {}; } }
+  function saveBmLocal(all) { try { localStorage.setItem(LS_BM, JSON.stringify(all)); } catch (e) {} }
+  function isMissingColumnErr(e) {
+    var s = String((e && e.code) || "") + " " + String((e && e.message) || "");
+    return /42703|PGRST204/.test(s) || /bookmarked/.test(s);
+  }
+
+  DB.isBookmarked = function (userId, wordId, wpRow) {
+    if (wpRow && wpRow.bookmarked) return true;
+    var mine = readBmLocal()[userId];
+    return !!(mine && mine[wordId]);
+  };
+
+  /* Trả về {fallback: true} nếu vừa phải lưu tạm vào máy (thiếu cột). */
+  DB.setBookmark = async function (userId, wordId, on) {
+    var all = readBmLocal(), mine = all[userId] || {};
+    if (progressLocal() || !DB.bookmarkColumnMissing) {
+      try {
+        await DB.saveWordProgress(userId, wordId, { bookmarked: !!on });
+        if (mine[wordId]) { delete mine[wordId]; all[userId] = mine; saveBmLocal(all); }
+        return { fallback: false };
+      } catch (e) {
+        if (!isMissingColumnErr(e)) throw e;
+        DB.bookmarkColumnMissing = true;
+      }
+    }
+    if (on) mine[wordId] = true; else delete mine[wordId];
+    all[userId] = mine;
+    saveBmLocal(all);
+    return { fallback: true };
+  };
+
+  /* Tải 2 danh sách "⭐ Yêu thích" + "❌ Hay sai" của 1 user trên TOÀN APP
+     (không chỉ Notebook đang mở — S.words chỉ có Notebook hiện tại).
+     Trả về { bookmarks: [word], wrong: [{word, wrong, attempts, correct}],
+     fallback } — word kèm block_name để hiện chỗ đứng. */
+  DB.loadWordSets = async function (userId) {
+    var rows = [], wordsById = {}, blockName = {};
+    if (!userId) return { bookmarks: [], wrong: [], fallback: false };
+
+    if (progressLocal()) {
+      rows = local().word_progress.filter(function (r) { return r.user_id === userId; });
+    } else {
+      rows = await sbListAll("word_progress", function (q) { return q.eq("user_id", userId); }, "word_id");
+      var probe = await DB.sb.from("word_progress").select("bookmarked").limit(1);
+      DB.bookmarkColumnMissing = !!(probe.error && isMissingColumnErr(probe.error));
+      /* Cột vừa có (đã chạy migration) mà máy còn bookmark tạm -> đẩy lên. */
+      var all = readBmLocal(), mine = all[userId] || {}, pending = Object.keys(mine);
+      if (!DB.bookmarkColumnMissing && pending.length) {
+        for (var i = 0; i < pending.length; i++) {
+          try {
+            await DB.saveWordProgress(userId, pending[i], { bookmarked: true });
+            var hit = rows.find(function (r) { return r.word_id === pending[i]; });
+            if (hit) hit.bookmarked = true; else rows.push({ user_id: userId, word_id: pending[i], bookmarked: true });
+            delete mine[pending[i]];
+          } catch (e) { console.warn("[DB] đẩy bookmark tạm lỗi:", e); }
+        }
+        all[userId] = mine;
+        saveBmLocal(all);
+      }
+    }
+
+    var bmSet = {};
+    rows.forEach(function (r) { if (r.bookmarked) bmSet[r.word_id] = true; });
+    Object.keys(readBmLocal()[userId] || {}).forEach(function (id) { bmSet[id] = true; });
+    var wrongRows = rows.filter(function (r) {
+      return (r.attempts || 0) - (r.correct || 0) > 0 && !r.mastered;
+    });
+
+    var ids = Object.keys(bmSet);
+    wrongRows.forEach(function (r) { if (!bmSet[r.word_id]) ids.push(r.word_id); });
+
+    if (progressLocal() || DB.mode === "local") {
+      var d = local();
+      d.blocks.forEach(function (b) { blockName[b.id] = b.name; });
+      d.words.forEach(function (x) { if (ids.indexOf(x.id) >= 0) wordsById[x.id] = x; });
+    }
+    if (DB.mode === "cloud") {
+      for (var j = 0; j < ids.length; j += 200) {
+        var part = ids.slice(j, j + 200);
+        var r2 = await DB.sb.from("words").select("*, blocks(name)").in("id", part);
+        if (r2.error) throw r2.error;
+        (r2.data || []).forEach(function (x) {
+          blockName[x.block_id] = x.blocks && x.blocks.name;
+          delete x.blocks;
+          wordsById[x.id] = x;
+        });
+      }
+    }
+    function withBlock(x) { return Object.assign({}, x, { block_name: blockName[x.block_id] || "" }); }
+
+    var bookmarks = Object.keys(bmSet).filter(function (id) { return wordsById[id]; })
+      .map(function (id) { return withBlock(wordsById[id]); })
+      .sort(function (a, b) { return String(a.term).localeCompare(String(b.term)); });
+    var wrong = wrongRows.filter(function (r) { return wordsById[r.word_id]; }).map(function (r) {
+      return { word: withBlock(wordsById[r.word_id]), wrong: (r.attempts || 0) - (r.correct || 0),
+               attempts: r.attempts || 0, correct: r.correct || 0 };
+    }).sort(function (a, b) {
+      return b.wrong - a.wrong || (a.correct / (a.attempts || 1)) - (b.correct / (b.attempts || 1));
+    });
+    /* progress: số attempts/correct HIỆN TẠI của mọi từ trong 2 danh sách —
+       màn Ôn riêng cộng dồn vào đây khi ghi kết quả (từ ở Notebook khác
+       không có trong S.wp, thiếu số này sẽ ghi đè attempts về 1). */
+    var progress = {};
+    rows.forEach(function (r) { progress[r.word_id] = { attempts: r.attempts || 0, correct: r.correct || 0 }; });
+    return { bookmarks: bookmarks, wrong: wrong, progress: progress, fallback: DB.bookmarkColumnMissing };
+  };
+
+  /* Đường dẫn đầy đủ tới 1 Block (Hub/Notebook/Section/Page/Batch) — cho
+     nút "↗" nhảy từ danh sách Ôn riêng về đúng Block của từ đó (App.jumpTo).
+     Notebook con (parent_notebook_id) có thể không có hub_id -> lần ngược
+     lên Notebook cha để lấy Hub. */
+  DB.locateBlock = async function (blockId) {
+    var d, blk, bat, pg, sec, nb;
+    if (DB.mode === "local") {
+      d = local();
+      blk = d.blocks.find(function (x) { return x.id === blockId; });
+      bat = blk && d.batches.find(function (x) { return x.id === blk.batch_id; });
+      pg = bat && d.pages.find(function (x) { return x.id === bat.page_id; });
+      sec = pg && d.sections.find(function (x) { return x.id === pg.section_id; });
+      nb = sec && d.notebooks.find(function (x) { return x.id === sec.notebook_id; });
+      var root = nb;
+      while (root && !root.hub_id && root.parent_notebook_id) {
+        root = d.notebooks.find(function (x) { return x.id === root.parent_notebook_id; });
+      }
+      if (!nb) return null;
+      return { hubId: root && root.hub_id, notebookId: nb.id, sectionId: sec.id, pageId: pg.id, batchId: bat.id, blockId: blockId };
+    }
+    var r = await DB.sb.from("blocks")
+      .select("id,batch_id,batches(id,page_id,pages(id,section_id,sections(id,notebook_id,notebooks(id,hub_id,parent_notebook_id))))")
+      .eq("id", blockId).maybeSingle();
+    if (r.error) throw r.error;
+    var b = r.data;
+    bat = b && b.batches; pg = bat && bat.pages; sec = pg && pg.sections; nb = sec && sec.notebooks;
+    if (!nb) return null;
+    var hubId = nb.hub_id, parentId = nb.parent_notebook_id, guard = 0;
+    while (!hubId && parentId && guard++ < 10) {
+      var p = await DB.sb.from("notebooks").select("id,hub_id,parent_notebook_id").eq("id", parentId).maybeSingle();
+      if (p.error || !p.data) break;
+      hubId = p.data.hub_id; parentId = p.data.parent_notebook_id;
+    }
+    return { hubId: hubId, notebookId: nb.id, sectionId: sec.id, pageId: pg.id, batchId: bat.id, blockId: blockId };
+  };
+
   DB.saveBlockProgress = async function (userId, blockId, data) {
     var row = Object.assign({ user_id: userId, block_id: blockId }, data);
     if (progressLocal()) {

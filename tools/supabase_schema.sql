@@ -129,6 +129,10 @@ create table if not exists word_progress (
   last_reviewed_at bigint,
   primary key (user_id, word_id)
 );
+-- ⭐ Bookmark từ yêu thích (2026-09-24) — theo từng user, màn "⭐ Ôn riêng".
+-- Chưa chạy dòng này thì app vẫn chạy: bookmark lưu tạm trên máy, chạy
+-- xong mở "⭐ Ôn riêng" là tự đẩy lên (xem DB.loadWordSets trong js/db.js).
+alter table word_progress add column if not exists bookmarked boolean default false;
 
 create table if not exists block_progress (
   user_id uuid not null references auth.users(id) on delete cascade,

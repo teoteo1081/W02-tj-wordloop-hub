@@ -15,7 +15,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon.svg">
-<link rel="stylesheet" href="css/app.css?v=37">
+<link rel="stylesheet" href="css/app.css?v=38">
 </head>
 <body>
 
@@ -46,6 +46,7 @@
   <div class="topbar-right">
     <button class="theme-btn btn-journey-label" id="btn-home" title="Trang chủ — toàn bộ cây thư mục">🏠 Trang chủ</button>
     <button class="theme-btn btn-journey-label" id="btn-journey" title="Journey — thống kê học theo ngày">📊 Journey</button>
+    <button class="theme-btn btn-journey-label" id="btn-wordset" title="Ôn riêng — từ đã ⭐ Bookmark và từ hay làm sai">⭐ Ôn riêng</button>
     <button class="btn-learning" id="btn-learning" title="Quay lại trang đang học" hidden>📖 Learning</button>
     <button class="theme-btn" id="theme-btn" title="Đổi giao diện sáng / tối" aria-label="Đổi giao diện sáng / tối">🌙</button>
     <!-- Nút nhanh đổi ngôn ngữ giao diện — sát nút sáng/tối (TJ yêu cầu
@@ -244,6 +245,12 @@
       <div class="screen-head">
         <h2 id="batch-title">Batch 1</h2>
         <div class="muted" id="batch-sub"></div>
+        <!-- Đọc lần lượt MỌI từ của MỌI Block trong Batch đang chọn (TJ yêu
+             cầu 2026-09-24) — xem App.readBatch trong app.js. -->
+        <div class="batch-audio">
+          <button class="btn-soft" id="btn-read-batch" title="Đọc lần lượt tất cả từ vựng của mọi Block trong Batch này">🔊 Đọc cả Batch</button>
+          <button class="btn-soft" id="btn-read-batch-full" title="Đọc từng từ kèm định nghĩa tiếng Anh">🔊 + định nghĩa</button>
+        </div>
       </div>
 
       <!-- Ô cảnh báo ôn tập + 4 thẻ chu kỳ -->
@@ -528,6 +535,9 @@
           <button class="mn-lang-tab" data-mnlang="en">EN</button>
           <button class="mn-lang-tab" data-mnlang="zh">CN</button>
           <button class="mn-lang-tab" data-mnlang="es">ES</button>
+          <!-- 🔇 Tắt HẾT âm thanh khi làm bài (TJ yêu cầu 2026-09-24) — dùng
+               chung cờ với tab Từng câu + màn Ôn riêng (Speech.quizMuted). -->
+          <button class="mn-mute" data-quiz-mute type="button"></button>
         </div>
         <div class="card final-wrap" id="meaning-card"></div>
       </div>
@@ -600,6 +610,32 @@
          Tổng quan (số liệu + 4 tab theo giai đoạn Tony Buzan) LUÔN là số của
          TOÀN BỘ TJ WordLoop, không đổi theo cây thư mục bên phải — cây bên
          phải chỉ để DUYỆT/nhảy vào học, không phải "phạm vi" của số liệu. -->
+    <!-- ===== MÀN HÌNH: ⭐ ÔN RIÊNG (2026-09-24) — 2 danh sách từ trên TOÀN
+         APP của người đang học: ⭐ Yêu thích (Bookmark) + ❌ Hay sai (từng
+         làm sai, chưa thuộc). Đọc tất cả + kiểm tra nghĩa riêng. Xem
+         js/wordset.js. ===== -->
+    <section id="screen-wordset" hidden>
+      <div class="journey-topbar">
+        <button class="btn-ghost" id="btn-wordset-back">← Về học tiếp</button>
+        <button class="btn-ghost" id="wordset-refresh" title="Tải lại danh sách">⟳ Tải lại</button>
+      </div>
+      <div class="card">
+        <div class="ws-head">
+          <div class="meaning-lang-tabs ws-tabs" id="ws-tabs">
+            <button class="mn-lang-tab active" data-ws="bm">⭐ Yêu thích <span class="ws-n" id="ws-n-bm"></span></button>
+            <button class="mn-lang-tab" data-ws="wrong">❌ Hay sai <span class="ws-n" id="ws-n-wrong"></span></button>
+          </div>
+          <div class="audio-toolbar" id="ws-toolbar">
+            <button class="btn-soft" id="ws-stop">⏹ Dừng</button>
+            <button class="btn-soft" id="ws-read-all">🔊 Đọc tất cả</button>
+            <button class="btn-primary" id="ws-quiz-btn">🔀 Kiểm tra nghĩa</button>
+          </div>
+        </div>
+        <div class="muted ws-note" id="ws-note"></div>
+        <div id="ws-body"></div>
+      </div>
+    </section>
+
     <section id="screen-journey" hidden>
       <div class="journey-topbar">
         <button class="btn-ghost" id="btn-journey-back">← Về học tiếp</button>
@@ -1137,16 +1173,17 @@ mitigate | giảm nhẹ"></textarea>
 <script src="js/keys.local.js?v=1"></script>
 <script src="js/util.js?v=1"></script>
 <script src="js/srs.js?v=1"></script>
-<script src="js/context.js?v=32"></script>
-<script src="js/speech.js?v=3"></script>
-<script src="js/db.js?v=11"></script>
+<script src="js/context.js?v=33"></script>
+<script src="js/speech.js?v=4"></script>
+<script src="js/db.js?v=12"></script>
 <script src="js/auth.js?v=5"></script>
 <script src="js/i18n.js?v=4"></script>
 <script src="js/reader.js?v=1"></script>
-<script src="js/detail.js?v=34"></script>
+<script src="js/detail.js?v=35"></script>
 <script src="js/export.js?v=2"></script>
-<script src="js/journey.js?v=5"></script>
-<script src="js/home.js?v=2"></script>
-<script src="js/app.js?v=42"></script>
+<script src="js/journey.js?v=6"></script>
+<script src="js/home.js?v=3"></script>
+<script src="js/wordset.js?v=1"></script>
+<script src="js/app.js?v=43"></script>
 </body>
 </html>

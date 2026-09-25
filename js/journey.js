@@ -62,6 +62,7 @@
     w.$("#screen-detail").hidden = true;
     w.$("#screen-leaderboard").hidden = true;
     w.$("#screen-home").hidden = true;
+    w.$("#screen-wordset").hidden = true;
     w.$("#btn-back").hidden = true;
     w.$("#screen-journey").hidden = false;
     w.$("#btn-learning").hidden = false;

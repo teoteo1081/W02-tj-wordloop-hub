@@ -347,6 +347,7 @@
           '<td><div class="term-cell">' +
             '<button class="spk" data-say="' + w.esc(x.term) + '" title="Nghe">🔊</button>' +
             "<b>" + w.esc(x.term) + "</b>" +
+            D.bmBtnHtml(x.id) +
           "</div></td>" +
           /* data-label để trên điện thoại mỗi dòng biến thành 1 thẻ có nhãn */
           '<td class="' + levelClass(x.level) + '" data-label="Level">' + w.esc(x.level || "—") + "</td>" +
@@ -962,7 +963,12 @@
          Thiếu userId (chưa đăng nhập Cloud, chỉ hồ sơ máy) -> proxy bỏ qua
          hẳn việc chấm quota. */
       var quotaCtx = { userId: (w.Auth.user && w.Auth.user.id) || null, blockId: myBlockId };
-      newPassage = await w.Context.generateAI(ws, cfg2, null, promptOverride, topicHint, quotaCtx);
+      /* Tiêu đề các bài Block đã có (đang dùng + mọi khe đã lưu) — AI được
+         dặn tránh lặp kịch bản cũ, mỗi lần "Tạo lại" ra câu chuyện mới. */
+      var avoidTitles = [b.context_passage].concat(b.context_passage_candidates || [])
+        .map(function (raw) { return raw ? w.Context.parseMeta(raw).title : ""; })
+        .filter(function (t, i, arr) { return t && arr.indexOf(t) === i; });
+      newPassage = await w.Context.generateAI(ws, cfg2, null, promptOverride, topicHint, quotaCtx, avoidTitles);
     } catch (e) {
       console.warn("Sinh bài đọc bằng AI thất bại:", e);
       if (w.App && w.App.showAiError) w.App.showAiError(e);
@@ -1368,7 +1374,7 @@
       var others = shuffle(withVi.filter(function (y) {
         return y.id !== x.id && y[field] !== x[field];
       })).slice(0, 3).map(function (y) { return y[field]; });
-      return { term: x.term, answer: x[field], options: shuffle([x[field]].concat(others)), given: null };
+      return { term: x.term, wordId: x.id, answer: x[field], options: shuffle([x[field]].concat(others)), given: null };
     });
 
     return { mc: mc, total: mc.length, graded: false };
@@ -1630,6 +1636,7 @@
         '<span class="exam-score">Đã làm ' + answered + "/" + ex.total +
           ' · <span class="exam-done' + (pct >= 80 ? " hi" : "") + '">Done ' + pct + "%</span></span>" +
         '<span class="exam-idx">CÂU ' + (D.si + 1) + " / " + list.length + "</span>" +
+        '<button class="mn-mute" data-quiz-mute type="button"></button>' +
       "</div>" +
       '<div class="quiz-bar"><i style="width:' + pct + '%"></i></div>' +
       body +
@@ -1662,7 +1669,7 @@
         g.ok = w.normalizeAnswer(v) === w.normalizeAnswer(g.term);
         g.shown = true;
         D.renderSingle();
-        if (g.ok) w.Speech.speakWord(g.term);
+        if (g.ok) w.Speech.speakQuiz(g.term);
 
         if (D.si < ex.gaps.length - 1 && g.ok) {
           clearTimeout(D._autoNext);
@@ -1672,6 +1679,7 @@
         }
       };
     });
+    D.bindQuizAudio(w.$("#single-card"));
     var p = w.$("#sg-prev"), n = w.$("#sg-next");
     if (p) p.onclick = function () { clearTimeout(D._autoNext); D.si--; D.renderSingle(); };
     if (n) n.onclick = function () { clearTimeout(D._autoNext); D.si++; D.renderSingle(); };
@@ -1815,6 +1823,113 @@
             passed ? "ok" : "err");
   };
 
+  /* ---------- Khối câu hỏi trắc nghiệm NGHĨA dùng chung (tab Nghĩa + màn
+     "⭐ Ôn riêng" trong wordset.js) — q: {term, options, answer, given,
+     shown, ok}; optClass(val) do nơi gọi truyền (giữ đúng cách tô màu
+     riêng của từng nơi). Có nút 🔊 nghe từ TRƯỚC khi chọn nghĩa (TJ yêu
+     cầu 2026-09-24) — tắt tiếng bài kiểm tra (Speech.quizMuted) thì nút
+     mờ đi, bấm không kêu. ---------- */
+  D.mcQuestionHtml = function (q, optClass) {
+    var shown = !!q.shown, muted = w.Speech.quizMuted();
+    var promptHtml =
+      '<div class="gap-card">' +
+        '<div class="gap-sentence mc-term-big">' + w.esc(q.term) +
+          ' <button class="spk mc-say" data-quiz-say="' + w.esc(q.term) + '"' +
+            (muted ? ' disabled title="Đang tắt tiếng bài kiểm tra"' : ' title="Nghe từ này"') +
+            ' aria-label="Nghe từ này">' + (muted ? "🔇" : "🔊") + "</button>" +
+          (q.wordId ? D.bmBtnHtml(q.wordId) : "") +
+        "</div>" +
+      "</div>";
+    var optsHtml = q.options.map(function (o, j) {
+      return '<button class="' + optClass(o) + '" data-pick="' + w.esc(o) + '"' +
+             (shown ? " disabled" : "") + '><span class="mk">' + "ABCD".charAt(j) +
+             ".</span>" + w.esc(o) + "</button>";
+    }).join("");
+    var explainHtml = shown
+      ? '<div class="quiz-feedback ' + (q.ok ? "ok" : "no") + '">' +
+          (q.ok ? "✅ Chính xác!" : "❌ Đáp án đúng: <b>" + w.esc(q.answer) + "</b>") +
+        "</div>"
+      : "";
+    return promptHtml +
+      '<div class="single-grid">' +
+        '<div class="opt-list">' + optsHtml + "</div>" +
+        '<div class="single-explain">' + explainHtml + "</div>" +
+      "</div>";
+  };
+
+  /* ---------- ⭐ BOOKMARK từng từ (2026-09-24) ----------
+     Hiện ở bảng từ vựng (tab Bài học) + cạnh từ đang hỏi trong bài Nghĩa +
+     màn "⭐ Ôn riêng". Lưu qua DB.setBookmark (word_progress.bookmarked,
+     thiếu cột thì DB tự lưu tạm trên máy). Mọi nút ⭐ của CÙNG 1 từ trên
+     màn hình đổi theo ngay (data-bm = word id). Bấm được nhờ 1 listener
+     chung trên document (xem cuối D.bind) — khỏi gắn lại mỗi lần vẽ. */
+  D.isBookmarked = function (wordId) {
+    var u = w.Auth.user;
+    return !!(u && w.DB.isBookmarked(u.id, wordId, S().wp[wordId]));
+  };
+  D.bmBtnHtml = function (wordId) {
+    var on = D.isBookmarked(wordId);
+    return '<button class="bm-btn' + (on ? " on" : "") + '" data-bm="' + w.esc(wordId) + '" type="button"' +
+      ' title="' + (on ? "Bỏ khỏi ⭐ Yêu thích" : "Thêm vào ⭐ Yêu thích để học riêng") + '"' +
+      ' aria-pressed="' + (on ? "true" : "false") + '">' + (on ? "★" : "☆") + "</button>";
+  };
+  D.toggleBookmark = async function (wordId) {
+    var u = w.Auth.user;
+    if (!u) { w.toast("Chọn người học trước đã", "err"); return; }
+    var on = !D.isBookmarked(wordId);
+    function paint(state) {
+      w.$$('[data-bm="' + (w.CSS && w.CSS.escape ? w.CSS.escape(wordId) : wordId) + '"]').forEach(function (b) {
+        b.classList.toggle("on", state);
+        b.textContent = state ? "★" : "☆";
+        b.title = state ? "Bỏ khỏi ⭐ Yêu thích" : "Thêm vào ⭐ Yêu thích để học riêng";
+        b.setAttribute("aria-pressed", state ? "true" : "false");
+      });
+    }
+    paint(on);
+    try {
+      var res = await w.DB.setBookmark(u.id, wordId, on);
+      if (!res.fallback) {
+        var prev = S().wp[wordId];
+        S().wp[wordId] = Object.assign({}, prev || { user_id: u.id, word_id: wordId }, { bookmarked: on });
+      }
+      w.toast(on ? "⭐ Đã thêm vào Yêu thích" : "Đã bỏ khỏi Yêu thích", "ok");
+      if (w.WordSet && w.WordSet.onBookmarkChanged) w.WordSet.onBookmarkChanged(wordId, on);
+    } catch (e) {
+      paint(!on);
+      console.warn("[Detail] setBookmark lỗi:", e);
+      w.toast("Không lưu được bookmark: " + (e.message || e), "err");
+    }
+  };
+
+  /* Nút 🔊 trong câu hỏi + nút "Tắt tiếng" (data-quiz-mute) trong 1 vùng.
+     Bật/tắt chỉ SƠN LẠI nút (không vẽ lại cả câu) — vẽ lại sẽ huỷ luôn
+     hẹn giờ tự qua câu tiếp đang chờ. */
+  D.bindQuizAudio = function (root) {
+    w.$$("[data-quiz-say]", root).forEach(function (b) {
+      b.onclick = function () { w.Speech.speakQuiz(b.dataset.quizSay); };
+    });
+    w.$$("[data-quiz-mute]", root).forEach(function (b) {
+      D.paintQuizMuteBtn(b);
+      b.onclick = function () {
+        w.Speech.setQuizMuted(!w.Speech.quizMuted());
+        w.$$("[data-quiz-mute]").forEach(D.paintQuizMuteBtn);
+        var muted = w.Speech.quizMuted();
+        w.$$("[data-quiz-say]").forEach(function (s) {
+          s.disabled = muted;
+          s.textContent = muted ? "🔇" : "🔊";
+          s.title = muted ? "Đang tắt tiếng bài kiểm tra" : "Nghe từ này";
+        });
+      };
+    });
+  };
+  D.paintQuizMuteBtn = function (b) {
+    var muted = w.Speech.quizMuted();
+    b.textContent = muted ? "🔇 Đã tắt tiếng" : "🔊 Có tiếng";
+    b.title = muted ? "Bấm để bật lại âm thanh khi làm bài" : "Bấm để tắt HẾT âm thanh khi làm bài — chỉ tập trung làm bài";
+    b.classList.toggle("active", muted);
+    b.setAttribute("aria-pressed", muted ? "true" : "false");
+  };
+
   /* ---------- TAB: NGHĨA (10 từ đảo nghĩa, 4 đáp án — luyện riêng) ---------- */
   /* Trình bày y hệt tab "Từng câu": mỗi lần 1 câu, chọn đáp án là chấm
      luôn — đúng thì tự động qua câu sau, sai thì hiện đáp án đúng và chờ
@@ -1856,27 +1971,7 @@
        "Nghĩa" + 4 đáp án rõ ràng là nghĩa tiếng Việt rồi, không cần nhắc
        lại (khác chế độ Từng câu vẫn giữ nhãn vì đó là hướng dẫn cần
        thiết cho câu điền-từ, không thừa). */
-    var promptHtml =
-      '<div class="gap-card">' +
-        '<div class="gap-sentence mc-term-big">' + w.esc(q.term) + "</div>" +
-      "</div>";
-    var optsHtml = q.options.map(function (o, j) {
-      return '<button class="' + optClass(o) + '" data-pick="' + w.esc(o) + '"' +
-             (shown ? " disabled" : "") + '><span class="mk">' + "ABCD".charAt(j) +
-             ".</span>" + w.esc(o) + "</button>";
-    }).join("");
-
-    var explainHtml = shown
-      ? '<div class="quiz-feedback ' + (q.ok ? "ok" : "no") + '">' +
-          (q.ok ? "✅ Chính xác!" : "❌ Đáp án đúng: <b>" + w.esc(q.answer) + "</b>") +
-        "</div>"
-      : "";
-
-    var body = promptHtml +
-      '<div class="single-grid">' +
-        '<div class="opt-list">' + optsHtml + "</div>" +
-        '<div class="single-explain">' + explainHtml + "</div>" +
-      "</div>";
+    var body = D.mcQuestionHtml(q, optClass);
 
     /* Câu cuối: KHÔNG cần bấm "Nộp bài" — trả lời xong (đúng hay sai) là
        tự động chấm và hiện kết quả luôn, xem bindMeaning(). */
@@ -1918,7 +2013,7 @@
         q.ok = v === q.answer;
         q.shown = true;
         D.renderMeaning();
-        if (q.ok) w.Speech.speakWord(q.term);
+        if (q.ok) w.Speech.speakQuiz(q.term);
 
         if (D.mi < ex.mc.length - 1 && q.ok) {
           clearTimeout(D._autoNextMeaning);
@@ -1928,6 +2023,7 @@
         }
       };
     });
+    D.bindQuizAudio(w.$("#pane-meaning"));
     var p = w.$("#mn-prev"), n = w.$("#mn-next");
     if (p) p.onclick = function () { clearTimeout(D._autoNextMeaning); D.mi--; D.renderMeaning(); };
     if (n) n.onclick = function () { clearTimeout(D._autoNextMeaning); D.mi++; D.renderMeaning(); };
@@ -1972,6 +2068,7 @@
         D.renderMeaning();
       };
     });
+    D.bindQuizAudio(box);   /* nút "🔊 Có tiếng / 🔇 Đã tắt tiếng" cùng hàng */
   };
 
   D.submitMeaning = async function () {
@@ -2986,6 +3083,16 @@
       hideStickyPlayer();
     };
 
+    /* ⭐ Bookmark — 1 listener chung cho MỌI nút [data-bm] (bảng từ vựng,
+       bài Nghĩa, màn Ôn riêng) vì các nút này được vẽ lại liên tục.
+       stopPropagation: bảng từ vựng có listener bấm dòng mở Reader. */
+    document.addEventListener("click", function (e) {
+      var btn = e.target.closest && e.target.closest("[data-bm]");
+      if (!btn) return;
+      e.preventDefault();
+      e.stopPropagation();
+      D.toggleBookmark(btn.dataset.bm);
+    }, true);
   };
 
   w.Detail = D;

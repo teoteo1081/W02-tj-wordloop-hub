@@ -75,6 +75,7 @@ Mỗi file tự gắn 1 global lên `window` (`w.App`, `w.DB`, `w.Detail`, `w.Co
 | `detail.js` | Màn học chi tiết 1 Block: bài học, bài đọc, 3 kiểu thi, tiến trình |
 | `export.js` | Xuất PDF (Block/Batch/Page/Section/Notebook) |
 | `journey.js` | Màn Journey — tổng quan + lịch học theo ngày |
+| `wordset.js` | Màn "⭐ Ôn riêng" — từ đã Bookmark + từ hay sai, đọc tất cả + kiểm tra nghĩa |
 | `app.js` | Bộ điều phối chính: nạp dữ liệu, render Hub/Notebook/Section/Page/Batch/Block, menu, paste-từ-mới, di chuyển Hub/Notebook/Section |
 
 ## Bài đọc ngữ cảnh — cách hoạt động
@@ -100,6 +101,13 @@ Sau khi học xong bài + đọc bài, có 3 tab kiểm tra độc lập, mỗi 
 
 **"✓ Done"** trên thẻ Block (góc phải) hiện ra khi **BẤT KỲ 1 trong 3 thẻ** đạt ≥ 80% (`bp.passed || bp.meaning_passed`) — không cần cả 3 đều đạt.
 
+## ⭐ Ôn riêng — Bookmark & từ hay sai
+- **☆/★ Bookmark** cạnh từ ở bảng từ vựng (tab Bài học) và cạnh từ đang hỏi trong bài **Nghĩa** — lưu theo từng người (`word_progress.bookmarked`).
+- Nút **"⭐ Ôn riêng"** trên thanh trên cùng (`js/wordset.js`) mở 2 danh sách trên TOÀN APP: **⭐ Yêu thích** (bỏ Bookmark ngay tại đây được) và **❌ Hay sai** (từ từng trả lời sai mà chưa thuộc — suy từ `attempts`/`correct` có sẵn, làm đúng đủ nhiều thì tự rời danh sách). Mỗi danh sách có 🔊 Đọc tất cả + 🔀 Kiểm tra nghĩa (ghi độ nhớ từng từ, không đụng SRS của Block) + nút ↗ nhảy về đúng Block.
+- **Cần chạy 1 dòng SQL** (`tools/supabase_schema.sql`, dòng `alter table word_progress add column ... bookmarked`) để Bookmark đồng bộ giữa các máy — chưa chạy thì Bookmark lưu tạm trên máy đó, chạy xong mở "⭐ Ôn riêng" là tự đẩy lên.
+- **🔊 Đọc cả Batch** / **+ định nghĩa** ở đầu màn danh sách Block — đọc mọi từ của mọi Block trong Batch (bỏ từ trùng của Block `full_…`), Block đang đọc sáng lên, bấm lại để dừng.
+- Bài **Nghĩa** có nút **🔊** nghe từ trước khi chọn đáp án + nút **"🔊 Có tiếng / 🔇 Đã tắt tiếng"** (tắt HẾT âm thanh khi làm bài; dùng chung cho Từng câu và màn Ôn riêng).
+
 ## Chu kỳ ôn tập (Tony Buzan)
 `js/srs.js` — 1 Block chỉ vào chu kỳ SAU KHI đạt bài thi (Phiếu đầy đủ/Từng câu ≥ 80%, ghi `bp.passed`). 5 mốc: 10 phút → 24 giờ → 1 tuần → 1 tháng → 3 tháng (→ 6 tháng duy trì). Trả lời sai nhiều thì `SRS.demote()` lùi 1 bậc.
 
@@ -117,7 +125,7 @@ Icon 📊 "Journey" trên thanh trên cùng. Số liệu ở đây **LUÔN là c
 - **Lưu từ khi đọc** (kiểu LingQ): bôi/bấm từ trong bài đọc → lưu vào Batch "⭐ Từ đã lưu" của Page hiện tại, đủ 10 từ tự sang Block mới (đánh số tiếp theo Block cũ nhất trong batch đó, không nhảy về 1 nếu batch đã có số).
 
 ## AI Framework — phân tích & luyện nói theo khung
-Nút **"🧭 AI Framework"** trên toolbar Notebook (`app.js` `doAiFramework`) — chỉ cho Notebook nào bật, hiện đang dùng ở **TJ_DATA ANALYST**. Dán 1 hoặc NHIỀU câu hỏi/tình huống (mỗi dòng 1 câu) → AI phân tích từng câu theo **7 Master Framework cố định** (`Context.FRAMEWORK_BANK`: opinion/why/story/self_intro/problem_solving/presentation/data_analysis) → mỗi câu tạo ra 1 cặp Block **🗣️ Speaking + ✍️ Writing** (chung 1 Batch, chung bộ từ vựng `full_words`, khác bài đọc), lưu vào `blocks.framework_data` (JSON).
+Nút **"🧭 AI Framework"** trên toolbar Notebook (`app.js` `doAiFramework`) — hiện ở **MỌI Notebook** (từ 2026-09-24; trước đó chỉ TJ_DATA ANALYST), ẩn với role "Chỉ xem". Dán 1 hoặc NHIỀU câu hỏi/tình huống (mỗi dòng 1 câu) → AI phân tích từng câu theo **7 Master Framework cố định** (`Context.FRAMEWORK_BANK`: opinion/why/story/self_intro/problem_solving/presentation/data_analysis) → mỗi câu tạo ra 1 cặp Block **🗣️ Speaking + ✍️ Writing** (chung 1 Batch, chung bộ từ vựng `full_words`, khác bài đọc), lưu vào `blocks.framework_data` (JSON).
 
 **2 lệnh gọi AI/câu hỏi** (`Context.generateFrameworkAnalysis`): Call 1 (nhẹ) = fit_tier/why/communication_method/method_key/opening_lines/keywords_by_stage/linking_words/closing_lines/paraphrase cho cả 7 framework; Call 2 (nặng) = từ vựng dùng chung + 2 bài đọc tổng quan (nói/viết) + bài đọc riêng từng framework. Cả 2 lệnh bọc qua `Context._callProviderJSONValidated` — **tự động gọi lại AI 1 lần** (không chỉ parse lại chuỗi cũ) nếu JSON hỏng cú pháp **hoặc** JSON hợp lệ nhưng sai schema (vd thiếu framework, sai số lượng 7) — 2 loại lỗi AI-flaky khác nhau, cùng 1 cơ chế retry. Nếu vẫn lỗi sau khi thử lại: `doAiFramework` **tự xoá Batch rỗng vừa tạo** (không để lại rác "0/0" nếu user bấm lại nhiều lần).
 

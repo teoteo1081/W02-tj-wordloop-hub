@@ -41,6 +41,53 @@
     return S.blocks.filter(function (b) { return b.batch_id === batchId; })
       .sort(function (a, b) { return (a.sort || 0) - (b.sort || 0); });
   };
+  /* 🔊 Đọc cả Batch (2026-09-24, TJ yêu cầu) — đọc lần lượt MỌI từ của
+     MỌI Block trong Batch đang chọn, theo thứ tự Block. Bỏ từ TRÙNG (Block
+     "full_..." của "Dán bài, tự trích từ" chứa lại toàn bộ từ của các Block
+     cùng Batch — không lọc thì mỗi từ bị đọc 2 lần). Block đang đọc sáng
+     lên (.block-card.reading); bấm lại nút = dừng; rời màn danh sách Block
+     (mở 1 Block, Journey...) thì tự dừng. withDef: chêm "it means" + định
+     nghĩa tiếng Anh, giống nút "🔊 Đọc + định nghĩa" trong Chi tiết Block. */
+  App.readBatch = function (withDef) {
+    var btnId = withDef ? "#btn-read-batch-full" : "#btn-read-batch";
+    var labels = { "#btn-read-batch": "🔊 Đọc cả Batch", "#btn-read-batch-full": "🔊 + định nghĩa" };
+    function resetButtons() {
+      Object.keys(labels).forEach(function (id) { var b = w.$(id); if (b) b.textContent = labels[id]; });
+      w.$$(".block-card.reading").forEach(function (c) { c.classList.remove("reading"); });
+      App._readingBatch = null;
+    }
+    if (App._readingBatch) {   /* đang đọc -> bấm lần nữa là dừng */
+      var same = App._readingBatch.btn === btnId;
+      w.Speech.stop(); resetButtons();
+      if (same) return;
+    }
+    var seen = {}, items = [], blockOfItem = [];
+    App.blocksOf(S.batchId).forEach(function (b) {
+      App.wordsOf(b.id).forEach(function (x) {
+        var k = String(x.term || "").trim().toLowerCase();
+        if (!k || seen[k]) return;
+        seen[k] = true;
+        var g = blockOfItem.length;
+        blockOfItem.push(b.id);
+        items.push({ text: x.term, groupIndex: g });
+        if (withDef && x.def_en) items.push({ text: "it means " + x.def_en, groupIndex: g });
+      });
+    });
+    if (!items.length) { w.toast("Batch này chưa có từ nào", "err"); return; }
+    var total = blockOfItem.length;
+    var run = App._readingBatch = { btn: btnId };
+    w.Speech.speakList(items, function (g) {
+      /* g < 0 = lượt này kết thúc (có thể do 1 lượt đọc KHÁC chen ngang) —
+         đừng gọi Speech.stop() ở đây kẻo dừng luôn lượt mới. */
+      if (g < 0 || App._readingBatch !== run) return;
+      if (w.$("#screen-blocks").hidden) { w.Speech.stop(); return; }
+      var btn = w.$(btnId);
+      if (btn) btn.textContent = "⏹ Dừng · " + (g + 1) + "/" + total;
+      var bid = blockOfItem[g];
+      w.$$(".block-card[data-block]").forEach(function (c) { c.classList.toggle("reading", c.dataset.block === bid); });
+    }, function () { if (App._readingBatch === run) resetButtons(); });
+  };
+
   App.wordsOf = function (blockId) {
     return S.words.filter(function (x) { return x.block_id === blockId; })
       .sort(function (a, b) { return (a.sort || 0) - (b.sort || 0); });
@@ -1131,6 +1178,7 @@
     w.$("#screen-journey").hidden = true;
     w.$("#screen-home").hidden = true;
     w.$("#screen-leaderboard").hidden = true;
+    w.$("#screen-wordset").hidden = true;
     w.$("#btn-learning").hidden = true;
 
     /* Bug đã gặp: nhảy từ Trang chủ/Journey vào 1 Notebook/Section/Page/
@@ -1159,6 +1207,7 @@
     if (w.Home && !w.$("#screen-home").hidden) { w.Home.close(); return; }
     if (w.Journey && !w.$("#screen-journey").hidden) { w.Journey.close(); return; }
     if (!w.$("#screen-leaderboard").hidden) { App.closeLeaderboardPage(); return; }
+    if (w.WordSet && w.WordSet.isOpen()) { w.WordSet.close(); return; }
   };
 
   /* ══════════════ BỘ ĐẾM TỔNG SỐ TỪ (góc phải thanh trên cùng) ══════════════
@@ -1354,11 +1403,12 @@
     if (extractBtn) extractBtn.hidden = !canAddContent;
     var pasteNewBtn = w.$("#btn-paste-new");
     if (pasteNewBtn) pasteNewBtn.hidden = !canAddContent;
-    /* "🧭 AI Framework" — CHỈ hiện ở đúng Notebook TJ_DATA ANALYST (so ID
-       trực tiếp, TJ chốt 2026-09-14 "chỉ có tác dụng trong TJ_data
-       analyst Framework Speaking thôi"), ẩn ở mọi Notebook khác. */
+    /* "🧭 AI Framework" — từng CHỈ hiện ở Notebook TJ_DATA ANALYST (TJ chốt
+       2026-09-14), nay MỞ CHO MỌI Notebook (TJ yêu cầu 2026-09-24 "để tính
+       năng AI Frame cho tất cả") — cùng điều kiện với 2 nút thêm nội dung
+       bên cạnh (ẩn khi role "Chỉ xem"). Cần Page đang chọn để tạo Batch. */
     var frameworkBtnTb = w.$("#btn-ai-framework");
-    if (frameworkBtnTb) frameworkBtnTb.hidden = !canAddContent || S.notebookId !== TJ_DATA_ANALYST_NOTEBOOK_ID;
+    if (frameworkBtnTb) frameworkBtnTb.hidden = !canAddContent;
     /* Nút "🔄 Xem như User"/"🔄 Về giao diện Admin" — CHỈ Admin THẬT thấy
        (u.admin, không phải isAdmin() — nếu không, bật xong thì chính nút
        để quay lại cũng biến mất, kẹt luôn trong chế độ xem thử). */
@@ -1828,8 +1878,8 @@
   }
 
   /* ══════════════ "AI FRAMEWORK" (2026-09-14) ══════════════
-     Chỉ hiện nút ở Notebook TJ_DATA ANALYST (so ID trực tiếp, xem
-     renderTopbar/updateToolbarVisibility) — dán 1 câu hỏi/tình huống, tạo
+     Nút hiện ở MỌI Notebook (từ 2026-09-24, trước đó chỉ TJ_DATA ANALYST)
+     trừ role "Chỉ xem" — dán 1 câu hỏi/tình huống, tạo
      1 Batch + 2 Block "🗣️ Speaking"/"✍️ Writing" MỚI trong Page đang xem
      (không tạo Page mới), kèm panel framework riêng (block.framework_data)
      hiển thị ở detail.js — giống nhau ở cả 2 Block, chỉ khác bài đọc.
@@ -1845,8 +1895,6 @@
      "🗣️ Speaking"/"✍️ Writing" như cũ (không thêm tiền tố) để không đổi
      hành vi bản gốc; từ 2 câu trở lên mới thêm tiền tố "Câu N — " để phân
      biệt các cặp trong cùng batch. */
-  var TJ_DATA_ANALYST_NOTEBOOK_ID = "415e8215-9f45-4dd6-9adf-27839c7aa538";
-
   async function doAiFramework() {
     if (!S.pageId) { w.toast("Hãy tạo/chọn một Page trước", "err"); return; }
     var cfg2 = w.APP_CONFIG || {};
@@ -2939,6 +2987,7 @@
     w.$("#screen-detail").hidden = true;
     w.$("#screen-home").hidden = true;
     w.$("#screen-journey").hidden = true;
+    w.$("#screen-wordset").hidden = true;
     w.$("#btn-back").hidden = true;
     w.$("#screen-leaderboard").hidden = false;
     w.$("#btn-learning").hidden = false;
@@ -3861,6 +3910,8 @@
     }
     var doFrameworkBtn = w.$("#btn-do-framework");
     if (doFrameworkBtn) doFrameworkBtn.onclick = doAiFramework;
+    w.$("#btn-read-batch").onclick = function () { App.readBatch(false); };
+    w.$("#btn-read-batch-full").onclick = function () { App.readBatch(true); };
     w.$("#btn-fetch-url").onclick = async function () {
       var url = w.$("#extract-url").value.trim();
       if (!url) { w.toast("Dán link vào trước đã", "err"); return; }

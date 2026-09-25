@@ -138,6 +138,24 @@
     synth.speak(makeUtterance(text, S.vocabRate));
   };
 
+  /* ---------- 🔇 tắt tiếng lúc làm bài kiểm tra (2026-09-24) ----------
+     TJ yêu cầu: làm bài Nghĩa cần 1 nút tắt tiếng TẤT CẢ để chỉ tập trung
+     làm bài, bật/tắt tuỳ ý. Chỉ áp cho âm thanh TRONG BÀI KIỂM TRA (tự đọc
+     từ khi chọn đúng + nút 🔊 nghe từ trước khi chọn) — đi qua
+     S.speakQuiz, không đụng nút loa ở bảng từ vựng/bài đọc. Nhớ theo máy. */
+  var LS_QUIZ_MUTE = "tjwl_quiz_muted_v1";
+  S.quizMuted = function () {
+    try { return localStorage.getItem(LS_QUIZ_MUTE) === "1"; } catch (e) { return false; }
+  };
+  S.setQuizMuted = function (on) {
+    try { localStorage.setItem(LS_QUIZ_MUTE, on ? "1" : "0"); } catch (e) {}
+    if (on) S.stop();
+  };
+  S.speakQuiz = function (text) {
+    if (S.quizMuted()) return;
+    S.speakWord(text);
+  };
+
   /* ---------- đọc lần lượt cả danh sách từ ----------
      items: [{text, id, lang, groupIndex}] — "lang" không truyền thì mặc
      định tiếng Anh (giữ nguyên hành vi cũ). "groupIndex" dùng khi 1 dòng
@@ -151,6 +169,10 @@
     S.stop();
     S.resetFollow();
     S._listStop = false;
+    /* Mỗi lượt đọc 1 token riêng: S.stop() ở trên làm synth.cancel() nhưng
+       onend của câu cũ tới TRỄ (sau khi lượt mới đã đặt _listStop=false) —
+       thiếu token thì lượt cũ đọc tiếp xen kẽ với lượt mới. */
+    var token = S._listToken = (S._listToken || 0) + 1;
     var i = 0;
 
     /* Mốc bắt đầu + ước tính tổng thời gian — y hệt readPassage(), để
@@ -162,7 +184,7 @@
     S._estTotalMs = (totalChars / 14.5) * 1000 / (S.vocabRate || 1);
 
     function step() {
-      if (S._listStop || i >= items.length) {
+      if (S._listStop || token !== S._listToken || i >= items.length) {
         if (onEach) onEach(-1);
         if (onDone) onDone();
         return;

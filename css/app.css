@@ -2232,3 +2232,32 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
 /* Kiểu bảng thì panel KHÔNG cần bảng chú giải 3 màu (fw-legend) lặp lại
    nữa — đã tô ngay viền trên mỗi cột — ẩn bớt cho gọn, dữ liệu vẫn y hệt. */
 .fw-panel.view-table .fw-legend{display:none;}
+
+/* ══════════════ ⭐ BOOKMARK · 🔇 TẮT TIẾNG BÀI KIỂM TRA · 🔊 ĐỌC CẢ BATCH ·
+   MÀN "⭐ ÔN RIÊNG" (2026-09-24) — xem wordset.js / Detail.bmBtnHtml ══════════════ */
+.bm-btn{background:transparent;border:none;cursor:pointer;color:var(--text-3);font-size:1rem;line-height:1;padding:0 .15rem;}
+.bm-btn:hover{color:var(--amber-l);}
+.bm-btn.on{color:var(--amber-l);}
+.mc-term-big .mc-say,.mc-term-big .bm-btn{font-size:1.05rem;vertical-align:middle;margin-left:.15rem;}
+.mc-say:disabled{opacity:.45;cursor:default;}
+.mn-mute{
+  margin-left:auto;background:var(--bg-soft);border:1px solid var(--border);color:var(--text-2);
+  font-size:.78rem;font-weight:600;padding:.35rem .8rem;border-radius:999px;cursor:pointer;white-space:nowrap;
+}
+.mn-mute:hover{color:var(--text);}
+.mn-mute.active{background:var(--red-sub);color:var(--red-l);border-color:var(--red);}
+.exam-bar-row .mn-mute{margin-left:auto;margin-right:.6rem;padding:.2rem .65rem;font-size:.72rem;}
+.batch-audio{display:flex;flex-wrap:wrap;gap:.4rem;margin-left:auto;}
+.batch-audio .btn-soft{font-size:.78rem;}
+.block-card.reading{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue-sub);}
+.ws-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.5rem;}
+.ws-tabs{margin:0;}
+.ws-n{opacity:.75;font-weight:700;margin-left:.15rem;}
+.ws-note{font-size:.8rem;margin:.5rem 0 .7rem;}
+.ws-empty{padding:1.5rem .5rem;text-align:center;}
+.ws-wrong{color:var(--red-l);font-weight:700;font-size:.8rem;white-space:nowrap;}
+.ws-jump{font-size:.75rem;padding:.2rem .5rem;white-space:nowrap;}
+@media (max-width:640px){
+  .batch-audio{margin-left:0;width:100%;}
+  .ws-head .audio-toolbar{width:100%;}
+}

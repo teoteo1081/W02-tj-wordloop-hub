@@ -645,28 +645,46 @@
 
     /* Mẫu prompt MẶC ĐỊNH (phần "viết gì" — không gồm hướng dẫn schema
        JSON, cái đó luôn cố định để không vỡ parsing dù user chỉnh prompt
-       tuỳ ý). 3 placeholder {{SETTING}}/{{STYLE}}/{{DIFF}} được code tự
-       random/tính rồi thay vào lúc gọi; {{WORDLIST}} là danh sách 10 từ
-       của Block — nếu user lỡ xoá mất placeholder này khi tự sửa prompt,
-       generateAI() vẫn tự nối danh sách từ vào cuối để không bao giờ gọi
-       AI mà thiếu từ vựng thật của Block (xem đoạn nối bên dưới). Hiện ở
-       UI thành 1 ô textarea cạnh nút "🔄 Tạo lại" — không sửa thì dùng y
-       hệt mẫu này, sửa gì cũng được trước khi bấm Tạo lại (theo yêu cầu). */
+       tuỳ ý). Placeholder code tự thay lúc gọi: {{TOPIC_HINT}} (tên
+       Notebook/Section — CHỈ là gợi ý yếu), {{PICK}} (số 1-3 random),
+       {{AVOID}} (tiêu đề các bài đã có của Block, để khỏi lặp), {{STYLE}},
+       {{DIFF}}, {{WORDLIST}}; {{SETTING}} vẫn còn thay được cho ai tự viết
+       prompt cũ. Thiếu {{WORDLIST}} thì generateAI() tự nối danh sách từ
+       vào cuối. Hiện ở UI thành ô textarea cạnh nút "🔄 Tạo lại".
+       ĐỔI 2026-09-24 (TJ: "sao nó cứ Survival hoài vậy?"): bản cũ ép 1
+       SETTING random (sân bay, tiệc...) + ép tên Notebook làm "CHỦ ĐỀ NỘI
+       DUNG CHÍNH" — Notebook tên "SURVIVAL" nên bài nào cũng ra chuyện
+       sinh tồn, còn SETTING random thì lệch hẳn nghĩa bộ từ. Giờ chủ đề
+       suy ra từ CHÍNH nghĩa bộ từ; độ đa dạng giữ bằng cách bắt AI tự nghĩ
+       3 kịch bản khác nhau rồi viết theo đúng số {{PICK}} code random
+       (không để model tự chọn — model hay chọn phương án an toàn nhất). */
     DEFAULT_PROMPT_TEMPLATE:
-      "Viết một BÀI ĐỌC HIỂU tiếng Anh hoàn chỉnh, TỰ NHIÊN, dài khoảng 450–550 từ, chia 3–5 " +
-      "đoạn văn (ngăn cách bằng 1 dòng trống).\n\n" +
-      "BỐI CẢNH BẮT BUỘC (không được đổi sang chủ đề khác): {{SETTING}}.\n" +
-      "VĂN PHONG BẮT BUỘC: {{STYLE}}.\n" +
-      "Lồng ghép TỰ NHIÊN nhóm từ vựng bên dưới vào đúng bối cảnh này — nếu từ vựng nghe " +
-      "\"lệch tông\" với bối cảnh (vd từ công nghệ nhưng bối cảnh là bữa tiệc gia đình) thì " +
-      "vẫn cứ dùng, chỉ cần lồng khéo (vd một nhân vật trong bữa tiệc đang nói về công việc " +
-      "công nghệ của mình) — KHÔNG được bỏ bối cảnh để quay về chủ đề an toàn quen thuộc.\n\n" +
-      "ĐỘ KHÓ của câu văn xung quanh (không phải độ khó của từ vựng cần học bên dưới, cái đó " +
-      "giữ nguyên): {{DIFF}}.\n\n" +
-      "Bài đọc PHẢI chứa TẤT CẢ các từ sau, mỗi từ xuất hiện ĐÚNG MỘT LẦN, NGUYÊN VĂN (không " +
-      "chia động từ, không đổi số ít/nhiều), xen kẽ tự nhiên trong bài — KHÔNG dồn hết vào 1 " +
-      "câu, KHÔNG viết kiểu mỗi từ 1 câu tách rời nhau, mà để bài đọc trôi chảy như văn viết " +
-      "thật:\n\n{{WORDLIST}}",
+      "Viết một BÀI ĐỌC HIỂU tiếng Anh hoàn chỉnh, TỰ NHIÊN, dài khoảng 450–550 từ: ĐÚNG 5 " +
+      "đoạn văn (ngăn cách bằng 1 dòng trống), MỖI ĐOẠN 90–110 từ.\n\n" +
+      "BƯỚC 1 — TÌM CHỦ ĐỀ TỪ CHÍNH BỘ TỪ VỰNG: đọc kỹ nghĩa + định nghĩa của TẤT CẢ từ vựng " +
+      "bên dưới, xác định lĩnh vực / tình huống đời thực mà các từ này HAY XUẤT HIỆN CÙNG NHAU " +
+      "nhất (vd: hợp đồng, bồi thường, điều khoản → pháp lý/kinh doanh; triệu chứng, kê đơn → " +
+      "khám bệnh; ngân sách, chiến dịch, chuyển đổi → marketing). Chủ đề bài đọc PHẢI đến từ " +
+      "chính bộ từ này, sao cho mỗi từ được dùng ĐÚNG NGHĨA đã cho mà không gượng ép.\n" +
+      "Nếu bộ từ trải nhiều lĩnh vực, chọn 1 tình huống đời thực đủ rộng để chứa hết (vd 1 ngày " +
+      "làm việc của 1 nhân vật, 1 cuộc trò chuyện giữa 2 người bạn, 1 bài báo tổng hợp) — không " +
+      "ép từ vào chủ đề lệch nghĩa.\n" +
+      "Tên thư mục người học đặt cho bộ từ này: \"{{TOPIC_HINT}}\". Đây CHỈ LÀ NHÃN tự đặt, thường " +
+      "KHÔNG mô tả nội dung (vd \"SURVIVAL\", \"TJ\", \"Batch 3\"). Chỉ dùng nếu nó THẬT SỰ khớp " +
+      "với nghĩa bộ từ; không khớp thì BỎ QUA hoàn toàn, tuyệt đối không viết về chữ trong tên " +
+      "thư mục.\n\n" +
+      "BƯỚC 2 — ĐA DẠNG HOÁ: nghĩ ra 3 kịch bản KHÁC HẲN NHAU (khác nhân vật, địa điểm, mục đích, " +
+      "tình tiết) đều hợp với chủ đề ở bước 1, rồi viết bài theo ĐÚNG kịch bản số {{PICK}}. " +
+      "Tránh các kịch bản nhàm chán kiểu \"họp văn phòng\" trừ khi bộ từ thật sự cần.\n" +
+      "{{AVOID}}\n" +
+      "VĂN PHONG: {{STYLE}}.\n" +
+      "ĐỘ KHÓ của câu văn xung quanh (không phải độ khó của từ vựng cần học, cái đó giữ " +
+      "nguyên): {{DIFF}}.\n\n" +
+      "BƯỚC 3 — LỒNG TỪ VỰNG: bài đọc PHẢI chứa TẤT CẢ các từ sau, mỗi từ xuất hiện ĐÚNG MỘT " +
+      "LẦN, NGUYÊN VĂN (không chia động từ, không đổi số ít/nhiều), dùng ĐÚNG NGHĨA ghi kèm, " +
+      "xen kẽ tự nhiên — KHÔNG dồn nhiều từ vào 1 câu, KHÔNG viết kiểu mỗi từ 1 câu rời rạc, " +
+      "để bài trôi chảy như văn viết thật. Ngữ cảnh quanh mỗi từ phải đủ rõ để người đọc đoán " +
+      "được nghĩa của từ đó:\n\n{{WORDLIST}}",
 
     /* words: [{term, meaning_vi, def_en}] -> Promise<string> (đã kèm meta).
        Sinh MỘT BÀI ĐỌC LIỀN MẠCH (~450-550 từ) chứ không phải kiểu "mỗi từ 1
@@ -683,8 +701,12 @@
        topicHint: gợi ý CHỦ ĐỀ/LĨNH VỰC GỐC của bộ từ này (vd tên Notebook/
        Section — "Digital Marketing", "TOEIC Reading"...) — có thì bài đọc
        sẽ nghiêng nội dung về đúng lĩnh vực đó thay vì hoàn toàn random
-       theo SETTINGS; để trống/undefined thì bỏ qua, chỉ dùng SETTINGS. */
-    generateAI: async function (words, cfg, difficulty, promptOverride, topicHint, quotaCtx) {
+       theo SETTINGS; để trống/undefined thì bỏ qua, chỉ dùng SETTINGS.
+       (Từ 2026-09-24 topicHint chỉ còn là GỢI Ý YẾU — xem chú thích ở
+       DEFAULT_PROMPT_TEMPLATE; chủ đề thật suy ra từ nghĩa bộ từ.)
+       avoidTitles: tiêu đề các bài đã có của Block (bài đang dùng +
+       candidates) — AI được dặn không lặp lại kịch bản đó. */
+    generateAI: async function (words, cfg, difficulty, promptOverride, topicHint, quotaCtx, avoidTitles) {
       var terms = (words || []).map(function (x) { return x.term; }).filter(Boolean);
       if (!terms.length) throw new Error("Block chưa có từ vựng");
       /* KHÔNG tự check "chưa có key" ở đây — để _callProvider() làm việc đó,
@@ -705,28 +727,22 @@
       }).join("\n");
 
       var template = (promptOverride && String(promptOverride).trim()) ? String(promptOverride) : w.Context.DEFAULT_PROMPT_TEMPLATE;
+      var pick = 1 + Math.floor(Math.random() * 3);
+      var avoid = (avoidTitles || []).filter(Boolean).slice(-8);
+      var avoidText = avoid.length
+        ? "Block này ĐÃ CÓ các bài sau — viết kịch bản MỚI, không lặp lại nhân vật/tình tiết của chúng: " +
+          avoid.map(function (t) { return "\"" + t + "\""; }).join(", ") + ".\n"
+        : "";
       var body = template
         .replace(/\{\{SETTING\}\}/g, setting)
         .replace(/\{\{STYLE\}\}/g, style)
-        .replace(/\{\{DIFF\}\}/g, diffDesc);
+        .replace(/\{\{DIFF\}\}/g, diffDesc)
+        .replace(/\{\{TOPIC_HINT\}\}/g, String(topicHint || "").trim() || "(không có)")
+        .replace(/\{\{PICK\}\}/g, String(pick))
+        .replace(/\{\{AVOID\}\}\n?/g, avoidText);
       /* Nếu prompt tự sửa lỡ xoá mất {{WORDLIST}} -> vẫn nối danh sách từ
          vào cuối, tránh gọi AI mà thiếu hẳn từ vựng thật của Block. */
       body = body.indexOf("{{WORDLIST}}") >= 0 ? body.replace(/\{\{WORDLIST\}\}/g, wordList) : (body + "\n\n" + wordList);
-      if (topicHint && String(topicHint).trim()) {
-        /* QUAN TRỌNG: phải nói rõ đây là NỘI DUNG CHÍNH, còn "BỐI CẢNH BẮT
-           BUỘC" bên dưới chỉ là ĐỊA ĐIỂM/TÌNH HUỐNG bao quanh — nếu chỉ
-           viết "nên liên quan" (câu gợi ý), model sẽ ưu tiên đúng chữ
-           "BẮT BUỘC" của setting và bỏ qua hẳn topicHint (đã test thật:
-           bối cảnh "sân bay bị hoãn chuyến" ra đời dù topicHint là
-           "Digital Marketing", không dính dáng gì cả). Giờ ép topicHint
-           làm CHỦ ĐỀ NỘI DUNG, setting chỉ còn là khung cảnh/nhân vật. */
-        body = "CHỦ ĐỀ NỘI DUNG CHÍNH bài đọc PHẢI xoay quanh lĩnh vực: " + String(topicHint).trim() + ". " +
-          "\"BỐI CẢNH BẮT BUỘC\" ở dưới CHỈ LÀ khung địa điểm/tình huống/nhân vật bao quanh câu chuyện, " +
-          "KHÔNG PHẢI chủ đề nội dung — nhân vật trong bối cảnh đó phải đang nói/nghĩ/làm việc gì đó " +
-          "LIÊN QUAN THẬT SỰ tới lĩnh vực \"" + String(topicHint).trim() + "\" (vd nếu bối cảnh là sân bay " +
-          "nhưng lĩnh vực là Digital Marketing thì nhân vật có thể đang đọc báo cáo quảng cáo trên " +
-          "điện thoại trong lúc chờ chuyến bay, KHÔNG phải viết về việc bay/hoãn chuyến chung chung).\n\n" + body;
-      }
 
       var sys = "Bạn là trợ lý viết bài đọc hiểu tiếng Anh để luyện từ vựng cho người Việt học " +
         "tiếng Anh. Luôn trả lời DUY NHẤT một object JSON đúng schema được yêu cầu, không thêm " +
@@ -734,9 +750,12 @@
       var user = body +
         "\n\nSau khi viết xong, với MỖI từ ở trên, ghi lại bản dịch tiếng Việt của ĐÚNG câu trong " +
         "bài chứa từ đó (chỉ câu đó thôi, không phải cả đoạn).\n\n" +
-        "Đặt thêm 1 tiêu đề tiếng Anh ngắn (5–8 từ) và 1 dòng mô tả nguồn bằng tiếng Việt.\n\n" +
+        "Đặt thêm 1 tiêu đề tiếng Anh ngắn (5–8 từ), 1 dòng tiếng Việt nêu chủ đề chung bạn đã " +
+        "suy ra từ bộ từ ở BƯỚC 1 (topic_vi), và 1 dòng mô tả nguồn bằng tiếng Việt.\n\n" +
+        "NHẮC LẠI: passage_en PHẢI có ĐÚNG 5 đoạn, mỗi đoạn 90–110 từ (tổng TỐI THIỂU 450 từ " +
+        "tiếng Anh — bài ngắn hơn là không đạt) — phát triển câu chuyện bằng chi tiết, cảm xúc, hội thoại, đừng tóm tắt.\n\n" +
         "Trả về đúng schema JSON sau, không thêm trường khác:\n" +
-        '{"title":"...", "source_vi":"...", "passage_en":"...", ' +
+        '{"topic_vi":"...", "title":"...", "source_vi":"...", "passage_en":"...", ' +
         '"translations":[{"term":"...","vi":"..."}]}';
 
       w.Context._lastCostUsd = null;   /* reset để không lỡ giữ số cũ nếu lần này ném lỗi trước khi gọi xong */
@@ -767,7 +786,8 @@
         ai: true,
         vi: viMap,
         title: parsed.title || "",
-        source: parsed.source_vi || "Bài đọc do AI sinh riêng cho Block này.",
+        source: (parsed.topic_vi ? "Chủ đề: " + parsed.topic_vi + " · " : "") +
+          (parsed.source_vi || "Bài đọc do AI sinh riêng cho Block này."),
         provider: w.Context._lastProvider || "",
         origin: origin,
         cost_usd: w.Context._lastCostUsd
