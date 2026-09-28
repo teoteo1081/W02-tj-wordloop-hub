@@ -1839,6 +1839,132 @@
       closeSent();
 
       return { plain: plain, html: "<p>" + html + "</p>", sentences: si };
+    },
+
+    /* Bài đọc do TJ/Claude tự viết tay theo Markdown thật (## tiêu đề,
+       **đậm**, bảng |a|b|c|, gạch đầu dòng - mục) — khác hẳn định dạng
+       [term] do AI sinh. Context.build() cũ chỉ hiểu [term], không hiểu
+       Markdown nên in ra y nguyên dấu ** và | (TJ báo lỗi 2026-09-28, xem
+       ảnh chụp PDF Ch.11 AMT). Hàm này dựng thật bảng/đậm/tiêu đề/list
+       thành HTML, vẫn bọc từng từ trong đoạn văn/list bằng <span class="kw">
+       để giữ được tính năng chạm-vào-từ + đọc từng câu (Sentence View) —
+       RIÊNG ô bảng thì hiện chữ thường (không bọc span từng từ), coi là
+       bảng tra cứu chứ không phải bài đọc chính. */
+    buildMarkdown: function (md) {
+      var text = String(md || "").replace(/\r\n/g, "\n");
+      var lines = text.split("\n");
+      var blocks = [], i = 0;
+      function isTableLine(l) { return /^\s*\|.*\|\s*$/.test(l); }
+      function isHeaderLine(l) { return /^#{1,6}\s+/.test(l); }
+      function isListLine(l) { return /^\s*[-*]\s+/.test(l); }
+
+      while (i < lines.length) {
+        var line = lines[i];
+        if (!line.trim()) { i++; continue; }
+        if (isTableLine(line)) {
+          var rows = [];
+          while (i < lines.length && isTableLine(lines[i])) { rows.push(lines[i]); i++; }
+          blocks.push({ type: "table", rows: rows });
+          continue;
+        }
+        if (isHeaderLine(line)) {
+          blocks.push({ type: "h", text: line.replace(/^#{1,6}\s+/, "") });
+          i++;
+          continue;
+        }
+        if (isListLine(line)) {
+          var items = [];
+          while (i < lines.length && isListLine(lines[i])) {
+            items.push(lines[i].replace(/^\s*[-*]\s+/, ""));
+            i++;
+          }
+          blocks.push({ type: "ul", items: items });
+          continue;
+        }
+        var pLines = [];
+        while (i < lines.length && lines[i].trim() && !isTableLine(lines[i]) && !isHeaderLine(lines[i]) && !isListLine(lines[i])) {
+          pLines.push(lines[i]); i++;
+        }
+        blocks.push({ type: "p", text: pLines.join(" ") });
+      }
+
+      var plain = "", html = "", si = 0, sentOpen = false;
+      function span(tok, cls) {
+        var s = plain.length;
+        plain += tok;
+        return '<span class="' + cls + '" data-s="' + s + '" data-e="' + plain.length +
+               '" data-w="' + w.esc(tok) + '">' + w.esc(tok) + "</span>";
+      }
+      function openSent() { if (!sentOpen) { html += '<span class="sent" data-si="' + si + '">'; sentOpen = true; } }
+      function closeSent() { if (sentOpen) { html += "</span>"; sentOpen = false; si++; } }
+
+      /* **đậm** trong 1 đoạn/mục — xử lý y hệt cách build() xử lý [term],
+         chỉ khác là bọc thêm <b> quanh các span từ thay vì đánh dấu vhl. */
+      function renderInline(t) {
+        var segs = [], re = /\*\*([^*]+)\*\*/g, last = 0, m;
+        while ((m = re.exec(t)) !== null) {
+          if (m.index > last) segs.push({ t: t.slice(last, m.index), b: false });
+          segs.push({ t: m[1], b: true });
+          last = re.lastIndex;
+        }
+        if (last < t.length) segs.push({ t: t.slice(last), b: false });
+
+        segs.forEach(function (seg) {
+          if (seg.b) html += "<b>";
+          seg.t.split(/(\s+)/).forEach(function (tok) {
+            if (tok === "") return;
+            if (/^\s+$/.test(tok)) { plain += tok; html += w.esc(tok); }
+            else {
+              openSent();
+              html += span(tok, "kw");
+              if (/[.!?:]["')\]]?$/.test(tok)) closeSent();
+            }
+          });
+          if (seg.b) html += "</b>";
+        });
+      }
+
+      blocks.forEach(function (b) {
+        if (b.type === "table") {
+          closeSent();
+          var cells = b.rows.map(function (r) {
+            return r.replace(/^\s*\|/, "").replace(/\|\s*$/, "").split("|").map(function (c) { return c.trim(); });
+          });
+          /* bỏ dòng phân cách |---|---|---| */
+          cells = cells.filter(function (row) { return !row.every(function (c) { return /^:?-+:?$/.test(c); }); });
+          if (cells.length) {
+            var headRow = cells[0], bodyRows = cells.slice(1);
+            html += '<table class="pv-md-table"><thead><tr>' +
+              headRow.map(function (c) { plain += c + " "; return "<th>" + w.esc(c) + "</th>"; }).join("") +
+              "</tr></thead><tbody>" +
+              bodyRows.map(function (row) {
+                return "<tr>" + row.map(function (c) { plain += c + " "; return "<td>" + w.esc(c) + "</td>"; }).join("") + "</tr>";
+              }).join("") +
+              "</tbody></table>";
+            plain += "\n\n";
+          }
+        } else if (b.type === "h") {
+          closeSent(); html += '<h4 class="pv-md-h">'; renderInline(b.text); closeSent(); html += "</h4>"; plain += "\n\n";
+        } else if (b.type === "ul") {
+          closeSent(); html += "<ul>";
+          b.items.forEach(function (it) { html += "<li>"; renderInline(it); closeSent(); html += "</li>"; });
+          html += "</ul>"; plain += "\n\n";
+        } else {
+          closeSent(); html += "<p>"; renderInline(b.text); closeSent(); html += "</p>"; plain += "\n\n";
+        }
+      });
+
+      return { plain: plain, html: html, sentences: si };
+    },
+
+    /* Tự nhận biết bài đọc là Markdown thật (viết tay, có **đậm**/bảng/
+       gạch đầu dòng) hay định dạng [term] cũ do AI sinh, rồi gọi đúng hàm
+       dựng — mọi chỗ hiển thị bài đọc (đọc trong app + xuất PDF) nên gọi
+       qua đây thay vì Context.build() thẳng, để tự động ăn cả 2 kiểu. */
+    buildAuto: function (marked) {
+      var s = String(marked || "");
+      var looksMarkdown = /\*\*[^*]+\*\*/.test(s) || /^\s*\|.*\|\s*$/m.test(s) || /^\s*[-*]\s+/m.test(s);
+      return looksMarkdown ? w.Context.buildMarkdown(s) : w.Context.build(s);
     }
   };
 })(window);

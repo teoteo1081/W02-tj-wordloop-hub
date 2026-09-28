@@ -115,18 +115,17 @@
     }
 
     var passageHtml = "";
-    if (meta.marked) {
-      var built = w.Context.build(meta.marked);
-      var paras = built.plain.split(/\n\s*\n/).filter(function (p) { return p.trim(); });
-      if (paras.length) {
-        /* Không còn bịa tiêu đề từ 1 danh sách cố định nữa — có tiêu đề
-           thật (AI sinh/bạn tự đặt) thì dùng, không thì lấy tên Block. */
+    if (meta.marked && meta.marked.trim()) {
+      /* buildAuto: bài Markdown thật (viết tay, có **đậm**/bảng/gạch đầu
+         dòng — trường hợp của EA2025/Digital Marketing/IELTS) thì dựng
+         bảng/đậm/tiêu đề thật thay vì in ra y nguyên **/| như trước (TJ
+         báo lỗi 2026-09-28); bài AI sinh kiểu [term] cũ vẫn qua build(). */
+      var built = w.Context.buildAuto(meta.marked);
+      if (built.html && built.html.replace(/<[^>]+>/g, "").trim()) {
         var title = meta.title || block.name;
         passageHtml =
           '<h3 class="pv-passage-title">📖 ' + w.esc(title) + "</h3>" +
-          '<div class="pv-passage">' +
-            paras.map(function (p) { return "<p>" + w.esc(p.trim()) + "</p>"; }).join("") +
-          "</div>";
+          '<div class="pv-passage">' + built.html + "</div>";
       }
     }
 

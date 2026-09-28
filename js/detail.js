@@ -971,7 +971,7 @@
         ? "· ~$" + meta.cost_usd.toFixed(4) : "";
     }
 
-    var built = w.Context.build(meta.marked);
+    var built = w.Context.buildAuto(meta.marked);
     /* Bài đọc đổi nội dung -> điểm "▶ Đọc tiếp" cũ không còn đúng chỗ nữa */
     if (D._passagePlain !== built.plain) { w.Speech.clearResume(); D.paintReadBtn(); }
     D._passagePlain = built.plain;
@@ -1166,7 +1166,7 @@
     var raw = m ? groups[m[1]][Number(m[2])] : null;
     if (!raw) { bodyEl.innerHTML = ""; D._srcTab = "paste"; return D.renderSourcePicker(b); }
     var meta = w.Context.parseMeta(raw);
-    var built = w.Context.build(meta.marked);
+    var built = w.Context.buildAuto(meta.marked);
     var costTag = (typeof meta.cost_usd === "number" && meta.cost_usd > 0) ? " · ~$" + meta.cost_usd.toFixed(4) : "";
     bodyEl.innerHTML = '<div class="claude-preview">' +
       (meta.title ? "<b>" + w.esc(meta.title) + "</b>" + w.esc(costTag) + "<br>" : "") +

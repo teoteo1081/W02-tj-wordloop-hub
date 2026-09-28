@@ -6,7 +6,16 @@
   w.$$ = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
 
   w.esc = function (s) {
-    return String(s == null ? "" : s)
+    var str = String(s == null ? "" : s);
+    /* .normalize("NFC"): 1 số nội dung nhập vào (PDF trích xuất, AI trả về)
+       lưu dấu tiếng Việt ở dạng tổ hợp rời (NFD — chữ cái + dấu riêng biệt,
+       ví dụ "ố" = "o" + dấu mũ + dấu sắc tách rời) thay vì 1 ký tự đã ghép
+       sẵn (NFC). Nhìn trên màn hình thường vẫn ổn (trình duyệt tự ghép),
+       nhưng khi in ra PDF thì vài font (Georgia...) vẽ dấu tách rời hẳn ra,
+       kiểu "tô´i" thay vì "tối" (TJ báo lỗi 2026-09-28). Ép về NFC ở đúng 1
+       chỗ trung tâm này để mọi nơi hiển thị (app + xuất PDF) đều ăn theo. */
+    if (str.normalize) str = str.normalize("NFC");
+    return str
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
   };

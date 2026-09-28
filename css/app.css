@@ -1007,6 +1007,16 @@ body.resizing-left,body.resizing-right{cursor:col-resize;user-select:none;}
 }
 .passage p{margin:0 0 .8rem;}
 .passage p:last-child{margin-bottom:0;}
+/* Bài đọc Markdown thật (Context.buildMarkdown — EA2025/Digital Marketing/
+   IELTS Business Vocab viết tay bằng **đậm**/bảng/gạch đầu dòng) render ra
+   <h4>/<table>/<ul> thật thay vì [term] phẳng như AI sinh — cần style
+   riêng cho khớp giao diện bài đọc bình thường. */
+.passage ul{margin:0 0 .8rem;padding-left:1.4rem;}
+.passage li{margin:0 0 .4rem;}
+.passage .pv-md-h{font-size:1.02rem;font-weight:700;margin:1rem 0 .5rem;color:var(--text-1);}
+.passage .pv-md-table{width:100%;border-collapse:collapse;margin:0 0 .9rem;font-size:.85rem;}
+.passage .pv-md-table th,.passage .pv-md-table td{border:1px solid var(--border);padding:.4rem .55rem;text-align:left;vertical-align:top;}
+.passage .pv-md-table th{background:var(--bg-soft);}
 .kw{border-radius:4px;padding:.05rem .05rem;cursor:pointer;transition:background .12s,color .12s;}
 .kw:hover{background:var(--bg-raise);}
 .kw.vhl{color:var(--amber-l);font-weight:700;border-bottom:1px solid rgba(251,191,36,.35);}
@@ -1850,7 +1860,11 @@ textarea:focus{border-color:var(--blue);}
   #print-root{
     display:block !important;
     background:#fff;color:#111;
-    font-family:Georgia,"Times New Roman",serif;
+    /* Georgia thiếu bộ chữ dấu tiếng Việt tổ hợp đầy đủ ở vài phiên bản
+       Windows, dấu bị vẽ tách rời khỏi chữ cái lúc in PDF — đổi ưu tiên
+       sang các font có bộ Unicode tiếng Việt đầy đủ hơn (TJ báo lỗi
+       2026-09-28), Georgia lùi xuống cuối làm phương án dự phòng. */
+    font-family:"Times New Roman","Segoe UI",Arial,Georgia,serif;
     line-height:1.65;
   }
   #print-root.print-normal{font-size:13pt;}
@@ -1871,6 +1885,12 @@ textarea:focus{border-color:var(--blue);}
 
   .pv-passage-title{font-size:1.2em;margin:0 0 .5em;}
   .pv-passage p{margin:0 0 1em;orphans:3;widows:3;}
+  .pv-passage ul{margin:0 0 1em;padding-left:1.3em;}
+  .pv-passage li{margin:0 0 .4em;}
+  .pv-md-h{font-size:1.05em;margin:1em 0 .5em;}
+  .pv-md-table{width:100%;border-collapse:collapse;margin:0 0 1.2em;font-size:.85em;}
+  .pv-md-table th,.pv-md-table td{border:1px solid #999;padding:.35em .5em;text-align:left;vertical-align:top;}
+  .pv-md-table th{background:#eee;}
 
   .pv-glossary{margin-top:1.2em;padding-top:.8em;border-top:1px dashed #999;font-size:.8em;}
   .pv-glossary-title{
