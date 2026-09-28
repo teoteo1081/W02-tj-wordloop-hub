@@ -3427,7 +3427,9 @@
      · Kéo lên/xuống trong cùng danh sách  -> đổi thứ tự
      · Kéo Notebook thả lên tab Hub        -> chuyển sang Hub khác
      · Kéo Page thả lên tab Section        -> chuyển sang Section khác
-     · Kéo Batch thả lên một Page          -> chuyển sang Page khác          */
+     · Kéo Batch thả lên một Page          -> chuyển sang Page khác
+     · Kéo Section thả lên tab Notebook    -> chuyển sang Notebook khác
+     · Kéo Section thả lên tab Hub         -> TÁCH thành Notebook mới trong Hub đó (2026-09-28) */
   var DRAG = null;
 
   function metaOf(el) {
@@ -3489,6 +3491,15 @@
     }
     var field = MOVE_PAIRS[DRAG.table + ">" + m.table];
     if (field) return { el: el, kind: "move", table: m.table, id: m.id, field: field };
+    /* Kéo 1 Section thả LÊN tab Hub (kể cả Hub đang mở) — TÁCH Section đó
+       thành 1 Notebook MỚI đứng gốc trong Hub đó (giữ nguyên Page/Batch/
+       Block bên trong, chỉ đổi lớp cha), theo yêu cầu TJ 2026-09-28. Khác
+       "sections>notebooks" ở trên (chỉ đổi notebook_id, không tạo gì mới)
+       — đây phải tạo Notebook mới trước rồi mới re-parent, xem
+       App.applyDrop kind "promote". */
+    if (DRAG.table === "sections" && m.table === "hubs") {
+      return { el: el, kind: "promote", table: m.table, id: m.id };
+    }
     return null;
   }
 
@@ -3552,6 +3563,7 @@
       var destName = destRow ? destRow.name : "";
       var tipText = t.kind === "nest" ? "📂 Đặt vào trong \"" + destName + "\""
         : t.kind === "reorder" ? "↕ Đổi vị trí — cạnh \"" + destName + "\""
+        : t.kind === "promote" ? "📓 Tách thành Notebook mới trong \"" + destName + "\""
         : "📦 Chuyển sang \"" + destName + "\"";
       showDragTip(tipText, e.clientX, e.clientY);
     });
@@ -3585,6 +3597,27 @@
         nRow.parent_notebook_id = target.id;
         await w.DB.patch("notebooks", drag.id, { parent_notebook_id: target.id });
         w.toast('Đã đưa "' + nRow.name + '" vào trong "' + destRow.name + '"', "ok");
+      } else if (target.kind === "promote") {
+        /* Section -> Notebook mới đứng gốc trong Hub thả vào — tạo Notebook
+           trước (tên = tên Section, đổi tay sau nếu muốn), rồi re-parent
+           chính Section đó vào Notebook mới. Page/Batch/Block bên trong
+           Section giữ nguyên, không đụng gì. */
+        var secRow = S.sections.find(function (x) { return x.id === drag.id; });
+        var hubRow = S.hubs.find(function (x) { return x.id === target.id; });
+        if (!secRow || !hubRow) return;
+        var newNb2 = await w.DB.addNotebook(target.id, secRow.name, "📓", null);
+        /* Notebook gốc mới tạo mặc định "restricted" (riêng tư) mà KHÔNG tự
+           cấp quyền cho người vừa tạo — cùng bug đã vá ở nút "+ Notebook
+           mới"/"Nhân bản Notebook" (xem 2 chỗ đó), lặp lại y hệt ở đây. */
+        var myUidP = w.Auth.effectiveUserId ? w.Auth.effectiveUserId() : (w.Auth.user && w.Auth.user.id);
+        if (myUidP && !w.Auth.isAdmin()) {
+          await w.DB.grantNotebookAccess(newNb2.id, myUidP, "edit");
+          myGrantedIds.add(newNb2.id);
+          notebookAccessAll.push({ notebook_id: newNb2.id, user_id: myUidP, role: "edit" });
+        }
+        await w.DB.patch("sections", drag.id, { notebook_id: newNb2.id });
+        secRow.notebook_id = newNb2.id;
+        w.toast('Đã tách "' + secRow.name + '" thành Notebook mới trong "' + hubRow.name + '"', "ok");
       } else {
         var row = (S[drag.table] || []).find(function (x) { return x.id === drag.id; });
         if (!row) return;
