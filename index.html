@@ -292,6 +292,16 @@
 
     <!-- ===== MÀN HÌNH B: CHI TIẾT BLOCK ===== -->
     <section id="screen-detail" hidden>
+      <!-- Thanh "🧪 Kiểm tra tất cả" (App.startReviewAll/reviewGoto trong
+           app.js) — chỉ hiện khi đang chạy chuỗi ôn liên tiếp qua nhiều
+           Block (Batch/Page/Section/Notebook/Hub). Dính đầu trang giống
+           .detail-tabs, xem css .review-bar + --review-h. -->
+      <div class="review-bar" id="review-bar" hidden>
+        <span id="review-bar-text"></span>
+        <button class="btn-soft" id="review-bar-prev" title="Block trước trong chuỗi">◀</button>
+        <button class="btn-soft" id="review-bar-next" title="Block tiếp trong chuỗi">▶</button>
+        <button class="btn-soft" id="review-bar-exit" title="Thoát chuỗi ôn tập">✕ Thoát</button>
+      </div>
       <h2 id="detail-title" hidden>📕 Block 1</h2>
 
       <!-- position:sticky — luôn thấy được các tab dù cuộn xuống đâu.

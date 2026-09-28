@@ -2464,6 +2464,14 @@
        vi = đúng những gì đang bấm vào (Notebook/Section/Page/Batch/Block),
        dùng App.scopeIds có sẵn — xem App.openLeaderboard bên dưới. */
     if (w.DB.mode === "cloud") items.push({ act: "leaderboard", icon: "🏆", text: "Xem xếp hạng" });
+    /* "🧪 Kiểm tra tất cả" (2026-09-27, TJ yêu cầu) — ôn liên tiếp MỌI Block
+       trong phạm vi này (kể cả Notebook con lồng bên trong, xuyên nhiều
+       Notebook/Hub với "notebooks"/"hubs"), đủ cả 5 hình thức (Nghĩa/Active
+       Recall/Dictation/Phiếu đầy đủ/Từng câu) — chọn 1 hình thức để bắt đầu
+       mỗi Block, tab bar vẫn full quyền đổi qua hình thức khác như bình
+       thường. Không có ở cấp "blocks" — 1 Block thì mở thẳng xem đủ 5 tab
+       rồi, không cần chuỗi. Xem App.startReviewAll/buildReviewQueue. */
+    if (table !== "blocks") items.push({ act: "quizall", icon: "🧪", text: "Kiểm tra tất cả" });
     items.push({ act: "reset", icon: "🔄", text: "Xoá tiến trình học" });   /* xoá tiến trình CỦA CHÍNH MÌNH — không phải sửa nội dung chung, cho phép dù role "Chỉ xem" */
     items.push({ act: "sep" });
     items.push({ act: "del", icon: "🗑", text: "Xoá " + meta.label, danger: true });
@@ -2790,6 +2798,11 @@
         return;   /* modal tự vẽ xong, không cần reloadCurrent() ở cuối hàm này */
       }
 
+      else if (act === "quizall") {
+        await App.startReviewAll(table, id, row.name);
+        return;   /* startReviewAll tự nhảy màn (App.jumpTo) + tự renderAll, không cần reloadCurrent() ở cuối hàm này */
+      }
+
       else if (act === "reset") {
         var ids = await App.scopeIds(table, id);
         var okR = await askConfirm({
@@ -2888,6 +2901,191 @@
     var wIds = S.words.filter(function (x) { return bIds.indexOf(x.block_id) >= 0; })
                       .map(function (x) { return x.id; });
     return { blocks: bIds, words: wIds };
+  };
+
+  /* ══════════════ "🧪 KIỂM TRA TẤT CẢ" (2026-09-27) ══════════════
+     Ôn liên tiếp MỌI Block trong 1 phạm vi (Batch/Page/Section/Notebook/
+     Hub — xem menu "⋯" ở App.openMenu), đủ cả 5 hình thức kiểm tra hiện có
+     (Nghĩa/Active Recall Quiz/Dictation/Phiếu đầy đủ/Từng câu).
+     KHÔNG dựng bộ đề gộp riêng — quá rủi ro đụng lại logic chấm điểm/SRS
+     đã tinh chỉnh nhiều lần ở D.buildExam/buildMeaningQuiz/buildDictationQuiz.
+     Thay vào đó: tính sẵn 1 DANH SÁCH Block đúng thứ tự hiển thị (đệ quy cả
+     Notebook con lồng bên trong với scope "notebooks"/"hubs"), rồi dùng
+     App.jumpTo (đã có sẵn, dùng cho cây Journey) để nhảy xuyên Hub/Notebook
+     khác nhau một cách an toàn — mở ĐÚNG UI Chi tiết Block sẵn có, người
+     dùng vẫn toàn quyền đổi tab hình thức như học bình thường, chấm điểm/
+     SRS không đổi gì cả. */
+  function reviewGroupSort(rows, key) {
+    var m = {};
+    rows.forEach(function (r) { (m[r[key]] = m[r[key]] || []).push(r); });
+    Object.keys(m).forEach(function (k) { m[k].sort(bySort); });
+    return m;
+  }
+  function buildReviewTreeIndex(tree) {
+    return {
+      nbById: tree.notebooks.reduce(function (m, n) { m[n.id] = n; return m; }, {}),
+      secByNb: reviewGroupSort(tree.sections, "notebook_id"),
+      pgBySec: reviewGroupSort(tree.pages, "section_id"),
+      btByPg: reviewGroupSort(tree.batches, "page_id"),
+      blByBt: reviewGroupSort(tree.blocks, "batch_id"),
+      childNb: reviewGroupSort(tree.notebooks.filter(function (n) { return n.parent_notebook_id; }), "parent_notebook_id")
+    };
+  }
+  /* Toàn bộ Block của 1 Notebook, ĐỆ QUY xuống Notebook con lồng bên trong
+     (thứ tự: nội dung của chính Notebook này trước, rồi lần lượt từng
+     Notebook con theo đúng sort) — visited chặn vòng lặp cha-con nếu lỡ có
+     dữ liệu hỏng, dù setparent bình thường đã chặn từ trước. */
+  function flattenReviewNotebook(nbId, idx, visited) {
+    if (visited[nbId]) return [];
+    visited[nbId] = true;
+    var nb = idx.nbById[nbId];
+    if (!nb) return [];
+    var out = [];
+    (idx.secByNb[nbId] || []).forEach(function (sec) {
+      (idx.pgBySec[sec.id] || []).forEach(function (pg) {
+        (idx.btByPg[pg.id] || []).forEach(function (bt) {
+          (idx.blByBt[bt.id] || []).forEach(function (bl) {
+            out.push({ hubId: nb.hub_id, notebookId: nbId, sectionId: sec.id, pageId: pg.id, batchId: bt.id, blockId: bl.id });
+          });
+        });
+      });
+    });
+    (idx.childNb[nbId] || []).forEach(function (child) {
+      out = out.concat(flattenReviewNotebook(child.id, idx, visited));
+    });
+    return out;
+  }
+  /* Danh sách Block đúng thứ tự cho 1 phạm vi bất kỳ + tổng số từ (đếm qua
+     DB.getAllWordsLite — giống lý do App.scopeIds phải làm vậy với
+     "notebooks"/"hubs": phạm vi này có thể KHÔNG PHẢI Notebook đang mở, S.*
+     không đủ dữ liệu). Luôn tải tree/words mới mỗi lần gọi cho đơn giản —
+     đây là thao tác thỉnh thoảng mới bấm, không phải đường nóng cần cache. */
+  App.buildReviewQueue = async function (table, id) {
+    var tree = await w.DB.getFullTree();
+    var idx = buildReviewTreeIndex(tree);
+    var items = [];
+
+    if (table === "batches") {
+      var btRow = tree.batches.find(function (x) { return x.id === id; });
+      var pg = btRow && tree.pages.find(function (x) { return x.id === btRow.page_id; });
+      var sec = pg && tree.sections.find(function (x) { return x.id === pg.section_id; });
+      var nb = sec && idx.nbById[sec.notebook_id];
+      if (nb) (idx.blByBt[id] || []).forEach(function (bl) {
+        items.push({ hubId: nb.hub_id, notebookId: nb.id, sectionId: sec.id, pageId: pg.id, batchId: id, blockId: bl.id });
+      });
+    } else if (table === "pages") {
+      var pgRow = tree.pages.find(function (x) { return x.id === id; });
+      var sec2 = pgRow && tree.sections.find(function (x) { return x.id === pgRow.section_id; });
+      var nb2 = sec2 && idx.nbById[sec2.notebook_id];
+      if (nb2) (idx.btByPg[id] || []).forEach(function (bt2) {
+        (idx.blByBt[bt2.id] || []).forEach(function (bl2) {
+          items.push({ hubId: nb2.hub_id, notebookId: nb2.id, sectionId: sec2.id, pageId: id, batchId: bt2.id, blockId: bl2.id });
+        });
+      });
+    } else if (table === "sections") {
+      var secRow = tree.sections.find(function (x) { return x.id === id; });
+      var nb3 = secRow && idx.nbById[secRow.notebook_id];
+      if (nb3) (idx.pgBySec[id] || []).forEach(function (pg3) {
+        (idx.btByPg[pg3.id] || []).forEach(function (bt3) {
+          (idx.blByBt[bt3.id] || []).forEach(function (bl3) {
+            items.push({ hubId: nb3.hub_id, notebookId: nb3.id, sectionId: id, pageId: pg3.id, batchId: bt3.id, blockId: bl3.id });
+          });
+        });
+      });
+    } else if (table === "notebooks") {
+      items = flattenReviewNotebook(id, idx, {});
+    } else if (table === "hubs") {
+      tree.notebooks.filter(function (n) { return n.hub_id === id && !n.parent_notebook_id; })
+        .sort(bySort)
+        .forEach(function (nbTop) { items = items.concat(flattenReviewNotebook(nbTop.id, idx, {})); });
+    }
+
+    var allWords = await w.DB.getAllWordsLite();
+    var blockIdSet = {};
+    items.forEach(function (it) { blockIdSet[it.blockId] = true; });
+    var wordCount = allWords.filter(function (x) { return blockIdSet[x.blockId]; }).length;
+    return { items: items, wordCount: wordCount };
+  };
+
+  var REVIEW_TABS = [
+    { id: "meaning", name: "🔀 Nghĩa" },
+    { id: "quiz", name: "📝 Active Recall Quiz" },
+    { id: "dictation", name: "🎧 Dictation" },
+    { id: "sheet", name: "📋 Phiếu đầy đủ" },
+    { id: "single", name: "🔤 Từng câu" }
+  ];
+  var LS_REVIEW_TAB = "tjwl_reviewall_tab_v1";
+
+  App.startReviewAll = async function (table, id, scopeName) {
+    var q;
+    try { q = await App.buildReviewQueue(table, id); }
+    catch (e) { w.toast("Không tải được phạm vi ôn: " + (e.message || e), "err"); return; }
+    if (!q.items.length) { w.toast('"' + scopeName + '" chưa có từ nào để ôn', "err"); return; }
+
+    /* Nhớ hình thức lần trước, đưa lên đầu danh sách chọn cho tiện — không
+       tự chọn sẵn được vì askPick chỉ là <select> thường (không nhận value
+       mặc định qua opts), nên đành đổi CHỖ ĐỨNG trong mảng options. */
+    var tabOpts = REVIEW_TABS.slice();
+    var lastTab = null;
+    try { lastTab = localStorage.getItem(LS_REVIEW_TAB); } catch (e) {}
+    var li = tabOpts.findIndex(function (o) { return o.id === lastTab; });
+    if (li > 0) tabOpts.unshift(tabOpts.splice(li, 1)[0]);
+
+    var pickedTab = await askPick({
+      title: "🧪 Kiểm tra tất cả — " + scopeName + " (" + q.items.length + " block · " + q.wordCount + " từ)",
+      options: tabOpts
+    });
+    if (!pickedTab) return;
+    try { localStorage.setItem(LS_REVIEW_TAB, pickedTab); } catch (e) {}
+
+    App.reviewQueue = { items: q.items, idx: 0, tab: pickedTab, scopeName: scopeName };
+    await App.reviewGoto(0);
+  };
+
+  /* Nhảy tới đúng Block thứ `idx` trong chuỗi — dùng App.jumpTo (đã tự lo
+     đổi Hub/Notebook/Section/Page/Batch + mở Chi tiết Block) nên an toàn kể
+     cả khi Block kế tiếp nằm ở Notebook/Hub hoàn toàn khác. Cờ
+     App._reviewNavigating đánh dấu "đây là nhảy DO CHUỖI ÔN gây ra" để
+     D.open (detail.js) không hiểu lầm là người dùng tự bấm sang Block khác
+     rồi tự thoát chuỗi (xem detail.js D.open/D.close). */
+  App.reviewGoto = async function (idx) {
+    var rq = App.reviewQueue;
+    if (!rq || idx < 0 || idx >= rq.items.length) return;
+    rq.idx = idx;
+    var it = rq.items[idx];
+    App._reviewNavigating = true;
+    try {
+      await App.jumpTo({ hubId: it.hubId, notebookId: it.notebookId, sectionId: it.sectionId, pageId: it.pageId, batchId: it.batchId, blockId: it.blockId });
+      if (w.Detail) w.Detail.showTab(rq.tab);
+    } finally { App._reviewNavigating = false; }
+    App.renderReviewBar();
+  };
+  App.reviewNext = function () {
+    var rq = App.reviewQueue; if (!rq) return;
+    if (rq.idx + 1 >= rq.items.length) {
+      w.toast("🎉 Đã ôn hết " + rq.items.length + " block trong \"" + rq.scopeName + "\"", "ok");
+      App.exitReview();
+      return;
+    }
+    App.reviewGoto(rq.idx + 1);
+  };
+  App.reviewPrev = function () {
+    var rq = App.reviewQueue; if (!rq) return;
+    if (rq.idx <= 0) { w.toast("Đây là Block đầu tiên của chuỗi ôn", "err"); return; }
+    App.reviewGoto(rq.idx - 1);
+  };
+  App.exitReview = function () {
+    App.reviewQueue = null;
+    App.renderReviewBar();
+  };
+  App.renderReviewBar = function () {
+    var bar = w.$("#review-bar");
+    if (!bar) return;
+    var rq = App.reviewQueue;
+    bar.hidden = !rq;
+    if (!rq) return;
+    w.$("#review-bar-text").textContent = "🧪 " + rq.scopeName + " · Block " + (rq.idx + 1) + "/" + rq.items.length;
+    w.$("#review-bar-prev").disabled = rq.idx <= 0;
   };
 
   /* ══════════════ BẢNG XẾP HẠNG (🏆) — đã chốt với TJ (2026-09-10) ══════════
@@ -3757,6 +3955,23 @@
       if (w.ResizeObserver) new ResizeObserver(setCrumbH).observe(crumbEl);
       w.addEventListener("resize", setCrumbH);
     }
+
+    /* Thanh "🧪 Kiểm tra tất cả" (#review-bar) — cùng cơ chế đo chiều cao
+       động như bbar/crumb ở trên, để .detail-tabs dính liền ngay dưới nó
+       khi đang chạy chuỗi ôn, và tự thu gọn về 0 khi ẩn (xem css .review-bar). */
+    var reviewBarEl = w.$("#review-bar");
+    if (reviewBarEl) {
+      var setReviewH = function () {
+        document.documentElement.style.setProperty("--review-h", reviewBarEl.offsetHeight + "px");
+      };
+      setReviewH();
+      if (w.ResizeObserver) new ResizeObserver(setReviewH).observe(reviewBarEl);
+      w.addEventListener("resize", setReviewH);
+    }
+    var rbPrev = w.$("#review-bar-prev"), rbNext = w.$("#review-bar-next"), rbExit = w.$("#review-bar-exit");
+    if (rbPrev) rbPrev.onclick = function () { App.reviewPrev(); };
+    if (rbNext) rbNext.onclick = function () { App.reviewNext(); };
+    if (rbExit) rbExit.onclick = function () { w.toast("Đã thoát chuỗi ôn tập", "ok"); App.exitReview(); };
 
     /* --- hub --- */
     /* Các hàng/tab điều hướng (Hub/Notebook/Section/Page/Batch) đều là

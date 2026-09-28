@@ -69,6 +69,12 @@
   };
 
   D.open = function (blockId, tab) {
+    /* Đang chạy chuỗi "🧪 Kiểm tra tất cả" (App.reviewQueue) mà Block mở ra
+       KHÔNG PHẢI do chính chuỗi đó điều hướng (App._reviewNavigating) — tức
+       người dùng tự bấm sang Block khác (menu, ←/→ thường, restoreLast...)
+       -> hiểu là họ muốn rời chuỗi, tự thoát cho gọn thay vì để thanh
+       review-bar đứng đó chỉ sai vị trí. */
+    if (w.App && w.App.reviewQueue && !w.App._reviewNavigating) w.App.exitReview();
     /* Đổi Block -> dừng bài đọc của Block cũ + bỏ điểm "Đọc tiếp" của nó */
     if (w.Speech) { w.Speech.stop(); w.Speech.clearResume(); }
     /* Hẹn giờ tự chấm câu cuối (Từng câu/Nghĩa) đặt cho Block ĐANG RỜI ĐI —
@@ -176,6 +182,12 @@
   };
 
   D.close = function () {
+    /* App.jumpTo() (dùng bởi App.reviewGoto để nhảy sang Block kế trong
+       chuỗi) LUÔN gọi leaveDetail() -> D.close() trước khi mở Block mới, kể
+       cả khi không thật sự "rời" Chi tiết Block — chỉ đổi sang Block khác
+       trong cùng chuỗi. Phải chừa cờ App._reviewNavigating giống D.open(),
+       không thì mỗi bước ←/▶ trong chuỗi ôn tự huỷ luôn chuỗi ngay lập tức. */
+    if (w.App && w.App.reviewQueue && !w.App._reviewNavigating) w.App.exitReview();
     clearTimeout(D._autoNext);
     clearTimeout(D._autoNextMeaning);
     w.Speech.stop();

@@ -835,8 +835,22 @@ body.resizing-left,body.resizing-right{cursor:col-resize;user-select:none;}
    không lộ viền lúc dính. */
 .detail-tabs{
   display:flex;align-items:center;gap:.35rem;border-bottom:1px solid var(--border);padding:.5rem 0 .4rem;
-  position:sticky;top:calc(var(--crumb-h,0px) + var(--bbar-h,0px));z-index:6;background:var(--bg-main);
+  position:sticky;top:calc(var(--crumb-h,0px) + var(--bbar-h,0px) + var(--review-h,0px));z-index:6;background:var(--bg-main);
 }
+
+/* Thanh "🧪 Kiểm tra tất cả" — dính ngay dưới crumb/bbar, ĐẨY .detail-tabs
+   xuống thêm đúng chiều cao của nó (--review-h, đo động ở app.js giống
+   --crumb-h/--bbar-h). Rỗng/hidden thì offsetHeight = 0, .detail-tabs tự
+   trở lại vị trí cũ, không cần if/else riêng. */
+.review-bar{
+  display:flex;align-items:center;gap:.5rem;padding:.5rem .2rem;
+  position:sticky;top:calc(var(--crumb-h,0px) + var(--bbar-h,0px));z-index:7;
+  background:var(--blue-sub);border:1px solid var(--blue-l);border-radius:8px;margin-bottom:.4rem;
+}
+.review-bar[hidden]{display:none;}
+.review-bar #review-bar-text{font-weight:700;font-size:.8rem;color:var(--blue-l);flex:1;min-width:0;}
+.review-bar .btn-soft{padding:.35rem .6rem;font-size:.78rem;flex-shrink:0;}
+.review-bar .btn-soft:disabled{opacity:.4;cursor:default;}
 /* CHỈ dải nút tab mới cuộn ngang khi chật chỗ — #bn-pos + nút "⤒" đứng
    ngoài, KHÔNG bao giờ bị cuộn khuất (gộp 1 hàng để tiết kiệm chỗ, không
    phải để mất thông tin — xem ghi chú trong index.html). */
