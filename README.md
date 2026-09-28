@@ -29,8 +29,8 @@ Mở **`http://localhost:8934`** — **không** mở bằng `file://` (fetch() b
 ## Triển khai hiện tại
 | Thứ | Ở đâu |
 |---|---|
-| Code (GitHub, **public**) | https://github.com/teoteo1081/tj-wordloop-hub |
-| Web live (GitHub Pages) | **https://teoteo1081.github.io/tj-wordloop-hub/** |
+| Code (GitHub, **public**) | https://github.com/teoteo1081/W02-tj-wordloop-hub |
+| Web live (GitHub Pages) | **https://teoteo1081.github.io/W02-tj-wordloop-hub/** |
 | Web live (Netlify — tạm ngưng deploy) | https://tj-wordloop-hub.netlify.app (đứng ở bản cũ, team hết hạn mức tháng, xem CLAUDE.md) |
 | Database dùng chung (Supabase) | project `pqarpszsipbdugrumhfy`, region Singapore |
 
