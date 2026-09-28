@@ -1957,7 +1957,7 @@
       return { plain: plain, html: html, sentences: si };
     },
 
-    /* Tự nhận biết bài đọc là Markdown thật (viết tay, có **đậm**/bảng/
+    /* Tự nhận biết bài đọc là Markdown thật (viết tay, có chữ đậm, bảng,
        gạch đầu dòng) hay định dạng [term] cũ do AI sinh, rồi gọi đúng hàm
        dựng — mọi chỗ hiển thị bài đọc (đọc trong app + xuất PDF) nên gọi
        qua đây thay vì Context.build() thẳng, để tự động ăn cả 2 kiểu. */

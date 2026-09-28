@@ -116,10 +116,10 @@
 
     var passageHtml = "";
     if (meta.marked && meta.marked.trim()) {
-      /* buildAuto: bài Markdown thật (viết tay, có **đậm**/bảng/gạch đầu
+      /* buildAuto: bài Markdown thật (viết tay, có chữ đậm, bảng, gạch đầu
          dòng — trường hợp của EA2025/Digital Marketing/IELTS) thì dựng
-         bảng/đậm/tiêu đề thật thay vì in ra y nguyên **/| như trước (TJ
-         báo lỗi 2026-09-28); bài AI sinh kiểu [term] cũ vẫn qua build(). */
+         bảng/đậm/tiêu đề thật thay vì in ra y nguyên ký tự markdown như
+         trước (TJ báo lỗi 2026-09-28); bài AI sinh kiểu [term] cũ vẫn qua build(). */
       var built = w.Context.buildAuto(meta.marked);
       if (built.html && built.html.replace(/<[^>]+>/g, "").trim()) {
         var title = meta.title || block.name;
