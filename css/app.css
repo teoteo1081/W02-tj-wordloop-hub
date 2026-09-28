@@ -517,17 +517,22 @@ body.resizing-left,body.resizing-right{cursor:col-resize;user-select:none;}
   font-size:.95rem;line-height:1;padding:.1rem .3rem;border-radius:5px;
   opacity:0;flex-shrink:0;margin-left:auto;
 }
-.nav-item:hover .dots,.section-tab:hover .dots,.batch-tab:hover .dots,
-.nav-item.active .dots,.section-tab.active .dots,.batch-tab.active .dots{opacity:1;}
+.nav-item:hover .dots,
+.nav-item.active .dots{opacity:1;}
 .dots:hover{background:var(--bg-raise);color:var(--text);}
 .section-tab,.batch-tab{position:relative;}
-/* Block card, và Hub tab: KHÔNG ẩn theo hover — trên di động không có
-   hover nên nút "⋯" (đổi tên/xoá/xoá tiến trình...) sẽ vô hình vĩnh viễn
-   nếu dùng chung kiểu opacity:0 như trên. Hub-tab từng bị BỎ SÓT khỏi
-   danh sách hover/active phía trên -> nút "⋯" của Hub luôn opacity:0,
-   không bao giờ hiện được (kể cả hover) -> user tưởng tính năng đổi
-   tên/xoá Hub không tồn tại, dù code/menu đã làm đủ từ trước (đã sửa). */
-.block-left .dots,.hub-tab .dots{opacity:1;}
+/* Block card, Hub tab, Section tab, Batch tab: KHÔNG ẩn theo hover — trên
+   di động không có hover nên nút "⋯" (đổi tên/xoá/xoá tiến trình/"🧪 Kiểm
+   tra tất cả"/"📓 Chuyển thành Notebook"...) sẽ vô hình vĩnh viễn nếu dùng
+   chung kiểu opacity:0 như trên. Hub-tab từng bị BỎ SÓT khỏi danh sách
+   hover/active phía trên -> nút "⋯" của Hub luôn opacity:0, không bao giờ
+   hiện được (kể cả hover) -> user tưởng tính năng đổi tên/xoá Hub không
+   tồn tại, dù code/menu đã làm đủ từ trước (đã sửa). Section-tab/batch-tab
+   gặp lại y hệt vụ đó (2026-09-28, TJ báo không thấy nút "🧪 Kiểm tra tất
+   cả" trên Section) -> bỏ luôn khỏi diện ẩn-theo-hover, hiện sẵn như
+   Hub-tab. Chỉ còn .nav-item (Notebook/Page ở 2 cột bên) vẫn ẩn-theo-hover
+   như cũ — chưa ai báo vướng chỗ đó. */
+.block-left .dots,.hub-tab .dots,.section-tab .dots,.batch-tab .dots{opacity:1;}
 
 /* ═══════════ KÉO THẢ ═══════════ */
 [draggable="true"]{cursor:grab;}
