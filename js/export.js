@@ -35,6 +35,14 @@
     sectionsOfNotebook(notebookId).forEach(function (s) { out = out.concat(blocksOfSection(s.id)); });
     return out;
   }
+  function notebooksOfHub(hubId) {
+    return S().notebooks.filter(function (nb) { return nb.hub_id === hubId; });
+  }
+  function blocksOfHub(hubId) {
+    var out = [];
+    notebooksOfHub(hubId).forEach(function (nb) { out = out.concat(blocksOfNotebook(nb.id)); });
+    return out;
+  }
 
   E.blocksOfScope = function (kind, id) {
     switch (kind) {
@@ -46,6 +54,7 @@
       case "page": return blocksOfPage(id);
       case "section": return blocksOfSection(id);
       case "notebook": return blocksOfNotebook(id);
+      case "hub": return blocksOfHub(id);
       default: return [];
     }
   };
@@ -76,6 +85,10 @@
     if (s.notebookId) {
       var nb = s.notebooks.find(function (x) { return x.id === s.notebookId; });
       if (nb) opts.push({ kind: "notebook", id: nb.id, name: nb.name, label: "Notebook đang chọn" });
+    }
+    if (s.hubId) {
+      var hub = s.hubs.find(function (x) { return x.id === s.hubId; });
+      if (hub) opts.push({ kind: "hub", id: hub.id, name: hub.name, label: "Cả Hub đang chọn" });
     }
     return opts;
   };
@@ -175,16 +188,27 @@
            thể chứa TOÀN BỘ từ đã trích (30-60+ từ), giả định cũ báo sai
            lệch số lượng trong hộp thoại này (không crash, chỉ sai chữ). */
         var totalWords = blocks.reduce(function (sum, b) { return sum + w.App.wordsOf(b.id).length; }, 0);
+        /* QUAN TRỌNG: phải ẨN hộp Xuất PDF trước khi mở hộp xác nhận —
+           2 modal-overlay cùng z-index, cùng position:fixed, nên hộp mở
+           SAU (ở đây là modal-confirm, nằm trước modal-export trong HTML)
+           bị hộp Xuất PDF (đứng sau trong HTML) đè hẳn lên trên, che mất
+           nút "Đồng ý" — nhìn như hộp xác nhận "biến mất"/không phản hồi.
+           Nếu bấm Hủy thì mở lại hộp Xuất PDF (giữ nguyên lựa chọn). */
+        m.hidden = true;
         var ok = await w.App.askConfirm({
           title: "Xuất " + blocks.length + " Block",
           desc: "Khá nhiều nội dung (" + blocks.length + " Block, " + totalWords +
                 " từ) — trình duyệt có thể mất một lúc để dựng bản in. Vẫn tiếp tục?"
         });
-        if (!ok) return;
+        if (!ok) { m.hidden = false; return; }
       }
 
       m.hidden = true;
-      E.print(title, blocks, size);
+      w.toast("Đang dựng bản in " + blocks.length + " Block…", "info");
+      /* chờ 1 nhịp cho toast kịp vẽ ra trước khi build HTML lớn (có thể
+         mất vài trăm ms với export nhiều trăm Block) — không thì UI
+         trông như đứng hình không phản hồi trong lúc build. */
+      setTimeout(function () { E.print(title, blocks, size); }, 30);
     };
   };
 
