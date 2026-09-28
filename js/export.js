@@ -223,8 +223,29 @@
       "</div>" +
       blocks.map(blockPrintHtml).join("");
 
+    /* Hộp "Lưu dưới dạng PDF" của trình duyệt lấy tên file mặc định từ
+       document.title của TAB — KHÔNG phải chữ trong ô "Tên/tiêu đề" của
+       hộp Xuất PDF. Không set lại thì file luôn bị lưu tên "TJ WordLoop
+       Hub.pdf" bất kể người dùng gõ gì, gây hiểu lầm "xuất xong mà không
+       tìm thấy file" (tên tìm không khớp tên lưu thật). Đổi tạm tab title
+       ngay trước khi in, trả lại tên cũ ngay sau khi hộp in đóng lại. */
+    var prevTitle = document.title;
+    var safeName = title.replace(/[\\/:*?"<>|]/g, " ").trim() || "TJ WordLoop Hub";
+    document.title = safeName;
+    function restoreTitle() {
+      document.title = prevTitle;
+      window.removeEventListener("afterprint", restoreTitle);
+    }
+    window.addEventListener("afterprint", restoreTitle);
+
     /* chờ 1 nhịp cho trình duyệt vẽ xong nội dung mới rồi mới mở hộp in */
-    setTimeout(function () { window.print(); }, 60);
+    setTimeout(function () {
+      window.print();
+      /* Safari/1 số trình duyệt không bắn "afterprint" đáng tin cậy khi
+         người dùng bấm Hủy thay vì Lưu — có 1 lưới an toàn trả tên lại
+         sau 5s dù sự kiện có bắn hay không. */
+      setTimeout(restoreTitle, 5000);
+    }, 60);
   };
 
   w.Export = E;
