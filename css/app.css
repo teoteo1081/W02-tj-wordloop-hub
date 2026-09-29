@@ -452,8 +452,12 @@ body.resizing-left,body.resizing-right{cursor:col-resize;user-select:none;}
   background:var(--bg-sidebar);border-bottom:1px solid var(--border);
   padding:.45rem .5rem 0;
 }
+/* flex-shrink:1 + min-width:max-content — cửa sổ hẹp thì 2 pane-head được
+   CO về đúng bề rộng nội dung (📌 + tên cột) để nhường chỗ, thay vì giữ
+   cứng bề rộng sidebar rồi đẩy cụm pane-right (nút 📌 ẩn/ghim cột Pages)
+   tràn ra khỏi mép phải màn hình — lỗi thật 2026-09-28 ở cửa sổ ~970px. */
 .pane-head{
-  flex-shrink:0;display:flex;align-items:center;gap:.35rem;
+  flex-shrink:1;min-width:max-content;display:flex;align-items:center;gap:.35rem;
   padding:0 .35rem .55rem;
 }
 .pane-head.pane-left{width:var(--sidebar-w-left);}
@@ -1671,6 +1675,9 @@ textarea:focus{border-color:var(--blue);}
 
 @media(max-width:1100px){
   .cycle-grid{grid-template-columns:repeat(2,1fr);}
+  /* cửa sổ vừa: cụm nút Paste chỉ còn icon (chữ vẫn có trong title) để
+     hàng Section không tràn, giữ nút 📌 cột Pages luôn thấy được */
+  .section-actions .dt-long{display:none;}
 }
 
 @media(max-width:860px){
