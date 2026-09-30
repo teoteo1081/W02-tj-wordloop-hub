@@ -520,14 +520,11 @@
     if (G.view === "screen") { show("s-screen"); $("#sc-code").textContent = code; paintScreen(); }
     else if (!G.st || G.st.phase === "lobby") renderLobby();
   }
-  /* host tải lại trang giữa trận -> lấy lại trạng thái đã lưu (điểm, đội, câu đang hỏi) */
-  function saveHost() { if (G.isHost && G.st) writeLS(LS_HOST + G.room.code, { st: G.st, endAt: G.endAt, qUntil: G.qUntil, revealUntil: G.revealUntil, answers: G.answers }); }
+  /* ĐÃ TẮT khôi phục ván (TJ 2026-09-30: "tự khởi động chơi hoài" — host rớt mạng/tải lại trang thì ván đó bỏ,
+     vào lại là phòng chờ). Dọn luôn các ván cũ từng lưu trong localStorage (tjwl_game_host_*) từ bản trước. */
+  function saveHost() {}
   function restoreHost() {
-    var s = readLS(LS_HOST + G.room.code);
-    if (!s || !s.st || s.st.phase !== "play") return;
-    if (!s.endAt || s.endAt < Date.now()) { writeLS(LS_HOST + G.room.code, null); return; }   /* ván cũ đã hết giờ -> KHÔNG tự chơi lại */
-    G.st = s.st; G.endAt = s.endAt; G.qUntil = s.qUntil; G.revealUntil = s.revealUntil; G.answers = s.answers || [];
-    clearInterval(G.hostTimer); G.hostTimer = setInterval(hostTick, 250);
+    try { Object.keys(localStorage).forEach(function (k) { if (k.indexOf(LS_HOST) === 0) localStorage.removeItem(k); }); } catch (e) {}
   }
 
   function connect() {
