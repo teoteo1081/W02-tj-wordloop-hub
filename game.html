@@ -76,7 +76,7 @@
           <select id="l-qtype"><option value="meaning">🔤 Nghĩa → chọn từ tiếng Anh</option><option value="en2m">🔤 Từ tiếng Anh → chọn nghĩa</option><option value="gap">📝 Điền chỗ trống (1 câu)</option><option value="recall">⌨️ Gõ từ (Active Recall)</option><option value="mix">🔀 Trộn 4 dạng trên</option><option value="sheet">📄 Phiếu đầy đủ theo Block</option><option value="write">✍️ Đặt câu (AI chấm)</option><option value="dict">🎧 Dictation (cần tai nghe)</option></select></label>
         <label>Cách tính điểm
           <select id="l-scoring"><option value="q">Theo câu — đúng +100</option><option value="speed">Theo tốc độ — đúng 100 → 50 (chậm bị trừ)</option></select></label>
-        <label>Tiếng chung (khi 🔒 ép + 📺 màn hình chung) <select id="l-lang"><option value="vi">🇻🇳 Tiếng Việt</option><option value="en">🇺🇸 English (định nghĩa)</option><option value="es">🇪🇸 Español</option><option value="zh">🇨🇳 中文</option></select></label>
+        <label>Tiếng chung — 📺 màn hình chung, 🔒 ép cả phòng, người chưa tự chọn ngôn ngữ <select id="l-lang"><option value="vi">🇻🇳 Tiếng Việt</option><option value="en">🇺🇸 English (định nghĩa)</option><option value="es">🇪🇸 Español</option><option value="zh">🇨🇳 中文</option></select></label>
         <label class="g-check" id="l-force-wrap"><input type="checkbox" id="l-force"> 🔒 Ép cả phòng dùng tiếng nghĩa này <span class="g-sub">(chỉ câu dạng 🔤 Nghĩa)</span></label>
         <label>Số phút <input type="number" id="l-min" min="1" max="60" step="1"></label>
         <label id="l-qs-wrap">Giây mỗi câu <input type="number" id="l-qs" min="5" max="90" step="1"></label>
@@ -149,6 +149,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="js/config.js?v=4"></script>
-<script src="js/game.js?v=24"></script>
+<script src="js/game.js?v=25"></script>
 </body>
 </html>

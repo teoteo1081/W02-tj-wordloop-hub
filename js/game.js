@@ -172,7 +172,7 @@
   });
   $("#n-langs").addEventListener("click", function (e) {
     var b = e.target.closest("[data-ml]"); if (!b) return;
-    G.myLang = b.dataset.ml; writeLS(LS_LANG, G.myLang); $("#g-mylang").value = G.myLang; applyUI();
+    G.myLang = b.dataset.ml; G.langSet = true; writeLS(LS_LANG, G.myLang); $("#g-mylang").value = G.myLang; applyUI();
   });
   $("#n-avatars").addEventListener("click", function (e) {
     var b = e.target.closest("[data-av]"); if (!b) return;
@@ -217,7 +217,7 @@
         : await sb.from("game_players").insert(row).select().single();
       if (w.error) throw w.error;
       G.me = { id: w.data.id, name: w.data.name, name_no: w.data.name_no, avatar: w.data.avatar };
-      writeLS(LS_ME, G.me); writeLS(LS_LANG, G.myLang); paintMe();
+      writeLS(LS_ME, G.me); paintMe();
       $("#n-err").textContent = "";
       route();
     } catch (e) { $("#n-err").textContent = T("err") + ": " + (e.message || e); }
@@ -532,7 +532,12 @@
     var key = G.view === "screen" ? "screen-" + Math.random().toString(36).slice(2) : G.me.id;
     G.ch = sb.channel("game:" + G.room.code, { config: { broadcast: { self: true }, presence: { key: key } } });
     G.ch.on("presence", { event: "sync" }, onPresence);
-    G.ch.on("broadcast", { event: "state" }, function (m) { onState(m.payload); });
+    G.ch.on("broadcast", { event: "state" }, function (m) {
+      var d = m.payload;
+      if (G.isHost && d.hid && G.me && d.hid !== G.me.id && (d.hsince || 0) < G.since) { setHost(false); }   /* có host vào trước -> nhường */
+      if (G.isHost && d.hid && G.me && d.hid !== G.me.id) return;   /* host không nhận trạng thái của host khác */
+      onState(d);
+    });
     G.ch.on("broadcast", { event: "ans" }, function (m) { if (G.isHost) hostOnAnswer(m.payload); });
     G.ch.on("broadcast", { event: "hello" }, function () { if (G.isHost && G.st) push(); });
     G.ch.on("broadcast", { event: "graded" }, function (m) {   /* Tự do + đặt câu: kết quả chấm riêng của mình */
@@ -708,7 +713,7 @@
   /* chỉ hiện người đang ở trong phòng (TJ: "ai thoát rồi thì không hiện tên nữa") — s.on do host gửi */
   function live(s, list) { var on = s.on; return on ? list.filter(function (x) { return on.indexOf(x.pid) >= 0; }) : list; }
   function pub() {   /* bản công khai: giấu đáp án tới lúc lộ; thời gian gửi dạng "còn lại bao nhiêu ms" (khỏi lệch đồng hồ) */
-    var s = Object.assign({}, G.st, { on: onlineIds(), left: G.endAt ? G.endAt - Date.now() : null, qLeft: G.qUntil ? G.qUntil - Date.now() : null });
+    var s = Object.assign({}, G.st, { hid: G.me && G.me.id, hsince: G.since, on: onlineIds(), left: G.endAt ? G.endAt - Date.now() : null, qLeft: G.qUntil ? G.qUntil - Date.now() : null });
     if (s.q) {
       var q = s.q, rev = !!q.revealed;
       s.q = { qn: q.qn, n: q.n, wids: q.wids, word: q.word, optTexts: q.optTexts, type: q.type, texts: q.texts, sent: q.sent, opts: q.opts, len: q.len, wid: q.wid, term: q.term, text: q.text, bank: q.bank, say: q.say, limit: q.limit, grading: !!q.grading,
@@ -743,6 +748,7 @@
     return Object.keys(set);
   }
   function hostNextQ() {
+    if (!G.st || G.st.phase !== "play") return;
     var q = makeQ(G.st.qtype, G.st.lang, roomLangs());
     G.st.q = Object.assign(q, { qn: (G.st.q ? G.st.q.qn : 0) + 1, revealed: false, got: {}, fast: null, res: {} });
     G.st.q.limit = qLimit(G.st.q, G.st.qs);
@@ -750,6 +756,7 @@
     push();
   }
   function hostTick() {
+    if (!G.st || G.st.phase !== "play") { clearInterval(G.hostTimer); return; }   /* đã Kết thúc -> dừng hẳn, chờ TJ bấm Ván mới */
     var now = Date.now();
     if (now - G.lastPush > HEARTBEAT_MS) push();   /* nhịp "host còn sống" — người chơi quá HOST_LOST_MS không nghe thì báo mất kết nối */
     if (now >= G.endAt) {
@@ -765,7 +772,7 @@
     } else if (now >= G.revealUntil) hostNextQ();
   }
   async function hostReveal() {
-    var q = G.st.q;
+    var q = G.st.q; if (!q || G.st.phase !== "play") return;
     if (q.type === "write" && !q.graded) {
       if (q.grading) return;
       q.grading = true; G.qUntil = 0; push();
@@ -780,6 +787,7 @@
         G.answers.push({ pid: pid, wid: q.wid, term: q.term, ok: tot >= 60, ms: q.got[pid].ms });
       });
       q.graded = true; q.grading = false;
+      if (G.st.phase !== "play") return;   /* bấm Kết thúc lúc đang chấm -> không lộ/ra câu nữa */
     }
     q.revealed = true; G.revealUntil = Date.now() + (q.type === "write" || q.type === "sheet" ? REVEAL_MS * 3 : q.type === "dict" ? REVEAL_MS * 2 : REVEAL_MS); G.qUntil = 0;
     var best = null; Object.keys(q.got).forEach(function (pid) { var g = q.got[pid]; if (g.ok && (!best || g.ms < q.got[best].ms)) best = pid; });
@@ -955,6 +963,7 @@
   /* ---------- MỌI NGƯỜI: nhận trạng thái ---------- */
   function onState(s) {
     G.lastState = Date.now();
+    if (!G.langSet && !isTJ() && s.lang && G.myLang !== s.lang) { G.myLang = s.lang; $("#g-mylang").value = s.lang; applyUI(); }
     var was = G.st && G.st.phase, langWas = G.st && G.st.lang;
     if (!G.isHost) G.st = s;
     if (s.left != null) G.endAt = Date.now() + s.left;
@@ -1186,6 +1195,7 @@
 
   /* kiểu tự do: mỗi máy tự sinh câu từ cùng kho, báo đúng/sai cho host chấm điểm */
   function freeNext() {
+    if (!G.st || G.st.phase !== "play") return;
     if (Date.now() >= G.endAt) return lockAll(T("time_up"));
     if (!G.pool.length) { $("#p-vi").textContent = T("loading"); return; }
     var ml = effLang(G.myLang, G.st, "recall");
@@ -1381,7 +1391,7 @@
 
   /* ---------- khởi động ---------- */
   $("#g-mylang").addEventListener("change", function () {
-    G.myLang = this.value; writeLS(LS_LANG, G.myLang);
+    G.myLang = this.value; G.langSet = true; writeLS(LS_LANG, G.myLang);
     applyUI();
     if (G.ch && G.me && G.view !== "screen") track();
     if (G.st && G.st.phase === "lobby") paintLobbyPlayers();
@@ -1411,12 +1421,14 @@
   (async function boot() {
     G.view = param("view");
     G.myLang = readLS(LS_LANG);
-    if (!G.myLang || G.myLang === "room") G.myLang = guessLang();   /* bản cũ có "Theo phòng" -> đổi thành tiếng thật */
+    G.langSet = !!(G.myLang && G.myLang !== "room");   /* đã TỰ chọn ngôn ngữ chưa (chưa -> theo tiếng chung của phòng) */
+    if (!G.langSet) G.myLang = "vi";
     $("#g-mylang").value = G.myLang;
     $("#g-mylang").hidden = G.view === "screen";
     applyUI();
     G.me = readLS(LS_ME);
     await loadProfile().catch(function () {});
+    if (!G.langSet && isTJ()) { G.myLang = "vi"; $("#g-mylang").value = "vi"; applyUI(); }   /* máy TJ mặc định tiếng Việt */
     paintMe();
     route();
   })();
