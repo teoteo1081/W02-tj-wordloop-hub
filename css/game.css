@@ -74,3 +74,72 @@ h1{font-size:22px;margin:8px 0 4px} h2{font-size:16px;margin:18px 0 8px}
 .g-opt.bad{border-color:var(--red);background:var(--red-sub)}
 .g-qmsg{text-align:center;margin-top:10px;min-height:1.2em;font-size:14px}
 @media (max-width:420px){ .g-opts{grid-template-columns:1fr} .g-opt{min-height:48px} }
+
+/* ===== v2: đội · ai chọn gì · lịch sử · 📺 màn hình chung (2026-09-30) ===== */
+.g-wide{width:100%;margin-bottom:14px}
+.g-row-tight{margin-top:0;flex-wrap:wrap}
+.g-check{flex-direction:row!important;align-items:center;gap:8px!important;color:var(--text)!important}
+.g-check input{width:18px;height:18px;accent-color:var(--accent)}
+.g-player{color:inherit;text-align:left;font:inherit;cursor:default}
+.g-player.g-click{cursor:pointer} .g-player.g-click:hover{background:var(--raise)}
+.g-tdot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none;margin-left:auto}
+.g-teams,.g-teambar{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:6px;margin:6px 0 10px}
+.g-teambar:empty,.g-teams:empty{display:none}
+.g-team{display:flex;flex-direction:column;gap:2px;padding:8px 10px;border-radius:10px;background:var(--card);border:1px solid var(--line);border-left:5px solid var(--tc)}
+.g-team b{font-size:20px;font-variant-numeric:tabular-nums}
+/* đáp án: chữ + ảnh những người đã chọn (hiện lúc lộ đáp án) */
+.g-opt{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.g-pickers{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:2px;min-height:0}
+.g-pickers:empty{display:none}
+.g-av-sm{width:22px;height:22px;font-size:13px}
+.g-fast{outline:2px solid var(--amber);outline-offset:1px}
+.g-cnt{font-size:12px;color:var(--text-2);margin-left:4px}
+/* lịch sử */
+.g-tabs{display:flex;gap:6px;margin:10px 0}
+.g-tabs button{flex:1;padding:8px;border-radius:10px;border:1px solid var(--line);background:var(--card);cursor:pointer}
+.g-tabs button.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.g-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+.g-stats div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px;text-align:center;display:flex;flex-direction:column}
+.g-stats b{font-size:20px} .g-stats span{font-size:12px;color:var(--text-2)}
+.g-table{width:100%;border-collapse:collapse;font-size:13px}
+.g-table th,.g-table td{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+.g-table th{color:var(--text-2);font-weight:600}
+.g-table tr.me td{background:rgba(217,119,87,.12)}
+.g-table a{color:var(--vi);text-decoration:none}
+.g-table .g-av-sm{vertical-align:middle}
+
+/* ===== 📺 màn hình chung: chữ to, ngang màn hình, để chia sẻ màn hình trong cuộc gọi ===== */
+body.big .g-top,body.big #g-main{display:none}
+.g-big{min-height:100dvh;padding:18px 24px;display:flex;flex-direction:column;gap:14px}
+.sc-head{display:flex;justify-content:space-between;align-items:center;font-size:20px;color:var(--text-2)}
+.sc-head b{color:var(--amber);letter-spacing:4px}
+.sc-left{font-size:34px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums}
+.sc-main{flex:1;display:grid;grid-template-columns:3fr 2fr;gap:18px;min-height:0}
+.sc-qwrap{display:flex;flex-direction:column;gap:12px}
+.sc-status{font-size:18px;color:var(--text-2);min-height:1.3em}
+.sc-q{font-size:clamp(26px,4vw,48px);font-weight:800;color:var(--vi);text-align:center;padding:18px 10px;display:flex;flex-wrap:wrap;gap:14px;justify-content:center;align-items:center;min-height:3.2em}
+.sc-opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sc-opt{min-height:96px;font-size:clamp(18px,2.2vw,28px);cursor:default;position:relative}
+.sc-key{position:absolute;top:8px;left:12px;font-size:14px;color:var(--text-2)}
+.sc-opt .g-av-sm{width:30px;height:30px;font-size:18px}
+.sc-waiting{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.sc-waiting .g-av{width:52px;height:52px;font-size:30px}
+.sc-pod{display:inline-flex;align-items:center;gap:8px;font-size:clamp(20px,2.6vw,34px)}
+.sc-pod .g-av{width:44px;height:44px;font-size:26px}
+.sc-side{display:flex;flex-direction:column;gap:8px;overflow:auto}
+.sc-lanes{display:flex;flex-direction:column;gap:6px}
+.sc-lane{display:grid;grid-template-columns:130px 1fr 60px;align-items:center;gap:8px;font-size:15px}
+.sc-lname{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sc-track{position:relative;height:36px;background:var(--card);border-radius:18px;border:1px solid var(--line);border-left:5px solid var(--tc,var(--line))}
+.sc-runner{position:absolute;top:2px;transition:left .8s cubic-bezier(.2,.8,.2,1)}
+.sc-runner .g-av{width:30px;height:30px}
+.sc-lane b{text-align:right;font-variant-numeric:tabular-nums}
+@media (max-width:900px){ .sc-main{grid-template-columns:1fr} }
+
+/* v4: tiếng nghĩa riêng từng người + báo host mất kết nối */
+.g-mylang{margin-left:auto;background:var(--raise);border:1px solid var(--line);border-radius:999px;padding:3px 8px;font-size:13px}
+.g-mylang + .g-me{margin-left:0}
+.g-alert{background:var(--red-sub);border:1px solid var(--red);color:var(--text);border-radius:10px;padding:8px 12px;margin-bottom:8px;text-align:center;font-weight:600}
+/* thuộc tính hidden phải thắng mọi display:flex/inline-flex ở trên (bug thật: người chơi thấy nút ⏹ Kết thúc của host) */
+[hidden]{display:none!important}
+@media (max-width:440px){ .g-brand b{display:none} .g-top{gap:6px;padding:8px 10px} .g-room{font-size:12px;padding:2px 8px} }
