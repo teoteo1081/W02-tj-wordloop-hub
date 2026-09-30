@@ -334,7 +334,7 @@
     push(); applyUI();
     clearTimeout(scopeTimer);
     $("#l-pool").textContent = G.st.scope.length ? "Đang tải từ vựng…" : "";
-    scopeTimer = setTimeout(async function () { await ensurePool(G.st.scope); if (G.st.phase === "lobby") paintPoolInfo(); }, 400);
+    scopeTimer = setTimeout(async function () { await ensurePool(G.st.scope); if (G.st.phase === "lobby") paintPoolInfo(); if (wantsGap(G.st.qtype)) aiGaps(); }, 400);
   }
   function scopeKey(scope) { return JSON.stringify((scope || []).map(function (p) { return p.table + ":" + p.id; }).sort()); }
   async function ensurePool(scope) {
@@ -448,9 +448,68 @@
     /* 🎧 câu dictation = câu chỗ trống với từ đã điền lại, 5–24 từ */
     var dicts = gaps.map(function (g) { return { wid: g.wid, term: g.term, sent: g.text.replace("{{GAP}}", g.term) }; })
       .filter(function (d) { var n = d.sent.split(/\s+/).length; return n >= 5 && n <= 24; });
-    G.pool = pool; G.gaps = gaps; G.sheets = sheets; G.dicts = dicts;
+    G.pool = pool; G.gaps = gaps; G.gapsSrc = gaps; G.sheets = sheets; G.dicts = dicts;
+    if (G.gapsIn && G.gapsIn.key === G.poolKey) G.gaps = G.gapsIn.gaps;   /* người chơi: dùng câu ngắn host đã gửi */
     return pool;
   }
+
+  /* 📝 CÂU ĐIỀN CHỖ TRỐNG NGẮN do AI viết (TJ 2026-09-30: câu tách từ bài đọc 500 từ dài quá; dùng OpenAI
+     qua openai-proxy cho đỡ tốn). Mỗi từ 1 câu 8-15 từ đúng nghĩa, viết 1 lần rồi nhớ trên máy host
+     (localStorage — CHỈ TJ làm host). Kiểu Tự do: host gửi danh sách câu cho người chơi (broadcast "gaps").
+     AI lỗi/thiếu -> dùng câu bài đọc NGẮN (≤ 20 từ), không có nữa thì mới dùng câu bài đọc như cũ. */
+  var LS_GAPAI = "tjwl_game_gapai_v1", GAPAI_MAX = 60, GAP_SEND_MAX = 120;
+  function baseTerm(t) { return String(t || "").replace(/\s*\([^)]*\)/g, " ").replace(/\s+/g, " ").trim(); }
+  function toGap(sent, term) {
+    sent = String(sent || "").trim(); var b = baseTerm(term);
+    var i = sent.toLowerCase().indexOf(b.toLowerCase());
+    if (!b || i < 0 || sent.split(/\s+/).length > 22) return null;
+    return sent.slice(0, i) + "{{GAP}}" + sent.slice(i + b.length);
+  }
+  async function callGapAI(part) {
+    var res = await fetch(cfg.SUPABASE_URL.replace(/\/$/, "") + "/functions/v1/openai-proxy", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: "Bearer " + cfg.SUPABASE_ANON_KEY, apikey: cfg.SUPABASE_ANON_KEY },
+      body: JSON.stringify({
+        model: cfg.OPENAI_MODEL || "gpt-4o-mini", temperature: 0.7, user_id: G.profile ? G.profile.id : null, block_id: "game-gap",
+        sys: "You write short example sentences for an English vocabulary fill-in-the-blank game (learners: TOEIC level). Reply with JSON only.",
+        user: "For EACH item write ONE natural English sentence of 8-15 words that uses the exact term (same spelling and form) " +
+          "in a context that matches the given meaning, so a learner can guess the term from context. Do not define the term; do not put it in quotes. " +
+          'Return {"items":[{"id":"<id>","s":"<sentence>"}]}.\n' +
+          JSON.stringify(part.map(function (w) { return { id: w.wid, term: baseTerm(w.term), pos: w.pos || "", meaning: w.m.vi || w.m.en || w.m.es || w.m.zh }; }))
+      })
+    });
+    var j = await res.json();
+    if (!res.ok) throw new Error((j && (j.error && (j.error.message || j.error))) || res.status);
+    var o = JSON.parse(j.choices[0].message.content), out = {};
+    (o.items || []).forEach(function (x) { if (x && x.id) out[x.id] = x.s; });
+    return out;
+  }
+  function aiGaps() {
+    if (!G.isHost || !G.pool.length) return Promise.resolve();
+    if (G.gapAiKey === G.poolKey && G.gapAiP) return G.gapAiP;
+    var key = G.gapAiKey = G.poolKey;
+    G.gapAiP = (async function () {
+      var cache = readLS(LS_GAPAI) || {}, have = G.pool.filter(function (w) { return cache[w.wid]; }).length;
+      var todo = shuffle(G.pool.filter(function (w) { return !cache[w.wid]; })).slice(0, Math.max(0, GAPAI_MAX - have));
+      for (var i = 0; i < todo.length; i += 20) {
+        var part = todo.slice(i, i + 20);
+        try {
+          var out = await callGapAI(part);
+          part.forEach(function (w) { var t = toGap(out[w.wid], w.term); if (t) cache[w.wid] = t; });
+          writeLS(LS_GAPAI, cache);
+        } catch (e) { console.warn("câu điền chỗ trống AI lỗi", e); break; }
+        if (G.poolKey !== key) return;
+      }
+      if (G.poolKey !== key) return;
+      var ai = G.pool.filter(function (w) { return cache[w.wid]; }).map(function (w) { return { wid: w.wid, term: w.term, block: w.block, text: cache[w.wid], ai: 1 }; });
+      var short = (G.gapsSrc || []).filter(function (g) { return !cache[g.wid] && g.text.split(/\s+/).length <= 20; });
+      if (ai.length + short.length >= 4) G.gaps = ai.concat(short);
+      if (G.st && G.st.phase === "lobby") paintPoolInfo();
+    })();
+    return G.gapAiP;
+  }
+  function wantsGap(qt) { return qt === "gap" || qt === "mix"; }
+  function sendGaps() { if (G.isHost && G.ch) G.ch.send({ type: "broadcast", event: "gaps", payload: { key: G.poolKey, gaps: G.gaps.slice(0, GAP_SEND_MAX) } }); }
   function gapSentences(text) {
     var out = [], seen = {}, re = /[^.!?\n]+[.!?]+/g, m, lastEnd = 0;
     function one(raw) {
@@ -602,8 +661,13 @@
       onState(d);
     });
     G.ch.on("broadcast", { event: "ans" }, function (m) { if (G.isHost) hostOnAnswer(m.payload); });
+    G.ch.on("broadcast", { event: "gaps" }, function (m) {   /* câu điền chỗ trống ngắn từ host (kiểu Tự do) */
+      if (G.isHost || !m.payload) return;
+      G.gapsIn = m.payload;
+      if (G.poolKey === m.payload.key && m.payload.gaps.length >= 4) G.gaps = m.payload.gaps;
+    });
     G.ch.on("broadcast", { event: "alive" }, function (m) { var d = m.payload || {}; G.seen[d.tab || d.id] = { at: Date.now() }; });
-    G.ch.on("broadcast", { event: "hello" }, function () { if (G.isHost && G.st) push(); });
+    G.ch.on("broadcast", { event: "hello" }, function () { if (G.isHost && G.st) { push(); if (G.st.phase === "play" && G.st.mode === "free") sendGaps(); } });
     G.ch.on("broadcast", { event: "graded" }, function (m) {   /* Tự do + đặt câu: kết quả chấm riêng của mình */
       var d = m.payload; if (!G.me || d.pid !== G.me.id || !G.myQ || !G.waitGrade) return;
       G.waitGrade = false;
@@ -716,6 +780,7 @@
     } else {
       picked = (G.st.scope || []).map(function (p) { return { table: p.table, id: p.id, title: p.title || p.id }; });
       await ensurePool(G.st.scope);
+      if (wantsGap(G.st.qtype)) aiGaps();
     }
     renderLobby();
     await loadTree();
@@ -795,6 +860,7 @@
       $("#l-teambtns").hidden = !tn;
       $("#l-force-wrap").hidden = !(st.qtype === "meaning" || st.qtype === "en2m" || st.qtype === "mix");
       if (s === "#l-hostplay") track();
+      if (s === "#l-qtype" && wantsGap(st.qtype)) aiGaps();
       sb.from("game_rooms").update({ scoring: st.scoring, mode: st.mode, qtype: st.qtype, meaning_lang: st.lang, minutes: st.minutes, q_seconds: st.qs, team_mode: !!tn, teams: tn }).eq("id", G.room.id).then(function () {});
       push(); paintLobbyPlayers();
     });
@@ -819,6 +885,11 @@
   $("#l-start").addEventListener("click", async function () {
     if (!G.isHost) return;
     if (G.st.scope && G.st.scope.length) await ensurePool(G.st.scope);
+    if (wantsGap(G.st.qtype)) {   /* chờ AI soạn câu ngắn (tối đa 25s, quá thì dùng câu có sẵn) */
+      $("#l-pool").textContent = "✍️ Đang soạn câu điền chỗ trống ngắn…";
+      await Promise.race([aiGaps(), new Promise(function (r) { setTimeout(r, 25000); })]);
+      paintPoolInfo();
+    }
     var need = readyMsg(G.st.qtype, G.st.lang);
     if (need) { alert(need); return; }
     if (!players().length) { alert("Chưa có người chơi nào."); return; }
@@ -830,7 +901,7 @@
     /* mỗi lần bắt đầu = 1 VÁN riêng (lịch sử xem theo ván) */
     var mr = await sb.from("game_matches").insert({ room_id: G.room.id, title: G.st.title, scope: G.st.scope, mode: G.st.mode, qtype: G.st.qtype, scoring: G.st.scoring || "q", meaning_lang: G.st.lang, minutes: G.st.minutes, q_seconds: G.st.qs, teams: G.st.teams || 0 }).select("id").single();
     G.st.matchId = mr.data ? mr.data.id : null;
-    if (G.st.mode === "kahoot") hostNextQ(); else { G.qUntil = 0; push(); }
+    if (G.st.mode === "kahoot") hostNextQ(); else { G.qUntil = 0; sendGaps(); push(); }
     clearInterval(G.hostTimer);
     G.hostTimer = setInterval(hostTick, 250);
   });
