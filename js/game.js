@@ -644,7 +644,10 @@
   /* ai THOÁT thì không hiện nữa: mỗi máy gửi nhịp "còn ở đây" 10s/lần (track lại với ts mới); máy nào 25s
      không đổi ts -> coi như đã thoát (Supabase không phải lúc nào cũng báo rời phòng ngay, nhất là khi trình
      duyệt chuyển trang chứ không đóng hẳn). So theo đồng hồ CỦA MÁY MÌNH lúc thấy ts đổi -> không lệch giờ giữa các máy. */
-  var PRESENCE_ALIVE_MS = 25000;
+  /* 90s (không phải 25s): điện thoại chuyển sang app khác (HelloTalk) / tab bị ẩn thì trình duyệt cho JS "ngủ",
+     nhịp 10s trễ tới 1 phút -> trước đây người chơi bị coi là đã thoát, không được tính vào ván, KHÔNG chọn được đáp án
+     (TJ 2026-09-30). Ai đóng/chuyển trang thật thì pagehide untrack + Supabase tự báo rời phòng. */
+  var PRESENCE_ALIVE_MS = 90000;
   G.seen = {};
   function onPresence() {
     if (!G.ch) return;
@@ -673,6 +676,10 @@
       if (ctrl && want !== G.isHost) return setHost(want);
     }
     if (G.isHost && G.st) {
+      if (G.st.phase === "play") {   /* ai đang trong phòng mà chưa có trong ván (vào muộn / lúc bấm Bắt đầu bị lỡ) -> cho chơi luôn */
+        list.forEach(function (p) { if (p.play !== false && !G.st.scores[p.id]) G.st.scores[p.id] = { s: 0, c: 0, w: 0, st: 0, best: 0 }; });
+        fillTeams();
+      }
       if (G.st.phase === "lobby") G.st.roster = {};   /* phòng chờ: danh sách = đúng người đang ở trong phòng (ai thoát là mất) */
       list.forEach(function (p) { G.st.roster[p.id] = { name: p.name, no: p.no, avatar: p.avatar }; });
       push();
@@ -1507,6 +1514,9 @@
     if (isTJ()) return openHostRoom();   /* host: vào thẳng PHÒNG CỐ ĐỊNH (kể cả mở từ chuột phải ?scope=) */
     return joinRoom(DEFAULT_ROOM);   /* người chơi: link trần = phòng của TJ */
   }
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "visible" && G.ch && G.me && G.view !== "screen") G.ch.send({ type: "broadcast", event: "alive", payload: { tab: G.tab, id: G.me.id } });
+  });
   window.addEventListener("pagehide", function () { try { if (G.ch) { G.ch.untrack(); sb.removeChannel(G.ch); } } catch (e) {} });
   (async function boot() {
     G.view = param("view");
