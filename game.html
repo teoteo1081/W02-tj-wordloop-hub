@@ -8,7 +8,7 @@
 <!-- Google tag (gtag.js) — cùng property GA4 với WordLoop -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM');</script>
-<link rel="stylesheet" href="css/game.css?v=12">
+<link rel="stylesheet" href="css/game.css?v=13">
 </head>
 <body>
 <!-- 🎮 Phòng game chơi chung — xem README.md "Việc còn dang dở" > PHÒNG GAME, bảng: tools/game_schema.sql.
@@ -76,6 +76,7 @@
     <div class="g-card" id="l-host" hidden>
       <h2>📚 Chủ đề ván này <span class="g-sub">(đổi thoải mái — mã phòng/link giữ nguyên)</span></h2>
       <div class="g-scope-picked" id="h-picked"></div>
+      <div class="g-row"><button class="g-btn g-btn-soft" id="h-all">☑ Chọn tất cả</button><button class="g-btn g-btn-soft" id="h-none">✖ Bỏ tất cả</button></div>
       <details class="g-treebox"><summary>Chọn nhánh từ vựng…</summary><div class="g-tree" id="h-tree"><p class="g-sub">Đang tải cây thư mục…</p></div></details>
       <div class="g-settings">
         <label>Kiểu chơi
@@ -157,6 +158,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="js/config.js?v=4"></script>
-<script src="js/game.js?v=26"></script>
+<script src="js/game.js?v=27"></script>
 </body>
 </html>

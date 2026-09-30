@@ -298,6 +298,18 @@
     hostSetScope();
   });
   $("#h-tree").addEventListener("click", function (e) { if (e.target.closest(".g-pick")) e.stopPropagation(); });
+  /* ☑ Chọn tất cả = mọi Hub · ✖ Bỏ tất cả = xoá hết rồi chọn lại từng nhánh (tới Block) trên cây */
+  $("#h-all").addEventListener("click", function () {
+    if (!TREE) return;
+    picked = TREE.hubs.map(function (h) { return { table: "hubs", id: h.id, title: h.name }; });
+    paintTree(); hostSetScope();
+  });
+  $("#h-none").addEventListener("click", function () {
+    picked = [];
+    if (TREE) paintTree(); else paintPicked();
+    hostSetScope();
+    var box = $(".g-treebox"); if (box) box.open = true;   /* mở cây để chọn lại ngay */
+  });
   function paintPicked() {
     $("#h-picked").innerHTML = picked.length ? picked.map(function (p) { return '<span class="g-chip">' + esc(p.title) + "</span>"; }).join("") : '<span class="g-sub">Chưa chọn chủ đề — mở "Chọn nhánh từ vựng…" bên dưới.</span>';
   }
@@ -523,8 +535,8 @@
   }
   function pauseTab(msg) { G.asleep = true; leaveRoom(); $("#g-room-badge").hidden = true; $("#t-msg").textContent = msg; show("s-tab"); }
   if (BC) BC.onmessage = function (e) {
-    var d = e.data || {}; if (d.tab === G.tab || G.asleep || !G.room || G.view === "screen") return;
-    if (d.t === "claim") {
+    var d = e.data || {}; if (d.tab === G.tab || G.asleep || G.view === "screen") return;
+    if (d.t === "claim" && G.room) {
       if (G.st && G.st.phase === "play" && !d.force) BC.postMessage({ t: "busy", tab: G.tab, to: d.tab });
       else pauseTab(T("tab_other"));
     } else if (d.t === "busy" && d.to === G.tab) G.busyElsewhere = true;
@@ -558,13 +570,12 @@
        (xem onPresence). Máy host thoát -> máy TJ kế tiếp tự lên thay. */
     G.cand = G.view !== "screen" && isTJ() && G.profile.id === G.room.host_id;
     G.since = Date.now();
-    G.isHost = G.cand;
+    /* KHÔNG tự nhận host ngay: chờ presence xem có tab/máy TJ nào vào trước không (onPresence -> setHost).
+       Trước đây tab TJ mới tự làm host rồi gửi "phòng chờ" ngay -> cả phòng đang chơi bị giật về phòng chờ. */
+    G.isHost = false;
     applyUI();
-    $("#g-room-badge").hidden = !G.isHost;
-    if (G.isHost) {
-      restoreHost();
-      if (G.st && G.st.scope) await ensurePool(G.st.scope);
-    }
+    $("#g-room-badge").hidden = true;
+    if (G.cand) restoreHost();
     connect();
     if (G.view === "screen") { show("s-screen"); $("#sc-code").textContent = code; paintScreen(); }
     else if (!G.st || G.st.phase === "lobby") renderLobby();
@@ -590,6 +601,7 @@
       onState(d);
     });
     G.ch.on("broadcast", { event: "ans" }, function (m) { if (G.isHost) hostOnAnswer(m.payload); });
+    G.ch.on("broadcast", { event: "alive" }, function (m) { var d = m.payload || {}; G.seen[d.tab || d.id] = { at: Date.now() }; });
     G.ch.on("broadcast", { event: "hello" }, function () { if (G.isHost && G.st) push(); });
     G.ch.on("broadcast", { event: "graded" }, function (m) {   /* Tự do + đặt câu: kết quả chấm riêng của mình */
       var d = m.payload; if (!G.me || d.pid !== G.me.id || !G.myQ || !G.waitGrade) return;
@@ -600,9 +612,20 @@
       setTimeout(freeNext, 6000);
     });
     clearInterval(G.aliveTimer);
-    G.aliveTimer = setInterval(function () { if (G.ch && G.me && G.view !== "screen") track(); onPresence(); }, 10000);
-    G.ch.subscribe(async function (s) {
-      if (s !== "SUBSCRIBED") return;
+    /* nhịp "còn ở đây" gửi bằng BROADCAST, KHÔNG track() lại presence: Supabase giới hạn số lần track mỗi máy —
+       track 10s/lần + mỗi lần đổi cài đặt làm server báo "Client presence rate limit exceeded" rồi ĐÓNG kênh
+       (host không nhận câu trả lời, không thấy ai trong phòng -> màn hình nhảy lung tung, TJ 2026-09-30) */
+    G.aliveTimer = setInterval(function () {
+      if (G.ch && G.me && G.view !== "screen") G.ch.send({ type: "broadcast", event: "alive", payload: { tab: G.tab, id: G.me.id } });
+      onPresence();
+    }, 10000);
+    var ch = G.ch;
+    ch.subscribe(async function (s) {
+      if (s === "CLOSED" || s === "CHANNEL_ERROR" || s === "TIMED_OUT") {   /* kênh rớt (mạng / server đóng) -> tự nối lại, giữ nguyên vai + ván */
+        if (ch === G.ch && G.room && !G.asleep) setTimeout(function () { if (ch === G.ch && G.room && !G.asleep) connect(); }, 1500);
+        return;
+      }
+      if (s !== "SUBSCRIBED" || ch !== G.ch) return;
       if (G.view !== "screen") await track();
       if (G.isHost) {
         if (!G.st) G.st = { phase: "lobby", scoring: G.room.scoring || "q", scope: G.room.scope || [], title: G.room.title || "", mode: G.room.mode, qtype: G.room.qtype || "meaning", lang: G.room.meaning_lang || "vi", force: false, minutes: +G.room.minutes, qs: G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
@@ -631,7 +654,7 @@
       ps[k].forEach(function (p) {
         if (!p || !p.id) return;
         var sk = p.tab || p.id, sn = G.seen[sk];
-        if (!sn || sn.ts !== p.ts) sn = G.seen[sk] = { ts: p.ts, at: now };
+        if (!sn || (sn.ts != null && sn.ts !== p.ts)) sn = G.seen[sk] = { ts: p.ts, at: now };   /* nhịp "alive" (broadcast) cũng làm mới .at */
         var mine = p.tab ? p.tab === G.tab : !!(G.me && p.id === G.me.id);
         if (!(now - sn.at < PRESENCE_ALIVE_MS || mine)) return;
         if (p.cand) cands.push(p);
@@ -1209,11 +1232,17 @@
       if (box) box.innerHTML = who.map(function (pid) { var p = roster[pid] || {}; return avatar(p.avatar, "g-av-sm" + (pid === q.fast ? " g-fast" : "")); }).join("") + (who.length ? '<span class="g-cnt">' + who.length + "</span>" : "");
     });
   }
+  /* host CHẤM LUÔN câu của chính mình (không đi vòng qua mạng): trước đây host gửi rồi tự nhận lại qua kênh —
+     kênh rớt là host bấm không ăn ("Host ko chơi được", TJ 2026-09-30) */
+  function sendAns(p) {
+    if (G.isHost) return hostOnAnswer(p);
+    if (G.ch) G.ch.send({ type: "broadcast", event: "ans", payload: p });
+  }
   function sendAnswer(choice) {
     var s = G.st;
     G.myChoice = choice;
     lockAll(T("picked"));
-    G.ch.send({ type: "broadcast", event: "ans", payload: { pid: G.me.id, qn: s.q.qn, choice: choice, ms: Date.now() - G.myQStart } });
+    sendAns({ pid: G.me.id, qn: s.q.qn, choice: choice, ms: Date.now() - G.myQStart });
   }
   $("#p-opts").addEventListener("click", function (e) {
     var b = e.target.closest(".g-opt"); if (!b || b.disabled) return;
@@ -1272,7 +1301,7 @@
     var ms = Date.now() - G.myQStart;
     q.res = {}; q.res[G.me.id] = { k: k, n: q.n, p: Math.round(POINTS * k * speedFactor(ms, FREE_MS.sheet)) };
     lockAll(); revealRich(q, {}, "#p-msg", "#p-res", "#p-vi");
-    G.ch.send({ type: "broadcast", event: "ans", payload: { pid: G.me.id, t: "sheet", k: k, n: q.n, items: items, ms: ms } });
+    sendAns({ pid: G.me.id, t: "sheet", k: k, n: q.n, items: items, ms: ms });
     setTimeout(freeNext, 5000);
   }
   function freeAnswer(choice, btn) {
@@ -1282,14 +1311,14 @@
       var acc = wordAcc(choice, q.ans);
       q.res = {}; q.res[G.me.id] = { k: acc.k, n: acc.n, text: choice, p: Math.round(POINTS * acc.r * speedFactor(ms0, FREE_MS.dict)) };
       lockAll(); revealRich(q, {}, "#p-msg", "#p-res", "#p-vi");
-      G.ch.send({ type: "broadcast", event: "ans", payload: { pid: G.me.id, t: "dict", r: acc.r, wid: q.wid, term: q.term, ms: ms0 } });
+      sendAns({ pid: G.me.id, t: "dict", r: acc.r, wid: q.wid, term: q.term, ms: ms0 });
       setTimeout(freeNext, 3500);
       return;
     }
     if (q.type === "write") {
       lockAll(T("grading"));
       G.waitGrade = true;
-      G.ch.send({ type: "broadcast", event: "ans", payload: { pid: G.me.id, t: "write", text: choice, wid: q.wid, term: q.term, ms: ms0 } });
+      sendAns({ pid: G.me.id, t: "write", text: choice, wid: q.wid, term: q.term, ms: ms0 });
       return;   /* host chấm xong gửi "graded" -> hiện kết quả rồi câu mới */
     }
     var ok = q.type === "recall" ? typedOk(choice, q.ans) : norm(choice) === norm(q.ans);
@@ -1297,7 +1326,7 @@
     $$(".g-opt").forEach(function (x) { if (norm(x.dataset.opt) === norm(q.ans)) x.classList.add("ok"); });
     if (!ok && btn) btn.classList.add("bad");
     $("#p-msg").textContent = ok ? T("right") + gainTail(Math.round(POINTS * speedFactor(Date.now() - G.myQStart, FREE_MS.q))) : T("wrong", { a: q.ans });
-    G.ch.send({ type: "broadcast", event: "ans", payload: { pid: G.me.id, ok: ok, wid: q.wid, term: q.ans, ms: Date.now() - G.myQStart } });
+    sendAns({ pid: G.me.id, ok: ok, wid: q.wid, term: q.ans, ms: Date.now() - G.myQStart });
     recordMyProgress(q.wid, ok);
     setTimeout(freeNext, ok ? 500 : 1400);
   }
