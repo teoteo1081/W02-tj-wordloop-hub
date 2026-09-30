@@ -75,6 +75,7 @@
         <label>Kiểu chơi
           <select id="l-mode"><option value="kahoot">Cùng 1 câu (kiểu Kahoot)</option><option value="free">Tự do — ai nhanh nhiều điểm</option></select></label>
         <label>Nghĩa hiển thị bằng <select id="l-lang"><option value="vi">🇻🇳 Tiếng Việt</option><option value="en">🇺🇸 English (định nghĩa)</option><option value="es">🇪🇸 Español</option><option value="zh">🇨🇳 中文</option></select></label>
+        <label class="g-check"><input type="checkbox" id="l-force"> 🔒 Ép cả phòng dùng tiếng này</label>
         <label>Số phút <input type="number" id="l-min" min="1" max="60" step="1"></label>
         <label id="l-qs-wrap">Giây mỗi câu <input type="number" id="l-qs" min="5" max="60" step="1"></label>
         <label>Chơi đội <select id="l-teamn"><option value="0">Không — ai cũng đấu lẻ</option><option value="2">2 đội</option><option value="3">3 đội</option><option value="4">4 đội</option></select></label>
@@ -138,6 +139,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="js/config.js?v=4"></script>
-<script src="js/game.js?v=5"></script>
+<script src="js/game.js?v=6"></script>
 </body>
 </html>

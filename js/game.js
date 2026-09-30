@@ -51,7 +51,10 @@
   };
   /* Mỗi người tự chọn tiếng của NGHĨA (người Việt đọc tiếng Việt, người Trung đọc 中文…) — cả phòng vẫn cùng
      1 câu + cùng 4 đáp án tiếng Anh nên vẫn đấu công bằng. "room" = theo tiếng host chọn cho phòng. */
-  function effLang(pref, st) { return pref && pref !== "room" ? pref : (st && st.lang) || (G.room && G.room.meaning_lang) || "vi"; }
+  function effLang(pref, st) {
+    var room = (st && st.lang) || (G.room && G.room.meaning_lang) || "vi";
+    return st && st.force ? room : pref && pref !== "room" ? pref : room;   /* host "🔒 ép" -> cả phòng 1 tiếng */
+  }
   function myText(q) { var t = q.texts || {}; return t[effLang(G.myLang, G.st)] || t.en || t.vi || q.text || ""; }
   function myFlag(q) { var t = q.texts || {}, l = effLang(G.myLang, G.st); return FLAG[t[l] ? l : t.en ? "en" : "vi"]; }
 
@@ -357,7 +360,7 @@
     if (G.isHost) {
       var st = G.st || {};
       $("#l-mode").value = st.mode || G.room.mode; $("#l-min").value = st.minutes || G.room.minutes; $("#l-qs").value = st.qs || G.room.q_seconds;
-      $("#l-lang").value = st.lang || G.room.meaning_lang || "vi"; $("#l-teamn").value = String(st.teams || 0);
+      $("#l-lang").value = st.lang || G.room.meaning_lang || "vi"; $("#l-teamn").value = String(st.teams || 0); $("#l-force").checked = !!st.force;
       $("#l-qs-wrap").hidden = $("#l-mode").value !== "kahoot";
       $("#l-teambtns").hidden = !(+$("#l-teamn").value);
       $("#l-pool").textContent = G.pool.length + " từ khác nhau · có nghĩa: " + poolCounts();
@@ -405,11 +408,11 @@
     (navigator.clipboard ? navigator.clipboard.writeText(link) : Promise.reject()).then(function () { b.textContent = "✓ Đã copy"; }, function () { prompt("Copy link này:", link); });
     setTimeout(function () { b.textContent = txt; }, 2000);
   }
-  ["#l-mode", "#l-min", "#l-qs", "#l-lang", "#l-teamn", "#l-hostplay"].forEach(function (s) {
+  ["#l-mode", "#l-min", "#l-qs", "#l-lang", "#l-teamn", "#l-hostplay", "#l-force"].forEach(function (s) {
     $(s).addEventListener("change", function () {
       if (!G.isHost) return;
       var st = G.st;
-      st.mode = $("#l-mode").value; st.lang = $("#l-lang").value; st.minutes = Math.max(1, +$("#l-min").value || 5); st.qs = Math.max(5, +$("#l-qs").value || 15);
+      st.mode = $("#l-mode").value; st.lang = $("#l-lang").value; st.force = $("#l-force").checked; st.minutes = Math.max(1, +$("#l-min").value || 5); st.qs = Math.max(5, +$("#l-qs").value || 15);
       var tn = +$("#l-teamn").value;
       if (tn !== st.teams) { st.teams = tn; st.teamOf = {}; if (tn) autoTeams(); }
       $("#l-qs-wrap").hidden = st.mode !== "kahoot";
@@ -548,8 +551,15 @@
   }
 
   /* ---------- MỌI NGƯỜI: nhận trạng thái ---------- */
+  function paintLangLock(s) {
+    var sel = $("#g-mylang"), lock = !!(s && s.force);
+    sel.disabled = lock;
+    sel.title = lock ? "Host đang ép cả phòng dùng " + (FLAG[s.lang] || "") + " — không đổi được" : "Nghĩa hiển thị bằng tiếng nào (riêng máy bạn)";
+    sel.value = lock ? s.lang : G.myLang;
+  }
   function onState(s) {
     G.lastState = Date.now();
+    paintLangLock(s);
     var was = G.st && G.st.phase;
     if (!G.isHost) G.st = s;
     if (s.left != null) G.endAt = Date.now() + s.left;
@@ -836,10 +846,7 @@
       else if (G.myQ) { $("#p-vi").textContent = myFlag(G.myQ) + " " + myText(G.myQ); }
     }
   });
-  function defaultLang() {   /* lần đầu: đoán theo ngôn ngữ trình duyệt; tiếng Việt thì "theo phòng" */
-    var l = (navigator.language || "").slice(0, 2).toLowerCase();
-    return l === "zh" || l === "es" ? l : l === "vi" ? "room" : l ? "en" : "room";
-  }
+  function defaultLang() { return "room"; }   /* mặc định theo tiếng host chọn; ai muốn thì tự đổi ở ô 🌐 */
   (async function boot() {
     G.view = param("view");
     G.myLang = readLS(LS_LANG) || defaultLang();
