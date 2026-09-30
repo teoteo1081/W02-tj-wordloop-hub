@@ -204,3 +204,10 @@ body.big .g-top,body.big #g-main{display:none}
 .g-team .g-tally{margin-left:0}
 .sc-lane .g-tally{font-size:14px}
 .sc-lane{grid-template-columns:130px 1fr auto}
+
+/* 📖 xem lại đáp án */
+.g-revnav{align-items:center;gap:14px}
+.g-revnav b{min-width:64px;text-align:center}
+.g-fill{color:var(--green);border-bottom:3px solid var(--green)}
+.g-selv{font-weight:700;padding:0 4px;border-radius:4px} .g-selv.ok{color:var(--green);background:var(--green-sub)} .g-selv.bad{color:var(--red);background:var(--red-sub);text-decoration:line-through}
+.g-rvmine{margin-top:10px;text-align:center;font-weight:700} .g-rvmine.ok{color:var(--green)} .g-rvmine.bad{color:var(--red)}
