@@ -1,0 +1,76 @@
+/* game.css — 🎮 Phòng game (game.html). Cùng tông màu với WordLoop (css/app.css :root), ưu tiên điện thoại. */
+:root{
+  --bg:#262624; --card:#30302e; --deep:#1f1e1d; --raise:#3a3936; --line:#3d3b37;
+  --text:#f5f4ef; --text-2:#a8a296; --accent:#d97757; --accent-hi:#c2663f;
+  --green:#4fae82; --green-sub:rgba(79,174,130,.22); --red:#d9695f; --red-sub:rgba(217,105,95,.22);
+  --amber:#d9a03c; --vi:#8fb8e8;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,-apple-system,sans-serif}
+button,input,select{font:inherit;color:inherit}
+.g-top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--deep);border-bottom:1px solid var(--line)}
+.g-brand{color:var(--text);text-decoration:none;font-size:15px}
+.g-room{font-size:13px;color:var(--text-2);background:var(--raise);border-radius:999px;padding:3px 10px}
+.g-me{margin-left:auto;display:flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--line);border-radius:999px;padding:3px 10px 3px 4px;cursor:pointer;font-size:13px}
+#g-main{max-width:640px;margin:0 auto;padding:16px 16px 40px}
+h1{font-size:22px;margin:8px 0 4px} h2{font-size:16px;margin:18px 0 8px}
+.g-sub{color:var(--text-2);font-size:13px}
+.g-err{color:var(--red);font-size:13px;min-height:1em}
+.g-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px}
+.g-row{display:flex;gap:8px;align-items:center;margin-top:12px}
+.g-input{flex:1;width:100%;background:var(--deep);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:16px}
+.g-code{text-transform:uppercase;letter-spacing:4px;font-weight:700;max-width:180px}
+.g-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:10px 16px;font-weight:600;cursor:pointer;text-decoration:none}
+.g-btn:hover{background:var(--accent-hi)}
+.g-btn-soft{background:var(--raise);color:var(--text);border:1px solid var(--line)} .g-btn-soft:hover{background:var(--line)}
+.g-btn-sm{padding:5px 10px;font-size:12px}
+.g-tag{font-size:11px;background:var(--amber);color:#1a1918;border-radius:6px;padding:1px 6px;font-weight:700}
+.g-no{color:var(--text-2);font-weight:400}
+.g-av{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--raise);font-size:18px;object-fit:cover;flex:none}
+.g-avatars{display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:6px}
+.g-avbtn{height:44px;border-radius:10px;border:2px solid transparent;background:var(--card);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.g-avbtn.on{border-color:var(--accent);background:var(--raise)}
+.g-upload{margin-top:10px}
+/* cây chọn phạm vi */
+.g-tree{max-height:320px;overflow:auto;background:var(--deep);border:1px solid var(--line);border-radius:10px;padding:6px 8px;font-size:14px}
+.g-tree details{margin-left:10px} .g-tree > details{margin-left:0}
+.g-tree summary{cursor:pointer;padding:3px 0} .g-leaf{margin-left:24px;padding:3px 0}
+.g-pick{cursor:pointer} .g-pick input{accent-color:var(--accent)}
+.g-scope-picked{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.g-chip{background:var(--raise);border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:13px}
+.g-settings{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:12px}
+.g-settings label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--text-2)}
+.g-settings select,.g-settings input{background:var(--deep);border:1px solid var(--line);border-radius:8px;padding:8px}
+/* phòng chờ */
+.g-lobby-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.g-bigcode{font-size:34px;font-weight:800;letter-spacing:6px;color:var(--amber)}
+.g-players{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.g-player{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px}
+.g-pname{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.g-wait{text-align:center;margin-top:20px}
+/* đang chơi: nửa trên bảng xếp hạng, nửa dưới trả lời */
+.g-play{display:flex;flex-direction:column;min-height:calc(100dvh - 90px)}
+.g-clock{display:flex;align-items:center;gap:10px}
+#p-left{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums}
+#p-stop{margin-left:auto}
+.g-board{list-style:none;margin:10px 0;padding:0;flex:1 1 40%;max-height:38dvh;overflow:auto}
+.g-board li{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:10px;background:var(--card);margin-bottom:5px;transition:transform .25s}
+.g-board li.me{outline:2px solid var(--accent)}
+.g-rank{width:26px;text-align:center;font-weight:700;color:var(--text-2)}
+.g-streak{margin-left:auto;font-size:13px;color:var(--amber)}
+.g-score{min-width:52px;text-align:right;font-variant-numeric:tabular-nums}
+.g-board-end{max-height:none}
+.g-board-end .g-sub{margin-left:auto}
+.g-q{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+.g-qbar{height:5px;background:var(--deep);border-radius:3px;overflow:hidden;margin-bottom:12px}
+#p-qbar{height:100%;width:0;background:var(--amber);transition:width .2s linear}
+.g-qvi{font-size:20px;font-weight:700;color:var(--vi);text-align:center;min-height:2.4em;display:flex;align-items:center;justify-content:center}
+.g-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.g-opt{min-height:56px;padding:10px;border-radius:12px;border:2px solid var(--line);background:var(--deep);font-size:16px;font-weight:600;cursor:pointer;word-break:break-word}
+.g-opt:hover:not(:disabled){border-color:var(--accent)}
+.g-opt:disabled{cursor:default}
+.g-opt.picked{border-color:var(--amber)}
+.g-opt.ok{border-color:var(--green);background:var(--green-sub)}
+.g-opt.bad{border-color:var(--red);background:var(--red-sub)}
+.g-qmsg{text-align:center;margin-top:10px;min-height:1.2em;font-size:14px}
+@media (max-width:420px){ .g-opts{grid-template-columns:1fr} .g-opt{min-height:48px} }

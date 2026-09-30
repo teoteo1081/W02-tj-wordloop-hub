@@ -2468,6 +2468,9 @@
        vi = đúng những gì đang bấm vào (Notebook/Section/Page/Batch/Block),
        dùng App.scopeIds có sẵn — xem App.openLeaderboard bên dưới. */
     if (w.DB.mode === "cloud") items.push({ act: "leaderboard", icon: "🏆", text: "Xem xếp hạng" });
+    /* 🎮 Phòng game chơi chung (2026-09-30) — tạm thời CHỈ admin mở phòng (TJ chốt),
+       mở game.html ở tab mới với phạm vi = đúng mục đang bấm. Xem js/game.js. */
+    if (w.DB.mode === "cloud" && w.Auth.isAdmin()) items.push({ act: "game", icon: "🎮", text: "Mở phòng game" });
     /* "🧪 Kiểm tra tất cả" (2026-09-27, TJ yêu cầu) — ôn liên tiếp MỌI Block
        trong phạm vi này (kể cả Notebook con lồng bên trong, xuyên nhiều
        Notebook/Hub với "notebooks"/"hubs"), đủ cả 5 hình thức (Nghĩa/Active
@@ -2797,6 +2800,10 @@
         w.toast('Đã tạo "' + newNb.name + '" — bản sao Section/Page/Batch/Block/Từ vựng' + (progressScope ? ", kèm tiến trình học" : ""), "ok");
       }
 
+      else if (act === "game") {
+        w.open("game.html?scope=" + encodeURIComponent(table + ":" + id) + "&title=" + encodeURIComponent(row.name || ""), "_blank");
+        return;
+      }
       else if (act === "leaderboard") {
         await App.openLeaderboard(table, id, row.name);
         return;   /* modal tự vẽ xong, không cần reloadCurrent() ở cuối hàm này */
