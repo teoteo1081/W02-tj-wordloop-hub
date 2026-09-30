@@ -566,7 +566,7 @@
     if (t === "mix") t = shuffle(["meaning", "en2m", "recall"].concat(G.gaps.length >= 4 ? ["gap"] : []))[0];
     if (t === "gap" && G.gaps.length >= 4) {
       var g = draw("gap", G.gaps), gw = G.pool.find(function (x) { return x.wid === g.wid; }) || { term: g.term, block: g.block };
-      return { type: "gap", wid: g.wid, ans: g.term, sent: g.text, texts: gw.m || {}, opts: distractors(gw, G.pool) };
+      return { type: "gap", wid: g.wid, ans: g.term, sent: g.text, len: baseTerm(g.term).length, texts: gw.m || {}, opts: distractors(gw, G.pool) };
     }
     var p = langs && langs.length ? poolForAll(langs) : poolFor(lang);
     if (p.length < 4) p = poolFor(lang);   /* thiếu từ có nghĩa ở MỌI tiếng -> theo tiếng phòng, ai thiếu thì hiện nghĩa tiếng Anh */
@@ -1191,7 +1191,7 @@
     return '<div class="g-sheet">' + esc(q.text).split(/\n\s*\n/).map(function (para) {
       return "<p>" + para.replace(/\{\{G(\d+)\}\}/g, function (_, i) {
         return sel ? '<select class="g-sel" data-gi="' + i + '"><option value="">—</option>' + q.bank.map(function (b) { return '<option value="' + esc(b) + '">' + esc(b) + "</option>"; }).join("") + "</select>"
-                   : '<span class="g-blank" data-gi="' + i + '">_____</span>';
+                   : '<span class="g-blank" data-gi="' + i + '"></span>';
       }) + "</p>";
     }).join("") + "</div>";
   }
@@ -1222,7 +1222,9 @@
       }).join("");
       return;
     }
-    if (q.type === "gap") $(textEl).innerHTML = esc(q.sent).replace("{{GAP}}", '<span class="g-blank">_____</span>');
+    /* bọc cả câu trong 1 span: .g-qvi là flex -> trước đây chữ trước/ô trống/chữ sau thành 3 cột rời, lủng khoảng lớn.
+       Ô trống dài đúng bằng từ cần điền (q.len ký tự) */
+    if (q.type === "gap") $(textEl).innerHTML = '<span class="g-gapline">' + esc(q.sent).replace("{{GAP}}", '<span class="g-blank" style="width:' + (Math.max(3, q.len || 6) * 0.55).toFixed(1) + 'em"></span>') + "</span>";
     else $(textEl).textContent = myFlag(q) + " " + myText(q) + (q.type === "recall" && q.len ? "  (" + q.len + ")" : "");
     if (q.type === "recall") {
       $(optsEl).innerHTML = "";

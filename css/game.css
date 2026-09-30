@@ -146,12 +146,13 @@ body.big .g-top,body.big #g-main{display:none}
 /* v7: dạng câu (gợi ý dạng câu, chỗ trống, ô gõ từ) */
 .g-qhint{text-align:center;margin-bottom:6px;font-size:13px}
 .g-qhint:empty{display:none}
-.g-blank{display:inline-block;min-width:90px;border-bottom:3px solid var(--amber);color:var(--amber);font-weight:800;letter-spacing:2px}
+.g-gapline{display:block;text-align:center}
+.g-blank{display:inline-block;width:8ch;height:1em;margin:0 3px;border-bottom:3px solid var(--amber);vertical-align:-.12em}
 .g-type{display:flex;gap:8px;margin-top:12px}
 .g-type .g-input{font-size:18px;text-align:center}
 .g-qvi{line-height:1.45}
 .sc-ans{color:var(--green);font-size:1.3em}
-.sc-q .g-blank{min-width:160px}
+
 
 /* v8: chọn chủ đề trong phòng chờ */
 .g-treebox{margin-bottom:6px}
