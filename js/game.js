@@ -457,31 +457,54 @@
      qua openai-proxy cho đỡ tốn). Mỗi từ 1 câu 8-15 từ đúng nghĩa, viết 1 lần rồi nhớ trên máy host
      (localStorage — CHỈ TJ làm host). Kiểu Tự do: host gửi danh sách câu cho người chơi (broadcast "gaps").
      AI lỗi/thiếu -> dùng câu bài đọc NGẮN (≤ 20 từ), không có nữa thì mới dùng câu bài đọc như cũ. */
-  var LS_GAPAI = "tjwl_game_gapai_v1", GAPAI_MAX = 60, GAP_SEND_MAX = 120;
+  var LS_GAPAI = "tjwl_game_gapai_v3",   /* v3: TOEIC Part 5 + AI kiểm chỉ 1 đáp án hợp (bỏ câu v1/v2) */
+      GAPAI_MAX = 60, GAP_SEND_MAX = 120;
   function baseTerm(t) { return String(t || "").replace(/\s*\([^)]*\)/g, " ").replace(/\s+/g, " ").trim(); }
   function toGap(sent, term) {
     sent = String(sent || "").trim(); var b = baseTerm(term);
-    var i = sent.toLowerCase().indexOf(b.toLowerCase());
-    if (!b || i < 0 || sent.split(/\s+/).length > 22) return null;
-    return sent.slice(0, i) + "{{GAP}}" + sent.slice(i + b.length);
+    if (!b || sent.split(/\s+/).length > 20) return null;
+    /* khớp TRỌN từ (không khớp giữa chữ khác, vd "act" trong "actually") */
+    var m = new RegExp("(^|[^A-Za-z])(" + b.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")(?![A-Za-z])", "i").exec(sent);
+    if (!m) return null;
+    var i = m.index + m[1].length;
+    return sent.slice(0, i) + "{{GAP}}" + sent.slice(i + m[2].length);
   }
-  async function callGapAI(part) {
+  async function openAI(sys, user, temperature) {   /* openai-proxy (key ở Supabase), trả JSON đã parse */
     var res = await fetch(cfg.SUPABASE_URL.replace(/\/$/, "") + "/functions/v1/openai-proxy", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: "Bearer " + cfg.SUPABASE_ANON_KEY, apikey: cfg.SUPABASE_ANON_KEY },
-      body: JSON.stringify({
-        model: cfg.OPENAI_MODEL || "gpt-4o-mini", temperature: 0.7, user_id: G.profile ? G.profile.id : null, block_id: "game-gap",
-        sys: "You write short example sentences for an English vocabulary fill-in-the-blank game (learners: TOEIC level). Reply with JSON only.",
-        user: "For EACH item write ONE natural English sentence of 8-15 words that uses the exact term (same spelling and form) " +
-          "in a context that matches the given meaning, so a learner can guess the term from context. Do not define the term; do not put it in quotes. " +
-          'Return {"items":[{"id":"<id>","s":"<sentence>"}]}.\n' +
-          JSON.stringify(part.map(function (w) { return { id: w.wid, term: baseTerm(w.term), pos: w.pos || "", meaning: w.m.vi || w.m.en || w.m.es || w.m.zh }; }))
-      })
+      body: JSON.stringify({ model: cfg.OPENAI_MODEL || "gpt-4o-mini", temperature: temperature, sys: sys, user: user, user_id: G.profile ? G.profile.id : null, block_id: "game-gap" })
     });
     var j = await res.json();
     if (!res.ok) throw new Error((j && (j.error && (j.error.message || j.error))) || res.status);
-    var o = JSON.parse(j.choices[0].message.content), out = {};
+    return JSON.parse(j.choices[0].message.content);
+  }
+  async function callGapAI(part) {   /* viết câu: {wid: câu ĐẦY ĐỦ có chứa từ} */
+    var o = await openAI("You write TOEIC Part 5 style sentences for an English vocabulary fill-in-the-blank quiz. Reply with JSON only.",
+      "For EACH item write ONE sentence of 8-14 words in a TOEIC business/workplace context (office, meetings, sales, " +
+      "travel, hiring, customers, finance, shipping...). Rules:\n" +
+      "1. Use the term EXACTLY as given (same spelling and form, no plural/past/-ing change), once, with the given meaning.\n" +
+      "2. Write the FULL sentence WITH the term in it (do NOT write blanks or underscores; we remove the term later).\n" +
+      "3. The quiz hides the term and offers the OTHER terms in this list as wrong options, so add a strong context clue " +
+      "(a detail that only goes with this term, e.g. 'by 5 p.m. Friday' for a deadline, 'both sides signed' for an agreement) so that NO other term in the list fits.\n" +
+      "4. No definitions, no quotes, no real company names.\n" +
+      'Return {"items":[{"id":"<id>","s":"<sentence>"}]}.\n' +
+      JSON.stringify(part.map(function (w) { return { id: w.wid, term: baseTerm(w.term), pos: w.pos || "", meaning: w.m.vi || w.m.en || w.m.es || w.m.zh }; })), 0.7);
+    var out = {};
     (o.items || []).forEach(function (x) { if (x && x.id) out[x.id] = x.s; });
+    return out;
+  }
+  /* KIỂM câu: AI khác đóng vai thí sinh chọn từ cho chỗ trống trong cùng danh sách — chọn SAI / "AMBIGUOUS"
+     (nhiều từ cùng hợp) thì bỏ câu đó (TJ 2026-09-30: "điền vào chỗ trống đang không đúng"). */
+  async function checkGapAI(part, cand) {
+    var ids = Object.keys(cand); if (!ids.length) return {};
+    var o = await openAI("You are a strict TOEIC test taker. Reply with JSON only.",
+      'For each sentence choose the ONE term from the list that best fills the blank. If two or more terms fit equally well, answer "AMBIGUOUS".\n' +
+      "Terms: " + JSON.stringify(part.map(function (w) { return baseTerm(w.term); })) + "\n" +
+      'Return {"items":[{"id":"<id>","a":"<term or AMBIGUOUS>"}]}.\n' +
+      JSON.stringify(ids.map(function (id) { return { id: id, s: cand[id].replace("{{GAP}}", "_____") }; })), 0);
+    var out = {};
+    (o.items || []).forEach(function (x) { if (x && x.id) out[x.id] = norm(x.a); });
     return out;
   }
   function aiGaps() {
@@ -490,20 +513,24 @@
     var key = G.gapAiKey = G.poolKey;
     G.gapAiP = (async function () {
       var cache = readLS(LS_GAPAI) || {}, have = G.pool.filter(function (w) { return cache[w.wid]; }).length;
-      var todo = shuffle(G.pool.filter(function (w) { return !cache[w.wid]; })).slice(0, Math.max(0, GAPAI_MAX - have));
+      var todo = shuffle(G.pool.filter(function (w) { return !cache[w.wid]; })).slice(0, Math.max(0, GAPAI_MAX - have))
+        .sort(function (a, b) { return a.block < b.block ? -1 : a.block > b.block ? 1 : 0; });   /* cùng Block chung 1 lần gọi: đáp án nhiễu lấy từ cùng Block */
       for (var i = 0; i < todo.length; i += 20) {
         var part = todo.slice(i, i + 20);
         try {
-          var out = await callGapAI(part);
-          part.forEach(function (w) { var t = toGap(out[w.wid], w.term); if (t) cache[w.wid] = t; });
+          var out = await callGapAI(part), cand = {};
+          part.forEach(function (w) { var t = toGap(out[w.wid], w.term); if (t) cand[w.wid] = t; });
+          var chk = await checkGapAI(part, cand).catch(function () { return null; });   /* kiểm lỗi -> giữ câu (vẫn hơn câu 500 từ) */
+          part.forEach(function (w) { if (cand[w.wid] && (!chk || chk[w.wid] === norm(baseTerm(w.term)))) cache[w.wid] = cand[w.wid]; });
           writeLS(LS_GAPAI, cache);
         } catch (e) { console.warn("câu điền chỗ trống AI lỗi", e); break; }
         if (G.poolKey !== key) return;
       }
       if (G.poolKey !== key) return;
       var ai = G.pool.filter(function (w) { return cache[w.wid]; }).map(function (w) { return { wid: w.wid, term: w.term, block: w.block, text: cache[w.wid], ai: 1 }; });
-      var short = (G.gapsSrc || []).filter(function (g) { return !cache[g.wid] && g.text.split(/\s+/).length <= 20; });
-      if (ai.length + short.length >= 4) G.gaps = ai.concat(short);
+      /* CHỈ câu AI (TJ: "chọn các câu bạn soạn lại ngắn ngắn"); AI lỗi (< 4 câu) mới dùng câu bài đọc ≤ 20 từ */
+      if (ai.length >= 4) G.gaps = ai;
+      else { var short = (G.gapsSrc || []).filter(function (g) { return g.text.split(/\s+/).length <= 20; }); if (short.length >= 4) G.gaps = short; }
       if (G.st && G.st.phase === "lobby") paintPoolInfo();
     })();
     return G.gapAiP;
