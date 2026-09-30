@@ -101,3 +101,7 @@ create index if not exists game_answers_match_idx on public.game_answers (match_
 alter table public.game_matches enable row level security;
 drop policy if exists shared_all on public.game_matches;
 create policy shared_all on public.game_matches for all to anon, authenticated using (true) with check (true);
+
+-- 2026-09-30: cách tính điểm mỗi ván: q (theo câu, đúng +100) | speed (theo tốc độ, đúng 100 -> 50)
+alter table public.game_matches add column if not exists scoring text not null default 'q';
+alter table public.game_rooms add column if not exists scoring text not null default 'q';

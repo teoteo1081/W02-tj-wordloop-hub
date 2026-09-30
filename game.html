@@ -8,7 +8,7 @@
 <!-- Google tag (gtag.js) — cùng property GA4 với WordLoop -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM');</script>
-<link rel="stylesheet" href="css/game.css?v=7">
+<link rel="stylesheet" href="css/game.css?v=12">
 </head>
 <body>
 <!-- 🎮 Phòng game chơi chung — xem README.md "Việc còn dang dở" > PHÒNG GAME, bảng: tools/game_schema.sql.
@@ -18,7 +18,7 @@
 <header class="g-top">
   <a class="g-brand" href="game.html">🎮 <b>WordLoop Game</b></a>
   <span class="g-room" id="g-room-badge" hidden></span>
-  <select class="g-mylang" id="g-mylang"><option value="room" data-t="lang_room">🌐 Theo phòng</option><option value="vi">🇻🇳 Tiếng Việt</option><option value="en">🇺🇸 English</option><option value="es">🇪🇸 Español</option><option value="zh">🇨🇳 中文</option></select>
+  <label class="g-langlbl"><span>🌐 Language</span><select class="g-mylang" id="g-mylang" data-tt="mother_tt"><option value="vi">🇻🇳 Tiếng Việt</option><option value="en">🇺🇸 English</option><option value="es">🇪🇸 Español</option><option value="zh">🇨🇳 中文</option></select></label>
   <button class="g-me" id="g-me" hidden></button>
 </header>
 
@@ -28,6 +28,8 @@
     <h1 data-t="name_h">Bạn tên gì?</h1>
     <p class="g-sub" data-t="name_sub">Máy này sẽ nhớ tên cho lần sau — không cần email.</p>
     <input id="n-name" class="g-input" maxlength="24" data-tp="name_ph" placeholder="Nhập tên…" autocomplete="nickname">
+    <h2 data-t="mother_h">Nghĩa hiển thị bằng (tiếng mẹ đẻ)</h2>
+    <div class="g-langs" id="n-langs"><button data-ml="vi">🇻🇳 Tiếng Việt</button><button data-ml="en">🇺🇸 English</button><button data-ml="es">🇪🇸 Español</button><button data-ml="zh">🇨🇳 中文</button></div>
     <h2 data-t="avatar_h">Chọn ảnh đại diện</h2>
     <div class="g-avatars" id="n-avatars"></div>
     <label class="g-btn g-btn-soft g-upload"><span data-t="upload">📷 Tải ảnh của bạn</span><input type="file" id="n-file" accept="image/*" hidden></label>
@@ -47,12 +49,18 @@
 
   <!-- 3. Phòng chờ -->
   <section class="g-screen" id="s-lobby" hidden>
-    <div class="g-card">
+    <div class="g-card" id="l-roomcard" hidden>
       <div class="g-lobby-head">
         <div><div class="g-sub" data-t="room_code">Mã phòng</div><div class="g-bigcode" id="l-code"></div></div>
-        <div class="g-row g-row-tight"><button class="g-btn g-btn-soft" id="l-copy" data-t="copy_link">🔗 Copy link mời</button><button class="g-btn g-btn-soft" id="l-screen" data-t="screen_btn">📺 Màn hình chung</button></div>
+        <div class="g-row g-row-tight" id="l-hostbtns" hidden><button class="g-btn g-btn-soft" id="l-copy">🔗 Copy link mời</button><button class="g-btn g-btn-soft" id="l-screen">📺 Màn hình chung</button></div>
       </div>
       <div class="g-sub" id="l-info"></div>
+    </div>
+    <!-- người chơi: CHỈ thẻ chào + chọn "Nghĩa hiển thị bằng" + danh sách người chơi (TJ 2026-09-30) -->
+    <div class="g-card g-mecard" id="l-mecard" hidden>
+      <div class="g-mehead"><span id="l-meav"></span><div><div class="g-mename" id="l-mename"></div><div class="g-sub g-waitdots" id="l-wait2" data-t="wait_host">Chờ host bắt đầu…</div></div></div>
+      <div class="g-sub" data-t="mother_h">Nghĩa hiển thị bằng (tiếng mẹ đẻ)</div>
+      <div class="g-langs" id="l-langs"><button data-ml="vi">🇻🇳 Tiếng Việt</button><button data-ml="en">🇺🇸 English</button><button data-ml="es">🇪🇸 Español</button><button data-ml="zh">🇨🇳 中文</button></div>
     </div>
     <h2><span data-t="players">Người chơi</span> (<span id="l-count">0</span>) <span class="g-sub" id="l-teamhint"></span></h2>
     <div class="g-teams" id="l-teams"></div>
@@ -65,19 +73,21 @@
         <label>Kiểu chơi
           <select id="l-mode"><option value="kahoot">Cùng 1 câu (kiểu Kahoot)</option><option value="free">Tự do — mỗi người tự làm</option></select></label>
         <label>Dạng câu hỏi
-          <select id="l-qtype"><option value="meaning">🔤 Nghĩa → chọn từ</option><option value="gap">📝 Điền chỗ trống (bài đọc)</option><option value="recall">⌨️ Gõ từ (Active Recall)</option><option value="mix">🔀 Trộn cả 3</option></select></label>
-        <label>Nghĩa hiển thị bằng <select id="l-lang"><option value="vi">🇻🇳 Tiếng Việt</option><option value="en">🇺🇸 English (định nghĩa)</option><option value="es">🇪🇸 Español</option><option value="zh">🇨🇳 中文</option></select></label>
+          <select id="l-qtype"><option value="meaning">🔤 Nghĩa → chọn từ</option><option value="gap">📝 Điền chỗ trống (1 câu)</option><option value="recall">⌨️ Gõ từ (Active Recall)</option><option value="mix">🔀 Trộn 3 dạng trên</option><option value="sheet">📄 Phiếu đầy đủ theo Block</option><option value="write">✍️ Đặt câu (AI chấm)</option><option value="dict">🎧 Dictation (cần tai nghe)</option></select></label>
+        <label>Cách tính điểm
+          <select id="l-scoring"><option value="q">Theo câu — đúng +100</option><option value="speed">Theo tốc độ — đúng 100 → 50 (chậm bị trừ)</option></select></label>
+        <label>Tiếng chung (khi 🔒 ép + 📺 màn hình chung) <select id="l-lang"><option value="vi">🇻🇳 Tiếng Việt</option><option value="en">🇺🇸 English (định nghĩa)</option><option value="es">🇪🇸 Español</option><option value="zh">🇨🇳 中文</option></select></label>
         <label class="g-check" id="l-force-wrap"><input type="checkbox" id="l-force"> 🔒 Ép cả phòng dùng tiếng nghĩa này <span class="g-sub">(chỉ câu dạng 🔤 Nghĩa)</span></label>
         <label>Số phút <input type="number" id="l-min" min="1" max="60" step="1"></label>
         <label id="l-qs-wrap">Giây mỗi câu <input type="number" id="l-qs" min="5" max="90" step="1"></label>
-        <label>Chơi đội <select id="l-teamn"><option value="0">Không — ai cũng đấu lẻ</option><option value="2">2 đội</option><option value="3">3 đội</option><option value="4">4 đội</option></select></label>
+        <label>Hình thức thi đấu <select id="l-teamn"><option value="0">Chơi lẻ</option><option value="2">2 đội</option><option value="3">3 đội</option><option value="4">4 đội</option></select></label>
         <label class="g-check"><input type="checkbox" id="l-hostplay" checked> Host cũng chơi</label>
       </div>
       <div class="g-row" id="l-teambtns" hidden><button class="g-btn g-btn-soft" id="l-auto">🔀 Chia đều tự động</button><span class="g-sub">hoặc bấm vào tên từng người để đổi đội</span></div>
       <div class="g-row"><button class="g-btn" id="l-start">▶ Bắt đầu</button></div>
       <p class="g-sub" id="l-pool"></p>
     </div>
-    <p class="g-sub g-wait" id="l-wait" data-t="wait_host">Chờ host bắt đầu…</p>
+    <p class="g-sub g-wait" id="l-wait" hidden data-t="wait_host">Chờ host bắt đầu…</p>
   </section>
 
   <!-- 4. Đang chơi: nửa trên bảng xếp hạng, nửa dưới trả lời -->
@@ -90,9 +100,11 @@
       <div class="g-qbar"><div id="p-qbar"></div></div>
       <div class="g-qhint g-sub" id="p-hint"></div>
       <div class="g-qvi" id="p-vi"></div>
+      <div class="g-row g-center" id="p-saywrap" hidden><button class="g-btn" id="p-say" type="button" data-t="listen">🔊 Nghe</button><span class="g-sub" data-t="headphones">🎧 Dùng tai nghe để không lọt tiếng vào voice</span></div>
       <div class="g-opts" id="p-opts"></div>
       <form class="g-type" id="p-type" hidden autocomplete="off"><input class="g-input" id="p-typein" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"><button class="g-btn" id="p-typego" data-t="submit">Gửi</button></form>
       <div class="g-sub g-qmsg" id="p-msg"></div>
+      <div class="g-res" id="p-res"></div>
     </div>
   </section>
 
@@ -104,7 +116,7 @@
     <ol class="g-board g-board-end" id="e-board"></ol>
     <div class="g-row"><button class="g-btn" id="e-again" hidden>🔁 Ván mới (cả phòng về phòng chờ)</button></div>
     <p class="g-sub g-wait" id="e-wait" data-t="wait_next">Chờ host mở ván mới…</p>
-    <div class="g-row"><button class="g-btn" id="e-hist" data-t="hist_btn">📜 Lịch sử & Xếp hạng</button><a class="g-btn g-btn-soft" href="game.html" data-t="back">← Về trang game</a></div>
+    <div class="g-row" id="e-hostnav" hidden><button class="g-btn" id="e-hist" data-t="hist_btn">📜 Lịch sử & Xếp hạng</button></div>
   </section>
 
   <!-- 6. Lịch sử & xếp hạng -->
@@ -126,6 +138,7 @@
       <div class="g-qhint g-sub" id="sc-hint"></div>
       <div class="sc-q" id="sc-q"></div>
       <div class="sc-opts" id="sc-opts"></div>
+      <div class="g-res sc-res" id="sc-res"></div>
     </div>
     <div class="sc-side">
       <div class="g-teambar" id="sc-teams"></div>
@@ -136,6 +149,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="js/config.js?v=4"></script>
-<script src="js/game.js?v=13"></script>
+<script src="js/game.js?v=22"></script>
 </body>
 </html>
