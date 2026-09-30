@@ -483,7 +483,10 @@
       } else G.ch.send({ type: "broadcast", event: "hello", payload: {} });   /* xin host gửi lại trạng thái hiện tại */
     });
   }
-  function track() { return G.ch.track({ id: G.me.id, name: G.me.name, no: G.me.name_no, avatar: G.me.avatar, host: G.isHost, play: G.isHost ? hostPlays() : true, lang: G.myLang }); }
+  function track() { return G.ch.track({ id: G.me.id, pf: G.profile ? G.profile.id : null, name: G.me.name, no: G.me.name_no, avatar: G.me.avatar, host: G.isHost, play: G.isHost ? hostPlays() : true, lang: G.myLang }); }
+  /* "Host" do PHÒNG quyết định (hồ sơ = host_id của phòng), không tin máy tự nhận — bản cũ đang mở ở máy khác
+     (vd Anti_TJ lúc còn admin) có thể vẫn gửi host:true */
+  function isRoomHost(p) { return !!(p && p.pf && G.room && p.pf === G.room.host_id && p.host); }
   function hostPlays() { var c = $("#l-hostplay"); return !c || c.checked; }
   function players() { return G.online.filter(function (p) { return p.play !== false; }); }
   function onPresence() {
@@ -531,7 +534,7 @@
   function paintLobbyPlayers() {
     var st = G.st || {}, teams = +st.teams || 0, teamOf = st.teamOf || {};
     var tt = st.title || ""; $("#l-info").textContent = tt ? T("vocab") + ": " + tt : "";
-    if (!G.isHost) $("#l-wait").textContent = G.online.some(function (p) { return p.host; }) ? T("wait_host") : T("host_away");
+    if (!G.isHost) $("#l-wait").textContent = G.online.some(isRoomHost) ? T("wait_host") : T("host_away");
     $("#l-count").textContent = players().length;
     $("#l-teamhint").textContent = teams ? T("click_team") : "";
     $("#l-teams").innerHTML = teams ? teamSummary(st, false) : "";
@@ -539,7 +542,7 @@
       var t = teamOf[p.id];
       return '<button class="g-player' + (teams && G.isHost && p.play !== false ? " g-click" : "") + '" data-pid="' + esc(p.id) + '"' + (t && TEAM_C[t] ? ' style="border-color:' + TEAM_C[t].c + '"' : "") + ">" +
         avatar(p.avatar) + '<span class="g-pname">' + label(p) + "</span>" + (p.lang && p.lang !== "room" ? '<span class="g-sub">' + FLAG[p.lang] + "</span>" : "") + (teams && t ? teamDot(t) : "") +
-        (p.host ? '<span class="g-tag">Host' + (p.play === false ? " · MC" : "") + "</span>" : "") + "</button>";
+        (isRoomHost(p) ? '<span class="g-tag">Host' + (p.play === false ? " · MC" : "") + "</span>" : "") + "</button>";
     }).join("");
   }
   $("#l-players").addEventListener("click", function (e) {   /* host bấm tên -> chuyển sang đội kế tiếp */
@@ -746,7 +749,7 @@
       else bar.style.width = "0%";
       if (G.st && G.st.mode === "free" && Date.now() >= G.endAt) lockAll(T("time_up"));
       if (!G.isHost) {
-        var hostHere = G.online.some(function (p) { return p.host; });
+        var hostHere = G.online.some(isRoomHost);
         $("#p-hostlost").hidden = hostHere && Date.now() - G.lastState <= HOST_LOST_MS;
       }
     }, 200);
