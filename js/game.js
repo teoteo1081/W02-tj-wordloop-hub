@@ -126,7 +126,12 @@
      Host 🔒 ép -> NGHĨA cả phòng 1 tiếng, còn chữ giao diện vẫn theo từng người. */
   function roomLang(st) { return (st && st.lang) || (G.room && G.room.meaning_lang) || "vi"; }
   function uiLang() { return G.myLang && G.myLang !== "room" ? G.myLang : G.view === "screen" || G.room ? roomLang(G.st) : "vi"; }
-  function effLang(pref, st) { return st && st.force ? roomLang(st) : pref && pref !== "room" ? pref : roomLang(st); }
+  /* 🔒 "Ép cả phòng" CHỈ áp cho câu dạng NGHĨA (TJ 2026-09-30) — Điền chỗ trống là câu tiếng Anh, Gõ từ vẫn
+     theo tiếng riêng từng người; trộn cả 3 thì chỉ câu Nghĩa bị ép. qtype = dạng của CÂU đang hỏi. */
+  function effLang(pref, st, qtype) {
+    var forced = st && st.force && (!qtype || qtype === "meaning");
+    return forced ? roomLang(st) : pref && pref !== "room" ? pref : roomLang(st);
+  }
   function T(k, vars) {
     var s = (UI[uiLang()] || UI.vi)[k]; if (s == null) s = UI.vi[k] || k;
     if (vars) s = s.replace(/\{(\w+)\}/g, function (_, x) { return vars[x] == null ? "" : vars[x]; });
@@ -139,8 +144,8 @@
     $("#p-typein").placeholder = T("type_ph");
     if (G.room) { $("#g-room-badge").textContent = T("room") + " " + G.room.code; var tt = (G.st && G.st.title) || ""; $("#l-info").textContent = tt ? T("vocab") + ": " + tt : ""; }
   }
-  function myText(q) { var t = q.texts || {}; return t[effLang(G.myLang, G.st)] || t.en || t.vi || ""; }
-  function myFlag(q) { var t = q.texts || {}, l = effLang(G.myLang, G.st); return FLAG[t[l] ? l : t.en ? "en" : "vi"]; }
+  function myText(q) { var t = q.texts || {}; return t[effLang(G.myLang, G.st, q.type)] || t.en || t.vi || ""; }
+  function myFlag(q) { var t = q.texts || {}, l = effLang(G.myLang, G.st, q.type); return FLAG[t[l] ? l : t.en ? "en" : "vi"]; }
 
   /* ---------- 1. tên + ảnh ---------- */
   var pickedAvatar = null;
@@ -526,6 +531,7 @@
       $("#l-min").value = st.minutes || G.room.minutes; $("#l-qs").value = st.qs || G.room.q_seconds;
       $("#l-lang").value = roomLang(st); $("#l-teamn").value = String(st.teams || 0); $("#l-force").checked = !!st.force;
       $("#l-qs-wrap").hidden = $("#l-mode").value !== "kahoot";
+      $("#l-force-wrap").hidden = !($("#l-qtype").value === "meaning" || $("#l-qtype").value === "mix");
       $("#l-teambtns").hidden = !(+$("#l-teamn").value);
       paintPoolInfo(); paintPicked();
     }
@@ -575,7 +581,7 @@
   $("#l-screen").addEventListener("click", function () { window.open(roomLink(G.room.code, true), "_blank"); });
   ["#l-mode", "#l-qtype", "#l-min", "#l-qs", "#l-lang", "#l-teamn", "#l-hostplay", "#l-force"].forEach(function (s) {
     $(s).addEventListener("change", function () {
-      if (!G.isHost) return;
+      if (!G.isHost || !G.st) return;   /* chưa kết nối xong (G.st chưa có) -> bỏ qua, initHostLobby sẽ vẽ lại */
       var st = G.st;
       st.mode = $("#l-mode").value; st.qtype = $("#l-qtype").value; st.lang = $("#l-lang").value; st.force = $("#l-force").checked;
       st.minutes = Math.max(1, +$("#l-min").value || 5); st.qs = Math.max(5, +$("#l-qs").value || 15);
@@ -583,6 +589,7 @@
       if (tn !== st.teams) { st.teams = tn; st.teamOf = {}; if (tn) autoTeams(); }
       $("#l-qs-wrap").hidden = st.mode !== "kahoot";
       $("#l-teambtns").hidden = !tn;
+      $("#l-force-wrap").hidden = !(st.qtype === "meaning" || st.qtype === "mix");
       if (s === "#l-hostplay") track();
       sb.from("game_rooms").update({ mode: st.mode, qtype: st.qtype, meaning_lang: st.lang, minutes: st.minutes, q_seconds: st.qs, team_mode: !!tn, teams: tn }).eq("id", G.room.id).then(function () {});
       push(); paintLobbyPlayers();
@@ -621,7 +628,7 @@
   });
   $("#p-stop").addEventListener("click", function () { if (G.isHost && confirm("Kết thúc trận ngay?")) hostEnd(); });
   function roomLangs() {
-    var set = {}; players().forEach(function (p) { set[effLang(p.lang, G.st)] = 1; });
+    var set = {}; players().forEach(function (p) { set[effLang(p.lang, G.st, "recall")] = 1; if (G.st.force) set[roomLang(G.st)] = 1; });
     return Object.keys(set);
   }
   function hostNextQ() {
@@ -858,7 +865,7 @@
   function freeNext() {
     if (Date.now() >= G.endAt) return lockAll(T("time_up"));
     if (!G.pool.length) { $("#p-vi").textContent = T("loading"); return; }
-    var ml = effLang(G.myLang, G.st);
+    var ml = effLang(G.myLang, G.st, "recall");
     G.myQ = makeQ(G.st.qtype || "meaning", poolFor(ml).length >= 4 ? ml : roomLang(G.st));
     G.myQStart = Date.now();
     paintQuestion(G.myQ, "#p-hint", "#p-vi", "#p-opts");
