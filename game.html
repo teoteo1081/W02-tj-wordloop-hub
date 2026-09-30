@@ -47,6 +47,14 @@
     <button class="g-btn g-btn-soft g-wide" id="h-hist" data-t="hist_btn">📜 Lịch sử & Xếp hạng</button>
   </section>
 
+  <!-- Game đã mở ở tab khác (1 trình duyệt = 1 người chơi -> chỉ 1 tab được vào phòng) -->
+  <section class="g-screen" id="s-tab" hidden>
+    <div class="g-card">
+      <p id="t-msg"></p>
+      <button class="g-btn" id="t-use" data-t="tab_use">Dùng game ở tab này</button>
+    </div>
+  </section>
+
   <!-- 3. Phòng chờ -->
   <section class="g-screen" id="s-lobby" hidden>
     <div class="g-card" id="l-roomcard" hidden>
@@ -149,6 +157,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="js/config.js?v=4"></script>
-<script src="js/game.js?v=25"></script>
+<script src="js/game.js?v=26"></script>
 </body>
 </html>
