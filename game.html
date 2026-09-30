@@ -73,6 +73,7 @@
     <h2><span data-t="players">Người chơi</span> (<span id="l-count">0</span>) <span class="g-sub" id="l-teamhint"></span></h2>
     <div class="g-teams" id="l-teams"></div>
     <div class="g-players" id="l-players"></div>
+    <button class="g-btn g-btn-soft g-wide" id="l-hist" data-t="hist_btn">📜 Lịch sử & Xếp hạng</button>
     <div class="g-card" id="l-host" hidden>
       <h2>📚 Chủ đề ván này <span class="g-sub">(đổi thoải mái — mã phòng/link giữ nguyên)</span></h2>
       <div class="g-scope-picked" id="h-picked"></div>
@@ -125,7 +126,7 @@
     <ol class="g-board g-board-end" id="e-board"></ol>
     <div class="g-row"><button class="g-btn" id="e-again" hidden>🔁 Ván mới (cả phòng về phòng chờ)</button></div>
     <p class="g-sub g-wait" id="e-wait" data-t="wait_next">Chờ host mở ván mới…</p>
-    <div class="g-row" id="e-hostnav" hidden><button class="g-btn" id="e-hist" data-t="hist_btn">📜 Lịch sử & Xếp hạng</button></div>
+    <div class="g-row" id="e-hostnav"><button class="g-btn" id="e-hist" data-t="hist_btn">📜 Lịch sử & Xếp hạng</button></div>
   </section>
 
   <!-- 6. Lịch sử & xếp hạng -->
@@ -133,7 +134,7 @@
     <h1 data-t="hist_btn">📜 Lịch sử & Xếp hạng</h1>
     <div class="g-tabs" id="hi-tabs"><button data-tab="me" class="on" data-t="tab_me">Của tôi</button><button data-tab="week" data-t="tab_week">Tuần này</button><button data-tab="all" data-t="tab_all">Mọi thời gian</button></div>
     <div id="hi-body"></div>
-    <div class="g-row"><a class="g-btn g-btn-soft" href="game.html" data-t="back">← Về trang game</a></div>
+    <div class="g-row"><button class="g-btn g-btn-soft" id="hi-back" data-t="back">← Về trang game</button></div>
   </section>
 </main>
 
@@ -158,6 +159,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="js/config.js?v=4"></script>
-<script src="js/game.js?v=28"></script>
+<script src="js/game.js?v=29"></script>
 </body>
 </html>

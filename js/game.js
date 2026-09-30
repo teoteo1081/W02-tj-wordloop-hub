@@ -250,6 +250,7 @@
   $("#h-code").addEventListener("keydown", function (e) { if (e.key === "Enter") $("#h-go").click(); });
   $("#h-hist").addEventListener("click", function () { renderHistory("me"); });
   $("#e-hist").addEventListener("click", function () { renderHistory("me"); });
+  $("#l-hist").addEventListener("click", function () { renderHistory("me"); });
 
   /* Cây Hub > Notebook > Section > Page (Batch/Block chọn qua chuột phải trong WordLoop) */
   var TREE = null;
@@ -1060,6 +1061,9 @@
     if (s.left != null) G.endAt = Date.now() + s.left;
     if (G.myLang === "room" && langWas !== s.lang) applyUI();   /* "theo phòng" -> host đổi tiếng thì giao diện đổi theo */
     if (G.view === "screen") return paintScreen(s);
+    /* đang xem 📜 Lịch sử: phòng gửi trạng thái 3-10s/lần -> trước đây bị kéo về phòng chờ/kết quả liên tục.
+       Nay đứng yên ở Lịch sử; chỉ khi ván BẮT ĐẦU mới kéo về để chơi. */
+    if (G.inHist) { if (s.phase !== "play" || was === "play") return; G.inHist = false; }
     if (s.phase === "play" && !G.isHost && G.me && !(s.scores || {})[G.me.id]) {   /* vào muộn: xem trước, ván sau chơi */
       if (!G.spectating) { G.spectating = true; G.lastN = -1; G.scRev = -1; }
       return paintScreen(s);
@@ -1415,7 +1419,7 @@
     show("s-end");
     $("#e-info").textContent = G.isHost || s.saved ? (s.title || "") + " · " + modeLine(s) + " · " + s.minutes + "'" : "";
     $("#e-again").hidden = !G.isHost || s.saved;
-    $("#e-hostnav").hidden = !G.isHost && !s.saved;
+    $("#e-hostnav").hidden = false;   /* 📜 cho MỌI người (trước chỉ host) */
     $("#e-wait").hidden = G.isHost || !!s.saved;
     $("#e-teams").innerHTML = +s.teams ? teamSummary(s, true) : "";
     var roster = s.roster || {};
@@ -1442,8 +1446,17 @@
   }
 
   /* ---------- 📜 lịch sử & xếp hạng ---------- */
+  $("#hi-back").addEventListener("click", function () {   /* về đúng màn đang có của phòng, không tải lại trang */
+    G.inHist = false;
+    var s = G.st;
+    if (!G.room || !s) { location.href = "game.html"; return; }
+    if (s.saved || s.phase === "end") return renderEnd(s);
+    if (s.phase === "lobby") return renderLobby();
+    onState(s);
+  });
   $("#hi-tabs").addEventListener("click", function (e) { var b = e.target.closest("[data-tab]"); if (b) renderHistory(b.dataset.tab); });
   async function renderHistory(tab) {
+    G.inHist = true;
     show("s-hist");
     $$("#hi-tabs button").forEach(function (b) { b.classList.toggle("on", b.dataset.tab === tab); });
     $("#hi-body").innerHTML = '<p class="g-sub">' + T("loading2") + "</p>";
