@@ -152,3 +152,8 @@ body.big .g-top,body.big #g-main{display:none}
 .g-qvi{line-height:1.45}
 .sc-ans{color:var(--green);font-size:1.3em}
 .sc-q .g-blank{min-width:160px}
+
+/* v8: chọn chủ đề trong phòng chờ */
+.g-treebox{margin-bottom:6px}
+.g-treebox summary{cursor:pointer;color:var(--vi);padding:4px 0}
+.g-treebox .g-tree{margin-top:6px}

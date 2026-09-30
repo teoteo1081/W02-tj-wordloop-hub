@@ -74,3 +74,30 @@ drop policy if exists game_avatars_read on storage.objects;
 create policy game_avatars_read on storage.objects for select to anon, authenticated using (bucket_id = 'game-avatars');
 drop policy if exists game_avatars_insert on storage.objects;
 create policy game_avatars_insert on storage.objects for insert to anon, authenticated with check (bucket_id = 'game-avatars');
+
+-- ===== 2026-09-30 (TJ): PHÒNG CỐ ĐỊNH + NHIỀU VÁN =====
+-- 1 host = 1 phòng dùng mãi (mã/link không đổi). Chủ đề/dạng câu/đội chọn trong phòng chờ.
+-- Mỗi lần bấm Bắt đầu = 1 VÁN (game_matches); kết quả/câu trả lời gắn theo ván.
+create table if not exists public.game_matches (
+  id uuid primary key default gen_random_uuid(),
+  room_id uuid not null references public.game_rooms(id) on delete cascade,
+  title text,
+  scope jsonb,
+  mode text, qtype text, meaning_lang text,
+  minutes numeric, q_seconds int, teams int not null default 0,
+  started_at timestamptz not null default now(),
+  ended_at timestamptz
+);
+create index if not exists game_matches_room_idx on public.game_matches (room_id);
+alter table public.game_results add column if not exists match_id uuid references public.game_matches(id) on delete cascade;
+alter table public.game_answers add column if not exists match_id uuid references public.game_matches(id) on delete cascade;
+alter table public.game_results drop constraint if exists game_results_room_id_player_id_key;
+do $$ begin
+  if not exists (select 1 from pg_constraint where conname = 'game_results_match_player_key') then
+    alter table public.game_results add constraint game_results_match_player_key unique (match_id, player_id);
+  end if;
+end $$;
+create index if not exists game_answers_match_idx on public.game_answers (match_id);
+alter table public.game_matches enable row level security;
+drop policy if exists shared_all on public.game_matches;
+create policy shared_all on public.game_matches for all to anon, authenticated using (true) with check (true);

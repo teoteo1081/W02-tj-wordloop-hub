@@ -8,7 +8,7 @@
 <!-- Google tag (gtag.js) — cùng property GA4 với WordLoop -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM');</script>
-<link rel="stylesheet" href="css/game.css?v=6">
+<link rel="stylesheet" href="css/game.css?v=7">
 </head>
 <body>
 <!-- 🎮 Phòng game chơi chung — xem README.md "Việc còn dang dở" > PHÒNG GAME, bảng: tools/game_schema.sql.
@@ -43,23 +43,6 @@
       <p class="g-err" id="h-err"></p>
     </div>
     <button class="g-btn g-btn-soft g-wide" id="h-hist" data-t="hist_btn">📜 Lịch sử & Xếp hạng</button>
-    <div class="g-card" id="h-host" hidden>
-      <h2>Mở phòng mới <span class="g-tag">Host</span></h2>
-      <p class="g-sub">Chọn 1 hoặc nhiều nhánh từ vựng:</p>
-      <div class="g-scope-picked" id="h-picked"></div>
-      <div class="g-tree" id="h-tree"><p class="g-sub">Đang tải cây thư mục…</p></div>
-      <div class="g-settings">
-        <label>Kiểu chơi
-          <select id="h-mode"><option value="kahoot">Cùng 1 câu (kiểu Kahoot)</option><option value="free">Tự do — mỗi người tự làm</option></select></label>
-        <label>Dạng câu hỏi
-          <select id="h-qtype"><option value="meaning">🔤 Nghĩa → chọn từ</option><option value="gap">📝 Điền chỗ trống (bài đọc)</option><option value="recall">⌨️ Gõ từ (Active Recall)</option><option value="mix">🔀 Trộn cả 3</option></select></label>
-        <label>Nghĩa hiển thị bằng <select id="h-lang"><option value="vi">🇻🇳 Tiếng Việt</option><option value="en">🇺🇸 English (định nghĩa)</option><option value="es">🇪🇸 Español</option><option value="zh">🇨🇳 中文</option></select></label>
-        <label>Số phút cả trận <input type="number" id="h-min" min="1" max="60" step="1" value="5"></label>
-        <label id="h-qs-wrap">Giây mỗi câu <input type="number" id="h-qs" min="5" max="90" step="1" value="15"></label>
-      </div>
-      <div class="g-row"><button class="g-btn" id="h-create">🎮 Tạo phòng</button></div>
-      <p class="g-err" id="h-cerr"></p>
-    </div>
   </section>
 
   <!-- 3. Phòng chờ -->
@@ -75,6 +58,9 @@
     <div class="g-teams" id="l-teams"></div>
     <div class="g-players" id="l-players"></div>
     <div class="g-card" id="l-host" hidden>
+      <h2>📚 Chủ đề ván này <span class="g-sub">(đổi thoải mái — mã phòng/link giữ nguyên)</span></h2>
+      <div class="g-scope-picked" id="h-picked"></div>
+      <details class="g-treebox"><summary>Chọn nhánh từ vựng…</summary><div class="g-tree" id="h-tree"><p class="g-sub">Đang tải cây thư mục…</p></div></details>
       <div class="g-settings">
         <label>Kiểu chơi
           <select id="l-mode"><option value="kahoot">Cùng 1 câu (kiểu Kahoot)</option><option value="free">Tự do — mỗi người tự làm</option></select></label>
@@ -116,6 +102,8 @@
     <div class="g-sub" id="e-info"></div>
     <div class="g-teambar g-teambar-end" id="e-teams"></div>
     <ol class="g-board g-board-end" id="e-board"></ol>
+    <div class="g-row"><button class="g-btn" id="e-again" hidden>🔁 Ván mới (cả phòng về phòng chờ)</button></div>
+    <p class="g-sub g-wait" id="e-wait" data-t="wait_next">Chờ host mở ván mới…</p>
     <div class="g-row"><button class="g-btn" id="e-hist" data-t="hist_btn">📜 Lịch sử & Xếp hạng</button><a class="g-btn g-btn-soft" href="game.html" data-t="back">← Về trang game</a></div>
   </section>
 
@@ -148,6 +136,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="js/config.js?v=4"></script>
-<script src="js/game.js?v=7"></script>
+<script src="js/game.js?v=9"></script>
 </body>
 </html>

@@ -1,8 +1,13 @@
 /* game.js — 🎮 PHÒNG GAME CHƠI CHUNG (TJ 2026-09-30)
    ---------------------------------------------------------------
    Đặc tả: README.md "Việc còn dang dở" > PHÒNG GAME. Bảng: tools/game_schema.sql.
-   - Chỉ admin WordLoop (đăng nhập qua link ?u=, xem auth.js) mở được phòng + bấm Bắt đầu.
-     Người chơi vào bằng link/mã phòng, chỉ cần gõ tên (máy nhớ, trùng tên -> #2, #3…).
+   - Chỉ admin WordLoop (đăng nhập qua link ?u=, xem auth.js) làm host + bấm Bắt đầu.
+     PHÒNG CỐ ĐỊNH (TJ 2026-09-30): mỗi host 1 phòng dùng mãi (phòng mới nhất của host trong game_rooms,
+     chưa có thì tự tạo) — mã/link KHÔNG đổi. Người chơi vào link rồi ngồi chờ; host chọn CHỦ ĐỀ, dạng câu,
+     chơi lẻ/đội NGAY TRONG PHÒNG CHỜ (sau khi thấy có bao nhiêu người). Mỗi lần bấm Bắt đầu = 1 VÁN
+     (game_matches, kết quả gắn match_id); hết ván host bấm "🔁 Ván mới" -> cả phòng về phòng chờ.
+     Chuột phải "🎮 Mở phòng game" trong WordLoop = mở phòng cố định đó với chủ đề chọn sẵn.
+     Người chơi chỉ cần gõ tên (máy nhớ, trùng tên -> #2, #3…).
    - Đồng bộ bằng Supabase Realtime, kênh "game:<MÃ>":
        · presence  = ai đang ở trong phòng (tên, ảnh, có chơi không, tiếng)
        · broadcast "state" (host -> mọi người): pha, câu hỏi, điểm, đội, thời gian còn lại
@@ -41,33 +46,34 @@
   var TEAM_C = [null, { c: "#d9695f", e: "🔴", k: "team_red" }, { c: "#5b9bd9", e: "🔵", k: "team_blue" }, { c: "#4fae82", e: "🟢", k: "team_green" }, { c: "#d9a03c", e: "🟡", k: "team_yellow" }];
   var FLAG = { vi: "🇻🇳", en: "🇺🇸", es: "🇪🇸", zh: "🇨🇳" };
   var MASTER_T = cfg.MASTER_THRESHOLD || 0.8, MASTER_N = cfg.MASTER_MIN_ATTEMPTS || 3;
+  var DEFAULT_ROOM = "TJ";   /* 1 link duy nhất cho tất cả: game.html (không tham số) = phòng của TJ */
   var POINTS = 100, REVEAL_MS = 3500, HOST_LOST_MS = 7000, HEARTBEAT_MS = 3000;
 
   /* ---------- chữ giao diện 4 tiếng (người chơi); phần cài đặt của host để tiếng Việt ---------- */
   var UI = {
     vi: { lang_room: "🌐 Theo phòng", name_h: "Bạn tên gì?", name_sub: "Máy này sẽ nhớ tên cho lần sau — không cần email.", name_ph: "Nhập tên…", avatar_h: "Chọn ảnh đại diện", upload: "📷 Tải ảnh của bạn", save: "Lưu & tiếp tục →", need_name: "Nhập tên trước nhé.", saving: "Đang lưu…", uploading: "Đang tải ảnh…", not_image: "File này không phải ảnh.",
-      join_h: "Vào phòng", code_ph: "MÃ PHÒNG", go: "Vào", hist_btn: "📜 Lịch sử & Xếp hạng", no_room: "Không tìm thấy phòng {c}.", room: "Phòng", room_code: "Mã phòng", copy_link: "🔗 Copy link mời", copied: "✓ Đã copy", screen_btn: "📺 Màn hình chung", players: "Người chơi", vocab: "Từ vựng", wait_host: "Chờ host bắt đầu…", host_lost: "⚠ Host mất kết nối — chờ host quay lại…",
+      join_h: "Vào phòng", code_ph: "MÃ PHÒNG", go: "Vào", hist_btn: "📜 Lịch sử & Xếp hạng", no_room: "Không tìm thấy phòng {c}.", room: "Phòng", room_code: "Mã phòng", copy_link: "🔗 Copy link mời", copied: "✓ Đã copy", screen_btn: "📺 Màn hình chung", players: "Người chơi", vocab: "Từ vựng", wait_host: "Chờ host bắt đầu…", host_away: "Host chưa vào phòng — xem trước, chờ host tới nhé.", wait_next: "Chờ host mở ván mới…", host_lost: "⚠ Host mất kết nối — chờ host quay lại…",
       m_kahoot: "Cùng 1 câu", m_free: "Tự do", sec_q: "giây/câu", q_meaning: "Chọn từ tiếng Anh đúng nghĩa", q_gap: "Chọn từ điền vào chỗ trống", q_recall: "Gõ từ tiếng Anh của nghĩa này", type_ph: "Gõ từ tiếng Anh…", submit: "Gửi",
       picked: "Đã trả lời — chờ mọi người…", answered: "{n} người đã trả lời", right: "✓ Đúng! +{p}", wrong: "✗ Sai — đáp án: {a}", timeout: "⏱ Hết giờ — đáp án: {a}", answer: "Đáp án: {a}", fastest: "⚡ Nhanh nhất: {n}", n_right: "{n} người đúng", time_up: "⏱ Hết giờ — chờ tổng kết…", loading: "Đang tải từ vựng…", mc: "Bạn đang làm MC — mở 📺 Màn hình chung để cả nhóm cùng xem.",
       results: "🏁 Kết quả", back: "← Về trang game", nobody: "Chưa ai trả lời câu nào.", ppl: "người", avg: "TB", team_red: "Đội Đỏ", team_blue: "Đội Xanh", team_green: "Đội Lá", team_yellow: "Đội Vàng", click_team: "· host bấm tên để đổi đội",
       tab_me: "Của tôi", tab_week: "Tuần này", tab_all: "Mọi thời gian", h_player: "Người chơi", h_total: "Tổng điểm", h_games: "Trận", h_best: "Cao nhất", h_acc: "Đúng", h_date: "Ngày", h_topic: "Chủ đề", h_score: "Điểm", h_rank: "Hạng", h_rw: "Đúng/Sai",
       s_games: "trận", s_wins: "lần 🥇", s_best: "kỷ lục điểm", s_streak: "chuỗi dài nhất", no_name: "Bạn chưa đặt tên trên máy này.", no_games: "Bạn chưa chơi trận nào.", no_week: "Chưa có trận nào trong 7 ngày qua.", no_all: "Chưa có trận nào.", loading2: "Đang tải…", join_at: "Vào phòng tại", race: "🏁 Đua tự do!", ended: "🏁 Kết thúc!", q_no: "Câu {n}", err: "Lỗi" },
     en: { lang_room: "🌐 Room language", name_h: "What's your name?", name_sub: "This device will remember you next time — no email needed.", name_ph: "Enter your name…", avatar_h: "Choose an avatar", upload: "📷 Upload your photo", save: "Save & continue →", need_name: "Please enter a name.", saving: "Saving…", uploading: "Uploading…", not_image: "That file is not an image.",
-      join_h: "Join a room", code_ph: "ROOM CODE", go: "Join", hist_btn: "📜 History & Rankings", no_room: "Room {c} not found.", room: "Room", room_code: "Room code", copy_link: "🔗 Copy invite link", copied: "✓ Copied", screen_btn: "📺 Shared screen", players: "Players", vocab: "Vocabulary", wait_host: "Waiting for the host to start…", host_lost: "⚠ Host disconnected — waiting for the host to return…",
+      join_h: "Join a room", code_ph: "ROOM CODE", go: "Join", hist_btn: "📜 History & Rankings", no_room: "Room {c} not found.", room: "Room", room_code: "Room code", copy_link: "🔗 Copy invite link", copied: "✓ Copied", screen_btn: "📺 Shared screen", players: "Players", vocab: "Vocabulary", wait_host: "Waiting for the host to start…", host_away: "The host is not here yet — feel free to look around.", wait_next: "Waiting for the host to start a new round…", host_lost: "⚠ Host disconnected — waiting for the host to return…",
       m_kahoot: "Same question", m_free: "Free play", sec_q: "s/question", q_meaning: "Choose the English word for this meaning", q_gap: "Choose the word that fills the blank", q_recall: "Type the English word for this meaning", type_ph: "Type the English word…", submit: "Submit",
       picked: "Answered — waiting for others…", answered: "{n} answered", right: "✓ Correct! +{p}", wrong: "✗ Wrong — answer: {a}", timeout: "⏱ Time's up — answer: {a}", answer: "Answer: {a}", fastest: "⚡ Fastest: {n}", n_right: "{n} correct", time_up: "⏱ Time's up — waiting for results…", loading: "Loading vocabulary…", mc: "You are the MC — open 📺 Shared screen so everyone can watch.",
       results: "🏁 Results", back: "← Back to game home", nobody: "Nobody answered yet.", ppl: "players", avg: "avg", team_red: "Red Team", team_blue: "Blue Team", team_green: "Green Team", team_yellow: "Yellow Team", click_team: "· host taps a name to switch team",
       tab_me: "Mine", tab_week: "This week", tab_all: "All time", h_player: "Player", h_total: "Total", h_games: "Games", h_best: "Best", h_acc: "Correct", h_date: "Date", h_topic: "Topic", h_score: "Score", h_rank: "Rank", h_rw: "Right/Wrong",
       s_games: "games", s_wins: "🥇 wins", s_best: "best score", s_streak: "longest streak", no_name: "You haven't set a name on this device.", no_games: "You haven't played yet.", no_week: "No games in the last 7 days.", no_all: "No games yet.", loading2: "Loading…", join_at: "Join at", race: "🏁 Free race!", ended: "🏁 Finished!", q_no: "Question {n}", err: "Error" },
     es: { lang_room: "🌐 Idioma de la sala", name_h: "¿Cómo te llamas?", name_sub: "Este dispositivo recordará tu nombre — sin correo.", name_ph: "Escribe tu nombre…", avatar_h: "Elige un avatar", upload: "📷 Sube tu foto", save: "Guardar y continuar →", need_name: "Escribe un nombre primero.", saving: "Guardando…", uploading: "Subiendo…", not_image: "Ese archivo no es una imagen.",
-      join_h: "Entrar a una sala", code_ph: "CÓDIGO", go: "Entrar", hist_btn: "📜 Historial y ranking", no_room: "No se encontró la sala {c}.", room: "Sala", room_code: "Código de sala", copy_link: "🔗 Copiar enlace", copied: "✓ Copiado", screen_btn: "📺 Pantalla compartida", players: "Jugadores", vocab: "Vocabulario", wait_host: "Esperando a que el anfitrión empiece…", host_lost: "⚠ El anfitrión se desconectó — esperando a que vuelva…",
+      join_h: "Entrar a una sala", code_ph: "CÓDIGO", go: "Entrar", hist_btn: "📜 Historial y ranking", no_room: "No se encontró la sala {c}.", room: "Sala", room_code: "Código de sala", copy_link: "🔗 Copiar enlace", copied: "✓ Copiado", screen_btn: "📺 Pantalla compartida", players: "Jugadores", vocab: "Vocabulario", wait_host: "Esperando a que el anfitrión empiece…", host_away: "El anfitrión aún no ha llegado — puedes mirar mientras tanto.", wait_next: "Esperando a que el anfitrión abra otra ronda…", host_lost: "⚠ El anfitrión se desconectó — esperando a que vuelva…",
       m_kahoot: "Misma pregunta", m_free: "Libre", sec_q: "s/pregunta", q_meaning: "Elige la palabra en inglés de este significado", q_gap: "Elige la palabra que completa el espacio", q_recall: "Escribe la palabra en inglés de este significado", type_ph: "Escribe la palabra en inglés…", submit: "Enviar",
       picked: "Respondido — esperando a los demás…", answered: "{n} respondieron", right: "✓ ¡Correcto! +{p}", wrong: "✗ Incorrecto — respuesta: {a}", timeout: "⏱ Se acabó el tiempo — respuesta: {a}", answer: "Respuesta: {a}", fastest: "⚡ Más rápido: {n}", n_right: "{n} acertaron", time_up: "⏱ Se acabó el tiempo — esperando resultados…", loading: "Cargando vocabulario…", mc: "Eres el presentador — abre 📺 Pantalla compartida para que todos vean.",
       results: "🏁 Resultados", back: "← Volver", nobody: "Nadie ha respondido todavía.", ppl: "jugadores", avg: "prom.", team_red: "Equipo Rojo", team_blue: "Equipo Azul", team_green: "Equipo Verde", team_yellow: "Equipo Amarillo", click_team: "· el anfitrión toca un nombre para cambiar de equipo",
       tab_me: "Mío", tab_week: "Esta semana", tab_all: "Siempre", h_player: "Jugador", h_total: "Total", h_games: "Partidas", h_best: "Mejor", h_acc: "Aciertos", h_date: "Fecha", h_topic: "Tema", h_score: "Puntos", h_rank: "Puesto", h_rw: "Bien/Mal",
       s_games: "partidas", s_wins: "veces 🥇", s_best: "récord", s_streak: "racha más larga", no_name: "Aún no tienes nombre en este dispositivo.", no_games: "Aún no has jugado.", no_week: "No hubo partidas en los últimos 7 días.", no_all: "Aún no hay partidas.", loading2: "Cargando…", join_at: "Entra en", race: "🏁 ¡Carrera libre!", ended: "🏁 ¡Terminado!", q_no: "Pregunta {n}", err: "Error" },
     zh: { lang_room: "🌐 跟随房间", name_h: "你叫什么名字？", name_sub: "本设备会记住你的名字——无需邮箱。", name_ph: "输入名字…", avatar_h: "选择头像", upload: "📷 上传照片", save: "保存并继续 →", need_name: "请先输入名字。", saving: "保存中…", uploading: "上传中…", not_image: "这个文件不是图片。",
-      join_h: "加入房间", code_ph: "房间码", go: "加入", hist_btn: "📜 历史与排名", no_room: "找不到房间 {c}。", room: "房间", room_code: "房间码", copy_link: "🔗 复制邀请链接", copied: "✓ 已复制", screen_btn: "📺 共享屏幕", players: "玩家", vocab: "词汇", wait_host: "等待主持人开始…", host_lost: "⚠ 主持人断线了——等待主持人回来…",
+      join_h: "加入房间", code_ph: "房间码", go: "加入", hist_btn: "📜 历史与排名", no_room: "找不到房间 {c}。", room: "房间", room_code: "房间码", copy_link: "🔗 复制邀请链接", copied: "✓ 已复制", screen_btn: "📺 共享屏幕", players: "玩家", vocab: "词汇", wait_host: "等待主持人开始…", host_away: "主持人还没进房间——可以先看看。", wait_next: "等待主持人开始新一局…", host_lost: "⚠ 主持人断线了——等待主持人回来…",
       m_kahoot: "同一题", m_free: "自由模式", sec_q: "秒/题", q_meaning: "选出这个意思的英文单词", q_gap: "选出填入空格的单词", q_recall: "输入这个意思的英文单词", type_ph: "输入英文单词…", submit: "提交",
       picked: "已作答——等待其他人…", answered: "{n} 人已作答", right: "✓ 正确！+{p}", wrong: "✗ 错误——答案：{a}", timeout: "⏱ 时间到——答案：{a}", answer: "答案：{a}", fastest: "⚡ 最快：{n}", n_right: "{n} 人答对", time_up: "⏱ 时间到——等待结果…", loading: "正在加载词汇…", mc: "你是主持人——打开 📺 共享屏幕让大家一起看。",
       results: "🏁 结果", back: "← 返回", nobody: "还没有人作答。", ppl: "人", avg: "平均", team_red: "红队", team_blue: "蓝队", team_green: "绿队", team_yellow: "黄队", click_team: "· 主持人点名字可换队",
@@ -127,7 +133,7 @@
     $$("[data-t]").forEach(function (el) { el.textContent = T(el.dataset.t); });
     $$("[data-tp]").forEach(function (el) { el.placeholder = T(el.dataset.tp); });
     $("#p-typein").placeholder = T("type_ph");
-    if (G.room) { $("#g-room-badge").textContent = T("room") + " " + G.room.code; $("#l-info").textContent = T("vocab") + ": " + (G.room.title || ""); }
+    if (G.room) { $("#g-room-badge").textContent = T("room") + " " + G.room.code; var tt = (G.st && G.st.title) || ""; $("#l-info").textContent = tt ? T("vocab") + ": " + tt : ""; }
   }
   function myText(q) { var t = q.texts || {}; return t[effLang(G.myLang, G.st)] || t.en || t.vi || ""; }
   function myFlag(q) { var t = q.texts || {}, l = effLang(G.myLang, G.st); return FLAG[t[l] ? l : t.en ? "en" : "vi"]; }
@@ -203,14 +209,9 @@
 
   /* ---------- 2. trang chính ---------- */
   var picked = [];   /* [{table, id, title}] */
-  async function renderHome() {
-    show("s-home");
-    $("#h-host").hidden = !(G.profile && G.profile.is_admin);
-    if (G.profile && G.profile.is_admin) await loadTree();
-  }
+  function renderHome() { show("s-home"); }
   $("#h-go").addEventListener("click", function () { var c = $("#h-code").value.trim().toUpperCase(); if (c) { history.replaceState(null, "", "?room=" + c); joinRoom(c); } });
   $("#h-code").addEventListener("keydown", function (e) { if (e.key === "Enter") $("#h-go").click(); });
-  $("#h-mode").addEventListener("change", function () { $("#h-qs-wrap").hidden = this.value !== "kahoot"; });
   $("#h-hist").addEventListener("click", function () { renderHistory("me"); });
   $("#e-hist").addEventListener("click", function () { renderHistory("me"); });
 
@@ -252,27 +253,50 @@
     picked = picked.filter(function (p) { return !(p.table === t && p.id === id); });
     if (c.checked) picked.push({ table: t, id: id, title: c.dataset.title });
     paintPicked();
+    hostSetScope();
   });
   $("#h-tree").addEventListener("click", function (e) { if (e.target.closest(".g-pick")) e.stopPropagation(); });
   function paintPicked() {
-    $("#h-picked").innerHTML = picked.length ? picked.map(function (p) { return '<span class="g-chip">' + esc(p.title) + "</span>"; }).join("") : '<span class="g-sub">Chưa chọn nhánh nào.</span>';
+    $("#h-picked").innerHTML = picked.length ? picked.map(function (p) { return '<span class="g-chip">' + esc(p.title) + "</span>"; }).join("") : '<span class="g-sub">Chưa chọn chủ đề — mở "Chọn nhánh từ vựng…" bên dưới.</span>';
   }
 
-  $("#h-create").addEventListener("click", async function () {
-    if (!picked.length) { $("#h-cerr").textContent = "Chọn ít nhất 1 nhánh từ vựng."; return; }
-    $("#h-cerr").textContent = "Đang tải từ vựng…";
-    try {
-      await loadPool(picked);
-      var qt = $("#h-qtype").value, need = readyMsg(qt, $("#h-lang").value);
-      if (need) { $("#h-cerr").textContent = need; return; }
-      var code = await createRoom(picked, picked.map(function (p) { return p.title; }).join(" + "), {
-        mode: $("#h-mode").value, qtype: qt, minutes: +$("#h-min").value || 5, q_seconds: +$("#h-qs").value || 15, lang: $("#h-lang").value });
-      history.replaceState(null, "", "?room=" + code);
-      joinRoom(code);
-    } catch (e) { $("#h-cerr").textContent = "Lỗi: " + (e.message || e); }
-  });
+  /* PHÒNG CỐ ĐỊNH của host: lấy phòng mới nhất của host, chưa có thì tạo — mã/link dùng mãi */
+  async function openHostRoom() {
+    var r = await sb.from("game_rooms").select("code").eq("host_id", G.profile.id).order("created_at", { ascending: false }).limit(1);
+    var own = await sb.from("game_rooms").select("code").eq("code", DEFAULT_ROOM).eq("host_id", G.profile.id).maybeSingle();   /* phòng "TJ" ưu tiên */
+    var code = own.data ? own.data.code : r.data && r.data[0] ? r.data[0].code : await createRoom([], "", { mode: "kahoot", qtype: "meaning", minutes: 5, q_seconds: 15, lang: "vi" });
+    var sc = param("scope");   /* giữ chủ đề chọn từ chuột phải cho initHostLobby */
+    history.replaceState(null, "", "?room=" + code + (sc ? "&scope=" + encodeURIComponent(sc) + "&title=" + encodeURIComponent(param("title") || "") : ""));
+    return joinRoom(code);
+  }
+  /* host đổi chủ đề trong phòng chờ -> lưu vào phòng + tải trước kho từ để báo số từ/câu */
+  var scopeTimer = null;
+  function hostSetScope() {
+    if (!G.isHost || !G.st) return;
+    G.st.scope = picked.map(function (p) { return { table: p.table, id: p.id, title: p.title }; });
+    G.st.title = picked.map(function (p) { return p.title; }).join(" + ");
+    sb.from("game_rooms").update({ scope: G.st.scope, title: G.st.title }).eq("id", G.room.id).then(function () {});
+    push(); applyUI();
+    clearTimeout(scopeTimer);
+    $("#l-pool").textContent = G.st.scope.length ? "Đang tải từ vựng…" : "";
+    scopeTimer = setTimeout(async function () { await ensurePool(G.st.scope); if (G.st.phase === "lobby") paintPoolInfo(); }, 400);
+  }
+  function scopeKey(scope) { return JSON.stringify((scope || []).map(function (p) { return p.table + ":" + p.id; }).sort()); }
+  async function ensurePool(scope) {
+    var k = scopeKey(scope);
+    if (G.poolKey === k) return;
+    G.poolKey = k; decks = {};
+    if (!scope || !scope.length) { G.pool = []; G.gaps = []; return; }
+    await loadPool(scope);
+  }
+  function paintPoolInfo() {
+    $("#l-pool").textContent = G.st && G.st.scope && G.st.scope.length
+      ? G.pool.length + " từ khác nhau · có nghĩa: " + poolCounts() + " · 📝 " + G.gaps.length + " câu điền chỗ trống"
+      : "Chưa chọn chủ đề.";
+  }
   /* đủ dữ liệu để chơi dạng câu này chưa? (trả về lời nhắc cho host, "" = ổn) */
   function readyMsg(qt, lang) {
+    if (!G.st || !G.st.scope || !G.st.scope.length) return "Chọn chủ đề (nhánh từ vựng) trước đã.";
     var nm = poolFor(lang).length, ng = G.gaps.length;
     if ((qt === "meaning" || qt === "recall") && nm < 4) return "Chỉ có " + nm + " từ có nghĩa bằng tiếng đã chọn — cần ít nhất 4. (" + poolCounts() + ")";
     if (qt === "gap" && ng < 4) return "Phạm vi này chỉ có " + ng + " câu có chỗ trống trong bài đọc — cần ít nhất 4 (chọn Block/Page đã có bài đọc).";
@@ -418,11 +442,10 @@
     G.room = r.data;
     G.isHost = G.view !== "screen" && !!(G.profile && G.profile.is_admin && G.profile.id === G.room.host_id);
     applyUI();
-    if (G.room.status === "ended") return showSavedResults();
     $("#g-room-badge").hidden = false;
     if (G.isHost) {
-      if (!G.pool.length) { $("#l-pool").textContent = "Đang tải từ vựng…"; await loadPool(G.room.scope); }
       restoreHost();
+      if (G.st && G.st.scope) await ensurePool(G.st.scope);
     }
     connect();
     if (G.view === "screen") { show("s-screen"); $("#sc-code").textContent = code; paintScreen(); }
@@ -449,9 +472,10 @@
       if (s !== "SUBSCRIBED") return;
       if (G.view !== "screen") await track();
       if (G.isHost) {
-        if (!G.st) G.st = { phase: "lobby", mode: G.room.mode, qtype: G.room.qtype || "meaning", lang: G.room.meaning_lang || "vi", force: false, minutes: +G.room.minutes, qs: G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
+        if (!G.st) G.st = { phase: "lobby", scope: G.room.scope || [], title: G.room.title || "", mode: G.room.mode, qtype: G.room.qtype || "meaning", lang: G.room.meaning_lang || "vi", force: false, minutes: +G.room.minutes, qs: G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
         push();
         if (G.st.phase === "play") onState(pub());
+        else initHostLobby();
       } else G.ch.send({ type: "broadcast", event: "hello", payload: {} });   /* xin host gửi lại trạng thái hiện tại */
     });
   }
@@ -470,6 +494,20 @@
   }
 
   /* ---------- phòng chờ ---------- */
+  async function initHostLobby() {
+    var sc = param("scope");
+    if (sc) {   /* mở từ chuột phải trong WordLoop: ?scope=<table>:<id>&title=… -> thành chủ đề ván tới */
+      var i = sc.indexOf(":");
+      picked = [{ table: sc.slice(0, i), id: sc.slice(i + 1), title: param("title") || sc }];
+      history.replaceState(null, "", "?room=" + G.room.code);
+      hostSetScope();
+    } else {
+      picked = (G.st.scope || []).map(function (p) { return { table: p.table, id: p.id, title: p.title || p.id }; });
+      await ensurePool(G.st.scope);
+    }
+    renderLobby();
+    await loadTree();
+  }
   function renderLobby() {
     show("s-lobby");
     $("#l-code").textContent = G.room.code;
@@ -482,12 +520,14 @@
       $("#l-lang").value = roomLang(st); $("#l-teamn").value = String(st.teams || 0); $("#l-force").checked = !!st.force;
       $("#l-qs-wrap").hidden = $("#l-mode").value !== "kahoot";
       $("#l-teambtns").hidden = !(+$("#l-teamn").value);
-      $("#l-pool").textContent = G.pool.length + " từ khác nhau · có nghĩa: " + poolCounts() + " · 📝 " + G.gaps.length + " câu điền chỗ trống";
+      paintPoolInfo(); paintPicked();
     }
     paintLobbyPlayers();
   }
   function paintLobbyPlayers() {
     var st = G.st || {}, teams = +st.teams || 0, teamOf = st.teamOf || {};
+    var tt = st.title || ""; $("#l-info").textContent = tt ? T("vocab") + ": " + tt : "";
+    if (!G.isHost) $("#l-wait").textContent = G.online.some(function (p) { return p.host; }) ? T("wait_host") : T("host_away");
     $("#l-count").textContent = players().length;
     $("#l-teamhint").textContent = teams ? T("click_team") : "";
     $("#l-teams").innerHTML = teams ? teamSummary(st, false) : "";
@@ -556,6 +596,7 @@
   function push() { G.lastPush = Date.now(); if (G.ch) G.ch.send({ type: "broadcast", event: "state", payload: pub() }); saveHost(); }
   $("#l-start").addEventListener("click", async function () {
     if (!G.isHost) return;
+    if (G.st.scope && G.st.scope.length) await ensurePool(G.st.scope);
     var need = readyMsg(G.st.qtype, G.st.lang);
     if (need) { alert(need); return; }
     if (!players().length) { alert("Chưa có người chơi nào."); return; }
@@ -564,6 +605,9 @@
     players().forEach(function (p) { G.st.scores[p.id] = { s: 0, c: 0, w: 0, st: 0, best: 0 }; });
     G.endAt = Date.now() + G.st.minutes * 60000;
     await sb.from("game_rooms").update({ status: "playing", started_at: new Date().toISOString(), mode: G.st.mode, qtype: G.st.qtype, meaning_lang: G.st.lang, minutes: G.st.minutes, q_seconds: G.st.qs, team_mode: !!G.st.teams, teams: G.st.teams }).eq("id", G.room.id);
+    /* mỗi lần bắt đầu = 1 VÁN riêng (lịch sử xem theo ván) */
+    var mr = await sb.from("game_matches").insert({ room_id: G.room.id, title: G.st.title, scope: G.st.scope, mode: G.st.mode, qtype: G.st.qtype, meaning_lang: G.st.lang, minutes: G.st.minutes, q_seconds: G.st.qs, teams: G.st.teams || 0 }).select("id").single();
+    G.st.matchId = mr.data ? mr.data.id : null;
     if (G.st.mode === "kahoot") hostNextQ(); else { G.qUntil = 0; push(); }
     clearInterval(G.hostTimer);
     G.hostTimer = setInterval(hostTick, 250);
@@ -630,17 +674,18 @@
       var ranked = rankList(G.st.scores);
       if (ranked.length) {
         var rr = await sb.from("game_results").upsert(ranked.map(function (x) {
-          return { room_id: G.room.id, player_id: x.pid, team: G.st.teams ? (G.st.teamOf[x.pid] || null) : null, score: x.s, correct: x.c, wrong: x.w, best_streak: x.best, rank: x.rank };
-        }), { onConflict: "room_id,player_id" });
+          return { room_id: G.room.id, match_id: G.st.matchId, player_id: x.pid, team: G.st.teams ? (G.st.teamOf[x.pid] || null) : null, score: x.s, correct: x.c, wrong: x.w, best_streak: x.best, rank: x.rank };
+        }), { onConflict: "match_id,player_id" });
         if (rr.error) console.warn("game_results", rr.error);
       }
       for (var i = 0; i < G.answers.length; i += 500) {
         var ra = await sb.from("game_answers").insert(G.answers.slice(i, i + 500).map(function (a) {
-          return { room_id: G.room.id, player_id: a.pid, word_id: a.wid, term: a.term, correct: a.ok, ms: a.ms || null };
+          return { room_id: G.room.id, match_id: G.st.matchId, player_id: a.pid, word_id: a.wid, term: a.term, correct: a.ok, ms: a.ms || null };
         }));
         if (ra.error) console.warn("game_answers", ra.error);
       }
-      await sb.from("game_rooms").update({ status: "ended", ended_at: new Date().toISOString() }).eq("id", G.room.id);
+      if (G.st.matchId) await sb.from("game_matches").update({ ended_at: new Date().toISOString() }).eq("id", G.st.matchId);
+      await sb.from("game_rooms").update({ status: "lobby", ended_at: new Date().toISOString() }).eq("id", G.room.id);
     } catch (e) { console.warn("lưu kết quả lỗi", e); }
   }
   function rankList(scores) {
@@ -704,8 +749,8 @@
     if (!iPlay()) $("#p-msg").textContent = T("mc");
     if (s.mode === "free" && iPlay()) {
       /* host có thể đổi sang "Tự do" sau khi người chơi vào phòng -> lúc đó mới tải kho từ */
-      if (G.pool.length) freeNext();
-      else { $("#p-vi").textContent = T("loading"); loadPool(G.room.scope).then(freeNext); }
+      if (G.poolKey === scopeKey(s.scope) && G.pool.length) freeNext();
+      else { $("#p-vi").textContent = T("loading"); ensurePool(s.scope).then(freeNext); }
     }
   }
   function iPlay() { return !(G.isHost && !hostPlays()); }
@@ -887,10 +932,19 @@
     }).join("");
   }
 
+  $("#e-again").addEventListener("click", function () {
+    if (!G.isHost || !G.st) return;
+    G.st.phase = "lobby"; G.st.scores = {}; G.st.q = null; G.st.matchId = null;
+    G.answers = []; G.endAt = 0; G.qUntil = 0; G.lastN = -1;
+    push(); renderLobby();
+  });
+
   /* ---------- kết quả ---------- */
   function renderEnd(s) {
     show("s-end");
-    $("#e-info").textContent = (G.room.title || "") + " · " + modeLine(s) + " · " + s.minutes + "'";
+    $("#e-info").textContent = (s.title || "") + " · " + modeLine(s) + " · " + s.minutes + "'";
+    $("#e-again").hidden = !G.isHost || s.saved;
+    $("#e-wait").hidden = G.isHost || !!s.saved;
     $("#e-teams").innerHTML = +s.teams ? teamSummary(s, true) : "";
     var roster = s.roster || {};
     $("#e-board").innerHTML = rankList(s.scores).map(function (x) {
@@ -900,17 +954,19 @@
         '<span class="g-sub">✓' + x.c + " ✗" + x.w + " 🔥" + x.best + '</span><b class="g-score">' + x.s + "</b></li>";
     }).join("") || '<li class="g-sub">' + T("nobody") + "</li>";
   }
-  async function showSavedResults() {
-    var r = await sb.from("game_results").select("player_id,team,score,correct,wrong,best_streak,rank,game_players(name,name_no,avatar)").eq("room_id", G.room.id).order("rank");
+  async function showMatch(id) {
+    var mr = await sb.from("game_matches").select("*,game_rooms(code)").eq("id", id).maybeSingle();
+    if (!mr.data) { renderHome(); $("#h-err").textContent = T("no_room", { c: "" }); return; }
+    var M = mr.data;
+    G.room = { code: (M.game_rooms || {}).code || "", title: M.title };
+    var r = await sb.from("game_results").select("player_id,team,score,correct,wrong,best_streak,rank,game_players(name,name_no,avatar)").eq("match_id", id).order("rank");
     var scores = {}, roster = {}, teamOf = {};
     (r.data || []).forEach(function (x) {
       scores[x.player_id] = { s: x.score, c: x.correct, w: x.wrong, st: 0, best: x.best_streak };
       if (x.team) teamOf[x.player_id] = x.team;
       var p = x.game_players || {}; roster[x.player_id] = { name: p.name, no: p.name_no, avatar: p.avatar };
     });
-    var s = { phase: "end", mode: G.room.mode, qs: G.room.q_seconds, minutes: G.room.minutes, teams: G.room.teams || 0, teamOf: teamOf, scores: scores, roster: roster };
-    if (G.view === "screen") { $("#sc-code").textContent = G.room.code; return paintScreen(s); }
-    renderEnd(s);
+    renderEnd({ phase: "end", saved: true, title: M.title, mode: M.mode, qs: M.q_seconds, minutes: M.minutes, teams: M.teams || 0, teamOf: teamOf, scores: scores, roster: roster });
   }
 
   /* ---------- 📜 lịch sử & xếp hạng ---------- */
@@ -938,11 +994,11 @@
   }
   async function histMine() {
     if (!G.me) { $("#hi-body").innerHTML = '<p class="g-sub">' + T("no_name") + "</p>"; return; }
-    var r = await sb.from("game_results").select("room_id,team,score,rank,correct,wrong,best_streak,created_at,game_rooms(code,title,mode,qtype,meaning_lang,minutes,teams)").eq("player_id", G.me.id).order("created_at", { ascending: false }).limit(200);
+    var r = await sb.from("game_results").select("match_id,team,score,rank,correct,wrong,best_streak,created_at,game_matches(title,mode,qtype,meaning_lang,minutes,teams)").eq("player_id", G.me.id).not("match_id", "is", null).order("created_at", { ascending: false }).limit(200);
     if (r.error) throw r.error;
     if (!r.data.length) { $("#hi-body").innerHTML = '<p class="g-sub">' + T("no_games") + "</p>"; return; }
-    var cnt = await sb.from("game_results").select("room_id").in("room_id", r.data.map(function (x) { return x.room_id; }));
-    var nIn = {}; (cnt.data || []).forEach(function (x) { nIn[x.room_id] = (nIn[x.room_id] || 0) + 1; });
+    var cnt = await sb.from("game_results").select("match_id").in("match_id", r.data.map(function (x) { return x.match_id; }));
+    var nIn = {}; (cnt.data || []).forEach(function (x) { nIn[x.match_id] = (nIn[x.match_id] || 0) + 1; });
     var best = r.data.reduce(function (m, x) { return Math.max(m, x.score); }, 0);
     var wins = r.data.filter(function (x) { return x.rank === 1; }).length;
     var streak = r.data.reduce(function (m, x) { return Math.max(m, x.best_streak); }, 0);
@@ -951,10 +1007,10 @@
       '<div class="g-stats"><div><b>' + r.data.length + "</b><span>" + T("s_games") + "</span></div><div><b>" + wins + "</b><span>" + T("s_wins") + "</span></div><div><b>" + best + "</b><span>" + T("s_best") + "</span></div><div><b>🔥" + streak + "</b><span>" + T("s_streak") + "</span></div></div>" +
       '<table class="g-table"><thead><tr><th>' + T("h_date") + "</th><th>" + T("h_topic") + "</th><th>" + T("h_score") + "</th><th>" + T("h_rank") + "</th><th>" + T("h_rw") + "</th></tr></thead><tbody>" +
       r.data.map(function (x) {
-        var rm = x.game_rooms || {}, d = new Date(x.created_at);
-        return "<tr><td>" + d.toLocaleDateString() + " " + d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + '</td><td><a href="?room=' + esc(rm.code) + '">' + esc(rm.title || rm.code) + "</a>" +
+        var rm = x.game_matches || {}, d = new Date(x.created_at);
+        return "<tr><td>" + d.toLocaleDateString() + " " + d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + '</td><td><a href="?match=' + esc(x.match_id) + '">' + esc(rm.title || "—") + "</a>" +
           '<div class="g-sub">' + (QT[rm.qtype] || "") + " " + (FLAG[rm.meaning_lang] || "") + " " + (rm.mode === "kahoot" ? T("m_kahoot") : T("m_free")) + (x.team && TEAM_C[x.team] ? " · " + TEAM_C[x.team].e + " " + esc(teamName(x.team)) : "") + "</div></td><td><b>" + x.score + (x.score === best ? " 🏆" : "") + "</b></td><td>" +
-          (x.rank === 1 ? "🥇" : x.rank) + "/" + (nIn[x.room_id] || "?") + "</td><td>✓" + x.correct + " ✗" + x.wrong + "</td></tr>";
+          (x.rank === 1 ? "🥇" : x.rank) + "/" + (nIn[x.match_id] || "?") + "</td><td>✓" + x.correct + " ✗" + x.wrong + "</td></tr>";
       }).join("") + "</tbody></table>";
   }
 
@@ -978,18 +1034,13 @@
     if (r.data) G.profile = r.data;
   }
   async function route() {
-    var room = param("room"), scope = param("scope");
+    var room = param("room"), match = param("match");
+    if (match) return showMatch(match);                        /* xem lại 1 ván đã lưu (từ lịch sử) */
     if (G.view === "screen" && room) return joinRoom(room);   /* màn hình chung không cần tên */
     if (!G.me) return renderNameScreen();
     if (room) return joinRoom(room);
-    await renderHome();
-    /* mở từ chuột phải trong WordLoop: ?scope=<table>:<id>&title=… -> chọn sẵn */
-    if (scope && G.profile && G.profile.is_admin && !picked.length) {
-      var i = scope.indexOf(":");
-      picked = [{ table: scope.slice(0, i), id: scope.slice(i + 1), title: param("title") || scope }];
-      paintPicked();
-      $$("[data-pick]").forEach(function (c) { if (c.dataset.pick === picked[0].table && c.dataset.id === picked[0].id) c.checked = true; });
-    }
+    if (G.profile && G.profile.is_admin) return openHostRoom();   /* host: vào thẳng PHÒNG CỐ ĐỊNH (kể cả mở từ chuột phải ?scope=) */
+    return joinRoom(DEFAULT_ROOM);   /* người chơi: link trần = phòng của TJ */
   }
   (async function boot() {
     G.view = param("view");
