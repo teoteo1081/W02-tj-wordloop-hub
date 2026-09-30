@@ -1,19 +1,25 @@
 /* game.js — 🎮 PHÒNG GAME CHƠI CHUNG (TJ 2026-09-30)
    ---------------------------------------------------------------
    Đặc tả: README.md "Việc còn dang dở" > PHÒNG GAME. Bảng: tools/game_schema.sql.
-   - Chỉ admin WordLoop (đăng nhập qua link ?u=, xem auth.js) mở được phòng.
+   - Chỉ admin WordLoop (đăng nhập qua link ?u=, xem auth.js) mở được phòng + bấm Bắt đầu.
      Người chơi vào bằng link/mã phòng, chỉ cần gõ tên (máy nhớ, trùng tên -> #2, #3…).
    - Đồng bộ bằng Supabase Realtime, kênh "game:<MÃ>":
-       · presence  = ai đang ở trong phòng (tên, ảnh, có chơi không)
+       · presence  = ai đang ở trong phòng (tên, ảnh, có chơi không, tiếng)
        · broadcast "state" (host -> mọi người): pha, câu hỏi, điểm, đội, thời gian còn lại
        · broadcast "ans"   (người chơi -> host): câu trả lời
        · broadcast "hello" (người mới vào / màn hình chung -> host): xin gửi lại trạng thái
-     HOST LÀ NGUỒN SỰ THẬT DUY NHẤT: chỉ host chấm điểm + đếm giờ. Host tải lại trang giữa
-     trận -> khôi phục từ localStorage (tjwl_game_host_<MÃ>), không mất điểm.
+     HOST LÀ NGUỒN SỰ THẬT DUY NHẤT: chỉ host chấm điểm + đếm giờ, gửi nhịp 3s/lần.
+     Host tải lại trang giữa trận -> khôi phục từ localStorage (tjwl_game_host_<MÃ>), không mất điểm.
    - 2 kiểu: "kahoot" (cả phòng cùng 1 câu) | "free" (mỗi người tự làm câu riêng).
-   - Điểm: đúng = 100 + thưởng tốc độ tối đa 50; chuỗi đúng ≥3 thì ×1.5. Sai = 0, mất chuỗi.
+   - 3 dạng câu (host chọn, hoặc trộn): "meaning" nghĩa -> chọn từ | "gap" điền chỗ trống câu trong
+     BÀI ĐỌC của Block (blocks.context_passage, [term] đánh dấu — cùng cách tách câu với
+     Context.gapSentences) | "recall" gõ từ tiếng Anh từ nghĩa (Active Recall, chấm như w.normalizeAnswer).
+   - Điểm TÍNH THEO CÂU (TJ 2026-09-30): đúng +100, sai/bỏ = 0. Chuỗi 🔥 chỉ để xem, không nhân điểm.
+     (⚡ "nhanh nhất" chỉ để khoe, không cộng điểm — phần liên quan thời gian để sau.)
    - Đội: host chọn 2-4 đội, chia đều tự động hoặc bấm tên để đổi đội; điểm đội = TỔNG
      (đội lệch số người thì hiện thêm điểm trung bình).
+   - Mỗi người chọn TIẾNG CỦA MÌNH (ô 🌐): đổi chữ giao diện + tiếng của nghĩa. Host 🔒 ép thì nghĩa
+     cả phòng 1 tiếng (giao diện vẫn theo từng người). Cả phòng luôn cùng câu + cùng đáp án tiếng Anh.
    - 📺 Màn hình chung: ?room=MÃ&view=screen — chỉ xem (không tính là người chơi).
    - Tiến trình học (word_progress) CHỈ ghi cho người chơi đang đăng nhập hồ sơ admin (TJ) —
      attempts/correct/mastered/❌wrong_open, KHÔNG đụng SRS/Done (giống màn Ôn riêng).
@@ -29,12 +35,45 @@
   var LS_ME = "tjwl_game_player_v1";
   var LS_LINK = "tjwl_link_user_id_v1";          /* hồ sơ WordLoop đăng nhập qua link (auth.js) */
   var LS_HOST = "tjwl_game_host_";               /* + MÃ: host lưu trạng thái trận để tải lại trang không mất điểm */
+  var LS_LANG = "tjwl_game_lang_v1";             /* tiếng người chơi chọn (riêng máy): room | vi | en | es | zh */
+  var META_SEP = "\n<<<TJWL_META>>>\n";          /* = Context.META_SEP (js/context.js) */
   var AVATARS = ["🐣","🦊","🐼","🐨","🦁","🐯","🐸","🐙","🦉","🐝","🌟","🚀","📚","🎯","🔥","💎","🍀","⚡","🐧","🦄","🐶","🐱","🐰","🐻","🐵","🦋","🌈","🍉","🍩","🎸"];
-  var TEAMS = [null, { n: "Đội Đỏ", c: "#d9695f", e: "🔴" }, { n: "Đội Xanh", c: "#5b9bd9", e: "🔵" }, { n: "Đội Lá", c: "#4fae82", e: "🟢" }, { n: "Đội Vàng", c: "#d9a03c", e: "🟡" }];
+  var TEAM_C = [null, { c: "#d9695f", e: "🔴", k: "team_red" }, { c: "#5b9bd9", e: "🔵", k: "team_blue" }, { c: "#4fae82", e: "🟢", k: "team_green" }, { c: "#d9a03c", e: "🟡", k: "team_yellow" }];
   var FLAG = { vi: "🇻🇳", en: "🇺🇸", es: "🇪🇸", zh: "🇨🇳" };
   var MASTER_T = cfg.MASTER_THRESHOLD || 0.8, MASTER_N = cfg.MASTER_MIN_ATTEMPTS || 3;
-  var REVEAL_MS = 3500, FREE_LIMIT_MS = 8000, HOST_LOST_MS = 7000, HEARTBEAT_MS = 3000;
-  var LS_LANG = "tjwl_game_lang_v1";   /* tiếng nghĩa người chơi tự chọn (riêng máy): room | vi | en | es | zh */
+  var POINTS = 100, REVEAL_MS = 3500, HOST_LOST_MS = 7000, HEARTBEAT_MS = 3000;
+
+  /* ---------- chữ giao diện 4 tiếng (người chơi); phần cài đặt của host để tiếng Việt ---------- */
+  var UI = {
+    vi: { lang_room: "🌐 Theo phòng", name_h: "Bạn tên gì?", name_sub: "Máy này sẽ nhớ tên cho lần sau — không cần email.", name_ph: "Nhập tên…", avatar_h: "Chọn ảnh đại diện", upload: "📷 Tải ảnh của bạn", save: "Lưu & tiếp tục →", need_name: "Nhập tên trước nhé.", saving: "Đang lưu…", uploading: "Đang tải ảnh…", not_image: "File này không phải ảnh.",
+      join_h: "Vào phòng", code_ph: "MÃ PHÒNG", go: "Vào", hist_btn: "📜 Lịch sử & Xếp hạng", no_room: "Không tìm thấy phòng {c}.", room: "Phòng", room_code: "Mã phòng", copy_link: "🔗 Copy link mời", copied: "✓ Đã copy", screen_btn: "📺 Màn hình chung", players: "Người chơi", vocab: "Từ vựng", wait_host: "Chờ host bắt đầu…", host_lost: "⚠ Host mất kết nối — chờ host quay lại…",
+      m_kahoot: "Cùng 1 câu", m_free: "Tự do", sec_q: "giây/câu", q_meaning: "Chọn từ tiếng Anh đúng nghĩa", q_gap: "Chọn từ điền vào chỗ trống", q_recall: "Gõ từ tiếng Anh của nghĩa này", type_ph: "Gõ từ tiếng Anh…", submit: "Gửi",
+      picked: "Đã trả lời — chờ mọi người…", answered: "{n} người đã trả lời", right: "✓ Đúng! +{p}", wrong: "✗ Sai — đáp án: {a}", timeout: "⏱ Hết giờ — đáp án: {a}", answer: "Đáp án: {a}", fastest: "⚡ Nhanh nhất: {n}", n_right: "{n} người đúng", time_up: "⏱ Hết giờ — chờ tổng kết…", loading: "Đang tải từ vựng…", mc: "Bạn đang làm MC — mở 📺 Màn hình chung để cả nhóm cùng xem.",
+      results: "🏁 Kết quả", back: "← Về trang game", nobody: "Chưa ai trả lời câu nào.", ppl: "người", avg: "TB", team_red: "Đội Đỏ", team_blue: "Đội Xanh", team_green: "Đội Lá", team_yellow: "Đội Vàng", click_team: "· host bấm tên để đổi đội",
+      tab_me: "Của tôi", tab_week: "Tuần này", tab_all: "Mọi thời gian", h_player: "Người chơi", h_total: "Tổng điểm", h_games: "Trận", h_best: "Cao nhất", h_acc: "Đúng", h_date: "Ngày", h_topic: "Chủ đề", h_score: "Điểm", h_rank: "Hạng", h_rw: "Đúng/Sai",
+      s_games: "trận", s_wins: "lần 🥇", s_best: "kỷ lục điểm", s_streak: "chuỗi dài nhất", no_name: "Bạn chưa đặt tên trên máy này.", no_games: "Bạn chưa chơi trận nào.", no_week: "Chưa có trận nào trong 7 ngày qua.", no_all: "Chưa có trận nào.", loading2: "Đang tải…", join_at: "Vào phòng tại", race: "🏁 Đua tự do!", ended: "🏁 Kết thúc!", q_no: "Câu {n}", err: "Lỗi" },
+    en: { lang_room: "🌐 Room language", name_h: "What's your name?", name_sub: "This device will remember you next time — no email needed.", name_ph: "Enter your name…", avatar_h: "Choose an avatar", upload: "📷 Upload your photo", save: "Save & continue →", need_name: "Please enter a name.", saving: "Saving…", uploading: "Uploading…", not_image: "That file is not an image.",
+      join_h: "Join a room", code_ph: "ROOM CODE", go: "Join", hist_btn: "📜 History & Rankings", no_room: "Room {c} not found.", room: "Room", room_code: "Room code", copy_link: "🔗 Copy invite link", copied: "✓ Copied", screen_btn: "📺 Shared screen", players: "Players", vocab: "Vocabulary", wait_host: "Waiting for the host to start…", host_lost: "⚠ Host disconnected — waiting for the host to return…",
+      m_kahoot: "Same question", m_free: "Free play", sec_q: "s/question", q_meaning: "Choose the English word for this meaning", q_gap: "Choose the word that fills the blank", q_recall: "Type the English word for this meaning", type_ph: "Type the English word…", submit: "Submit",
+      picked: "Answered — waiting for others…", answered: "{n} answered", right: "✓ Correct! +{p}", wrong: "✗ Wrong — answer: {a}", timeout: "⏱ Time's up — answer: {a}", answer: "Answer: {a}", fastest: "⚡ Fastest: {n}", n_right: "{n} correct", time_up: "⏱ Time's up — waiting for results…", loading: "Loading vocabulary…", mc: "You are the MC — open 📺 Shared screen so everyone can watch.",
+      results: "🏁 Results", back: "← Back to game home", nobody: "Nobody answered yet.", ppl: "players", avg: "avg", team_red: "Red Team", team_blue: "Blue Team", team_green: "Green Team", team_yellow: "Yellow Team", click_team: "· host taps a name to switch team",
+      tab_me: "Mine", tab_week: "This week", tab_all: "All time", h_player: "Player", h_total: "Total", h_games: "Games", h_best: "Best", h_acc: "Correct", h_date: "Date", h_topic: "Topic", h_score: "Score", h_rank: "Rank", h_rw: "Right/Wrong",
+      s_games: "games", s_wins: "🥇 wins", s_best: "best score", s_streak: "longest streak", no_name: "You haven't set a name on this device.", no_games: "You haven't played yet.", no_week: "No games in the last 7 days.", no_all: "No games yet.", loading2: "Loading…", join_at: "Join at", race: "🏁 Free race!", ended: "🏁 Finished!", q_no: "Question {n}", err: "Error" },
+    es: { lang_room: "🌐 Idioma de la sala", name_h: "¿Cómo te llamas?", name_sub: "Este dispositivo recordará tu nombre — sin correo.", name_ph: "Escribe tu nombre…", avatar_h: "Elige un avatar", upload: "📷 Sube tu foto", save: "Guardar y continuar →", need_name: "Escribe un nombre primero.", saving: "Guardando…", uploading: "Subiendo…", not_image: "Ese archivo no es una imagen.",
+      join_h: "Entrar a una sala", code_ph: "CÓDIGO", go: "Entrar", hist_btn: "📜 Historial y ranking", no_room: "No se encontró la sala {c}.", room: "Sala", room_code: "Código de sala", copy_link: "🔗 Copiar enlace", copied: "✓ Copiado", screen_btn: "📺 Pantalla compartida", players: "Jugadores", vocab: "Vocabulario", wait_host: "Esperando a que el anfitrión empiece…", host_lost: "⚠ El anfitrión se desconectó — esperando a que vuelva…",
+      m_kahoot: "Misma pregunta", m_free: "Libre", sec_q: "s/pregunta", q_meaning: "Elige la palabra en inglés de este significado", q_gap: "Elige la palabra que completa el espacio", q_recall: "Escribe la palabra en inglés de este significado", type_ph: "Escribe la palabra en inglés…", submit: "Enviar",
+      picked: "Respondido — esperando a los demás…", answered: "{n} respondieron", right: "✓ ¡Correcto! +{p}", wrong: "✗ Incorrecto — respuesta: {a}", timeout: "⏱ Se acabó el tiempo — respuesta: {a}", answer: "Respuesta: {a}", fastest: "⚡ Más rápido: {n}", n_right: "{n} acertaron", time_up: "⏱ Se acabó el tiempo — esperando resultados…", loading: "Cargando vocabulario…", mc: "Eres el presentador — abre 📺 Pantalla compartida para que todos vean.",
+      results: "🏁 Resultados", back: "← Volver", nobody: "Nadie ha respondido todavía.", ppl: "jugadores", avg: "prom.", team_red: "Equipo Rojo", team_blue: "Equipo Azul", team_green: "Equipo Verde", team_yellow: "Equipo Amarillo", click_team: "· el anfitrión toca un nombre para cambiar de equipo",
+      tab_me: "Mío", tab_week: "Esta semana", tab_all: "Siempre", h_player: "Jugador", h_total: "Total", h_games: "Partidas", h_best: "Mejor", h_acc: "Aciertos", h_date: "Fecha", h_topic: "Tema", h_score: "Puntos", h_rank: "Puesto", h_rw: "Bien/Mal",
+      s_games: "partidas", s_wins: "veces 🥇", s_best: "récord", s_streak: "racha más larga", no_name: "Aún no tienes nombre en este dispositivo.", no_games: "Aún no has jugado.", no_week: "No hubo partidas en los últimos 7 días.", no_all: "Aún no hay partidas.", loading2: "Cargando…", join_at: "Entra en", race: "🏁 ¡Carrera libre!", ended: "🏁 ¡Terminado!", q_no: "Pregunta {n}", err: "Error" },
+    zh: { lang_room: "🌐 跟随房间", name_h: "你叫什么名字？", name_sub: "本设备会记住你的名字——无需邮箱。", name_ph: "输入名字…", avatar_h: "选择头像", upload: "📷 上传照片", save: "保存并继续 →", need_name: "请先输入名字。", saving: "保存中…", uploading: "上传中…", not_image: "这个文件不是图片。",
+      join_h: "加入房间", code_ph: "房间码", go: "加入", hist_btn: "📜 历史与排名", no_room: "找不到房间 {c}。", room: "房间", room_code: "房间码", copy_link: "🔗 复制邀请链接", copied: "✓ 已复制", screen_btn: "📺 共享屏幕", players: "玩家", vocab: "词汇", wait_host: "等待主持人开始…", host_lost: "⚠ 主持人断线了——等待主持人回来…",
+      m_kahoot: "同一题", m_free: "自由模式", sec_q: "秒/题", q_meaning: "选出这个意思的英文单词", q_gap: "选出填入空格的单词", q_recall: "输入这个意思的英文单词", type_ph: "输入英文单词…", submit: "提交",
+      picked: "已作答——等待其他人…", answered: "{n} 人已作答", right: "✓ 正确！+{p}", wrong: "✗ 错误——答案：{a}", timeout: "⏱ 时间到——答案：{a}", answer: "答案：{a}", fastest: "⚡ 最快：{n}", n_right: "{n} 人答对", time_up: "⏱ 时间到——等待结果…", loading: "正在加载词汇…", mc: "你是主持人——打开 📺 共享屏幕让大家一起看。",
+      results: "🏁 结果", back: "← 返回", nobody: "还没有人作答。", ppl: "人", avg: "平均", team_red: "红队", team_blue: "蓝队", team_green: "绿队", team_yellow: "黄队", click_team: "· 主持人点名字可换队",
+      tab_me: "我的", tab_week: "本周", tab_all: "全部", h_player: "玩家", h_total: "总分", h_games: "场次", h_best: "最高分", h_acc: "正确率", h_date: "日期", h_topic: "主题", h_score: "分数", h_rank: "名次", h_rw: "对/错",
+      s_games: "场", s_wins: "次 🥇", s_best: "最高分", s_streak: "最长连对", no_name: "你还没有在本设备设置名字。", no_games: "你还没有玩过。", no_week: "最近 7 天没有比赛。", no_all: "还没有比赛。", loading2: "加载中…", join_at: "加入地址", race: "🏁 自由赛跑！", ended: "🏁 结束！", q_no: "第 {n} 题", err: "错误" }
+  };
 
   var G = {
     me: null,          /* {id, name, name_no, avatar} */
@@ -42,42 +81,56 @@
     view: null,        /* "screen" = 📺 màn hình chung */
     room: null, ch: null, isHost: false,
     pool: [],          /* [{wid, term, block, pos, m:{vi,en,es,zh}}] */
+    gaps: [],          /* [{wid, term, block, text:"... {{GAP}} ..."}] từ bài đọc của Block */
     online: [],        /* presence */
     st: null,          /* state mới nhất (host tự giữ, người khác nhận qua broadcast) */
     endAt: 0, qUntil: 0, qUntilLocal: 0, revealUntil: 0, tick: null, hostTimer: null,
     answers: [],       /* host gom: {pid, wid, term, ok, ms} */
-    myQ: null, myQStart: 0, lastN: -1, myChoice: null, revealedN: -1, myStreak: 0,
-    myLang: "room", lastState: 0
+    myQ: null, myQStart: 0, lastN: -1, myChoice: null, revealedN: -1,
+    myLang: "room", lastState: 0, lastPush: 0
   };
-  /* Mỗi người tự chọn tiếng của NGHĨA (người Việt đọc tiếng Việt, người Trung đọc 中文…) — cả phòng vẫn cùng
-     1 câu + cùng 4 đáp án tiếng Anh nên vẫn đấu công bằng. "room" = theo tiếng host chọn cho phòng. */
-  function effLang(pref, st) {
-    var room = (st && st.lang) || (G.room && G.room.meaning_lang) || "vi";
-    return st && st.force ? room : pref && pref !== "room" ? pref : room;   /* host "🔒 ép" -> cả phòng 1 tiếng */
-  }
-  function myText(q) { var t = q.texts || {}; return t[effLang(G.myLang, G.st)] || t.en || t.vi || q.text || ""; }
-  function myFlag(q) { var t = q.texts || {}, l = effLang(G.myLang, G.st); return FLAG[t[l] ? l : t.en ? "en" : "vi"]; }
 
   /* ---------- tiện ích ---------- */
   function show(id) { $$(".g-screen").forEach(function (s) { s.hidden = s.id !== id; }); document.body.classList.toggle("big", id === "s-screen"); }
   function norm(t) { return String(t || "").toLowerCase().replace(/\s+/g, " ").trim(); }
+  /* chấm câu GÕ TAY giống WordLoop (w.normalizeAnswer): bỏ dấu câu/ngoặc, thường hoá, gộp khoảng trắng */
+  function normAns(s) { return String(s || "").toLowerCase().trim().replace(/[.,!?;:"'`()\[\]]/g, "").replace(/\s+/g, " "); }
+  function typedOk(typed, ans) {   /* "subscribe (to)": gõ "subscribe to" hoặc "subscribe" đều đúng */
+    var t = normAns(typed); if (!t) return false;
+    return t === normAns(ans) || t === normAns(String(ans).replace(/\([^)]*\)/g, " "));
+  }
   function clean(t) { return String(t || "").trim(); }
   function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   function fmt(ms) { ms = Math.max(0, ms); var s = Math.ceil(ms / 1000); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
   function label(p) { return p ? esc(p.name) + (p.no > 1 ? ' <span class="g-no">#' + p.no + "</span>" : "") : "?"; }
+  function plain(p) { return p ? p.name + (p.no > 1 ? " #" + p.no : "") : "?"; }
   function avatar(a, cls) { return a && /^https?:/.test(a) ? '<img class="g-av ' + (cls || "") + '" src="' + esc(a) + '" alt="">' : '<span class="g-av ' + (cls || "") + '">' + esc(a || "🐣") + "</span>"; }
   function readLS(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
   function writeLS(k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
   function param(k) { return new URLSearchParams(location.search).get(k); }
   function roomLink(code, screen) { return location.origin + location.pathname + "?room=" + code + (screen ? "&view=screen" : ""); }
-  function teamDot(t) { return t && TEAMS[t] ? '<span class="g-tdot" style="background:' + TEAMS[t].c + '" title="' + TEAMS[t].n + '"></span>' : ""; }
-  /* điểm 1 câu đúng: 100 + thưởng tốc độ (tối đa 50, nhanh ngay = 50, sát hết giờ = 0); chuỗi đúng ≥3 thì ×1.5 */
-  function points(ms, limit, streakAfter) {
-    var bonus = Math.round(50 * Math.max(0, 1 - (ms || limit) / limit));
-    var mult = streakAfter >= 3 ? 1.5 : 1;
-    return { p: Math.round((100 + bonus) * mult), boost: mult > 1 };
+  function teamName(t) { return TEAM_C[t] ? T(TEAM_C[t].k) : ""; }
+  function teamDot(t) { return t && TEAM_C[t] ? '<span class="g-tdot" style="background:' + TEAM_C[t].c + '" title="' + esc(teamName(t)) + '"></span>' : ""; }
+
+  /* Tiếng của TỪNG người: đổi chữ giao diện + tiếng của nghĩa ("room" = theo tiếng host chọn).
+     Host 🔒 ép -> NGHĨA cả phòng 1 tiếng, còn chữ giao diện vẫn theo từng người. */
+  function roomLang(st) { return (st && st.lang) || (G.room && G.room.meaning_lang) || "vi"; }
+  function uiLang() { return G.myLang && G.myLang !== "room" ? G.myLang : G.view === "screen" || G.room ? roomLang(G.st) : "vi"; }
+  function effLang(pref, st) { return st && st.force ? roomLang(st) : pref && pref !== "room" ? pref : roomLang(st); }
+  function T(k, vars) {
+    var s = (UI[uiLang()] || UI.vi)[k]; if (s == null) s = UI.vi[k] || k;
+    if (vars) s = s.replace(/\{(\w+)\}/g, function (_, x) { return vars[x] == null ? "" : vars[x]; });
+    return s;
   }
-  function gainText(g) { return g ? "+" + g.p + (g.boost ? " 🔥×1.5" : "") : ""; }
+  function applyUI() {
+    document.documentElement.lang = uiLang();
+    $$("[data-t]").forEach(function (el) { el.textContent = T(el.dataset.t); });
+    $$("[data-tp]").forEach(function (el) { el.placeholder = T(el.dataset.tp); });
+    $("#p-typein").placeholder = T("type_ph");
+    if (G.room) { $("#g-room-badge").textContent = T("room") + " " + G.room.code; $("#l-info").textContent = T("vocab") + ": " + (G.room.title || ""); }
+  }
+  function myText(q) { var t = q.texts || {}; return t[effLang(G.myLang, G.st)] || t.en || t.vi || ""; }
+  function myFlag(q) { var t = q.texts || {}, l = effLang(G.myLang, G.st); return FLAG[t[l] ? l : t.en ? "en" : "vi"]; }
 
   /* ---------- 1. tên + ảnh ---------- */
   var pickedAvatar = null;
@@ -101,7 +154,7 @@
   /* ảnh tự tải: thu nhỏ còn 128×128 ngay trên máy rồi mới gửi lên (bucket game-avatars, ≤300KB) */
   $("#n-file").addEventListener("change", function () {
     var f = this.files && this.files[0]; if (!f) return;
-    $("#n-err").textContent = "Đang tải ảnh…";
+    $("#n-err").textContent = T("uploading");
     var img = new Image();
     img.onload = function () {
       var c = document.createElement("canvas"); c.width = c.height = 128;
@@ -110,19 +163,19 @@
       c.toBlob(async function (blob) {
         var path = "av-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8) + ".webp";
         var r = await sb.storage.from("game-avatars").upload(path, blob, { contentType: "image/webp" });
-        if (r.error) { $("#n-err").textContent = "Không tải được ảnh: " + r.error.message; return; }
+        if (r.error) { $("#n-err").textContent = T("err") + ": " + r.error.message; return; }
         pickedAvatar = sb.storage.from("game-avatars").getPublicUrl(path).data.publicUrl;
         $("#n-err").textContent = ""; paintAvatars();
       }, "image/webp", 0.85);
       URL.revokeObjectURL(img.src);
     };
-    img.onerror = function () { $("#n-err").textContent = "File này không phải ảnh."; };
+    img.onerror = function () { $("#n-err").textContent = T("not_image"); };
     img.src = URL.createObjectURL(f);
   });
   $("#n-save").addEventListener("click", async function () {
     var name = $("#n-name").value.trim().replace(/\s+/g, " ");
-    if (!name) { $("#n-err").textContent = "Nhập tên trước nhé."; return; }
-    $("#n-err").textContent = "Đang lưu…";
+    if (!name) { $("#n-err").textContent = T("need_name"); return; }
+    $("#n-err").textContent = T("saving");
     try {
       var same = G.me && G.me.id && norm(G.me.name) === norm(name);
       var no = same ? G.me.name_no : 1;
@@ -140,7 +193,7 @@
       writeLS(LS_ME, G.me); paintMe();
       $("#n-err").textContent = "";
       route();
-    } catch (e) { $("#n-err").textContent = "Lỗi: " + (e.message || e); }
+    } catch (e) { $("#n-err").textContent = T("err") + ": " + (e.message || e); }
   });
   function paintMe() {
     var b = $("#g-me"); b.hidden = !G.me;
@@ -209,22 +262,30 @@
     if (!picked.length) { $("#h-cerr").textContent = "Chọn ít nhất 1 nhánh từ vựng."; return; }
     $("#h-cerr").textContent = "Đang tải từ vựng…";
     try {
-      G.pool = await loadPool(picked);
-      var n = poolFor($("#h-lang").value).length;
-      if (n < 4) { $("#h-cerr").textContent = "Nhánh này chỉ có " + n + " từ có nghĩa bằng tiếng đã chọn — cần ít nhất 4. (" + poolCounts() + ")"; return; }
+      await loadPool(picked);
+      var qt = $("#h-qtype").value, need = readyMsg(qt, $("#h-lang").value);
+      if (need) { $("#h-cerr").textContent = need; return; }
       var code = await createRoom(picked, picked.map(function (p) { return p.title; }).join(" + "), {
-        mode: $("#h-mode").value, minutes: +$("#h-min").value || 5, q_seconds: +$("#h-qs").value || 15, lang: $("#h-lang").value });
+        mode: $("#h-mode").value, qtype: qt, minutes: +$("#h-min").value || 5, q_seconds: +$("#h-qs").value || 15, lang: $("#h-lang").value });
       history.replaceState(null, "", "?room=" + code);
       joinRoom(code);
     } catch (e) { $("#h-cerr").textContent = "Lỗi: " + (e.message || e); }
   });
+  /* đủ dữ liệu để chơi dạng câu này chưa? (trả về lời nhắc cho host, "" = ổn) */
+  function readyMsg(qt, lang) {
+    var nm = poolFor(lang).length, ng = G.gaps.length;
+    if ((qt === "meaning" || qt === "recall") && nm < 4) return "Chỉ có " + nm + " từ có nghĩa bằng tiếng đã chọn — cần ít nhất 4. (" + poolCounts() + ")";
+    if (qt === "gap" && ng < 4) return "Phạm vi này chỉ có " + ng + " câu có chỗ trống trong bài đọc — cần ít nhất 4 (chọn Block/Page đã có bài đọc).";
+    if (qt === "mix" && nm < 4) return "Chỉ có " + nm + " từ có nghĩa — cần ít nhất 4.";
+    return "";
+  }
 
   async function createRoom(scope, title, set) {
     var ABC = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     for (var k = 0; k < 5; k++) {
       var code = ""; for (var i = 0; i < 5; i++) code += ABC[Math.floor(Math.random() * ABC.length)];
       var r = await sb.from("game_rooms").insert({
-        code: code, host_id: G.profile.id, title: title, mode: set.mode, minutes: set.minutes, q_seconds: set.q_seconds, meaning_lang: set.lang,
+        code: code, host_id: G.profile.id, title: title, mode: set.mode, qtype: set.qtype, minutes: set.minutes, q_seconds: set.q_seconds, meaning_lang: set.lang,
         scope: scope.map(function (p) { return { table: p.table, id: p.id, title: p.title }; })
       }).select().single();
       if (!r.error) return code;
@@ -233,7 +294,7 @@
     throw new Error("không tạo được mã phòng");
   }
 
-  /* ---------- từ vựng theo phạm vi: scope -> Block -> words (lọc trùng theo chữ) ---------- */
+  /* ---------- từ vựng + bài đọc theo phạm vi: scope -> Block -> words (lọc trùng theo chữ) ---------- */
   async function inIds(table, cols, key, ids) {
     var out = [];
     for (var i = 0; i < ids.length; i += 80) {
@@ -262,48 +323,105 @@
     var secs = by("sections").concat(nbs.length ? ids(await inIds("sections", "id", "notebook_id", nbs)) : []);
     var pages = by("pages").concat(secs.length ? ids(await inIds("pages", "id", "section_id", secs)) : []);
     var bats = by("batches").concat(pages.length ? ids(await inIds("batches", "id", "page_id", pages)) : []);
-    var blks = by("blocks").concat(bats.length ? ids(await inIds("blocks", "id", "batch_id", bats)) : []);
+    var blkRows = [];
+    if (bats.length) blkRows = await inIds("blocks", "id,context_passage", "batch_id", bats);
+    var extra = by("blocks").filter(function (id) { return !blkRows.some(function (b) { return b.id === id; }); });
+    if (extra.length) blkRows = blkRows.concat(await inIds("blocks", "id,context_passage", "id", extra));
+    var blks = ids(blkRows);
     var words = blks.length ? await inIds("words", "id,block_id,term,pos,meaning_vi,meaning_zh,meaning_es,def_en", "block_id", blks) : [];
-    var seen = {}, pool = [];
+    var seen = {}, pool = [], byTerm = {};
     words.forEach(function (w) {
       var k = norm(w.term), m = { vi: clean(w.meaning_vi), en: clean(w.def_en), es: clean(w.meaning_es), zh: clean(w.meaning_zh) };
       if (!k || seen[k] || !(m.vi || m.en || m.es || m.zh)) return;
-      seen[k] = 1; pool.push({ wid: w.id, term: clean(w.term), block: w.block_id, pos: norm(w.pos), m: m });
+      seen[k] = 1;
+      var it = { wid: w.id, term: clean(w.term), block: w.block_id, pos: norm(w.pos), m: m };
+      pool.push(it); byTerm[k] = it;
     });
+    /* câu có chỗ trống: tách câu trong bài đọc giống Context.gapSentences (js/context.js) */
+    var gaps = [], gseen = {};
+    blkRows.forEach(function (b) {
+      var marked = String(b.context_passage || ""), cut = marked.indexOf(META_SEP);
+      if (cut >= 0) marked = marked.slice(0, cut);
+      gapSentences(marked).forEach(function (g) {
+        var w = byTerm[norm(g.term)], key = norm(g.text);
+        if (!w || gseen[key]) return;
+        gseen[key] = 1;
+        gaps.push({ wid: w.wid, term: w.term, block: b.id, text: g.text });
+      });
+    });
+    G.pool = pool; G.gaps = gaps;
     return pool;
   }
+  function gapSentences(text) {
+    var out = [], seen = {}, re = /[^.!?\n]+[.!?]+/g, m, lastEnd = 0;
+    function one(raw) {
+      var s = String(raw || "").trim(); if (!s) return;
+      var termRe = /\[([^\]]+)\]/g, hit, terms = [];
+      while ((hit = termRe.exec(s)) !== null) terms.push(hit[1]);
+      terms.forEach(function (term) {
+        if (seen[term.toLowerCase()]) return;
+        seen[term.toLowerCase()] = 1;
+        out.push({ term: term, text: s.replace("[" + term + "]", "{{GAP}}").replace(/\[([^\]]+)\]/g, "$1") });
+      });
+    }
+    while ((m = re.exec(text)) !== null) { one(m[0]); lastEnd = re.lastIndex; }
+    text.slice(lastEnd).split(/\n+/).forEach(one);
+    return out;
+  }
   function poolFor(lang) { return G.pool.filter(function (x) { return x.m[lang]; }); }
-  function poolCounts() { return ["vi", "en", "es", "zh"].map(function (l) { return FLAG[l] + " " + poolFor(l).length; }).join(" · "); }
-  /* "xào bài": hỏi lần lượt hết các từ (thứ tự ngẫu nhiên) rồi mới lặp lại.
-     Đáp án nhiễu KHÓ: ưu tiên từ CÙNG Block, rồi cùng loại từ (pos), rồi mới tới từ bất kỳ. */
-  var deck = { key: "", list: [] };
   function poolForAll(langs) { return G.pool.filter(function (x) { return langs.every(function (l) { return x.m[l]; }); }); }
-  function makeQ(lang, langs) {
-    var p = langs && langs.length ? poolForAll(langs) : poolFor(lang);
-    if (p.length < 4) p = poolFor(lang);   /* không đủ từ có nghĩa ở MỌI tiếng -> theo tiếng phòng, ai thiếu thì hiện nghĩa tiếng Anh */
-    var dk = lang + (langs || []).join("");
-    if (deck.key !== dk + p.length || !deck.list.length) deck = { key: dk + p.length, list: shuffle(p.slice()) };
-    var w = deck.list.pop();
-    var ok = function (x) { return norm(x.term) !== norm(w.term) && norm(x.m[lang]) !== norm(w.m[lang]); };
+  function poolCounts() { return ["vi", "en", "es", "zh"].map(function (l) { return FLAG[l] + " " + poolFor(l).length; }).join(" · "); }
+
+  /* ---------- sinh câu hỏi ----------
+     "xào bài": hỏi lần lượt hết (thứ tự ngẫu nhiên) rồi mới lặp lại.
+     Đáp án nhiễu KHÓ: ưu tiên từ CÙNG Block, rồi cùng loại từ (pos), rồi mới tới từ bất kỳ. */
+  var decks = {};
+  function draw(key, list) {
+    var d = decks[key];
+    if (!d || d.n !== list.length || !d.list.length) d = decks[key] = { n: list.length, list: shuffle(list.slice()) };
+    return d.list.pop();
+  }
+  function distractors(w, p) {
+    var ok = function (x) { return norm(x.term) !== norm(w.term); };
     var sameBlock = shuffle(p.filter(function (x) { return ok(x) && x.block === w.block; }));
     var samePos = shuffle(p.filter(function (x) { return ok(x) && x.block !== w.block && w.pos && x.pos === w.pos; }));
     var rest = shuffle(p.filter(function (x) { return ok(x) && x.block !== w.block && !(w.pos && x.pos === w.pos); }));
     var picks = [], used = {};
     sameBlock.concat(samePos, rest).forEach(function (x) { if (picks.length < 3 && !used[norm(x.term)]) { used[norm(x.term)] = 1; picks.push(x.term); } });
-    return { wid: w.wid, text: w.m[lang], texts: w.m, lang: lang, ans: w.term, opts: shuffle([w.term].concat(picks)) };
+    return shuffle([w.term].concat(picks));
+  }
+  function makeQ(qtype, lang, langs) {
+    var t = qtype;
+    if (t === "mix") t = shuffle(["meaning", "recall"].concat(G.gaps.length >= 4 ? ["gap"] : []))[0];
+    if (t === "gap" && G.gaps.length >= 4) {
+      var g = draw("gap", G.gaps), gw = G.pool.find(function (x) { return x.wid === g.wid; }) || { term: g.term, block: g.block };
+      return { type: "gap", wid: g.wid, ans: g.term, sent: g.text, texts: gw.m || {}, opts: distractors(gw, G.pool) };
+    }
+    var p = langs && langs.length ? poolForAll(langs) : poolFor(lang);
+    if (p.length < 4) p = poolFor(lang);   /* thiếu từ có nghĩa ở MỌI tiếng -> theo tiếng phòng, ai thiếu thì hiện nghĩa tiếng Anh */
+    if (p.length < 4) p = G.pool;
+    var w = draw(t + lang + (langs || []).join(""), p);
+    var q = { type: t === "recall" ? "recall" : "meaning", wid: w.wid, ans: w.term, texts: w.m };
+    if (q.type === "meaning") q.opts = distractors(w, p);
+    else q.len = w.term.length;
+    return q;
   }
 
   /* ---------- 3. vào phòng ---------- */
   async function joinRoom(code) {
     code = code.toUpperCase();
     var r = await sb.from("game_rooms").select("*").eq("code", code).maybeSingle();
-    if (r.error || !r.data) { if (G.view === "screen") { show("s-screen"); $("#sc-status").textContent = "Không tìm thấy phòng " + code; return; } show("s-home"); $("#h-err").textContent = "Không tìm thấy phòng " + code + "."; return; }
+    if (r.error || !r.data) {
+      if (G.view === "screen") { show("s-screen"); $("#sc-status").textContent = T("no_room", { c: code }); return; }
+      show("s-home"); $("#h-err").textContent = T("no_room", { c: code }); return;
+    }
     G.room = r.data;
     G.isHost = G.view !== "screen" && !!(G.profile && G.profile.is_admin && G.profile.id === G.room.host_id);
+    applyUI();
     if (G.room.status === "ended") return showSavedResults();
-    $("#g-room-badge").hidden = false; $("#g-room-badge").textContent = "Phòng " + code;
+    $("#g-room-badge").hidden = false;
     if (G.isHost) {
-      if (!G.pool.length) { $("#l-pool").textContent = "Đang tải từ vựng…"; G.pool = await loadPool(G.room.scope); }
+      if (!G.pool.length) { $("#l-pool").textContent = "Đang tải từ vựng…"; await loadPool(G.room.scope); }
       restoreHost();
     }
     connect();
@@ -331,7 +449,7 @@
       if (s !== "SUBSCRIBED") return;
       if (G.view !== "screen") await track();
       if (G.isHost) {
-        if (!G.st) G.st = { phase: "lobby", mode: G.room.mode, lang: G.room.meaning_lang || "vi", minutes: +G.room.minutes, qs: G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
+        if (!G.st) G.st = { phase: "lobby", mode: G.room.mode, qtype: G.room.qtype || "meaning", lang: G.room.meaning_lang || "vi", force: false, minutes: +G.room.minutes, qs: G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
         push();
         if (G.st.phase === "play") onState(pub());
       } else G.ch.send({ type: "broadcast", event: "hello", payload: {} });   /* xin host gửi lại trạng thái hiện tại */
@@ -355,28 +473,28 @@
   function renderLobby() {
     show("s-lobby");
     $("#l-code").textContent = G.room.code;
-    $("#l-info").textContent = "Từ vựng: " + (G.room.title || "");
+    applyUI();
     $("#l-host").hidden = !G.isHost; $("#l-wait").hidden = G.isHost;
     if (G.isHost) {
       var st = G.st || {};
-      $("#l-mode").value = st.mode || G.room.mode; $("#l-min").value = st.minutes || G.room.minutes; $("#l-qs").value = st.qs || G.room.q_seconds;
-      $("#l-lang").value = st.lang || G.room.meaning_lang || "vi"; $("#l-teamn").value = String(st.teams || 0); $("#l-force").checked = !!st.force;
+      $("#l-mode").value = st.mode || G.room.mode; $("#l-qtype").value = st.qtype || G.room.qtype || "meaning";
+      $("#l-min").value = st.minutes || G.room.minutes; $("#l-qs").value = st.qs || G.room.q_seconds;
+      $("#l-lang").value = roomLang(st); $("#l-teamn").value = String(st.teams || 0); $("#l-force").checked = !!st.force;
       $("#l-qs-wrap").hidden = $("#l-mode").value !== "kahoot";
       $("#l-teambtns").hidden = !(+$("#l-teamn").value);
-      $("#l-pool").textContent = G.pool.length + " từ khác nhau · có nghĩa: " + poolCounts();
+      $("#l-pool").textContent = G.pool.length + " từ khác nhau · có nghĩa: " + poolCounts() + " · 📝 " + G.gaps.length + " câu điền chỗ trống";
     }
     paintLobbyPlayers();
   }
   function paintLobbyPlayers() {
     var st = G.st || {}, teams = +st.teams || 0, teamOf = st.teamOf || {};
-    var list = G.online;
     $("#l-count").textContent = players().length;
-    $("#l-teamhint").textContent = teams && G.isHost ? "· bấm tên để đổi đội" : "";
-    $("#l-teams").innerHTML = teams ? teamSummary(st, null) : "";
-    $("#l-players").innerHTML = list.map(function (p) {
+    $("#l-teamhint").textContent = teams ? T("click_team") : "";
+    $("#l-teams").innerHTML = teams ? teamSummary(st, false) : "";
+    $("#l-players").innerHTML = G.online.map(function (p) {
       var t = teamOf[p.id];
-      return '<button class="g-player' + (teams && G.isHost && p.play !== false ? " g-click" : "") + '" data-pid="' + esc(p.id) + '"' + (t && TEAMS[t] ? ' style="border-color:' + TEAMS[t].c + '"' : "") + ">" +
-        avatar(p.avatar) + '<span class="g-pname">' + label(p) + "</span>" + (teams && t ? teamDot(t) : "") +
+      return '<button class="g-player' + (teams && G.isHost && p.play !== false ? " g-click" : "") + '" data-pid="' + esc(p.id) + '"' + (t && TEAM_C[t] ? ' style="border-color:' + TEAM_C[t].c + '"' : "") + ">" +
+        avatar(p.avatar) + '<span class="g-pname">' + label(p) + "</span>" + (p.lang && p.lang !== "room" ? '<span class="g-sub">' + FLAG[p.lang] + "</span>" : "") + (teams && t ? teamDot(t) : "") +
         (p.host ? '<span class="g-tag">Host' + (p.play === false ? " · MC" : "") + "</span>" : "") + "</button>";
     }).join("");
   }
@@ -402,47 +520,50 @@
       G.st.teamOf[p.id] = best;
     });
   }
-  $("#l-copy").addEventListener("click", function () { copyLink(roomLink(G.room.code), this, "🔗 Copy link mời"); });
+  $("#l-copy").addEventListener("click", function () {
+    var b = this, link = roomLink(G.room.code);
+    (navigator.clipboard ? navigator.clipboard.writeText(link) : Promise.reject()).then(function () { b.textContent = T("copied"); }, function () { prompt("Link:", link); });
+    setTimeout(function () { b.textContent = T("copy_link"); }, 2000);
+  });
   $("#l-screen").addEventListener("click", function () { window.open(roomLink(G.room.code, true), "_blank"); });
-  function copyLink(link, b, txt) {
-    (navigator.clipboard ? navigator.clipboard.writeText(link) : Promise.reject()).then(function () { b.textContent = "✓ Đã copy"; }, function () { prompt("Copy link này:", link); });
-    setTimeout(function () { b.textContent = txt; }, 2000);
-  }
-  ["#l-mode", "#l-min", "#l-qs", "#l-lang", "#l-teamn", "#l-hostplay", "#l-force"].forEach(function (s) {
+  ["#l-mode", "#l-qtype", "#l-min", "#l-qs", "#l-lang", "#l-teamn", "#l-hostplay", "#l-force"].forEach(function (s) {
     $(s).addEventListener("change", function () {
       if (!G.isHost) return;
       var st = G.st;
-      st.mode = $("#l-mode").value; st.lang = $("#l-lang").value; st.force = $("#l-force").checked; st.minutes = Math.max(1, +$("#l-min").value || 5); st.qs = Math.max(5, +$("#l-qs").value || 15);
+      st.mode = $("#l-mode").value; st.qtype = $("#l-qtype").value; st.lang = $("#l-lang").value; st.force = $("#l-force").checked;
+      st.minutes = Math.max(1, +$("#l-min").value || 5); st.qs = Math.max(5, +$("#l-qs").value || 15);
       var tn = +$("#l-teamn").value;
       if (tn !== st.teams) { st.teams = tn; st.teamOf = {}; if (tn) autoTeams(); }
       $("#l-qs-wrap").hidden = st.mode !== "kahoot";
       $("#l-teambtns").hidden = !tn;
       if (s === "#l-hostplay") track();
-      sb.from("game_rooms").update({ mode: st.mode, meaning_lang: st.lang, minutes: st.minutes, q_seconds: st.qs, team_mode: !!tn, teams: tn }).eq("id", G.room.id).then(function () {});
+      sb.from("game_rooms").update({ mode: st.mode, qtype: st.qtype, meaning_lang: st.lang, minutes: st.minutes, q_seconds: st.qs, team_mode: !!tn, teams: tn }).eq("id", G.room.id).then(function () {});
       push(); paintLobbyPlayers();
     });
   });
 
   /* ---------- HOST: điều khiển trận ---------- */
-  function pub() {   /* bản công khai của state: giấu đáp án cho tới lúc lộ; thời gian gửi dạng "còn lại bao nhiêu ms" (khỏi lệch đồng hồ) */
+  function pub() {   /* bản công khai: giấu đáp án tới lúc lộ; thời gian gửi dạng "còn lại bao nhiêu ms" (khỏi lệch đồng hồ) */
     var s = Object.assign({}, G.st, { left: G.endAt ? G.endAt - Date.now() : null, qLeft: G.qUntil ? G.qUntil - Date.now() : null });
     if (s.q) {
       var q = s.q, rev = !!q.revealed;
-      s.q = { n: q.n, text: q.text, texts: q.texts, lang: q.lang, opts: q.opts, wid: q.wid, revealed: rev, ans: rev ? q.ans : null, cnt: Object.keys(q.got).length,
-              picks: rev ? Object.keys(q.got).reduce(function (o, pid) { o[pid] = q.got[pid].c; return o; }, {}) : null, fast: rev ? q.fast : null };
+      s.q = { n: q.n, type: q.type, texts: q.texts, sent: q.sent, opts: q.opts, len: q.len, wid: q.wid, revealed: rev, ans: rev ? q.ans : null, cnt: Object.keys(q.got).length,
+              picks: rev ? Object.keys(q.got).reduce(function (o, pid) { o[pid] = q.got[pid].c; return o; }, {}) : null,
+              oks: rev ? Object.keys(q.got).filter(function (pid) { return q.got[pid].ok; }) : null, fast: rev ? q.fast : null };
     }
     return s;
   }
   function push() { G.lastPush = Date.now(); if (G.ch) G.ch.send({ type: "broadcast", event: "state", payload: pub() }); saveHost(); }
   $("#l-start").addEventListener("click", async function () {
     if (!G.isHost) return;
-    if (poolFor(G.st.lang).length < 4) { alert("Cần ít nhất 4 từ có nghĩa bằng tiếng đã chọn (" + poolCounts() + ")."); return; }
+    var need = readyMsg(G.st.qtype, G.st.lang);
+    if (need) { alert(need); return; }
     if (!players().length) { alert("Chưa có người chơi nào."); return; }
     fillTeams();
     G.st.phase = "play"; G.st.scores = {}; G.st.q = null; G.answers = [];
     players().forEach(function (p) { G.st.scores[p.id] = { s: 0, c: 0, w: 0, st: 0, best: 0 }; });
     G.endAt = Date.now() + G.st.minutes * 60000;
-    await sb.from("game_rooms").update({ status: "playing", started_at: new Date().toISOString(), mode: G.st.mode, meaning_lang: G.st.lang, minutes: G.st.minutes, q_seconds: G.st.qs, team_mode: !!G.st.teams, teams: G.st.teams }).eq("id", G.room.id);
+    await sb.from("game_rooms").update({ status: "playing", started_at: new Date().toISOString(), mode: G.st.mode, qtype: G.st.qtype, meaning_lang: G.st.lang, minutes: G.st.minutes, q_seconds: G.st.qs, team_mode: !!G.st.teams, teams: G.st.teams }).eq("id", G.room.id);
     if (G.st.mode === "kahoot") hostNextQ(); else { G.qUntil = 0; push(); }
     clearInterval(G.hostTimer);
     G.hostTimer = setInterval(hostTick, 250);
@@ -453,14 +574,14 @@
     return Object.keys(set);
   }
   function hostNextQ() {
-    var q = makeQ(G.st.lang, roomLangs());
-    G.st.q = { n: (G.st.q ? G.st.q.n : 0) + 1, text: q.text, texts: q.texts, lang: q.lang, opts: q.opts, ans: q.ans, wid: q.wid, revealed: false, got: {}, fast: null };
+    var q = makeQ(G.st.qtype, G.st.lang, roomLangs());
+    G.st.q = Object.assign(q, { n: (G.st.q ? G.st.q.n : 0) + 1, revealed: false, got: {}, fast: null });
     G.qUntil = Date.now() + G.st.qs * 1000;
     push();
   }
   function hostTick() {
     var now = Date.now();
-    if (now - (G.lastPush || 0) > HEARTBEAT_MS) push();   /* nhịp "host còn sống" — người chơi quá HOST_LOST_MS không nghe thì báo mất kết nối */
+    if (now - G.lastPush > HEARTBEAT_MS) push();   /* nhịp "host còn sống" — người chơi quá HOST_LOST_MS không nghe thì báo mất kết nối */
     if (now >= G.endAt) {
       if (G.st.mode === "kahoot" && G.st.q && !G.st.q.revealed) return hostReveal();   /* chấm nốt câu đang dở */
       if (G.st.mode !== "kahoot" || !G.revealUntil || now >= G.revealUntil) return hostEnd();
@@ -475,29 +596,26 @@
   function hostReveal() {
     var q = G.st.q;
     q.revealed = true; G.revealUntil = Date.now() + REVEAL_MS; G.qUntil = 0;
-    /* ai nhanh nhất trong số trả lời đúng */
     var best = null; Object.keys(q.got).forEach(function (pid) { var g = q.got[pid]; if (g.ok && (!best || g.ms < q.got[best].ms)) best = pid; });
-    q.fast = best;
-    /* ai không trả lời câu này thì mất chuỗi */
-    Object.keys(G.st.scores).forEach(function (pid) { if (!q.got[pid]) { G.st.scores[pid].st = 0; G.st.scores[pid].g = null; } });
+    q.fast = best;   /* chỉ để khoe, không cộng điểm */
+    Object.keys(G.st.scores).forEach(function (pid) { if (!q.got[pid]) G.st.scores[pid].st = 0; });   /* bỏ câu = mất chuỗi */
     push();
   }
-  function score(pid, ok, ms, limit) {
+  function score(pid, ok) {   /* điểm TÍNH THEO CÂU: đúng +100 */
     var s = G.st.scores[pid] || (G.st.scores[pid] = { s: 0, c: 0, w: 0, st: 0, best: 0 });
-    if (ok) { s.st++; var g = points(ms, limit, s.st); s.s += g.p; s.c++; s.best = Math.max(s.best, s.st); s.g = g; }
-    else { s.w++; s.st = 0; s.g = null; }
+    if (ok) { s.s += POINTS; s.c++; s.st++; s.best = Math.max(s.best, s.st); } else { s.w++; s.st = 0; }
   }
   function hostOnAnswer(a) {
     if (!G.st || G.st.phase !== "play") return;
     if (G.st.mode === "kahoot") {
       var q = G.st.q;
       if (!q || q.revealed || a.n !== q.n || q.got[a.pid]) return;   /* mỗi người 1 lần / câu */
-      var ok = norm(a.choice) === norm(q.ans);
+      var ok = q.type === "recall" ? typedOk(a.choice, q.ans) : norm(a.choice) === norm(q.ans);
       q.got[a.pid] = { ok: ok, c: a.choice, ms: a.ms };
-      score(a.pid, ok, a.ms, G.st.qs * 1000);
+      score(a.pid, ok);
       G.answers.push({ pid: a.pid, wid: q.wid, term: q.ans, ok: ok, ms: a.ms });
     } else {
-      score(a.pid, !!a.ok, a.ms, FREE_LIMIT_MS);
+      score(a.pid, !!a.ok);
       G.answers.push({ pid: a.pid, wid: a.wid, term: a.term, ok: !!a.ok, ms: a.ms });
     }
     push();
@@ -536,7 +654,7 @@
     var out = [];
     for (var t = 1; t <= (+st.teams || 0); t++) out.push({ t: t, s: 0, n: 0 });
     Object.keys(st.teamOf || {}).forEach(function (pid) {
-      var t = st.teamOf[pid], row = out[t - 1]; if (!row) return;
+      var row = out[st.teamOf[pid] - 1]; if (!row) return;
       row.n++; row.s += (st.scores && st.scores[pid] ? st.scores[pid].s : 0);
     });
     return out.sort(function (a, b) { return b.s - a.s; });
@@ -544,25 +662,19 @@
   function teamSummary(st, withScore) {
     var tt = teamTotals(st), uneven = tt.some(function (x) { return x.n !== tt[0].n; });
     return tt.map(function (x, i) {
-      var T = TEAMS[x.t];
-      return '<div class="g-team" style="--tc:' + T.c + '"><span>' + (withScore && i === 0 && x.s > 0 ? "👑 " : "") + T.e + " " + T.n + '</span><span class="g-sub">' + x.n + " người</span>" +
-        (withScore ? '<b>' + x.s + "</b>" + (uneven && x.n ? '<span class="g-sub">TB ' + Math.round(x.s / x.n) + "</span>" : "") : "") + "</div>";
+      var C = TEAM_C[x.t];
+      return '<div class="g-team" style="--tc:' + C.c + '"><span>' + (withScore && i === 0 && x.s > 0 ? "👑 " : "") + C.e + " " + esc(teamName(x.t)) + '</span><span class="g-sub">' + x.n + " " + T("ppl") + "</span>" +
+        (withScore ? "<b>" + x.s + "</b>" + (uneven && x.n ? '<span class="g-sub">' + T("avg") + " " + Math.round(x.s / x.n) + "</span>" : "") : "") + "</div>";
     }).join("");
   }
 
   /* ---------- MỌI NGƯỜI: nhận trạng thái ---------- */
-  function paintLangLock(s) {
-    var sel = $("#g-mylang"), lock = !!(s && s.force);
-    sel.disabled = lock;
-    sel.title = lock ? "Host đang ép cả phòng dùng " + (FLAG[s.lang] || "") + " — không đổi được" : "Nghĩa hiển thị bằng tiếng nào (riêng máy bạn)";
-    sel.value = lock ? s.lang : G.myLang;
-  }
   function onState(s) {
     G.lastState = Date.now();
-    paintLangLock(s);
-    var was = G.st && G.st.phase;
+    var was = G.st && G.st.phase, langWas = G.st && G.st.lang;
     if (!G.isHost) G.st = s;
     if (s.left != null) G.endAt = Date.now() + s.left;
+    if (G.myLang === "room" && langWas !== s.lang) applyUI();   /* "theo phòng" -> host đổi tiếng thì giao diện đổi theo */
     if (G.view === "screen") return paintScreen(s);
     if (s.phase === "lobby") { if ($("#s-lobby").hidden) renderLobby(); else paintLobbyPlayers(); return; }
     if (s.phase === "end") { clearInterval(G.tick); return renderEnd(s); }
@@ -572,32 +684,31 @@
       if (s.mode === "kahoot" && s.q) paintKahoot(s);
     }
   }
+  function modeLine(s) { return s.mode === "kahoot" ? T("m_kahoot") + " · " + s.qs + " " + T("sec_q") : T("m_free"); }
   function enterPlay(s) {
     show("s-play");
-    $("#p-mode").textContent = (s.mode === "kahoot" ? "Cùng 1 câu · " + s.qs + " giây/câu" : "Tự do — ai nhanh nhiều điểm");
+    $("#p-mode").textContent = modeLine(s);
     $("#p-stop").hidden = !G.isHost;
     clearInterval(G.tick);
     G.tick = setInterval(function () {
       $("#p-left").textContent = fmt(G.endAt - Date.now());
       var bar = $("#p-qbar");
-      if (G.st && G.st.mode === "kahoot" && G.qUntilLocal) {
-        var tot = (G.st.qs || 15) * 1000; bar.style.width = Math.max(0, Math.min(100, (G.qUntilLocal - Date.now()) / tot * 100)) + "%";
-      } else bar.style.width = "0%";
-      if (G.st && G.st.mode === "free" && Date.now() >= G.endAt) lockOpts("⏱ Hết giờ — chờ host tổng kết…");
+      if (G.st && G.st.mode === "kahoot" && G.qUntilLocal) bar.style.width = Math.max(0, Math.min(100, (G.qUntilLocal - Date.now()) / ((G.st.qs || 15) * 1000) * 100)) + "%";
+      else bar.style.width = "0%";
+      if (G.st && G.st.mode === "free" && Date.now() >= G.endAt) lockAll(T("time_up"));
       if (!G.isHost) {
         var hostHere = G.online.some(function (p) { return p.host; });
-        var quiet = Date.now() - G.lastState > HOST_LOST_MS;
-        $("#p-hostlost").hidden = hostHere && !quiet;
+        $("#p-hostlost").hidden = hostHere && Date.now() - G.lastState <= HOST_LOST_MS;
       }
     }, 200);
-    var playing = !(G.isHost && !hostPlays());
-    if (!playing) { $("#p-msg").textContent = "Bạn đang làm MC (không chơi) — mở 📺 Màn hình chung để cả nhóm cùng xem."; }
-    if (s.mode === "free" && playing) {
+    if (!iPlay()) $("#p-msg").textContent = T("mc");
+    if (s.mode === "free" && iPlay()) {
       /* host có thể đổi sang "Tự do" sau khi người chơi vào phòng -> lúc đó mới tải kho từ */
       if (G.pool.length) freeNext();
-      else { $("#p-vi").textContent = "Đang tải từ vựng…"; loadPool(G.room.scope).then(function (p) { G.pool = p; freeNext(); }); }
+      else { $("#p-vi").textContent = T("loading"); loadPool(G.room.scope).then(freeNext); }
     }
   }
+  function iPlay() { return !(G.isHost && !hostPlays()); }
   function paintBoard(s) {
     var roster = s.roster || {}, list = rankList(s.scores), teams = +s.teams;
     $("#p-teams").innerHTML = teams ? teamSummary(s, true) : "";
@@ -605,43 +716,62 @@
       var p = roster[x.pid] || {};
       return '<li class="' + (x.pid === G.me.id ? "me" : "") + '"><span class="g-rank">' + x.rank + "</span>" + avatar(p.avatar) +
         '<span class="g-pname">' + label(p) + "</span>" + (teams ? teamDot((s.teamOf || {})[x.pid]) : "") +
-        '<span class="g-streak">' + (x.st >= 3 ? "🔥" + x.st : x.st > 1 ? "·" + x.st : "") + '</span><b class="g-score">' + x.s + "</b></li>";
+        '<span class="g-streak">' + (x.st >= 2 ? "🔥" + x.st : "") + '</span><b class="g-score">' + x.s + "</b></li>";
     }).join("");
   }
-  function optHTML(o) { return '<button class="g-opt" data-opt="' + esc(o) + '"><span class="g-otext">' + esc(o) + '</span><span class="g-pickers"></span></button>'; }
 
-  /* kiểu Kahoot: host gửi câu, mọi người chọn 1 lần, hết giờ mới hiện đáp án + ai chọn gì + ai nhanh nhất */
+  /* vẽ 1 câu hỏi (dùng chung Kahoot / Tự do): gợi ý dạng câu + nội dung + 4 lựa chọn HOẶC ô gõ */
+  function paintQuestion(q, hintEl, textEl, optsEl) {
+    $(hintEl).textContent = T(q.type === "gap" ? "q_gap" : q.type === "recall" ? "q_recall" : "q_meaning");
+    if (q.type === "gap") $(textEl).innerHTML = esc(q.sent).replace("{{GAP}}", '<span class="g-blank">_____</span>');
+    else $(textEl).textContent = myFlag(q) + " " + myText(q) + (q.type === "recall" && q.len ? "  (" + q.len + ")" : "");
+    if (q.type === "recall") {
+      $(optsEl).innerHTML = "";
+      if (optsEl === "#p-opts") { $("#p-type").hidden = false; var inp = $("#p-typein"); inp.value = ""; inp.disabled = false; $("#p-typego").disabled = false; if (iPlay()) inp.focus(); }
+    } else {
+      if (optsEl === "#p-opts") $("#p-type").hidden = true;
+      $(optsEl).innerHTML = q.opts.map(function (o) { return '<button class="g-opt" data-opt="' + esc(o) + '"><span class="g-otext">' + esc(o) + '</span><span class="g-pickers"></span></button>'; }).join("");
+    }
+  }
+  function lockAll(msg) {
+    $$(".g-opt").forEach(function (x) { x.disabled = true; });
+    $("#p-typein").disabled = true; $("#p-typego").disabled = true;
+    if (msg) $("#p-msg").textContent = msg;
+  }
+
+  /* kiểu Kahoot: host gửi câu, mọi người trả lời 1 lần, hết giờ mới hiện đáp án + ai chọn gì + ai nhanh nhất */
   function paintKahoot(s) {
-    var q = s.q, playing = !(G.isHost && !hostPlays());
+    var q = s.q;
     if (q.n !== G.lastN) {
       G.lastN = q.n; G.myChoice = null; G.myQStart = Date.now();
       G.qUntilLocal = s.qLeft != null ? Date.now() + s.qLeft : 0;
-      $("#p-vi").textContent = myFlag(q) + " " + myText(q);
-      $("#p-opts").innerHTML = q.opts.map(optHTML).join("");
-      if (!playing) $$(".g-opt").forEach(function (b) { b.disabled = true; });
-      $("#p-msg").textContent = playing ? "" : "MC: " + (q.cnt || 0) + " người đã trả lời";
-    } else if (!q.revealed && !playing) $("#p-msg").textContent = "MC: " + (q.cnt || 0) + " người đã trả lời";
-    else if (!q.revealed && G.myChoice != null) $("#p-msg").textContent = "Đã chọn — chờ mọi người… (" + (q.cnt || 0) + " đã trả lời)";
-    if (q.revealed) {
-      G.qUntilLocal = 0;
-      paintPickers(q, s.roster || {}, ".g-opt");
-      if (G.revealedN !== q.n) {
-        G.revealedN = q.n;
-        var ok = G.myChoice != null && norm(G.myChoice) === norm(q.ans);
-        var me = (s.scores || {})[G.me.id], fast = q.fast ? (s.roster || {})[q.fast] : null;
-        var msg = !playing ? "Đáp án: " + q.ans : G.myChoice == null ? "Hết giờ — đáp án: " + q.ans : ok ? "✓ Đúng! " + gainText(me && me.g) : "✗ Sai — đáp án: " + q.ans;
-        if (fast) msg += "  ·  ⚡ Nhanh nhất: " + fast.name + (fast.no > 1 ? " #" + fast.no : "");
-        $("#p-msg").textContent = msg;
-        if (G.myChoice != null) recordMyProgress(q.wid, ok);
-      }
+      paintQuestion(q, "#p-hint", "#p-vi", "#p-opts");
+      if (!iPlay()) lockAll();
+      $("#p-msg").textContent = iPlay() ? "" : T("mc");
     }
+    if (!q.revealed) {
+      if (G.myChoice != null || !iPlay()) $("#p-msg").textContent = (iPlay() ? T("picked") + " · " : "") + T("answered", { n: q.cnt || 0 });
+      return;
+    }
+    G.qUntilLocal = 0;
+    lockAll();
+    paintPickers(q, s.roster || {}, ".g-opt");
+    if (G.revealedN === q.n) return;
+    G.revealedN = q.n;
+    var ok = G.myChoice != null && (q.type === "recall" ? typedOk(G.myChoice, q.ans) : norm(G.myChoice) === norm(q.ans));
+    var msg = !iPlay() ? T("answer", { a: q.ans }) : G.myChoice == null ? T("timeout", { a: q.ans }) : ok ? T("right", { p: POINTS }) : T("wrong", { a: q.ans });
+    if (q.type === "recall") msg += "  ·  " + T("n_right", { n: (q.oks || []).length }) + " " + (q.oks || []).map(function (pid) { var p = (s.roster || {})[pid]; return p ? p.avatar && !/^https?:/.test(p.avatar) ? p.avatar : "👤" : ""; }).join("");
+    var fast = q.fast ? (s.roster || {})[q.fast] : null;
+    if (fast) msg += "  ·  " + T("fastest", { n: plain(fast) });
+    $("#p-msg").textContent = msg;
+    if (q.type === "recall") $("#p-typein").value = G.myChoice || "";
+    if (G.myChoice != null) recordMyProgress(q.wid, ok);
   }
-  /* tô đúng/sai + gắn ảnh những người đã chọn từng đáp án */
+  /* tô đúng/sai + gắn ảnh những người đã chọn từng đáp án (dạng chọn 1 trong 4) */
   function paintPickers(q, roster, sel) {
     var by = {};
     Object.keys(q.picks || {}).forEach(function (pid) { var k = norm(q.picks[pid]); (by[k] = by[k] || []).push(pid); });
     $$(sel).forEach(function (b) {
-      b.disabled = true;
       var o = norm(b.dataset.opt), who = by[o] || [];
       if (o === norm(q.ans)) b.classList.add("ok");
       else if (G.myChoice && o === norm(G.myChoice)) b.classList.add("bad");
@@ -649,41 +779,50 @@
       if (box) box.innerHTML = who.map(function (pid) { var p = roster[pid] || {}; return avatar(p.avatar, "g-av-sm" + (pid === q.fast ? " g-fast" : "")); }).join("") + (who.length ? '<span class="g-cnt">' + who.length + "</span>" : "");
     });
   }
+  function sendAnswer(choice) {
+    var s = G.st;
+    G.myChoice = choice;
+    lockAll(T("picked"));
+    G.ch.send({ type: "broadcast", event: "ans", payload: { pid: G.me.id, n: s.q.n, choice: choice, ms: Date.now() - G.myQStart } });
+  }
   $("#p-opts").addEventListener("click", function (e) {
     var b = e.target.closest(".g-opt"); if (!b || b.disabled) return;
-    var s = G.st; if (!s || s.phase !== "play") return;
+    var s = G.st; if (!s || s.phase !== "play" || !iPlay()) return;
     if (s.mode === "kahoot") {
       if (G.myChoice != null || !s.q || s.q.revealed) return;
-      G.myChoice = b.dataset.opt;
       b.classList.add("picked");
-      $$(".g-opt").forEach(function (x) { x.disabled = true; });
-      $("#p-msg").textContent = "Đã chọn — chờ mọi người…";
-      G.ch.send({ type: "broadcast", event: "ans", payload: { pid: G.me.id, n: s.q.n, choice: G.myChoice, ms: Date.now() - G.myQStart } });
-    } else freeAnswer(b);
+      sendAnswer(b.dataset.opt);
+    } else freeAnswer(b.dataset.opt, b);
+  });
+  $("#p-type").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var v = $("#p-typein").value.trim(), s = G.st;
+    if (!v || !s || s.phase !== "play" || !iPlay()) return;
+    if (s.mode === "kahoot") { if (G.myChoice == null && s.q && !s.q.revealed) sendAnswer(v); }
+    else freeAnswer(v, null);
   });
 
   /* kiểu tự do: mỗi máy tự sinh câu từ cùng kho, báo đúng/sai cho host chấm điểm */
   function freeNext() {
-    if (Date.now() >= G.endAt) return lockOpts("⏱ Hết giờ — chờ host tổng kết…");
-    if (!G.pool.length) { $("#p-vi").textContent = "Đang tải từ vựng…"; return; }
+    if (Date.now() >= G.endAt) return lockAll(T("time_up"));
+    if (!G.pool.length) { $("#p-vi").textContent = T("loading"); return; }
     var ml = effLang(G.myLang, G.st);
-    G.myQ = makeQ(poolFor(ml).length >= 4 ? ml : (G.st.lang || "vi")); G.myQStart = Date.now();
-    $("#p-vi").textContent = myFlag(G.myQ) + " " + myText(G.myQ);
-    $("#p-opts").innerHTML = G.myQ.opts.map(optHTML).join("");
+    G.myQ = makeQ(G.st.qtype || "meaning", poolFor(ml).length >= 4 ? ml : roomLang(G.st));
+    G.myQStart = Date.now();
+    paintQuestion(G.myQ, "#p-hint", "#p-vi", "#p-opts");
     $("#p-msg").textContent = "";
   }
-  function freeAnswer(b) {
+  function freeAnswer(choice, btn) {
     var q = G.myQ; if (!q) return;
-    var ms = Date.now() - G.myQStart, ok = norm(b.dataset.opt) === norm(q.ans);
-    $$(".g-opt").forEach(function (x) { x.disabled = true; if (norm(x.dataset.opt) === norm(q.ans)) x.classList.add("ok"); });
-    if (!ok) b.classList.add("bad");
-    G.myStreak = ok ? G.myStreak + 1 : 0;   /* dự đoán điểm để báo ngay (host vẫn là người chấm chính thức) */
-    $("#p-msg").textContent = ok ? "✓ " + gainText(points(ms, FREE_LIMIT_MS, G.myStreak)) : "✗ " + q.ans;
-    G.ch.send({ type: "broadcast", event: "ans", payload: { pid: G.me.id, ok: ok, wid: q.wid, term: q.ans, ms: ms } });
+    var ok = q.type === "recall" ? typedOk(choice, q.ans) : norm(choice) === norm(q.ans);
+    lockAll();
+    $$(".g-opt").forEach(function (x) { if (norm(x.dataset.opt) === norm(q.ans)) x.classList.add("ok"); });
+    if (!ok && btn) btn.classList.add("bad");
+    $("#p-msg").textContent = ok ? T("right", { p: POINTS }) : T("wrong", { a: q.ans });
+    G.ch.send({ type: "broadcast", event: "ans", payload: { pid: G.me.id, ok: ok, wid: q.wid, term: q.ans, ms: Date.now() - G.myQStart } });
     recordMyProgress(q.wid, ok);
-    setTimeout(freeNext, ok ? 450 : 1100);
+    setTimeout(freeNext, ok ? 500 : 1400);
   }
-  function lockOpts(msg) { $$(".g-opt").forEach(function (x) { x.disabled = true; }); $("#p-msg").textContent = msg; }
 
   /* Tiến trình học — CHỈ hồ sơ admin (TJ). "Học chung" vẫn tách được qua game_answers (có room_id). */
   async function recordMyProgress(wid, ok) {
@@ -709,30 +848,32 @@
       if (G.st && G.st.mode === "kahoot" && G.qUntilLocal) bar.style.width = Math.max(0, Math.min(100, (G.qUntilLocal - Date.now()) / ((G.st.qs || 15) * 1000) * 100)) + "%";
       else bar.style.width = "0%";
     }, 200);
-    if (!s) { $("#sc-status").textContent = "Đang kết nối…"; return; }
+    if (!s) { $("#sc-status").textContent = T("loading2"); return; }
     var roster = s.roster || {};
     if (s.phase === "lobby") {
-      $("#sc-status").innerHTML = "Vào phòng tại <b>" + esc(roomLink(G.room.code)) + "</b>";
-      $("#sc-q").textContent = "Mã phòng: " + G.room.code;
-      $("#sc-opts").innerHTML = '<div class="sc-waiting">' + Object.keys(roster).map(function (pid) { return avatar(roster[pid].avatar) ; }).join("") + "</div>";
+      $("#sc-status").innerHTML = T("join_at") + " <b>" + esc(roomLink(G.room.code)) + "</b>";
+      $("#sc-hint").textContent = "";
+      $("#sc-q").textContent = T("room_code") + ": " + G.room.code;
+      $("#sc-opts").innerHTML = '<div class="sc-waiting">' + Object.keys(roster).map(function (pid) { return avatar(roster[pid].avatar); }).join("") + "</div>";
     } else if (s.phase === "play") {
-      $("#sc-status").textContent = (FLAG[s.lang] || "") + " " + (s.mode === "kahoot" ? (s.q ? "Câu " + s.q.n + (s.q.revealed ? "" : " · " + (s.q.cnt || 0) + " người đã trả lời") : "") : "Tự do — ai nhanh nhiều điểm");
       if (s.mode === "kahoot" && s.q) {
+        $("#sc-status").textContent = T("q_no", { n: s.q.n }) + (s.q.revealed ? "" : " · " + T("answered", { n: s.q.cnt || 0 }));
         if (s.q.n !== G.lastN) {
           G.lastN = s.q.n; G.qUntilLocal = s.qLeft != null ? Date.now() + s.qLeft : 0;
-          $("#sc-q").textContent = s.q.text;
-          $("#sc-opts").innerHTML = s.q.opts.map(function (o, i) { return '<div class="g-opt sc-opt" data-opt="' + esc(o) + '"><span class="sc-key">' + "ABCD"[i] + '</span><span class="g-otext">' + esc(o) + '</span><span class="g-pickers"></span></div>'; }).join("");
+          paintQuestion(s.q, "#sc-hint", "#sc-q", "#sc-opts");
+          $$("#sc-opts .g-opt").forEach(function (b, i) { b.classList.add("sc-opt"); b.insertAdjacentHTML("afterbegin", '<span class="sc-key">' + "ABCD"[i] + "</span>"); b.disabled = true; });
         }
         if (s.q.revealed) {
           G.qUntilLocal = 0;
-          paintPickers(s.q, roster, ".sc-opt");
+          paintPickers(s.q, roster, "#sc-opts .g-opt");
+          if (s.q.type === "recall") $("#sc-opts").innerHTML = '<div class="sc-waiting"><b class="sc-ans">' + esc(s.q.ans) + "</b> · " + esc(T("n_right", { n: (s.q.oks || []).length })) + " " + (s.q.oks || []).map(function (pid) { return avatar((roster[pid] || {}).avatar); }).join("") + "</div>";
           var fast = s.q.fast ? roster[s.q.fast] : null;
-          if (fast) $("#sc-status").textContent = "⚡ Nhanh nhất: " + fast.name + (fast.no > 1 ? " #" + fast.no : "");
+          if (fast) $("#sc-status").textContent = T("fastest", { n: plain(fast) });
         }
-      } else if (s.mode === "free") { $("#sc-q").textContent = "🏁 Đua tự do!"; $("#sc-opts").innerHTML = ""; }
+      } else if (s.mode === "free") { $("#sc-status").textContent = T("m_free"); $("#sc-hint").textContent = ""; $("#sc-q").textContent = T("race"); $("#sc-opts").innerHTML = ""; }
     } else if (s.phase === "end") {
       clearInterval(G.tick); $("#sc-left").textContent = "";
-      $("#sc-status").textContent = "🏁 Kết thúc!";
+      $("#sc-status").textContent = T("ended"); $("#sc-hint").textContent = "";
       var top = rankList(s.scores).slice(0, 3);
       $("#sc-q").innerHTML = top.map(function (x, i) { var p = roster[x.pid] || {}; return '<span class="sc-pod">' + ["🥇", "🥈", "🥉"][i] + avatar(p.avatar) + label(p) + " · " + x.s + "</span>"; }).join("");
       $("#sc-opts").innerHTML = "";
@@ -742,14 +883,14 @@
     var list = rankList(s.scores), max = Math.max(1, list.length ? list[0].s : 1);
     $("#sc-lanes").innerHTML = list.map(function (x) {
       var p = roster[x.pid] || {}, t = (s.teamOf || {})[x.pid];
-      return '<div class="sc-lane"' + (t && TEAMS[t] ? ' style="--tc:' + TEAMS[t].c + '"' : "") + '><span class="sc-lname">' + x.rank + ". " + label(p) + '</span><div class="sc-track"><div class="sc-runner" style="left:' + Math.round(x.s / max * 88) + '%">' + avatar(p.avatar) + '</div></div><b>' + x.s + "</b></div>";
+      return '<div class="sc-lane"' + (t && TEAM_C[t] ? ' style="--tc:' + TEAM_C[t].c + '"' : "") + '><span class="sc-lname">' + x.rank + ". " + label(p) + '</span><div class="sc-track"><div class="sc-runner" style="left:' + Math.round(x.s / max * 88) + '%">' + avatar(p.avatar) + '</div></div><b>' + x.s + "</b></div>";
     }).join("");
   }
 
   /* ---------- kết quả ---------- */
   function renderEnd(s) {
     show("s-end");
-    $("#e-info").textContent = (G.room.title || "") + " · " + (s.mode === "kahoot" ? "Cùng 1 câu" : "Tự do") + " · " + s.minutes + " phút";
+    $("#e-info").textContent = (G.room.title || "") + " · " + modeLine(s) + " · " + s.minutes + "'";
     $("#e-teams").innerHTML = +s.teams ? teamSummary(s, true) : "";
     var roster = s.roster || {};
     $("#e-board").innerHTML = rankList(s.scores).map(function (x) {
@@ -757,7 +898,7 @@
       return '<li class="' + (G.me && x.pid === G.me.id ? "me" : "") + '"><span class="g-rank">' + (x.rank === 1 ? "🥇" : x.rank === 2 ? "🥈" : x.rank === 3 ? "🥉" : x.rank) + "</span>" +
         avatar(p.avatar) + '<span class="g-pname">' + label(p) + "</span>" + (+s.teams ? teamDot((s.teamOf || {})[x.pid]) : "") +
         '<span class="g-sub">✓' + x.c + " ✗" + x.w + " 🔥" + x.best + '</span><b class="g-score">' + x.s + "</b></li>";
-    }).join("") || '<li class="g-sub">Chưa ai trả lời câu nào.</li>';
+    }).join("") || '<li class="g-sub">' + T("nobody") + "</li>";
   }
   async function showSavedResults() {
     var r = await sb.from("game_results").select("player_id,team,score,correct,wrong,best_streak,rank,game_players(name,name_no,avatar)").eq("room_id", G.room.id).order("rank");
@@ -767,18 +908,17 @@
       if (x.team) teamOf[x.player_id] = x.team;
       var p = x.game_players || {}; roster[x.player_id] = { name: p.name, no: p.name_no, avatar: p.avatar };
     });
-    var s = { phase: "end", mode: G.room.mode, minutes: G.room.minutes, teams: G.room.teams || 0, teamOf: teamOf, scores: scores, roster: roster };
+    var s = { phase: "end", mode: G.room.mode, qs: G.room.q_seconds, minutes: G.room.minutes, teams: G.room.teams || 0, teamOf: teamOf, scores: scores, roster: roster };
     if (G.view === "screen") { $("#sc-code").textContent = G.room.code; return paintScreen(s); }
     renderEnd(s);
   }
 
   /* ---------- 📜 lịch sử & xếp hạng ---------- */
-  var histTab = "me";
   $("#hi-tabs").addEventListener("click", function (e) { var b = e.target.closest("[data-tab]"); if (b) renderHistory(b.dataset.tab); });
   async function renderHistory(tab) {
-    histTab = tab; show("s-hist");
+    show("s-hist");
     $$("#hi-tabs button").forEach(function (b) { b.classList.toggle("on", b.dataset.tab === tab); });
-    $("#hi-body").innerHTML = '<p class="g-sub">Đang tải…</p>';
+    $("#hi-body").innerHTML = '<p class="g-sub">' + T("loading2") + "</p>";
     try {
       if (tab === "me") return await histMine();
       var q = sb.from("game_results").select("player_id,score,rank,correct,wrong,created_at,game_players(name,name_no,avatar)").order("created_at", { ascending: false }).limit(5000);
@@ -790,34 +930,47 @@
         a.total += x.score; a.games++; if (x.rank === 1) a.wins++; a.best = Math.max(a.best, x.score); a.c += x.correct; a.w += x.wrong;
       });
       var rows = Object.keys(agg).map(function (k) { return Object.assign({ id: k }, agg[k]); }).sort(function (a, b) { return b.total - a.total; });
-      $("#hi-body").innerHTML = rows.length ? '<table class="g-table"><thead><tr><th>#</th><th>Người chơi</th><th>Tổng điểm</th><th>Trận</th><th>🥇</th><th>Cao nhất</th><th>Đúng</th></tr></thead><tbody>' +
+      $("#hi-body").innerHTML = rows.length ? '<table class="g-table"><thead><tr><th>#</th><th>' + T("h_player") + "</th><th>" + T("h_total") + "</th><th>" + T("h_games") + "</th><th>🥇</th><th>" + T("h_best") + "</th><th>" + T("h_acc") + "</th></tr></thead><tbody>" +
         rows.map(function (a, i) {
           return '<tr class="' + (G.me && a.id === G.me.id ? "me" : "") + '"><td>' + (i + 1) + "</td><td>" + avatar(a.p.avatar, "g-av-sm") + " " + label({ name: a.p.name, no: a.p.name_no }) + "</td><td><b>" + a.total + "</b></td><td>" + a.games + "</td><td>" + a.wins + "</td><td>" + a.best + "</td><td>" + (a.c + a.w ? Math.round(a.c / (a.c + a.w) * 100) + "%" : "—") + "</td></tr>";
-        }).join("") + "</tbody></table>" : '<p class="g-sub">Chưa có trận nào ' + (tab === "week" ? "trong 7 ngày qua." : ".") + "</p>";
-    } catch (e) { $("#hi-body").innerHTML = '<p class="g-err">Lỗi: ' + esc(e.message || e) + "</p>"; }
+        }).join("") + "</tbody></table>" : '<p class="g-sub">' + T(tab === "week" ? "no_week" : "no_all") + "</p>";
+    } catch (e) { $("#hi-body").innerHTML = '<p class="g-err">' + T("err") + ": " + esc(e.message || e) + "</p>"; }
   }
   async function histMine() {
-    if (!G.me) { $("#hi-body").innerHTML = '<p class="g-sub">Bạn chưa đặt tên trên máy này.</p>'; return; }
-    var r = await sb.from("game_results").select("room_id,team,score,rank,correct,wrong,best_streak,created_at,game_rooms(code,title,mode,meaning_lang,minutes,teams)").eq("player_id", G.me.id).order("created_at", { ascending: false }).limit(200);
+    if (!G.me) { $("#hi-body").innerHTML = '<p class="g-sub">' + T("no_name") + "</p>"; return; }
+    var r = await sb.from("game_results").select("room_id,team,score,rank,correct,wrong,best_streak,created_at,game_rooms(code,title,mode,qtype,meaning_lang,minutes,teams)").eq("player_id", G.me.id).order("created_at", { ascending: false }).limit(200);
     if (r.error) throw r.error;
-    if (!r.data.length) { $("#hi-body").innerHTML = '<p class="g-sub">Bạn chưa chơi trận nào.</p>'; return; }
+    if (!r.data.length) { $("#hi-body").innerHTML = '<p class="g-sub">' + T("no_games") + "</p>"; return; }
     var cnt = await sb.from("game_results").select("room_id").in("room_id", r.data.map(function (x) { return x.room_id; }));
     var nIn = {}; (cnt.data || []).forEach(function (x) { nIn[x.room_id] = (nIn[x.room_id] || 0) + 1; });
     var best = r.data.reduce(function (m, x) { return Math.max(m, x.score); }, 0);
     var wins = r.data.filter(function (x) { return x.rank === 1; }).length;
     var streak = r.data.reduce(function (m, x) { return Math.max(m, x.best_streak); }, 0);
+    var QT = { meaning: "🔤", gap: "📝", recall: "⌨️", mix: "🔀" };
     $("#hi-body").innerHTML =
-      '<div class="g-stats"><div><b>' + r.data.length + '</b><span>trận</span></div><div><b>' + wins + '</b><span>lần 🥇</span></div><div><b>' + best + '</b><span>kỷ lục điểm</span></div><div><b>🔥' + streak + '</b><span>chuỗi dài nhất</span></div></div>' +
-      '<table class="g-table"><thead><tr><th>Ngày</th><th>Chủ đề</th><th>Điểm</th><th>Hạng</th><th>Đúng/Sai</th></tr></thead><tbody>' +
+      '<div class="g-stats"><div><b>' + r.data.length + "</b><span>" + T("s_games") + "</span></div><div><b>" + wins + "</b><span>" + T("s_wins") + "</span></div><div><b>" + best + "</b><span>" + T("s_best") + "</span></div><div><b>🔥" + streak + "</b><span>" + T("s_streak") + "</span></div></div>" +
+      '<table class="g-table"><thead><tr><th>' + T("h_date") + "</th><th>" + T("h_topic") + "</th><th>" + T("h_score") + "</th><th>" + T("h_rank") + "</th><th>" + T("h_rw") + "</th></tr></thead><tbody>" +
       r.data.map(function (x) {
         var rm = x.game_rooms || {}, d = new Date(x.created_at);
-        return "<tr><td>" + d.toLocaleDateString("vi-VN") + " " + d.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }) + '</td><td><a href="?room=' + esc(rm.code) + '">' + esc(rm.title || rm.code) + "</a>" +
-          '<div class="g-sub">' + (FLAG[rm.meaning_lang] || "") + " " + (rm.mode === "kahoot" ? "Cùng 1 câu" : "Tự do") + (x.team && TEAMS[x.team] ? " · " + TEAMS[x.team].e + " " + TEAMS[x.team].n : "") + "</div></td><td><b>" + x.score + (x.score === best ? " 🏆" : "") + "</b></td><td>" +
+        return "<tr><td>" + d.toLocaleDateString() + " " + d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + '</td><td><a href="?room=' + esc(rm.code) + '">' + esc(rm.title || rm.code) + "</a>" +
+          '<div class="g-sub">' + (QT[rm.qtype] || "") + " " + (FLAG[rm.meaning_lang] || "") + " " + (rm.mode === "kahoot" ? T("m_kahoot") : T("m_free")) + (x.team && TEAM_C[x.team] ? " · " + TEAM_C[x.team].e + " " + esc(teamName(x.team)) : "") + "</div></td><td><b>" + x.score + (x.score === best ? " 🏆" : "") + "</b></td><td>" +
           (x.rank === 1 ? "🥇" : x.rank) + "/" + (nIn[x.room_id] || "?") + "</td><td>✓" + x.correct + " ✗" + x.wrong + "</td></tr>";
       }).join("") + "</tbody></table>";
   }
 
   /* ---------- khởi động ---------- */
+  $("#g-mylang").addEventListener("change", function () {
+    G.myLang = this.value; writeLS(LS_LANG, G.myLang);
+    applyUI();
+    if (G.ch && G.me && G.view !== "screen") track();
+    if (G.st && G.st.phase === "lobby") paintLobbyPlayers();
+    if (G.st && G.st.phase === "play") {
+      $("#p-mode").textContent = modeLine(G.st);
+      var q = G.st.mode === "kahoot" ? G.st.q : G.myQ;
+      if (q && q.type !== "gap") $("#p-vi").textContent = myFlag(q) + " " + myText(q) + (q.type === "recall" && q.len ? "  (" + q.len + ")" : "");
+      if (q) $("#p-hint").textContent = T(q.type === "gap" ? "q_gap" : q.type === "recall" ? "q_recall" : "q_meaning");
+    }
+  });
   async function loadProfile() {
     var id = null; try { id = localStorage.getItem(LS_LINK); } catch (e) {}
     if (!id) return;
@@ -838,20 +991,12 @@
       $$("[data-pick]").forEach(function (c) { if (c.dataset.pick === picked[0].table && c.dataset.id === picked[0].id) c.checked = true; });
     }
   }
-  $("#g-mylang").addEventListener("change", function () {
-    G.myLang = this.value; writeLS(LS_LANG, G.myLang);
-    if (G.ch && G.me && G.view !== "screen") track();
-    if (G.st && G.st.phase === "play") {
-      if (G.st.mode === "kahoot" && G.st.q) { $("#p-vi").textContent = myFlag(G.st.q) + " " + myText(G.st.q); }
-      else if (G.myQ) { $("#p-vi").textContent = myFlag(G.myQ) + " " + myText(G.myQ); }
-    }
-  });
-  function defaultLang() { return "room"; }   /* mặc định theo tiếng host chọn; ai muốn thì tự đổi ở ô 🌐 */
   (async function boot() {
     G.view = param("view");
-    G.myLang = readLS(LS_LANG) || defaultLang();
+    G.myLang = readLS(LS_LANG) || "room";
     $("#g-mylang").value = G.myLang;
     $("#g-mylang").hidden = G.view === "screen";
+    applyUI();
     G.me = readLS(LS_ME);
     await loadProfile().catch(function () {});
     paintMe();

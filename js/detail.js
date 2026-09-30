@@ -1234,6 +1234,10 @@
     D.renderQuestion();
   };
 
+  function recallMeaning(item) {
+    var f = MEANING_FIELD[D.meaningLang()] || "meaning_vi";
+    return String(item[f] || item.meaning_vi || item.def_en || "").trim();
+  }
   function slotsHtml(term, hintLevel) {
     return term.split("").map(function (ch, i) {
       if (ch === " ") return '<span style="width:.5rem"></span>';
@@ -1259,9 +1263,16 @@
         '<span class="quiz-bar"><i style="width:' + progress + '%"></i></span>' +
         "<span>Đúng " + q.correct + "</span>" +
       "</div>" +
+      /* Nghĩa theo TIẾNG MẸ ĐẺ người học chọn (TJ 2026-09-30) — dùng chung lựa chọn với tab Nghĩa
+         (D.meaningLang, nhớ theo máy). Tiếng đó thiếu nghĩa thì lùi về nghĩa Việt/định nghĩa Anh. */
+      '<div class="meaning-lang-tabs" id="recall-lang-tabs">' +
+        ["vi", "en", "zh", "es"].map(function (l) {
+          return '<button class="mn-lang-tab' + (l === D.meaningLang() ? " active" : "") + '" data-rclang="' + l + '">' + { vi: "VN", en: "EN", zh: "CN", es: "ES" }[l] + "</button>";
+        }).join("") +
+      "</div>" +
       '<div class="quiz-prompt">Nhớ lại từ tiếng Anh của nghĩa sau:</div>' +
-      '<div class="quiz-meaning">' + w.esc(item.meaning_vi || item.def_en || "(chưa có nghĩa)") + "</div>" +
-      (item.def_en && item.meaning_vi ? '<div class="quiz-extra">' + w.esc(item.def_en) + "</div>" : "") +
+      '<div class="quiz-meaning">' + w.esc(recallMeaning(item) || "(chưa có nghĩa)") + "</div>" +
+      (D.meaningLang() !== "en" && item.def_en && recallMeaning(item) !== item.def_en ? '<div class="quiz-extra">' + w.esc(item.def_en) + "</div>" : "") +
       '<div class="quiz-slots" id="q-slots">' + slotsHtml(item.term, 0) + "</div>" +
       '<input class="answer-input" id="q-input" autocomplete="off" autocapitalize="off" ' +
         'autocorrect="off" spellcheck="false" placeholder="Gõ từ tiếng Anh rồi bấm Enter">' +
@@ -1272,6 +1283,13 @@
       "</div>" +
       '<div id="q-feedback"></div>';
 
+    w.$$("#recall-lang-tabs [data-rclang]").forEach(function (bt) {
+      bt.onclick = function () {
+        if (bt.dataset.rclang === D.meaningLang()) return;
+        D.setMeaningLang(bt.dataset.rclang);
+        D.renderQuestion();   /* giữ nguyên câu đang làm, chỉ đổi tiếng của nghĩa */
+      };
+    });
     var input = w.$("#q-input");
     input.focus();
     input.addEventListener("keydown", function (e) {

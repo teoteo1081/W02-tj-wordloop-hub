@@ -143,3 +143,12 @@ body.big .g-top,body.big #g-main{display:none}
 /* thuộc tính hidden phải thắng mọi display:flex/inline-flex ở trên (bug thật: người chơi thấy nút ⏹ Kết thúc của host) */
 [hidden]{display:none!important}
 @media (max-width:440px){ .g-brand b{display:none} .g-top{gap:6px;padding:8px 10px} .g-room{font-size:12px;padding:2px 8px} }
+/* v7: dạng câu (gợi ý dạng câu, chỗ trống, ô gõ từ) */
+.g-qhint{text-align:center;margin-bottom:6px;font-size:13px}
+.g-qhint:empty{display:none}
+.g-blank{display:inline-block;min-width:90px;border-bottom:3px solid var(--amber);color:var(--amber);font-weight:800;letter-spacing:2px}
+.g-type{display:flex;gap:8px;margin-top:12px}
+.g-type .g-input{font-size:18px;text-align:center}
+.g-qvi{line-height:1.45}
+.sc-ans{color:var(--green);font-size:1.3em}
+.sc-q .g-blank{min-width:160px}

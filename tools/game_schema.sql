@@ -24,6 +24,7 @@ create table if not exists public.game_rooms (
   minutes numeric not null default 5,
   q_seconds int not null default 15,
   meaning_lang text not null default 'vi',  -- nghĩa hiện bằng: vi | en (def_en) | es | zh
+  qtype text not null default 'meaning',   -- dạng câu: meaning (nghĩa->chọn từ) | gap (điền chỗ trống từ bài đọc) | recall (gõ từ) | mix
   status text not null default 'lobby',  -- lobby | playing | ended
   started_at timestamptz,
   ended_at timestamptz,
