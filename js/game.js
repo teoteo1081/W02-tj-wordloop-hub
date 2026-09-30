@@ -46,7 +46,11 @@
   var TEAM_C = [null, { c: "#d9695f", e: "🔴", k: "team_red" }, { c: "#5b9bd9", e: "🔵", k: "team_blue" }, { c: "#4fae82", e: "🟢", k: "team_green" }, { c: "#d9a03c", e: "🟡", k: "team_yellow" }];
   var FLAG = { vi: "🇻🇳", en: "🇺🇸", es: "🇪🇸", zh: "🇨🇳" };
   var MASTER_T = cfg.MASTER_THRESHOLD || 0.8, MASTER_N = cfg.MASTER_MIN_ATTEMPTS || 3;
-  var DEFAULT_ROOM = "TJ";   /* 1 link duy nhất cho tất cả: game.html (không tham số) = phòng của TJ */
+  var DEFAULT_ROOM = "TJ";
+  /* CHỈ hồ sơ TJ được làm host + ghi tiến trình học từ game (TJ chốt 2026-09-30). KHÔNG dùng is_admin:
+     WordLoop có 2 admin (TJ + Anti_TJ) — Anti_TJ vào game chỉ là người chơi thường. */
+  var HOST_PROFILE_ID = "f3fd95c9-06e8-4d39-b6f2-efc113d436cf";
+  function isTJ() { return !!(G.profile && G.profile.id === HOST_PROFILE_ID); }   /* 1 link duy nhất cho tất cả: game.html (không tham số) = phòng của TJ */
   var POINTS = 100, REVEAL_MS = 3500, HOST_LOST_MS = 7000, HEARTBEAT_MS = 3000;
 
   /* ---------- chữ giao diện 4 tiếng (người chơi); phần cài đặt của host để tiếng Việt ---------- */
@@ -440,7 +444,7 @@
       show("s-home"); $("#h-err").textContent = T("no_room", { c: code }); return;
     }
     G.room = r.data;
-    G.isHost = G.view !== "screen" && !!(G.profile && G.profile.is_admin && G.profile.id === G.room.host_id);
+    G.isHost = G.view !== "screen" && isTJ() && G.profile.id === G.room.host_id;
     applyUI();
     $("#g-room-badge").hidden = false;
     if (G.isHost) {
@@ -871,7 +875,7 @@
 
   /* Tiến trình học — CHỈ hồ sơ admin (TJ). "Học chung" vẫn tách được qua game_answers (có room_id). */
   async function recordMyProgress(wid, ok) {
-    if (!G.profile || !G.profile.is_admin || !wid) return;
+    if (!isTJ() || !wid) return;
     try {
       var r = await sb.from("word_progress").select("attempts,correct").eq("user_id", G.profile.id).eq("word_id", wid).maybeSingle();
       var at = ((r.data && r.data.attempts) || 0) + 1, co = ((r.data && r.data.correct) || 0) + (ok ? 1 : 0);
@@ -1039,7 +1043,7 @@
     if (G.view === "screen" && room) return joinRoom(room);   /* màn hình chung không cần tên */
     if (!G.me) return renderNameScreen();
     if (room) return joinRoom(room);
-    if (G.profile && G.profile.is_admin) return openHostRoom();   /* host: vào thẳng PHÒNG CỐ ĐỊNH (kể cả mở từ chuột phải ?scope=) */
+    if (isTJ()) return openHostRoom();   /* host: vào thẳng PHÒNG CỐ ĐỊNH (kể cả mở từ chuột phải ?scope=) */
     return joinRoom(DEFAULT_ROOM);   /* người chơi: link trần = phòng của TJ */
   }
   (async function boot() {

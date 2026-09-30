@@ -2470,7 +2470,7 @@
     if (w.DB.mode === "cloud") items.push({ act: "leaderboard", icon: "🏆", text: "Xem xếp hạng" });
     /* 🎮 Phòng game chơi chung (2026-09-30) — tạm thời CHỈ admin mở phòng (TJ chốt),
        mở game.html ở tab mới với phạm vi = đúng mục đang bấm. Xem js/game.js. */
-    if (w.DB.mode === "cloud" && w.Auth.isAdmin()) items.push({ act: "game", icon: "🎮", text: "Mở phòng game" });
+    if (w.DB.mode === "cloud" && w.Auth.user && w.Auth.user.id === "f3fd95c9-06e8-4d39-b6f2-efc113d436cf" && !w.Auth.viewAsUserId) items.push({ act: "game", icon: "🎮", text: "Mở phòng game" });   /* CHỈ hồ sơ TJ (không phải mọi admin) — khớp HOST_PROFILE_ID trong js/game.js */
     /* "🧪 Kiểm tra tất cả" (2026-09-27, TJ yêu cầu) — ôn liên tiếp MỌI Block
        trong phạm vi này (kể cả Notebook con lồng bên trong, xuyên nhiều
        Notebook/Hub với "notebooks"/"hubs"), đủ cả 5 hình thức (Nghĩa/Active
