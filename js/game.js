@@ -1712,6 +1712,7 @@
   }
 
   function lockAll(msg) {
+    var ae = document.activeElement; if (ae && ae.classList && ae.classList.contains("g-opt")) ae.blur();   /* không để ô vừa bấm giữ focus sang câu sau */
     $$(".g-opt, .g-sel, #p-sheetgo").forEach(function (x) { x.disabled = true; });
     $("#p-typein").disabled = true; $("#p-typego").disabled = true;
     if (msg) $("#p-msg").textContent = msg;

@@ -67,7 +67,11 @@ h1{font-size:22px;margin:8px 0 4px} h2{font-size:16px;margin:18px 0 8px}
 .g-qvi{font-size:20px;font-weight:700;color:var(--vi);text-align:center;min-height:2.4em;display:flex;align-items:center;justify-content:center}
 .g-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
 .g-opt{min-height:56px;padding:10px;border-radius:12px;border:2px solid var(--line);background:var(--deep);font-size:16px;font-weight:600;cursor:pointer;word-break:break-word}
-.g-opt:hover:not(:disabled){border-color:var(--accent)}
+/* hover CHỈ cho máy có chuột: điện thoại "kẹt" :hover ở chỗ vừa chạm -> ô đáp án câu sau ở cùng vị trí bị viền cam
+   như đã chọn (TJ báo 2026-10-01). Bỏ luôn vòng focus/chớp xanh khi chạm; bàn phím vẫn có :focus-visible. */
+@media (hover:hover){ .g-opt:hover:not(:disabled){border-color:var(--accent)} }
+.g-opt{-webkit-tap-highlight-color:transparent}
+.g-opt:focus{outline:none} .g-opt:focus-visible{outline:2px solid var(--vi);outline-offset:2px}
 .g-opt:disabled{cursor:default}
 .g-opt.picked{border-color:var(--amber)}
 .g-opt.ok{border-color:var(--green);background:var(--green-sub)}

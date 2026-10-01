@@ -375,6 +375,9 @@
         '<span class="jrow-ic">' + (done ? "✓" : "⭕") + "</span>" +
         '<span class="jrow-name">' + w.esc(row.name) + "</span>" +
         '<span class="jrow-status">' + (done ? "✓ Done" : "Chưa xong") + "</span>" +
+        /* 🎮 nút tím giống Block card (TJ 2026-10-01) — chỉ hồ sơ TJ, mở thẻ 🎮 Game với Block này (js/gamelayer.js) */
+        (w.GameLayer && w.DB.mode === "cloud" && w.Auth.user && w.Auth.user.id === "f3fd95c9-06e8-4d39-b6f2-efc113d436cf" && !w.Auth.viewAsUserId
+          ? '<button class="btn-game-block jrow-game" data-act="game" title="Chơi game với Block này">🎮 Chơi game →</button>' : "") +
         '<button class="jrow-open" data-act="open" title="Mở bài học" aria-label="Mở bài học ' + w.esc(row.name) + '">↗</button>' +
         '<button class="jrow-dots" data-act="menu" title="Thao tác" aria-label="Thao tác với ' + w.esc(row.name) + '">⋯</button>' +
       "</div>";
@@ -431,12 +434,17 @@
   /* Click/bấm phải trong 1 danh sách Block phẳng (tab Tony Buzan) — chỉ
      có 1 cấp (block, lá), không cần logic "drill sâu hơn" như cây bên
      phải, nên tách hàm riêng cho gọn thay vì dùng chung handler cây. */
+  function playGame(row) {
+    var nm = row.querySelector(".jrow-name");
+    if (w.GameLayer) w.GameLayer.openScope("blocks", row.dataset.id, nm ? nm.textContent : "");
+  }
   async function handleFlatBlockClick(e) {
     var row = e.target.closest(".jrow");
     if (!row) return;
     var id = row.dataset.id;
     var act = e.target.closest("[data-act]");
     if (act && act.dataset.act === "menu") { e.stopPropagation(); await openRowMenu("block", id, act); return; }
+    if (act && act.dataset.act === "game") { e.stopPropagation(); playGame(row); return; }
     await jumpToRow("block", id);
   }
 
@@ -464,6 +472,7 @@
 
     if (act && act.dataset.act === "menu") { e.stopPropagation(); await openRowMenu(level, id, act); return; }
     if (act && act.dataset.act === "open") { e.stopPropagation(); await jumpToRow(level, id); return; }
+    if (act && act.dataset.act === "game") { e.stopPropagation(); playGame(row); return; }
 
     if (level === "block") { await jumpToRow(level, id); return; }   // Block là lá -> bấm dòng = mở luôn
     drillInto(level, id);                                            // các cấp khác -> đi sâu vào trong cây
