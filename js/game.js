@@ -1737,7 +1737,7 @@
     }
     /* máy mới chưa có người chơi: dùng lại người chơi cũ của hồ sơ này (tên + ảnh + lịch sử) thay vì bắt tạo mới */
     if (!G.me) {
-      var gp = await sb.from("game_players").select("id,name,name_no,avatar").eq("profile_id", G.profile.id).order("name_no").limit(1);
+      var gp = await sb.from("game_players").select("id,name,name_no,avatar").eq("profile_id", G.profile.id).order("created_at").limit(1);
       if (gp.data && gp.data[0]) { G.me = { id: gp.data[0].id, name: gp.data[0].name, name_no: gp.data[0].name_no, avatar: gp.data[0].avatar }; writeLS(LS_ME, G.me); }
     }
   }
