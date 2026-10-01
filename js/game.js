@@ -1722,10 +1722,24 @@
     }
   });
   async function loadProfile() {
-    var id = null; try { id = localStorage.getItem(LS_LINK); } catch (e) {}
+    /* link riêng "game.html?u=<mã hồ sơ>" (giống ?u= của web chính, auth.js): mở 1 lần trên máy mới -> máy đó nhớ hồ sơ
+       (kể cả TJ = host), không phải tạo tài khoản mới. Người chơi dùng link trần, không cần ?u= */
+    var qid = param("u"), id = qid;
+    if (!id) { try { id = localStorage.getItem(LS_LINK); } catch (e) {} }
     if (!id) return;
     var r = await sb.from("profiles").select("id,display_name,is_admin").eq("id", id).maybeSingle();
-    if (r.data) G.profile = r.data;
+    if (!r.data) return;
+    G.profile = r.data;
+    if (qid) {
+      try { localStorage.setItem(LS_LINK, id); } catch (e) {}
+      var u = new URLSearchParams(location.search); u.delete("u");
+      history.replaceState(null, "", location.pathname + (u.toString() ? "?" + u : "") + location.hash);   /* gỡ mã khỏi thanh địa chỉ */
+    }
+    /* máy mới chưa có người chơi: dùng lại người chơi cũ của hồ sơ này (tên + ảnh + lịch sử) thay vì bắt tạo mới */
+    if (!G.me) {
+      var gp = await sb.from("game_players").select("id,name,name_no,avatar").eq("profile_id", G.profile.id).order("name_no").limit(1);
+      if (gp.data && gp.data[0]) { G.me = { id: gp.data[0].id, name: gp.data[0].name, name_no: gp.data[0].name_no, avatar: gp.data[0].avatar }; writeLS(LS_ME, G.me); }
+    }
   }
   async function route() {
     var room = param("room"), match = param("match");
