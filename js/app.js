@@ -865,6 +865,12 @@
     { tab: "single", icon: "🔤", title: "Từng câu" },
     { tab: "progress", icon: "📊", title: "Tiến trình trí nhớ" }
   ];
+  /* 🎮 nút tím "Chơi game →" cuối hàng icon của Block card (TJ 2026-10-01) — CHỈ hồ sơ TJ (host game), mở thẻ 🎮 Game
+     với chủ đề = đúng Block này (js/gamelayer.js GameLayer.openScope). */
+  function gameBtnHtml(b) {
+    if (!(w.DB.mode === "cloud" && w.Auth.user && w.Auth.user.id === "f3fd95c9-06e8-4d39-b6f2-efc113d436cf" && !w.Auth.viewAsUserId)) return "";
+    return '<button class="btn-game-block" data-gameblock="' + b.id + '" data-title="' + w.esc(b.name || "") + '" title="Chơi game với Block này (đạt ≥ 80% là pass, vào chu kỳ Tony Buzan)">🎮 Chơi game →</button>';
+  }
   function quickTabsHtml(blockId) {
     return '<div class="block-quick-tabs">' + QUICK_TABS.map(function (t) {
       return '<button class="bq-tab" data-open="' + blockId + '" data-quicktab="' + t.tab + '" title="' + w.esc(t.title) + '">' + t.icon + "</button>";
@@ -1087,7 +1093,7 @@
              dù Block bao nhiêu từ (khác vocab-chips, độ dài phụ thuộc số
              từ nên không đoán trước được chỗ trống). fw-preview (nếu có)
              lấp đúng phần trống CỐ ĐỊNH này — xem .block-tabs-row CSS. */
-          '<div class="block-tabs-row">' + quickTabsHtml(b.id) + fwPreview + "</div>" +
+          '<div class="block-tabs-row">' + quickTabsHtml(b.id) + fwPreview + gameBtnHtml(b) + "</div>" +
         "</div>" +
       "</div>";
     }).join("");
@@ -2812,8 +2818,9 @@
         w.toast('Đã tạo "' + newNb.name + '" — bản sao Section/Page/Batch/Block/Từ vựng' + (progressScope ? ", kèm tiến trình học" : ""), "ok");
       }
 
-      else if (act === "game") {
-        w.open("game.html?scope=" + encodeURIComponent(table + ":" + id) + "&title=" + encodeURIComponent(row.name || ""), "_blank");
+      else if (act === "game") {   /* mở trong thẻ 🎮 Game (giữ phòng đang mở), không mở tab mới nữa */
+        if (w.GameLayer) w.GameLayer.openScope(table, id, row.name || "");
+        else w.open("game.html?scope=" + encodeURIComponent(table + ":" + id) + "&title=" + encodeURIComponent(row.name || ""), "_blank");
         return;
       }
       else if (act === "leaderboard") {
@@ -4229,6 +4236,8 @@
     /* --- mở block --- */
     w.$("#blocks-list").onclick = async function (e) {
       if (e.target.closest("[data-menu]")) return;
+      var gameBtn = e.target.closest("[data-gameblock]");
+      if (gameBtn) { if (w.GameLayer) w.GameLayer.openScope("blocks", gameBtn.dataset.gameblock, gameBtn.dataset.title); return; }
 
       /* Nút "×" xoá thẳng 1 từ ngay trên chip - PHẢI xét TRƯỚC (return sớm),
          không thì click lọt xuống card bên dưới sẽ mở luôn Block ra. */

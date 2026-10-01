@@ -556,8 +556,29 @@
     if (!scope || !scope.length) { G.pool = []; G.gaps = []; return; }
     await loadPool(scope);
   }
+  /* ⏱ Tổng thời gian TỰ TÍNH (TJ 2026-10-01): số câu × giây mỗi câu, số câu = số từ trong chủ đề (sau lọc cấp độ;
+     📄 Phiếu = tổng số chỗ trống). Kiểu Kahoot cộng thêm thời gian xem đáp án sau mỗi câu (REVEAL_MS) để kịp hỏi hết. */
+  function autoCount() {
+    var st = G.st || {};
+    if (st.qtype === "sheet") return (G.sheets || []).reduce(function (n, x) { return n + x.ans.length; }, 0);
+    if (st.qtype === "dict") return Math.min((G.dicts || []).length, (G.pool || []).length);
+    return (G.pool || []).length;
+  }
+  function autoSec() {
+    var st = G.st || {}, n = autoCount(), qs = +st.qs || 15, per = qs + (st.mode === "kahoot" ? REVEAL_MS / 1000 : 0);
+    return { n: n, qs: qs, per: per, sec: Math.max(30, Math.round(n * per)) };
+  }
+  function fmtSec(s) { var m = Math.floor(s / 60), r = s % 60; return (m ? m + " phút " : "") + (r ? r + " giây" : m ? "" : "0 giây"); }
+  function paintAutoTime() {
+    if (!G.st || !$("#l-auto")) return;
+    var on = G.st.auto !== false, a = autoSec();
+    $("#l-qs-wrap").hidden = !(G.st.mode === "kahoot" || on);   /* Tự do: giây/câu chỉ dùng để tính tổng */
+    $("#l-min").disabled = on;
+    if (on) $("#l-min").value = Math.max(1, Math.ceil(a.sec / 60));
+    $("#l-autohint").textContent = on ? (a.n ? "→ " + a.n + (G.st.qtype === "sheet" ? " chỗ trống" : " từ") + " × " + a.qs + " giây" + (G.st.mode === "kahoot" ? " (+" + REVEAL_MS / 1000 + " giây xem đáp án)" : "") + " = " + fmtSec(a.sec) : "→ chọn chủ đề trước") : "";
+  }
   function paintPoolInfo() {
-    paintLevels();
+    paintLevels(); paintAutoTime();
     $("#l-pool").textContent = G.st && G.st.scope && G.st.scope.length
       ? G.pool.length + " từ khác nhau · có nghĩa: " + poolCounts() + " · 📝 " + G.gaps.length + " câu điền chỗ trống (📚 thư viện " + (G.gapLib || []).length + " · 📖 bài đọc " + (G.gapsSrc || []).length + ") · 📄 " + (G.sheets || []).length + " phiếu Block · 🎧 " + (G.dicts || []).length + " câu dictation"
       : "Chưa chọn chủ đề.";
@@ -987,7 +1008,7 @@
       if (s !== "SUBSCRIBED" || ch !== G.ch) return;
       if (G.view !== "screen") await track();
       if (G.isHost) {
-        if (!G.st) G.st = { phase: "lobby", levels: [], gapsrc: "lib", scoring: G.room.scoring || "q", scope: G.room.scope || [], title: G.room.title || "", mode: G.room.mode, qtype: G.room.qtype || "meaning", lang: G.room.meaning_lang || "vi", force: false, minutes: +G.room.minutes, qs: G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
+        if (!G.st) G.st = { phase: "lobby", auto: true, levels: [], gapsrc: "lib", scoring: G.room.scoring || "q", scope: G.room.scope || [], title: G.room.title || "", mode: G.room.mode, qtype: G.room.qtype || "meaning", lang: G.room.meaning_lang || "vi", force: false, minutes: +G.room.minutes, qs: G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
         push();
         if (G.st.phase === "play") onState(pub());
         else initHostLobby();
@@ -1058,18 +1079,30 @@
       return;
     }
     var pv = G.st || {};   /* trạng thái nhận từ host cũ -> lấy lại CÀI ĐẶT, còn ván đang dở thì bỏ (về phòng chờ) */
-    G.st = { phase: "lobby", levels: pv.levels || [], gapsrc: pv.gapsrc || "lib", scoring: pv.scoring || G.room.scoring || "q", scope: pv.scope || G.room.scope || [], title: pv.title || G.room.title || "", mode: pv.mode || G.room.mode, qtype: pv.qtype || G.room.qtype || "meaning", lang: pv.lang || G.room.meaning_lang || "vi", force: !!pv.force, minutes: pv.minutes || +G.room.minutes, qs: pv.qs || G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
+    G.st = { phase: "lobby", auto: pv.auto !== false, levels: pv.levels || [], gapsrc: pv.gapsrc || "lib", scoring: pv.scoring || G.room.scoring || "q", scope: pv.scope || G.room.scope || [], title: pv.title || G.room.title || "", mode: pv.mode || G.room.mode, qtype: pv.qtype || G.room.qtype || "meaning", lang: pv.lang || G.room.meaning_lang || "vi", force: !!pv.force, minutes: pv.minutes || +G.room.minutes, qs: pv.qs || G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
     G.endAt = 0; G.qUntil = 0; clearInterval(G.hostTimer);
     G.online.forEach(function (p) { G.st.roster[p.id] = { name: p.name, no: p.no, avatar: p.avatar }; });
     push(); initHostLobby();
   }
 
   /* ---------- phòng chờ ---------- */
+  /* WordLoop (thẻ 🎮 Game, nút 🎮 trên Block card) gửi chủ đề mới khi game đã mở sẵn — đổi tại chỗ, không tải lại */
+  window.addEventListener("message", function (e) {
+    if (e.origin !== location.origin || !e.data || e.data.type !== "tjwl-game-scope") return;
+    var sc = (e.data.scope || []).filter(function (p) { return p && p.table && p.id; });
+    if (!sc.length) return;
+    if (!G.isHost || !G.st) { G.pendingScope = sc; return; }   /* chưa vào phòng xong -> initHostLobby áp sau */
+    if (G.st.phase !== "lobby") { alert("Đang chơi dở — bấm Kết thúc / Ván mới rồi chọn lại chủ đề nhé."); return; }
+    picked = sc.map(function (p) { return { table: p.table, id: p.id, title: p.title || p.id }; });
+    if (TREE) paintTree(); else paintPicked();
+    hostSetScope();
+  });
   async function initHostLobby() {
     var sc = param("scope");
+    if (!sc && G.pendingScope) { var ps = G.pendingScope[0]; sc = ps.table + ":" + ps.id; G.pendingTitle = ps.title; G.pendingScope = null; }
     if (sc) {   /* mở từ chuột phải trong WordLoop: ?scope=<table>:<id>&title=… -> thành chủ đề ván tới */
       var i = sc.indexOf(":");
-      picked = [{ table: sc.slice(0, i), id: sc.slice(i + 1), title: param("title") || sc }];
+      picked = [{ table: sc.slice(0, i), id: sc.slice(i + 1), title: param("title") || G.pendingTitle || sc }];
       history.replaceState(null, "", "?room=" + G.room.code);
       hostSetScope();
     } else {
@@ -1094,7 +1127,7 @@
       $("#l-mode").value = st.mode || G.room.mode; $("#l-qtype").value = st.qtype || G.room.qtype || "meaning";
       $("#l-min").value = st.minutes || G.room.minutes; $("#l-qs").value = st.qs || G.room.q_seconds;
       $("#l-lang").value = roomLang(st); $("#l-teamn").value = String(st.teams || 0); $("#l-force").checked = !!st.force;
-      $("#l-qs-wrap").hidden = $("#l-mode").value !== "kahoot";
+      $("#l-auto").checked = st.auto !== false; paintAutoTime();
       $("#l-force-wrap").hidden = !($("#l-qtype").value === "meaning" || $("#l-qtype").value === "en2m" || $("#l-qtype").value === "mix");
       $("#l-teambtns").hidden = !(+$("#l-teamn").value);
       paintPoolInfo(); paintPicked();
@@ -1145,17 +1178,18 @@
     setTimeout(function () { b.textContent = "🔗 Copy link mời"; }, 2000);
   });
   $("#l-screen").addEventListener("click", function () { window.open(roomLink(G.room.code, true), "_blank"); });
-  ["#l-mode", "#l-qtype", "#l-min", "#l-qs", "#l-lang", "#l-teamn", "#l-hostplay", "#l-force", "#l-scoring", "#l-gapsrc"].forEach(function (s) {
+  ["#l-mode", "#l-qtype", "#l-min", "#l-qs", "#l-lang", "#l-teamn", "#l-hostplay", "#l-force", "#l-scoring", "#l-gapsrc", "#l-auto"].forEach(function (s) {
     $(s).addEventListener("change", function () {
       if (!G.isHost || !G.st) return;   /* chưa kết nối xong (G.st chưa có) -> bỏ qua, initHostLobby sẽ vẽ lại */
       var st = G.st;
       st.gapsrc = $("#l-gapsrc").value; $("#l-gapsrc-wrap").hidden = !wantsGap($("#l-qtype").value);
       st.mode = $("#l-mode").value; st.qtype = $("#l-qtype").value; st.scoring = $("#l-scoring").value; st.lang = $("#l-lang").value; st.force = $("#l-force").checked;
-      st.minutes = Math.max(1, +$("#l-min").value || 5); st.qs = Math.max(5, +$("#l-qs").value || 15);
+      st.auto = $("#l-auto").checked;
+      st.minutes = Math.max(1, +$("#l-min").value || 5); st.qs = Math.max(3, +$("#l-qs").value || 15);
       st.timed = true;
       var tn = +$("#l-teamn").value;
       if (tn !== st.teams) { st.teams = tn; st.teamOf = {}; if (tn) autoTeams(); }
-      $("#l-qs-wrap").hidden = st.mode !== "kahoot" || !st.timed; $("#l-min-wrap").hidden = !st.timed;
+      paintAutoTime();
       $("#l-teambtns").hidden = !tn;
       $("#l-force-wrap").hidden = !(st.qtype === "meaning" || st.qtype === "en2m" || st.qtype === "mix");
       if (s === "#l-hostplay") track();
@@ -1196,7 +1230,8 @@
     fillTeams();
     G.st.phase = "play"; G.st.scores = {}; G.st.q = null; G.answers = []; G.myAns = []; G.srsHtml = "";
     players().forEach(function (p) { G.st.scores[p.id] = { s: 0, c: 0, w: 0, st: 0, best: 0 }; });
-    G.endAt = Date.now() + (G.st.minutes * 60000);
+    if (G.st.auto !== false) { var at = autoSec(); G.st.totalSec = at.sec; G.st.minutes = Math.max(1, Math.ceil(at.sec / 60)); } else G.st.totalSec = G.st.minutes * 60;
+    G.endAt = Date.now() + G.st.totalSec * 1000;
     await sb.from("game_rooms").update({ status: "playing", started_at: new Date().toISOString(), mode: G.st.mode, qtype: G.st.qtype, meaning_lang: G.st.lang, minutes: G.st.minutes, q_seconds: G.st.qs, team_mode: !!G.st.teams, teams: G.st.teams }).eq("id", G.room.id);
     /* mỗi lần bắt đầu = 1 VÁN riêng (lịch sử xem theo ván) */
     var mr = await sb.from("game_matches").insert({ room_id: G.room.id, title: G.st.title, scope: G.st.scope, mode: G.st.mode, qtype: G.st.qtype, scoring: G.st.scoring || "q", meaning_lang: G.st.lang, minutes: G.st.minutes, q_seconds: G.st.qs, teams: G.st.teams || 0 }).select("id").single();

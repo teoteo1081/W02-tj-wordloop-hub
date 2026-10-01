@@ -39,6 +39,21 @@
   }
   btn.addEventListener("click", function () { isOpen() ? close() : open(); });
 
+  /* Mở game với chủ đề chọn sẵn (nút 🎮 trên Block card / chuột phải "🎮 Mở phòng game"). Game chưa mở -> tạo iframe
+     với ?scope=; đã mở -> gửi postMessage để game đổi chủ đề tại chỗ (không tải lại, giữ phòng/người chơi). */
+  function openScope(table, id, title) {
+    if (!layer.firstChild) {
+      var f = document.createElement("iframe");
+      f.src = "game.html?embed=1&scope=" + encodeURIComponent(table + ":" + id) + "&title=" + encodeURIComponent(title || "");
+      f.title = "WordLoop Game";
+      f.allow = "clipboard-write; autoplay";
+      layer.appendChild(f);
+    } else {
+      try { layer.firstChild.contentWindow.postMessage({ type: "tjwl-game-scope", scope: [{ table: table, id: id, title: title || id }] }, location.origin); } catch (e) {}
+    }
+    if (!isOpen()) open();
+  }
+
   /* "📖 Learning": đang mở game thì chỉ đóng game (màn bên dưới vẫn y như lúc rời đi) */
   learn.addEventListener("click", function (e) {
     if (!isOpen()) return;
@@ -60,5 +75,5 @@
   if (w.Auth && w.Auth.onChange) w.Auth.onChange(syncBtn);
   var tries = 0, t = setInterval(function () { syncBtn(); if (++tries > 30 || !btn.hidden) clearInterval(t); }, 1000);   /* Auth.init chạy bất đồng bộ */
   syncBtn();
-  w.GameLayer = { open: open, close: close, isOpen: isOpen };
+  w.GameLayer = { open: open, close: close, isOpen: isOpen, openScope: openScope };
 })(window);

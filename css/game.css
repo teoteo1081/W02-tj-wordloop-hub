@@ -282,3 +282,6 @@ body.g-resizing{cursor:col-resize;user-select:none}
 
 /* v39: chạy trong thẻ 🎮 Game của WordLoop (?embed=1) — WordLoop đã có thanh trên cùng, bỏ logo cho gọn */
 body.embed .g-brand{display:none}
+
+/* v44: dòng ⏱ tự tính tổng thời gian trải hết hàng cài đặt */
+#l-auto-wrap{grid-column:1/-1}

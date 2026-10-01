@@ -8,7 +8,7 @@
 <!-- Google tag (gtag.js) — cùng property GA4 với WordLoop -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM');</script>
-<link rel="stylesheet" href="css/game.css?v=22">
+<link rel="stylesheet" href="css/game.css?v=23">
 </head>
 <body>
 <!-- 🎮 Phòng game chơi chung — xem README.md "Việc còn dang dở" > PHÒNG GAME, bảng: tools/game_schema.sql.
@@ -110,7 +110,8 @@
           <select id="l-scoring"><option value="q">Theo câu — đúng +100</option><option value="speed">Theo tốc độ — đúng 100 → 50 (chậm bị trừ)</option></select></label>
         <label>Tiếng chung — 📺 màn hình chung, 🔒 ép cả phòng, người chưa tự chọn ngôn ngữ <select id="l-lang"><option value="vi">🇻🇳 Tiếng Việt</option><option value="en">🇺🇸 English (định nghĩa)</option><option value="es">🇪🇸 Español</option><option value="zh">🇨🇳 中文</option></select></label>
         <label class="g-check" id="l-force-wrap"><input type="checkbox" id="l-force"> 🔒 Ép cả phòng dùng tiếng nghĩa này <span class="g-sub">(chỉ câu dạng 🔤 Nghĩa)</span></label>
-        <label id="l-min-wrap">Số phút <input type="number" id="l-min" min="1" max="60" step="1"></label>
+        <label id="l-min-wrap">Tổng thời gian (phút) <input type="number" id="l-min" min="1" max="120" step="1"></label>
+        <label class="g-check" id="l-auto-wrap"><input type="checkbox" id="l-auto" checked> ⏱ Tự tính = số từ × giây mỗi câu <span class="g-sub" id="l-autohint"></span></label>
         <label id="l-qs-wrap">Giây mỗi câu <input type="number" id="l-qs" min="5" max="90" step="1"></label>
         <label>Hình thức thi đấu <select id="l-teamn"><option value="0">Chơi lẻ</option><option value="2">2 đội</option><option value="3">3 đội</option><option value="4">4 đội</option></select></label>
         <label class="g-check"><input type="checkbox" id="l-hostplay" checked> Host cũng chơi</label>
@@ -198,6 +199,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="js/config.js?v=4"></script>
-<script src="js/game.js?v=43"></script>
+<script src="js/game.js?v=44"></script>
 </body>
 </html>

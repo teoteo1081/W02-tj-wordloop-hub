@@ -2383,6 +2383,12 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
   background:var(--bg-main,#262624);
 }
 .game-layer[hidden]{display:none;}
+/* nút 🎮 tím trên Block card — cùng khuôn với nút vàng "Bắt đầu học →" (.btn-warn), đứng sát phải hàng icon */
+.btn-game-block{
+  margin-left:auto;background:#8b5cf6;color:#fff;border:none;padding:.42rem .95rem;border-radius:7px;
+  font-weight:700;font-size:.78rem;cursor:pointer;white-space:nowrap;
+}
+.btn-game-block:hover{background:#7c3aed;}
 .game-layer iframe{width:100%;height:100%;border:0;display:block;}
 /* điện thoại: chừa thanh điều hướng dưới đáy; rộng ĐÚNG màn hình (100vw) — thanh trên cùng đang tràn ngang làm
    trang rộng hơn màn hình, left:0/right:0 sẽ kéo game rộng theo (game tưởng là máy tính, cột chủ đề ghim cứng) */
