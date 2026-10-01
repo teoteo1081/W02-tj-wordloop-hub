@@ -1271,7 +1271,7 @@
     if (mine) $("#p-typein").placeholder = T("type_ph");
     if (q.type === "en2m") {   /* từ tiếng Anh to ở trên, 4 nghĩa theo tiếng của người xem (data-opt vẫn là từ để chấm) */
       var ml = effLang(mine ? G.myLang : "room", G.st, "en2m");
-      $(textEl).textContent = "🇺🇸 " + q.word;
+      $(textEl).textContent = q.word;
       if (mine) $("#p-type").hidden = true;
       $(optsEl).innerHTML = q.opts.map(function (o) {
         var m = (q.optTexts || {})[o] || {}, t = m[ml] || m.en || m.vi || o;
