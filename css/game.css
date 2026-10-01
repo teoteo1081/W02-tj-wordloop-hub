@@ -249,6 +249,14 @@ body.g-resizing{cursor:col-resize;user-select:none}
 .g-duetag{flex:none;font-size:11px;color:var(--text-2);margin-left:6px;white-space:nowrap}
 .g-duenone{padding:2px 0 2px 16px}
 .g-btn-xs{padding:2px 8px;font-size:11px;border-radius:6px}
+/* v42: lọc cấp độ từ (CEFR) + báo đẩy chu kỳ Tony Buzan sau ván */
+.g-levels{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0 4px}
+.g-levels button{border:1px solid var(--line);background:var(--deep);border-radius:999px;padding:4px 11px;font-size:13px;font-weight:600;cursor:pointer}
+.g-levels button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.g-levels button small{font-weight:400;opacity:.75;margin-left:3px}
+.g-srs h3{margin:0 0 6px;font-size:15px}
+.g-srs ul{margin:0;padding-left:18px;font-size:14px;line-height:1.6}
+.g-srs .ok{color:var(--green)} .g-srs .no{color:var(--text-2)}
 .g-dotmenu [hidden]{display:none}
 @media (max-width:900px){ #h-pin,#h-shrink,.g-sidetab,.g-resizer{display:none} }   /* điện thoại: mở cây bằng nút "📚 Chọn chủ đề…" */
 .g-side .g-tree{flex:1;max-height:none;overflow:auto;background:transparent;border:none;border-radius:0;padding:6px 6px 24px;font-size:13px}

@@ -8,7 +8,7 @@
 <!-- Google tag (gtag.js) — cùng property GA4 với WordLoop -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM');</script>
-<link rel="stylesheet" href="css/game.css?v=21">
+<link rel="stylesheet" href="css/game.css?v=22">
 </head>
 <body>
 <!-- 🎮 Phòng game chơi chung — xem README.md "Việc còn dang dở" > PHÒNG GAME, bảng: tools/game_schema.sql.
@@ -98,6 +98,7 @@
       <h2>📚 Chủ đề ván này <span class="g-sub">(đổi thoải mái — mã phòng/link giữ nguyên)</span></h2>
       <div class="g-scope-picked" id="h-picked"></div>
       <button class="g-btn g-btn-soft g-btn-sm" id="h-sideopen">📚 Chọn chủ đề…</button>
+      <div class="g-levels" id="l-levels"><span class="g-sub">Cấp độ từ:</span><button data-lv="A1">A1</button><button data-lv="A2">A2</button><button data-lv="B1">B1</button><button data-lv="B2">B2</button><button data-lv="C1">C1</button><button data-lv="C2">C2</button><button data-lv="-">Chưa gắn</button><span class="g-sub" id="l-lvhint">(không chọn = tất cả)</span></div>
       <div class="g-settings">
         <label>Kiểu chơi
           <select id="l-mode"><option value="kahoot">Cùng 1 câu (kiểu Kahoot)</option><option value="free">Tự do — mỗi người tự làm</option></select></label>
@@ -146,6 +147,7 @@
     <div class="g-sub" id="e-info"></div>
     <div class="g-teambar g-teambar-end" id="e-teams"></div>
     <ol class="g-board g-board-end" id="e-board"></ol>
+    <div class="g-card g-srs" id="e-srs" hidden></div>
     <div class="g-row"><button class="g-btn" id="e-again" hidden>🔁 Ván mới (cả phòng về phòng chờ)</button></div>
     <p class="g-sub g-wait" id="e-wait" data-t="wait_next">Chờ host mở ván mới…</p>
     <div class="g-row" id="e-hostnav"><button class="g-btn" id="e-review" data-t="review_btn" hidden>📖 Xem lại đáp án</button><button class="g-btn" id="e-hist" data-t="hist_btn">📜 Lịch sử & Xếp hạng</button></div>
@@ -196,6 +198,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="js/config.js?v=4"></script>
-<script src="js/game.js?v=41"></script>
+<script src="js/game.js?v=42"></script>
 </body>
 </html>

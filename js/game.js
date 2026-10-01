@@ -530,7 +530,25 @@
     $("#l-pool").textContent = G.st.scope.length ? "Đang tải từ vựng…" : "";
     scopeTimer = setTimeout(async function () { await ensurePool(G.st.scope); if (G.st.phase === "lobby") paintPoolInfo(); if (wantsGap(G.st.qtype)) aiGaps(); }, 400);
   }
-  function scopeKey(scope) { return JSON.stringify((scope || []).map(function (p) { return p.table + ":" + p.id; }).sort()); }
+  function scopeKey(scope) { return JSON.stringify((scope || []).map(function (p) { return p.table + ":" + p.id; }).sort()) + "|" + levelsOf().join(","); }
+  /* 🎚 lọc cấp độ từ (cột words.level: A1…C2, "-" = chưa gắn) — rỗng = tất cả (TJ 2026-10-01) */
+  function lvKey(l) { l = String(l || "").trim().toUpperCase(); return /^[ABC][12]$/.test(l) ? l : "-"; }
+  function paintLevels() {
+    var on = levelsOf(), n = G.lvCount || {};
+    $$("#l-levels [data-lv]").forEach(function (b) {
+      var k = b.dataset.lv;
+      b.classList.toggle("on", on.indexOf(k) >= 0);
+      b.innerHTML = (k === "-" ? "Chưa gắn" : k) + (G.lvCount ? "<small>" + (n[k] || 0) + "</small>" : "");
+    });
+    $("#l-lvhint").textContent = on.length ? "" : "(không chọn = tất cả)";
+  }
+  $("#l-levels").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-lv]"); if (!b || !G.isHost || !G.st) return;
+    var lv = levelsOf().slice(), i = lv.indexOf(b.dataset.lv);
+    if (i >= 0) lv.splice(i, 1); else lv.push(b.dataset.lv);
+    G.st.levels = lv; paintLevels(); hostSetScope();
+  });
+  function levelsOf() { return (G.st && G.st.levels) || []; }
   async function ensurePool(scope) {
     var k = scopeKey(scope);
     if (G.poolKey === k) return;
@@ -539,6 +557,7 @@
     await loadPool(scope);
   }
   function paintPoolInfo() {
+    paintLevels();
     $("#l-pool").textContent = G.st && G.st.scope && G.st.scope.length
       ? G.pool.length + " từ khác nhau · có nghĩa: " + poolCounts() + " · 📝 " + G.gaps.length + " câu điền chỗ trống (📚 thư viện " + (G.gapLib || []).length + " · 📖 bài đọc " + (G.gapsSrc || []).length + ") · 📄 " + (G.sheets || []).length + " phiếu Block · 🎧 " + (G.dicts || []).length + " câu dictation"
       : "Chưa chọn chủ đề.";
@@ -604,7 +623,13 @@
     var extra = by("blocks").filter(function (id) { return !blkRows.some(function (b) { return b.id === id; }); });
     if (extra.length) blkRows = blkRows.concat(await inIds("blocks", "id,context_passage,context_passage_candidates", "id", extra));
     var blks = ids(blkRows);
-    var words = blks.length ? await inIds("words", "id,block_id,term,pos,meaning_vi,meaning_zh,meaning_es,def_en", "block_id", blks) : [];
+    var words = blks.length ? await inIds("words", "id,block_id,term,pos,level,meaning_vi,meaning_zh,meaning_es,def_en", "block_id", blks) : [];
+    /* số từ THẬT của từng Block (trước khi lọc cấp độ) — để xét "đã ôn đủ Block chưa" khi đẩy chu kỳ Tony Buzan */
+    var bwn = {}, lvn = {};
+    words.forEach(function (w) { bwn[w.block_id] = (bwn[w.block_id] || 0) + 1; var l = lvKey(w.level); lvn[l] = (lvn[l] || 0) + 1; });
+    G.blockWordN = bwn; G.lvCount = lvn;
+    var lvs = levelsOf();
+    if (lvs.length) words = words.filter(function (w) { return lvs.indexOf(lvKey(w.level)) >= 0; });
     var seen = {}, pool = [], byTerm = {};
     words.forEach(function (w) {
       var k = norm(w.term), m = { vi: clean(w.meaning_vi), en: clean(w.def_en), es: clean(w.meaning_es), zh: clean(w.meaning_zh) };
@@ -962,7 +987,7 @@
       if (s !== "SUBSCRIBED" || ch !== G.ch) return;
       if (G.view !== "screen") await track();
       if (G.isHost) {
-        if (!G.st) G.st = { phase: "lobby", gapsrc: "lib", scoring: G.room.scoring || "q", scope: G.room.scope || [], title: G.room.title || "", mode: G.room.mode, qtype: G.room.qtype || "meaning", lang: G.room.meaning_lang || "vi", force: false, minutes: +G.room.minutes, qs: G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
+        if (!G.st) G.st = { phase: "lobby", levels: [], gapsrc: "lib", scoring: G.room.scoring || "q", scope: G.room.scope || [], title: G.room.title || "", mode: G.room.mode, qtype: G.room.qtype || "meaning", lang: G.room.meaning_lang || "vi", force: false, minutes: +G.room.minutes, qs: G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
         push();
         if (G.st.phase === "play") onState(pub());
         else initHostLobby();
@@ -1033,7 +1058,7 @@
       return;
     }
     var pv = G.st || {};   /* trạng thái nhận từ host cũ -> lấy lại CÀI ĐẶT, còn ván đang dở thì bỏ (về phòng chờ) */
-    G.st = { phase: "lobby", gapsrc: pv.gapsrc || "lib", scoring: pv.scoring || G.room.scoring || "q", scope: pv.scope || G.room.scope || [], title: pv.title || G.room.title || "", mode: pv.mode || G.room.mode, qtype: pv.qtype || G.room.qtype || "meaning", lang: pv.lang || G.room.meaning_lang || "vi", force: !!pv.force, minutes: pv.minutes || +G.room.minutes, qs: pv.qs || G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
+    G.st = { phase: "lobby", levels: pv.levels || [], gapsrc: pv.gapsrc || "lib", scoring: pv.scoring || G.room.scoring || "q", scope: pv.scope || G.room.scope || [], title: pv.title || G.room.title || "", mode: pv.mode || G.room.mode, qtype: pv.qtype || G.room.qtype || "meaning", lang: pv.lang || G.room.meaning_lang || "vi", force: !!pv.force, minutes: pv.minutes || +G.room.minutes, qs: pv.qs || G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
     G.endAt = 0; G.qUntil = 0; clearInterval(G.hostTimer);
     G.online.forEach(function (p) { G.st.roster[p.id] = { name: p.name, no: p.no, avatar: p.avatar }; });
     push(); initHostLobby();
@@ -1169,7 +1194,7 @@
     if (need) { alert(need); return; }
     if (!players().length) { alert("Chưa có người chơi nào."); return; }
     fillTeams();
-    G.st.phase = "play"; G.st.scores = {}; G.st.q = null; G.answers = [];
+    G.st.phase = "play"; G.st.scores = {}; G.st.q = null; G.answers = []; G.myAns = []; G.srsHtml = "";
     players().forEach(function (p) { G.st.scores[p.id] = { s: 0, c: 0, w: 0, st: 0, best: 0 }; });
     G.endAt = Date.now() + (G.st.minutes * 60000);
     await sb.from("game_rooms").update({ status: "playing", started_at: new Date().toISOString(), mode: G.st.mode, qtype: G.st.qtype, meaning_lang: G.st.lang, minutes: G.st.minutes, q_seconds: G.st.qs, team_mode: !!G.st.teams, teams: G.st.teams }).eq("id", G.room.id);
@@ -1361,8 +1386,53 @@
         if (ra.error) console.warn("game_answers", ra.error);
       }
       if (G.st.matchId) await sb.from("game_matches").update({ ended_at: new Date().toISOString() }).eq("id", G.st.matchId);
+      await srsAfterMatch();
       await sb.from("game_rooms").update({ status: "lobby", ended_at: new Date().toISOString() }).eq("id", G.room.id);
     } catch (e) { console.warn("lưu kết quả lỗi", e); }
+  }
+  /* 🔁 Đẩy chu kỳ Tony Buzan sau ván (TJ 2026-10-01: "chơi game xong thì đẩy vào chu trình Tony Buzan nếu đúng hẹn").
+     CÙNG luật với bài thi WordLoop (detail.js srsAdvanceIfDue + PASS_MARK 80): Block phải ĐANG trong chu kỳ (passed),
+     chưa xong 6 lần, ĐÚNG HẠN (next_review_at, nới 1 tiếng). Thêm điều kiện riêng cho game: TJ đã trả lời ≥ 80% số từ
+     của Block (đếm trên MỌI từ của Block, không theo lọc cấp độ) và đúng ≥ 80%. Block chưa vào chu kỳ thì KHÔNG bắt đầu
+     chu kỳ từ game (vẫn cần Phiếu đầy đủ / Từng câu). */
+  var SRS_WAIT = [10 * 6e4, 24 * 36e5, 7 * 864e5, 30 * 864e5, 90 * 864e5, 180 * 864e5], SRS_SHORT = ["10 phút", "24 giờ", "1 tuần", "1 tháng", "3 tháng", "6 tháng"];
+  async function srsAfterMatch() {
+    G.srsHtml = "";
+    if (!isTJ() || !(G.myAns || []).length) return;
+    var blockOf = {}; (G.pool || []).forEach(function (w) { blockOf[w.wid] = w.block; });
+    var per = {};
+    G.myAns.forEach(function (a) {
+      var b = blockOf[a.wid]; if (!b) return;
+      var x = per[b] = per[b] || { seen: {}, n: 0, ok: 0 };
+      x.seen[a.wid] = 1; x.n++; if (a.ok) x.ok++;
+    });
+    var ids = Object.keys(per); if (!ids.length) return;
+    var r = await sb.from("block_progress").select("block_id,passed,cycle,next_review_at,review_history").eq("user_id", HOST_PROFILE_ID).in("block_id", ids);
+    if (r.error) { console.warn("block_progress", r.error.message); return; }
+    var bp = {}; (r.data || []).forEach(function (x) { bp[x.block_id] = x; });
+    var now = Date.now(), moved = [], notYet = [];
+    for (var i = 0; i < ids.length; i++) {
+      var id = ids[i], x = per[id], p = bp[id], total = (G.blockWordN || {})[id] || 0;
+      var name = TREE ? pathOf({ table: "blocks", id: id, title: id }).split(" › ").slice(-3).join(" › ") : id;
+      if (!p || !p.passed || (p.cycle | 0) >= SRS_WAIT.length) continue;                     /* chưa vào chu kỳ / đã xong 6 lần */
+      if (p.next_review_at && p.next_review_at - 36e5 > now) continue;                         /* chưa tới hạn -> không đẩy (như WordLoop) */
+      var cover = total ? Object.keys(x.seen).length / total : 0, acc = x.n ? x.ok / x.n : 0;
+      if (cover < 0.8 || acc < 0.8) { notYet.push({ name: name, cover: cover, acc: acc, seen: Object.keys(x.seen).length, total: total }); continue; }
+      var c = Math.min((p.cycle | 0) + 1, SRS_WAIT.length), next = now + SRS_WAIT[Math.min(c, SRS_WAIT.length - 1)];
+      var hist = Array.isArray(p.review_history) ? p.review_history.slice() : [];
+      hist.push({ step: c, at: now, via: "game" });
+      if (hist.length > SRS_WAIT.length) hist = hist.slice(hist.length - SRS_WAIT.length);
+      var u = await sb.from("block_progress").update({ cycle: c, next_review_at: next, last_reviewed_at: now, review_history: hist }).eq("user_id", HOST_PROFILE_ID).eq("block_id", id);
+      if (u.error) { console.warn("đẩy chu kỳ", u.error.message); continue; }
+      moved.push({ name: name, c: c, wait: SRS_SHORT[Math.min(c, SRS_SHORT.length - 1)] });
+    }
+    if (!moved.length && !notYet.length) return;
+    var pc = function (v) { return Math.round(v * 100) + "%"; };
+    G.srsHtml = "<h3>🔁 Chu kỳ Tony Buzan</h3><ul>" +
+      moved.map(function (m) { return '<li class="ok">✓ ' + esc(m.name) + " — xong lần " + m.c + (m.c >= SRS_WAIT.length ? " 💎" : ", ôn tiếp sau " + m.wait) + "</li>"; }).join("") +
+      notYet.map(function (m) { return '<li class="no">… ' + esc(m.name) + " — đến hạn nhưng chưa đủ: làm " + m.seen + "/" + m.total + " từ (" + pc(m.cover) + "), đúng " + pc(m.acc) + " — cần ≥ 80% cả hai</li>"; }).join("") + "</ul>";
+    if (!$("#s-end").hidden) { $("#e-srs").innerHTML = G.srsHtml; $("#e-srs").hidden = false; }
+    loadDue();   /* cột ⏳ Đến hạn cập nhật ngay */
   }
   /* xếp hạng: ván "theo câu" -> nhiều câu ĐÚNG nhất (hoà thì ít sai hơn); ván "theo tốc độ" -> điểm tốc độ */
   function rankList(scores, speed) {
@@ -1797,6 +1867,7 @@
   /* Tiến trình học — CHỈ hồ sơ admin (TJ). "Học chung" vẫn tách được qua game_answers (có room_id). */
   async function recordMyProgress(wid, ok) {
     if (!isTJ() || !wid) return;
+    (G.myAns = G.myAns || []).push({ wid: wid, ok: !!ok });   /* để xét đẩy chu kỳ Tony Buzan lúc hết ván (srsAfterMatch) */
     try {
       var r = await sb.from("word_progress").select("attempts,correct").eq("user_id", G.profile.id).eq("word_id", wid).maybeSingle();
       var at = ((r.data && r.data.attempts) || 0) + 1, co = ((r.data && r.data.correct) || 0) + (ok ? 1 : 0);
@@ -1862,7 +1933,7 @@
   $("#e-again").addEventListener("click", function () {
     if (!G.isHost || !G.st) return;
     G.st.phase = "lobby"; G.st.scores = {}; G.st.q = null; G.st.matchId = null;
-    G.answers = []; G.endAt = 0; G.qUntil = 0; G.lastN = -1;
+    G.answers = []; G.endAt = 0; G.qUntil = 0; G.lastN = -1; G.srsHtml = "";
     push(); renderLobby();
   });
 
@@ -1875,6 +1946,7 @@
     $("#e-review").hidden = s.saved || !G.log.length;
     $("#e-wait").hidden = G.isHost || !!s.saved;
     $("#e-teams").innerHTML = +s.teams ? teamSummary(s, true) : "";
+    $("#e-srs").hidden = !(G.isHost && !s.saved && G.srsHtml); $("#e-srs").innerHTML = G.srsHtml || "";
     var roster = s.roster || {};
     $("#e-board").innerHTML = rankList(s.scores, s.scoring === "speed").map(function (x) {
       var p = roster[x.pid] || {};
