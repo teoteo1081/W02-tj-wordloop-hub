@@ -481,7 +481,7 @@
      (localStorage — CHỈ TJ làm host). Kiểu Tự do: host gửi danh sách câu cho người chơi (broadcast "gaps").
      AI lỗi/thiếu -> dùng câu bài đọc NGẮN (≤ 20 từ), không có nữa thì mới dùng câu bài đọc như cũ. */
   var LS_GAPAI = "tjwl_game_gapai_v3",   /* v3: TOEIC Part 5 + AI kiểm chỉ 1 đáp án hợp (bỏ câu v1/v2) */
-      GAPAI_MAX = 60, GAP_SEND_MAX = 120;
+      GAPAI_MAX = 60, GAP_SEND_MAX = 120;   /* GAPAI_MAX: tối đa số câu host nhờ AI soạn tại chỗ khi chưa có sẵn trong Supabase */
   function baseTerm(t) { return String(t || "").replace(/\s*\([^)]*\)/g, " ").replace(/\s+/g, " ").trim(); }
   function toGap(sent, term) {
     sent = String(sent || "").trim(); var b = baseTerm(term);
@@ -535,8 +535,22 @@
     if (G.gapAiKey === G.poolKey && G.gapAiP) return G.gapAiP;
     var key = G.gapAiKey = G.poolKey;
     G.gapAiP = (async function () {
-      var cache = readLS(LS_GAPAI) || {}, have = G.pool.filter(function (w) { return cache[w.wid]; }).length;
-      var todo = shuffle(G.pool.filter(function (w) { return !cache[w.wid]; })).slice(0, Math.max(0, GAPAI_MAX - have))
+      var cache = readLS(LS_GAPAI) || {};
+      /* câu soạn SẴN trong Supabase (bảng game_gap_sentences, tools/gen_gap_sentences.py): dùng trước, nhanh, mọi máy host như nhau */
+      var dbN = 0;
+      for (var j = 0; j < G.pool.length; j += 80) {
+        var ids = G.pool.slice(j, j + 80).map(function (w) { return w.wid; });
+        var dr = await sb.from("game_gap_sentences").select("word_id,sentence").in("word_id", ids);
+        if (dr.error) { console.warn("game_gap_sentences", dr.error.message); break; }
+        (dr.data || []).forEach(function (r) {
+          var w = G.pool.find(function (x) { return x.wid === r.word_id; }), t = w && toGap(r.sentence, w.term);
+          if (t) { cache[w.wid] = t; dbN++; }
+        });
+      }
+      if (G.poolKey !== key) return;
+      var have = G.pool.filter(function (w) { return cache[w.wid]; }).length;
+      var maxAi = dbN >= 4 ? 0 : GAPAI_MAX;   /* đủ câu soạn sẵn -> không bắt host chờ AI soạn thêm */
+      var todo = shuffle(G.pool.filter(function (w) { return !cache[w.wid]; })).slice(0, Math.max(0, maxAi - have))
         .sort(function (a, b) { return a.block < b.block ? -1 : a.block > b.block ? 1 : 0; });   /* cùng Block chung 1 lần gọi: đáp án nhiễu lấy từ cùng Block */
       for (var i = 0; i < todo.length; i += 20) {
         var part = todo.slice(i, i + 20);

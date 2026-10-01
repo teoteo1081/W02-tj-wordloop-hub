@@ -214,3 +214,7 @@ body.big .g-top,body.big #g-main{display:none}
 
 .g-h2row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:18px}.g-h2row h2{margin:0}.g-btn-sm{padding:6px 10px;font-size:13px;white-space:nowrap}
 .g-chip-path{border-radius:10px;line-height:1.35;white-space:normal}
+
+/* v37: câu điền chỗ trống gọn hơn — chỗ trống là ô gạch chân sát chữ, câu cân dòng */
+.g-gapline{text-wrap:balance;font-weight:600;line-height:1.6}
+.g-gapline .g-blank{margin:0 .2em;height:.95em;vertical-align:baseline;border-bottom:3px solid var(--amber);min-width:3em}
