@@ -1031,6 +1031,7 @@
   G.seen = {};
   function onPresence() {
     if (!G.ch) return;
+    if (!$("#s-users").hidden) renderUsers(true);   /* có người vào/ra -> danh sách 👥 cập nhật luôn */
     var ps = G.ch.presenceState(), list = [], cands = [], now = Date.now();
     Object.keys(ps).forEach(function (k) {   /* 1 key (= người chơi) có thể có NHIỀU tab -> xét hết, không chỉ tab cuối */
       var best = null;
@@ -2017,12 +2018,16 @@
   /* ---------- 👥 quản lý người chơi (chỉ TJ) ---------- */
   $("#l-users").addEventListener("click", function () { renderUsers(); });
   $("#us-back").addEventListener("click", function () { G.inHist = false; if (G.st && G.st.phase === "lobby") renderLobby(); else if (G.st) onState(G.st); });
-  async function renderUsers() {
+  /* Danh sách tự làm mới (TJ 2026-10-01: "vừa tạo tk mới mà quản lý tk không thấy") — trước chỉ tải 1 lần lúc mở màn.
+     Nay: 🔄 Tải lại · 10 giây/lần khi đang mở màn · ngay khi có người vào/ra phòng (onPresence). */
+  $("#us-reload").addEventListener("click", function () { renderUsers(true); });
+  setInterval(function () { if (!$("#s-users").hidden && !document.hidden) renderUsers(true); }, 10000);
+  async function renderUsers(quiet) {
     if (!isTJ()) return;
     G.inHist = true;   /* như 📜: trạng thái phòng không kéo khỏi màn này */
     show("s-users");
     var box = $("#us-body");
-    box.innerHTML = '<p class="g-sub">Đang tải…</p>';
+    if (!quiet || !box.querySelector(".g-utable")) box.innerHTML = '<p class="g-sub">Đang tải…</p>';
     var pr = await Promise.all([
       sb.from("game_players").select("id,name,name_no,avatar,profile_id,created_at").order("name").order("name_no"),
       sb.from("game_results").select("player_id").limit(10000),
@@ -2033,6 +2038,7 @@
     var pname = {}; (pr[2].data || []).forEach(function (p) { pname[p.id] = p.display_name; });
     var list = pr[0].data || [];
     G.usersList = list;
+    $("#us-time").textContent = list.length + " người · cập nhật " + new Date().toLocaleTimeString("vi-VN");
     box.innerHTML = '<table class="g-utable"><thead><tr><th>Người chơi</th><th>Hồ sơ WordLoop</th><th>Ván</th><th>Tạo lúc</th><th></th></tr></thead><tbody>' +
       list.map(function (u) {
         var dupOf = u.name_no > 1 && list.some(function (x) { return x.id !== u.id && norm(x.name) === norm(u.name); });
