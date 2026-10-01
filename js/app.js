@@ -2462,6 +2462,12 @@
     if (table === "notebooks") items.push({ act: "duplicate", icon: "📋", text: "Nhân bản Notebook…" });
     /* Gộp hàng loạt: đứng ở 1 Hub, gom hết Notebook từ MỌI Hub khác về đây */
     if (table === "hubs" && S.hubs.length > 1) items.push({ act: "consolidate", icon: "📦", text: "Gộp tất cả Notebook về đây" });
+    /* Bung/Thu CẢ cây Notebook của Hub (TJ 2026-10-01) — chỉ Hub đang mở (S.notebooks chỉ chứa Notebook của Hub này) */
+    if (table === "hubs" && id === S.hubId && S.notebooks.some(function (n) { return n.parent_notebook_id; })) {
+      items.push({ act: "sep" });
+      items.push({ act: "hubExpandAll", icon: "▸▸", text: "Bung hết cây Notebook" });
+      items.push({ act: "hubCollapseAll", icon: "▾▾", text: "Thu hết cây Notebook" });
+    }
     items.push({ act: "sep" });
     /* Bảng xếp hạng (🏆) — chỉ Cloud mode (cần thấy tiến trình người KHÁC,
        local mode mỗi hồ sơ tách biệt theo máy, không có ai để so). Phạm
@@ -2648,21 +2654,30 @@
          này vẽ lại đúng theo trạng thái mới. */
       else if (act === "expand1") {
         collapsedSet.delete(id);
-        saveCollapsed();
+        saveCollapsed(); renderAll(); return;   /* chỉ đổi hiển thị -> vẽ lại ngay, khỏi tải lại cả cây từ DB (chậm vài giây) */
       }
       else if (act === "expandAll") {
         collapsedSet.delete(id);
         notebookDescendantIds(id).forEach(function (did) { collapsedSet.delete(did); });
-        saveCollapsed();
+        saveCollapsed(); renderAll(); return;   /* chỉ đổi hiển thị -> vẽ lại ngay, khỏi tải lại cả cây từ DB (chậm vài giây) */
       }
       else if (act === "collapse1") {
         collapsedSet.add(id);
-        saveCollapsed();
+        saveCollapsed(); renderAll(); return;   /* chỉ đổi hiển thị -> vẽ lại ngay, khỏi tải lại cả cây từ DB (chậm vài giây) */
       }
       else if (act === "collapseAll") {
         collapsedSet.add(id);
         notebookDescendantIds(id).forEach(function (did) { collapsedSet.add(did); });
-        saveCollapsed();
+        saveCollapsed(); renderAll(); return;   /* chỉ đổi hiển thị -> vẽ lại ngay, khỏi tải lại cả cây từ DB (chậm vài giây) */
+      }
+
+      else if (act === "hubExpandAll") {
+        S.notebooks.forEach(function (n) { collapsedSet.delete(n.id); });
+        saveCollapsed(); renderAll(); return;   /* chỉ đổi hiển thị -> vẽ lại ngay, khỏi tải lại cả cây từ DB (chậm vài giây) */
+      }
+      else if (act === "hubCollapseAll") {
+        S.notebooks.forEach(function (n) { if (S.notebooks.some(function (c) { return c.parent_notebook_id === n.id; })) collapsedSet.add(n.id); });
+        saveCollapsed(); renderAll(); return;   /* chỉ đổi hiển thị -> vẽ lại ngay, khỏi tải lại cả cây từ DB (chậm vài giây) */
       }
 
       else if (act === "consolidate") {

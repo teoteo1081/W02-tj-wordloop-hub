@@ -358,6 +358,20 @@
     if (side.hidden) $("#h-dotmenu").hidden = true;
   }
   function sideOpen(on) { SIDE.open = on; paintSide(); }
+  /* « thu nhỏ cột = bỏ ghim + đóng (còn 📚 ở mép trái / nút "Chọn chủ đề…") */
+  $("#h-shrink").addEventListener("click", function () { SIDE.pinned = false; SIDE.open = false; writeLS(LS_PIN, false); paintSide(); });
+  /* kéo mép phải đổi độ rộng cột (giống thanh kéo Notebooks/Pages của WordLoop), nhớ theo máy */
+  var LS_SIDEW = "tjwl_game_sidew_v1";
+  function setSideW(px) { px = Math.max(180, Math.min(520, px | 0)); document.documentElement.style.setProperty("--sidew", px + "px"); return px; }
+  if (readLS(LS_SIDEW)) setSideW(readLS(LS_SIDEW));
+  $("#h-resizer").addEventListener("pointerdown", function (e) {
+    e.preventDefault();
+    var el = this; el.setPointerCapture(e.pointerId); document.body.classList.add("g-resizing");
+    function mv(ev) { setSideW(ev.clientX); }
+    function up(ev) { el.removeEventListener("pointermove", mv); el.removeEventListener("pointerup", up); document.body.classList.remove("g-resizing"); writeLS(LS_SIDEW, setSideW(ev.clientX)); }
+    el.addEventListener("pointermove", mv); el.addEventListener("pointerup", up);
+  });
+  $("#h-resizer").addEventListener("dblclick", function () { document.documentElement.style.removeProperty("--sidew"); writeLS(LS_SIDEW, null); });
   $("#h-pin").addEventListener("click", function () { SIDE.pinned = !SIDE.pinned; SIDE.open = false; writeLS(LS_PIN, SIDE.pinned); paintSide(); });
   $("#h-sideopen").addEventListener("click", function () { sideOpen(true); });
   $("#h-sidetab").addEventListener("click", function () { sideOpen(true); });
@@ -367,13 +381,22 @@
 
   /* ⋯ của từng mục: CHỈ thao tác chọn (sửa/dời/xoá vẫn làm bên WordLoop — TJ 2026-10-01) */
   var dotFor = null;
-  function dotMenu(btn) {
+  function dotMenu(btn, x, y) {   /* x,y = vị trí chuột phải (không có -> ngay dưới nút ⋯) */
     var m = $("#h-dotmenu"), r = btn.getBoundingClientRect();
-    dotFor = btn.parentNode.querySelector("[data-pick]");
+    var row = btn.closest(".g-nrow");
+    dotFor = row.querySelector("[data-pick]");
+    var branch = !!row.closest("summary");   /* mục có con -> có Bung/Thu */
+    $$("#h-dotmenu [data-fold]").forEach(function (b) { b.hidden = !branch; });
     m.hidden = false;
-    m.style.top = Math.min(r.bottom + 2, window.innerHeight - m.offsetHeight - 8) + "px";
-    m.style.left = Math.max(8, Math.min(r.left, window.innerWidth - m.offsetWidth - 8)) + "px";
+    m.style.top = Math.min(y != null ? y : r.bottom + 2, window.innerHeight - m.offsetHeight - 8) + "px";
+    m.style.left = Math.max(8, Math.min(x != null ? x : r.left, window.innerWidth - m.offsetWidth - 8)) + "px";
   }
+  /* chuột phải vào 1 mục = mở cùng menu với ⋯ (TJ 2026-10-01) */
+  $("#h-tree").addEventListener("contextmenu", function (e) {
+    var row = e.target.closest(".g-nrow"); if (!row) return;
+    e.preventDefault();
+    dotMenu(row.querySelector("[data-dots]"), e.clientX, e.clientY);
+  });
   document.addEventListener("click", function (e) { if (!e.target.closest("#h-dotmenu") && !e.target.closest("[data-dots]")) $("#h-dotmenu").hidden = true; });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") { $("#h-dotmenu").hidden = true; if (SIDE.open) sideOpen(false); } });
   $("#h-dotmenu").addEventListener("click", function (e) {
@@ -382,6 +405,12 @@
     var box = c.closest("details") || c.closest(".g-leaf");
     var inside = Array.prototype.map.call(box.querySelectorAll("[data-pick]"), function (x) { return x.dataset.pick + ":" + x.dataset.id; });   /* mục này + mọi mục con */
     var notMe = function (p) { return inside.indexOf(p.table + ":" + p.id) < 0; };
+    if (b.dataset.act === "open" || b.dataset.act === "close") {   /* bung/thu MỌI cấp bên trong nhánh này */
+      var on = b.dataset.act === "open";
+      if (box.tagName === "DETAILS") { box.open = on; box.querySelectorAll("details").forEach(function (d) { d.open = on; }); }
+      $("#h-dotmenu").hidden = true;
+      return;
+    }
     if (b.dataset.act === "only") picked = [me];
     else if (b.dataset.act === "branch") picked = picked.filter(notMe).concat([me]);   /* chọn cha là đủ cả nhánh -> bỏ chọn lẻ bên trong */
     else picked = picked.filter(notMe);

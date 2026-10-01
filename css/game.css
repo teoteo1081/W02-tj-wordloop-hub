@@ -224,17 +224,22 @@ body.big .g-top,body.big #g-main{display:none}
 .g-treebtns .g-btn{flex:0 0 auto;white-space:nowrap;padding:7px 12px;font-size:14px}
 
 /* v39: 📚 cây chủ đề thành CỘT TRÁI kiểu sidebar Notebooks của WordLoop (chỉ host, phòng chờ) */
-.g-side{position:fixed;left:0;top:var(--gtop,52px);bottom:0;width:280px;z-index:20;display:flex;flex-direction:column;background:var(--deep);border-right:1px solid var(--line)}
+.g-side{position:fixed;left:0;top:var(--gtop,52px);bottom:0;width:var(--sidew,280px);z-index:20;display:flex;flex-direction:column;background:var(--deep);border-right:1px solid var(--line)}
 .g-side.fly{box-shadow:6px 0 24px rgba(0,0,0,.45);width:min(320px,88vw)}
-body.side-pinned #g-main{margin-left:max(296px,calc(280px + (100vw - 280px - 640px)/2))}   /* căn giữa trong phần còn lại */
+body.side-pinned #g-main{margin-left:max(calc(var(--sidew,280px) + 16px),calc(var(--sidew,280px) + (100vw - var(--sidew,280px) - 640px)/2))}   /* căn giữa trong phần còn lại */
 .g-side-head{display:flex;align-items:center;gap:6px;padding:10px 10px 4px}
 .g-side-title{flex:1;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2)}
 .g-side-tools{display:flex;gap:4px;padding:2px 10px 8px;border-bottom:1px solid var(--line)}
 .g-mini{width:30px;height:28px;display:inline-flex;align-items:center;justify-content:center;border-radius:6px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-size:14px;padding:0}
 .g-mini:hover{background:var(--raise)}
 .g-mini.on{border-color:var(--accent);background:var(--raise)}
-.g-side:not(.fly) .g-side-x{display:none}
-@media (max-width:900px){ #h-pin,.g-sidetab{display:none} }   /* điện thoại: mở cây bằng nút "📚 Chọn chủ đề…" */
+.g-side:not(.fly) .g-side-x,.g-side.fly #h-shrink,.g-side.fly .g-resizer{display:none}
+.g-resizer{position:absolute;top:0;right:-3px;bottom:0;width:6px;cursor:col-resize;z-index:2}
+.g-resizer:hover,body.g-resizing .g-resizer{background:var(--accent)}
+body.g-resizing{cursor:col-resize;user-select:none}
+.g-dotsep{border:none;border-top:1px solid var(--line);margin:4px 2px}
+.g-dotmenu [hidden]{display:none}
+@media (max-width:900px){ #h-pin,#h-shrink,.g-sidetab,.g-resizer{display:none} }   /* điện thoại: mở cây bằng nút "📚 Chọn chủ đề…" */
 .g-side .g-tree{flex:1;max-height:none;overflow:auto;background:transparent;border:none;border-radius:0;padding:6px 6px 24px;font-size:13px}
 .g-side .g-tree details details,.g-side .g-tree details > .g-leaf{margin-left:9px;padding-left:5px;border-left:1px solid var(--line)}
 .g-side .g-tree summary{list-style:none;padding:0;display:flex;align-items:center}
