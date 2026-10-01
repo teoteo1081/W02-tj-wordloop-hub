@@ -9,7 +9,24 @@
 4. **Không dùng file này để ghi kiến trúc/quyết định lâu dài** (đó là việc của `CLAUDE.md`) hay backlog nhiều-phiên (đó là việc của `README.md`) — chỉ ghi đúng 1 việc đang dở dang NGAY LÚC NGẮT PHIÊN.
 
 ## Trạng thái hiện tại
-_Không có việc gì đang dở dang giữa chừng cần nối tiếp._ (Cập nhật lần cuối: 2026-09-10 — dọn lại toàn bộ file này, xem commit "Dọn tài liệu: xoá HANDOFF.md lỗi thời, đồng bộ README/CLAUDE" và commit thêm luật dùng file này.)
+
+## Đang làm: Đơn giản hoá tài khoản game — "1 hồ sơ = 1 người chơi" (CHỜ TJ chốt, CHƯA code)
+- **Mục tiêu**: hết cảnh TJ#2/TJ#3. Hiện có 2 hệ danh tính song song: hồ sơ WordLoop (`profiles`, nhận qua link `?u=`, localStorage `tjwl_link_user_id_v1`) và người chơi game (`game_players`, localStorage `tjwl_game_player_v1`, trùng tên tự đánh `name_no`). Xoá cache -> máy quên cả 2 -> game tạo người mới #N.
+- **Đề xuất đã gửi TJ (2026-10-01, máy 2)**:
+  1. Ai có hồ sơ WordLoop -> người chơi = hồ sơ đó, bỏ màn nhập tên, mỗi hồ sơ đúng 1 `game_players` (DB: unique index trên `profile_id` where not null).
+  2. Khách không hồ sơ -> chỉ gõ tên, **bỏ đánh số #2/#3: cùng tên = cùng người** (DB: unique trên `lower(name)`); đổi máy/xoá cache gõ lại tên là về tài khoản cũ.
+  3. TJ xoá cache -> mở link bookmark `index.html?u=<HOST_PROFILE_ID>` (id nằm trong `js/game.js`).
+- **Đã làm xong tới đâu** (v46, commit `eb5a82f`): vá tạm — `loadProfile` tự đổi về người chơi gắn hồ sơ; màn 👥 Quản lý người chơi (đổi tên/gộp/xoá); đã gộp dữ liệu TJ#2/#3 -> TJ, Anti_TJ#2-4 -> Anti_TJ, Anti_TJ#1 gắn lại hồ sơ Anti_TJ. Verify: `curl "$SB_URL/rest/v1/game_players?select=name,name_no,profile_id&order=created_at" -H "apikey: $SB_KEY" -H "Authorization: Bearer $SB_KEY"` -> phải còn 6 người, không ai có `name_no` > 1 (TJ, Anti_TJ, Dung, Son D, Son, Aaron).
+- **Bước tiếp theo cụ thể** (nếu TJ đồng ý): sửa `renderNameScreen` + `loadProfile` trong `js/game.js` (bỏ tạo `name_no` mới, tên trùng = đăng nhập lại; có hồ sơ thì bỏ qua màn tên, tự tạo/gắn 1 người chơi); thêm 2 unique index ở trên vào `tools/game_schema.sql` và chạy qua Management API (cần TJ tạo PAT mới, chạy xong nhắc revoke).
+- **Quyết định còn treo cần hỏi TJ**:
+  - Đồng ý hướng trên? Gửi PAT mới, hay "làm phần code trước" (chưa có ràng buộc DB)?
+  - Game đẩy chu kỳ Tony Buzan đang tính MỌI dạng câu (kể cả 🔤 trắc nghiệm, dễ hơn Phiếu) — có muốn chỉ tính ⌨️ Gõ từ / 📝 Điền chỗ trống / 📄 Phiếu không?
+  - WordLoop: thêm tab "✏️ Câu ngắn" (câu từ `game_gap_sentences`) sau 🔀 Nghĩa (đề xuất (a)) hay đổi tab 🔤 Từng câu sang câu ngắn (b)? Câu ngắn có đẩy chu kỳ không?
+  - Game ghi vào Journey ("hôm nay ôn N từ bằng game")? Khu "❌ Từ đang sai"/"⭐ Ôn riêng" ở đầu cột chủ đề game? Bảng "từ còn yếu" sau ván?
+  - 841 từ chưa có `level` (CEFR) — nhờ AI gắn?
+  - Điện thoại: `.topbar-right` không co (~890px) -> cả trang WordLoop rộng hơn màn hình; đề xuất gom nút vào menu ☰ (TJ từng dặn không đổi bố cục mobile -> phải hỏi).
+  - Bảo mật: gần như mọi bảng có policy `shared_all` cho anon (ai có anon key trong repo public cũng xoá được kho từ) — đề xuất sao lưu định kỳ + chỉ hồ sơ TJ được ghi (cần PAT).
+- **Commit/push gần nhất liên quan**: `eb5a82f` — "Game v46: tự đổi về người chơi gắn hồ sơ (hết TJ#3), màn 👥 Quản lý người chơi…"
 
 <!-- MẪU khi cần điền (xoá dòng comment này, điền các mục dưới, xoá mục nào không có):
 

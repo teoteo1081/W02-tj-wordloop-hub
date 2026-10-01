@@ -201,8 +201,9 @@ Mỗi Block card trong danh sách Block (chưa mở) có **preview nhanh** (`app
     - 📖 **Xem lại đáp án** sau ván (◀ ▶ / phím ← →), mỗi máy tự chụp câu lúc lộ đáp án.
     - **Sang câu bằng tay** ("Câu tiếp ▶"; Kahoot host bấm, có "👁 Hiện đáp án"); **⏱ Có tính giờ / ∞ Không tính giờ**; hết giờ chưa Enter -> tự nộp chữ đang gõ/ô phiếu đã chọn.
   - **CÒN DANG DỞ (cập nhật 2026-10-01)**:
+    - **Tài khoản game rối (TJ#2/#3) — đề xuất "1 hồ sơ = 1 người chơi, khách trùng tên = cùng người" đang chờ TJ chốt, chi tiết ở `HANDOFF.md`.**
     - **Chờ TJ đồng ý (đụng dữ liệu thật)**: (1) trừ 9 câu test đã lỡ ghi vào `word_progress` của TJ (8 từ Block 1 `bl_mtx25v31_jkbfuu`, `last_reviewed_at` 1790783624948–1790783668162; attempts +1 mỗi câu, 2 đúng/7 sai, 6 từ bị bật `wrong_open`) — không khôi phục được `last_reviewed_at`/`wrong_open` cũ; (2) gộp người chơi trùng: TJ#2 -> TJ (#1), Anti_TJ#3 -> Anti_TJ (chuyển `game_results`/`game_answers` rồi xoá dòng thừa); (3) bỏ `profile_id` TJ khỏi "Anti_TJ" #1.
-    - Câu điền chỗ trống AI chỉ nhớ trên máy host; muốn dùng chung nhiều máy cần bảng mới (vd `game_gap_sentences(word_id, sentence)`) — cần PAT để chạy migration. AI kiểm vẫn có thể lọt câu hợp 2 đáp án.
+    - ~~Câu AI chỉ nhớ trên máy host~~ — XONG: bảng `game_gap_sentences` (v41 ghi cả câu AI soạn tại chỗ). Còn: bảng chỉ 1 câu/`word_id` (muốn nhiều câu/từ, mỗi bài đọc/AI 1 câu, thống kê câu hay sai -> đổi khoá chính, cần PAT). AI kiểm vẫn có thể lọt câu hợp 2 đáp án.
     - Xem lại đáp án chỉ lưu trong trang (tải lại trang là mất); chưa lưu lên Supabase.
     - Chưa làm: tự chuyển host sang NGƯỜI CHƠI khác khi host (TJ) mất hẳn; leader tự chọn thành viên đội; nút "đấu lại" (có thể trùng 🔁 Ván mới — hỏi TJ).
     - Test headless dùng phòng tạm `ZTEST` + người chơi `ZZ_*` (tạo/xoá qua REST) — host để MC (bỏ "Host cũng chơi") để KHÔNG ghi tiến trình TJ.
