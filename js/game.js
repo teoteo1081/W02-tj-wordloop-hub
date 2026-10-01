@@ -105,7 +105,7 @@
   };
 
   /* ---------- tiện ích ---------- */
-  function show(id) { $$(".g-screen").forEach(function (s) { s.hidden = s.id !== id; }); document.body.classList.toggle("big", id === "s-screen"); }
+  function show(id) { $$(".g-screen").forEach(function (s) { s.hidden = s.id !== id; }); document.body.classList.toggle("big", id === "s-screen"); paintSide(); }
   function norm(t) { return String(t || "").toLowerCase().replace(/\s+/g, " ").trim(); }
   /* chấm câu GÕ TAY giống WordLoop (w.normalizeAnswer): bỏ dấu câu/ngoặc, thường hoá, gộp khoảng trắng */
   function normAns(s) { return String(s || "").toLowerCase().trim().replace(/[.,!?;:"'`()\[\]]/g, "").replace(/\s+/g, " "); }
@@ -294,7 +294,6 @@
   }
   function treeOpenAll(on) {
     $$("#h-tree details").forEach(function (d) { d.open = on; });
-    var box = $(".g-treebox"); if (box && on) box.open = true;
   }
   $("#h-expand").addEventListener("click", function () { treeOpenAll(true); });
   $("#h-collapse").addEventListener("click", function () { treeOpenAll(false); });
@@ -304,7 +303,8 @@
     function node(table, r, inner) {
       var on = picked.some(function (p) { return p.table === table && p.id === r.id; });
       var chk = '<label class="g-pick"><input type="checkbox" data-pick="' + table + '" data-id="' + esc(r.id) + '" data-title="' + esc(r.name) + '"' + (on ? " checked" : "") + "> " + esc(r.name) + "</label>";
-      return inner ? "<details><summary>" + chk + "</summary>" + inner + "</details>" : '<div class="g-leaf">' + chk + "</div>";
+      var dots = '<button class="g-dots" data-dots title="Chọn…">⋯</button>';
+      return inner ? '<details><summary><span class="g-nrow">' + chk + dots + "</span></summary>" + inner + "</details>" : '<div class="g-leaf"><span class="g-nrow">' + chk + dots + "</span></div>";
     }
     function nbTree(nb) {
       var sub = kids("notebooks", "parent_notebook_id", nb.id).map(nbTree).join("") +
@@ -333,7 +333,61 @@
     paintPicked();
     hostSetScope();
   });
-  $("#h-tree").addEventListener("click", function (e) { if (e.target.closest(".g-pick")) e.stopPropagation(); });
+  $("#h-tree").addEventListener("click", function (e) {
+    var d = e.target.closest("[data-dots]");
+    if (d) { e.preventDefault(); e.stopPropagation(); return dotMenu(d); }
+    if (e.target.closest(".g-pick")) e.stopPropagation();
+  });
+
+  /* ---------- 📚 cột trái chứa cây (chỉ host, chỉ phòng chờ) ---------- */
+  var LS_PIN = "tjwl_game_sidepin_v1";
+  var SIDE = { pinned: readLS(LS_PIN) !== false, open: false };
+  function narrow() { return window.matchMedia("(max-width: 900px)").matches; }
+  function paintSide() {
+    var side = $("#g-side"); if (!side || !SIDE) return;
+    document.documentElement.style.setProperty("--gtop", $(".g-top").offsetHeight + "px");
+    var on = !!(G.isHost && G.view !== "screen" && !$("#s-lobby").hidden), pinned = SIDE.pinned && !narrow();
+    if (!on) SIDE.open = false;
+    side.hidden = !on || (!pinned && !SIDE.open);
+    side.classList.toggle("fly", !pinned);
+    document.body.classList.toggle("side-pinned", on && pinned);
+    $("#h-sidetab").hidden = !on || pinned || SIDE.open;
+    $("#h-sidebd").hidden = !on || pinned || !SIDE.open;
+    $("#h-pin").classList.toggle("on", SIDE.pinned);
+    $("#h-sideopen").hidden = pinned;
+    if (side.hidden) $("#h-dotmenu").hidden = true;
+  }
+  function sideOpen(on) { SIDE.open = on; paintSide(); }
+  $("#h-pin").addEventListener("click", function () { SIDE.pinned = !SIDE.pinned; SIDE.open = false; writeLS(LS_PIN, SIDE.pinned); paintSide(); });
+  $("#h-sideopen").addEventListener("click", function () { sideOpen(true); });
+  $("#h-sidetab").addEventListener("click", function () { sideOpen(true); });
+  $("#h-sideclose").addEventListener("click", function () { sideOpen(false); });
+  $("#h-sidebd").addEventListener("click", function () { sideOpen(false); });
+  window.addEventListener("resize", paintSide);
+
+  /* ⋯ của từng mục: CHỈ thao tác chọn (sửa/dời/xoá vẫn làm bên WordLoop — TJ 2026-10-01) */
+  var dotFor = null;
+  function dotMenu(btn) {
+    var m = $("#h-dotmenu"), r = btn.getBoundingClientRect();
+    dotFor = btn.parentNode.querySelector("[data-pick]");
+    m.hidden = false;
+    m.style.top = Math.min(r.bottom + 2, window.innerHeight - m.offsetHeight - 8) + "px";
+    m.style.left = Math.max(8, Math.min(r.left, window.innerWidth - m.offsetWidth - 8)) + "px";
+  }
+  document.addEventListener("click", function (e) { if (!e.target.closest("#h-dotmenu") && !e.target.closest("[data-dots]")) $("#h-dotmenu").hidden = true; });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") { $("#h-dotmenu").hidden = true; if (SIDE.open) sideOpen(false); } });
+  $("#h-dotmenu").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-act]"); if (!b || !dotFor) return;
+    var c = dotFor, me = { table: c.dataset.pick, id: c.dataset.id, title: c.dataset.title };
+    var box = c.closest("details") || c.closest(".g-leaf");
+    var inside = Array.prototype.map.call(box.querySelectorAll("[data-pick]"), function (x) { return x.dataset.pick + ":" + x.dataset.id; });   /* mục này + mọi mục con */
+    var notMe = function (p) { return inside.indexOf(p.table + ":" + p.id) < 0; };
+    if (b.dataset.act === "only") picked = [me];
+    else if (b.dataset.act === "branch") picked = picked.filter(notMe).concat([me]);   /* chọn cha là đủ cả nhánh -> bỏ chọn lẻ bên trong */
+    else picked = picked.filter(notMe);
+    $("#h-dotmenu").hidden = true;
+    paintTree(); hostSetScope();
+  });
   /* ☑ Chọn tất cả = mọi Hub · ✖ Bỏ tất cả = xoá hết rồi chọn lại từng nhánh (tới Block) trên cây */
   $("#h-all").addEventListener("click", function () {
     if (!TREE) return;
@@ -344,7 +398,7 @@
     picked = [];
     if (TREE) paintTree(); else paintPicked();
     hostSetScope();
-    var box = $(".g-treebox"); if (box) box.open = true;   /* mở cây để chọn lại ngay */
+    sideOpen(true);   /* mở cây để chọn lại ngay */
   });
   /* đường dẫn Hub › Notebook › Section › Page › Batch › Block của mục đã chọn (cần TREE đã tải) */
   function pathOf(p) {
@@ -365,7 +419,7 @@
     return chain.length ? chain.join(" › ") : p.title;
   }
   function paintPicked() {
-    $("#h-picked").innerHTML = picked.length ? picked.map(function (p) { return '<span class="g-chip g-chip-path">' + esc(pathOf(p)) + "</span>"; }).join("") : '<span class="g-sub">Chưa chọn chủ đề — mở "Chọn nhánh từ vựng…" bên dưới.</span>';
+    $("#h-picked").innerHTML = picked.length ? picked.map(function (p) { return '<span class="g-chip g-chip-path">' + esc(pathOf(p)) + "</span>"; }).join("") : '<span class="g-sub">Chưa chọn chủ đề — tích chọn ở cột 📚 Chủ đề bên trái.</span>';
   }
 
   /* PHÒNG CỐ ĐỊNH của host: lấy phòng mới nhất của host, chưa có thì tạo — mã/link dùng mãi */
@@ -855,6 +909,7 @@
   function setHost(on) {
     G.isHost = on;
     $("#g-room-badge").hidden = !on;
+    paintSide();
     track();
     if (!on) {   /* nhường quyền: thành người chơi, xin host thật gửi trạng thái */
       clearInterval(G.hostTimer); G.st = null;
@@ -891,6 +946,7 @@
     applyUI();
     $("#l-host").hidden = !G.isHost; $("#l-wait").hidden = G.isHost; $("#l-hostbtns").hidden = !G.isHost;
     $("#l-roomcard").hidden = !G.isHost;   /* người chơi chỉ chơi: không mã phòng, link mời, 📺, chủ đề */
+    paintSide();
     $("#l-mecard").hidden = G.isHost; $("#l-wait").hidden = true;
     if (!G.isHost && G.me) { $("#l-meav").innerHTML = avatar(G.me.avatar); $("#l-mename").innerHTML = label({ name: G.me.name, no: G.me.name_no }); }
     if (G.isHost) {
@@ -1728,7 +1784,7 @@
   $("#hi-back").addEventListener("click", function () {   /* về đúng màn đang có của phòng, không tải lại trang */
     G.inHist = false;
     var s = G.st;
-    if (!G.room || !s) { location.href = "game.html"; return; }
+    if (!G.room || !s) { location.href = "game.html" + (G.embed ? "?embed=1" : ""); return; }
     if (s.saved || s.phase === "end") return renderEnd(s);
     if (s.phase === "lobby") return renderLobby();
     onState(s);
@@ -1827,6 +1883,8 @@
   window.addEventListener("pagehide", function () { try { if (G.ch) { G.ch.untrack(); sb.removeChannel(G.ch); } } catch (e) {} });
   (async function boot() {
     G.view = param("view");
+    G.embed = param("embed") === "1";   /* mở trong thẻ 🎮 Game của WordLoop (iframe, js/gamelayer.js) */
+    document.body.classList.toggle("embed", G.embed);
     G.myLang = readLS(LS_LANG);
     G.langSet = !!(G.myLang && G.myLang !== "room");   /* đã TỰ chọn ngôn ngữ chưa (chưa -> theo tiếng chung của phòng) */
     if (!G.langSet) G.myLang = "vi";

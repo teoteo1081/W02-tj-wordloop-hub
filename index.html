@@ -24,7 +24,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon.svg">
-<link rel="stylesheet" href="css/app.css?v=47">
+<link rel="stylesheet" href="css/app.css?v=48">
 </head>
 <body>
 
@@ -59,6 +59,7 @@
     <button class="theme-btn btn-journey-label ws-top" id="btn-wordset" title="Ôn riêng — từ đã ⭐ Bookmark"><span class="ws-top-main">⭐<span class="ws-top-txt"> Ôn riêng</span></span><span class="ws-top-sub" id="ws-top-bm"></span></button>
     <button class="theme-btn btn-journey-label ws-top" id="btn-fixwrong" title="Fix lỗi sai — từ đang trả lời sai; làm đúng lại là tự bỏ ra"><span class="ws-top-main">❌<span class="ws-top-txt"> Fix lỗi sai</span></span><span class="ws-top-sub" id="ws-top-wrong"></span></button>
     <button class="btn-learning" id="btn-learning" title="Quay lại trang đang học" hidden>📖 Learning</button>
+    <button class="btn-learning btn-game" id="btn-game" title="Phòng game chơi chung (chỉ TJ — host)" hidden>🎮 Game</button>
     <button class="theme-btn" id="theme-btn" title="Đổi giao diện sáng / tối" aria-label="Đổi giao diện sáng / tối">🌙</button>
     <!-- Nút nhanh đổi ngôn ngữ giao diện — sát nút sáng/tối (TJ yêu cầu
          2026-09-13: "sát nút đổi giao diện", rồi chốt lại "chọn 3 ngôn
@@ -782,12 +783,16 @@
 
 </div>
 
+<!-- 🎮 Game bê nguyên game.html vào đây (iframe) — xem js/gamelayer.js -->
+<div class="game-layer" id="game-layer" hidden></div>
+
 <!-- Thanh điều hướng dưới cùng cho điện thoại -->
 <nav class="mobile-nav mobile-only">
   <button data-m="left">📓<span>Notebook</span></button>
   <button data-m="main" class="active">📚<span>Học</span></button>
   <button data-m="right">📄<span>Pages</span></button>
   <button data-m="user">👤<span>Tôi</span></button>
+  <button data-m="game" id="mnav-game" hidden>🎮<span>Game</span></button>
 </nav>
 
 <div class="drawer-backdrop" id="drawer-backdrop" hidden></div>
@@ -1220,5 +1225,6 @@ mitigate | giảm nhẹ"></textarea>
 <script src="js/home.js?v=3"></script>
 <script src="js/wordset.js?v=9"></script>
 <script src="js/app.js?v=50"></script>
+<script src="js/gamelayer.js?v=1"></script>
 </body>
 </html>
