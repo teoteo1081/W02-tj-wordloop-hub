@@ -566,6 +566,10 @@
   DB.addPage = function (sectionId, name) {
     return insertOne("pages", { section_id: sectionId, name: name, sort: Date.now() % 100000 });
   };
+  /* Batch rỗng — dùng khi tách 1 Block ra thành Notebook mới (App.promoteToNotebook) */
+  DB.addBatch = function (pageId, name) {
+    return insertOne("batches", { page_id: pageId, name: name, sort: Date.now() % 100000, created_at: Date.now() });
+  };
 
   async function insertMany(table, rows) {
     if (!rows.length) return [];

@@ -2447,13 +2447,16 @@
         items.push({ act: "collapseAll", icon: "▾▾", text: "Thu hết (mọi cấp con)" });
       }
     }
-    if (table === "sections" && S.notebooks.length > 1) items.push({ act: "move", icon: "📦", text: "Chuyển sang Notebook khác" });
+    /* 📦 Chuyển tới… — chọn nơi đến ở MỌI Hub (admin) / mọi Notebook được sửa (TJ 2026-10-01 "di chuyển linh hoạt"), có ô lọc */
+    if (table === "sections" || table === "pages" || table === "batches" || table === "blocks") {
+      var MOVE_TO = { sections: "Notebook", pages: "Section", batches: "Page", blocks: "Batch" };
+      items.push({ act: "move", icon: "📦", text: "Chuyển tới " + MOVE_TO[table] + " khác…" });
+    }
     /* "📓 Chuyển thành Notebook…" — bản menu (⋯) của tính năng kéo-thả
        Section lên tab Hub (2026-09-28, TJ yêu cầu thêm nút bấm ngoài kéo
        chuột), cho chọn Hub hiện tại HOẶC Hub khác. Xem App.promoteSectionToNotebook. */
-    if (table === "sections") items.push({ act: "promote", icon: "📓", text: "Chuyển thành Notebook…" });
-    if (table === "pages" && S.sections.length > 1) items.push({ act: "move", icon: "📦", text: "Chuyển sang Section khác" });
-    if (table === "batches" && S.pages.length > 1) items.push({ act: "move", icon: "📦", text: "Chuyển sang Page khác" });
+    /* 📓 Section / Page / Batch / Block -> Notebook mới (TJ 2026-10-01): tự tạo các cấp trung gian cùng tên */
+    if (table === "sections" || table === "pages" || table === "batches" || table === "blocks") items.push({ act: "promote", icon: "📓", text: "Chuyển thành Notebook…" });
     if (table === "pages") items.push({ act: "duplicate", icon: "📋", text: "Nhân bản Page" });
     /* Nhân bản Notebook — CHỈ nội dung trực tiếp (không mang theo Notebook
        con lồng bên trong), có thể dán vào BẤT KỲ Notebook nào khác kể cả
@@ -2548,7 +2551,7 @@
     /* Chặn kép — menu vốn đã lọc bỏ các nút này với role "Chỉ xem" (xem
        App.openMenu), kiểm tra lại đây phòng ai đó tự gọi act qua DevTools.
        Vẫn chỉ là Mức A (chặn ở client), không phải RLS thật. */
-    var EDIT_ACTS_GUARD = { rename: 1, up: 1, down: 1, top: 1, bottom: 1, move: 1, setparent: 1, unparent: 1, duplicate: 1, del: 1 };
+    var EDIT_ACTS_GUARD = { rename: 1, up: 1, down: 1, top: 1, bottom: 1, move: 1, setparent: 1, unparent: 1, duplicate: 1, del: 1, promote: 1 };
     if (EDIT_ACTS_GUARD[act]) {
       var ownerNbIdGuard = resolveNotebookIdForRow(table, id);
       if (ownerNbIdGuard && myRoleInNotebook(ownerNbIdGuard) === "view") {
@@ -2601,15 +2604,9 @@
         if (table === "notebooks") {
           opts = S.hubs.filter(function (h) { return h.id !== row.hub_id; });
           field = "hub_id";
-        } else if (table === "sections") {
-          opts = S.notebooks.filter(function (n) { return n.id !== row.notebook_id; });
-          field = "notebook_id";
-        } else if (table === "pages") {
-          opts = S.sections.filter(function (s) { return s.id !== row.section_id; });
-          field = "section_id";
         } else {
-          opts = S.pages.filter(function (p) { return p.id !== row.page_id; });
-          field = "page_id";
+          field = { sections: "notebook_id", pages: "section_id", batches: "page_id", blocks: "batch_id" }[table];
+          opts = (await moveDestinations(table)).filter(function (o) { return o.id !== row[field]; });
         }
         if (!opts.length) { w.toast("Không có chỗ nào khác để chuyển", "err"); return; }
         var pickTo = await askPick({
@@ -2836,9 +2833,9 @@
           pickedHubId = await askPick({ title: "📓 Chuyển \"" + row.name + "\" thành Notebook — trong Hub nào?", options: hubOpts });
           if (!pickedHubId) return;
         }
-        var pr = await App.promoteSectionToNotebook(id, pickedHubId);
+        var pr = await App.promoteToNotebook(table, id, pickedHubId);
         if (!pr) { w.toast("Không tạo được Notebook mới", "err"); return; }
-        w.toast('Đã tách "' + pr.section.name + '" thành Notebook mới trong "' + pr.hub.name + '"', "ok");
+        w.toast('Đã tách "' + pr.row.name + '" thành Notebook mới trong "' + pr.hub.name + '"', "ok");
         /* rơi xuống await App.reloadCurrent() ở cuối hàm — chỉ đổi dữ liệu, không tự nhảy màn như quizall/leaderboard */
       }
 
@@ -3412,10 +3409,20 @@
     return new Promise(function (resolve) {
       var m = w.$("#modal-pick");
       w.$("#pick-title").textContent = opts.title || "Chọn";
-      w.$("#pick-select").innerHTML = opts.options.map(function (o) {
-        return '<option value="' + w.esc(o.id) + '">' + w.esc(o.name) + "</option>";
-      }).join("");
+      var sel = w.$("#pick-select"), q = w.$("#pick-search"), many = opts.options.length > 12;
+      function fill(f) {
+        f = (f || "").toLowerCase().trim();
+        var list = opts.options.filter(function (o) { return !f || f.split(/\s+/).every(function (k) { return o.name.toLowerCase().indexOf(k) >= 0; }); });
+        sel.innerHTML = list.map(function (o) { return '<option value="' + w.esc(o.id) + '" title="' + w.esc(o.name) + '">' + w.esc(o.name) + "</option>"; }).join("");
+        if (list.length) sel.selectedIndex = 0;
+      }
+      /* danh sách dài (vd "📦 Chuyển tới…" xuyên mọi Hub): ô lọc + hộp chọn dạng danh sách cao */
+      q.hidden = !many; q.value = ""; sel.size = many ? 12 : 0; sel.style.height = many ? "auto" : "";
+      q.oninput = function () { fill(q.value); };
+      sel.ondblclick = function () { if (sel.value) w.$("#pick-ok").click(); };
+      fill("");
       m.hidden = false;
+      if (many) setTimeout(function () { q.focus(); }, 30);
       function done(v) { m.hidden = true; resolve(v); }
       w.$("#pick-ok").onclick = function () { done(w.$("#pick-select").value || null); };
       m.querySelector("[data-close]").onclick = function () { done(null); };
@@ -3626,10 +3633,17 @@
      Section ("📓 Chuyển thành Notebook…", 2026-09-28). Trả về
      {notebook,section,hub} hoặc null nếu không tìm thấy Section/Hub. */
   App.promoteSectionToNotebook = async function (sectionId, hubId) {
-    var secRow = S.sections.find(function (x) { return x.id === sectionId; });
+    var r = await App.promoteToNotebook("sections", sectionId, hubId);
+    return r && { notebook: r.notebook, section: r.row, hub: r.hub };
+  };
+  /* Tổng quát (TJ 2026-10-01): Section / Page / Batch / Block -> Notebook MỚI đứng gốc trong Hub đã chọn. Tạo đủ các
+     cấp trung gian (cùng tên với mục được tách) rồi CHỈ đổi cột cha của chính mục đó — nội dung bên trong, tiến trình
+     học (block_progress gắn theo block_id) giữ nguyên. Trả về {notebook,row,hub} hoặc null. */
+  App.promoteToNotebook = async function (table, id, hubId) {
+    var row = rowOf(table, id);
     var hubRow = S.hubs.find(function (x) { return x.id === hubId; });
-    if (!secRow || !hubRow) return null;
-    var newNb = await w.DB.addNotebook(hubId, secRow.name, "📓", null);
+    if (!row || !hubRow) return null;
+    var newNb = await w.DB.addNotebook(hubId, row.name, "📓", null);
     /* Notebook gốc mới tạo mặc định "restricted" (riêng tư) mà KHÔNG tự cấp
        quyền cho người vừa tạo — cùng bug đã vá ở nút "+ Notebook mới"/
        "Nhân bản Notebook" (xem 2 chỗ đó), lặp lại y hệt ở đây. */
@@ -3639,10 +3653,49 @@
       myGrantedIds.add(newNb.id);
       notebookAccessAll.push({ notebook_id: newNb.id, user_id: myUidP, role: "edit" });
     }
-    await w.DB.patch("sections", sectionId, { notebook_id: newNb.id });
-    secRow.notebook_id = newNb.id;
-    return { notebook: newNb, section: secRow, hub: hubRow };
+    if (table === "sections") { await w.DB.patch("sections", id, { notebook_id: newNb.id }); row.notebook_id = newNb.id; }
+    else {
+      var sec = await w.DB.addSection(newNb.id, row.name);
+      if (table === "pages") { await w.DB.patch("pages", id, { section_id: sec.id }); row.section_id = sec.id; }
+      else {
+        var pg = await w.DB.addPage(sec.id, row.name);
+        if (table === "batches") { await w.DB.patch("batches", id, { page_id: pg.id }); row.page_id = pg.id; }
+        else {
+          var bt = await w.DB.addBatch(pg.id, row.name);
+          await w.DB.patch("blocks", id, { batch_id: bt.id }); row.batch_id = bt.id;
+        }
+      }
+    }
+    return { notebook: newNb, row: row, hub: hubRow };
   };
+
+  /* Nơi đến cho "📦 Chuyển tới…": đọc CẢ cây (mọi Hub) để chuyển xuyên Hub/Notebook. Nhãn = đường dẫn đầy đủ.
+     Admin: mọi Hub đang thấy; người thường: chỉ Notebook đang mở ở Hub này mà mình được sửa (an toàn quyền). */
+  async function moveDestinations(table) {
+    var t = await w.DB.getFullTree(null);
+    var idx = {};
+    ["hubs", "notebooks", "sections", "pages", "batches"].forEach(function (k) { idx[k] = {}; (t[k] || []).forEach(function (r) { idx[k][r.id] = r; }); });
+    var hubOk = new Set(S.hubs.map(function (h) { return h.id; }));
+    var admin = w.Auth.isAdmin && w.Auth.isAdmin();
+    var nbOk = function (nb) {
+      if (!nb) return false;
+      if (!admin) return S.notebooks.some(function (n) { return n.id === nb.id; }) && myRoleInNotebook(nb.id) !== "view";
+      var root = nb, g = 0; while (root.parent_notebook_id && idx.notebooks[root.parent_notebook_id] && g++ < 20) root = idx.notebooks[root.parent_notebook_id];
+      return hubOk.has(root.hub_id);
+    };
+    var nbLabel = function (nb) {
+      var names = [], n = nb, g = 0, root = nb;
+      while (n && g++ < 20) { names.unshift(n.name); root = n; n = n.parent_notebook_id ? idx.notebooks[n.parent_notebook_id] : null; }
+      var h = idx.hubs[root.hub_id];
+      return (h ? h.name + " › " : "") + names.join(" › ");
+    };
+    var out = [];
+    if (table === "sections") (t.notebooks || []).forEach(function (nb) { if (nbOk(nb)) out.push({ id: nb.id, name: nbLabel(nb) }); });
+    else if (table === "pages") (t.sections || []).forEach(function (s) { var nb = idx.notebooks[s.notebook_id]; if (nbOk(nb)) out.push({ id: s.id, name: nbLabel(nb) + " › " + s.name }); });
+    else if (table === "batches") (t.pages || []).forEach(function (p) { var s = idx.sections[p.section_id], nb = s && idx.notebooks[s.notebook_id]; if (nbOk(nb)) out.push({ id: p.id, name: nbLabel(nb) + " › " + s.name + " › " + p.name }); });
+    else if (table === "blocks") (t.batches || []).forEach(function (b) { var p = idx.pages[b.page_id], s = p && idx.sections[p.section_id], nb = s && idx.notebooks[s.notebook_id]; if (nbOk(nb)) out.push({ id: b.id, name: nbLabel(nb) + " › " + s.name + " › " + p.name + " › " + b.name }); });
+    return out.sort(function (a, b) { return a.name.localeCompare(b.name, "vi", { numeric: true }); });
+  }
 
   App.applyDrop = async function (drag, target) {
     try {
