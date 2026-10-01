@@ -1194,11 +1194,11 @@ mitigate | giảm nhẹ"></textarea>
      readPdfText). Bản "legacy" build chạy được trên trình duyệt cũ hơn,
      không cần bundler. Thiếu mạng/CDN chặn -> readPdfText tự báo lỗi rõ
      ràng ("Chưa nạp được thư viện đọc PDF"), không vỡ chức năng khác. -->
-<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/legacy/build/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/legacy/build/pdf.min.js"></script>
 <script>
   if (window.pdfjsLib) {
     window.pdfjsLib.GlobalWorkerOptions.workerSrc =
-      "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/legacy/build/pdf.worker.min.js";
+      "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/legacy/build/pdf.worker.min.js";
   }
 </script>
 <script src="js/config.js?v=4"></script>
