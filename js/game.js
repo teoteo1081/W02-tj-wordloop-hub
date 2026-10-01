@@ -126,11 +126,20 @@
   /* Tiếng của TỪNG người: đổi chữ giao diện + tiếng của nghĩa ("room" = theo tiếng host chọn).
      Host 🔒 ép -> NGHĨA cả phòng 1 tiếng, còn chữ giao diện vẫn theo từng người. */
   function roomLang(st) { return (st && st.lang) || (G.room && G.room.meaning_lang) || "vi"; }
-  function uiLang() { return G.view === "screen" ? roomLang(G.st) : G.myLang && G.myLang !== "room" ? G.myLang : "vi"; }
+  /* TJ 2026-09-30: "Tiếng chung" = ngôn ngữ của TJ. Nếu Tiếng chung là TIẾNG VIỆT -> chỉ TJ dùng tiếng Việt, NGƯỜI CHƠI bị ép
+     tiếng Anh (giao diện + nghĩa, ô Language khoá). Tiếng chung là tiếng khác -> người chơi tự chọn tiếng mẹ đẻ như bình thường. */
+  function playersForcedEn(st) { return roomLang(st || G.st) === "vi"; }
+  function uiLang() {
+    if (G.view === "screen") return roomLang(G.st);
+    if (!G.isHost && G.room && G.st && playersForcedEn(G.st)) return "en";
+    return G.myLang && G.myLang !== "room" ? G.myLang : "vi";
+  }
   function guessLang() { var l = (navigator.language || "").slice(0, 2).toLowerCase(); return { vi: "vi", es: "es", zh: "zh", en: "en" }[l] || "vi"; }
   /* 🔒 "Ép cả phòng" CHỈ áp cho câu dạng NGHĨA (TJ 2026-09-30) — Điền chỗ trống là câu tiếng Anh, Gõ từ vẫn
      theo tiếng riêng từng người; trộn cả 3 thì chỉ câu Nghĩa bị ép. qtype = dạng của CÂU đang hỏi. */
-  function effLang(pref, st, qtype) {
+  function effLang(pref, st, qtype, forHost) {   /* forHost = đang tính cho chính host (TJ) */
+    if (forHost === undefined) forHost = G.isHost;
+    if (!forHost && st && playersForcedEn(st)) return "en";   /* Tiếng chung = Việt -> người chơi dùng tiếng Anh */
     var forced = st && st.force && (!qtype || qtype === "meaning" || qtype === "en2m");
     return forced ? roomLang(st) : pref && pref !== "room" ? pref : roomLang(st);
   }
@@ -596,9 +605,18 @@
     if (G.st && G.st.phase === "lobby" && G.view !== "screen") paintLobbyPlayers();
   }
 
+  /* HOST không có ô 🌐 Language riêng (TJ 2026-09-30): ngôn ngữ của máy host = ô "Tiếng chung" trong cài đặt */
+  function syncHostLang() {
+    var lbl = document.querySelector(".g-langlbl");
+    if (lbl) lbl.hidden = !!G.isHost;
+    if (!G.isHost || !G.st) return;
+    var l = roomLang(G.st);
+    if (G.myLang !== l) { G.myLang = l; $("#g-mylang").value = l; applyUI(); if (G.ch && G.me) track(); }
+  }
   function setHost(on) {
     G.isHost = on;
     $("#g-room-badge").hidden = !on;
+    if (!on) { var lb = document.querySelector(".g-langlbl"); if (lb) lb.hidden = false; }
     track();
     if (!on) {   /* nhường quyền: thành người chơi, xin host thật gửi trạng thái */
       clearInterval(G.hostTimer); G.st = null;
@@ -644,7 +662,7 @@
       $("#l-qs-wrap").hidden = $("#l-mode").value !== "kahoot";
       $("#l-force-wrap").hidden = !($("#l-qtype").value === "meaning" || $("#l-qtype").value === "en2m" || $("#l-qtype").value === "mix");
       $("#l-teambtns").hidden = !(+$("#l-teamn").value);
-      paintPoolInfo(); paintPicked();
+      paintPoolInfo(); paintPicked(); syncHostLang();
       $("#l-scoring").value = st.scoring || "q";
     }
     paintLobbyPlayers();
@@ -703,6 +721,7 @@
       $("#l-teambtns").hidden = !tn;
       $("#l-force-wrap").hidden = !(st.qtype === "meaning" || st.qtype === "en2m" || st.qtype === "mix");
       if (s === "#l-hostplay") track();
+      if (s === "#l-lang") syncHostLang();
       sb.from("game_rooms").update({ scoring: st.scoring, mode: st.mode, qtype: st.qtype, meaning_lang: st.lang, minutes: st.minutes, q_seconds: st.qs, team_mode: !!tn, teams: tn }).eq("id", G.room.id).then(function () {});
       push(); paintLobbyPlayers();
     });
@@ -744,7 +763,7 @@
   });
   $("#p-stop").addEventListener("click", function () { if (G.isHost && confirm("Kết thúc trận ngay?")) hostEnd(); });
   function roomLangs() {
-    var set = {}; players().forEach(function (p) { set[effLang(p.lang, G.st, "recall")] = 1; if (G.st.force) set[roomLang(G.st)] = 1; });
+    var set = {}; players().forEach(function (p) { set[effLang(p.lang, G.st, "recall", isRoomHost(p))] = 1; if (G.st.force) set[roomLang(G.st)] = 1; });
     return Object.keys(set);
   }
   function hostNextQ() {
@@ -961,13 +980,22 @@
   }
 
   /* ---------- MỌI NGƯỜI: nhận trạng thái ---------- */
+  function paintLangLock() {
+    var lock = !G.isHost && G.st && playersForcedEn(G.st);
+    $("#g-mylang").disabled = !!lock;
+    $("#g-mylang").value = lock ? "en" : G.myLang;
+    $$("#l-langs [data-ml]").forEach(function (b) { b.disabled = !!lock; b.classList.toggle("on", lock ? b.dataset.ml === "en" : b.dataset.ml === G.myLang); });
+  }
   function onState(s) {
     G.lastState = Date.now();
+    var wasLock = G.st && playersForcedEn(G.st);
     if (!G.langSet && !isTJ() && s.lang && G.myLang !== s.lang) { G.myLang = s.lang; $("#g-mylang").value = s.lang; applyUI(); }
     var was = G.st && G.st.phase, langWas = G.st && G.st.lang;
     if (!G.isHost) G.st = s;
     if (s.left != null) G.endAt = Date.now() + s.left;
     if (G.myLang === "room" && langWas !== s.lang) applyUI();   /* "theo phòng" -> host đổi tiếng thì giao diện đổi theo */
+    if (!G.isHost && wasLock !== playersForcedEn(s)) applyUI();
+    paintLangLock();
     if (G.view === "screen") return paintScreen(s);
     if (s.phase === "play" && !G.isHost && G.me && !(s.scores || {})[G.me.id]) {   /* vào muộn: xem trước, ván sau chơi */
       if (!G.spectating) { G.spectating = true; G.lastN = -1; G.scRev = -1; }
@@ -1047,7 +1075,7 @@
     }
     if (mine) $("#p-typein").placeholder = T("type_ph");
     if (q.type === "en2m") {   /* từ tiếng Anh to ở trên, 4 nghĩa theo tiếng của người xem (data-opt vẫn là từ để chấm) */
-      var ml = effLang(mine ? G.myLang : "room", G.st, "en2m");
+      var ml = effLang(mine ? G.myLang : "room", G.st, "en2m", mine ? G.isHost : true);
       $(textEl).textContent = "🇺🇸 " + q.word;
       if (mine) $("#p-type").hidden = true;
       $(optsEl).innerHTML = q.opts.map(function (o) {
