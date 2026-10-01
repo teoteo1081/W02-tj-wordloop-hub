@@ -54,7 +54,7 @@
   var FREE_MS = { q: 10000, dict: 30000, write: 60000, sheet: 150000 };   /* "theo tốc độ" ở kiểu Tự do: mốc thời gian mỗi dạng */
   var POINTS = 100, REVEAL_MS = 3500, HOST_LOST_MS = 7000, HEARTBEAT_MS = 3000;
   var NO_END = 1e11;   /* ván "∞ không tính giờ": hạn chót rất xa, host bấm Kết thúc */
-  function untimed(s) { return !!(s && s.timed === false); }
+  function untimed() { return false; }   /* luôn tính giờ (TJ 2026-10-01: tốc độ + chính xác là quan trọng) */
 
   /* ---------- chữ giao diện 4 tiếng (người chơi); phần cài đặt của host để tiếng Việt ---------- */
   var UI = {
@@ -828,8 +828,7 @@
       $("#l-mode").value = st.mode || G.room.mode; $("#l-qtype").value = st.qtype || G.room.qtype || "meaning";
       $("#l-min").value = st.minutes || G.room.minutes; $("#l-qs").value = st.qs || G.room.q_seconds;
       $("#l-lang").value = roomLang(st); $("#l-teamn").value = String(st.teams || 0); $("#l-force").checked = !!st.force;
-      $("#l-timed").value = st.timed === false ? "0" : "1";
-      $("#l-qs-wrap").hidden = $("#l-mode").value !== "kahoot" || st.timed === false; $("#l-min-wrap").hidden = st.timed === false;
+      $("#l-qs-wrap").hidden = $("#l-mode").value !== "kahoot";
       $("#l-force-wrap").hidden = !($("#l-qtype").value === "meaning" || $("#l-qtype").value === "en2m" || $("#l-qtype").value === "mix");
       $("#l-teambtns").hidden = !(+$("#l-teamn").value);
       paintPoolInfo(); paintPicked();
@@ -879,13 +878,13 @@
     setTimeout(function () { b.textContent = "🔗 Copy link mời"; }, 2000);
   });
   $("#l-screen").addEventListener("click", function () { window.open(roomLink(G.room.code, true), "_blank"); });
-  ["#l-mode", "#l-qtype", "#l-timed", "#l-min", "#l-qs", "#l-lang", "#l-teamn", "#l-hostplay", "#l-force", "#l-scoring"].forEach(function (s) {
+  ["#l-mode", "#l-qtype", "#l-min", "#l-qs", "#l-lang", "#l-teamn", "#l-hostplay", "#l-force", "#l-scoring"].forEach(function (s) {
     $(s).addEventListener("change", function () {
       if (!G.isHost || !G.st) return;   /* chưa kết nối xong (G.st chưa có) -> bỏ qua, initHostLobby sẽ vẽ lại */
       var st = G.st;
       st.mode = $("#l-mode").value; st.qtype = $("#l-qtype").value; st.scoring = $("#l-scoring").value; st.lang = $("#l-lang").value; st.force = $("#l-force").checked;
       st.minutes = Math.max(1, +$("#l-min").value || 5); st.qs = Math.max(5, +$("#l-qs").value || 15);
-      st.timed = $("#l-timed").value !== "0";   /* ∞ không tính giờ: không đếm giờ câu lẫn cả ván, host bấm Kết thúc */
+      st.timed = true;
       var tn = +$("#l-teamn").value;
       if (tn !== st.teams) { st.teams = tn; st.teamOf = {}; if (tn) autoTeams(); }
       $("#l-qs-wrap").hidden = st.mode !== "kahoot" || !st.timed; $("#l-min-wrap").hidden = !st.timed;
@@ -928,7 +927,7 @@
     fillTeams();
     G.st.phase = "play"; G.st.scores = {}; G.st.q = null; G.answers = [];
     players().forEach(function (p) { G.st.scores[p.id] = { s: 0, c: 0, w: 0, st: 0, best: 0 }; });
-    G.endAt = Date.now() + (G.st.timed === false ? NO_END : G.st.minutes * 60000);
+    G.endAt = Date.now() + (G.st.minutes * 60000);
     await sb.from("game_rooms").update({ status: "playing", started_at: new Date().toISOString(), mode: G.st.mode, qtype: G.st.qtype, meaning_lang: G.st.lang, minutes: G.st.minutes, q_seconds: G.st.qs, team_mode: !!G.st.teams, teams: G.st.teams }).eq("id", G.room.id);
     /* mỗi lần bắt đầu = 1 VÁN riêng (lịch sử xem theo ván) */
     var mr = await sb.from("game_matches").insert({ room_id: G.room.id, title: G.st.title, scope: G.st.scope, mode: G.st.mode, qtype: G.st.qtype, scoring: G.st.scoring || "q", meaning_lang: G.st.lang, minutes: G.st.minutes, q_seconds: G.st.qs, teams: G.st.teams || 0 }).select("id").single();
