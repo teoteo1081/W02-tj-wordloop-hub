@@ -1393,8 +1393,8 @@
   /* 🔁 Đẩy chu kỳ Tony Buzan sau ván (TJ 2026-10-01: "chơi game xong thì đẩy vào chu trình Tony Buzan nếu đúng hẹn").
      CÙNG luật với bài thi WordLoop (detail.js srsAdvanceIfDue + PASS_MARK 80): Block phải ĐANG trong chu kỳ (passed),
      chưa xong 6 lần, ĐÚNG HẠN (next_review_at, nới 1 tiếng). Thêm điều kiện riêng cho game: TJ đã trả lời ≥ 80% số từ
-     của Block (đếm trên MỌI từ của Block, không theo lọc cấp độ) và đúng ≥ 80%. Block chưa vào chu kỳ thì KHÔNG bắt đầu
-     chu kỳ từ game (vẫn cần Phiếu đầy đủ / Từng câu). */
+     của Block (đếm trên MỌI từ của Block, không theo lọc cấp độ) và đúng ≥ 80%. Block CHƯA vào chu kỳ mà đạt đủ 2 điều kiện đó -> BẮT ĐẦU chu kỳ (TJ 2026-10-01: "chơi block đó thì bắt đầu tính vào
+     chu kỳ"): passed = true, lần 1, ôn tiếp sau 24 giờ — y như lần đầu đạt Phiếu đầy đủ/Từng câu (advance từ cycle 0). */
   var SRS_WAIT = [10 * 6e4, 24 * 36e5, 7 * 864e5, 30 * 864e5, 90 * 864e5, 180 * 864e5], SRS_SHORT = ["10 phút", "24 giờ", "1 tuần", "1 tháng", "3 tháng", "6 tháng"];
   async function srsAfterMatch() {
     G.srsHtml = "";
@@ -1407,30 +1407,37 @@
       x.seen[a.wid] = 1; x.n++; if (a.ok) x.ok++;
     });
     var ids = Object.keys(per); if (!ids.length) return;
-    var r = await sb.from("block_progress").select("block_id,passed,cycle,next_review_at,review_history").eq("user_id", HOST_PROFILE_ID).in("block_id", ids);
+    var r = await sb.from("block_progress").select("block_id,passed,cycle,next_review_at,review_history,hard_passed_at").eq("user_id", HOST_PROFILE_ID).in("block_id", ids);
     if (r.error) { console.warn("block_progress", r.error.message); return; }
     var bp = {}; (r.data || []).forEach(function (x) { bp[x.block_id] = x; });
-    var now = Date.now(), moved = [], notYet = [];
+    var now = Date.now(), moved = [], notYet = [], started = [];
     for (var i = 0; i < ids.length; i++) {
       var id = ids[i], x = per[id], p = bp[id], total = (G.blockWordN || {})[id] || 0;
       var name = TREE ? pathOf({ table: "blocks", id: id, title: id }).split(" › ").slice(-3).join(" › ") : id;
-      if (!p || !p.passed || (p.cycle | 0) >= SRS_WAIT.length) continue;                     /* chưa vào chu kỳ / đã xong 6 lần */
-      if (p.next_review_at && p.next_review_at - 36e5 > now) continue;                         /* chưa tới hạn -> không đẩy (như WordLoop) */
+      var fresh = !p || !p.passed;                                                              /* chưa vào chu kỳ -> game được BẮT ĐẦU chu kỳ */
+      if (!fresh && (p.cycle | 0) >= SRS_WAIT.length) continue;                                  /* đã xong 6 lần 💎 */
+      if (!fresh && p.next_review_at && p.next_review_at - 36e5 > now) continue;                  /* chưa tới hạn -> không đẩy (như WordLoop) */
       var cover = total ? Object.keys(x.seen).length / total : 0, acc = x.n ? x.ok / x.n : 0;
-      if (cover < 0.8 || acc < 0.8) { notYet.push({ name: name, cover: cover, acc: acc, seen: Object.keys(x.seen).length, total: total }); continue; }
-      var c = Math.min((p.cycle | 0) + 1, SRS_WAIT.length), next = now + SRS_WAIT[Math.min(c, SRS_WAIT.length - 1)];
-      var hist = Array.isArray(p.review_history) ? p.review_history.slice() : [];
+      if (cover < 0.8 || acc < 0.8) {
+        if (!fresh || cover >= 0.5) notYet.push({ name: name, cover: cover, acc: acc, seen: Object.keys(x.seen).length, total: total, fresh: fresh });   /* Block mới: chỉ nhắc khi đã làm ≥ 50% */
+        continue;
+      }
+      var c = fresh ? 1 : Math.min((p.cycle | 0) + 1, SRS_WAIT.length), next = now + SRS_WAIT[Math.min(c, SRS_WAIT.length - 1)];
+      var hist = !fresh && Array.isArray(p.review_history) ? p.review_history.slice() : [];
       hist.push({ step: c, at: now, via: "game" });
       if (hist.length > SRS_WAIT.length) hist = hist.slice(hist.length - SRS_WAIT.length);
-      var u = await sb.from("block_progress").update({ cycle: c, next_review_at: next, last_reviewed_at: now, review_history: hist }).eq("user_id", HOST_PROFILE_ID).eq("block_id", id);
+      var row = { user_id: HOST_PROFILE_ID, block_id: id, passed: true, cycle: c, next_review_at: next, last_reviewed_at: now, review_history: hist };
+      if (fresh && !(p && p.hard_passed_at)) row.hard_passed_at = now;   /* mốc đạt đầu tiên — Bảng xếp hạng lọc Tuần/Tháng */
+      var u = await sb.from("block_progress").upsert(row, { onConflict: "user_id,block_id" });   /* chưa có dòng thì tạo, có rồi chỉ sửa các cột này */
       if (u.error) { console.warn("đẩy chu kỳ", u.error.message); continue; }
-      moved.push({ name: name, c: c, wait: SRS_SHORT[Math.min(c, SRS_SHORT.length - 1)] });
+      (fresh ? started : moved).push({ name: name, c: c, wait: SRS_SHORT[Math.min(c, SRS_SHORT.length - 1)] });
     }
-    if (!moved.length && !notYet.length) return;
+    if (!moved.length && !notYet.length && !started.length) return;
     var pc = function (v) { return Math.round(v * 100) + "%"; };
     G.srsHtml = "<h3>🔁 Chu kỳ Tony Buzan</h3><ul>" +
+      started.map(function (m) { return '<li class="ok">▶ ' + esc(m.name) + " — bắt đầu chu kỳ: xong lần 1, ôn tiếp sau " + m.wait + "</li>"; }).join("") +
       moved.map(function (m) { return '<li class="ok">✓ ' + esc(m.name) + " — xong lần " + m.c + (m.c >= SRS_WAIT.length ? " 💎" : ", ôn tiếp sau " + m.wait) + "</li>"; }).join("") +
-      notYet.map(function (m) { return '<li class="no">… ' + esc(m.name) + " — đến hạn nhưng chưa đủ: làm " + m.seen + "/" + m.total + " từ (" + pc(m.cover) + "), đúng " + pc(m.acc) + " — cần ≥ 80% cả hai</li>"; }).join("") + "</ul>";
+      notYet.map(function (m) { return '<li class="no">… ' + esc(m.name) + (m.fresh ? " — chưa đủ để bắt đầu chu kỳ: làm " : " — đến hạn nhưng chưa đủ: làm ") + m.seen + "/" + m.total + " từ (" + pc(m.cover) + "), đúng " + pc(m.acc) + " — cần ≥ 80% cả hai</li>"; }).join("") + "</ul>";
     if (!$("#s-end").hidden) { $("#e-srs").innerHTML = G.srsHtml; $("#e-srs").hidden = false; }
     loadDue();   /* cột ⏳ Đến hạn cập nhật ngay */
   }
