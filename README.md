@@ -348,3 +348,31 @@ Mỗi Block card trong danh sách Block (chưa mở) có **preview nhanh** (`app
     - `js/speech.js` thêm `S.pause()`/`S.resume()`/`S.getProgress()` (Web Speech API hỗ trợ sẵn pause/resume, không cắt utterance như stop() cũ), áp dụng cho CẢ `readPassage` (bài đọc) lẫn `speakList` (bảng từ vựng) — tiến độ/tổng thời gian là ƯỚC TÍNH (không có API trình duyệt nào trả về giây thật đã đọc), theo công thức ~14.5 ký tự/giây đã dùng ở `startFallbackTimer`.
     - **Đã tự test bằng Playwright (headless Chromium qua CLI, không cần chrome-devtools MCP)** — PASS cả 5 kịch bản: hiện đúng lúc cuộn khỏi hàng nút (kể cả bài dài cuộn giữa chừng), pause, resume, nhảy karaoke (🎤), đóng hẳn (✕). Chưa test tay trên Safari/điện thoại thật — pause/resume của Web Speech API từng có tiếng chập chờn tuỳ trình duyệt, nên vẫn nên thử qua 1 lần trên máy/điện thoại thật trước khi yên tâm hoàn toàn.
   - **Nút "▾ Thu gọn / ▸ Mở rộng" cho bài đọc** (`#btn-toggle-passage`) — y hệt nút đã có sẵn cho bảng từ vựng, đặt trước `#voice-select` trong `.audio-toolbar`. Bài đọc (đặc biệt Block "full_..." dán cả bài báo) có thể rất dài, thu gọn còn 22rem (~352px, có gradient mờ dần ở đáy) đỡ chiếm hết màn hình. Mặc định KHÔNG thu gọn (khác bảng từ vựng mặc định CÓ thu gọn) — bài đọc là nội dung chính cần đọc ngay. Dùng lại đúng 2 chuỗi dịch có sẵn trong `js/i18n.js` ("▾ Thu gọn"/"▸ Mở rộng") nên tự dịch English luôn, không cần thêm dòng DICT mới. Đã test Playwright: bấm thu gọn đúng còn 352px, mở lại đúng về full.
+
+
+## 🔄 Bàn giao sang máy khác (2026-10-01)
+
+**Làm tiếp ở máy mới:** `git pull` repo này. Python cần `requests` (`pip install requests openpyxl`). Mọi khóa đọc từ `js/config.js`, không cần file nào thêm.
+
+**Link game (nội bộ gia đình)**
+- Người chơi: `https://teoteo1081.github.io/W02-tj-wordloop-hub/game.html` (phòng `TJ`, link trần).
+- Host (TJ): cùng link + `?u=<id hồ sơ TJ>` (id nằm ở `HOST_PROFILE_ID` trong `js/game.js`). Mở **1 lần** trên máy mới là máy đó nhớ TJ (localStorage `tjwl_link_user_id_v1`), và tự dùng lại người chơi "TJ" cũ. Đã gộp TJ#2/#3 vào TJ#1. `Anti_TJ` là nick thử của TJ, để nguyên.
+- Test vai người chơi trên cùng máy: cửa sổ ẩn danh (chưa có tham số `?player=1`).
+
+**Thay đổi game 2026-10-01 (v35–v37)**
+- Tự sang câu sau ít giây (bỏ nút "Câu tiếp"); xem lại đáp án sau ván bằng "📖 Xem lại đáp án" (lưu tạm trên máy từng người, mất khi tải lại trang).
+- Bỏ hẳn tùy chọn "không tính giờ"; luôn có giờ.
+- Bỏ cờ trước câu hỏi (Windows vẽ cờ thành chữ "US"); `FLAG` trên Windows là EN/VI/ES/ZH.
+- Phòng chờ: nút Lịch sử ngang hàng "Người chơi", cây chọn nhánh bung sẵn, ô chủ đề hiện đường dẫn Hub › … › Block.
+- Khi sửa `game.js` / `game.css` nhớ tăng `?v=` trong `game.html` (Chrome giữ cache cũ).
+
+**Câu điền chỗ trống soạn sẵn (đang dở)**
+- Bảng Supabase `game_gap_sentences` (schema: `tools/game_gap_schema.sql`, đã chạy). Script `tools/gen_gap_sentences.py`: gpt-4o-mini qua `openai-proxy` soạn câu 8–14 từ kiểu TOEIC Part 5 + AI thứ 2 kiểm "chỉ 1 từ hợp" (câu bị bỏ sẽ được thử lại ở lần chạy sau).
+- Nhóm theo (từ + loại từ + nghĩa): cùng nhóm = 1 câu; khác nghĩa/ngữ cảnh = câu mới; không câu nào trùng câu nào.
+- Game đọc câu theo **từ** (không theo id) nên 1 từ nhiều nghĩa ra nhiều câu; thiếu thì host tự nhờ AI soạn tại chỗ như cũ.
+- **Tiếp tục:** `cd tools && python gen_gap_sentences.py` (chạy lại được, bỏ qua nhóm đã có câu). Có thể lặp vài lần để vớt các từ bị bỏ. Xem tiến độ: đếm dòng `game_gap_sentences` trên Supabase.
+- 82 dòng thử cũ lưu `term` ở dạng thô (có thể kèm ngoặc đơn) — từ có ngoặc có thể không khớp khi game tra; script mới lưu dạng đã bỏ ngoặc. Có thể xóa 82 dòng cũ rồi chạy lại nếu muốn đồng bộ.
+
+**Bảo mật:** token Supabase (`sbp_…`) từng dùng để tạo bảng chỉ dùng tạm — TJ cần Revoke ở https://supabase.com/dashboard/account/tokens. Muốn chạy SQL lần sau thì xin token mới.
+
+**Gợi ý việc tiếp:** thêm `?player=1` để test vai người chơi trong cùng trình duyệt; xem lại tốc độ chuyển câu (thời gian chờ mỗi dạng câu) sau khi chơi thật.
