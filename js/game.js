@@ -256,8 +256,8 @@
 
   /* Cây Hub > Notebook > Section > Page (Batch/Block chọn qua chuột phải trong WordLoop) */
   var TREE = null;
-  async function loadTree() {
-    if (TREE) return paintTree();
+  async function loadTree(fresh) {
+    if (TREE && !fresh) return paintTree();
     async function all(t, cols, order) {   /* đọc hết (PostgREST trả tối đa 1000 dòng/lần) */
       var out = [], from = 0;
       for (;;) { var r = await sb.from(t).select(cols).order(order).range(from, from + 999); if (r.error) throw r.error; out = out.concat(r.data); if (r.data.length < 1000) return out; from += 1000; }
@@ -267,8 +267,38 @@
         all("pages", "id,name,sort,section_id", "sort"), all("batches", "id,name,sort,page_id", "sort"), all("blocks", "id,name,global_index,batch_id", "global_index")]);
       TREE = { hubs: q[0], notebooks: q[1], sections: q[2], pages: q[3], batches: q[4], blocks: q[5] };
     } catch (err) { $("#h-tree").innerHTML = '<p class="g-err">Không tải được cây: ' + esc(err.message || err) + "</p>"; return; }
-    paintTree();
+    if (!fresh) paintTree();
+    return true;
   }
+  /* 🔄 Tải lại cây (TJ 2026-10-01): đổi cấu trúc/thêm từ bên WordLoop -> game thấy ngay không cần F5.
+     Giữ nhánh đang bung; mục đã chọn bị xoá bên WordLoop thì bỏ, bị đổi tên thì lấy tên mới; tải lại kho từ. */
+  var treeBusy = false;
+  async function refreshTree(quiet) {
+    if (treeBusy || !G.isHost || !G.st || G.st.phase !== "lobby") return;
+    treeBusy = true;
+    var opened = $$("#h-tree details[open] > summary [data-pick]").map(function (c) { return c.dataset.pick + ":" + c.dataset.id; });
+    if (!quiet) $("#h-reload").disabled = true;
+    try {
+      if (!(await loadTree(true))) return;
+      var before = JSON.stringify(picked);
+      picked = picked.filter(function (p) { return (TREE[p.table] || []).some(function (r) { return r.id === p.id; }); })
+        .map(function (p) { var r = TREE[p.table].find(function (x) { return x.id === p.id; }); return { table: p.table, id: p.id, title: r.name }; });
+      paintTree();
+      opened.forEach(function (k) {
+        var i = k.indexOf(":"), c = $('#h-tree [data-pick="' + k.slice(0, i) + '"][data-id="' + k.slice(i + 1).replace(/"/g, '\\"') + '"]');
+        var d = c && c.closest("details"); if (d) d.open = true;
+      });
+      G.poolKey = null;   /* tải lại cả kho từ (có thể vừa thêm từ vào Block đang chọn) */
+      if (picked.length || before !== "[]") hostSetScope();
+    } finally { treeBusy = false; if (!quiet) $("#h-reload").disabled = false; }
+  }
+  function treeOpenAll(on) {
+    $$("#h-tree details").forEach(function (d) { d.open = on; });
+    var box = $(".g-treebox"); if (box && on) box.open = true;
+  }
+  $("#h-expand").addEventListener("click", function () { treeOpenAll(true); });
+  $("#h-collapse").addEventListener("click", function () { treeOpenAll(false); });
+  $("#h-reload").addEventListener("click", function () { refreshTree(false); });
   function paintTree() {
     function kids(list, key, id) { return TREE[list].filter(function (r) { return r[key] === id; }); }
     function node(table, r, inner) {
@@ -1792,6 +1822,7 @@
   }
   document.addEventListener("visibilitychange", function () {
     if (document.visibilityState === "visible" && G.ch && G.me && G.view !== "screen") G.ch.send({ type: "broadcast", event: "alive", payload: { tab: G.tab, id: G.me.id } });
+    if (document.visibilityState === "visible" && TREE) refreshTree(true);   /* quay lại từ tab WordLoop -> cây mới */
   });
   window.addEventListener("pagehide", function () { try { if (G.ch) { G.ch.untrack(); sb.removeChannel(G.ch); } } catch (e) {} });
   (async function boot() {

@@ -218,3 +218,7 @@ body.big .g-top,body.big #g-main{display:none}
 /* v37: câu điền chỗ trống gọn hơn — chỗ trống là ô gạch chân sát chữ, câu cân dòng */
 .g-gapline{text-wrap:balance;font-weight:600;line-height:1.6}
 .g-gapline .g-blank{margin:0 .2em;height:.95em;vertical-align:baseline;border-bottom:3px solid var(--amber);min-width:3em}
+
+/* v38: hàng nút cây chủ đề (Mở rộng / Thu gọn / Tải lại) — không xuống dòng chữ */
+.g-treebtns{flex-wrap:wrap;gap:6px}
+.g-treebtns .g-btn{flex:0 0 auto;white-space:nowrap;padding:7px 12px;font-size:14px}

@@ -365,6 +365,7 @@ Mỗi Block card trong danh sách Block (chưa mở) có **preview nhanh** (`app
 - Bỏ cờ trước câu hỏi (Windows vẽ cờ thành chữ "US"); `FLAG` trên Windows là EN/VI/ES/ZH.
 - Phòng chờ: nút Lịch sử ngang hàng "Người chơi", cây chọn nhánh bung sẵn, ô chủ đề hiện đường dẫn Hub › … › Block.
 - Khi sửa `game.js` / `game.css` nhớ tăng `?v=` trong `game.html` (Chrome giữ cache cũ).
+- **v38 (2026-10-01, máy 2):** cây "Chọn nhánh từ vựng" có ⊞ Mở rộng / ⊟ Thu gọn / 🔄 Tải lại cây. Cây + kho từ tự tải lại khi host quay lại tab game (`visibilitychange`, chỉ ở phòng chờ) → đổi cấu trúc / thêm từ bên WordLoop là game thấy, không cần F5; nhánh đang bung giữ nguyên, mục đã chọn bị xoá thì bỏ, đổi tên thì lấy tên mới.
 
 **Câu điền chỗ trống soạn sẵn (đang dở)**
 - Bảng Supabase `game_gap_sentences` (schema: `tools/game_gap_schema.sql`, đã chạy). Script `tools/gen_gap_sentences.py`: gpt-4o-mini qua `openai-proxy` soạn câu 8–14 từ kiểu TOEIC Part 5 + AI thứ 2 kiểm "chỉ 1 từ hợp" (câu bị bỏ sẽ được thử lại ở lần chạy sau).
