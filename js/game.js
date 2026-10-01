@@ -537,18 +537,22 @@
     G.gapAiP = (async function () {
       var cache = readLS(LS_GAPAI) || {};
       /* câu soạn SẴN trong Supabase (bảng game_gap_sentences, tools/gen_gap_sentences.py): dùng trước, nhanh, mọi máy host như nhau */
-      var dbN = 0;
-      for (var j = 0; j < G.pool.length; j += 80) {
-        var ids = G.pool.slice(j, j + 80).map(function (w) { return w.wid; });
-        var dr = await sb.from("game_gap_sentences").select("word_id,sentence").in("word_id", ids);
+      var dbN = 0, dbGaps = [], dbSeen = {}, byBase = {};
+      G.pool.forEach(function (w) { byBase[norm(baseTerm(w.term))] = w; });
+      var bases = Object.keys(byBase);
+      for (var j = 0; j < bases.length; j += 60) {
+        /* tra theo TỪ (không theo id): cùng 1 từ có nhiều nghĩa/ngữ cảnh khác nhau thì mỗi nghĩa 1 câu riêng */
+        var terms = bases.slice(j, j + 60).map(function (b) { return '"' + baseTerm(byBase[b].term).split("\\").join("\\\\").split('"').join('\\"') + '"'; });
+        var dr = await sb.from("game_gap_sentences").select("term,sentence").in("term", terms);
         if (dr.error) { console.warn("game_gap_sentences", dr.error.message); break; }
         (dr.data || []).forEach(function (r) {
-          var w = G.pool.find(function (x) { return x.wid === r.word_id; }), t = w && toGap(r.sentence, w.term);
-          if (t) { cache[w.wid] = t; dbN++; }
+          var w = byBase[norm(baseTerm(r.term))], t = w && toGap(r.sentence, w.term), k = t && norm(t);
+          if (t && !dbSeen[k]) { dbSeen[k] = 1; dbGaps.push({ wid: w.wid, term: w.term, block: w.block, text: t, ai: 1 }); }
         });
       }
+      dbN = dbGaps.length;
       if (G.poolKey !== key) return;
-      var have = G.pool.filter(function (w) { return cache[w.wid]; }).length;
+      var have = G.pool.filter(function (w) { return cache[w.wid]; }).length + dbN;
       var maxAi = dbN >= 4 ? 0 : GAPAI_MAX;   /* đủ câu soạn sẵn -> không bắt host chờ AI soạn thêm */
       var todo = shuffle(G.pool.filter(function (w) { return !cache[w.wid]; })).slice(0, Math.max(0, maxAi - have))
         .sort(function (a, b) { return a.block < b.block ? -1 : a.block > b.block ? 1 : 0; });   /* cùng Block chung 1 lần gọi: đáp án nhiễu lấy từ cùng Block */
@@ -564,7 +568,8 @@
         if (G.poolKey !== key) return;
       }
       if (G.poolKey !== key) return;
-      var ai = G.pool.filter(function (w) { return cache[w.wid]; }).map(function (w) { return { wid: w.wid, term: w.term, block: w.block, text: cache[w.wid], ai: 1 }; });
+      var ai = dbGaps.slice();
+      G.pool.forEach(function (w) { var t = cache[w.wid]; if (t && !dbSeen[norm(t)]) { dbSeen[norm(t)] = 1; ai.push({ wid: w.wid, term: w.term, block: w.block, text: t, ai: 1 }); } });
       /* CHỈ câu AI (TJ: "chọn các câu bạn soạn lại ngắn ngắn"); AI lỗi (< 4 câu) mới dùng câu bài đọc ≤ 20 từ */
       if (ai.length >= 4) G.gaps = ai;
       else { var short = (G.gapsSrc || []).filter(function (g) { return g.text.split(/\s+/).length <= 20; }); if (short.length >= 4) G.gaps = short; }

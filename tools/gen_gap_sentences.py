@@ -38,7 +38,7 @@ def ask(sys_msg, user_msg, temperature):
     return None
 
 
-def write_sentences(items):
+def write_sentences(items, avoid):
     o = ask("You write TOEIC Part 5 style sentences for an English vocabulary fill-in-the-blank quiz. Reply with JSON only.",
             "For EACH item write ONE sentence of 8-14 words in a TOEIC business/workplace context (office, meetings, sales, "
             "travel, hiring, customers, finance, shipping...). Rules:\n"
@@ -48,9 +48,12 @@ def write_sentences(items):
             "(a detail that only goes with this term, e.g. 'by 5 p.m. Friday' for a deadline, 'both sides signed' for an agreement) "
             "so that NO other term in the list fits.\n"
             "4. No definitions, no quotes, no real company names.\n"
+            "5. The same term can appear in several items with DIFFERENT meanings: write a clearly different situation for each meaning, "
+            "and never repeat or lightly reword any sentence listed in 'do_not_reuse'.\n"
             'Return {"items":[{"id":"<id>","s":"<sentence>"}]}.\n'
             + json.dumps([{"id": w["id"], "term": base_term(w["term"]), "pos": w.get("pos") or "",
-                           "meaning": w.get("meaning_vi") or w.get("def_en") or ""} for w in items], ensure_ascii=False), 0.7)
+                           "meaning": w.get("meaning_vi") or w.get("def_en") or "",
+                           "do_not_reuse": avoid.get(norm(base_term(w["term"])), [])[:4]} for w in items], ensure_ascii=False), 0.7)
     return {x["id"]: x["s"] for x in (o or {}).get("items", []) if x.get("id") and x.get("s")}
 
 
@@ -81,8 +84,23 @@ def main():
     a = ap.parse_args()
 
     words = fetch_all("words", "id,block_id,sort,term,pos,meaning_vi,def_en")
-    have = {r["word_id"] for r in fetch_all("game_gap_sentences", "word_id")}
-    todo = [w for w in words if w["id"] not in have and w.get("term") and (not a.block or w["block_id"] == a.block)]
+    rows_db = fetch_all("game_gap_sentences", "word_id,term,sentence")
+    have = {r["word_id"] for r in rows_db}
+    used_sent = {norm(r["sentence"]) for r in rows_db}          # không câu nào trùng câu nào
+    avoid = {}
+    for r in rows_db:
+        avoid.setdefault(norm(base_term(r["term"])), []).append(r["sentence"])
+    # CÙNG từ + loại từ + nghĩa = cùng 1 câu (dòng trùng ở Block khác không soạn lại); khác nghĩa/ngữ cảnh = câu MỚI
+    groups = {}
+    for w in words:
+        if w.get("term"):
+            groups.setdefault((norm(base_term(w["term"])), norm(w.get("pos")), norm(w.get("meaning_vi") or w.get("def_en"))), []).append(w)
+    todo = []
+    for g in groups.values():
+        if any(w["id"] in have for w in g):
+            continue
+        if not a.block or any(w["block_id"] == a.block for w in g):
+            todo.append(g[0])
     if a.limit:
         todo = todo[:a.limit]
     print(f"{len(words)} từ · đã có câu {len(have)} · cần soạn {len(todo)}")
@@ -98,18 +116,20 @@ def main():
 
     saved = dropped = 0
     for n, items in enumerate(batches, 1):
-        out = write_sentences(items)
+        out = write_sentences(items, avoid)
         cand = {}
         for w in items:
             s = out.get(w["id"])
-            if s and blank_of(s, w["term"]):
+            if s and blank_of(s, w["term"]) and norm(s) not in used_sent:
                 cand[w["id"]] = blank_of(s, w["term"])
         chk = check_sentences(items, cand)
         rows = []
         for w in items:
             ok = w["id"] in cand and chk.get(w["id"]) == norm(base_term(w["term"]))
-            if ok:
-                rows.append({"word_id": w["id"], "block_id": w["block_id"], "term": w["term"], "sentence": out[w["id"]], "checked": True, "model": MODEL})
+            if ok and norm(out[w["id"]]) not in used_sent:
+                used_sent.add(norm(out[w["id"]]))
+                avoid.setdefault(norm(base_term(w["term"])), []).append(out[w["id"]])
+                rows.append({"word_id": w["id"], "block_id": w["block_id"], "term": base_term(w["term"]), "sentence": out[w["id"]], "checked": True, "model": MODEL})
         dropped += len(items) - len(rows)
         if rows:
             r = requests.post(REST_URL + "/game_gap_sentences", timeout=60,
