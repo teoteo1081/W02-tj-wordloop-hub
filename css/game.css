@@ -289,3 +289,12 @@ body.embed .g-brand{display:none}
 
 /* v44: dòng ⏱ tự tính tổng thời gian trải hết hàng cài đặt */
 #l-auto-wrap{grid-column:1/-1}
+/* v46: 👥 quản lý người chơi */
+.g-utable{width:100%;border-collapse:collapse;font-size:14px}
+.g-utable th,.g-utable td{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+.g-utable th{color:var(--text-2);font-weight:600;font-size:12px}
+.g-utable td.num{text-align:right;color:var(--text-2)}
+.g-utable .acts{white-space:nowrap;text-align:right}
+.g-utable .acts button{margin-left:4px}
+.g-utable tr.dup td:first-child{color:var(--amber)}
+.g-utag{font-size:11px;border-radius:6px;padding:1px 6px;background:var(--raise);color:var(--text-2);margin-left:4px}

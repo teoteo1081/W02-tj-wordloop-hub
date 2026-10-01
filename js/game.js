@@ -1119,6 +1119,7 @@
     applyUI();
     $("#l-host").hidden = !G.isHost; $("#l-wait").hidden = G.isHost; $("#l-hostbtns").hidden = !G.isHost;
     $("#l-roomcard").hidden = !G.isHost;   /* người chơi chỉ chơi: không mã phòng, link mời, 📺, chủ đề */
+    $("#l-users").hidden = !(G.isHost && isTJ());
     paintSide();
     $("#l-mecard").hidden = G.isHost; $("#l-wait").hidden = true;
     if (!G.isHost && G.me) { $("#l-meav").innerHTML = avatar(G.me.avatar); $("#l-mename").innerHTML = label({ name: G.me.name, no: G.me.name_no }); }
@@ -2013,6 +2014,76 @@
     renderEnd({ phase: "end", saved: true, scoring: M.scoring || "q", title: M.title, mode: M.mode, qs: M.q_seconds, minutes: M.minutes, teams: M.teams || 0, teamOf: teamOf, scores: scores, roster: roster });
   }
 
+  /* ---------- 👥 quản lý người chơi (chỉ TJ) ---------- */
+  $("#l-users").addEventListener("click", function () { renderUsers(); });
+  $("#us-back").addEventListener("click", function () { G.inHist = false; if (G.st && G.st.phase === "lobby") renderLobby(); else if (G.st) onState(G.st); });
+  async function renderUsers() {
+    if (!isTJ()) return;
+    G.inHist = true;   /* như 📜: trạng thái phòng không kéo khỏi màn này */
+    show("s-users");
+    var box = $("#us-body");
+    box.innerHTML = '<p class="g-sub">Đang tải…</p>';
+    var pr = await Promise.all([
+      sb.from("game_players").select("id,name,name_no,avatar,profile_id,created_at").order("name").order("name_no"),
+      sb.from("game_results").select("player_id").limit(10000),
+      sb.from("profiles").select("id,display_name")
+    ]);
+    if (pr[0].error) { box.innerHTML = '<p class="g-err">' + esc(pr[0].error.message) + "</p>"; return; }
+    var games = {}; (pr[1].data || []).forEach(function (r) { games[r.player_id] = (games[r.player_id] || 0) + 1; });
+    var pname = {}; (pr[2].data || []).forEach(function (p) { pname[p.id] = p.display_name; });
+    var list = pr[0].data || [];
+    G.usersList = list;
+    box.innerHTML = '<table class="g-utable"><thead><tr><th>Người chơi</th><th>Hồ sơ WordLoop</th><th>Ván</th><th>Tạo lúc</th><th></th></tr></thead><tbody>' +
+      list.map(function (u) {
+        var dupOf = u.name_no > 1 && list.some(function (x) { return x.id !== u.id && norm(x.name) === norm(u.name); });
+        return '<tr class="' + (dupOf ? "dup" : "") + '" data-uid="' + esc(u.id) + '"><td>' + avatar(u.avatar) + " " + label({ name: u.name, no: u.name_no }) +
+          (u.id === (G.me && G.me.id) ? '<span class="g-utag">bạn</span>' : "") + "</td>" +
+          "<td>" + (u.profile_id ? esc(pname[u.profile_id] || u.profile_id.slice(0, 8)) : '<span class="g-sub">—</span>') + "</td>" +
+          '<td class="num">' + (games[u.id] || 0) + "</td>" +
+          '<td class="g-sub">' + esc(new Date(u.created_at).toLocaleDateString("vi-VN")) + "</td>" +
+          '<td class="acts"><button class="g-btn g-btn-soft g-btn-xs" data-uact="ren">✏️ Đổi tên</button><button class="g-btn g-btn-soft g-btn-xs" data-uact="merge">🔀 Gộp vào…</button>' +
+          (u.id === (G.me && G.me.id) ? "" : '<button class="g-btn g-btn-soft g-btn-xs" data-uact="del">🗑</button>') + "</td></tr>";
+      }).join("") + "</tbody></table>";
+  }
+  /* chuyển lịch sử ván + câu trả lời của "from" sang "to" rồi xoá "from" (ván trùng -> giữ kết quả của "to") */
+  async function mergePlayer(from, to) {
+    var tm = await sb.from("game_results").select("match_id").eq("player_id", to);
+    var have = {}; (tm.data || []).forEach(function (r) { if (r.match_id) have[r.match_id] = 1; });
+    var fr = await sb.from("game_results").select("id,match_id").eq("player_id", from);
+    for (var i = 0; i < (fr.data || []).length; i++) {
+      var r = fr.data[i];
+      if (r.match_id && have[r.match_id]) await sb.from("game_results").delete().eq("id", r.id);
+      else { await sb.from("game_results").update({ player_id: to }).eq("id", r.id); if (r.match_id) have[r.match_id] = 1; }
+    }
+    await sb.from("game_answers").update({ player_id: to }).eq("player_id", from);
+    var d = await sb.from("game_players").delete().eq("id", from);
+    if (d.error) throw d.error;
+  }
+  $("#us-body").addEventListener("click", async function (e) {
+    var b = e.target.closest("[data-uact]"); if (!b) return;
+    var id = b.closest("tr").dataset.uid, list = G.usersList || [], u = list.find(function (x) { return x.id === id; }); if (!u) return;
+    var nm = u.name + (u.name_no > 1 ? " #" + u.name_no : "");
+    try {
+      if (b.dataset.uact === "ren") {
+        var v = prompt("Tên mới cho " + nm + ":", u.name); if (!v || !v.trim() || v.trim() === u.name) return;
+        var r1 = await sb.from("game_players").update({ name: v.trim() }).eq("id", id); if (r1.error) throw r1.error;
+      } else if (b.dataset.uact === "del") {
+        if (!confirm("Xoá hẳn " + nm + " cùng toàn bộ lịch sử ván của người này?")) return;
+        var r2 = await sb.from("game_players").delete().eq("id", id); if (r2.error) throw r2.error;
+      } else {
+        var others = list.filter(function (x) { return x.id !== id; });
+        var guess = others.find(function (x) { return norm(x.name) === norm(u.name) && x.name_no === 1; });
+        var ask = others.map(function (x, i) { return (i + 1) + ". " + x.name + (x.name_no > 1 ? " #" + x.name_no : ""); }).join("\n");
+        var pick = prompt("Gộp " + nm + " vào ai? Gõ số thứ tự:\n" + ask, guess ? String(others.indexOf(guess) + 1) : "");
+        var to = others[(+pick || 0) - 1]; if (!to) return;
+        if (!confirm("Gộp " + nm + " vào " + to.name + (to.name_no > 1 ? " #" + to.name_no : "") + "? Lịch sử của " + nm + " chuyển sang, rồi xoá " + nm + ".")) return;
+        await mergePlayer(id, to.id);
+        if (G.me && G.me.id === id) { G.me = { id: to.id, name: to.name, name_no: to.name_no, avatar: to.avatar }; writeLS(LS_ME, G.me); paintMe(); }
+      }
+    } catch (err) { alert("Lỗi: " + (err.message || err)); }
+    renderUsers();
+  });
+
   /* ---------- 📜 lịch sử & xếp hạng ---------- */
   $("#hi-back").addEventListener("click", function () {   /* về đúng màn đang có của phòng, không tải lại trang */
     G.inHist = false;
@@ -2093,6 +2164,16 @@
       try { localStorage.setItem(LS_LINK, id); } catch (e) {}
       var u = new URLSearchParams(location.search); u.delete("u");
       history.replaceState(null, "", location.pathname + (u.toString() ? "?" + u : "") + location.hash);   /* gỡ mã khỏi thanh địa chỉ */
+    }
+    /* Máy đang giữ 1 người chơi KHÔNG gắn hồ sơ này (vd xoá cache -> lỡ tạo "TJ#3" lúc chưa nhận ra TJ, rồi mới mở link ?u=)
+       -> đổi về người chơi gắn hồ sơ (TJ 2026-10-01: "đang ở TJ mà bấm chơi game lại ra TJ#3"). */
+    if (G.me) {
+      var cur = await sb.from("game_players").select("id,profile_id").eq("id", G.me.id).maybeSingle();
+      if (!cur.data || cur.data.profile_id !== G.profile.id) {
+        var lk = await sb.from("game_players").select("id,name,name_no,avatar").eq("profile_id", G.profile.id).order("created_at").limit(1);
+        if (lk.data && lk.data[0]) { G.me = { id: lk.data[0].id, name: lk.data[0].name, name_no: lk.data[0].name_no, avatar: lk.data[0].avatar }; writeLS(LS_ME, G.me); }
+        else if (cur.data && !cur.data.profile_id) sb.from("game_players").update({ profile_id: G.profile.id }).eq("id", G.me.id).then(function () {});   /* hồ sơ chưa có người chơi nào -> gắn luôn người chơi này */
+      }
     }
     /* máy mới chưa có người chơi: dùng lại người chơi cũ của hồ sơ này (tên + ảnh + lịch sử) thay vì bắt tạo mới */
     if (!G.me) {

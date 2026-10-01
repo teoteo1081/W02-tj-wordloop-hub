@@ -8,7 +8,7 @@
 <!-- Google tag (gtag.js) — cùng property GA4 với WordLoop -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM');</script>
-<link rel="stylesheet" href="css/game.css?v=24">
+<link rel="stylesheet" href="css/game.css?v=25">
 </head>
 <body>
 <!-- 🎮 Phòng game chơi chung — xem README.md "Việc còn dang dở" > PHÒNG GAME, bảng: tools/game_schema.sql.
@@ -91,7 +91,7 @@
       <div class="g-langs" id="l-langs"><button data-ml="vi">🇻🇳 Tiếng Việt</button><button data-ml="en">🇺🇸 English</button><button data-ml="es">🇪🇸 Español</button><button data-ml="zh">🇨🇳 中文</button></div>
     </div>
     <div class="g-h2row"><h2><span data-t="players">Người chơi</span> (<span id="l-count">0</span>) <span class="g-sub" id="l-teamhint"></span></h2>
-    <button class="g-btn g-btn-soft g-btn-sm" id="l-hist" data-t="hist_btn">📜 Lịch sử & Xếp hạng</button></div>
+    <span class="g-row g-row-tight"><button class="g-btn g-btn-soft g-btn-sm" id="l-users" hidden>👥 Quản lý người chơi</button><button class="g-btn g-btn-soft g-btn-sm" id="l-hist" data-t="hist_btn">📜 Lịch sử & Xếp hạng</button></span></div>
     <div class="g-teams" id="l-teams"></div>
     <div class="g-players" id="l-players"></div>
     <div class="g-card" id="l-host" hidden>
@@ -170,6 +170,14 @@
   </section>
 
   <!-- 6. Lịch sử & xếp hạng -->
+  <!-- 👥 Quản lý người chơi (chỉ TJ) — đổi tên, gộp tài khoản trùng (TJ#2…) về 1, xoá -->
+  <section class="g-screen" id="s-users" hidden>
+    <h1>👥 Quản lý người chơi</h1>
+    <p class="g-sub">Gộp = chuyển hết lịch sử ván + câu trả lời sang tài khoản kia rồi xoá tài khoản này (ván nào cả hai cùng chơi thì giữ kết quả của tài khoản được gộp vào). Không hoàn tác được.</p>
+    <div id="us-body"></div>
+    <div class="g-row"><button class="g-btn g-btn-soft" id="us-back">← Về phòng chờ</button></div>
+  </section>
+
   <section class="g-screen" id="s-hist" hidden>
     <h1 data-t="hist_btn">📜 Lịch sử & Xếp hạng</h1>
     <div class="g-tabs" id="hi-tabs"><button data-tab="me" class="on" data-t="tab_me">Của tôi</button><button data-tab="week" data-t="tab_week">Tuần này</button><button data-tab="all" data-t="tab_all">Mọi thời gian</button></div>
@@ -199,6 +207,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="js/config.js?v=4"></script>
-<script src="js/game.js?v=45"></script>
+<script src="js/game.js?v=46"></script>
 </body>
 </html>
