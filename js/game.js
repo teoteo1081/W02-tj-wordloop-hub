@@ -290,6 +290,9 @@
     $("#h-tree").innerHTML = TREE.hubs.map(function (h) {
       return node("hubs", h, TREE.notebooks.filter(function (n) { return n.hub_id === h.id && !n.parent_notebook_id; }).map(nbTree).join(""));
     }).join("");
+    $$("#h-tree input:checked").forEach(function (c) {   /* bung sẵn các nhánh có mục đang chọn */
+      for (var d = c.closest("details"); d; d = d.parentElement && d.parentElement.closest("details")) d.open = true;
+    });
     paintPicked();
   }
   $("#h-tree").addEventListener("change", function (e) {
@@ -313,8 +316,26 @@
     hostSetScope();
     var box = $(".g-treebox"); if (box) box.open = true;   /* mở cây để chọn lại ngay */
   });
+  /* đường dẫn Hub › Notebook › Section › Page › Batch › Block của mục đã chọn (cần TREE đã tải) */
+  function pathOf(p) {
+    if (!TREE) return p.title;
+    var chain = [], t = p.table, id = p.id, by = function (list, i) { return TREE[list].find(function (r) { return r.id === i; }); };
+    for (var n = 0; n < 12 && t && id; n++) {
+      var r, up;
+      if (t === "blocks") { r = by("blocks", id); up = r && ["batches", r.batch_id]; }
+      else if (t === "batches") { r = by("batches", id); up = r && ["pages", r.page_id]; }
+      else if (t === "pages") { r = by("pages", id); up = r && ["sections", r.section_id]; }
+      else if (t === "sections") { r = by("sections", id); up = r && ["notebooks", r.notebook_id]; }
+      else if (t === "notebooks") { r = by("notebooks", id); up = r && (r.parent_notebook_id ? ["notebooks", r.parent_notebook_id] : ["hubs", r.hub_id]); }
+      else { r = by("hubs", id); up = null; }
+      if (!r) break;
+      chain.unshift(r.name);
+      t = up && up[0]; id = up && up[1];
+    }
+    return chain.length ? chain.join(" › ") : p.title;
+  }
   function paintPicked() {
-    $("#h-picked").innerHTML = picked.length ? picked.map(function (p) { return '<span class="g-chip">' + esc(p.title) + "</span>"; }).join("") : '<span class="g-sub">Chưa chọn chủ đề — mở "Chọn nhánh từ vựng…" bên dưới.</span>';
+    $("#h-picked").innerHTML = picked.length ? picked.map(function (p) { return '<span class="g-chip g-chip-path">' + esc(pathOf(p)) + "</span>"; }).join("") : '<span class="g-sub">Chưa chọn chủ đề — mở "Chọn nhánh từ vựng…" bên dưới.</span>';
   }
 
   /* PHÒNG CỐ ĐỊNH của host: lấy phòng mới nhất của host, chưa có thì tạo — mã/link dùng mãi */

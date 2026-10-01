@@ -211,3 +211,6 @@ body.big .g-top,body.big #g-main{display:none}
 .g-fill{color:var(--green);border-bottom:3px solid var(--green)}
 .g-selv{font-weight:700;padding:0 4px;border-radius:4px} .g-selv.ok{color:var(--green);background:var(--green-sub)} .g-selv.bad{color:var(--red);background:var(--red-sub);text-decoration:line-through}
 .g-rvmine{margin-top:10px;text-align:center;font-weight:700} .g-rvmine.ok{color:var(--green)} .g-rvmine.bad{color:var(--red)}
+
+.g-h2row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:18px}.g-h2row h2{margin:0}.g-btn-sm{padding:6px 10px;font-size:13px;white-space:nowrap}
+.g-chip-path{border-radius:10px;line-height:1.35;white-space:normal}
