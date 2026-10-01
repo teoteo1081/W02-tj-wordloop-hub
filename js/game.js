@@ -2047,7 +2047,7 @@
           "<td>" + (u.profile_id ? esc(pname[u.profile_id] || u.profile_id.slice(0, 8)) : '<span class="g-sub">—</span>') + "</td>" +
           '<td class="num">' + (games[u.id] || 0) + "</td>" +
           '<td class="g-sub">' + esc(new Date(u.created_at).toLocaleDateString("vi-VN")) + "</td>" +
-          '<td class="acts"><button class="g-btn g-btn-soft g-btn-xs" data-uact="ren">✏️ Đổi tên</button><button class="g-btn g-btn-soft g-btn-xs" data-uact="merge">🔀 Gộp vào…</button>' +
+          '<td class="acts"><button class="g-btn g-btn-soft g-btn-xs" data-uact="link" title="Link riêng: mở là vào game đúng tài khoản này, không cần gõ tên">🔗 Copy link</button><button class="g-btn g-btn-soft g-btn-xs" data-uact="ren">✏️ Đổi tên</button><button class="g-btn g-btn-soft g-btn-xs" data-uact="merge">🔀 Gộp vào…</button>' +
           (u.id === (G.me && G.me.id) ? "" : '<button class="g-btn g-btn-soft g-btn-xs" data-uact="del">🗑</button>') + "</td></tr>";
       }).join("") + "</tbody></table>";
   }
@@ -2069,6 +2069,13 @@
     var b = e.target.closest("[data-uact]"); if (!b) return;
     var id = b.closest("tr").dataset.uid, list = G.usersList || [], u = list.find(function (x) { return x.id === id; }); if (!u) return;
     var nm = u.name + (u.name_no > 1 ? " #" + u.name_no : "");
+    if (b.dataset.uact === "link") {
+      var link = location.origin + location.pathname + "?p=" + id;   /* pathname = …/game.html (kể cả khi chạy trong thẻ 🎮 của WordLoop) */
+      var done = function () { var t = b.textContent; b.textContent = "✓ Đã copy"; setTimeout(function () { b.textContent = t; }, 1500); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(done, function () { prompt("Copy link của " + nm + ":", link); });
+      else prompt("Copy link của " + nm + ":", link);
+      return;
+    }
     try {
       if (b.dataset.uact === "ren") {
         var v = prompt("Tên mới cho " + nm + ":", u.name); if (!v || !v.trim() || v.trim() === u.name) return;
@@ -2173,7 +2180,7 @@
     }
     /* Máy đang giữ 1 người chơi KHÔNG gắn hồ sơ này (vd xoá cache -> lỡ tạo "TJ#3" lúc chưa nhận ra TJ, rồi mới mở link ?u=)
        -> đổi về người chơi gắn hồ sơ (TJ 2026-10-01: "đang ở TJ mà bấm chơi game lại ra TJ#3"). */
-    if (G.me) {
+    if (G.me && !G.fromLink) {   /* vừa mở link riêng ?p= -> giữ đúng người trong link */
       var cur = await sb.from("game_players").select("id,profile_id").eq("id", G.me.id).maybeSingle();
       if (!cur.data || cur.data.profile_id !== G.profile.id) {
         var lk = await sb.from("game_players").select("id,name,name_no,avatar").eq("profile_id", G.profile.id).order("created_at").limit(1);
@@ -2212,7 +2219,20 @@
     $("#g-mylang").hidden = G.view === "screen";
     applyUI();
     G.me = readLS(LS_ME);
+    /* 🔗 link riêng của 1 người chơi (nút "Copy link" trong 👥 Quản lý người chơi): game.html?p=<id> -> máy này thành
+       đúng người đó, không phải gõ tên; link ưu tiên hơn người chơi đang nhớ trên máy. Gỡ ?p khỏi thanh địa chỉ. */
+    var pid = param("p");
+    if (pid) {
+      try {
+        var pr = await sb.from("game_players").select("id,name,name_no,avatar,profile_id").eq("id", pid).maybeSingle();
+        if (pr.data) { G.me = { id: pr.data.id, name: pr.data.name, name_no: pr.data.name_no, avatar: pr.data.avatar }; writeLS(LS_ME, G.me); G.fromLink = true; G.linkProfile = pr.data.profile_id; }
+      } catch (e) {}
+      var uq = new URLSearchParams(location.search); uq.delete("p");
+      history.replaceState(null, "", location.pathname + (uq.toString() ? "?" + uq : "") + location.hash);
+    }
     await loadProfile().catch(function () {});
+    /* máy đang đăng nhập hồ sơ KHÁC (vd máy TJ thử link của Son) -> lượt này là người trong link, không nhận host/tiến trình TJ */
+    if (G.fromLink && G.profile && G.linkProfile !== G.profile.id) G.profile = null;
     if (!G.langSet && isTJ()) { G.myLang = "vi"; $("#g-mylang").value = "vi"; applyUI(); }   /* máy TJ mặc định tiếng Việt */
     paintMe();
     route();
