@@ -8,7 +8,7 @@
 <!-- Google tag (gtag.js) — cùng property GA4 với WordLoop -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM');</script>
-<link rel="stylesheet" href="css/game.css?v=20">
+<link rel="stylesheet" href="css/game.css?v=21">
 </head>
 <body>
 <!-- 🎮 Phòng game chơi chung — xem README.md "Việc còn dang dở" > PHÒNG GAME, bảng: tools/game_schema.sql.
@@ -34,6 +34,7 @@
   <div class="g-side-tools">
     <button class="g-mini" id="h-all" title="Chọn tất cả">☑</button><button class="g-mini" id="h-none" title="Bỏ tất cả">✖</button><button class="g-mini" id="h-expand" title="Mở rộng hết">⊞</button><button class="g-mini" id="h-collapse" title="Thu gọn hết">⊟</button><button class="g-mini" id="h-reload" title="Tải lại cây từ WordLoop">🔄</button>
   </div>
+  <div class="g-due" id="h-due" hidden></div>
   <div class="g-tree" id="h-tree"><p class="g-sub">Đang tải cây thư mục…</p></div>
   <div class="g-resizer" id="h-resizer" title="Kéo để đổi độ rộng · bấm đúp = mặc định"></div>
 </aside>
@@ -102,6 +103,8 @@
           <select id="l-mode"><option value="kahoot">Cùng 1 câu (kiểu Kahoot)</option><option value="free">Tự do — mỗi người tự làm</option></select></label>
         <label>Dạng câu hỏi
           <select id="l-qtype"><option value="meaning">🔤 Nghĩa → chọn từ tiếng Anh</option><option value="en2m">🔤 Từ tiếng Anh → chọn nghĩa</option><option value="gap">📝 Điền chỗ trống (1 câu)</option><option value="recall">⌨️ Gõ từ (Active Recall)</option><option value="mix">🔀 Trộn 4 dạng trên</option><option value="sheet">📄 Phiếu đầy đủ theo Block</option><option value="write">✍️ Đặt câu (AI chấm)</option><option value="dict">🎧 Dictation (cần tai nghe)</option></select></label>
+        <label id="l-gapsrc-wrap">Nguồn câu điền chỗ trống
+          <select id="l-gapsrc"><option value="lib">📚 Thư viện câu (ngắn, AI đã kiểm)</option><option value="read">📖 Câu trong bài đọc (mọi bài)</option><option value="both">🔀 Cả hai</option></select></label>
         <label>Cách tính điểm
           <select id="l-scoring"><option value="q">Theo câu — đúng +100</option><option value="speed">Theo tốc độ — đúng 100 → 50 (chậm bị trừ)</option></select></label>
         <label>Tiếng chung — 📺 màn hình chung, 🔒 ép cả phòng, người chưa tự chọn ngôn ngữ <select id="l-lang"><option value="vi">🇻🇳 Tiếng Việt</option><option value="en">🇺🇸 English (định nghĩa)</option><option value="es">🇪🇸 Español</option><option value="zh">🇨🇳 中文</option></select></label>
@@ -193,6 +196,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="js/config.js?v=4"></script>
-<script src="js/game.js?v=40"></script>
+<script src="js/game.js?v=41"></script>
 </body>
 </html>

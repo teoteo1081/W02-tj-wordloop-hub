@@ -238,6 +238,17 @@ body.side-pinned #g-main{margin-left:max(calc(var(--sidew,280px) + 16px),calc(va
 .g-resizer:hover,body.g-resizing .g-resizer{background:var(--accent)}
 body.g-resizing{cursor:col-resize;user-select:none}
 .g-dotsep{border:none;border-top:1px solid var(--line);margin:4px 2px}
+/* v41: ⏳ Block đến hạn ôn của TJ — đầu cột chủ đề */
+.g-due{padding:6px 6px 8px;border-bottom:1px solid var(--line);font-size:13px;max-height:40%;overflow:auto;flex:none}
+.g-due summary{list-style:none;cursor:pointer;display:flex;align-items:center}
+.g-due summary::-webkit-details-marker{display:none}
+.g-due summary::before{content:"▸";width:14px;flex:none;color:var(--text-2);font-size:11px;text-align:center}
+.g-due details[open] > summary::before{content:"▾"}
+.g-duehead{flex:1;color:var(--amber);font-size:12px}
+.g-due .g-leaf{margin-left:0} .g-due .g-leaf .g-nrow{padding-left:14px}
+.g-duetag{flex:none;font-size:11px;color:var(--text-2);margin-left:6px;white-space:nowrap}
+.g-duenone{padding:2px 0 2px 16px}
+.g-btn-xs{padding:2px 8px;font-size:11px;border-radius:6px}
 .g-dotmenu [hidden]{display:none}
 @media (max-width:900px){ #h-pin,#h-shrink,.g-sidetab,.g-resizer{display:none} }   /* điện thoại: mở cây bằng nút "📚 Chọn chủ đề…" */
 .g-side .g-tree{flex:1;max-height:none;overflow:auto;background:transparent;border:none;border-radius:0;padding:6px 6px 24px;font-size:13px}

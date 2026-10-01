@@ -268,6 +268,7 @@
       TREE = { hubs: q[0], notebooks: q[1], sections: q[2], pages: q[3], batches: q[4], blocks: q[5] };
     } catch (err) { $("#h-tree").innerHTML = '<p class="g-err">Không tải được cây: ' + esc(err.message || err) + "</p>"; return; }
     if (!fresh) paintTree();
+    loadDue();
     return true;
   }
   /* 🔄 Tải lại cây (TJ 2026-10-01): đổi cấu trúc/thêm từ bên WordLoop -> game thấy ngay không cần F5.
@@ -447,7 +448,64 @@
     }
     return chain.length ? chain.join(" › ") : p.title;
   }
+  /* ---------- ⏳ Block ĐẾN HẠN ÔN của TJ (TJ 2026-10-01: "game phục vụ việc học của TJ") ----------
+     Cùng luật với SRS.state (js/srs.js): đã đạt bài thi (passed), chưa xong 6 lần ôn, next_review_at <= bây giờ.
+     "Sắp đến hạn" = trong 7 ngày tới. Chỉ ĐỌC block_progress, không ghi gì. */
+  var DUE = null, DUE_STEPS = 6, DAY_MS = 864e5;
+  async function loadDue() {
+    if (!G.isHost || !isTJ()) return;
+    var r = await sb.from("block_progress").select("block_id,cycle,next_review_at").eq("user_id", HOST_PROFILE_ID).eq("passed", true).limit(5000);
+    if (r.error) { console.warn("block_progress", r.error.message); return; }
+    var now = Date.now(), ids = {};
+    if (TREE) TREE.blocks.forEach(function (b) { ids[b.id] = 1; });
+    var rows = (r.data || []).filter(function (x) { return (x.cycle | 0) < DUE_STEPS && (!TREE || ids[x.block_id]); });
+    DUE = {
+      now: rows.filter(function (x) { return !x.next_review_at || x.next_review_at <= now; }).sort(function (a, b) { return (a.next_review_at || 0) - (b.next_review_at || 0); }),
+      soon: rows.filter(function (x) { return x.next_review_at > now && x.next_review_at <= now + 7 * DAY_MS; }).sort(function (a, b) { return a.next_review_at - b.next_review_at; })
+    };
+    paintDue();
+  }
+  function dueRow(x, isNow) {
+    var b = TREE && TREE.blocks.find(function (r) { return r.id === x.block_id; }); if (!b) return "";
+    var on = picked.some(function (p) { return p.table === "blocks" && p.id === b.id; });
+    var path = pathOf({ table: "blocks", id: b.id, title: b.name }), parts = path.split(" › ");
+    var d = x.next_review_at ? Math.round((x.next_review_at - Date.now()) / DAY_MS) : 0;
+    var when = isNow ? (d < 0 ? "trễ " + (-d) + " ngày" : "hôm nay") : (d <= 0 ? "< 1 ngày" : "còn " + d + " ngày");
+    return '<div class="g-leaf"><span class="g-nrow" title="' + esc(path) + '"><label class="g-pick"><input type="checkbox" data-due data-id="' + esc(b.id) + '" data-title="' + esc(b.name) + '"' + (on ? " checked" : "") + "> " +
+      "<b>" + esc(b.name) + "</b> · " + esc(parts.slice(-5, -4).concat(parts.slice(-3, -2)).join(" › ")) + '</label><span class="g-duetag">Lần ' + ((x.cycle | 0) + 1) + " · " + when + "</span></span></div>";
+  }
+  function paintDue() {
+    var box = $("#h-due"); if (!box) return;
+    if (!DUE || !TREE) { box.hidden = true; return; }
+    box.hidden = false;
+    var wasOpen = {}; $$("#h-due details").forEach(function (d) { wasOpen[d.dataset.g] = d.open; });
+    function grp(key, title, list, isNow) {
+      var open = key in wasOpen ? wasOpen[key] : isNow;
+      return '<details data-g="' + key + '"' + (open ? " open" : "") + '><summary><span class="g-nrow"><b class="g-duehead">' + title + " (" + list.length + ")</b>" +
+        (list.length ? '<button class="g-btn g-btn-soft g-btn-xs" data-dueall="' + key + '">Chọn hết</button>' : "") + "</span></summary>" +
+        (list.length ? list.map(function (x) { return dueRow(x, isNow); }).join("") : '<div class="g-sub g-duenone">' + (isNow ? "Không có Block nào đến hạn 🎉" : "Không có") + "</div>") + "</details>";
+    }
+    box.innerHTML = grp("now", "⏳ Đến hạn ôn", DUE.now, true) + grp("soon", "🗓 Sắp đến hạn (7 ngày)", DUE.soon, false);
+  }
+  $("#h-due").addEventListener("change", function (e) {
+    var c = e.target.closest("[data-due]"); if (!c) return;
+    picked = picked.filter(function (p) { return !(p.table === "blocks" && p.id === c.dataset.id); });
+    if (c.checked) picked.push({ table: "blocks", id: c.dataset.id, title: c.dataset.title });
+    paintTree(); hostSetScope();
+  });
+  $("#h-due").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-dueall]");
+    if (b) {
+      e.preventDefault(); e.stopPropagation();
+      var list = DUE[b.dataset.dueall] || [];
+      list.forEach(function (x) { if (!picked.some(function (p) { return p.table === "blocks" && p.id === x.block_id; })) { var r = TREE.blocks.find(function (k) { return k.id === x.block_id; }); if (r) picked.push({ table: "blocks", id: r.id, title: r.name }); } });
+      paintTree(); hostSetScope();
+      return;
+    }
+    if (e.target.closest(".g-pick")) e.stopPropagation();
+  });
   function paintPicked() {
+    paintDue();
     $("#h-picked").innerHTML = picked.length ? picked.map(function (p) { return '<span class="g-chip g-chip-path">' + esc(pathOf(p)) + "</span>"; }).join("") : '<span class="g-sub">Chưa chọn chủ đề — tích chọn ở cột 📚 Chủ đề bên trái.</span>';
   }
 
@@ -482,7 +540,7 @@
   }
   function paintPoolInfo() {
     $("#l-pool").textContent = G.st && G.st.scope && G.st.scope.length
-      ? G.pool.length + " từ khác nhau · có nghĩa: " + poolCounts() + " · 📝 " + G.gaps.length + " câu điền chỗ trống · 📄 " + (G.sheets || []).length + " phiếu Block · 🎧 " + (G.dicts || []).length + " câu dictation"
+      ? G.pool.length + " từ khác nhau · có nghĩa: " + poolCounts() + " · 📝 " + G.gaps.length + " câu điền chỗ trống (📚 thư viện " + (G.gapLib || []).length + " · 📖 bài đọc " + (G.gapsSrc || []).length + ") · 📄 " + (G.sheets || []).length + " phiếu Block · 🎧 " + (G.dicts || []).length + " câu dictation"
       : "Chưa chọn chủ đề.";
   }
   /* đủ dữ liệu để chơi dạng câu này chưa? (trả về lời nhắc cho host, "" = ổn) */
@@ -542,9 +600,9 @@
     var pages = by("pages").concat(secs.length ? ids(await inIds("pages", "id", "section_id", secs)) : []);
     var bats = by("batches").concat(pages.length ? ids(await inIds("batches", "id", "page_id", pages)) : []);
     var blkRows = [];
-    if (bats.length) blkRows = await inIds("blocks", "id,context_passage", "batch_id", bats);
+    if (bats.length) blkRows = await inIds("blocks", "id,context_passage,context_passage_candidates", "batch_id", bats);
     var extra = by("blocks").filter(function (id) { return !blkRows.some(function (b) { return b.id === id; }); });
-    if (extra.length) blkRows = blkRows.concat(await inIds("blocks", "id,context_passage", "id", extra));
+    if (extra.length) blkRows = blkRows.concat(await inIds("blocks", "id,context_passage,context_passage_candidates", "id", extra));
     var blks = ids(blkRows);
     var words = blks.length ? await inIds("words", "id,block_id,term,pos,meaning_vi,meaning_zh,meaning_es,def_en", "block_id", blks) : [];
     var seen = {}, pool = [], byTerm = {};
@@ -557,14 +615,18 @@
     });
     /* câu có chỗ trống: tách câu trong bài đọc giống Context.gapSentences (js/context.js) */
     var gaps = [], gseen = {};
+    /* TẤT CẢ bài đọc của Block: bài chính + các bài phụ (context_passage_candidates — bài Claude/OpenAI/Gemini/dán,
+       TJ 2026-10-01 "tận dụng hết các câu"); trùng câu thì bỏ */
     blkRows.forEach(function (b) {
-      var marked = String(b.context_passage || ""), cut = marked.indexOf(META_SEP);
-      if (cut >= 0) marked = marked.slice(0, cut);
-      gapSentences(marked).forEach(function (g) {
-        var w = byTerm[norm(g.term)], key = norm(g.text);
-        if (!w || gseen[key]) return;
-        gseen[key] = 1;
-        gaps.push({ wid: w.wid, term: w.term, block: b.id, text: g.text });
+      [b.context_passage].concat(b.context_passage_candidates || []).forEach(function (raw) {
+        var marked = String(raw || ""), cut = marked.indexOf(META_SEP);
+        if (cut >= 0) marked = marked.slice(0, cut);
+        gapSentences(marked).forEach(function (g) {
+          var w = byTerm[norm(g.term)], key = norm(g.text);
+          if (!w || gseen[key]) return;
+          gseen[key] = 1;
+          gaps.push({ wid: w.wid, term: w.term, block: b.id, text: g.text });
+        });
       });
     });
     /* 📄 phiếu theo Block: cả bài đọc, mỗi từ của kho (lần xuất hiện đầu) thành 1 chỗ trống, tối đa 12 */
@@ -584,7 +646,8 @@
     /* 🎧 câu dictation = câu chỗ trống với từ đã điền lại, 5–24 từ */
     var dicts = gaps.map(function (g) { return { wid: g.wid, term: g.term, sent: g.text.replace("{{GAP}}", g.term) }; })
       .filter(function (d) { var n = d.sent.split(/\s+/).length; return n >= 5 && n <= 24; });
-    G.pool = pool; G.gaps = gaps; G.gapsSrc = gaps; G.sheets = sheets; G.dicts = dicts;
+    G.pool = pool; G.gaps = gaps; G.gapsSrc = gaps; G.gapLib = []; G.sheets = sheets; G.dicts = dicts;
+    applyGap();
     if (G.gapsIn && G.gapsIn.key === G.poolKey) G.gaps = G.gapsIn.gaps;   /* người chơi: dùng câu ngắn host đã gửi */
     return pool;
   }
@@ -650,7 +713,7 @@
     G.gapAiP = (async function () {
       var cache = readLS(LS_GAPAI) || {};
       /* câu soạn SẴN trong Supabase (bảng game_gap_sentences, tools/gen_gap_sentences.py): dùng trước, nhanh, mọi máy host như nhau */
-      var dbN = 0, dbGaps = [], dbSeen = {}, byBase = {};
+      var dbN = 0, dbGaps = [], dbSeen = {}, byBase = {}, dbHas = {};
       G.pool.forEach(function (w) { byBase[norm(baseTerm(w.term))] = w; });
       var bases = Object.keys(byBase);
       for (var j = 0; j < bases.length; j += 60) {
@@ -660,6 +723,7 @@
         if (dr.error) { console.warn("game_gap_sentences", dr.error.message); break; }
         (dr.data || []).forEach(function (r) {
           var w = byBase[norm(baseTerm(r.term))], t = w && toGap(r.sentence, w.term), k = t && norm(t);
+          if (w) dbHas[w.wid] = 1;
           if (t && !dbSeen[k]) { dbSeen[k] = 1; dbGaps.push({ wid: w.wid, term: w.term, block: w.block, text: t, ai: 1 }); }
         });
       }
@@ -677,20 +741,42 @@
           var chk = await checkGapAI(part, cand).catch(function () { return null; });   /* kiểm lỗi -> giữ câu (vẫn hơn câu 500 từ) */
           part.forEach(function (w) { if (cand[w.wid] && (!chk || chk[w.wid] === norm(baseTerm(w.term)))) cache[w.wid] = cand[w.wid]; });
           writeLS(LS_GAPAI, cache);
+          saveToLib(part.filter(function (w) { return cand[w.wid] && cache[w.wid] === cand[w.wid]; }).map(function (w) { return { w: w, sent: out[w.wid], checked: !!chk }; }));
         } catch (e) { console.warn("câu điền chỗ trống AI lỗi", e); break; }
         if (G.poolKey !== key) return;
       }
       if (G.poolKey !== key) return;
-      var ai = dbGaps.slice();
-      G.pool.forEach(function (w) { var t = cache[w.wid]; if (t && !dbSeen[norm(t)]) { dbSeen[norm(t)] = 1; ai.push({ wid: w.wid, term: w.term, block: w.block, text: t, ai: 1 }); } });
-      /* CHỈ câu AI (TJ: "chọn các câu bạn soạn lại ngắn ngắn"); AI lỗi (< 4 câu) mới dùng câu bài đọc ≤ 20 từ */
-      if (ai.length >= 4) G.gaps = ai;
-      else { var short = (G.gapsSrc || []).filter(function (g) { return g.text.split(/\s+/).length <= 20; }); if (short.length >= 4) G.gaps = short; }
+      var ai = dbGaps.slice(), old = [];
+      G.pool.forEach(function (w) {
+        var t = cache[w.wid]; if (!t || dbSeen[norm(t)]) return;
+        dbSeen[norm(t)] = 1; ai.push({ wid: w.wid, term: w.term, block: w.block, text: t, ai: 1 });
+        if (!dbHas[w.wid]) old.push({ w: w, sent: t.replace("{{GAP}}", w.term), checked: true });   /* câu AI cũ chỉ nằm trên máy host -> đẩy lên thư viện */
+      });
+      saveToLib(old);
+      G.gapLib = ai;
+      applyGap();
       if (G.st && G.st.phase === "lobby") paintPoolInfo();
     })();
     return G.gapAiP;
   }
   function wantsGap(qt) { return qt === "gap" || qt === "mix"; }
+  /* Nguồn câu điền chỗ trống (TJ 2026-10-01): lib = thư viện câu ngắn (game_gap_sentences + AI soạn tại chỗ),
+     read = câu trong MỌI bài đọc, both = trộn. Thư viện thiếu (< 4 câu) -> tạm dùng câu bài đọc <= 20 từ. */
+  function applyGap() {
+    if (!G.isHost) return;   /* người chơi dùng câu host gửi (broadcast "gaps") */
+    var src = (G.st && G.st.gapsrc) || "lib", lib = G.gapLib || [], rd = G.gapsSrc || [];
+    if (src === "read") G.gaps = rd;
+    else if (src === "both") { var seen = {}; G.gaps = shuffle(lib.concat(rd)).filter(function (g) { var k = norm(g.text); return seen[k] ? false : (seen[k] = 1); }); }
+    else G.gaps = lib.length >= 4 ? lib : rd.filter(function (g) { return g.text.split(/\s+/).length <= 20; });
+  }
+  /* câu AI soạn tại chỗ -> GHI LẠI vào thư viện chung (game_gap_sentences, 1 câu/word_id; đã có thì giữ câu cũ) */
+  function saveToLib(items) {
+    var rows = (items || []).filter(function (x) { return x.sent && x.w && x.w.wid; }).map(function (x) {
+      return { word_id: x.w.wid, block_id: x.w.block, term: baseTerm(x.w.term), sentence: x.sent, checked: !!x.checked, model: "gpt-4o-mini (game host)" };
+    });
+    if (!rows.length) return;
+    sb.from("game_gap_sentences").upsert(rows, { onConflict: "word_id", ignoreDuplicates: true }).then(function (r) { if (r.error) console.warn("lưu thư viện câu", r.error.message); });
+  }
   function sendGaps() { if (G.isHost && G.ch) G.ch.send({ type: "broadcast", event: "gaps", payload: { key: G.poolKey, gaps: G.gaps.slice(0, GAP_SEND_MAX) } }); }
   function gapSentences(text) {
     var out = [], seen = {}, re = /[^.!?\n]+[.!?]+/g, m, lastEnd = 0;
@@ -876,7 +962,7 @@
       if (s !== "SUBSCRIBED" || ch !== G.ch) return;
       if (G.view !== "screen") await track();
       if (G.isHost) {
-        if (!G.st) G.st = { phase: "lobby", scoring: G.room.scoring || "q", scope: G.room.scope || [], title: G.room.title || "", mode: G.room.mode, qtype: G.room.qtype || "meaning", lang: G.room.meaning_lang || "vi", force: false, minutes: +G.room.minutes, qs: G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
+        if (!G.st) G.st = { phase: "lobby", gapsrc: "lib", scoring: G.room.scoring || "q", scope: G.room.scope || [], title: G.room.title || "", mode: G.room.mode, qtype: G.room.qtype || "meaning", lang: G.room.meaning_lang || "vi", force: false, minutes: +G.room.minutes, qs: G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
         push();
         if (G.st.phase === "play") onState(pub());
         else initHostLobby();
@@ -947,7 +1033,7 @@
       return;
     }
     var pv = G.st || {};   /* trạng thái nhận từ host cũ -> lấy lại CÀI ĐẶT, còn ván đang dở thì bỏ (về phòng chờ) */
-    G.st = { phase: "lobby", scoring: pv.scoring || G.room.scoring || "q", scope: pv.scope || G.room.scope || [], title: pv.title || G.room.title || "", mode: pv.mode || G.room.mode, qtype: pv.qtype || G.room.qtype || "meaning", lang: pv.lang || G.room.meaning_lang || "vi", force: !!pv.force, minutes: pv.minutes || +G.room.minutes, qs: pv.qs || G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
+    G.st = { phase: "lobby", gapsrc: pv.gapsrc || "lib", scoring: pv.scoring || G.room.scoring || "q", scope: pv.scope || G.room.scope || [], title: pv.title || G.room.title || "", mode: pv.mode || G.room.mode, qtype: pv.qtype || G.room.qtype || "meaning", lang: pv.lang || G.room.meaning_lang || "vi", force: !!pv.force, minutes: pv.minutes || +G.room.minutes, qs: pv.qs || G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
     G.endAt = 0; G.qUntil = 0; clearInterval(G.hostTimer);
     G.online.forEach(function (p) { G.st.roster[p.id] = { name: p.name, no: p.no, avatar: p.avatar }; });
     push(); initHostLobby();
@@ -988,6 +1074,7 @@
       $("#l-teambtns").hidden = !(+$("#l-teamn").value);
       paintPoolInfo(); paintPicked();
       $("#l-scoring").value = st.scoring || "q";
+      $("#l-gapsrc").value = st.gapsrc || "lib"; $("#l-gapsrc-wrap").hidden = !wantsGap($("#l-qtype").value);
     }
     paintLobbyPlayers();
   }
@@ -1033,10 +1120,11 @@
     setTimeout(function () { b.textContent = "🔗 Copy link mời"; }, 2000);
   });
   $("#l-screen").addEventListener("click", function () { window.open(roomLink(G.room.code, true), "_blank"); });
-  ["#l-mode", "#l-qtype", "#l-min", "#l-qs", "#l-lang", "#l-teamn", "#l-hostplay", "#l-force", "#l-scoring"].forEach(function (s) {
+  ["#l-mode", "#l-qtype", "#l-min", "#l-qs", "#l-lang", "#l-teamn", "#l-hostplay", "#l-force", "#l-scoring", "#l-gapsrc"].forEach(function (s) {
     $(s).addEventListener("change", function () {
       if (!G.isHost || !G.st) return;   /* chưa kết nối xong (G.st chưa có) -> bỏ qua, initHostLobby sẽ vẽ lại */
       var st = G.st;
+      st.gapsrc = $("#l-gapsrc").value; $("#l-gapsrc-wrap").hidden = !wantsGap($("#l-qtype").value);
       st.mode = $("#l-mode").value; st.qtype = $("#l-qtype").value; st.scoring = $("#l-scoring").value; st.lang = $("#l-lang").value; st.force = $("#l-force").checked;
       st.minutes = Math.max(1, +$("#l-min").value || 5); st.qs = Math.max(5, +$("#l-qs").value || 15);
       st.timed = true;
@@ -1047,6 +1135,7 @@
       $("#l-force-wrap").hidden = !(st.qtype === "meaning" || st.qtype === "en2m" || st.qtype === "mix");
       if (s === "#l-hostplay") track();
       if (s === "#l-qtype" && wantsGap(st.qtype)) aiGaps();
+      if (s === "#l-gapsrc") { applyGap(); paintPoolInfo(); }
       sb.from("game_rooms").update({ scoring: st.scoring, mode: st.mode, qtype: st.qtype, meaning_lang: st.lang, minutes: st.minutes, q_seconds: st.qs, team_mode: !!tn, teams: tn }).eq("id", G.room.id).then(function () {});
       push(); paintLobbyPlayers();
     });
