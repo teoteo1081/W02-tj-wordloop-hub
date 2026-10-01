@@ -44,7 +44,7 @@
   var META_SEP = "\n<<<TJWL_META>>>\n";          /* = Context.META_SEP (js/context.js) */
   var AVATARS = ["🐣","🦊","🐼","🐨","🦁","🐯","🐸","🐙","🦉","🐝","🌟","🚀","📚","🎯","🔥","💎","🍀","⚡","🐧","🦄","🐶","🐱","🐰","🐻","🐵","🦋","🌈","🍉","🍩","🎸"];
   var TEAM_C = [null, { c: "#d9695f", e: "🔴", k: "team_red" }, { c: "#5b9bd9", e: "🔵", k: "team_blue" }, { c: "#4fae82", e: "🟢", k: "team_green" }, { c: "#d9a03c", e: "🟡", k: "team_yellow" }];
-  var FLAG = { vi: "🇻🇳", en: "🇺🇸", es: "🇪🇸", zh: "🇨🇳" };
+  var FLAG = /Windows/.test(navigator.userAgent) ? { vi: "VI", en: "EN", es: "ES", zh: "ZH" } : { vi: "🇻🇳", en: "🇺🇸", es: "🇪🇸", zh: "🇨🇳" };   /* Windows không vẽ cờ -> hiện chữ "US"/"VN" */
   var MASTER_T = cfg.MASTER_THRESHOLD || 0.8, MASTER_N = cfg.MASTER_MIN_ATTEMPTS || 3;
   var DEFAULT_ROOM = "TJ";
   /* CHỈ hồ sơ TJ được làm host + ghi tiến trình học từ game (TJ chốt 2026-09-30). KHÔNG dùng is_admin:
@@ -704,7 +704,7 @@
       revealRich(G.myQ, {}, "#p-msg", "#p-res", "#p-vi");
       logQ(G.myQ, G.myQ.res[G.me.id].text, d.r.g + d.r.u >= 60);
       recordMyProgress(G.myQ.wid, d.r.g + d.r.u >= 60);
-      showNext();
+      showNext(6000);
     });
     clearInterval(G.aliveTimer);
     /* nhịp "còn ở đây" gửi bằng BROADCAST, KHÔNG track() lại presence: Supabase giới hạn số lần track mỗi máy —
@@ -966,7 +966,7 @@
       /* hết giờ câu (+0.8s để máy người chơi kịp tự nộp chữ đang gõ dở) hoặc cả phòng đã trả lời -> lộ đáp án */
       if ((G.qUntil && now >= G.qUntil + 800) || (n && got >= n)) hostReveal();
     }
-    /* đã lộ đáp án: KHÔNG tự sang câu (TJ 2026-10-01: "chưa kịp coi mà qua rồi") — host bấm "Câu tiếp ▶" */
+    else if (now >= G.revealUntil) hostNextQ();   /* đã lộ đáp án đủ lâu -> tự sang câu; xem lại sau ván bằng 📖 */
   }
   async function hostReveal() {
     var q = G.st.q; if (!q || G.st.phase !== "play") return;
@@ -1243,7 +1243,7 @@
       return;
     }
     if (q.type === "dict" || q.type === "write") {
-      $(textEl).textContent = q.type === "dict" ? "🎧" : "✍️ " + q.term + "  —  " + myFlag(q) + " " + myText(q);
+      $(textEl).textContent = q.type === "dict" ? "🎧" : "✍️ " + q.term + "  —  " + myText(q);
       $(optsEl).innerHTML = "";
       if (mine) { $("#p-type").hidden = false; var ti = $("#p-typein"); ti.value = ""; ti.disabled = false; $("#p-typego").disabled = false; ti.placeholder = T(q.type === "dict" ? "dict_ph" : "write_ph"); if (iPlay()) ti.focus(); }
       return;
@@ -1262,7 +1262,7 @@
     /* bọc cả câu trong 1 span: .g-qvi là flex -> trước đây chữ trước/ô trống/chữ sau thành 3 cột rời, lủng khoảng lớn.
        Ô trống dài đúng bằng từ cần điền (q.len ký tự) */
     if (q.type === "gap") $(textEl).innerHTML = '<span class="g-gapline">' + esc(q.sent).replace("{{GAP}}", '<span class="g-blank" style="width:' + (Math.max(3, q.len || 6) * 0.55).toFixed(1) + 'em"></span>') + "</span>";
-    else $(textEl).textContent = myFlag(q) + " " + myText(q) + (q.type === "recall" && q.len ? "  (" + q.len + ")" : "");
+    else $(textEl).textContent = myText(q) + (q.type === "recall" && q.len ? "  (" + q.len + ")" : "");
     if (q.type === "recall") {
       $(optsEl).innerHTML = "";
       if (optsEl === "#p-opts") { $("#p-type").hidden = false; var inp = $("#p-typein"); inp.value = ""; inp.disabled = false; $("#p-typego").disabled = false; if (iPlay()) inp.focus(); }
@@ -1325,7 +1325,8 @@
   });
 
   /* ---------- sang câu bằng tay + tự nộp khi hết giờ ---------- */
-  function showNext() { var b = $("#p-next"); b.hidden = false; try { b.focus(); } catch (e) {} }
+  /* tự sang câu sau ít giây (TJ 2026-10-01: phải tự nhảy, xem lại đáp án SAU KHI kết thúc bằng 📖) */
+  function showNext(ms) { setTimeout(freeNext, ms); }
   $("#p-next").addEventListener("click", function () {
     var s = G.st; if (!s || s.phase !== "play") return;
     this.hidden = true;
@@ -1364,8 +1365,8 @@
   /* kiểu Kahoot: host gửi câu, mọi người trả lời 1 lần, hết giờ mới hiện đáp án + ai chọn gì + ai nhanh nhất */
   function paintKahoot(s) {
     var q = s.q;
-    $("#p-reveal").hidden = !(G.isHost && !q.revealed && !q.grading);
-    $("#p-next").hidden = !(G.isHost && q.revealed);
+    $("#p-reveal").hidden = !(G.isHost && untimed(s) && !q.revealed && !q.grading);   /* chỉ ván ∞ không giờ mới cần bấm hiện đáp án */
+    $("#p-next").hidden = true;   /* tự sang câu, không cần bấm */
     if (q.qn !== G.lastN) {
       G.lastN = q.qn; G.myChoice = null; G.myQStart = Date.now();
       G.qUntilLocal = s.qLeft != null ? Date.now() + s.qLeft : 0; G.qLimit = q.limit || s.qs;
@@ -1518,7 +1519,7 @@
     lockAll(); revealRich(q, {}, "#p-msg", "#p-res", "#p-vi");
     logQ(q, null, k === q.n);
     sendAns({ pid: G.me.id, t: "sheet", k: k, n: q.n, items: items, ms: ms });
-    showNext();
+    showNext(5000);
   }
   function freeAnswer(choice, btn) {
     var q = G.myQ; if (!q) return;
@@ -1530,7 +1531,7 @@
       lockAll(); revealRich(q, {}, "#p-msg", "#p-res", "#p-vi");
       logQ(q, choice, acc.k === acc.n);
       sendAns({ pid: G.me.id, t: "dict", r: acc.r, wid: q.wid, term: q.term, ms: ms0 });
-      showNext();
+      showNext(3500);
       return;
     }
     if (q.type === "write") {
@@ -1547,7 +1548,7 @@
     logQ(q, choice, ok);
     sendAns({ pid: G.me.id, ok: ok, wid: q.wid, term: q.ans, ms: Date.now() - G.myQStart });
     recordMyProgress(q.wid, ok);
-    showNext();
+    showNext(ok ? 500 : 1400);
   }
 
   /* Tiến trình học — CHỈ hồ sơ admin (TJ). "Học chung" vẫn tách được qua game_answers (có room_id). */
@@ -1717,7 +1718,7 @@
     if (G.st && G.st.phase === "play") {
       $("#p-mode").textContent = modeLine(G.st);
       var q = G.st.mode === "kahoot" ? G.st.q : G.myQ;
-      if (q && q.type !== "gap") $("#p-vi").textContent = myFlag(q) + " " + myText(q) + (q.type === "recall" && q.len ? "  (" + q.len + ")" : "");
+      if (q && q.type !== "gap") $("#p-vi").textContent = myText(q) + (q.type === "recall" && q.len ? "  (" + q.len + ")" : "");
       if (q) $("#p-hint").textContent = T(q.type === "gap" ? "q_gap" : q.type === "recall" ? "q_recall" : "q_meaning");
     }
   });
