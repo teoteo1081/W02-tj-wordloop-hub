@@ -359,3 +359,5 @@ body.embed .g-brand{display:none}
 .g-stats + .g-tally{margin-left:0}
 .g-mystats{font-weight:500;color:var(--text-2)}
 @media (max-width:480px){ .g-stats{font-size:11px;margin-right:6px} }
+.g-chipmiss,.g-missed{color:var(--amber)}
+.g-chip2,.g-mystats span[title]{cursor:help}
