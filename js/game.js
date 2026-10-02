@@ -28,7 +28,8 @@
    - 📺 Màn hình chung: ?room=MÃ&view=screen — chỉ xem (không tính là người chơi).
    - Tiến trình học (word_progress) CHỈ ghi cho người chơi đang đăng nhập hồ sơ admin (TJ) —
      attempts/correct/mastered/❌wrong_open, KHÔNG đụng SRS/Done (giống màn Ôn riêng).
-   - IM LẶNG: không có âm thanh nào, đúng/sai báo bằng màu.
+   - MẶC ĐỊNH IM LẶNG (chơi kèm voice HelloTalk), đúng/sai báo bằng màu. Host bật "🔊 Đọc to từ tiếng Anh" làm mặc định của
+     phòng; mỗi người tự bật/tắt bằng nút 🔊 lúc chơi (nhớ theo máy) — xem soundOn()/speakQ() (TJ 2026-10-02).
    --------------------------------------------------------------- */
 (function () {
   "use strict";
@@ -1008,7 +1009,7 @@
       if (s !== "SUBSCRIBED" || ch !== G.ch) return;
       if (G.view !== "screen") await track();
       if (G.isHost) {
-        if (!G.st) G.st = { phase: "lobby", auto: true, levels: [], gapsrc: "lib", scoring: G.room.scoring || "q", scope: G.room.scope || [], title: G.room.title || "", mode: G.room.mode, qtype: G.room.qtype || "meaning", lang: G.room.meaning_lang || "vi", force: false, minutes: +G.room.minutes, qs: G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
+        if (!G.st) G.st = { phase: "lobby", sound: false, auto: true, levels: [], gapsrc: "lib", scoring: G.room.scoring || "q", scope: G.room.scope || [], title: G.room.title || "", mode: G.room.mode, qtype: G.room.qtype || "meaning", lang: G.room.meaning_lang || "vi", force: false, minutes: +G.room.minutes, qs: G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
         push();
         if (G.st.phase === "play") onState(pub());
         else initHostLobby();
@@ -1080,7 +1081,7 @@
       return;
     }
     var pv = G.st || {};   /* trạng thái nhận từ host cũ -> lấy lại CÀI ĐẶT, còn ván đang dở thì bỏ (về phòng chờ) */
-    G.st = { phase: "lobby", auto: pv.auto !== false, levels: pv.levels || [], gapsrc: pv.gapsrc || "lib", scoring: pv.scoring || G.room.scoring || "q", scope: pv.scope || G.room.scope || [], title: pv.title || G.room.title || "", mode: pv.mode || G.room.mode, qtype: pv.qtype || G.room.qtype || "meaning", lang: pv.lang || G.room.meaning_lang || "vi", force: !!pv.force, minutes: pv.minutes || +G.room.minutes, qs: pv.qs || G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
+    G.st = { phase: "lobby", sound: !!pv.sound, auto: pv.auto !== false, levels: pv.levels || [], gapsrc: pv.gapsrc || "lib", scoring: pv.scoring || G.room.scoring || "q", scope: pv.scope || G.room.scope || [], title: pv.title || G.room.title || "", mode: pv.mode || G.room.mode, qtype: pv.qtype || G.room.qtype || "meaning", lang: pv.lang || G.room.meaning_lang || "vi", force: !!pv.force, minutes: pv.minutes || +G.room.minutes, qs: pv.qs || G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
     G.endAt = 0; G.qUntil = 0; clearInterval(G.hostTimer);
     G.online.forEach(function (p) { G.st.roster[p.id] = { name: p.name, no: p.no, avatar: p.avatar }; });
     push(); initHostLobby();
@@ -1130,6 +1131,7 @@
       $("#l-min").value = st.minutes || G.room.minutes; $("#l-qs").value = st.qs || G.room.q_seconds;
       $("#l-lang").value = roomLang(st); $("#l-teamn").value = String(st.teams || 0); $("#l-force").checked = !!st.force;
       $("#l-auto").checked = st.auto !== false; paintAutoTime();
+      $("#l-sound").checked = !!st.sound;
       $("#l-force-wrap").hidden = !($("#l-qtype").value === "meaning" || $("#l-qtype").value === "en2m" || $("#l-qtype").value === "mix");
       $("#l-teambtns").hidden = !(+$("#l-teamn").value);
       paintPoolInfo(); paintPicked();
@@ -1180,13 +1182,13 @@
     setTimeout(function () { b.textContent = "🔗 Copy link mời"; }, 2000);
   });
   $("#l-screen").addEventListener("click", function () { window.open(roomLink(G.room.code, true), "_blank"); });
-  ["#l-mode", "#l-qtype", "#l-min", "#l-qs", "#l-lang", "#l-teamn", "#l-hostplay", "#l-force", "#l-scoring", "#l-gapsrc", "#l-auto"].forEach(function (s) {
+  ["#l-mode", "#l-qtype", "#l-min", "#l-qs", "#l-lang", "#l-teamn", "#l-hostplay", "#l-force", "#l-scoring", "#l-gapsrc", "#l-auto", "#l-sound"].forEach(function (s) {
     $(s).addEventListener("change", function () {
       if (!G.isHost || !G.st) return;   /* chưa kết nối xong (G.st chưa có) -> bỏ qua, initHostLobby sẽ vẽ lại */
       var st = G.st;
       st.gapsrc = $("#l-gapsrc").value; $("#l-gapsrc-wrap").hidden = !wantsGap($("#l-qtype").value);
       st.mode = $("#l-mode").value; st.qtype = $("#l-qtype").value; st.scoring = $("#l-scoring").value; st.lang = $("#l-lang").value; st.force = $("#l-force").checked;
-      st.auto = $("#l-auto").checked;
+      st.auto = $("#l-auto").checked; st.sound = $("#l-sound").checked; paintSoundBtn();
       st.minutes = Math.max(1, +$("#l-min").value || 5); st.qs = Math.max(3, +$("#l-qs").value || 15);
       st.timed = true;
       var tn = +$("#l-teamn").value;
@@ -1592,7 +1594,7 @@
   function paintQuestion(q, hintEl, textEl, optsEl) {
     $(hintEl).textContent = T(QHINT[q.type] || "q_meaning");
     var mine = optsEl === "#p-opts";
-    if (mine) { $("#p-saywrap").hidden = q.type !== "dict"; $("#p-res").innerHTML = ""; }
+    if (mine) { $("#p-saywrap").hidden = !(q.type === "dict" || q.type === "en2m"); $("#p-res").innerHTML = ""; paintSoundBtn(); }
     if (q.type === "sheet") {
       $(textEl).innerHTML = sheetHTML(q, mine);
       $(optsEl).innerHTML = mine ? '<button class="g-btn" id="p-sheetgo" type="button">' + T("submit_sheet") + "</button>" : "";
@@ -1609,7 +1611,7 @@
     if (q.type === "en2m") {   /* từ tiếng Anh to ở trên, 4 nghĩa theo tiếng của người xem (data-opt vẫn là từ để chấm) */
       var ml = effLang(mine ? G.myLang : "room", G.st, "en2m");
       $(textEl).textContent = q.word;
-      if (mine) $("#p-type").hidden = true;
+      if (mine) { $("#p-type").hidden = true; speakQ(q, "q"); }
       $(optsEl).innerHTML = q.opts.map(function (o) {
         var m = (q.optTexts || {})[o] || {}, t = m[ml] || m.en || m.vi || o;
         return '<button class="g-opt" data-opt="' + esc(o) + '"><span class="g-otext">' + esc(t) + '</span><span class="g-pickers"></span></button>';
@@ -1748,6 +1750,7 @@
       return logQ(q, G.myChoice, q.type === "write" ? rr && rr.g + rr.u >= 60 : rr && rr.k === rr.n);
     }
     var ok = G.myChoice != null && (q.type === "recall" ? typedOk(G.myChoice, q.ans) : norm(G.myChoice) === norm(q.ans));
+    speakQ(q, "ans");
     var mine = (s.scores || {})[G.me.id] || {};
     var msg = !iPlay() ? T("answer", { a: q.ans }) : G.myChoice == null ? T(untimed(s) ? "answer" : "timeout", { a: q.ans }) : ok ? T("right") + gainTail(mine.g) : T("wrong", { a: q.ans });
     if (q.type === "recall") msg += "  ·  " + T("n_right", { n: (q.oks || []).length }) + " " + (q.oks || []).map(function (pid) { var p = (s.roster || {})[pid]; return p ? p.avatar && !/^https?:/.test(p.avatar) ? p.avatar : "👤" : ""; }).join("");
@@ -1838,14 +1841,39 @@
       var syn = window.speechSynthesis; if (!syn) return;
       syn.cancel();
       var u = new SpeechSynthesisUtterance(text); u.lang = "en-US"; u.rate = 0.9;
-      var v = syn.getVoices().filter(function (x) { return /^en[-_]US/i.test(x.lang); });
-      if (v.length) u.voice = v.find(function (x) { return /natural|online|google/i.test(x.name); }) || v[0];
+      var all = syn.getVoices(), mine = readLSraw("tjwl_voice_v1");   /* giọng đã chọn bên WordLoop (js/speech.js LS_VOICE) */
+      var v = (mine && all.find(function (x) { return x.name === mine; })) || null;
+      if (!v) { var en = all.filter(function (x) { return /^en[-_]US/i.test(x.lang); }); v = en.find(function (x) { return /natural|online|google/i.test(x.name); }) || en[0]; }
+      if (v) u.voice = v;
       syn.speak(u);
     } catch (e) {}
+  }
+  function readLSraw(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  /* 🔊 đọc to từ tiếng Anh: "1"/"0" = người này tự chọn trên máy; chưa chọn -> theo mặc định của phòng (host đặt) */
+  var LS_SOUND = "tjwl_game_sound_v1";
+  function soundOn() { var o = readLSraw(LS_SOUND); return o === "1" ? true : o === "0" ? false : !!(G.st && G.st.sound); }
+  function paintSoundBtn() { var b = $("#p-sound"); if (!b) return; var on = soundOn(); b.textContent = on ? "🔊" : "🔇"; b.classList.toggle("on", on); b.title = on ? "Đang đọc to từ tiếng Anh — bấm để tắt trên máy này" : "Đang tắt tiếng — bấm để nghe đọc từ tiếng Anh"; }
+  $("#p-sound").addEventListener("click", function () {
+    var on = !soundOn();
+    try { localStorage.setItem(LS_SOUND, on ? "1" : "0"); } catch (e) {}
+    if (!on && window.speechSynthesis) window.speechSynthesis.cancel();
+    paintSoundBtn();
+  });
+  /* đọc từ của câu: "q" = lúc câu hiện (chỉ dạng Từ -> Nghĩa, từ tiếng Anh đang hiện to); "ans" = lúc lộ đáp án (đọc từ đúng) */
+  var spoke = {};
+  function speakQ(q, when) {
+    if (!q || !soundOn()) return;
+    if (q.type === "dict" || q.type === "sheet" || q.type === "write") return;   /* dictation có nút 🔊 riêng; phiếu/đặt câu không đọc */
+    var word = when === "q" ? (q.type === "en2m" ? q.word : null) : (q.ans || q.word);
+    if (!word) return;
+    if (q.qn != null) { var k = when + ":" + q.qn; if (spoke[k]) return; spoke[k] = 1; }   /* Kahoot: mỗi câu có số qn, trạng thái gửi lại nhiều lần */
+    else { var f = "_spoke_" + when; if (q[f]) return; q[f] = 1; }                         /* Tự do: mỗi câu là 1 object riêng */
+    sayIt(baseTerm(word));
   }
   $("#p-say").addEventListener("click", function () {
     var q = G.st && G.st.mode === "kahoot" ? G.st.q : G.myQ;
     if (q && q.say) sayIt(q.say);
+    else if (q && q.type === "en2m" && q.word) sayIt(baseTerm(q.word));   /* nghe lại từ tiếng Anh (luôn được, kể cả khi đang tắt tự đọc) */
   });
   $("#p-type").addEventListener("submit", function (e) {
     e.preventDefault();
@@ -1904,6 +1932,7 @@
     if (!ok && btn) btn.classList.add("bad");
     $("#p-msg").textContent = ok ? T("right") + gainTail(Math.round(POINTS * speedFactor(Date.now() - G.myQStart, FREE_MS.q))) : T("wrong", { a: q.ans });
     logQ(q, choice, ok);
+    speakQ(q, "ans");
     sendAns({ pid: G.me.id, ok: ok, wid: q.wid, term: q.ans, ms: Date.now() - G.myQStart });
     recordMyProgress(q.wid, ok);
     showNext(ok ? 500 : 1400);

@@ -302,3 +302,6 @@ body.embed .g-brand{display:none}
 /* tiêu đề màn + nút quay về canh phải cùng hàng (📜 Lịch sử) */
 .g-h1row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .g-h1row h1{margin:8px 0 4px}
+/* v49: nút 🔊/🔇 cạnh đồng hồ */
+.g-sound{min-width:38px}
+.g-sound.on{border-color:var(--green);color:var(--green)}
