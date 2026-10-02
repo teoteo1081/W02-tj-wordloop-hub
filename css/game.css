@@ -306,6 +306,10 @@ body.embed .g-brand{display:none}
 .g-mute{margin-left:auto;background:var(--card);border:1px solid var(--line);color:var(--text-2);font-size:13px;font-weight:600;padding:5px 12px;border-radius:999px;cursor:pointer;white-space:nowrap}
 .g-mute:hover{color:var(--text)}
 .g-mute.off{background:var(--red-sub);color:var(--red);border-color:var(--red)}
+/* v51: thanh âm lượng cạnh nút tắt tiếng */
+.g-vol{width:84px;accent-color:var(--accent);cursor:pointer;margin:0}
+.g-vol:disabled{opacity:.35;cursor:default}
+@media (max-width:420px){ .g-vol{width:60px} }
 /* loa nhỏ ngay cạnh từ tiếng Anh (bấm = nghe lại) */
 .g-spk{background:none;border:none;cursor:pointer;font-size:.7em;padding:0 0 0 8px;opacity:.8;vertical-align:middle}
 .g-spk:hover{opacity:1}

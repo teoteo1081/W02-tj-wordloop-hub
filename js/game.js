@@ -1840,7 +1840,7 @@
     try {
       var syn = window.speechSynthesis; if (!syn) return;
       syn.cancel();
-      var u = new SpeechSynthesisUtterance(text); u.lang = "en-US"; u.rate = 0.9;
+      var u = new SpeechSynthesisUtterance(text); u.lang = "en-US"; u.rate = 0.9; u.volume = volLevel();
       var all = syn.getVoices(), mine = readLSraw("tjwl_voice_v1");   /* giọng đã chọn bên WordLoop (js/speech.js LS_VOICE) */
       var v = (mine && all.find(function (x) { return x.name === mine; })) || null;
       if (!v) { var en = all.filter(function (x) { return /^en[-_]US/i.test(x.lang); }); v = en.find(function (x) { return /natural|online|google/i.test(x.name); }) || en[0]; }
@@ -1852,8 +1852,18 @@
   /* 🔊 đọc to từ tiếng Anh: "1"/"0" = người này tự chọn trên máy; chưa chọn -> theo mặc định của phòng (host đặt) */
   var LS_SOUND = "tjwl_game_sound_v1";
   function soundOn() { var o = readLSraw(LS_SOUND); return o === "1" ? true : o === "0" ? false : !(G.st && G.st.sound === false); }
+  /* 🔉 âm lượng đọc (0–100, nhớ theo máy; mặc định 100). iPhone/Safari có thể bỏ qua volume của giọng máy -> dùng nút âm lượng của máy */
+  var LS_VOL = "tjwl_game_volume_v1";
+  function volLevel() { var v = parseInt(readLSraw(LS_VOL), 10); return isNaN(v) ? 1 : Math.max(0, Math.min(100, v)) / 100; }
+  $("#p-vol").value = Math.round(volLevel() * 100);
+  $("#p-vol").addEventListener("input", function () { try { localStorage.setItem(LS_VOL, this.value); } catch (e) {} this.title = "Âm lượng: " + this.value + "%"; });
+  $("#p-vol").addEventListener("change", function () {   /* thả tay -> đọc thử để nghe mức mới */
+    var q = G.st && G.st.mode === "kahoot" ? G.st.q : G.myQ, w = q && (q.type === "en2m" ? q.word : q.revealed ? q.ans : null);   /* không đọc lộ đáp án */
+    if (soundOn()) sayIt(baseTerm(w || "volume"));
+  });
   function paintSoundBtn() {
     var b = $("#p-sound"); if (!b) return; var on = soundOn();
+    $("#p-vol").disabled = !on; $("#p-vol").title = "Âm lượng: " + $("#p-vol").value + "%";
     b.textContent = on ? "🔊 Có tiếng" : "🔇 Đã tắt tiếng";
     b.classList.toggle("off", !on);
     b.title = on ? "Bấm để tắt tiếng trên máy này (chơi kèm HelloTalk)" : "Bấm để bật lại: câu mới tự đọc từ tiếng Anh";

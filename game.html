@@ -8,7 +8,7 @@
 <!-- Google tag (gtag.js) — cùng property GA4 với WordLoop -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM');</script>
-<link rel="stylesheet" href="css/game.css?v=28">
+<link rel="stylesheet" href="css/game.css?v=29">
 </head>
 <body>
 <!-- 🎮 Phòng game chơi chung — xem README.md "Việc còn dang dở" > PHÒNG GAME, bảng: tools/game_schema.sql.
@@ -127,7 +127,7 @@
   <!-- 4. Đang chơi: nửa trên bảng xếp hạng, nửa dưới trả lời -->
   <section class="g-screen g-play" id="s-play" hidden>
     <div class="g-alert" id="p-hostlost" hidden data-t="host_lost">⚠ Host mất kết nối — chờ host quay lại…</div>
-    <div class="g-clock"><span id="p-left">5:00</span><span class="g-sub" id="p-mode"></span><button class="g-mute" id="p-sound" type="button"></button><button class="g-btn g-btn-soft g-btn-sm" id="p-stop" hidden>⏹ Kết thúc</button></div>
+    <div class="g-clock"><span id="p-left">5:00</span><span class="g-sub" id="p-mode"></span><button class="g-mute" id="p-sound" type="button"></button><input type="range" class="g-vol" id="p-vol" min="0" max="100" step="5" title="Âm lượng đọc từ (máy này)" aria-label="Âm lượng đọc từ"><button class="g-btn g-btn-soft g-btn-sm" id="p-stop" hidden>⏹ Kết thúc</button></div>
     <div class="g-teambar" id="p-teams"></div>
     <ol class="g-board" id="p-board"></ol>
     <div class="g-q">
@@ -208,6 +208,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="js/config.js?v=4"></script>
-<script src="js/game.js?v=50"></script>
+<script src="js/game.js?v=51"></script>
 </body>
 </html>
