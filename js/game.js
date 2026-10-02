@@ -58,7 +58,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 66;
+  var GAME_VER = 67;
   function checkVersion() {
     if (G.st && G.st.phase === "play") return;
     fetch("game-version.json?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (j) {
@@ -2000,7 +2000,11 @@
       var v = (mine && all.find(function (x) { return x.name === mine; })) || null;
       if (!v) { var en = all.filter(function (x) { return /^en[-_]US/i.test(x.lang); }); v = en.find(function (x) { return /natural|online|google/i.test(x.name); }) || en[0]; }
       if (v) u.voice = v;
-      G.saying = true; u.onend = u.onerror = function () { G.saying = false; };
+      G.saying = true; u.onend = function () { G.saying = false; };
+      u.onerror = function (e) {   /* Chrome chặn giọng đọc khi trang CHƯA được chạm (người chơi vào bằng link) -> nhắc chạm + đọc bù */
+        G.saying = false;
+        if (e && e.error === "not-allowed") { G.blockedWord = text; tapHint(true); }
+      };
       setTimeout(function () { try { syn.speak(u); } catch (er) {} }, busy ? 80 : 0);
     } catch (e) {}
   }
@@ -2010,7 +2014,19 @@
       document.removeEventListener(ev, unlock, true);
       primeTTS();
     }, true);
+    /* lần chạm sau khi bị chặn: tắt dòng nhắc + đọc BÙ từ vừa bị chặn (không mất câu đầu) */
+    document.addEventListener(ev, function () {
+      tapHint(false);
+      if (G.blockedWord && soundOn()) { var w = G.blockedWord; G.blockedWord = null; setTimeout(function () { sayIt(w); }, 120); }
+    }, true);
   });
+  function tapHint(on) { $$(".js-taphint").forEach(function (x) { x.hidden = !on; }); }
+  /* nhắc sẵn ở phòng chờ: đang bật tiếng mà trang chưa từng được chạm (Chrome sẽ chặn câu đầu) */
+  function tapHintIfNeeded() {
+    var ua = navigator.userActivation;
+    if (ua && !ua.hasBeenActive && soundOn()) tapHint(true);
+  }
+  setTimeout(tapHintIfNeeded, 1500);
   /* mồi bộ đọc rồi XOÁ hàng đợi ngay: câu mồi chỉ có dấu cách từng làm Chrome KẸT hàng đợi -> từ cần đọc bị dồn tới lần sau
      (TJ 2026-10-02: "lúc lộ đáp án không đọc, sau đó mới đọc") */
   function primeTTS() {

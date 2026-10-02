@@ -373,3 +373,5 @@ body.embed .g-brand{display:none}
 .g-stat.ok b{color:var(--green)} .g-stat.bad b{color:var(--red)}
 .g-stat[title]{cursor:help}
 @media (max-width:480px){ .g-statbar{grid-template-columns:repeat(3,1fr)} }
+/* v67: nhắc chạm để bật tiếng (Chrome chặn giọng đọc khi trang chưa được chạm) */
+.g-taphint{background:var(--raise);border:1px dashed var(--amber);color:var(--amber);border-radius:10px;padding:7px 12px;font-size:13px;text-align:center;margin:6px 0;cursor:pointer}
