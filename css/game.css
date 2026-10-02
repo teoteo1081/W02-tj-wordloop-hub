@@ -410,3 +410,10 @@ body.embed .g-brand{display:none}
 /* v74: ⭐ để dành học lại + 📖 xem lại ván cũ trong lịch sử */
 .g-star.on{border-color:var(--amber);color:var(--amber);background:rgba(217,160,60,.12)}
 .g-rvbtn{vertical-align:middle;margin-right:4px}
+
+/* v75: Kahoot lộ đáp án không làm ô cao lên — ảnh người chọn NỔI ở góc phải ô (trước chèn thành hàng mới, ô cao
+   thêm ~20px, đẩy các ô bên dưới xuống = "nhảy giật" trên điện thoại); dòng thông báo giữ sẵn chỗ 2 dòng */
+.g-opt{position:relative}
+.g-opt .g-pickers{position:absolute;right:6px;top:50%;transform:translateY(-50%);max-width:42%;flex-wrap:nowrap;overflow:hidden;justify-content:flex-end;pointer-events:none}
+.g-opt .g-otext{padding:0 4px}
+#p-msg{min-height:2.7em}
