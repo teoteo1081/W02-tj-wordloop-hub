@@ -17,7 +17,7 @@
   function open() {
     if (!layer.firstChild) {
       var f = document.createElement("iframe");
-      f.src = "game.html?embed=1";
+      f.src = "game.html?embed=1&t=" + Date.now();   /* &t: luôn lấy game.html MỚI (Ctrl+F5 WordLoop không làm mới iframe -> từng kẹt bản cũ, TJ 2026-10-02) */
       f.title = "WordLoop Game";
       f.allow = "clipboard-write; autoplay";
       layer.appendChild(f);
@@ -44,7 +44,7 @@
   function openScope(table, id, title) {
     if (!layer.firstChild) {
       var f = document.createElement("iframe");
-      f.src = "game.html?embed=1&scope=" + encodeURIComponent(table + ":" + id) + "&title=" + encodeURIComponent(title || "");
+      f.src = "game.html?embed=1&t=" + Date.now() + "&scope=" + encodeURIComponent(table + ":" + id) + "&title=" + encodeURIComponent(title || "");
       f.title = "WordLoop Game";
       f.allow = "clipboard-write; autoplay";
       layer.appendChild(f);

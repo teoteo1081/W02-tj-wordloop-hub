@@ -15,7 +15,9 @@
        · broadcast "hello" (người mới vào / màn hình chung -> host): xin gửi lại trạng thái
      HOST LÀ NGUỒN SỰ THẬT DUY NHẤT: chỉ host chấm điểm + đếm giờ, gửi nhịp 3s/lần.
      Host tải lại trang giữa trận -> khôi phục từ localStorage (tjwl_game_host_<MÃ>), không mất điểm.
-   - 2 kiểu: "kahoot" (cả phòng cùng 1 câu) | "free" (mỗi người tự làm câu riêng).
+   - 2 kiểu: "kahoot" (cả phòng cùng 1 câu; câu chọn đáp án được ĐỔI khi còn giờ) | "free" (mỗi người tự làm câu riêng, chọn là chốt).
+     "⚡ Đua tốc độ" = "free" + st.race: tổng thời gian host đặt cứng (không tự tính theo số từ), sang câu gần như ngay,
+     xếp hạng nhiều câu ĐÚNG nhất (hoà -> ít sai hơn). TJ 2026-10-02.
    - 3 dạng câu (host chọn, hoặc trộn): "meaning" nghĩa -> chọn từ | "gap" điền chỗ trống câu trong
      BÀI ĐỌC của Block (blocks.context_passage, [term] đánh dấu — cùng cách tách câu với
      Context.gapSentences) | "recall" gõ từ tiếng Anh từ nghĩa (Active Recall, chấm như w.normalizeAnswer).
@@ -61,29 +63,29 @@
   var UI = {
     vi: { lang_room: "🌐 Theo phòng", next_q: "Câu tiếp ▶", reveal_btn: "👁 Hiện đáp án", wait_nextq: "Chờ host sang câu tiếp…", no_time: "∞ không tính giờ", review_btn: "📖 Xem lại đáp án", review_h: "📖 Xem lại đáp án", prev: "◀ Trước", next: "Sau ▶", back_res: "← Về kết quả", you_typed: "Bạn trả lời: {a}", you_none: "Bạn chưa trả lời câu này", right_ans: "Đáp án đúng: {a}", same_name: "Tên \"{n}\" đã có người dùng: {list}.\nNếu là BẠN (chơi ở máy/trình duyệt khác) -> gõ số của bạn (vd 1) để giữ lịch sử.\nNếu là người khác -> để trống và bấm OK.", tab_other: "Game đã được mở ở tab khác — tab này tạm dừng.", tab_busy: "Ván đang chơi ở tab khác — tab này không vào phòng để khỏi làm hỏng ván.", tab_use: "Dùng game ở tab này", q_en2m: "Chọn nghĩa đúng của từ tiếng Anh này", pts_speed: "điểm tốc độ", h_right: "✓ Đúng", h_wrong: "✗ Sai", s_bestc: "nhiều câu đúng nhất / 1 ván", q_sheet: "Chọn từ cho TẤT CẢ chỗ trống rồi bấm Nộp", q_write: "Đặt 1 câu tiếng Anh có dùng từ này", q_dict: "Bấm 🔊 nghe rồi gõ lại CẢ CÂU", listen: "🔊 Nghe", headphones: "🎧 Dùng tai nghe để không lọt tiếng vào voice", submit_sheet: "📄 Nộp bài", grading: "✍️ Đang chấm câu của mọi người…", write_ph: "Viết 1 câu tiếng Anh…", dict_ph: "Gõ lại câu vừa nghe…", r_sheet: "✓ {k}/{n} chỗ đúng", r_dict: "✓ {k}/{n} từ đúng", r_write: "Điểm câu {p}/100 (ngữ pháp {g}/50 · dùng từ {u}/50)", fix: "Sửa:", your_ans: "Bạn gõ:", sent_ok: "Đã nộp — chờ mọi người…", mother_h: "Nghĩa hiển thị bằng (tiếng mẹ đẻ)", mother_tt: "Tiếng mẹ đẻ của bạn (chữ giao diện + nghĩa)", name_h: "Bạn tên gì?", name_sub: "Máy này sẽ nhớ tên cho lần sau — không cần email.", name_ph: "Nhập tên…", avatar_h: "Chọn ảnh đại diện", upload: "📷 Tải ảnh của bạn", save: "Lưu & tiếp tục →", need_name: "Nhập tên trước nhé.", saving: "Đang lưu…", uploading: "Đang tải ảnh…", not_image: "File này không phải ảnh.",
       join_h: "Vào phòng", code_ph: "MÃ PHÒNG", go: "Vào", hist_btn: "📜 Lịch sử & Xếp hạng", no_room: "Không tìm thấy phòng {c}.", room: "Phòng", room_code: "Mã phòng", copy_link: "🔗 Copy link mời", copied: "✓ Đã copy", screen_btn: "📺 Màn hình chung", players: "Người chơi", vocab: "Từ vựng", wait_host: "Chờ host bắt đầu…", host_away: "Host chưa vào phòng — xem trước, chờ host tới nhé.", wait_next: "Chờ host mở ván mới…", host_lost: "⚠ Host mất kết nối — chờ host quay lại…",
-      m_kahoot: "Cùng 1 câu", m_free: "Tự do", sec_q: "giây/câu", q_meaning: "Chọn từ tiếng Anh đúng nghĩa", q_gap: "Chọn từ điền vào chỗ trống", q_recall: "Gõ từ tiếng Anh của nghĩa này", type_ph: "Gõ từ tiếng Anh…", submit: "Gửi",
-      picked: "Đã trả lời — chờ mọi người…", answered: "{n} người đã trả lời", right: "✓ Đúng!", wrong: "✗ Sai — đáp án: {a}", timeout: "⏱ Hết giờ — đáp án: {a}", answer: "Đáp án: {a}", fastest: "⚡ Nhanh nhất: {n}", n_right: "{n} người đúng", time_up: "⏱ Hết giờ — chờ tổng kết…", loading: "Đang tải từ vựng…", mc: "Bạn đang làm MC — mở 📺 Màn hình chung để cả nhóm cùng xem.",
+      m_kahoot: "Cùng 1 câu", m_free: "Tự do", m_race: "⚡ Đua tốc độ", sec_q: "giây/câu", q_meaning: "Chọn từ tiếng Anh đúng nghĩa", q_gap: "Chọn từ điền vào chỗ trống", q_recall: "Gõ từ tiếng Anh của nghĩa này", type_ph: "Gõ từ tiếng Anh…", submit: "Gửi",
+      picked: "Đã trả lời — chờ mọi người…", picked_change: "Đã chọn — còn giờ thì bấm đáp án khác để đổi", answered: "{n} người đã trả lời", right: "✓ Đúng!", wrong: "✗ Sai — đáp án: {a}", timeout: "⏱ Hết giờ — đáp án: {a}", answer: "Đáp án: {a}", fastest: "⚡ Nhanh nhất: {n}", n_right: "{n} người đúng", time_up: "⏱ Hết giờ — chờ tổng kết…", loading: "Đang tải từ vựng…", mc: "Bạn đang làm MC — mở 📺 Màn hình chung để cả nhóm cùng xem.",
       results: "🏁 Kết quả", back: "← Về trang game", nobody: "Chưa ai trả lời câu nào.", ppl: "người", avg: "TB", team_red: "Đội Đỏ", team_blue: "Đội Xanh", team_green: "Đội Lá", team_yellow: "Đội Vàng", click_team: "· host bấm tên để đổi đội",
       tab_me: "Của tôi", tab_week: "Tuần này", tab_all: "Mọi thời gian", h_player: "Người chơi", h_total: "Tổng điểm", h_games: "Trận", h_best: "Cao nhất", h_acc: "Đúng", h_date: "Ngày", h_topic: "Chủ đề", h_score: "Điểm", h_rank: "Hạng", h_rw: "Đúng/Sai",
       s_games: "trận", s_wins: "lần 🥇", s_best: "kỷ lục điểm", s_streak: "chuỗi dài nhất", no_name: "Bạn chưa đặt tên trên máy này.", no_games: "Bạn chưa chơi trận nào.", no_week: "Chưa có trận nào trong 7 ngày qua.", no_all: "Chưa có trận nào.", loading2: "Đang tải…", join_at: "Vào phòng tại", race: "🏁 Đua tự do!", ended: "🏁 Kết thúc!", q_no: "Câu {n}", err: "Lỗi" },
     en: { lang_room: "🌐 Room language", next_q: "Next ▶", reveal_btn: "👁 Show answer", wait_nextq: "Waiting for the host to go on…", no_time: "∞ untimed", review_btn: "📖 Review answers", review_h: "📖 Review answers", prev: "◀ Previous", next: "Next ▶", back_res: "← Back to results", you_typed: "Your answer: {a}", you_none: "You did not answer this one", right_ans: "Correct answer: {a}", same_name: "The name \"{n}\" is already used: {list}.\nIf that is YOU (on another device/browser) -> type your number (e.g. 1) to keep your history.\nIf it is someone else -> leave empty and press OK.", tab_other: "The game was opened in another tab — this tab is paused.", tab_busy: "A round is being played in another tab — this tab stays out so it won't break the round.", tab_use: "Use the game in this tab", q_en2m: "Choose the correct meaning of this English word", pts_speed: "speed pts", h_right: "✓ Correct", h_wrong: "✗ Wrong", s_bestc: "most correct in one game", q_sheet: "Fill in ALL the blanks, then press Submit", q_write: "Write one English sentence using this word", q_dict: "Press 🔊 to listen, then type the WHOLE sentence", listen: "🔊 Listen", headphones: "🎧 Use headphones so the sound stays out of the voice call", submit_sheet: "📄 Submit", grading: "✍️ Grading everyone's sentences…", write_ph: "Write one English sentence…", dict_ph: "Type the sentence you heard…", r_sheet: "✓ {k}/{n} blanks correct", r_dict: "✓ {k}/{n} words correct", r_write: "Sentence score {p}/100 (grammar {g}/50 · word use {u}/50)", fix: "Fix:", your_ans: "You typed:", sent_ok: "Submitted — waiting for others…", mother_h: "Show meanings in (your native language)", mother_tt: "Your native language (interface + meanings)", name_h: "What's your name?", name_sub: "This device will remember you next time — no email needed.", name_ph: "Enter your name…", avatar_h: "Choose an avatar", upload: "📷 Upload your photo", save: "Save & continue →", need_name: "Please enter a name.", saving: "Saving…", uploading: "Uploading…", not_image: "That file is not an image.",
       join_h: "Join a room", code_ph: "ROOM CODE", go: "Join", hist_btn: "📜 History & Rankings", no_room: "Room {c} not found.", room: "Room", room_code: "Room code", copy_link: "🔗 Copy invite link", copied: "✓ Copied", screen_btn: "📺 Shared screen", players: "Players", vocab: "Vocabulary", wait_host: "Waiting for the host to start…", host_away: "The host is not here yet — feel free to look around.", wait_next: "Waiting for the host to start a new round…", host_lost: "⚠ Host disconnected — waiting for the host to return…",
-      m_kahoot: "Same question", m_free: "Free play", sec_q: "s/question", q_meaning: "Choose the English word for this meaning", q_gap: "Choose the word that fills the blank", q_recall: "Type the English word for this meaning", type_ph: "Type the English word…", submit: "Submit",
-      picked: "Answered — waiting for others…", answered: "{n} answered", right: "✓ Correct!", wrong: "✗ Wrong — answer: {a}", timeout: "⏱ Time's up — answer: {a}", answer: "Answer: {a}", fastest: "⚡ Fastest: {n}", n_right: "{n} correct", time_up: "⏱ Time's up — waiting for results…", loading: "Loading vocabulary…", mc: "You are the MC — open 📺 Shared screen so everyone can watch.",
+      m_kahoot: "Same question", m_free: "Free play", m_race: "⚡ Speed race", sec_q: "s/question", q_meaning: "Choose the English word for this meaning", q_gap: "Choose the word that fills the blank", q_recall: "Type the English word for this meaning", type_ph: "Type the English word…", submit: "Submit",
+      picked: "Answered — waiting for others…", picked_change: "Picked — tap another answer to change while time is left", answered: "{n} answered", right: "✓ Correct!", wrong: "✗ Wrong — answer: {a}", timeout: "⏱ Time's up — answer: {a}", answer: "Answer: {a}", fastest: "⚡ Fastest: {n}", n_right: "{n} correct", time_up: "⏱ Time's up — waiting for results…", loading: "Loading vocabulary…", mc: "You are the MC — open 📺 Shared screen so everyone can watch.",
       results: "🏁 Results", back: "← Back to game home", nobody: "Nobody answered yet.", ppl: "players", avg: "avg", team_red: "Red Team", team_blue: "Blue Team", team_green: "Green Team", team_yellow: "Yellow Team", click_team: "· host taps a name to switch team",
       tab_me: "Mine", tab_week: "This week", tab_all: "All time", h_player: "Player", h_total: "Total", h_games: "Games", h_best: "Best", h_acc: "Correct", h_date: "Date", h_topic: "Topic", h_score: "Score", h_rank: "Rank", h_rw: "Right/Wrong",
       s_games: "games", s_wins: "🥇 wins", s_best: "best score", s_streak: "longest streak", no_name: "You haven't set a name on this device.", no_games: "You haven't played yet.", no_week: "No games in the last 7 days.", no_all: "No games yet.", loading2: "Loading…", join_at: "Join at", race: "🏁 Free race!", ended: "🏁 Finished!", q_no: "Question {n}", err: "Error" },
     es: { lang_room: "🌐 Idioma de la sala", next_q: "Siguiente ▶", reveal_btn: "👁 Mostrar respuesta", wait_nextq: "Esperando a que el anfitrión continúe…", no_time: "∞ sin tiempo", review_btn: "📖 Revisar respuestas", review_h: "📖 Revisar respuestas", prev: "◀ Anterior", next: "Siguiente ▶", back_res: "← Volver a resultados", you_typed: "Tu respuesta: {a}", you_none: "No respondiste esta", right_ans: "Respuesta correcta: {a}", same_name: "El nombre \"{n}\" ya existe: {list}.\nSi eres TÚ (en otro dispositivo/navegador) -> escribe tu número (p. ej. 1) para conservar tu historial.\nSi es otra persona -> déjalo vacío y pulsa OK.", tab_other: "El juego se abrió en otra pestaña — esta pestaña está en pausa.", tab_busy: "Hay una partida en otra pestaña — esta pestaña no entra para no romperla.", tab_use: "Usar el juego en esta pestaña", q_en2m: "Elige el significado correcto de esta palabra en inglés", pts_speed: "pts de velocidad", h_right: "✓ Aciertos", h_wrong: "✗ Fallos", s_bestc: "más aciertos en una partida", q_sheet: "Completa TODOS los espacios y pulsa Enviar", q_write: "Escribe una oración en inglés con esta palabra", q_dict: "Pulsa 🔊 para escuchar y escribe la oración COMPLETA", listen: "🔊 Escuchar", headphones: "🎧 Usa auriculares para que el sonido no pase a la llamada", submit_sheet: "📄 Enviar", grading: "✍️ Corrigiendo las oraciones…", write_ph: "Escribe una oración en inglés…", dict_ph: "Escribe la oración que escuchaste…", r_sheet: "✓ {k}/{n} espacios correctos", r_dict: "✓ {k}/{n} palabras correctas", r_write: "Nota de la oración {p}/100 (gramática {g}/50 · uso {u}/50)", fix: "Corrección:", your_ans: "Escribiste:", sent_ok: "Enviado — esperando a los demás…", mother_h: "Mostrar significados en (tu idioma materno)", mother_tt: "Tu idioma materno (interfaz + significados)", name_h: "¿Cómo te llamas?", name_sub: "Este dispositivo recordará tu nombre — sin correo.", name_ph: "Escribe tu nombre…", avatar_h: "Elige un avatar", upload: "📷 Sube tu foto", save: "Guardar y continuar →", need_name: "Escribe un nombre primero.", saving: "Guardando…", uploading: "Subiendo…", not_image: "Ese archivo no es una imagen.",
       join_h: "Entrar a una sala", code_ph: "CÓDIGO", go: "Entrar", hist_btn: "📜 Historial y ranking", no_room: "No se encontró la sala {c}.", room: "Sala", room_code: "Código de sala", copy_link: "🔗 Copiar enlace", copied: "✓ Copiado", screen_btn: "📺 Pantalla compartida", players: "Jugadores", vocab: "Vocabulario", wait_host: "Esperando a que el anfitrión empiece…", host_away: "El anfitrión aún no ha llegado — puedes mirar mientras tanto.", wait_next: "Esperando a que el anfitrión abra otra ronda…", host_lost: "⚠ El anfitrión se desconectó — esperando a que vuelva…",
-      m_kahoot: "Misma pregunta", m_free: "Libre", sec_q: "s/pregunta", q_meaning: "Elige la palabra en inglés de este significado", q_gap: "Elige la palabra que completa el espacio", q_recall: "Escribe la palabra en inglés de este significado", type_ph: "Escribe la palabra en inglés…", submit: "Enviar",
-      picked: "Respondido — esperando a los demás…", answered: "{n} respondieron", right: "✓ ¡Correcto!", wrong: "✗ Incorrecto — respuesta: {a}", timeout: "⏱ Se acabó el tiempo — respuesta: {a}", answer: "Respuesta: {a}", fastest: "⚡ Más rápido: {n}", n_right: "{n} acertaron", time_up: "⏱ Se acabó el tiempo — esperando resultados…", loading: "Cargando vocabulario…", mc: "Eres el presentador — abre 📺 Pantalla compartida para que todos vean.",
+      m_kahoot: "Misma pregunta", m_free: "Libre", m_race: "⚡ Carrera", sec_q: "s/pregunta", q_meaning: "Elige la palabra en inglés de este significado", q_gap: "Elige la palabra que completa el espacio", q_recall: "Escribe la palabra en inglés de este significado", type_ph: "Escribe la palabra en inglés…", submit: "Enviar",
+      picked: "Respondido — esperando a los demás…", picked_change: "Elegido — toca otra respuesta para cambiarla mientras quede tiempo", answered: "{n} respondieron", right: "✓ ¡Correcto!", wrong: "✗ Incorrecto — respuesta: {a}", timeout: "⏱ Se acabó el tiempo — respuesta: {a}", answer: "Respuesta: {a}", fastest: "⚡ Más rápido: {n}", n_right: "{n} acertaron", time_up: "⏱ Se acabó el tiempo — esperando resultados…", loading: "Cargando vocabulario…", mc: "Eres el presentador — abre 📺 Pantalla compartida para que todos vean.",
       results: "🏁 Resultados", back: "← Volver", nobody: "Nadie ha respondido todavía.", ppl: "jugadores", avg: "prom.", team_red: "Equipo Rojo", team_blue: "Equipo Azul", team_green: "Equipo Verde", team_yellow: "Equipo Amarillo", click_team: "· el anfitrión toca un nombre para cambiar de equipo",
       tab_me: "Mío", tab_week: "Esta semana", tab_all: "Siempre", h_player: "Jugador", h_total: "Total", h_games: "Partidas", h_best: "Mejor", h_acc: "Aciertos", h_date: "Fecha", h_topic: "Tema", h_score: "Puntos", h_rank: "Puesto", h_rw: "Bien/Mal",
       s_games: "partidas", s_wins: "veces 🥇", s_best: "récord", s_streak: "racha más larga", no_name: "Aún no tienes nombre en este dispositivo.", no_games: "Aún no has jugado.", no_week: "No hubo partidas en los últimos 7 días.", no_all: "Aún no hay partidas.", loading2: "Cargando…", join_at: "Entra en", race: "🏁 ¡Carrera libre!", ended: "🏁 ¡Terminado!", q_no: "Pregunta {n}", err: "Error" },
     zh: { lang_room: "🌐 跟随房间", next_q: "下一题 ▶", reveal_btn: "👁 显示答案", wait_nextq: "等待主持人进入下一题…", no_time: "∞ 不计时", review_btn: "📖 查看答案", review_h: "📖 查看答案", prev: "◀ 上一题", next: "下一题 ▶", back_res: "← 返回结果", you_typed: "你的答案：{a}", you_none: "你没有回答这题", right_ans: "正确答案：{a}", same_name: "名字 \"{n}\" 已被使用：{list}。\n如果是你（换了设备/浏览器）-> 输入你的编号（如 1）以保留历史记录。\n如果是别人 -> 留空并点确定。", tab_other: "游戏已在另一个标签页打开——此标签页已暂停。", tab_busy: "另一个标签页正在进行比赛——此标签页不进入房间，以免打乱比赛。", tab_use: "在此标签页使用游戏", q_en2m: "选出这个英文单词的正确意思", pts_speed: "速度分", h_right: "✓ 答对", h_wrong: "✗ 答错", s_bestc: "单局最多答对", q_sheet: "给所有空格选词，然后点提交", q_write: "用这个词写一个英文句子", q_dict: "点 🔊 听，然后输入整句话", listen: "🔊 听", headphones: "🎧 请戴耳机，避免声音传进语音通话", submit_sheet: "📄 提交", grading: "✍️ 正在批改大家的句子…", write_ph: "写一个英文句子…", dict_ph: "输入你听到的句子…", r_sheet: "✓ {k}/{n} 空正确", r_dict: "✓ {k}/{n} 词正确", r_write: "句子得分 {p}/100（语法 {g}/50 · 用词 {u}/50）", fix: "修改：", your_ans: "你输入的：", sent_ok: "已提交——等待其他人…", mother_h: "释义显示语言（你的母语）", mother_tt: "你的母语（界面 + 释义）", name_h: "你叫什么名字？", name_sub: "本设备会记住你的名字——无需邮箱。", name_ph: "输入名字…", avatar_h: "选择头像", upload: "📷 上传照片", save: "保存并继续 →", need_name: "请先输入名字。", saving: "保存中…", uploading: "上传中…", not_image: "这个文件不是图片。",
       join_h: "加入房间", code_ph: "房间码", go: "加入", hist_btn: "📜 历史与排名", no_room: "找不到房间 {c}。", room: "房间", room_code: "房间码", copy_link: "🔗 复制邀请链接", copied: "✓ 已复制", screen_btn: "📺 共享屏幕", players: "玩家", vocab: "词汇", wait_host: "等待主持人开始…", host_away: "主持人还没进房间——可以先看看。", wait_next: "等待主持人开始新一局…", host_lost: "⚠ 主持人断线了——等待主持人回来…",
-      m_kahoot: "同一题", m_free: "自由模式", sec_q: "秒/题", q_meaning: "选出这个意思的英文单词", q_gap: "选出填入空格的单词", q_recall: "输入这个意思的英文单词", type_ph: "输入英文单词…", submit: "提交",
-      picked: "已作答——等待其他人…", answered: "{n} 人已作答", right: "✓ 正确！", wrong: "✗ 错误——答案：{a}", timeout: "⏱ 时间到——答案：{a}", answer: "答案：{a}", fastest: "⚡ 最快：{n}", n_right: "{n} 人答对", time_up: "⏱ 时间到——等待结果…", loading: "正在加载词汇…", mc: "你是主持人——打开 📺 共享屏幕让大家一起看。",
+      m_kahoot: "同一题", m_free: "自由模式", m_race: "⚡ 竞速", sec_q: "秒/题", q_meaning: "选出这个意思的英文单词", q_gap: "选出填入空格的单词", q_recall: "输入这个意思的英文单词", type_ph: "输入英文单词…", submit: "提交",
+      picked: "已作答——等待其他人…", picked_change: "已选择——时间未到可点其他答案更改", answered: "{n} 人已作答", right: "✓ 正确！", wrong: "✗ 错误——答案：{a}", timeout: "⏱ 时间到——答案：{a}", answer: "答案：{a}", fastest: "⚡ 最快：{n}", n_right: "{n} 人答对", time_up: "⏱ 时间到——等待结果…", loading: "正在加载词汇…", mc: "你是主持人——打开 📺 共享屏幕让大家一起看。",
       results: "🏁 结果", back: "← 返回", nobody: "还没有人作答。", ppl: "人", avg: "平均", team_red: "红队", team_blue: "蓝队", team_green: "绿队", team_yellow: "黄队", click_team: "· 主持人点名字可换队",
       tab_me: "我的", tab_week: "本周", tab_all: "全部", h_player: "玩家", h_total: "总分", h_games: "场次", h_best: "最高分", h_acc: "正确率", h_date: "日期", h_topic: "主题", h_score: "分数", h_rank: "名次", h_rw: "对/错",
       s_games: "场", s_wins: "次 🥇", s_best: "最高分", s_streak: "最长连对", no_name: "你还没有在本设备设置名字。", no_games: "你还没有玩过。", no_week: "最近 7 天没有比赛。", no_all: "还没有比赛。", loading2: "加载中…", join_at: "加入地址", race: "🏁 自由赛跑！", ended: "🏁 结束！", q_no: "第 {n} 题", err: "错误" }
@@ -572,7 +574,8 @@
   function fmtSec(s) { var m = Math.floor(s / 60), r = s % 60; return (m ? m + " phút " : "") + (r ? r + " giây" : m ? "" : "0 giây"); }
   function paintAutoTime() {
     if (!G.st || !$("#l-auto")) return;
-    var on = G.st.auto !== false, a = autoSec();
+    var race = !!G.st.race, on = G.st.auto !== false && !race, a = autoSec();
+    $("#l-auto-wrap").hidden = race;   /* ⚡ Đua: tổng thời gian do host đặt cứng */
     $("#l-qs-wrap").hidden = !(G.st.mode === "kahoot" || on);   /* Tự do: giây/câu chỉ dùng để tính tổng */
     $("#l-min").disabled = on;
     if (on) $("#l-min").value = Math.max(1, Math.ceil(a.sec / 60));
@@ -1127,7 +1130,7 @@
     if (!G.isHost && G.me) { $("#l-meav").innerHTML = avatar(G.me.avatar); $("#l-mename").innerHTML = label({ name: G.me.name, no: G.me.name_no }); }
     if (G.isHost) {
       var st = G.st || {};
-      $("#l-mode").value = st.mode || G.room.mode; $("#l-qtype").value = st.qtype || G.room.qtype || "meaning";
+      $("#l-mode").value = st.race ? "race" : (st.mode || G.room.mode); $("#l-qtype").value = st.qtype || G.room.qtype || "meaning";
       $("#l-min").value = st.minutes || G.room.minutes; $("#l-qs").value = st.qs || G.room.q_seconds;
       $("#l-lang").value = roomLang(st); $("#l-teamn").value = String(st.teams || 0); $("#l-force").checked = !!st.force;
       $("#l-auto").checked = st.auto !== false; paintAutoTime();
@@ -1187,7 +1190,7 @@
       if (!G.isHost || !G.st) return;   /* chưa kết nối xong (G.st chưa có) -> bỏ qua, initHostLobby sẽ vẽ lại */
       var st = G.st;
       st.gapsrc = $("#l-gapsrc").value; $("#l-gapsrc-wrap").hidden = !wantsGap($("#l-qtype").value);
-      st.mode = $("#l-mode").value; st.qtype = $("#l-qtype").value; st.scoring = $("#l-scoring").value; st.lang = $("#l-lang").value; st.force = $("#l-force").checked;
+      st.race = $("#l-mode").value === "race"; st.mode = st.race ? "free" : $("#l-mode").value; st.qtype = $("#l-qtype").value; st.scoring = $("#l-scoring").value; st.lang = $("#l-lang").value; st.force = $("#l-force").checked;
       st.auto = $("#l-auto").checked; st.sound = $("#l-sound").checked; paintSoundBtn();
       st.minutes = Math.max(1, +$("#l-min").value || 5); st.qs = Math.max(3, +$("#l-qs").value || 15);
       st.timed = true;
@@ -1234,7 +1237,7 @@
     fillTeams();
     G.st.phase = "play"; G.st.scores = {}; G.st.q = null; G.answers = []; G.myAns = []; G.srsHtml = "";
     players().forEach(function (p) { G.st.scores[p.id] = { s: 0, c: 0, w: 0, st: 0, best: 0 }; });
-    if (G.st.auto !== false) { var at = autoSec(); G.st.totalSec = at.sec; G.st.minutes = Math.max(1, Math.ceil(at.sec / 60)); } else G.st.totalSec = G.st.minutes * 60;
+    if (G.st.auto !== false && !G.st.race) { var at = autoSec(); G.st.totalSec = at.sec; G.st.minutes = Math.max(1, Math.ceil(at.sec / 60)); } else G.st.totalSec = G.st.minutes * 60;
     G.endAt = Date.now() + G.st.totalSec * 1000;
     await sb.from("game_rooms").update({ status: "playing", started_at: new Date().toISOString(), mode: G.st.mode, qtype: G.st.qtype, meaning_lang: G.st.lang, minutes: G.st.minutes, q_seconds: G.st.qs, team_mode: !!G.st.teams, teams: G.st.teams }).eq("id", G.room.id);
     /* mỗi lần bắt đầu = 1 VÁN riêng (lịch sử xem theo ván) */
@@ -1271,7 +1274,9 @@
       if (G.st.q.grading) return;
       var n = players().filter(function (p) { return G.st.scores[p.id]; }).length, got = Object.keys(G.st.q.got).length;
       /* hết giờ câu (+0.8s để máy người chơi kịp tự nộp chữ đang gõ dở) hoặc cả phòng đã trả lời -> lộ đáp án */
-      if ((G.qUntil && now >= G.qUntil + 800) || (n && got >= n)) hostReveal();
+      /* cả phòng đã chọn: câu chọn đáp án chờ thêm 2 giây sau lần chọn cuối (kịp đổi nếu lỡ bấm nhầm) */
+      var allIn = n && got >= n && (!isChoice(G.st.q) || now - (G.st.q.lastAnsAt || 0) >= 2000);
+      if ((G.qUntil && now >= G.qUntil + 800) || allIn) hostReveal();
     }
     else if (now >= G.revealUntil) hostNextQ();   /* đã lộ đáp án đủ lâu -> tự sang câu; xem lại sau ván bằng 📖 */
   }
@@ -1293,6 +1298,13 @@
       q.graded = true; q.grading = false;
       if (G.st.phase !== "play") return;   /* bấm Kết thúc lúc đang chấm -> không lộ/ra câu nữa */
     }
+    if (isChoice(q) && !q.scored) {   /* chấm theo lựa chọn CUỐI của mỗi người */
+      q.scored = true;
+      Object.keys(q.got).forEach(function (pid) {
+        var g = q.got[pid]; score(pid, g.ok, g.ms, q.limit * 1000);
+        G.answers.push({ pid: pid, wid: q.wid, term: q.ans, ok: g.ok, ms: g.ms });
+      });
+    }
     q.revealed = true; G.revealUntil = Date.now() + (q.type === "write" || q.type === "sheet" ? REVEAL_MS * 3 : q.type === "dict" ? REVEAL_MS * 2 : REVEAL_MS); G.qUntil = 0;
     var best = null; Object.keys(q.got).forEach(function (pid) { var g = q.got[pid]; if (g.ok && (!best || g.ms < q.got[best].ms)) best = pid; });
     q.fast = best;   /* chỉ để khoe, không cộng điểm */
@@ -1309,6 +1321,8 @@
     if (ok) { s.st++; s.best = Math.max(s.best, s.st); } else s.st = 0;
     return p;
   }
+  /* câu chọn 1 trong 4 ô (không gõ chữ / phiếu / dictation / đặt câu) — Kahoot cho ĐỔI đáp án khi còn giờ (TJ 2026-10-02) */
+  function isChoice(q) { return !!q && (q.type === "meaning" || q.type === "en2m" || q.type === "gap"); }
   function score(pid, ok, ms, limitMs) { return award(pid, ok ? POINTS : 0, ok, ok ? 1 : 0, ok ? 0 : 1, ms, limitMs); }
   /* dictation: tỉ lệ từ đúng theo thứ tự (LCS trên từ đã chuẩn hoá) */
   function wordAcc(typed, ans) {
@@ -1360,7 +1374,7 @@
     if (!G.st.scores[a.pid]) return;   /* vào muộn giữa ván -> chỉ xem, ván sau mới tính */
     if (G.st.mode === "kahoot") {
       var q = G.st.q;
-      if (!q || q.revealed || a.qn !== q.qn || q.got[a.pid]) return;   /* mỗi người 1 lần / câu */
+      if (!q || q.revealed || a.qn !== q.qn || (q.got[a.pid] && !isChoice(q))) return;   /* mỗi người 1 lần / câu (câu chọn đáp án: được đổi) */
       var lim = q.limit * 1000;
       if (q.type === "sheet") {
         var ch = Array.isArray(a.choice) ? a.choice : [], k = 0;
@@ -1374,6 +1388,9 @@
         G.answers.push({ pid: a.pid, wid: q.wid, term: q.term, ok: acc.r >= 0.8, ms: a.ms });
       } else if (q.type === "write") {
         q.got[a.pid] = { ok: null, c: a.choice, ms: a.ms };   /* chấm lúc hết giờ (gom cả phòng 1 lần) */
+      } else if (isChoice(q)) {   /* câu chọn 4 đáp án: được ĐỔI khi còn giờ -> giữ lựa chọn MỚI NHẤT, chấm lúc lộ đáp án (hostReveal) */
+        q.got[a.pid] = { ok: norm(a.choice) === norm(q.ans), c: a.choice, ms: a.ms };
+        q.lastAnsAt = Date.now();
       } else {
         var ok = q.type === "recall" ? typedOk(a.choice, q.ans) : norm(a.choice) === norm(q.ans);
         q.got[a.pid] = { ok: ok, c: a.choice, ms: a.ms };
@@ -1541,7 +1558,7 @@
       if (s.mode === "kahoot" && s.q) paintKahoot(s);
     }
   }
-  function modeLine(s) { return (s.mode === "kahoot" ? T("m_kahoot") + (untimed(s) ? "" : " · " + s.qs + " " + T("sec_q")) : T("m_free")) + (untimed(s) ? " · " + T("no_time") : ""); }
+  function modeLine(s) { return (s.mode === "kahoot" ? T("m_kahoot") + (untimed(s) ? "" : " · " + s.qs + " " + T("sec_q")) : T(s.race ? "m_race" : "m_free")) + (untimed(s) ? " · " + T("no_time") : ""); }
   function enterPlay(s) {
     logStart(s);
     $("#p-next").hidden = true; $("#p-reveal").hidden = true;
@@ -1736,7 +1753,7 @@
     }
     if (!q.revealed) {
       if (q.grading) { lockAll(T("grading")); return; }
-      if (G.myChoice != null || !iPlay()) $("#p-msg").textContent = (iPlay() ? T("picked") + " · " : "") + T("answered", { n: q.cnt || 0 });
+      if (G.myChoice != null || !iPlay()) $("#p-msg").textContent = (iPlay() ? T(isChoice(q) ? "picked_change" : "picked") + " · " : "") + T("answered", { n: q.cnt || 0 });
       return;
     }
     G.qUntilLocal = 0;
@@ -1816,14 +1833,17 @@
   function sendAnswer(choice) {
     var s = G.st;
     G.myChoice = choice;
-    lockAll(T("picked"));
+    if (isChoice(s.q)) $("#p-msg").textContent = T("picked_change");   /* KHÔNG khoá: còn giờ thì bấm ô khác để đổi */
+    else lockAll(T("picked"));
     sendAns({ pid: G.me.id, qn: s.q.qn, choice: choice, ms: Date.now() - G.myQStart });
   }
   $("#p-opts").addEventListener("click", function (e) {
     var b = e.target.closest(".g-opt"); if (!b || b.disabled) return;
     var s = G.st; if (!s || s.phase !== "play" || !iPlay()) return;
     if (s.mode === "kahoot") {
-      if (G.myChoice != null || !s.q || s.q.revealed) return;
+      if (!s.q || s.q.revealed || (G.myChoice != null && !isChoice(s.q))) return;
+      if (G.myChoice != null && norm(G.myChoice) === norm(b.dataset.opt)) return;   /* bấm lại đúng ô đang chọn */
+      $$("#p-opts .g-opt.picked").forEach(function (x) { x.classList.remove("picked"); });
       b.classList.add("picked");
       sendAnswer(b.dataset.opt);
     } else freeAnswer(b.dataset.opt, b);
@@ -1952,7 +1972,7 @@
     speakQ(q, "ans");
     sendAns({ pid: G.me.id, ok: ok, wid: q.wid, term: q.ans, ms: Date.now() - G.myQStart });
     recordMyProgress(q.wid, ok);
-    showNext(ok ? 500 : 1400);
+    showNext(G.st && G.st.race ? (ok ? 250 : 900) : (ok ? 500 : 1400));   /* ⚡ Đua: sang câu gần như ngay */
   }
 
   /* Tiến trình học — CHỈ hồ sơ admin (TJ). "Học chung" vẫn tách được qua game_answers (có room_id). */
