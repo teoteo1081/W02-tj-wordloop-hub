@@ -361,3 +361,15 @@ body.embed .g-brand{display:none}
 @media (max-width:480px){ .g-stats{font-size:11px;margin-right:6px} }
 .g-chipmiss,.g-missed{color:var(--amber)}
 .g-chip2,.g-mystats span[title]{cursor:help}
+
+/* v66: hàng trên 2 tầng gọn trong khung — tầng 1 đồng hồ + nút, tầng 2 dải ô thống kê (số to, nhãn nhỏ) */
+.g-clock{flex-wrap:wrap;row-gap:6px}
+.g-clock .g-qtools{margin-left:auto}
+.g-statbar{display:grid;grid-template-columns:repeat(auto-fit,minmax(64px,1fr));gap:6px;margin:8px 0 6px}
+.g-statbar:empty{display:none}
+.g-stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:5px 4px 4px;text-align:center;cursor:default}
+.g-stat b{display:block;font-size:18px;line-height:1.15;font-variant-numeric:tabular-nums;color:var(--text)}
+.g-stat span{display:block;font-size:11px;color:var(--text-2);white-space:nowrap}
+.g-stat.ok b{color:var(--green)} .g-stat.bad b{color:var(--red)}
+.g-stat[title]{cursor:help}
+@media (max-width:480px){ .g-statbar{grid-template-columns:repeat(3,1fr)} }

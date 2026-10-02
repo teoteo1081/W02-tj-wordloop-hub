@@ -8,7 +8,7 @@
 <!-- Google tag (gtag.js) — cùng property GA4 với WordLoop -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM');</script>
-<link rel="stylesheet" href="css/game.css?v=39">
+<link rel="stylesheet" href="css/game.css?v=40">
 </head>
 <body>
 <!-- 🎮 Phòng game chơi chung — xem README.md "Việc còn dang dở" > PHÒNG GAME, bảng: tools/game_schema.sql.
@@ -129,7 +129,9 @@
   <!-- 4. Đang chơi: nửa trên bảng xếp hạng, nửa dưới trả lời -->
   <section class="g-screen g-play" id="s-play" hidden>
     <div class="g-alert" id="p-hostlost" hidden data-t="host_lost">⚠ Host mất kết nối — chờ host quay lại…</div>
-    <div class="g-clock"><span id="p-left">5:00</span><span class="g-sub" id="p-mode"></span><span class="g-prog" id="p-prog"></span><span class="g-qtools"><button class="g-replay" id="p-replay" type="button" title="Nghe lại từ tiếng Anh" disabled>🔊</button><button class="g-mute js-snd" type="button"></button><input type="range" class="g-vol js-vol" min="0" max="100" step="5" aria-label="Âm lượng đọc từ"></span><button class="g-btn g-btn-soft g-btn-sm" id="p-stop" hidden>⏹ Kết thúc</button></div>
+    <div class="g-clock"><span id="p-left">5:00</span><span class="g-sub" id="p-mode"></span><span class="g-qtools"><button class="g-replay" id="p-replay" type="button" title="Nghe lại từ tiếng Anh" disabled>🔊</button><button class="g-mute js-snd" type="button"></button><input type="range" class="g-vol js-vol" min="0" max="100" step="5" aria-label="Âm lượng đọc từ"></span><button class="g-btn g-btn-soft g-btn-sm" id="p-stop" hidden>⏹ Kết thúc</button></div>
+    <!-- 📊 dải ô thống kê của MÌNH (TJ 2026-10-02: hàng trên "kỳ quá" -> tách 2 tầng, số to + nhãn nhỏ) -->
+    <div class="g-statbar" id="p-prog"></div>
     <div class="g-teambar" id="p-teams"></div>
     <ol class="g-board" id="p-board"></ol>
     <div class="g-q">
@@ -210,6 +212,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="js/config.js?v=4"></script>
-<script src="js/game.js?v=65"></script>
+<script src="js/game.js?v=66"></script>
 </body>
 </html>
