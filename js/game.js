@@ -58,7 +58,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 70;
+  var GAME_VER = 72;
   function checkVersion() {
     if (G.st && G.st.phase === "play") return;
     fetch("game-version.json?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (j) {
@@ -582,7 +582,12 @@
     return (G.pool || []).length;
   }
   function autoSec() {
-    var st = G.st || {}, n = autoCount(), qs = +st.qs || 15, per = qs + (st.mode === "kahoot" ? REVEAL_MS / 1000 : 0);
+    var st = G.st || {}, n = autoCount(), qs = +st.qs || 15;
+    if (st.qtype === "mix") {   /* Trộn: trung bình giây của các loại sẽ ra */
+      var ts = TQ_TYPES.filter(function (t) { return t !== "gap" || (G.gaps || []).length >= 4; });
+      qs = Math.round(ts.reduce(function (a, t) { return a + tqOf(st, t); }, 0) / ts.length);
+    }
+    var per = qs + (st.mode === "kahoot" ? REVEAL_MS / 1000 : 0);
     return { n: n, qs: qs, per: per, sec: Math.max(30, Math.round(n * per)) };
   }
   function fmtSec(s) { var m = Math.floor(s / 60), r = s % 60; return (m ? m + " phút " : "") + (r ? r + " giây" : m ? "" : "0 giây"); }
@@ -590,7 +595,10 @@
     if (!G.st || !$("#l-auto")) return;
     var race = !!G.st.race, on = G.st.auto !== false && !race, a = autoSec();
     $("#l-auto-wrap").hidden = race;   /* ⚡ Đua: tổng thời gian do host đặt cứng */
-    $("#l-qs-wrap").hidden = !(G.st.mode === "kahoot" || on);   /* Tự do: giây/câu chỉ dùng để tính tổng */
+    var mix = G.st.qtype === "mix";
+    $("#l-qs-wrap").hidden = !(G.st.mode === "kahoot" || on) || mix;   /* Tự do: giây/câu chỉ dùng để tính tổng */
+    $("#l-tq-wrap").hidden = !(G.st.mode === "kahoot" || on) || !mix;
+    if (mix) $$("#l-tq-wrap [data-tq]").forEach(function (i) { if (document.activeElement !== i) i.value = tqOf(G.st, i.dataset.tq); });
     $("#l-min").disabled = on;
     if (on) $("#l-min").value = Math.max(1, Math.ceil(a.sec / 60));
     $("#l-autohint").textContent = on ? (a.n ? "→ " + a.n + (G.st.qtype === "sheet" ? " chỗ trống" : " từ") + " × " + a.qs + " giây" + (G.st.mode === "kahoot" ? " (+" + REVEAL_MS / 1000 + " giây xem đáp án)" : "") + " = " + fmtSec(a.sec) : "→ chọn chủ đề trước") : "";
@@ -881,7 +889,13 @@
     return shuffle([w.term].concat(picks));
   }
   /* thời gian mỗi câu (giây) theo dạng: phiếu = giây/câu × số chỗ trống; đặt câu ≥60; dictation ≥30 */
+  /* ⏱ giây RIÊNG từng loại khi Trộn (TJ 2026-10-02: "phần gõ nhanh quá không gõ kịp, cho chọn time cho từng loại").
+     Chưa chỉnh: trắc nghiệm = giây mỗi câu; Gõ từ = gấp đôi (ít nhất 20 giây). */
+  var TQ_TYPES = ["meaning", "en2m", "gap", "recall"];
+  function tqDefault(type, qs) { return type === "recall" ? Math.max(20, qs * 2) : qs; }
+  function tqOf(st, type) { var qs = +st.qs || 15, v = st.tq && +st.tq[type]; return v > 0 ? v : tqDefault(type, qs); }
   function qLimit(q, qs) {
+    if (G.st && G.st.qtype === "mix" && TQ_TYPES.indexOf(q.type) >= 0) return tqOf(G.st, q.type);
     if (q.type === "sheet") return Math.min(600, Math.max(60, qs * q.n));
     if (q.type === "write") return Math.max(60, qs);
     if (q.type === "dict") return Math.max(30, qs);
@@ -1231,6 +1245,12 @@
     setTimeout(function () { b.textContent = "🔗 Copy link mời"; }, 2000);
   });
   $("#l-screen").addEventListener("click", function () { window.open(roomLink(G.room.code, true), "_blank"); });
+  $("#l-tq-wrap").addEventListener("change", function (e) {
+    var i = e.target.closest("[data-tq]"); if (!i || !G.isHost || !G.st) return;
+    G.st.tq = Object.assign({}, G.st.tq || {}); G.st.tq[i.dataset.tq] = Math.max(3, Math.min(180, Math.round(+i.value) || tqDefault(i.dataset.tq, +G.st.qs || 15)));
+    i.value = G.st.tq[i.dataset.tq];
+    push(); paintAutoTime();
+  });
   ["#l-mode", "#l-qtype", "#l-min", "#l-qs", "#l-lang", "#l-teamn", "#l-hostplay", "#l-force", "#l-scoring", "#l-gapsrc", "#l-auto", "#l-sound"].forEach(function (s) {
     $(s).addEventListener("change", function () {
       if (!G.isHost || !G.st) return;   /* chưa kết nối xong (G.st chưa có) -> bỏ qua, initHostLobby sẽ vẽ lại */
@@ -1783,7 +1803,8 @@
      Mỗi máy tự ghi lại câu hỏi NGAY LÚC LỘ ĐÁP ÁN (chụp khung câu hỏi đang hiện: đúng/sai đã tô màu, ai chọn gì),
      không cần server. Hết ván -> nút "📖 Xem lại đáp án" trên màn kết quả, ◀ ▶ (hoặc phím ← →) đi từng câu. */
   G.log = []; G.logMatch = null;
-  function logStart(s) { var k = s.matchId || s.started || "m"; if (G.logMatch !== k) { G.logMatch = k; G.log = []; } }
+  /* ván mới: xoá cả trí nhớ "đã đọc câu số n" — trước đây Kahoot ván 2 đánh số lại từ 1 nên tưởng đã đọc rồi, im luôn */
+  function logStart(s) { var k = s.matchId || s.started || "m"; if (G.logMatch !== k) { G.logMatch = k; G.log = []; spoke = {}; } }
   function logQ(q, mine, ok) {
     try {
       var vi = $("#p-vi").cloneNode(true), orig = $$("#p-vi select");
@@ -1819,7 +1840,7 @@
     /* 🔊 nghe lại (TJ 2026-10-02): nút cạnh ◀ ▶ + loa nhỏ ngay sau từ đúng; đang bật tiếng thì sang câu tự đọc */
     $("#rv-say").hidden = !L.say; $("#rv-say").dataset.say = L.say || "";
     $$("#rv-vi .g-fill").forEach(function (f) { if (L.say) f.insertAdjacentHTML("afterend", spk(L.say)); });
-    if (L.say && soundOn()) sayIt(L.say);
+    if (L.say && soundOn()) sayIt(L.say, true);
     var m = $("#rv-mine");
     m.className = "g-rvmine";
     if (L.typed && L.played) {
@@ -1831,7 +1852,7 @@
   }
   $("#e-review").addEventListener("click", function () { renderReview(0); });
   function spk(text) { return '<button type="button" class="g-spk" data-say="' + esc(text) + '" title="Nghe lại">🔊</button>'; }
-  document.addEventListener("click", function (e) { var b = e.target.closest("[data-say]"); if (b && b.dataset.say) sayIt(b.dataset.say); });
+  document.addEventListener("click", function (e) { var b = e.target.closest("[data-say]"); if (b && b.dataset.say) sayIt(b.dataset.say, true); });
   $("#rv-prev").addEventListener("click", function () { renderReview(rvI - 1); });
   $("#rv-next").addEventListener("click", function () { renderReview(rvI + 1); });
   $("#rv-back").addEventListener("click", function () { G.inHist = false; if (G.st) renderEnd(G.st); });
@@ -2005,11 +2026,18 @@
     else freeSheet(picks);
   });
   /* 🎧 dictation: đọc câu bằng giọng tiếng Anh CỦA MÁY NGƯỜI CHƠI (nghe lại được) — game vẫn im lặng trừ khi tự bấm */
-  function sayIt(text) {
+  /* ĐỌC TIẾNG (v71, TJ 2026-10-02 "âm thanh lúc đọc lúc không"):
+     - now = true (người BẤM loa / nghe lại / xem lại): cắt câu đang đọc, đọc ngay.
+     - now = false (tự đọc khi câu hiện / lộ đáp án): nếu đang đọc dở thì XẾP HÀNG (chỉ giữ câu mới nhất), đọc xong
+       câu trước mới đọc — trước đây câu mới cắt ngang đáp án đang đọc, Chrome hay nuốt luôn câu ngay sau lệnh cắt.
+     - Giữ tham chiếu G.utt: Chrome có thể dọn rác utterance đang đọc -> tắt tiếng giữa chừng + không bao giờ báo onend.
+     - Gỡ kẹt: 6 s không thấy onend (Chrome báo "đang đọc" mà thật ra im) -> huỷ, đọc tiếp câu đang chờ.
+     - Lỗi âm thanh tạm (audio-busy / synthesis-failed) -> thử lại 1 lần. */
+  function sayIt(text, now) {
     try {
-      var syn = window.speechSynthesis; if (!syn) return;
-      /* Chrome: cancel() rồi speak() NGAY thì hay bị im lặng bỏ qua (TJ 2026-10-02 "đang bật tiếng mà mất tiếng") ->
-         chỉ cancel khi đang đọc dở, resume() đánh thức bộ đọc bị treo, chờ 80 ms rồi mới speak */
+      var syn = window.speechSynthesis; if (!syn || !text) return;
+      if (!now && G.saying && (syn.speaking || syn.pending)) { G.nextSay = text; return; }
+      if (now) G.nextSay = null;
       var busy = syn.speaking || syn.pending;
       if (busy) syn.cancel();
       try { syn.resume(); } catch (er) {}
@@ -2018,12 +2046,23 @@
       var v = (mine && all.find(function (x) { return x.name === mine; })) || null;
       if (!v) { var en = all.filter(function (x) { return /^en[-_]US/i.test(x.lang); }); v = en.find(function (x) { return /natural|online|google/i.test(x.name); }) || en[0]; }
       if (v) u.voice = v;
-      G.saying = true; u.onend = function () { G.saying = false; };
-      u.onerror = function (e) {   /* Chrome chặn giọng đọc khi trang CHƯA được chạm (người chơi vào bằng link) -> nhắc chạm + đọc bù */
-        G.saying = false;
-        if (e && e.error === "not-allowed") { G.blockedWord = text; tapHint(true); }
+      var tries = (sayIt._retry === text) ? 1 : 0; sayIt._retry = null;
+      function done() {
+        if (G.utt !== u) return;
+        G.saying = false; G.utt = null; clearTimeout(G.sayDog);
+        if (G.nextSay) { var t = G.nextSay; G.nextSay = null; setTimeout(function () { sayIt(t); }, 60); }
+      }
+      G.utt = u; G.saying = true;
+      u.onend = done;
+      u.onerror = function (e) {
+        var why = e && e.error;
+        if (why === "not-allowed") { G.blockedWord = text; tapHint(true); }   /* Chrome chặn khi trang chưa được chạm -> nhắc chạm + đọc bù */
+        if ((why === "audio-busy" || why === "synthesis-failed" || why === "audio-hardware") && !tries) { G.utt = null; G.saying = false; sayIt._retry = text; setTimeout(function () { sayIt(text, true); }, 250); return; }
+        done();
       };
-      setTimeout(function () { try { syn.speak(u); } catch (er) {} }, busy ? 80 : 0);
+      clearTimeout(G.sayDog);
+      G.sayDog = setTimeout(function () { if (G.utt === u) { try { syn.cancel(); } catch (er) {} done(); } }, 6000 + text.length * 60);
+      setTimeout(function () { try { if (G.utt === u) syn.speak(u); } catch (er) {} }, busy ? 120 : 0);
     } catch (e) {}
   }
   /* Chrome chặn giọng đọc trong trang (nhất là iframe thẻ 🎮) chưa từng được chạm -> lần chạm đầu đọc 1 câu rỗng để "mở khoá" */
@@ -2035,7 +2074,7 @@
     /* lần chạm sau khi bị chặn: tắt dòng nhắc + đọc BÙ từ vừa bị chặn (không mất câu đầu) */
     document.addEventListener(ev, function () {
       tapHint(false);
-      if (G.blockedWord && soundOn()) { var w = G.blockedWord; G.blockedWord = null; setTimeout(function () { sayIt(w); }, 120); }
+      if (G.blockedWord && soundOn()) { var w = G.blockedWord; G.blockedWord = null; setTimeout(function () { sayIt(w, true); }, 120); }
     }, true);
   });
   function tapHint(on) { $$(".js-taphint").forEach(function (x) { x.hidden = !on; }); }
@@ -2051,7 +2090,7 @@
     try {
       var syn = window.speechSynthesis; if (!syn || syn.speaking || syn.pending) return;
       var z = new SpeechSynthesisUtterance("ok"); z.volume = 0; z.rate = 10; z.lang = "en-US";
-      syn.speak(z); setTimeout(function () { if (!G.saying) syn.cancel(); }, 60);
+      syn.speak(z); setTimeout(function () { if (!G.saying && !G.utt) syn.cancel(); }, 60);
     } catch (e) {}
   }
   function readLSraw(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -2073,7 +2112,7 @@
   document.addEventListener("change", function (e) {   /* thả tay -> đọc thử để nghe mức mới (không đọc lộ đáp án) */
     if (!e.target.closest(".js-vol") || !soundOn()) return;
     var q = G.st && G.st.phase === "play" ? (G.st.mode === "kahoot" ? G.st.q : G.myQ) : null;
-    sayIt(baseTerm(replayWord(q) || "volume"));
+    sayIt(baseTerm(replayWord(q) || "volume"), true);
   });
   function paintVolLabel() {   /* "🔉 Âm lượng 80%" cạnh thanh kéo (TJ: thiếu thông tin) */
     var v = Math.round(volLevel() * 100), ic = !soundOn() || v === 0 ? "🔈" : v < 50 ? "🔉" : "🔊";
@@ -2120,11 +2159,11 @@
   /* 🔊 nghe lại (nút ngoài khung câu): Từ->Nghĩa = từ đang hỏi; dạng khác chỉ sau khi lộ đáp án (không lộ đáp án) */
   function replayWord(q) { if (!q) return null; if (q.type === "en2m") return q.word; if (q.type === "dict") return null; return q.revealed || q._shown ? q.ans : null; }
   function paintReplay(q) { var b = $("#p-replay"); if (b) b.disabled = !replayWord(q); }   /* luôn hiện (hàng 3 nút không nhảy), chỉ mờ khi chưa nghe được */
-  $("#p-replay").addEventListener("click", function () { var q = G.st && G.st.mode === "kahoot" ? G.st.q : G.myQ, w = replayWord(q); if (w) sayIt(baseTerm(w)); });
+  $("#p-replay").addEventListener("click", function () { var q = G.st && G.st.mode === "kahoot" ? G.st.q : G.myQ, w = replayWord(q); if (w) sayIt(baseTerm(w), true); });
   $("#p-say").addEventListener("click", function () {
     var q = G.st && G.st.mode === "kahoot" ? G.st.q : G.myQ;
-    if (q && q.say) sayIt(q.say);
-    else if (q && q.type === "en2m" && q.word) sayIt(baseTerm(q.word));   /* nghe lại từ tiếng Anh (luôn được, kể cả khi đang tắt tự đọc) */
+    if (q && q.say) sayIt(q.say, true);
+    else if (q && q.type === "en2m" && q.word) sayIt(baseTerm(q.word), true);   /* nghe lại từ tiếng Anh (luôn được, kể cả khi đang tắt tự đọc) */
   });
   $("#p-type").addEventListener("submit", function (e) {
     e.preventDefault();
