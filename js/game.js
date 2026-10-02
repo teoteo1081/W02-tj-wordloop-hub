@@ -1125,6 +1125,7 @@
     $("#l-host").hidden = !G.isHost; $("#l-wait").hidden = G.isHost; $("#l-hostbtns").hidden = !G.isHost;
     $("#l-roomcard").hidden = !G.isHost;   /* người chơi chỉ chơi: không mã phòng, link mời, 📺, chủ đề */
     $("#l-users").hidden = !(G.isHost && isTJ());
+    paintSoundBtn();
     paintSide();
     $("#l-mecard").hidden = G.isHost; $("#l-wait").hidden = true;
     if (!G.isHost && G.me) { $("#l-meav").innerHTML = avatar(G.me.avatar); $("#l-mename").innerHTML = label({ name: G.me.name, no: G.me.name_no }); }
@@ -1535,6 +1536,7 @@
 
   /* ---------- MỌI NGƯỜI: nhận trạng thái ---------- */
   function onState(s) {
+    if (s && G.st && s.sound !== G.st.sound) setTimeout(paintSoundBtn, 0);   /* host đổi mặc định âm thanh -> nút của người chưa tự chọn đổi theo */
     G.lastState = Date.now();
     if (!G.langSet && !isTJ() && s.lang && G.myLang !== s.lang) { G.myLang = s.lang; $("#g-mylang").value = s.lang; applyUI(); }
     var was = G.st && G.st.phase, langWas = G.st && G.st.lang;
@@ -1611,7 +1613,7 @@
   function paintQuestion(q, hintEl, textEl, optsEl) {
     $(hintEl).textContent = T(QHINT[q.type] || "q_meaning");
     var mine = optsEl === "#p-opts";
-    if (mine) { $("#p-saywrap").hidden = q.type !== "dict"; $("#p-res").innerHTML = ""; paintSoundBtn(); }
+    if (mine) { $("#p-saywrap").hidden = q.type !== "dict"; $("#p-res").innerHTML = ""; paintSoundBtn(); paintReplay(q); }
     if (q.type === "sheet") {
       $(textEl).innerHTML = sheetHTML(q, mine);
       $(optsEl).innerHTML = mine ? '<button class="g-btn" id="p-sheetgo" type="button">' + T("submit_sheet") + "</button>" : "";
@@ -1627,7 +1629,7 @@
     if (mine) $("#p-typein").placeholder = T("type_ph");
     if (q.type === "en2m") {   /* từ tiếng Anh to ở trên, 4 nghĩa theo tiếng của người xem (data-opt vẫn là từ để chấm) */
       var ml = effLang(mine ? G.myLang : "room", G.st, "en2m");
-      $(textEl).innerHTML = esc(q.word) + '<button class="g-spk" type="button" data-say="' + esc(baseTerm(q.word)) + '" title="Nghe lại">🔊</button>';
+      $(textEl).textContent = q.word;
       if (mine) { $("#p-type").hidden = true; speakQ(q, "q"); }
       $(optsEl).innerHTML = q.opts.map(function (o) {
         var m = (q.optTexts || {})[o] || {}, t = m[ml] || m.en || m.vi || o;
@@ -1875,28 +1877,39 @@
   /* 🔉 âm lượng đọc (0–100, nhớ theo máy; mặc định 100). iPhone/Safari có thể bỏ qua volume của giọng máy -> dùng nút âm lượng của máy */
   var LS_VOL = "tjwl_game_volume_v1";
   function volLevel() { var v = parseInt(readLSraw(LS_VOL), 10); return isNaN(v) ? 1 : Math.max(0, Math.min(100, v)) / 100; }
-  $("#p-vol").value = Math.round(volLevel() * 100);
-  $("#p-vol").addEventListener("input", function () { try { localStorage.setItem(LS_VOL, this.value); } catch (e) {} this.title = "Âm lượng: " + this.value + "%"; });
-  $("#p-vol").addEventListener("change", function () {   /* thả tay -> đọc thử để nghe mức mới */
-    var q = G.st && G.st.mode === "kahoot" ? G.st.q : G.myQ, w = q && (q.type === "en2m" ? q.word : q.revealed ? q.ans : null);   /* không đọc lộ đáp án */
-    if (soundOn()) sayIt(baseTerm(w || "volume"));
+  /* Nút "🔊 Có tiếng / 🔇 Đã tắt tiếng" + thanh âm lượng có ở 2 chỗ (phòng chờ + lúc chơi), cùng 1 lựa chọn của máy này:
+     người chơi tự bật/tắt + chỉnh, đè lên mặc định của host (TJ 2026-10-02). */
+  $$(".js-vol").forEach(function (r) { r.value = Math.round(volLevel() * 100); });
+  document.addEventListener("input", function (e) {
+    var r = e.target.closest(".js-vol"); if (!r) return;
+    try { localStorage.setItem(LS_VOL, r.value); } catch (er) {}
+    $$(".js-vol").forEach(function (x) { if (x !== r) x.value = r.value; x.title = "Âm lượng: " + r.value + "%"; });
+  });
+  document.addEventListener("change", function (e) {   /* thả tay -> đọc thử để nghe mức mới (không đọc lộ đáp án) */
+    if (!e.target.closest(".js-vol") || !soundOn()) return;
+    var q = G.st && G.st.phase === "play" ? (G.st.mode === "kahoot" ? G.st.q : G.myQ) : null;
+    sayIt(baseTerm(replayWord(q) || "volume"));
   });
   function paintSoundBtn() {
-    var b = $("#p-sound"); if (!b) return; var on = soundOn();
-    $("#p-vol").disabled = !on; $("#p-vol").title = "Âm lượng: " + $("#p-vol").value + "%";
-    b.textContent = on ? "🔊 Có tiếng" : "🔇 Đã tắt tiếng";
-    b.classList.toggle("off", !on);
-    b.title = on ? "Bấm để tắt tiếng trên máy này (chơi kèm HelloTalk)" : "Bấm để bật lại: câu mới tự đọc từ tiếng Anh";
+    var on = soundOn();
+    $$(".js-snd").forEach(function (b) {
+      b.textContent = on ? "🔊 Có tiếng" : "🔇 Đã tắt tiếng";
+      b.classList.toggle("off", !on);
+      b.title = on ? "Bấm để tắt tiếng trên máy này (chơi kèm HelloTalk)" : "Bấm để bật lại: câu mới tự đọc từ tiếng Anh";
+    });
+    $$(".js-vol").forEach(function (r) { r.disabled = !on; r.title = "Âm lượng: " + r.value + "%"; });
   }
-  $("#p-sound").addEventListener("click", function () {
+  document.addEventListener("click", function (e) {
+    if (!e.target.closest(".js-snd")) return;
     var on = !soundOn();
-    try { localStorage.setItem(LS_SOUND, on ? "1" : "0"); } catch (e) {}
+    try { localStorage.setItem(LS_SOUND, on ? "1" : "0"); } catch (er) {}
     if (!on && window.speechSynthesis) window.speechSynthesis.cancel();
     paintSoundBtn();
   });
   /* đọc từ của câu: "q" = lúc câu hiện (chỉ dạng Từ -> Nghĩa, từ tiếng Anh đang hiện to); "ans" = lúc lộ đáp án (đọc từ đúng) */
   var spoke = {};
   function speakQ(q, when) {
+    if (q && when === "ans") { q._shown = true; paintReplay(q); }   /* đã lộ đáp án -> hiện loa nghe lại từ đúng */
     if (!q || !soundOn()) return;
     if (q.type === "dict" || q.type === "sheet" || q.type === "write") return;   /* dictation có nút 🔊 riêng; phiếu/đặt câu không đọc */
     var word = when === "q" ? (q.type === "en2m" ? q.word : null) : (q.ans || q.word);
@@ -1906,7 +1919,10 @@
     sayIt(baseTerm(word));
   }
   /* loa nhỏ cạnh từ tiếng Anh: bấm = nghe lại (luôn được, kể cả khi đang tắt tự đọc) */
-  document.addEventListener("click", function (e) { var b = e.target.closest(".g-spk[data-say]"); if (b) { e.preventDefault(); sayIt(b.dataset.say); } });
+  /* 🔊 nghe lại (nút ngoài khung câu): Từ->Nghĩa = từ đang hỏi; dạng khác chỉ sau khi lộ đáp án (không lộ đáp án) */
+  function replayWord(q) { if (!q) return null; if (q.type === "en2m") return q.word; if (q.type === "dict") return null; return q.revealed || q._shown ? q.ans : null; }
+  function paintReplay(q) { var b = $("#p-replay"); if (b) b.hidden = !replayWord(q); }
+  $("#p-replay").addEventListener("click", function () { var q = G.st && G.st.mode === "kahoot" ? G.st.q : G.myQ, w = replayWord(q); if (w) sayIt(baseTerm(w)); });
   $("#p-say").addEventListener("click", function () {
     var q = G.st && G.st.mode === "kahoot" ? G.st.q : G.myQ;
     if (q && q.say) sayIt(q.say);
