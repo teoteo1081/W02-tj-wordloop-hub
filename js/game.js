@@ -58,7 +58,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 68;
+  var GAME_VER = 69;
   function checkVersion() {
     if (G.st && G.st.phase === "play") return;
     fetch("game-version.json?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (j) {
@@ -546,6 +546,9 @@
   }
   function scopeKey(scope) { return JSON.stringify((scope || []).map(function (p) { return p.table + ":" + p.id; }).sort()) + "|" + levelsOf().join(","); }
   /* 🎚 lọc cấp độ từ (cột words.level: A1…C2, "-" = chưa gắn) — rỗng = tất cả (TJ 2026-10-01) */
+  /* nhãn cấp độ CEFR cạnh từ đang hỏi (TJ 2026-10-02: "mỗi từ vựng phải để level A-C mấy để biết luôn");
+     chưa gắn cấp độ thì không hiện. Nhãn nói về TỪ cần trả lời — không lộ đáp án. */
+  function lvBadge(l) { l = lvKey(l); return l === "-" ? "" : '<span class="g-lv g-lv-' + l.charAt(0) + '" title="Cấp độ CEFR">' + l + "</span>"; }
   function lvKey(l) { l = String(l || "").trim().toUpperCase(); return /^[ABC][12]$/.test(l) ? l : "-"; }
   function paintLevels() {
     var on = levelsOf(), n = G.lvCount || {};
@@ -671,7 +674,7 @@
       var k = norm(w.term), m = { vi: clean(w.meaning_vi), en: clean(w.def_en), es: clean(w.meaning_es), zh: clean(w.meaning_zh) };
       if (!k || seen[k] || !(m.vi || m.en || m.es || m.zh)) return;
       seen[k] = 1;
-      var it = { wid: w.id, term: clean(w.term), block: w.block_id, pos: norm(w.pos), m: m };
+      var it = { wid: w.id, term: clean(w.term), block: w.block_id, pos: norm(w.pos), lv: lvKey(w.level), m: m };
       pool.push(it); byTerm[k] = it;
     });
     /* câu có chỗ trống: tách câu trong bài đọc giống Context.gapSentences (js/context.js) */
@@ -890,18 +893,18 @@
       var sh = draw("sheet", G.sheets);
       return { type: "sheet", block: sh.block, text: sh.text, ans: sh.ans, wids: sh.wids, n: sh.ans.length, bank: shuffle(sh.ans.slice()) };
     }
-    if (t === "dict") { var d = draw("dict", G.dicts); return { type: "dict", wid: d.wid, term: d.term, say: d.sent, ans: d.sent, n: d.sent.split(/\s+/).length }; }
-    if (t === "write") { var ww = draw("write" + lang, poolFor(lang).length ? poolFor(lang) : G.pool); return { type: "write", wid: ww.wid, term: ww.term, ans: ww.term, texts: ww.m }; }
+    if (t === "dict") { var d = draw("dict", G.dicts), dw = G.pool.find(function (x) { return x.wid === d.wid; }) || {}; return { type: "dict", wid: d.wid, term: d.term, lv: dw.lv, say: d.sent, ans: d.sent, n: d.sent.split(/\s+/).length }; }
+    if (t === "write") { var ww = draw("write" + lang, poolFor(lang).length ? poolFor(lang) : G.pool); return { type: "write", wid: ww.wid, term: ww.term, lv: ww.lv, ans: ww.term, texts: ww.m }; }
     if (t === "mix") t = shuffle(["meaning", "en2m", "recall"].concat(G.gaps.length >= 4 ? ["gap"] : []))[0];
     if (t === "gap" && G.gaps.length >= 4) {
       var g = draw("gap", G.gaps), gw = G.pool.find(function (x) { return x.wid === g.wid; }) || { term: g.term, block: g.block };
-      return { type: "gap", wid: g.wid, ans: g.term, sent: g.text, len: baseTerm(g.term).length, texts: gw.m || {}, opts: distractors(gw, G.pool) };
+      return { type: "gap", wid: g.wid, ans: g.term, lv: gw.lv, sent: g.text, len: baseTerm(g.term).length, texts: gw.m || {}, opts: distractors(gw, G.pool) };
     }
     var p = langs && langs.length ? poolForAll(langs) : poolFor(lang);
     if (p.length < 4) p = poolFor(lang);   /* thiếu từ có nghĩa ở MỌI tiếng -> theo tiếng phòng, ai thiếu thì hiện nghĩa tiếng Anh */
     if (p.length < 4) p = G.pool;
     var w = draw(t + lang + (langs || []).join(""), p);
-    var q = { type: t === "recall" ? "recall" : t === "en2m" ? "en2m" : "meaning", wid: w.wid, ans: w.term, texts: w.m };
+    var q = { type: t === "recall" ? "recall" : t === "en2m" ? "en2m" : "meaning", wid: w.wid, ans: w.term, lv: w.lv, texts: w.m };
     if (q.type === "meaning") q.opts = distractors(w, p);
     if (q.type === "en2m") {   /* hiện TỪ tiếng Anh, 4 lựa chọn = NGHĨA (mỗi người thấy theo tiếng mẹ đẻ của mình) */
       q.word = w.term; q.opts = distractors(w, p); q.optTexts = {};
@@ -1258,7 +1261,7 @@
     var s = Object.assign({}, G.st, { hid: G.me && G.me.id, htab: G.tab, hsince: G.since, on: onlineIds(), left: G.endAt ? G.endAt - Date.now() : null, qLeft: G.qUntil ? G.qUntil - Date.now() : null });
     if (s.q) {
       var q = s.q, rev = !!q.revealed;
-      s.q = { qn: q.qn, n: q.n, wids: q.wids, word: q.word, optTexts: q.optTexts, type: q.type, texts: q.texts, sent: q.sent, opts: q.opts, len: q.len, wid: q.wid, term: q.term, text: q.text, bank: q.bank, say: q.say, limit: q.limit, grading: !!q.grading,
+      s.q = { qn: q.qn, n: q.n, wids: q.wids, word: q.word, lv: q.lv, optTexts: q.optTexts, type: q.type, texts: q.texts, sent: q.sent, opts: q.opts, len: q.len, wid: q.wid, term: q.term, text: q.text, bank: q.bank, say: q.say, limit: q.limit, grading: !!q.grading,
               res: rev ? q.res : null, revealed: rev, ans: rev ? q.ans : null, cnt: Object.keys(q.got).length,
               picks: rev ? Object.keys(q.got).reduce(function (o, pid) { o[pid] = q.got[pid].c; return o; }, {}) : null,
               oks: rev ? Object.keys(q.got).filter(function (pid) { return q.got[pid].ok; }) : null, fast: rev ? q.fast : null };
@@ -1745,6 +1748,7 @@
     }
     if (q.type === "dict" || q.type === "write") {
       $(textEl).textContent = q.type === "dict" ? "🎧" : "✍️ " + q.term + "  —  " + myText(q);
+      if (q.type === "write") $(textEl).insertAdjacentHTML("beforeend", lvBadge(q.lv));
       $(optsEl).innerHTML = "";
       if (mine) { $("#p-type").hidden = false; var ti = $("#p-typein"); ti.value = ""; ti.disabled = false; $("#p-typego").disabled = false; ti.placeholder = T(q.type === "dict" ? "dict_ph" : "write_ph"); if (iPlay()) ti.focus(); }
       return;
@@ -1753,6 +1757,7 @@
     if (q.type === "en2m") {   /* từ tiếng Anh to ở trên, 4 nghĩa theo tiếng của người xem (data-opt vẫn là từ để chấm) */
       var ml = effLang(mine ? G.myLang : "room", G.st, "en2m");
       $(textEl).textContent = q.word;
+      $(textEl).insertAdjacentHTML("beforeend", lvBadge(q.lv));
       if (mine) { $("#p-type").hidden = true; speakQ(q, "q"); }
       $(optsEl).innerHTML = q.opts.map(function (o) {
         var m = (q.optTexts || {})[o] || {}, t = m[ml] || m.en || m.vi || o;
@@ -1762,8 +1767,8 @@
     }
     /* bọc cả câu trong 1 span: .g-qvi là flex -> trước đây chữ trước/ô trống/chữ sau thành 3 cột rời, lủng khoảng lớn.
        Ô trống dài đúng bằng từ cần điền (q.len ký tự) */
-    if (q.type === "gap") $(textEl).innerHTML = '<span class="g-gapline">' + esc(q.sent).replace("{{GAP}}", '<span class="g-blank" style="width:' + (Math.max(3, q.len || 6) * 0.55).toFixed(1) + 'em"></span>') + "</span>";
-    else $(textEl).textContent = myText(q) + (q.type === "recall" && q.len ? "  (" + q.len + ")" : "");
+    if (q.type === "gap") $(textEl).innerHTML = '<span class="g-gapline">' + esc(q.sent).replace("{{GAP}}", '<span class="g-blank" style="width:' + (Math.max(3, q.len || 6) * 0.55).toFixed(1) + 'em"></span>') + lvBadge(q.lv) + "</span>";
+    else { $(textEl).textContent = myText(q) + (q.type === "recall" && q.len ? "  (" + q.len + ")" : ""); $(textEl).insertAdjacentHTML("beforeend", lvBadge(q.lv)); }
     if (q.type === "recall") {
       $(optsEl).innerHTML = "";
       if (optsEl === "#p-opts") { $("#p-type").hidden = false; var inp = $("#p-typein"); inp.value = ""; inp.disabled = false; $("#p-typego").disabled = false; if (iPlay()) inp.focus(); }

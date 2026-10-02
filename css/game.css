@@ -390,3 +390,7 @@ body.embed .g-brand{display:none}
 .g-spk{border:0;background:transparent;cursor:pointer;font-size:.8em;padding:0 2px;vertical-align:middle;line-height:1}
 .g-spk:hover{transform:scale(1.15)}
 .g-board .g-chip2{line-height:1.3;padding:0 7px}   /* v68: nhãn thấp hơn dòng -> dòng không cao thêm khi nhãn xuất hiện */
+
+/* v69: nhãn cấp độ CEFR cạnh từ (A xanh lá · B xanh dương · C cam) */
+.g-lv{display:inline-block;margin-left:8px;padding:1px 7px;border-radius:999px;font-size:12px;font-weight:800;line-height:1.5;vertical-align:middle;letter-spacing:.3px;border:1px solid currentColor;flex:none}
+.g-lv-A{color:#4fae82;background:rgba(79,174,130,.12)} .g-lv-B{color:#5b9bd9;background:rgba(91,155,217,.12)} .g-lv-C{color:#e0894a;background:rgba(224,137,74,.12)}
