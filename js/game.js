@@ -58,7 +58,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 61;
+  var GAME_VER = 63;
   function checkVersion() {
     if (G.st && G.st.phase === "play") return;
     fetch("game-version.json?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (j) {
@@ -1632,7 +1632,16 @@
     }
   }
   function modeLine(s) { return (s.mode === "kahoot" ? T("m_kahoot") + (untimed(s) ? "" : " · " + s.qs + " " + T("sec_q")) : T(s.race ? "m_race" : "m_free")) + (untimed(s) ? " · " + T("no_time") : ""); }
+  /* 🔥 làm nóng giọng đọc: Chrome tải bộ đọc + danh sách giọng chậm ở lần đầu -> câu đầu bị trễ / im (TJ 2026-10-02) */
+  function warmTTS() {
+    try {
+      var syn = window.speechSynthesis; if (!syn || G.ttsWarm) return;
+      G.ttsWarm = true; syn.getVoices(); primeTTS();
+    } catch (e) {}
+  }
+  try { if (window.speechSynthesis) { window.speechSynthesis.getVoices(); window.speechSynthesis.onvoiceschanged = function () { window.speechSynthesis.getVoices(); }; } } catch (e) {}
   function enterPlay(s) {
+    warmTTS();
     logStart(s);
     $("#p-next").hidden = true; $("#p-reveal").hidden = true;
     G.lastN = -1; G.revealedN = -1; G.scRev = -1; G.myChoice = null;   /* ván mới đánh số câu lại từ 1 */
@@ -1965,6 +1974,7 @@
       var v = (mine && all.find(function (x) { return x.name === mine; })) || null;
       if (!v) { var en = all.filter(function (x) { return /^en[-_]US/i.test(x.lang); }); v = en.find(function (x) { return /natural|online|google/i.test(x.name); }) || en[0]; }
       if (v) u.voice = v;
+      G.saying = true; u.onend = u.onerror = function () { G.saying = false; };
       setTimeout(function () { try { syn.speak(u); } catch (er) {} }, busy ? 80 : 0);
     } catch (e) {}
   }
@@ -1972,9 +1982,18 @@
   ["pointerdown", "keydown"].forEach(function (ev) {
     document.addEventListener(ev, function unlock() {
       document.removeEventListener(ev, unlock, true);
-      try { var syn = window.speechSynthesis; if (syn && !syn.speaking) { var z = new SpeechSynthesisUtterance(" "); z.volume = 0; syn.speak(z); } } catch (e) {}
+      primeTTS();
     }, true);
   });
+  /* mồi bộ đọc rồi XOÁ hàng đợi ngay: câu mồi chỉ có dấu cách từng làm Chrome KẸT hàng đợi -> từ cần đọc bị dồn tới lần sau
+     (TJ 2026-10-02: "lúc lộ đáp án không đọc, sau đó mới đọc") */
+  function primeTTS() {
+    try {
+      var syn = window.speechSynthesis; if (!syn || syn.speaking || syn.pending) return;
+      var z = new SpeechSynthesisUtterance("ok"); z.volume = 0; z.rate = 10; z.lang = "en-US";
+      syn.speak(z); setTimeout(function () { if (!G.saying) syn.cancel(); }, 60);
+    } catch (e) {}
+  }
   function readLSraw(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   /* 🔊 đọc to từ tiếng Anh: "1"/"0" = người này tự chọn trên máy; chưa chọn -> theo mặc định của phòng (host đặt) */
   var LS_SOUND = "tjwl_game_sound_v1";
@@ -2030,6 +2049,7 @@
     if (q && when === "ans") { q._shown = true; paintReplay(q); }   /* đã lộ đáp án -> hiện loa nghe lại từ đúng */
     if (!q || !soundOn()) return;
     if (q.type === "dict" || q.type === "sheet" || q.type === "write") return;   /* dictation có nút 🔊 riêng; phiếu/đặt câu không đọc */
+    if (q.type === "en2m" && when === "ans") return;   /* Từ->Nghĩa đã đọc lúc câu hiện; đáp án tiếng Việt thì không đọc lại (TJ: phát 2 lần) */
     var word = when === "q" ? (q.type === "en2m" ? q.word : null) : (q.ans || q.word);
     if (!word) return;
     if (q.qn != null) { var k = when + ":" + q.qn; if (spoke[k]) return; spoke[k] = 1; }   /* Kahoot: mỗi câu có số qn, trạng thái gửi lại nhiều lần */
