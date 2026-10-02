@@ -1009,7 +1009,7 @@
       if (s !== "SUBSCRIBED" || ch !== G.ch) return;
       if (G.view !== "screen") await track();
       if (G.isHost) {
-        if (!G.st) G.st = { phase: "lobby", sound: false, auto: true, levels: [], gapsrc: "lib", scoring: G.room.scoring || "q", scope: G.room.scope || [], title: G.room.title || "", mode: G.room.mode, qtype: G.room.qtype || "meaning", lang: G.room.meaning_lang || "vi", force: false, minutes: +G.room.minutes, qs: G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
+        if (!G.st) G.st = { phase: "lobby", sound: true, auto: true, levels: [], gapsrc: "lib", scoring: G.room.scoring || "q", scope: G.room.scope || [], title: G.room.title || "", mode: G.room.mode, qtype: G.room.qtype || "meaning", lang: G.room.meaning_lang || "vi", force: false, minutes: +G.room.minutes, qs: G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
         push();
         if (G.st.phase === "play") onState(pub());
         else initHostLobby();
@@ -1081,7 +1081,7 @@
       return;
     }
     var pv = G.st || {};   /* trạng thái nhận từ host cũ -> lấy lại CÀI ĐẶT, còn ván đang dở thì bỏ (về phòng chờ) */
-    G.st = { phase: "lobby", sound: !!pv.sound, auto: pv.auto !== false, levels: pv.levels || [], gapsrc: pv.gapsrc || "lib", scoring: pv.scoring || G.room.scoring || "q", scope: pv.scope || G.room.scope || [], title: pv.title || G.room.title || "", mode: pv.mode || G.room.mode, qtype: pv.qtype || G.room.qtype || "meaning", lang: pv.lang || G.room.meaning_lang || "vi", force: !!pv.force, minutes: pv.minutes || +G.room.minutes, qs: pv.qs || G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
+    G.st = { phase: "lobby", sound: pv.sound !== false, auto: pv.auto !== false, levels: pv.levels || [], gapsrc: pv.gapsrc || "lib", scoring: pv.scoring || G.room.scoring || "q", scope: pv.scope || G.room.scope || [], title: pv.title || G.room.title || "", mode: pv.mode || G.room.mode, qtype: pv.qtype || G.room.qtype || "meaning", lang: pv.lang || G.room.meaning_lang || "vi", force: !!pv.force, minutes: pv.minutes || +G.room.minutes, qs: pv.qs || G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
     G.endAt = 0; G.qUntil = 0; clearInterval(G.hostTimer);
     G.online.forEach(function (p) { G.st.roster[p.id] = { name: p.name, no: p.no, avatar: p.avatar }; });
     push(); initHostLobby();
@@ -1131,7 +1131,7 @@
       $("#l-min").value = st.minutes || G.room.minutes; $("#l-qs").value = st.qs || G.room.q_seconds;
       $("#l-lang").value = roomLang(st); $("#l-teamn").value = String(st.teams || 0); $("#l-force").checked = !!st.force;
       $("#l-auto").checked = st.auto !== false; paintAutoTime();
-      $("#l-sound").checked = !!st.sound;
+      $("#l-sound").checked = st.sound !== false;
       $("#l-force-wrap").hidden = !($("#l-qtype").value === "meaning" || $("#l-qtype").value === "en2m" || $("#l-qtype").value === "mix");
       $("#l-teambtns").hidden = !(+$("#l-teamn").value);
       paintPoolInfo(); paintPicked();
@@ -1594,7 +1594,7 @@
   function paintQuestion(q, hintEl, textEl, optsEl) {
     $(hintEl).textContent = T(QHINT[q.type] || "q_meaning");
     var mine = optsEl === "#p-opts";
-    if (mine) { $("#p-saywrap").hidden = !(q.type === "dict" || q.type === "en2m"); $("#p-res").innerHTML = ""; paintSoundBtn(); }
+    if (mine) { $("#p-saywrap").hidden = q.type !== "dict"; $("#p-res").innerHTML = ""; paintSoundBtn(); }
     if (q.type === "sheet") {
       $(textEl).innerHTML = sheetHTML(q, mine);
       $(optsEl).innerHTML = mine ? '<button class="g-btn" id="p-sheetgo" type="button">' + T("submit_sheet") + "</button>" : "";
@@ -1610,7 +1610,7 @@
     if (mine) $("#p-typein").placeholder = T("type_ph");
     if (q.type === "en2m") {   /* từ tiếng Anh to ở trên, 4 nghĩa theo tiếng của người xem (data-opt vẫn là từ để chấm) */
       var ml = effLang(mine ? G.myLang : "room", G.st, "en2m");
-      $(textEl).textContent = q.word;
+      $(textEl).innerHTML = esc(q.word) + '<button class="g-spk" type="button" data-say="' + esc(baseTerm(q.word)) + '" title="Nghe lại">🔊</button>';
       if (mine) { $("#p-type").hidden = true; speakQ(q, "q"); }
       $(optsEl).innerHTML = q.opts.map(function (o) {
         var m = (q.optTexts || {})[o] || {}, t = m[ml] || m.en || m.vi || o;
@@ -1851,8 +1851,13 @@
   function readLSraw(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   /* 🔊 đọc to từ tiếng Anh: "1"/"0" = người này tự chọn trên máy; chưa chọn -> theo mặc định của phòng (host đặt) */
   var LS_SOUND = "tjwl_game_sound_v1";
-  function soundOn() { var o = readLSraw(LS_SOUND); return o === "1" ? true : o === "0" ? false : !!(G.st && G.st.sound); }
-  function paintSoundBtn() { var b = $("#p-sound"); if (!b) return; var on = soundOn(); b.textContent = on ? "🔊" : "🔇"; b.classList.toggle("on", on); b.title = on ? "Đang đọc to từ tiếng Anh — bấm để tắt trên máy này" : "Đang tắt tiếng — bấm để nghe đọc từ tiếng Anh"; }
+  function soundOn() { var o = readLSraw(LS_SOUND); return o === "1" ? true : o === "0" ? false : !(G.st && G.st.sound === false); }
+  function paintSoundBtn() {
+    var b = $("#p-sound"); if (!b) return; var on = soundOn();
+    b.textContent = on ? "🔊 Có tiếng" : "🔇 Đã tắt tiếng";
+    b.classList.toggle("off", !on);
+    b.title = on ? "Bấm để tắt tiếng trên máy này (chơi kèm HelloTalk)" : "Bấm để bật lại: câu mới tự đọc từ tiếng Anh";
+  }
   $("#p-sound").addEventListener("click", function () {
     var on = !soundOn();
     try { localStorage.setItem(LS_SOUND, on ? "1" : "0"); } catch (e) {}
@@ -1870,6 +1875,8 @@
     else { var f = "_spoke_" + when; if (q[f]) return; q[f] = 1; }                         /* Tự do: mỗi câu là 1 object riêng */
     sayIt(baseTerm(word));
   }
+  /* loa nhỏ cạnh từ tiếng Anh: bấm = nghe lại (luôn được, kể cả khi đang tắt tự đọc) */
+  document.addEventListener("click", function (e) { var b = e.target.closest(".g-spk[data-say]"); if (b) { e.preventDefault(); sayIt(b.dataset.say); } });
   $("#p-say").addEventListener("click", function () {
     var q = G.st && G.st.mode === "kahoot" ? G.st.q : G.myQ;
     if (q && q.say) sayIt(q.say);

@@ -52,7 +52,7 @@ h1{font-size:22px;margin:8px 0 4px} h2{font-size:16px;margin:18px 0 8px}
 .g-play{display:flex;flex-direction:column;min-height:calc(100dvh - 90px)}
 .g-clock{display:flex;align-items:center;gap:10px}
 #p-left{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums}
-#p-stop{margin-left:auto}
+#p-stop{margin-left:6px}
 .g-board{list-style:none;margin:10px 0;padding:0;flex:1 1 40%;max-height:38dvh;overflow:auto}
 .g-board li{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:10px;background:var(--card);margin-bottom:5px;transition:transform .25s}
 .g-board li.me{outline:2px solid var(--accent)}
@@ -302,6 +302,10 @@ body.embed .g-brand{display:none}
 /* tiêu đề màn + nút quay về canh phải cùng hàng (📜 Lịch sử) */
 .g-h1row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .g-h1row h1{margin:8px 0 4px}
-/* v49: nút 🔊/🔇 cạnh đồng hồ */
-.g-sound{min-width:38px}
-.g-sound.on{border-color:var(--green);color:var(--green)}
+/* v50: "🔊 Có tiếng / 🔇 Đã tắt tiếng" giống bài trắc nghiệm WordLoop (.mn-mute), bên phải cạnh Kết thúc */
+.g-mute{margin-left:auto;background:var(--card);border:1px solid var(--line);color:var(--text-2);font-size:13px;font-weight:600;padding:5px 12px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.g-mute:hover{color:var(--text)}
+.g-mute.off{background:var(--red-sub);color:var(--red);border-color:var(--red)}
+/* loa nhỏ ngay cạnh từ tiếng Anh (bấm = nghe lại) */
+.g-spk{background:none;border:none;cursor:pointer;font-size:.7em;padding:0 0 0 8px;opacity:.8;vertical-align:middle}
+.g-spk:hover{opacity:1}
