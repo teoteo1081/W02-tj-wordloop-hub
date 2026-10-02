@@ -32,7 +32,22 @@
   - 841 từ chưa có `level` (CEFR) — nhờ AI gắn?
   - Điện thoại: `.topbar-right` không co (~890px) -> cả trang WordLoop rộng hơn màn hình; đề xuất gom nút vào menu ☰ (TJ từng dặn không đổi bố cục mobile -> phải hỏi).
   - Bảo mật: gần như mọi bảng có policy `shared_all` cho anon (ai có anon key trong repo public cũng xoá được kho từ) — đề xuất sao lưu định kỳ + chỉ hồ sơ TJ được ghi (cần PAT).
-- **Commit/push gần nhất liên quan**: `eb5a82f` — "Game v46: tự đổi về người chơi gắn hồ sơ (hết TJ#3), màn 👥 Quản lý người chơi…"
+- **2026-10-02 → 10-03 (máy 1), game v68 → v76 — đã làm, đã push** (chi tiết từng bản trong `git log`):
+  - v68/v70/v75: điện thoại hết giật khi chọn đáp án — dải thống kê cố định (ô Câu/phút luôn có, 4 ô/hàng), dòng xếp hạng 1 dòng, dòng nhắc bật tiếng nổi ở đáy, đổi câu hiện dần 0.16s, đúng giữ 0.8s; Kahoot: ảnh người chọn nổi góc phải ô (ô không cao thêm), `#p-msg` giữ 2 dòng. Đo khung iPhone 13 + CPU 4×: 0 layout shift (Tự do + Kahoot).
+  - v68: 🔊 nghe lại trong màn xem lại (nút + loa nhỏ cạnh từ đúng).
+  - v69: nhãn cấp độ CEFR cạnh từ mọi dạng câu. **Dữ liệu**: đã bù `words.level` 819/833 dòng trống bằng gpt-4o-mini (chỉ ghi ô trống); 14 dòng cố ý để trống (12 mã mẫu thuế 1099/1095/1098/K-1 + 2 dòng không phải từ). Sao lưu trước khi ghi: `GITHUB_REPOS/_backups/words_level_before_2026-10-02.json` (ngoài repo).
+  - v71: âm thanh lúc đọc lúc không — Kahoot câm từ ván 2 (`spoke` không xoá mỗi ván), tự đọc xếp hàng không cắt ngang, giữ `G.utt`, gỡ kẹt 6s, thử lại lỗi audio. **Chờ TJ nghe thử trên máy thật.**
+  - v72: 🔀 Trộn có giây RIÊNG từng loại (Nghĩa · Từ→Nghĩa · Điền chỗ trống · Gõ từ; Gõ từ mặc định gấp đôi ≥ 20s).
+  - v73: đang xem lại/kết quả/lịch sử KHÔNG tự tải lại khi có bản mới (`busyReading`); phần xem lại lưu sessionStorage + nút 📖 ở phòng chờ.
+  - v74: ⭐ "Để dành học lại" trong màn xem lại -> `word_progress.bookmarked` của TJ (vào Hub ⭐ ÔN RIÊNG); `progUid()` = hồ sơ TJ hoặc người chơi gắn `profile_id` = TJ. **Dữ liệu**: đã gắn người chơi "Thảo" (`2254ff04-…`) vào hồ sơ TJ -> câu Thảo trả lời ghi tiến trình + chu kỳ Tony Buzan của TJ. 📜 Lịch sử: nút 📖 xem lại từng ván cũ (từ game_answers — chỉ biết đúng/sai).
+  - v76: 📜 Lịch sử › Của tôi: "📖 Xem lại tất cả các ván" + "❌ Chỉ từ hay sai"; ẩn ván trống 0/0.
+- **Còn treo sau v76 (làm tiếp)**:
+  - TJ xác nhận trên điện thoại thật: hết giật (v75) + âm thanh (v71).
+  - Ván cũ không lưu ĐÁP ÁN ĐÃ CHỌN (game_answers chỉ có correct) — muốn xem lại đầy đủ cần cột mới (vd `game_answers.choice`) -> cần PAT.
+  - Vẫn chưa trừ 9 câu test lỡ ghi vào word_progress TJ (Block 1, 2026-09-30) — chờ TJ đồng ý.
+  - Test headless dùng phòng tạm `ZTEST` + người chơi `ZZ_*`, host để MC; script đo giật/âm thanh nằm ở scratchpad (không lưu) — viết lại theo mô tả trong commit v68/v70/v71/v75 nếu cần.
+- **Commit/push gần nhất liên quan**: `056daa5` — "Game v76: 📖 xem lại TẤT CẢ các ván + ❌ chỉ từ hay sai"
+- **Commit cũ hơn**: `eb5a82f` — "Game v46: tự đổi về người chơi gắn hồ sơ (hết TJ#3), màn 👥 Quản lý người chơi…"
 
 <!-- MẪU khi cần điền (xoá dòng comment này, điền các mục dưới, xoá mục nào không có):
 
