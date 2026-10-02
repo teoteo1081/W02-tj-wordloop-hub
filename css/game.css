@@ -417,3 +417,7 @@ body.embed .g-brand{display:none}
 .g-opt .g-pickers{position:absolute;right:6px;top:50%;transform:translateY(-50%);max-width:42%;flex-wrap:nowrap;overflow:hidden;justify-content:flex-end;pointer-events:none}
 .g-opt .g-otext{padding:0 4px}
 #p-msg{min-height:2.7em}
+
+/* v76: xem lại tất cả các ván */
+.g-allrv{gap:8px;flex-wrap:wrap;margin:6px 0 10px}
+.g-rvmean{grid-column:1/-1;text-align:center;font-size:18px;color:var(--text);margin:2px 0 4px}
