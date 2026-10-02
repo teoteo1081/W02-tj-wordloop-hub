@@ -58,11 +58,15 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 72;
+  var GAME_VER = 73;
+  /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
+     chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
+  function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
   function checkVersion() {
     if (G.st && G.st.phase === "play") return;
+    if (busyReading()) return;
     fetch("game-version.json?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (j) {
-      if (j && +j.v > GAME_VER && !(G.st && G.st.phase === "play")) { var u = new URL(location.href); u.searchParams.set("gv", j.v); location.replace(u.toString()); }
+      if (j && +j.v > GAME_VER && !(G.st && G.st.phase === "play") && !busyReading()) { var u = new URL(location.href); u.searchParams.set("gv", j.v); location.replace(u.toString()); }
     }).catch(function () {});
   }
   setTimeout(checkVersion, 3000); setInterval(checkVersion, 120000);
@@ -1178,6 +1182,8 @@
     await loadTree();
   }
   function renderLobby() {
+    if (G.inHist) return;   /* đang xem lại / lịch sử: đổi host, ván mới… không kéo màn hình đi (bấm ← để về) */
+    $("#l-review").hidden = !G.log.length;
     show("s-lobby");
     $("#l-code").textContent = G.room.code;
     applyUI();
@@ -1803,8 +1809,12 @@
      Mỗi máy tự ghi lại câu hỏi NGAY LÚC LỘ ĐÁP ÁN (chụp khung câu hỏi đang hiện: đúng/sai đã tô màu, ai chọn gì),
      không cần server. Hết ván -> nút "📖 Xem lại đáp án" trên màn kết quả, ◀ ▶ (hoặc phím ← →) đi từng câu. */
   G.log = []; G.logMatch = null;
+  /* lưu phần xem lại vào bộ nhớ TAB (sessionStorage): lỡ tải lại trang vẫn xem tiếp được */
+  var SS_REVIEW = "tjwl_game_review_v1";
+  function saveLog() { try { sessionStorage.setItem(SS_REVIEW, JSON.stringify({ m: G.logMatch, log: G.log })); } catch (e) {} }
+  try { var sv = JSON.parse(sessionStorage.getItem(SS_REVIEW) || "null"); if (sv && sv.log && sv.log.length) { G.log = sv.log; G.logMatch = sv.m; } } catch (e) {}
   /* ván mới: xoá cả trí nhớ "đã đọc câu số n" — trước đây Kahoot ván 2 đánh số lại từ 1 nên tưởng đã đọc rồi, im luôn */
-  function logStart(s) { var k = s.matchId || s.started || "m"; if (G.logMatch !== k) { G.logMatch = k; G.log = []; spoke = {}; } }
+  function logStart(s) { var k = s.matchId || s.started || "m"; if (G.logMatch !== k) { G.logMatch = k; G.log = []; spoke = {}; saveLog(); } }
   function logQ(q, mine, ok) {
     try {
       var vi = $("#p-vi").cloneNode(true), orig = $$("#p-vi select");
@@ -1825,6 +1835,7 @@
       G.log.push({ hint: $("#p-hint").textContent, vi: vi.innerHTML, opts: opts.innerHTML, msg: $("#p-msg").textContent.split("  ·  " + T("wait_nextq")).join(""), res: $("#p-res").innerHTML,
                    mine: typed ? (mine == null ? "" : String(mine)) : null, ans: typeof q.ans === "string" ? q.ans : "", ok: !!ok, typed: typed, played: iPlay(),
                    say: q.type === "dict" ? q.say || q.ans : q.type === "en2m" ? baseTerm(q.word) : q.type === "write" ? baseTerm(q.term) : typeof q.ans === "string" ? baseTerm(q.ans) : "" });
+      saveLog();
     } catch (e) { console.warn("logQ", e); }
   }
   var rvI = 0;
@@ -1855,7 +1866,15 @@
   document.addEventListener("click", function (e) { var b = e.target.closest("[data-say]"); if (b && b.dataset.say) sayIt(b.dataset.say, true); });
   $("#rv-prev").addEventListener("click", function () { renderReview(rvI - 1); });
   $("#rv-next").addEventListener("click", function () { renderReview(rvI + 1); });
-  $("#rv-back").addEventListener("click", function () { G.inHist = false; if (G.st) renderEnd(G.st); });
+  $("#rv-back").addEventListener("click", function () {   /* về đúng màn hiện tại của phòng (ván mới đã mở thì về phòng chờ) */
+    G.inHist = false;
+    var s = G.st;
+    if (!s || !G.room) { location.href = "game.html" + (G.embed ? "?embed=1" : ""); return; }
+    if (s.phase === "lobby") return renderLobby();
+    if (s.phase === "end" || s.saved) return renderEnd(s);
+    onState(s);
+  });
+  $("#l-review").addEventListener("click", function () { renderReview(0); });
   document.addEventListener("keydown", function (e) {
     if ($("#s-review").hidden || /INPUT|TEXTAREA|SELECT/.test((e.target || {}).tagName || "")) return;
     if (e.key === "ArrowLeft") renderReview(rvI - 1);
