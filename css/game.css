@@ -312,9 +312,14 @@ body.embed .g-brand{display:none}
 @media (max-width:420px){ .g-vol{width:60px} }
 /* loa nhỏ ngay cạnh từ tiếng Anh (bấm = nghe lại) */
 /* v53: loa nghe lại NGOÀI khung câu, góc trên phải (TJ chọn) */
-.g-qtop{display:flex;justify-content:flex-end;min-height:34px;margin-bottom:4px}
+.g-qtop{display:flex;justify-content:flex-start;align-items:center;gap:10px;min-height:30px;margin-bottom:4px;opacity:.75}
+.g-qtop:hover{opacity:1}
+.g-sndck{display:inline-flex;align-items:center;gap:5px;font-size:13px;color:var(--text-2);cursor:pointer;user-select:none}
+.g-sndck input{accent-color:var(--accent);cursor:pointer}
+.g-qtop .g-vol{width:90px}
 .g-replay{background:transparent;border:1px solid transparent;border-radius:999px;width:38px;height:32px;font-size:16px;cursor:pointer;opacity:.35;filter:grayscale(1)}   /* xám mờ, không gây mất tập trung (TJ) */
 .g-replay:hover,.g-replay:focus-visible{opacity:.8;border-color:var(--line)}
+.g-replay:disabled{opacity:.15;cursor:default}
 /* hàng âm thanh riêng của mỗi người ở phòng chờ */
 .g-sndrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0}
 .g-sndrow .g-mute{margin-left:0}
@@ -326,3 +331,13 @@ body.embed .g-brand{display:none}
 .g-volbox{display:inline-flex;align-items:center;gap:6px}
 .g-volval{font-size:12px;color:var(--text-2);white-space:nowrap;min-width:92px;text-align:right}
 @media (max-width:420px){ .g-volval{min-width:0} }
+
+/* v58: hàng đầu khung câu (mẫu bài trắc nghiệm WordLoop) */
+.g-qhead{display:flex;align-items:center;gap:10px;margin:-2px 0 10px;flex-wrap:wrap}
+.g-qno{font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--text-2);text-transform:uppercase}
+.g-qtools{margin-left:auto;display:inline-flex;align-items:center;gap:8px}
+.g-qtools .g-mute{margin-left:0;font-size:12px;padding:4px 10px}
+.g-qtools .g-vol{width:80px}
+.g-qhead .g-prog{font-size:13px;font-weight:700;color:var(--accent)}
+.g-qhead .g-prog b{color:var(--green)}
+@media (max-width:480px){ .g-qtools .g-vol{width:56px} .g-qhead{gap:6px} }
