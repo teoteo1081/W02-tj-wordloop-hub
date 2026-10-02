@@ -406,3 +406,7 @@ body.embed .g-brand{display:none}
 .g-tq > span{flex-basis:100%}
 .g-tq label{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
 .g-tq input{width:64px}
+
+/* v74: ⭐ để dành học lại + 📖 xem lại ván cũ trong lịch sử */
+.g-star.on{border-color:var(--amber);color:var(--amber);background:rgba(217,160,60,.12)}
+.g-rvbtn{vertical-align:middle;margin-right:4px}
