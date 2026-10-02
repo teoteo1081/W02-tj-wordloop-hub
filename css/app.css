@@ -183,6 +183,7 @@ button{font-family:inherit;}
   font-size:.72rem;font-weight:700;white-space:nowrap;flex-shrink:0;
 }
 .btn-learning:hover{color:var(--text);border-color:var(--border-hi);}
+.btn-learning[hidden]{display:none;}   /* display:flex ở trên từng đè [hidden] -> nút Learning/🎮 Game luôn hiện, kể cả với khách (QA 2026-10-02) */
 .mode-pill{
   font-size:.62rem;font-weight:800;letter-spacing:.06em;padding:.2rem .45rem;border-radius:5px;
   border:1px solid var(--border);color:var(--text-3);background:var(--bg-deep);white-space:nowrap;
@@ -2030,11 +2031,11 @@ textarea:focus{border-color:var(--blue);}
 .home-card.sub .home-card-ic{font-size:1.25rem;}
 .home-card.sub .home-card-name{font-size:.8rem;}
 .home-card-subcount{font-weight:600;color:var(--text-3);font-size:.76rem;}
-@media(max-width:640px){ .home-cards{grid-template-columns:1fr;} }
+@media(max-width:640px){ .home-cards{grid-template-columns:minmax(0,1fr);} }
 
 /* ─── Journey: 2 khung song song (trạng thái | cây thư mục) ─── */
-.journey-body{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;align-items:start;}
-@media(max-width:980px){ .journey-body{grid-template-columns:1fr;} }
+.journey-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.9rem;align-items:start;}
+@media(max-width:980px){ .journey-body{grid-template-columns:minmax(0,1fr);} }   /* minmax(0,…): cột không bị nội dung dài đẩy tràn ngang */
 
 /* ─── Journey: 4 tab Tony Buzan + 2 danh sách Block trong mỗi tab ─── */
 .jtabs{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.7rem;}
@@ -2398,3 +2399,25 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
    trang rộng hơn màn hình, left:0/right:0 sẽ kéo game rộng theo (game tưởng là máy tính, cột chủ đề ghim cứng) */
 @media(max-width:860px){ .game-layer{right:auto;width:100vw;bottom:calc(56px + env(safe-area-inset-bottom));} }
 .mobile-nav button[hidden]{display:none;}
+
+
+/* ══════════════ ĐIỆN THOẠI: thanh trên cùng 2 hàng (2026-10-02) ══════════════
+   TJ báo: trên điện thoại menu trên cùng tràn màn hình, không vuốt ngang để chọn 📖 Learning được. Nguyên nhân:
+   .topbar-right flex-shrink:0 (~900px) -> cả trang rộng ~1080px, tab Hub bị ép còn 0px, thanh điều hướng dưới đáy
+   trôi ra ngoài màn. Nay: hàng 1 = ☰ 🔁 + tab Hub; hàng 2 = dải nút VUỐT NGANG (Trang chủ … Learning, Game, user).
+   Dropdown ngôn ngữ / menu user chuyển position:fixed để không bị cắt bởi overflow của dải vuốt.
+   KHÔNG dùng mask-image làm mờ mép (cắt luôn cả menu fixed). */
+@media (max-width:860px){
+  :root{--topbar-h:92px;}
+  .topbar{flex-wrap:wrap;align-content:center;row-gap:4px;height:calc(var(--topbar-h) + env(safe-area-inset-top));}
+  .hub-tabs{min-width:0;}
+  .topbar-right{order:9;flex:1 0 100%;min-width:0;overflow-x:auto;overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;scrollbar-width:none;padding-bottom:2px;}
+  .topbar-right::-webkit-scrollbar{display:none;}
+  .topbar-right>*{flex-shrink:0;}
+  .user-menu,.lang-dropdown{position:fixed;top:calc(var(--topbar-h) + env(safe-area-inset-top) + 6px);
+    right:8px;left:auto;z-index:950;max-height:calc(100dvh - var(--topbar-h) - 90px);overflow-y:auto;}
+  .game-layer{right:0;width:auto;}   /* hết tràn ngang -> bỏ mẹo 100vw */
+  .jrow .jrow-game{font-size:0;padding:.3rem .5rem;}   /* Journey: chỉ hiện 🎮 để còn chỗ cho tên Block */
+  .jrow .jrow-game::before{content:"🎮";font-size:.9rem;}
+}

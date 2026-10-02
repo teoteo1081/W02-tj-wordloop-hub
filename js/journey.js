@@ -452,7 +452,25 @@
   w.$("#btn-journey").onclick = function () { J.open(); };
   w.$("#btn-journey-back").onclick = function () { J.close(); };
   w.$("#btn-learning").onclick = function () { J.close(); };
-  w.$("#journey-refresh").onclick = function () { J.loadTree(); };
+  /* "⟳ Tải lại" (TJ 2026-10-02 báo "nút refresh hong hoạt động"): trước chỉ tải lại cây bên phải, lịch + số đếm đứng yên,
+     không có dấu hiệu đang tải -> tưởng nút chết. Nay tải lại cả số liệu + nhật ký + lịch (giữ tháng đang xem) + cây. */
+  J.refresh = async function () {
+    var btn = w.$("#journey-refresh"); if (btn.disabled) return;
+    var old = btn.textContent; btn.disabled = true; btn.textContent = "⟳ Đang tải…";
+    try {
+      var uid = w.Auth.user && w.Auth.user.id;
+      if (uid) {
+        J._summary = await w.DB.getJourneySummary(uid);
+        J._log = await w.DB.getDailyLog(uid);
+        if (w.App && w.App.setWordCounter) w.App.setWordCounter(J._summary.mastered, J._summary.totalWords);
+      }
+      J.renderCalendar();
+      await J.loadTree();
+      if (w.toast) w.toast("Đã tải lại", "ok");
+    } catch (e) { if (w.toast) w.toast("Không tải lại được: " + (e.message || e), "err"); }
+    finally { btn.disabled = false; btn.textContent = old; }
+  };
+  w.$("#journey-refresh").onclick = function () { J.refresh(); };
   w.$("#jcal-prev").onclick = function () { J.shiftCalMonth(-1); };
   w.$("#jcal-next").onclick = function () { J.shiftCalMonth(1); };
 
