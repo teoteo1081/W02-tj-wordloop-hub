@@ -26,12 +26,14 @@
     learnWasHidden = learn.hidden;
     learn.hidden = false;          /* "📖 Learning" = về lại trang đang học */
     layer.hidden = false;
+    try { sessionStorage.setItem("tjwl_game_open", "1"); } catch (e) {}   /* F5 khi đang ở Game -> mở lại Game (TJ 2026-10-02) */
     btn.classList.add("active");
     if (mbtn) { w.$$(".mobile-nav button").forEach(function (x) { x.classList.toggle("active", x === mbtn); }); }
     document.body.classList.add("game-on");
   }
   function close() {
     layer.hidden = true;
+    try { sessionStorage.removeItem("tjwl_game_open"); } catch (e) {}
     learn.hidden = learnWasHidden;
     btn.classList.remove("active");
     if (mbtn) mbtn.classList.remove("active");
@@ -73,7 +75,12 @@
   w.$$(".mobile-nav button").forEach(function (b) { if (b !== mbtn) b.addEventListener("click", function () { if (isOpen()) close(); }, true); });
 
   if (w.Auth && w.Auth.onChange) w.Auth.onChange(syncBtn);
-  var tries = 0, t = setInterval(function () { syncBtn(); if (++tries > 30 || !btn.hidden) clearInterval(t); }, 1000);   /* Auth.init chạy bất đồng bộ */
+  var wasOpen = false; try { wasOpen = sessionStorage.getItem("tjwl_game_open") === "1"; } catch (e) {}
+  var tries = 0, t = setInterval(function () {   /* Auth.init chạy bất đồng bộ */
+    syncBtn();
+    if (!btn.hidden && wasOpen && !isOpen()) { wasOpen = false; open(); }
+    if (++tries > 30 || !btn.hidden) clearInterval(t);
+  }, 1000);
   syncBtn();
   w.GameLayer = { open: open, close: close, isOpen: isOpen, openScope: openScope };
 })(window);
