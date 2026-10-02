@@ -58,7 +58,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 58;
+  var GAME_VER = 59;
   function checkVersion() {
     if (G.st && G.st.phase === "play") return;
     fetch("game-version.json?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (j) {
@@ -1643,7 +1643,6 @@
     var me = G.me && s.scores ? s.scores[G.me.id] : null, total = +s.total || 0, html = "";
     var done = me ? (me.c || 0) + (me.w || 0) : 0;
     var qi = s.mode === "kahoot" && s.q ? s.q.qn : done + 1;   /* số thứ tự câu đang làm */
-    $("#p-qno").textContent = total ? T("q_of", { i: qi, n: total }) : T("q_of", { i: qi, n: "" }).replace(/\s*\/\s*(题)?$/, "$1");   /* ⚡ Đua: không giới hạn -> chỉ "CÂU 7" */
     if (me && iPlay()) html = "<b>✓ " + (me.c || 0) + "</b> · " + esc(total ? T("done_of", { a: done, n: total }) : T("done_of", { a: done, n: "" }).replace(/\/$/, ""));
     el.innerHTML = html;
   }

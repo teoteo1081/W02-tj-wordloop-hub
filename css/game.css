@@ -341,3 +341,10 @@ body.embed .g-brand{display:none}
 .g-qhead .g-prog{font-size:13px;font-weight:700;color:var(--accent)}
 .g-qhead .g-prog b{color:var(--green)}
 @media (max-width:480px){ .g-qtools .g-vol{width:56px} .g-qhead{gap:6px} }
+
+/* v59: TJ chốt — tất cả lên HÀNG TRÊN CÙNG (đồng hồ · tiến độ · 🔊 nghe lại · Có tiếng · âm lượng · Kết thúc); khung câu giữ như cũ */
+.g-clock .g-qtools{margin-left:auto}
+.g-clock #p-stop{margin-left:6px}
+.g-clock .g-prog{font-size:13px;font-weight:700;color:var(--accent)}
+@media (max-width:560px){ .g-clock{flex-wrap:wrap;row-gap:6px} .g-clock .g-qtools{margin-left:0} }
+.g-clock #p-mode{white-space:nowrap}
