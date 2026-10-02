@@ -348,3 +348,14 @@ body.embed .g-brand{display:none}
 .g-clock .g-prog{font-size:13px;font-weight:700;color:var(--accent)}
 @media (max-width:560px){ .g-clock{flex-wrap:wrap;row-gap:6px} .g-clock .g-qtools{margin-left:0} }
 .g-clock #p-mode{white-space:nowrap}
+
+/* v60: thống kê trên bảng xếp hạng + hàng trên cùng */
+.g-stats{margin-left:auto;margin-right:10px;display:inline-flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;font-size:12px;color:var(--text-2);font-variant-numeric:tabular-nums}
+.g-chip2{background:var(--deep);border:1px solid var(--line);border-radius:999px;padding:1px 8px;white-space:nowrap;line-height:1.6}
+/* vạch tỉ lệ đúng/sai mảnh dưới mỗi dòng bảng xếp hạng */
+.g-board li{position:relative;overflow:hidden}
+.g-accbar{position:absolute;left:10px;right:10px;bottom:2px;height:3px;border-radius:3px;background:var(--red-sub)}
+.g-accbar i{display:block;height:100%;border-radius:3px;background:var(--green);transition:width .3s}
+.g-stats + .g-tally{margin-left:0}
+.g-mystats{font-weight:500;color:var(--text-2)}
+@media (max-width:480px){ .g-stats{font-size:11px;margin-right:6px} }
