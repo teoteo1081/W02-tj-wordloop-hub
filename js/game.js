@@ -58,7 +58,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 64;
+  var GAME_VER = 65;
   function checkVersion() {
     if (G.st && G.st.phase === "play") return;
     fetch("game-version.json?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (j) {
@@ -74,7 +74,7 @@
   var UI = {
     vi: { lang_room: "🌐 Theo phòng", next_q: "Câu tiếp ▶", reveal_btn: "👁 Hiện đáp án", wait_nextq: "Chờ host sang câu tiếp…", no_time: "∞ không tính giờ", review_btn: "📖 Xem lại đáp án", review_h: "📖 Xem lại đáp án", prev: "◀ Trước", next: "Sau ▶", back_res: "← Về kết quả", you_typed: "Bạn trả lời: {a}", you_none: "Bạn chưa trả lời câu này", right_ans: "Đáp án đúng: {a}", same_name: "Tên \"{n}\" đã có người dùng: {list}.\nNếu là BẠN (chơi ở máy/trình duyệt khác) -> gõ số của bạn (vd 1) để giữ lịch sử.\nNếu là người khác -> để trống và bấm OK.", tab_other: "Game đã được mở ở tab khác — tab này tạm dừng.", tab_busy: "Ván đang chơi ở tab khác — tab này không vào phòng để khỏi làm hỏng ván.", tab_use: "Dùng game ở tab này", q_en2m: "Chọn nghĩa đúng của từ tiếng Anh này", pts_speed: "điểm tốc độ", h_right: "✓ Đúng", h_wrong: "✗ Sai", s_bestc: "nhiều câu đúng nhất / 1 ván", q_sheet: "Chọn từ cho TẤT CẢ chỗ trống rồi bấm Nộp", q_write: "Đặt 1 câu tiếng Anh có dùng từ này", q_dict: "Bấm 🔊 nghe rồi gõ lại CẢ CÂU", listen: "🔊 Nghe", headphones: "🎧 Dùng tai nghe để không lọt tiếng vào voice", submit_sheet: "📄 Nộp bài", grading: "✍️ Đang chấm câu của mọi người…", write_ph: "Viết 1 câu tiếng Anh…", dict_ph: "Gõ lại câu vừa nghe…", r_sheet: "✓ {k}/{n} chỗ đúng", r_dict: "✓ {k}/{n} từ đúng", r_write: "Điểm câu {p}/100 (ngữ pháp {g}/50 · dùng từ {u}/50)", fix: "Sửa:", your_ans: "Bạn gõ:", sent_ok: "Đã nộp — chờ mọi người…", mother_h: "Nghĩa hiển thị bằng (tiếng mẹ đẻ)", mother_tt: "Tiếng mẹ đẻ của bạn (chữ giao diện + nghĩa)", name_h: "Bạn tên gì?", name_sub: "Máy này sẽ nhớ tên cho lần sau — không cần email.", name_ph: "Nhập tên…", avatar_h: "Chọn ảnh đại diện", upload: "📷 Tải ảnh của bạn", save: "Lưu & tiếp tục →", need_name: "Nhập tên trước nhé.", saving: "Đang lưu…", uploading: "Đang tải ảnh…", not_image: "File này không phải ảnh.",
       join_h: "Vào phòng", code_ph: "MÃ PHÒNG", go: "Vào", hist_btn: "📜 Lịch sử & Xếp hạng", no_room: "Không tìm thấy phòng {c}.", room: "Phòng", room_code: "Mã phòng", copy_link: "🔗 Copy link mời", copied: "✓ Đã copy", screen_btn: "📺 Màn hình chung", players: "Người chơi", vocab: "Từ vựng", wait_host: "Chờ host bắt đầu…", host_away: "Host chưa vào phòng — xem trước, chờ host tới nhé.", wait_next: "Chờ host mở ván mới…", host_lost: "⚠ Host mất kết nối — chờ host quay lại…", host_lost_free: "⚠ Host mất kết nối — bạn cứ làm tiếp, đáp án sẽ tự gửi khi host quay lại",
-      m_kahoot: "Cùng 1 câu", m_free: "Tự do", left_q: "còn {n} câu", per_min: "{n} câu/ph", missed: "bỏ {n}", t_acc: "Tỉ lệ đúng trên các câu đã trả lời", t_pace: "Số câu làm được mỗi phút", t_avg: "Thời gian trung bình để chọn đáp án mỗi câu", t_miss: "Số câu hết giờ mà chưa chọn (không tính là sai)", t_left: "Số câu còn lại của ván", avg_s: "TB {n}s", react_s: "⚡TB {n}s", q_of: "Câu {i} / {n}", done_of: "đã làm {a}/{n}", m_race: "⚡ Đua tốc độ", sec_q: "giây/câu", q_meaning: "Chọn từ tiếng Anh đúng nghĩa", q_gap: "Chọn từ điền vào chỗ trống", q_recall: "Gõ từ tiếng Anh của nghĩa này", type_ph: "Gõ từ tiếng Anh…", submit: "Gửi",
+      m_kahoot: "Cùng 1 câu", m_free: "Tự do", left_q: "còn {n} câu", per_min: "{n} câu/ph", missed: "bỏ {n}", t_acc: "Tỉ lệ đúng trên các câu đã trả lời", t_pace: "Số câu làm được mỗi phút", t_avg: "Thời gian trung bình để chọn đáp án mỗi câu", t_miss: "Số câu hết giờ mà chưa chọn", t_left: "Số câu còn lại của ván", avg_s: "TB {n}s", react_s: "⚡TB {n}s", q_of: "Câu {i} / {n}", done_of: "đã làm {a}/{n}", m_race: "⚡ Đua tốc độ", sec_q: "giây/câu", q_meaning: "Chọn từ tiếng Anh đúng nghĩa", q_gap: "Chọn từ điền vào chỗ trống", q_recall: "Gõ từ tiếng Anh của nghĩa này", type_ph: "Gõ từ tiếng Anh…", submit: "Gửi",
       picked: "Đã trả lời — chờ mọi người…", picked_change: "Đã chọn — còn giờ thì bấm đáp án khác để đổi", answered: "{n} người đã trả lời", right: "✓ Đúng!", wrong: "✗ Sai — đáp án: {a}", timeout: "⏱ Hết giờ — đáp án: {a}", answer: "Đáp án: {a}", fastest: "⚡ Nhanh nhất: {n}", n_right: "{n} người đúng", time_up: "⏱ Hết giờ — chờ tổng kết…", loading: "Đang tải từ vựng…", mc: "Bạn đang làm MC — mở 📺 Màn hình chung để cả nhóm cùng xem.",
       results: "🏁 Kết quả", back: "← Về trang game", nobody: "Chưa ai trả lời câu nào.", ppl: "người", avg: "TB", team_red: "Đội Đỏ", team_blue: "Đội Xanh", team_green: "Đội Lá", team_yellow: "Đội Vàng", click_team: "· host bấm tên để đổi đội",
       tab_me: "Của tôi", tab_week: "Tuần này", tab_all: "Mọi thời gian", h_player: "Người chơi", h_total: "Tổng điểm", h_games: "Trận", h_best: "Cao nhất", h_acc: "Đúng", h_date: "Ngày", h_topic: "Chủ đề", h_score: "Điểm", h_rank: "Hạng", h_rw: "Đúng/Sai",
@@ -1351,6 +1351,17 @@
         G.answers.push({ pid: pid, wid: q.wid, term: q.ans, ok: g.ok, ms: g.ms });
       });
     }
+    /* ⏭ BỎ LỠ = SAI (TJ 2026-10-02): ai đang trong ván mà hết giờ chưa chọn -> tính 1 câu sai (phiếu: sai cả N chỗ trống),
+       mất chuỗi, thời gian = trọn giờ của câu. Ghi cả game_answers để lịch sử / Fix lỗi sai đúng. */
+    if (!q.missDone && q.type !== "write") {
+      q.missDone = true;
+      var limMs = (q.limit || G.st.qs || 15) * 1000;
+      Object.keys(G.st.scores).forEach(function (pid) {
+        if (q.got[pid]) return;
+        if (q.type === "sheet") { award(pid, 0, false, 0, q.n || 1, limMs, limMs); (q.wids || []).forEach(function (wid, i) { G.answers.push({ pid: pid, wid: wid, term: q.ans[i], ok: false, ms: null }); }); }
+        else { score(pid, false, limMs, limMs); G.answers.push({ pid: pid, wid: q.wid, term: q.term || q.ans, ok: false, ms: null }); }
+      });
+    }
     q.revealed = true; G.revealUntil = Date.now() + (q.type === "write" || q.type === "sheet" ? REVEAL_MS * 3 : q.type === "dict" ? REVEAL_MS * 2 : REVEAL_MS); G.qUntil = 0;
     var best = null; Object.keys(q.got).forEach(function (pid) { var g = q.got[pid]; if (g.ok && (!best || g.ms < q.got[best].ms)) best = pid; });
     q.fast = best;   /* chỉ để khoe, không cộng điểm */
@@ -1567,7 +1578,8 @@
     if (!s || s.phase !== "play" || !G.endAt) return tot;
     return Math.max(0, tot - Math.max(0, G.endAt - Date.now()));
   }
-  /* Kahoot: câu đã CHẤM của phòng (lộ đáp án) - câu người này đã trả lời = số câu BỎ LỠ (hết giờ chưa chọn, không tính sai) */
+  /* Kahoot: câu đã CHẤM - số lượt đã tính (k). Từ v65 câu bỏ lỡ được tính SAI ngay lúc lộ đáp án (k cũng +1) nên số này
+     thường = 0; chỉ còn > 0 với dữ liệu ván cũ. */
   function missedOf(x, s) {
     if (!s || s.mode !== "kahoot" || !s.q) return 0;
     var asked = s.q.revealed ? s.q.qn : s.q.qn - 1, n = (x.k != null ? x.k : (x.c || 0) + (x.w || 0));
@@ -1885,7 +1897,7 @@
     $("#p-msg").textContent = msg;
     if (q.type === "recall") $("#p-typein").value = G.myChoice || "";
     logQ(q, G.myChoice, ok);
-    if (G.myChoice != null) recordMyProgress(q.wid, ok);
+    if (iPlay()) recordMyProgress(q.wid, ok);   /* bỏ lỡ (chưa chọn) = sai -> vào ❌ Fix lỗi sai + xét chu kỳ */
   }
   /* lộ đáp án dạng phiếu / dictation / đặt câu: điểm của mình + danh sách cả phòng (để cả nhóm bàn qua voice) */
   function revealRich(q, roster, msgEl, resEl, textEl) {
