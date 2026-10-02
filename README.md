@@ -15,6 +15,7 @@ App học từ vựng tiếng Anh cá nhân, dùng phương pháp lặp lại ng
 - [Cách thêm từ vựng mới](#cách-thêm-từ-vựng-mới)
 - [AI Framework — phân tích & luyện nói theo khung](#ai-framework--phân-tích--luyện-nói-theo-khung)
 - [Khoá API / bí mật](#khoá-api--bí-mật)
+- [Đánh giá 5 chuyên gia & lộ trình thương mại hoá (2026-10-02)](#-đánh-giá-5-chuyên-gia--lộ-trình-thương-mại-hoá-2026-10-02)
 - [Việc còn dang dở](#việc-còn-dang-dở)
 
 ## Chạy thử ở máy
@@ -153,6 +154,83 @@ Mỗi Block card trong danh sách Block (chưa mở) có **preview nhanh** (`app
 - `js/config.js` — **có commit** (repo **Public** trên GitHub — mọi key trong file này coi như công khai). Chỉ chứa `SUPABASE_URL`/`SUPABASE_ANON_KEY` — an toàn để lộ (chặn bởi RLS trong `tools/supabase_schema.sql`). **Tuyệt đối không** đặt `service_role`/`sb_secret_...` vào đây.
 - **`GEMINI_API_KEY` KHÔNG nằm trong bất kỳ file client-side nào nữa** (đã bị Google tự thu hồi 3 lần liên tiếp khi từng để trần trong `config.js` — repo Public bị secret-scanning quét ra). Key thật giờ chỉ là **Supabase secret** dùng bởi Edge Function `gemini-proxy` (`supabase/functions/gemini-proxy/index.ts`); client (web live lẫn máy local) gọi qua proxy này bằng `SUPABASE_URL`/`SUPABASE_ANON_KEY` sẵn có, không bao giờ cần biết giá trị key thật. Đổi key Gemini: `supabase secrets set GEMINI_API_KEY=<key> --project-ref pqarpszsipbdugrumhfy` rồi `supabase functions deploy gemini-proxy --project-ref pqarpszsipbdugrumhfy --no-verify-jwt` — không sửa file JS nào. Xem thêm ở `CLAUDE.md`.
 - `js/keys.local.js` (copy từ `js/keys.local.example.js`) — **gitignored**, không commit, chỉ tồn tại trên 1 máy cụ thể. Dùng **duy nhất** để bật **OpenAI tuỳ chọn** (`OPENAI_API_KEY` + `OPENAI_MODEL`) cho máy đó — trả tiền thật nên không đưa lên web live. Không có file này (mặc định) thì app chỉ dùng Gemini qua proxy, hoạt động bình thường ở mọi nơi.
+
+## 🧭 Đánh giá 5 chuyên gia & lộ trình thương mại hoá (2026-10-02)
+
+> Đội 5 subagent (Frontend mobile · QA · Bảo mật/Backend · Sư phạm/EdTech · Chiến lược sản phẩm) kiểm tra web live + code, CHỈ ĐỌC. Đây là ảnh chụp đánh giá ngày 2026-10-02 — việc nào làm xong thì gạch đi / ghi commit, đừng tin mù quáng sau nhiều tuần (verify lại bằng code/DB).
+
+### Đã sửa ngay trong ngày (commit `29b729b`)
+- Điện thoại: thanh trên cùng 2 hàng (hàng 1 ☰ 🔁 + tab Hub; hàng 2 dải nút **vuốt ngang**), hết tràn màn hình (trước: trang ~1080px trên máy 390px, tab Hub bị ép còn 0px, thanh điều hướng dưới đáy trôi ra ngoài).
+- Journey "⟳ Tải lại" tải lại thật (số liệu + nhật ký + lịch + cây, có "Đang tải…").
+- Nút 📖 Learning / 🎮 Game không còn luôn hiện (kể cả với khách) — `display:flex` từng đè `[hidden]`.
+- Journey / Trang chủ hết tràn cột (`minmax(0,1fr)`).
+
+### 🔒 Bảo mật & Backend — KHẨN CẤP
+1. **Chiếm tài khoản, kể cả Admin**: "đăng nhập" chỉ là link `?u=<uuid>` lưu localStorage, không xác minh; danh sách hồ sơ (cả cờ admin) đọc công khai qua anon key (`read_all_profiles`, `tools/supabase_schema.sql`). Quyền admin chỉ kiểm ở client.
+2. **Mất dữ liệu**: policy `shared_all` (anon, using true / with check true) trên hubs…words, word_progress, block_progress, notebook_access, các bảng game → ai có anon key (nằm trong repo public) cũng sửa/xoá được; FK cascade nên xoá 1 Hub là mất cả nhánh. **Chưa có backup**.
+3. **Lạm dụng chi phí AI**: `gemini-proxy` / `openai-proxy` deploy `--no-verify-jwt`; quota bỏ qua khi thiếu `user_id`/`block_id` hoặc gửi id admin; client tự chọn `model`, prompt không giới hạn.
+4. **Riêng tư**: tên, tiến trình, lịch sử chơi, `site_visits` đọc công khai; bucket `game-avatars` cho anon upload; `fetch-article` là proxy công khai.
+5. **Pháp lý**: chưa có ToS / chính sách riêng tư / đồng ý phụ huynh / xoá-xuất dữ liệu / audit log.
+6. **Vận hành**: file SQL từng lệch DB thật — cần liệt kê `pg_policies` thật rồi đồng bộ; revoke mọi PAT cũ.
+
+**Kế hoạch:**
+- **A. Tuần này (1–3 ngày, ~0đ, cần PAT mới):** backup hằng đêm (GitHub Action `pg_dump` ở repo PRIVATE, giữ 30 bản, thử restore) · bỏ `read_all_profiles` (view `profiles_public` không có `is_admin` nếu leaderboard cần) · bảng từ vựng: anon chỉ SELECT, ghi chỉ admin đăng nhập Supabase Auth thật (magic link) · AI proxy: bắt JWT, lấy user từ token, fail-closed, whitelist model, giới hạn độ dài, đặt hạn mức chi tiêu cứng ở OpenAI/Google · tắt anon upload avatar · revoke PAT cũ.
+- **B. Trước khi thu tiền (3–6 tuần):** Supabase Auth thật (email OTP/Google), bỏ `?u=`; RLS `auth.uid() = user_id`; mô hình tenant `orgs / org_members(owner|teacher|student) / classes`; rate limit + quota AI theo gói; người chơi game ghi qua RPC/edge function; `audit_log` + soft-delete; staging/prod, migration trong git.
+- **C. Khi có khách trả tiền (2–4 tuần):** webhook thanh toán (PayOS/VNPay/MoMo, Stripe) → bảng `subscriptions`/`payments`, RLS đọc quyền từ đó; ToS/Privacy/DPA; Supabase Pro + PITR; Sentry, cảnh báo chi phí AI, uptime.
+- Chi phí: Supabase Pro ~25 USD/tháng; email SMTP 0–20 USD; PITR ~+100 USD/tháng (tuỳ chọn); phí cổng thanh toán 1–3%.
+
+### 📱 Frontend mobile (việc còn lại)
+- Logo 🔁 trông như nút tải lại nhưng không có handler; app đã cài (standalone) trên iPhone không có cách tải lại trang → gắn `location.reload()`.
+- Safe-area (tai thỏ) khi chạy dạng app: `.topbar` dùng `height:var(--topbar-h)` + `padding-top:env(safe-area-inset-top)` → nội dung bị ép (bản 2 hàng mới đã tính `+ inset` trong ≤860px; kiểm lại >860px).
+- Crumb + `.batches-bar` / `.section-bar` (sticky) vẫn hiện ở Trang chủ / Journey / Ôn riêng, chiếm ~300/664px chiều cao → ẩn khi không ở màn học.
+- Nút "Tôi" ở thanh dưới mở danh sách người học, không phải menu user (bản 2 hàng đã lộ lại menu user).
+- Vùng bấm < 32px: "⋯" tab Hub 18×17, ☰ 32×30, "+" Hub 34×26, nút topbar cao 26px.
+
+### 🧪 QA
+- **HIGH** — Khách vô danh thấy đủ nút thêm/sửa/xoá kho chung (+ Notebook, + Hub, Paste, Add page, "Clean stray rows" xoá từ) và chúng ghi thật (`myRoleInNotebook` mặc định "edit", `js/app.js`).
+- **HIGH** — (đã sửa) topbar tràn; nút Learning/Game luôn hiện.
+- **MEDIUM** — Giao diện English còn lòi tiếng Việt: "chưa có từ", "0 từ sai", "Đọc cả Batch", "+ định nghĩa", "Có N block not studied", "CLOUD · KHÁCH", "Học viên 1", "Đang tải…", "Xem đầy đủ →", MASTERY LEVEL, toàn màn Ôn riêng / Fix lỗi sai, tab Bài học, thanh dưới "Học / Tôi".
+- **MEDIUM** — PWA không chạy offline: `sw.js` precache URL không có `?v=`, thiếu `i18n.js / wordset.js / gamelayer.js / game.html`, URL trang đổi thành `?mode=…&user=…` mà `caches.match` không `ignoreSearch`, `CACHE` chưa bao giờ bump; manifest chỉ có icon SVG (thiếu PNG 192/512).
+- **MEDIUM** — `js/keys.local.js?v=1` 404 mỗi lần tải trang.
+- **MEDIUM** — Tương phản thấp: nút "Start learning →" 2,32:1; "Not tested", breadcrumb 2,77:1; legend ~10px 3,49:1.
+- **MEDIUM** — Vùng bấm nhỏ; ô `#wp-meaning` thiếu label.
+- **LOW** — Khách vào thẳng notebook người khác, không màn chào; "6 block" vs "46 block" lệch nghĩa; ranking hiện "❔ (user đã xoá)"; bộ đếm 📚 ~10s mới ra; `game.html` không theo ngôn ngữ trình duyệt; tên hồ sơ lên URL (`?user=…`) lọt vào GA4.
+- Ghi chú: mỗi lần mở trang bằng hồ sơ chủ, app tự gửi ~7 lệnh ghi (site_visits + upsert Hub Ôn riêng).
+
+### 🎓 Sư phạm / EdTech
+**Mạnh:** học trong ngữ cảnh (bài đọc ~500 từ, dịch từng câu); có cả nhận diện + gợi nhớ (Active Recall, Dictation); "Fix lỗi sai" theo đúng loại câu (`sameKind`); chặn ôn sớm nhảy cóc chu kỳ (`srsAdvanceIfDue`); thư viện câu kiểu Part 5 có AI thứ 2 kiểm định; game nhóm + nghĩa đa ngôn ngữ.
+
+**Yếu:**
+1. Lịch ôn theo **Block** chứ không theo **từ** — đúng 8/10 là cả 10 từ lên lịch, 2 từ sai bị che; C1 và B1 chung khoảng cách.
+2. Ôn trượt không bị phạt: `SRS.demote()` có trong `js/srs.js` nhưng **không nơi nào gọi**; Block dưới 80% chỉ nằm "quá hạn".
+3. Khoảng cách cố định, không dùng thông tin "trễ mà vẫn nhớ" (FSRS thì dùng).
+4. Bài dễ = bài khó: `submitMeaning` (detail.js) và `reconcileMeaningPassed` (db.js) đẩy chu kỳ chỉ bằng trắc nghiệm Nghĩa — **trái với README** ("Nghĩa không đụng SRS").
+5. Đề thi dùng câu của chính bài vừa đọc (nhớ câu ≠ nhớ từ); Phiếu đầy đủ có ngân hàng 10 từ cho 10 chỗ trống → loại trừ dần là đoán được.
+6. Không xử lý dồn quá hạn (TJ: 24/48 Block quá hạn, có Block trễ 10–15 ngày) — dễ bỏ cuộc.
+7. Chưa đo nghe/nói: Dictation chấm khớp nguyên câu, không vào SRS; không đo thời gian phản hồi.
+
+**5 thay đổi lớn nhất:** (1) FSRS theo từng từ (ts-fsrs, dữ liệu `word_progress` có sẵn; Block chỉ là đơn vị trình bày) · (2) độ khó theo loại câu: nhận diện = Hard/không đẩy lịch, gợi nhớ = Good; ôn bằng câu thư viện người học CHƯA thấy; bỏ ngân hàng từ khỏi Phiếu hoặc thêm từ nhiễu ngoài Block · (3) hàng đợi "Hôm nay" giới hạn (~50 lượt), ưu tiên từ sắp quên, nút "Trả nợ quá hạn" chia 5–7 ngày, ôn trượt học lại trong ngày · (4) Dictation vào lịch ôn, chấm theo tỉ lệ từ đúng; nói lại (Web Speech/Whisper); đo thời gian phản hồi · (5) chứng minh tiến bộ: test 2 tuần/lần, đường cong ghi nhớ thật, ước lượng TOEIC Part 5/6 / IELTS Lexical Resource.
+
+**Điều khiến người ta trả tiền:** kết quả đo được ("nhớ 87% của 1.240 từ sau 30 ngày") thay vì đếm hoạt động; bám kỳ thi (danh sách theo dải điểm, Part 5 tính giờ ~20 giây/câu, đáp án nhiễu cùng từ loại); cam kết "15 phút/ngày, không bao giờ quá tải"; báo cáo/chứng chỉ chia sẻ được; gói nội dung có lộ trình ("750 trong 60 ngày").
+
+### 💰 Chiến lược sản phẩm & thương mại hoá
+- **Ai cũng có (không ai trả tiền vì nó):** flashcard, SRS, trắc nghiệm, chính tả, bảng xếp hạng, đọc bằng giọng máy.
+- **Khác biệt thật:** dán bài báo / PDF → bộ từ + bài đọc AI + bài kiểm tra + game, trọn vòng; game kiểu Kahoot chạy thẳng trên bộ từ đang học (giáo viên khỏi soạn lại); cây Notebook/Section/Block khớp cách chia giáo trình theo buổi.
+- **Chặn việc bán:** chưa đăng nhập thật; chỉ admin mở phòng game; chưa có lớp / giao bài / báo cáo cho giáo viên; mảng TOEIC tự học quá chật (Study4, Prep.vn, ELSA).
+- **Phân khúc đầu tiên: giáo viên tự do / gia sư / trung tâm nhỏ** — 1 giáo viên trả tiền kéo theo 20–50 học viên; 2 tính năng mạnh nhất vốn là tính năng của giáo viên; giáo viên VN đã quen trả tiền (Canva, Quizizz, Kahoot). Thông điệp: *"Biến tài liệu của tôi thành bài từ vựng và game trên lớp trong 5 phút."*
+- **Giá giả thuyết (cần kiểm chứng):** Free 0đ (1 lớp ≤10 học viên, 3 lượt AI/ngày, game ≤10 người) · **Giáo viên Pro 99.000đ/tháng hoặc 790.000đ/năm** · Trung tâm 2–4 triệu/năm (5 giáo viên, 200 học viên) · Học viên Pro 49.000đ/tháng (sau) · Trọn đời 990.000đ cho 30 người đầu. Chi phí AI ~0,001 USD/lượt.
+- **90 ngày:** Ngày 1–30: đăng nhập thật, lớp + link mời + giao Block có hạn + bảng điểm, giáo viên nào cũng mở phòng game, trang giới thiệu + video 60 giây; phỏng vấn 20 giáo viên → mốc 10 giáo viên dùng hằng tuần · Ngày 31–60: thu tiền VietQR (kích hoạt tay), 3 video TikTok/Reels mỗi tuần, nhóm Facebook giáo viên, gõ cửa 10 trung tâm → 5 giáo viên trả tiền, giữ chân ≥40% sau 4 tuần · Ngày 61–90: giới thiệu nhau → 15–20 giáo viên, 1–2 trung tâm, ~2–4 triệu/tháng. **Dừng/xoay hướng** nếu ngày 60 < 3 người trả tiền dù đã có 20 người dùng thật — không xây thêm tính năng để chữa cháy.
+- **Không làm lúc này:** app di động riêng, chấm phát âm, đề thi thử TOEIC đầy đủ, thêm ngôn ngữ / khung AI mới, thiết kế lại giao diện.
+- **Pháp lý VN:** hộ kinh doanh trước (hỏi chi cục thuế ngưỡng miễn thuế + hoá đơn điện tử), công ty TNHH khi trung tâm cần hoá đơn đỏ · VietQR → PayOS (~20 đơn/tháng) → MoMo/VNPay sau · thông báo website TMĐT (online.gov.vn), điều khoản + chính sách hoàn tiền · Nghị định 13/2023 & Luật Bảo vệ dữ liệu cá nhân, dưới 16 tuổi cần phụ huynh đồng ý · Bản quyền: không chép đề ETS/IDP, không chép bài đọc/ví dụ sách (AEF – Oxford); **rà nguồn bài đọc + câu ví dụ**, đánh dấu nguồn từng câu; "TOEIC"/"IELTS" là nhãn hiệu — chỉ viết "luyện từ vựng cho kỳ thi TOEIC", không đặt trong tên sản phẩm.
+
+### Lộ trình đề xuất (chờ TJ chọn)
+| Bước | Việc | Thời gian |
+|---|---|---|
+| 1. Ngay | Bảo mật tối thiểu: backup, khoá quyền sửa, khoá AI proxy, hạn mức chi tiêu | 1–3 ngày (cần PAT) |
+| 2. Sửa nhanh | Ẩn nút sửa với khách, logo 🔁 tải lại trang, PWA offline, tương phản, chữ Việt khi chọn English | 1–2 buổi |
+| 3. Nền tảng | Đăng nhập email/Google thật; tài khoản game = tài khoản WordLoop | 2–3 tuần |
+| 4. Kiểm chứng | Phỏng vấn 20 giáo viên — song song bước 3 | |
+| 5. Theo phản hồi | Lớp học / giao bài; FSRS theo từng từ | |
 
 ## Việc còn dang dở
 > **Đây là nơi ghi backlog nhiều-phiên, LÂU DÀI** (khác `HANDOFF.md` — file đó chỉ ghi checkpoint TẠM của 1 phiên sắp hết token, xem luật dùng ngay đầu file đó, và `CLAUDE.md` mục "Nguyên tắc chung"). Việc nào kéo dài nhiều phiên/nhiều người thì cập nhật thẳng vào đây; đừng lập thêm file `.md` mới ngoài 3 file đã có (README/CLAUDE/HANDOFF).
