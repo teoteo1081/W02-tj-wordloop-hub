@@ -298,3 +298,7 @@ body.embed .g-brand{display:none}
 .g-utable .acts button{margin-left:4px}
 .g-utable tr.dup td:first-child{color:var(--amber)}
 .g-utag{font-size:11px;border-radius:6px;padding:1px 6px;background:var(--raise);color:var(--text-2);margin-left:4px}
+
+/* tiêu đề màn + nút quay về canh phải cùng hàng (📜 Lịch sử) */
+.g-h1row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.g-h1row h1{margin:8px 0 4px}
