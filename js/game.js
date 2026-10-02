@@ -58,7 +58,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 69;
+  var GAME_VER = 70;
   function checkVersion() {
     if (G.st && G.st.phase === "play") return;
     fetch("game-version.json?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (j) {
@@ -1737,6 +1737,8 @@
     }).join("") + "</div>";
   }
   function paintQuestion(q, hintEl, textEl, optsEl) {
+    /* câu mới HIỆN DẦN (0.16s) thay vì bật ra đột ngột — điện thoại đỡ cảm giác giật khi đổi câu (TJ 2026-10-02) */
+    [textEl, optsEl].forEach(function (sel) { var el = $(sel); if (!el) return; el.classList.remove("g-in"); void el.offsetWidth; el.classList.add("g-in"); });
     $(hintEl).textContent = T(QHINT[q.type] || "q_meaning");
     var mine = optsEl === "#p-opts";
     if (mine) { $("#p-saywrap").hidden = q.type !== "dict"; $("#p-res").innerHTML = ""; paintSoundBtn(); paintReplay(q); }
@@ -2184,7 +2186,7 @@
     speakQ(q, "ans");
     sendAns({ pid: G.me.id, ok: ok, wid: q.wid, term: q.ans, ms: Date.now() - G.myQStart });
     recordMyProgress(q.wid, ok);
-    showNext(G.st && G.st.race ? (ok ? 250 : 900) : (ok ? 500 : 1400));   /* ⚡ Đua: sang câu gần như ngay */
+    showNext(G.st && G.st.race ? (ok ? 250 : 900) : (ok ? 800 : 1400));   /* đúng: giữ màu xanh 0.8s (0.5s trông như chớp giật trên điện thoại) */   /* ⚡ Đua: sang câu gần như ngay */
   }
 
   /* Tiến trình học — CHỈ hồ sơ admin (TJ). "Học chung" vẫn tách được qua game_answers (có room_id). */
