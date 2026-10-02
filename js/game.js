@@ -58,7 +58,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 67;
+  var GAME_VER = 68;
   function checkVersion() {
     if (G.st && G.st.phase === "play") return;
     fetch("game-version.json?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (j) {
@@ -1704,7 +1704,9 @@
         tile(total ? done + "/" + total : done, T("st_done"), "") +
         (total ? tile(Math.max(0, total - used), T("st_left"), T("t_left")) : "") +
         tile(acc, T("st_acc"), T("t_acc")) +
-        (s.mode !== "kahoot" && n && el2 >= 10000 ? tile(Math.round(n / (el2 / 60000) * 10) / 10, T("st_pace"), T("t_pace")) : "") +
+        /* ô Câu/phút LUÔN có (chưa đủ số liệu thì "—"): trước đây ô hiện thêm sau câu đầu -> dải ô cao thêm 1 hàng,
+           đẩy khung câu hỏi xuống, điện thoại thấy giật (TJ 2026-10-02) */
+        (s.mode !== "kahoot" ? tile(n && el2 >= 10000 ? Math.round(n / (el2 / 60000) * 10) / 10 : "—", T("st_pace"), T("t_pace")) : "") +
         tile(me.k && me.t ? (me.t / me.k / 1000).toFixed(1) + "s" : "—", T("st_avg"), T("t_avg"));
     } else if (s.q && total) html = tile((s.q.qn || 0) + "/" + total, T("st_q"), "") + tile(Math.max(0, total - used), T("st_left"), T("t_left"));
     el.innerHTML = html;
@@ -1792,8 +1794,9 @@
         else if (mine != null && norm(b.dataset.opt) === norm(mine)) b.classList.add("bad");
       });
       var typed = q.type === "recall" || q.type === "dict" || q.type === "write";
-      G.log.push({ hint: $("#p-hint").textContent, vi: vi.innerHTML, opts: opts.innerHTML, msg: $("#p-msg").textContent, res: $("#p-res").innerHTML,
-                   mine: typed ? (mine == null ? "" : String(mine)) : null, ans: typeof q.ans === "string" ? q.ans : "", ok: !!ok, typed: typed, played: iPlay() });
+      G.log.push({ hint: $("#p-hint").textContent, vi: vi.innerHTML, opts: opts.innerHTML, msg: $("#p-msg").textContent.split("  ·  " + T("wait_nextq")).join(""), res: $("#p-res").innerHTML,
+                   mine: typed ? (mine == null ? "" : String(mine)) : null, ans: typeof q.ans === "string" ? q.ans : "", ok: !!ok, typed: typed, played: iPlay(),
+                   say: q.type === "dict" ? q.say || q.ans : q.type === "en2m" ? baseTerm(q.word) : q.type === "write" ? baseTerm(q.term) : typeof q.ans === "string" ? baseTerm(q.ans) : "" });
     } catch (e) { console.warn("logQ", e); }
   }
   var rvI = 0;
@@ -1806,14 +1809,22 @@
     $("#rv-pos").textContent = (rvI + 1) + " / " + G.log.length;
     $("#rv-prev").disabled = rvI === 0; $("#rv-next").disabled = rvI === G.log.length - 1;
     $("#rv-hint").textContent = L.hint; $("#rv-vi").innerHTML = L.vi; $("#rv-opts").innerHTML = L.opts; $("#rv-res").innerHTML = L.res; $("#rv-msg").textContent = L.msg;
+    /* 🔊 nghe lại (TJ 2026-10-02): nút cạnh ◀ ▶ + loa nhỏ ngay sau từ đúng; đang bật tiếng thì sang câu tự đọc */
+    $("#rv-say").hidden = !L.say; $("#rv-say").dataset.say = L.say || "";
+    $$("#rv-vi .g-fill").forEach(function (f) { if (L.say) f.insertAdjacentHTML("afterend", spk(L.say)); });
+    if (L.say && soundOn()) sayIt(L.say);
     var m = $("#rv-mine");
     m.className = "g-rvmine";
     if (L.typed && L.played) {
-      m.textContent = (L.mine ? T("you_typed", { a: L.mine }) : T("you_none")) + (L.ans && !L.ok ? "  ·  " + T("right_ans", { a: L.ans }) : "");
+      m.innerHTML = esc(L.mine ? T("you_typed", { a: L.mine }) : T("you_none")) + (L.ans && !L.ok ? "  ·  " + esc(T("right_ans", { a: L.ans })) + (L.say ? " " + spk(L.say) : "") : "");
       m.classList.add(L.ok ? "ok" : "bad");
+    } else if (L.say && !$("#rv-vi .g-fill") && L.ans) {   /* câu trắc nghiệm: dòng "Đáp án đúng: … 🔊" */
+      m.innerHTML = esc(T("right_ans", { a: L.ans })) + " " + spk(L.say); m.classList.add("ok");
     } else m.textContent = "";
   }
   $("#e-review").addEventListener("click", function () { renderReview(0); });
+  function spk(text) { return '<button type="button" class="g-spk" data-say="' + esc(text) + '" title="Nghe lại">🔊</button>'; }
+  document.addEventListener("click", function (e) { var b = e.target.closest("[data-say]"); if (b && b.dataset.say) sayIt(b.dataset.say); });
   $("#rv-prev").addEventListener("click", function () { renderReview(rvI - 1); });
   $("#rv-next").addEventListener("click", function () { renderReview(rvI + 1); });
   $("#rv-back").addEventListener("click", function () { G.inHist = false; if (G.st) renderEnd(G.st); });

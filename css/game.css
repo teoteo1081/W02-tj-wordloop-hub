@@ -375,3 +375,18 @@ body.embed .g-brand{display:none}
 @media (max-width:480px){ .g-statbar{grid-template-columns:repeat(3,1fr)} }
 /* v67: nhắc chạm để bật tiếng (Chrome chặn giọng đọc khi trang chưa được chạm) */
 .g-taphint{background:var(--raise);border:1px dashed var(--amber);color:var(--amber);border-radius:10px;padding:7px 12px;font-size:13px;text-align:center;margin:6px 0;cursor:pointer}
+
+/* v68: điện thoại không giật khi chọn đáp án — dải thống kê cố định 2 hàng (4 ô/hàng), dòng bảng xếp hạng giữ 1 dòng */
+@media (max-width:480px){
+  .g-statbar{grid-template-columns:repeat(4,1fr);gap:4px}
+  .g-stat b{font-size:16px}
+  .g-stat span{font-size:10px}
+  .g-board li{flex-wrap:nowrap}
+  .g-board .g-stats{flex-wrap:nowrap}
+  .g-board .g-stats .g-chip2:not(:first-child){display:none}
+  .g-board .g-streak{white-space:nowrap}
+}
+/* 🔊 loa nhỏ nghe lại trong màn xem lại đáp án */
+.g-spk{border:0;background:transparent;cursor:pointer;font-size:.8em;padding:0 2px;vertical-align:middle;line-height:1}
+.g-spk:hover{transform:scale(1.15)}
+.g-board .g-chip2{line-height:1.3;padding:0 7px}   /* v68: nhãn thấp hơn dòng -> dòng không cao thêm khi nhãn xuất hiện */
