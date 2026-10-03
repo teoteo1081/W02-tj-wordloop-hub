@@ -67,7 +67,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 79;
+  var GAME_VER = 80;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -2247,7 +2247,7 @@
         if (G.nextSay) { var t = G.nextSay; G.nextSay = null; setTimeout(function () { sayIt(t); }, 60); }
       }
       G.utt = u; G.saying = true;
-      u.onend = done;
+      u.onend = done; u.onstart = function () { u._started = true; };
       u.onerror = function (e) {
         var why = e && e.error;
         if (why === "not-allowed") { G.blockedWord = text; tapHint(true); }   /* Chrome chặn khi trang chưa được chạm -> nhắc chạm + đọc bù */
@@ -2256,7 +2256,13 @@
       };
       clearTimeout(G.sayDog);
       G.sayDog = setTimeout(function () { if (G.utt === u) { try { syn.cancel(); } catch (er) {} done(); } }, 6000 + text.length * 60);
-      setTimeout(function () { try { if (G.utt === u) syn.speak(u); } catch (er) {} }, busy ? 120 : 0);
+      if (now) {
+        /* NGƯỜI BẤM loa: speak() NGAY trong lúc chạm — iPhone (Safari/Chrome iOS) chỉ cho phát khi lệnh đọc nằm trong
+           thao tác chạm; trước đây chờ 0–120 ms (né lỗi Chrome máy tính) nên iPhone chặn luôn (TJ 2026-10-03: "loa đọc lại
+           lúc review không hoạt động"). Chrome máy tính đôi khi nuốt câu ngay sau cancel() -> 0.35 s chưa thấy phát thì đọc lại. */
+        try { syn.speak(u); } catch (er) {}
+        setTimeout(function () { if (G.utt === u && !u._started && !syn.speaking) { try { syn.cancel(); syn.speak(u); } catch (er) {} } }, 350);
+      } else setTimeout(function () { try { if (G.utt === u) syn.speak(u); } catch (er) {} }, busy ? 120 : 0);
     } catch (e) {}
   }
   /* Chrome chặn giọng đọc trong trang (nhất là iframe thẻ 🎮) chưa từng được chạm -> lần chạm đầu đọc 1 câu rỗng để "mở khoá" */

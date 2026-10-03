@@ -430,3 +430,8 @@ body.embed .g-brand{display:none}
 .g-fns{display:none}
 @media (max-width:440px){ .g-forcenote{font-size:11px;padding:1px 6px} .g-fnl{display:none} .g-fns{display:inline} }
 .g-langs button.g-learning{opacity:.35;cursor:not-allowed;text-decoration:line-through}
+
+/* v80: loa nhỏ đủ to để chạm trên điện thoại (trước ~20×13) */
+.g-spk{min-width:36px;min-height:32px;padding:4px 6px;font-size:1em;border-radius:8px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.g-spk:active{background:var(--raise)}
+#rv-say{touch-action:manipulation}
