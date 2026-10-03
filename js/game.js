@@ -67,7 +67,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 90;
+  var GAME_VER = 91;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -2478,16 +2478,22 @@
     if (!AUD) { AUD = new Audio(); AUD.preload = "auto"; }
     if (!now && !AUD.paused && !AUD.ended) { G.nextSay = text; return true; }
     try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) {}
+    /* file không tải được / treo (vd ở Trung Quốc github.io chập chờn — Aaron 2026-10-03 "không bấm được nghe lại") ->
+       đọc bằng giọng máy; hỏng 2 lần thì cả phiên bỏ qua file, bấm loa đọc giọng máy NGAY trong lúc chạm (iPhone cần vậy) */
+    var tok = (playFile._tok = (playFile._tok || 0) + 1), started = false;
+    function fail() { if (tok !== playFile._tok || started) return; playFile._tok++; G.fileFails = (G.fileFails || 0) + 1; try { AUD.pause(); } catch (e) {} sayIt._nofile = text; sayIt(text, true); }
     AUD.onended = function () { if (G.nextSay) { var t = G.nextSay; G.nextSay = null; setTimeout(function () { sayIt(t); }, 60); } };
-    AUD.onerror = function () { sayIt._nofile = text; sayIt(text, true); };
+    AUD.onplaying = function () { started = true; G.fileFails = 0; };
+    AUD.onerror = fail;
     AUD.src = url; AUD.volume = volLevel();
+    setTimeout(fail, 4000);
     var p = AUD.play();
-    if (p && p.catch) p.catch(function (e) { if (e && e.name === "NotAllowedError") { G.blockedWord = text; tapHint(true); } else { sayIt._nofile = text; sayIt(text, true); } });
+    if (p && p.catch) p.catch(function (e) { if (e && e.name === "NotAllowedError") { playFile._tok++; G.blockedWord = text; tapHint(true); } else fail(); });
     return true;
   }
   function sayIt(text, now) {
     try {
-      var fl = sayIt._lang || tgt(), url = sayIt._nofile === text ? null : G.audioMap[fl + "|" + String(text || "").trim()];
+      var fl = sayIt._lang || tgt(), url = sayIt._nofile === text || (G.fileFails || 0) >= 2 ? null : G.audioMap[fl + "|" + String(text || "").trim()];
       sayIt._nofile = null;
       if (url) { sayIt._lang = null; playFile(url, text, now); return; }
       var syn = window.speechSynthesis; if (!syn || !text) return;
@@ -2502,7 +2508,10 @@
       var v = tl === "en-US" && mine && all.find(function (x) { return x.name === mine; }) || null;   /* giọng chọn bên WordLoop là giọng tiếng Anh */
       if (!v) { var pre = tl.slice(0, 2), en = all.filter(function (x) { return x.lang.replace("_", "-").toLowerCase().indexOf(tl.toLowerCase()) === 0; });
         if (!en.length) en = all.filter(function (x) { return x.lang.slice(0, 2).toLowerCase() === pre; });
-        v = en.find(function (x) { return /natural|online|google/i.test(x.name); }) || en[0]; }
+        /* giọng "Google …"/"… Online" đọc qua máy chủ Google/Microsoft — ở Trung Quốc không vào được Google nên im lặng.
+           Đã hỏng 1 lần -> cả phiên chỉ dùng giọng có sẵn trong máy (localService) */
+        var loc = en.filter(function (x) { return x.localService; });
+        v = G.noNetVoice && loc.length ? loc[0] : en.find(function (x) { return /natural|online|google/i.test(x.name); }) || en[0]; }
       /* máy KHÔNG có giọng đúng ngôn ngữ (hay gặp: Windows chỉ có giọng tiếng Anh) -> không đọc (giọng Anh đọc chữ Hán / tiếng
          Việt sai hẳn), nhắc 1 lần mỗi ngôn ngữ. Danh sách giọng còn trống (Chrome nạp chậm) thì vẫn thử đọc. */
       if (!v && all.length && tl !== "en-US") { G.saying = false; noVoiceHint(tl.slice(0, 2)); return; }
@@ -2518,6 +2527,7 @@
       u.onerror = function (e) {
         var why = e && e.error;
         if (why === "not-allowed") { G.blockedWord = text; tapHint(true); }   /* Chrome chặn khi trang chưa được chạm -> nhắc chạm + đọc bù */
+        if (v && !v.localService && !G.noNetVoice && why !== "not-allowed" && why !== "interrupted" && why !== "canceled") { G.noNetVoice = true; G.utt = null; G.saying = false; setTimeout(function () { sayIt(text, true); }, 60); return; }
         if ((why === "audio-busy" || why === "synthesis-failed" || why === "audio-hardware") && !tries) { G.utt = null; G.saying = false; sayIt._retry = text; setTimeout(function () { sayIt(text, true); }, 250); return; }
         done();
       };
@@ -2529,6 +2539,8 @@
            lúc review không hoạt động"). Chrome máy tính đôi khi nuốt câu ngay sau cancel() -> 0.35 s chưa thấy phát thì đọc lại. */
         try { syn.speak(u); } catch (er) {}
         setTimeout(function () { if (G.utt === u && !u._started && !syn.speaking) { try { syn.cancel(); syn.speak(u); } catch (er) {} } }, 350);
+        /* giọng mạng treo không báo lỗi: 2.5 s chưa bắt đầu đọc -> chuyển giọng trong máy, đọc lại */
+        if (v && !v.localService && !G.noNetVoice) setTimeout(function () { if (G.utt === u && !u._started) { G.noNetVoice = true; try { syn.cancel(); } catch (er) {} G.utt = null; G.saying = false; sayIt(text, true); } }, 2500);
       } else setTimeout(function () { try { if (G.utt === u) syn.speak(u); } catch (er) {} }, busy ? 120 : 0);
     } catch (e) {}
   }
