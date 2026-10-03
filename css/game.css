@@ -501,3 +501,5 @@ body.embed .g-brand{display:none}
 .g-w{cursor:pointer;border-radius:4px;padding:0 1px}
 @media (hover:hover){.g-w:hover{background:var(--raise)}}
 .g-w.sel{background:var(--accent);color:#fff}
+.g-w{padding:2px 2px}
+@media (pointer:coarse){#rv-vi .g-tstem{line-height:2}.g-w{padding:4px 3px}}
