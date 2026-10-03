@@ -67,7 +67,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 80;
+  var GAME_VER = 81;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -197,7 +197,23 @@
   var LANG_NAME = { vi: "Tiếng Việt", en: "English", es: "Español", zh: "中文" };
   /* 🎯 + tiếng mẹ đẻ PHẢI HỢP LÝ (TJ 2026-10-03): không chọn tiếng mẹ đẻ / tiếng chung TRÙNG tiếng đang học (ô mờ "🎯 đang
      học"); nhãn tóm tắt cạnh ô Language: "🎯 Học: 🇨🇳 中文 · Nghĩa: 🇻🇳 Tiếng Việt" (+ 🔒 khi host ép tiếng nghĩa). */
+  /* ô "Dạng câu hỏi" của host ghi đúng NGÔN NGỮ ĐANG HỌC (TJ 2026-10-03: "chọn tiếng Trung thì dạng câu hỏi phải đổi qua
+     tiếng Trung -> tiếng mẹ đẻ họ tự chọn"); dạng chỉ có ở tiếng Anh thì mờ. */
+  var EN_ONLY = { gap: 1, sheet: 1, write: 1, dict: 1 };
+  function paintQtypes() {
+    var sel = $("#l-qtype"); if (!sel) return;
+    var t = tgt(), L = TGT_NAME.vi[t], other = t !== "en";
+    var lab = { meaning: "🔤 Nghĩa (tiếng mẹ đẻ) → chọn từ " + L, en2m: "🔤 Từ " + L + " → chọn nghĩa (tiếng mẹ đẻ)",
+                recall: "⌨️ Gõ từ " + L + " (Active Recall)", mix: other ? "🔀 Trộn 3 dạng trên" : "🔀 Trộn 4 dạng trên" };
+    $$("#l-qtype option").forEach(function (o) {
+      if (o.dataset.orig == null) o.dataset.orig = o.textContent;
+      o.disabled = other && !!EN_ONLY[o.value];
+      o.textContent = lab[o.value] || (o.dataset.orig + (o.disabled ? " — chỉ khi học English" : ""));
+    });
+    if (other && EN_ONLY[sel.value]) sel.value = "meaning";
+  }
   function paintForce() {
+    paintQtypes();
     var el = $("#g-forcenote"); if (!el) return;
     var st = G.st, t = tgt(), block = t !== "en" ? t : null;
     $$("#g-mylang option, #l-lang option").forEach(function (o) {
