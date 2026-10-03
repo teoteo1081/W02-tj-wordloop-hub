@@ -747,6 +747,10 @@
     if (qt === "sheet" && !(G.sheets || []).length) return "Phạm vi này chưa có Block nào có bài đọc (cần ≥3 chỗ trống) — chọn Block/Page đã có bài đọc.";
     if (qt === "dict" && (G.dicts || []).length < 2) return "Phạm vi này chưa đủ câu trong bài đọc để làm Dictation.";
     if (qt === "write" && G.pool.length < 1) return "Chưa có từ nào.";
+    if (/^(order|chunk|listen|polite|chunkmix)$/.test(qt)) {
+      var ok = CHUNK_TYPES.filter(function (x) { return chunkPool(x).length >= (x === "chunk" || x === "listen" ? 4 : 1); });
+      if (qt === "chunkmix" ? !ok.length : ok.indexOf(qt) < 0) return "Phạm vi này chưa đủ dữ liệu chunk cho dạng câu này (cần chủ đề 1000 câu 🕵️ CIA, đã có mảnh ghép/chunk/mức lịch sự).";
+    }
     return "";
   }
 

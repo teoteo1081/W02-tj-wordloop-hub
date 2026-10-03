@@ -443,3 +443,14 @@ body.embed .g-brand{display:none}
 
 /* v86: nhắc máy không có giọng đọc đúng ngôn ngữ */
 .g-novoice{bottom:calc(64px + env(safe-area-inset-bottom));white-space:normal;max-width:min(520px,calc(100% - 32px))}
+
+/* 🕵️ dạng câu nhớ chunk (v88) */
+.g-ordline{min-height:52px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;padding:8px;margin-top:12px;border-bottom:2px dashed var(--line)}
+.g-tiles{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px}
+.g-tile{min-height:44px;padding:8px 12px;border-radius:10px;border:2px solid var(--line);background:var(--deep);font-size:16px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.g-tile:disabled{cursor:default;opacity:.85}
+.g-ordline .g-tile{border-color:var(--accent)}
+.g-listen{font-size:48px}
+.g-qmean{display:block;margin-top:6px;font-size:14px;font-weight:500;color:var(--muted,#9aa)}
+.g-reg{display:inline-block;padding:4px 12px;border-radius:999px;background:var(--deep);border:1px solid var(--line)}
+#p-opts:has(.g-tiles){display:block}
