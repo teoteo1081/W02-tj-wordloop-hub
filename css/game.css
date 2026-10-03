@@ -462,3 +462,16 @@ body.embed .g-brand{display:none}
 .g-reg{white-space:nowrap;font-size:16px;max-width:100%;overflow:hidden;text-overflow:ellipsis}
 /* iPhone tự phóng to trang khi chạm ô nhập/chọn chữ < 16px (phòng chờ của host) */
 @media (max-width:600px){.g-settings select,.g-settings input{font-size:16px}}
+/* 2 HUB phòng game: 🎮 từ vựng · 🎯 TEST */
+.g-hubs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.g-hubs button{flex:1 1 140px;min-height:42px;border-radius:10px;border:1px solid var(--line);background:var(--deep);font-weight:600;cursor:pointer}
+.g-hubs button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.g-hubs small{font-weight:500;opacity:.8}
+.g-hubtest > :not(.g-hubs):not(#l-hub-test){display:none!important}
+.g-tsk{margin:12px 0}
+.g-tskh{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;margin-bottom:6px}
+.g-ttab{width:100%;border-collapse:collapse;font-size:13px}
+.g-ttab td{padding:5px 6px;border-top:1px solid var(--line);vertical-align:top}
+.g-ttab td:first-child{white-space:nowrap;color:var(--text-2)}
+.g-ttab .g-num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.g-ttab{table-layout:auto}.g-ttab td:nth-child(2){width:100%}

@@ -67,7 +67,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 93;
+  var GAME_VER = 94;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -2291,6 +2291,51 @@
     if (e.key === "ArrowLeft") renderReview(rvI - 1);
     if (e.key === "ArrowRight") renderReview(rvI + 1);
   });
+
+  /* ---------- 🎯 HUB "LÀM BÀI TEST" (TJ 2026-10-03, đang chuẩn bị) ----------
+     Thời gian MẶC ĐỊNH theo đề TOEIC thật (ETS, định dạng từ 2022): Listening 45 phút do audio dẫn nhịp, Reading 75 phút;
+     Speaking ~20 phút (giây chuẩn bị / trả lời từng câu), Writing 60 phút. Phút từng Part Reading = nhịp nên làm
+     (P5 ~20 s/câu, P6 ~30 s/câu, P7 ~1 phút/câu) — tổng 73 + 2 phút dò lại = 75. Đề lưu Supabase, KHÔNG để trong repo
+     (bản quyền ETS, repo public). */
+  var TOEIC = [
+    { k: "LC", name: "🎧 Listening", min: 45, note: "audio dẫn nhịp, không dừng được", parts: [
+      { p: 1, q: 6, name: "Mô tả tranh", min: 4.5 }, { p: 2, q: 25, name: "Hỏi – đáp", min: 9 },
+      { p: 3, q: 39, name: "Hội thoại ngắn", min: 17 }, { p: 4, q: 30, name: "Bài nói ngắn", min: 14.5 } ] },
+    { k: "RC", name: "📖 Reading", min: 75, note: "tự phân bổ — nhịp gợi ý bên dưới", parts: [
+      { p: 5, q: 30, name: "Điền câu (ngữ pháp, từ vựng)", min: 10 }, { p: 6, q: 16, name: "Điền đoạn văn", min: 8 },
+      { p: 7, q: 54, name: "Đọc hiểu (đoạn đơn, kép, ba)", min: 55 } ] },
+    { k: "SP", name: "🎙 Speaking", min: 20, note: "giây chuẩn bị / giây trả lời", parts: [
+      { p: "1–2", q: 2, name: "Đọc to đoạn văn", sec: "45s / 45s" }, { p: "3–4", q: 2, name: "Mô tả tranh", sec: "45s / 30s" },
+      { p: "5–7", q: 3, name: "Trả lời câu hỏi", sec: "3s / 15–30s" }, { p: "8–10", q: 3, name: "Trả lời theo thông tin", sec: "45s+3s / 15–30s" },
+      { p: "11", q: 1, name: "Nêu quan điểm", sec: "45s / 60s" } ] },
+    { k: "WR", name: "✍️ Writing", min: 60, note: "", parts: [
+      { p: "1–5", q: 5, name: "Viết câu theo tranh (2 từ cho sẵn)", min: 8 }, { p: "6–7", q: 2, name: "Trả lời email", min: 20, each: 10 },
+      { p: "8", q: 1, name: "Bài luận nêu quan điểm", min: 30 } ] }
+  ];
+  function fmtMin(m) { var s = Math.round(m * 60), mm = Math.floor(s / 60), ss = s % 60; return mm + (ss ? ":" + (ss < 10 ? "0" : "") + ss : "") + " phút"; }
+  function paintTestHub() {
+    var el = $("#l-hub-test"); if (!el || el.dataset.done) return; el.dataset.done = "1";
+    el.innerHTML = '<p class="g-sub">Hub này để <b>làm đề thi</b> (TOEIC trước): chơi từng Part, thi thử cả bài, hoặc gom câu theo <b>chủ điểm ngữ pháp</b>. Đang nhập đề — chưa chơi được. Thời gian mặc định theo đề thật:</p>' +
+      TOEIC.map(function (sk) {
+        return '<div class="g-tsk"><div class="g-tskh"><b>' + sk.name + '</b><span class="g-sub">' + sk.parts.reduce(function (a, p) { return a + p.q; }, 0) + " câu · " + sk.min + " phút" + (sk.note ? " · " + esc(sk.note) : "") + "</span></div>" +
+          '<table class="g-ttab"><tbody>' + sk.parts.map(function (p) {
+            return "<tr><td>" + (typeof p.p === "number" ? "Part " : "Câu ") + p.p + "</td><td>" + esc(p.name) + '</td><td class="g-num">' + p.q + ' câu</td><td class="g-num">' +
+              (p.sec ? p.sec : fmtMin(p.min) + (p.each ? "<br><small>" + p.each + " phút/câu</small>" : "")) + "</td></tr>"; }).join("") + "</tbody></table></div>";
+      }).join("") +
+      '<p class="g-sub">Sắp có: 🎯 Test 1–7 (Reading) · 📝 Thi thử full 75 phút · 🎯 Theo chủ điểm ngữ pháp · 🎧 Listening có audio · ✍️🎙 Viết/Nói dạng ghép câu + AI chấm.</p>';
+  }
+  var LS_HUB = "tjwl_game_hub_v1";
+  function setHub(h) {
+    h = h === "test" ? "test" : "vocab";
+    var box = $("#l-host"); if (!box) return;
+    box.classList.toggle("g-hubtest", h === "test");
+    $$("#l-hubs [data-hub]").forEach(function (b) { var on = b.dataset.hub === h; b.classList.toggle("on", on); b.setAttribute("aria-selected", on ? "true" : "false"); });
+    $("#l-hub-test").hidden = h !== "test";
+    if (h === "test") paintTestHub();
+    try { localStorage.setItem(LS_HUB, h); } catch (e) {}
+  }
+  $("#l-hubs").addEventListener("click", function (e) { var b = e.target.closest("[data-hub]"); if (b) setHub(b.dataset.hub); });
+  setHub(readLSraw(LS_HUB) || "vocab");
 
   /* 🔀 GHÉP CÂU: bấm mảnh -> lên hàng câu; bấm mảnh trên hàng -> trả về; đủ mảnh -> tự nộp */
   /* hàng câu cao bằng hàng mảnh (+ khoảng đệm) ngay từ đầu -> ghép thêm mảnh không làm khung cao/thấp đi */
