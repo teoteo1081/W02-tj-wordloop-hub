@@ -67,7 +67,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 82;
+  var GAME_VER = 83;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -135,13 +135,18 @@
   function show(id) { $$(".g-screen").forEach(function (s) { s.hidden = s.id !== id; }); document.body.classList.toggle("big", id === "s-screen"); paintSide(); }
   function norm(t) { return String(t || "").toLowerCase().replace(/\s+/g, " ").trim(); }
   /* chấm câu GÕ TAY giống WordLoop (w.normalizeAnswer): bỏ dấu câu/ngoặc, thường hoá, gộp khoảng trắng */
-  function normAns(s) { return String(s || "").toLowerCase().trim().replace(/[.,!?;:"'`()\[\]]/g, "").replace(/\s+/g, " "); }
+  function normAns(s) { return String(s || "").normalize("NFC").toLowerCase().trim().replace(/[.,!?;:"'`()\[\]]/g, "").replace(/\s+/g, " "); }
   function typedOk(typed, ans) {   /* "subscribe (to)": gõ "subscribe to" hoặc "subscribe" đều đúng */
     var t = normAns(typed); if (!t) return false;
     if (t === normAns(ans) || t === normAns(String(ans).replace(/\([^)]*\)/g, " "))) return true;
     return String(ans).split(/\s*[\/;,，、；]\s*/).some(function (v) { v = v.replace(/\([^)]*\)|（[^）]*）/g, " ").trim(); return v && normAns(v) === t; });   /* nhiều cách nói: gõ 1 cách là đúng */
   }
   function clean(t) { return String(t || "").trim(); }
+  /* bản dịch -> 1 cách nói cho game (khi chưa có cột quiz_<x>): bỏ ngoặc, lấy cách đầu, bỏ dấu câu cuối (chuyên gia ngôn ngữ 2026-10-03) */
+  function quizForm(t) {
+    t = String(t || "").replace(/（[^）]*）|\([^)]*\)/g, " ").split(/\s*[\/;；,，、]\s*/)[0] || "";
+    return t.replace(/[。.!！?？…]+\s*$/, "").replace(/\s+/g, " ").trim();
+  }
   function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   function fmt(ms) { ms = Math.max(0, ms); var s = Math.ceil(ms / 1000); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
   function label(p) { return p ? esc(p.name) + (p.no > 1 ? ' <span class="g-no">#' + p.no + "</span>" : "") : "?"; }
@@ -166,18 +171,20 @@
   var PY_SRC = "https://cdn.jsdelivr.net/npm/pinyin-pro@3.29.4/dist/index.js", pyP = null;
   function loadPinyin() {
     if (window.pinyinPro) return Promise.resolve();
-    if (!pyP) pyP = new Promise(function (ok) { var sc = document.createElement("script"); sc.src = PY_SRC; sc.onload = function () { ok(); decoratePy(document); }; sc.onerror = function () { pyP = null; ok(); }; document.head.appendChild(sc); });
+    if (!pyP) pyP = new Promise(function (ok) { var sc = document.createElement("script"); sc.src = PY_SRC; sc.onload = function () {
+      try { window.pinyinPro.customPinyin({ "还钱": "huán qián", "还给": "huán gěi", "归还": "guī huán", "为背景": "wéi bèi jǐng", "以为": "yǐ wéi" }); } catch (e) {}   /* chữ đa âm pinyin-pro đọc sai */
+      ok(); decoratePy(document, true); }; sc.onerror = function () { pyP = null; ok(); }; document.head.appendChild(sc); });
     return pyP;
   }
   function hasZh(t) { return /[\u3400-\u9fff]/.test(String(t || "")); }
   function py(t) {
     if (!hasZh(t) || !window.pinyinPro) return "";
-    try { return window.pinyinPro.pinyin(String(t), { toneType: "symbol", nonZh: "consecutive" }).replace(/\s+/g, " ").trim(); } catch (e) { return ""; }
+    try { return window.pinyinPro.pinyin(String(t), { toneType: "symbol", nonZh: "consecutive" }).replace(/\s+/g, " ").replace(/(\.\s?){3}/g, "...").trim(); } catch (e) { return ""; }
   }
   function zhA(t) { var p = tgt() === "zh" ? py(t) : ""; return p ? t + " (" + p + ")" : t; }   /* "đáp án: 螃蟹 (páng xiè)" */
   /* gắn dòng pinyin dưới mọi phần tử [data-zh] chưa có (gọi lại sau khi thư viện tải xong) */
-  function decoratePy(root) {
-    if (tgt() !== "zh") return;
+  function decoratePy(root, force) {
+    if (!force && tgt() !== "zh") return;
     if (!window.pinyinPro) { loadPinyin(); return; }
     (root || document).querySelectorAll("[data-zh]").forEach(function (el) {
       if (el.querySelector(".g-py")) return;
@@ -770,7 +777,7 @@
     var extra = by("blocks").filter(function (id) { return !blkRows.some(function (b) { return b.id === id; }); });
     if (extra.length) blkRows = blkRows.concat(await inIds("blocks", "id,context_passage,context_passage_candidates", "id", extra));
     var blks = ids(blkRows);
-    var words = blks.length ? await inIds("words", "id,block_id,term,pos,level,meaning_vi,meaning_zh,meaning_es,def_en", "block_id", blks) : [];
+    var words = blks.length ? await inIds("words", "id,block_id,term,pos,level,meaning_vi,meaning_zh,meaning_es,def_en,quiz_vi,quiz_zh,quiz_es", "block_id", blks) : [];
     /* số từ THẬT của từng Block (trước khi lọc cấp độ) — để xét "đã ôn đủ Block chưa" khi đẩy chu kỳ Tony Buzan */
     var bwn = {}, lvn = {};
     words.forEach(function (w) { bwn[w.block_id] = (bwn[w.block_id] || 0) + 1; var l = lvKey(w.level); lvn[l] = (lvn[l] || 0) + 1; });
@@ -779,7 +786,8 @@
     if (lvs.length) words = words.filter(function (w) { return lvs.indexOf(lvKey(w.level)) >= 0; });
     var seen = {}, pool = [], byTerm = {};
     words.forEach(function (w) {
-      var k = norm(w.term), m = { vi: clean(w.meaning_vi), en: clean(w.def_en), es: clean(w.meaning_es), zh: clean(w.meaning_zh) };
+      /* quiz_<x> = bản gọn (AI, 2026-10-03) — có thì dùng cho nghĩa hiển thị; gốc meaning_<x> giữ làm dự phòng */
+      var k = norm(w.term), m = { vi: clean(w.quiz_vi || w.meaning_vi), en: clean(w.def_en), es: clean(w.quiz_es || w.meaning_es), zh: clean(w.quiz_zh || w.meaning_zh) };
       if (!k || seen[k] || !(m.vi || m.en || m.es || m.zh)) return;
       seen[k] = 1;
       var it = { wid: w.id, term: clean(w.term), block: w.block_id, pos: norm(w.pos), lv: lvKey(w.level), m: m };
@@ -822,7 +830,8 @@
     if (tg !== "en") {   /* 🎯 học tiếng khác: từ = bản dịch meaning_<tg>, "nghĩa tiếng Anh" = chính từ tiếng Anh */
       var tp = [], tseen = {};
       pool.forEach(function (it) {
-        var word = clean(it.m[tg]); if (!word || tseen[norm(word)]) return;
+        if (/\s\/\s/.test(it.term)) return;                                       /* "beef / lamb / pork": 1 dòng ghép 3 từ, không khớp 1-1 */
+        var word = quizForm(it.m[tg]); if (!word || tseen[norm(word)]) return;
         if (tg === "zh" && !hasZh(word)) return;                                   /* ô nghĩa tiếng Trung mà chứa chữ Latin (dữ liệu lỗi) */
         if (norm(word) === norm(it.term)) return;                                  /* chưa dịch, còn nguyên tiếng Anh */
         if (/[.?!。？！]\s*$/.test(it.term) || it.term.split(/\s+/).length > 6) return;   /* câu mẫu ngữ pháp, không phải từ vựng */
@@ -994,12 +1003,21 @@
     return d.list.pop();
   }
   function distractors(w, p) {
-    var ok = function (x) { return norm(x.term) !== norm(w.term); };
+    /* không lấy đáp án nhiễu TRÙNG NGHĨA với đáp án đúng ở bất kỳ tiếng nào (lucky/fortunate cùng "may mắn",
+       court/course cùng "球场") — câu sẽ có 2 đáp án đúng (chuyên gia ngôn ngữ 2026-10-03) */
+    var sameMean = function (x) { return ["vi", "en", "es", "zh"].some(function (l) { return x.m && w.m && x.m[l] && w.m[l] && norm(quizForm(x.m[l])) === norm(quizForm(w.m[l])); }); };
+    var ok = function (x) { return norm(x.term) !== norm(w.term) && !sameMean(x); };
     var sameBlock = shuffle(p.filter(function (x) { return ok(x) && x.block === w.block; }));
     var samePos = shuffle(p.filter(function (x) { return ok(x) && x.block !== w.block && w.pos && x.pos === w.pos; }));
     var rest = shuffle(p.filter(function (x) { return ok(x) && x.block !== w.block && !(w.pos && x.pos === w.pos); }));
     var picks = [], used = {};
-    sameBlock.concat(samePos, rest).forEach(function (x) { if (picks.length < 3 && !used[norm(x.term)]) { used[norm(x.term)] = 1; picks.push(x.term); } });
+    var usedM = {};
+    sameBlock.concat(samePos, rest).forEach(function (x) {
+      if (picks.length >= 3 || used[norm(x.term)]) return;
+      var mk = ["vi", "en", "es", "zh"].map(function (l) { return x.m && x.m[l] ? l + ":" + norm(quizForm(x.m[l])) : ""; }).filter(Boolean);
+      if (mk.some(function (k) { return usedM[k]; })) return;   /* 2 đáp án nhiễu cũng không trùng nghĩa nhau */
+      used[norm(x.term)] = 1; mk.forEach(function (k) { usedM[k] = 1; }); picks.push(x.term);
+    });
     return shuffle([w.term].concat(picks));
   }
   /* thời gian mỗi câu (giây) theo dạng: phiếu = giây/câu × số chỗ trống; đặt câu ≥60; dictation ≥30 */
@@ -1435,7 +1453,7 @@
     G.endAt = Date.now() + G.st.totalSec * 1000;
     await sb.from("game_rooms").update({ status: "playing", started_at: new Date().toISOString(), mode: G.st.mode, qtype: G.st.qtype, meaning_lang: G.st.lang, minutes: G.st.minutes, q_seconds: G.st.qs, team_mode: !!G.st.teams, teams: G.st.teams }).eq("id", G.room.id);
     /* mỗi lần bắt đầu = 1 VÁN riêng (lịch sử xem theo ván) */
-    var mr = await sb.from("game_matches").insert({ room_id: G.room.id, title: G.st.title, scope: G.st.scope, mode: G.st.mode, qtype: G.st.qtype, scoring: G.st.scoring || "q", meaning_lang: G.st.lang, minutes: G.st.minutes, q_seconds: G.st.qs, teams: G.st.teams || 0 }).select("id").single();
+    var mr = await sb.from("game_matches").insert({ target: tgt(), room_id: G.room.id, title: G.st.title, scope: G.st.scope, mode: G.st.mode, qtype: G.st.qtype, scoring: G.st.scoring || "q", meaning_lang: G.st.lang, minutes: G.st.minutes, q_seconds: G.st.qs, teams: G.st.teams || 0 }).select("id").single();
     G.st.matchId = mr.data ? mr.data.id : null;
     if (G.st.mode === "kahoot") hostNextQ(); else { G.qUntil = 0; sendGaps(); push(); }
     clearInterval(G.hostTimer);
@@ -1496,7 +1514,7 @@
       q.scored = true;
       Object.keys(q.got).forEach(function (pid) {
         var g = q.got[pid]; score(pid, g.ok, g.ms, q.limit * 1000);
-        G.answers.push({ pid: pid, wid: q.wid, term: q.ans, ok: g.ok, ms: g.ms });
+        G.answers.push({ pid: pid, wid: q.wid, term: q.ans, ok: g.ok, ms: g.ms, c: g.c });
       });
     }
     /* ⏭ BỎ LỠ = SAI (TJ 2026-10-02): ai đang trong ván mà hết giờ chưa chọn -> tính 1 câu sai (phiếu: sai cả N chỗ trống),
@@ -1592,7 +1610,7 @@
         var acc = wordAcc(a.choice, q.ans);
         q.got[a.pid] = { ok: acc.r >= 0.8, c: a.choice, ms: a.ms };
         q.res[a.pid] = { k: acc.k, n: acc.n, text: a.choice, p: award(a.pid, Math.round(POINTS * acc.r), acc.r >= 0.8, acc.r >= 0.8 ? 1 : 0, acc.r >= 0.8 ? 0 : 1, a.ms, lim) };
-        G.answers.push({ pid: a.pid, wid: q.wid, term: q.term, ok: acc.r >= 0.8, ms: a.ms });
+        G.answers.push({ pid: a.pid, wid: q.wid, term: q.term, ok: acc.r >= 0.8, ms: a.ms, c: a.choice });
       } else if (q.type === "write") {
         q.got[a.pid] = { ok: null, c: a.choice, ms: a.ms };   /* chấm lúc hết giờ (gom cả phòng 1 lần) */
       } else if (isChoice(q)) {   /* câu chọn 4 đáp án: được ĐỔI khi còn giờ -> giữ lựa chọn MỚI NHẤT, chấm lúc lộ đáp án (hostReveal) */
@@ -1602,7 +1620,7 @@
         var ok = q.type === "recall" ? typedOk(a.choice, q.ans) : norm(a.choice) === norm(q.ans);
         q.got[a.pid] = { ok: ok, c: a.choice, ms: a.ms };
         score(a.pid, ok, a.ms, lim);
-        G.answers.push({ pid: a.pid, wid: q.wid, term: q.ans, ok: ok, ms: a.ms });
+        G.answers.push({ pid: a.pid, wid: q.wid, term: q.ans, ok: ok, ms: a.ms, c: a.choice });
       }
     } else {
       var fl = FREE_MS[a.t] || FREE_MS.q;
@@ -1623,7 +1641,7 @@
         return;
       } else {
         score(a.pid, !!a.ok, a.ms, fl);
-        G.answers.push({ pid: a.pid, wid: a.wid, term: a.term, ok: !!a.ok, ms: a.ms });
+        G.answers.push({ pid: a.pid, wid: a.wid, term: a.term, ok: !!a.ok, ms: a.ms, c: a.c });
       }
     }
     push();
@@ -1645,7 +1663,8 @@
       }
       for (var i = 0; i < G.answers.length; i += 500) {
         var ra = await sb.from("game_answers").insert(G.answers.slice(i, i + 500).map(function (a) {
-          return { room_id: G.room.id, match_id: G.st.matchId, player_id: a.pid, word_id: a.wid, term: a.term, correct: a.ok, ms: a.ms || null };
+          return { room_id: G.room.id, match_id: G.st.matchId, player_id: a.pid, word_id: a.wid, term: a.term, correct: a.ok, ms: a.ms || null,
+                   target: tgt(), choice: a.c != null ? String(Array.isArray(a.c) ? a.c.join(" | ") : a.c).slice(0, 300) : null };
         }));
         if (ra.error) console.warn("game_answers", ra.error);
       }
@@ -1989,6 +2008,7 @@
     /* 🔊 nghe lại (TJ 2026-10-02): nút cạnh ◀ ▶ + loa nhỏ ngay sau từ đúng; đang bật tiếng thì sang câu tự đọc */
     $("#rv-say").hidden = !L.say; $("#rv-say").dataset.say = L.say || ""; $("#rv-say").dataset.sl = L.sl || "en";
     $$("#rv-vi .g-fill").forEach(function (f) { if (L.say) f.insertAdjacentHTML("afterend", spk(L.say, L.sl)); });
+    if (L.tg === "zh") { loadPinyin(); decoratePy($("#s-review"), true); }
     if (L.say && soundOn()) { sayIt._lang = L.sl || "en"; sayIt(L.say, true); }
     var m = $("#rv-mine");
     m.className = "g-rvmine";
@@ -2031,47 +2051,57 @@
   });
   /* 📖 XEM LẠI 1 VÁN CŨ (từ 📜 Lịch sử): game_answers của mình trong ván đó + từ/nghĩa/cấp độ. Ván cũ không lưu đáp án
      đã chọn — chỉ biết đúng/sai. */
+  /* thẻ xem lại 1 từ trong LỊCH SỬ theo đúng ngôn ngữ đã học ván đó (game_answers.target; null = English):
+     từ = quiz_/meaning_<target> (tiếng Trung kèm pinyin), nghĩa = tiếng mẹ đẻ, đọc bằng giọng của tiếng đó */
+  var HIST_COLS = "id,term,level,meaning_vi,meaning_zh,meaning_es,def_en,quiz_vi,quiz_zh,quiz_es";
+  function histCard(w, tg, extra) {
+    tg = tg || "en";
+    var t = tg === "en" ? w.term : quizForm(w["quiz_" + tg] || w["meaning_" + tg]) || w.term;
+    var mean = { vi: w.quiz_vi || w.meaning_vi, en: tg === "en" ? w.def_en : w.term, es: w.quiz_es || w.meaning_es, zh: w.quiz_zh || w.meaning_zh };
+    delete mean[tg];
+    var ml = G.myLang && G.myLang !== "room" ? G.myLang : "vi"; if (ml === tg) ml = "en";
+    var word = tg === "zh" ? '<span class="g-zhw" data-zh="' + esc(t) + '"><span>' + esc(t) + "</span></span>" : esc(t);
+    return Object.assign({ vi: word + (tg === "en" ? lvBadge(w.level) : "") + (tg !== "en" ? ' <span class="g-sub">' + FLAG[tg] + "</span>" : ""), res: "", msg: "",
+             opts: '<div class="g-rvmean">' + esc(mean[ml] || mean.vi || mean.en || "") + "</div>", ans: t, say: tg === "zh" || tg === "en" ? baseTerm(t) : t, sl: tg,
+             tg: tg !== "en" ? tg : null, wid: w.id, typed: false, played: true }, extra);
+  }
   async function pastReview(matchId, title) {
     if (!G.me) return;
-    var a = await sb.from("game_answers").select("word_id,term,correct").eq("match_id", matchId).eq("player_id", G.me.id);
+    var a = await sb.from("game_answers").select("word_id,term,correct,target,choice").eq("match_id", matchId).eq("player_id", G.me.id);
     var rows = (a.data || []).filter(function (x) { return x.word_id; });
     if (!rows.length) { alert(T("no_answers")); return; }
     var ids = rows.map(function (x) { return x.word_id; }).filter(function (v, i, arr) { return arr.indexOf(v) === i; });
-    var wr = await inIds("words", "id,term,level,meaning_vi,meaning_zh,meaning_es,def_en", "id", ids), W = {};
+    var wr = await inIds("words", HIST_COLS, "id", ids), W = {};
     wr.forEach(function (w) { W[w.id] = w; });
-    var ml = effLang(G.myLang, G.st, "recall");
     var list = rows.map(function (x, i) {
-      var w = W[x.word_id] || { term: x.term }, mean = { vi: w.meaning_vi, en: w.def_en, es: w.meaning_es, zh: w.meaning_zh }, t = w.term || x.term;
-      return { hint: "📜 " + (title || "") + " — " + T("q_no", { n: i + 1 }), vi: esc(t) + lvBadge(w.level), res: "", msg: "",
-               opts: '<div class="g-rvmean">' + esc(mean[ml] || mean.vi || mean.en || "") + "</div>", note: x.correct ? T("past_ok") : T("past_bad"), ok: !!x.correct,
-               ans: t, say: baseTerm(t), sl: "en", wid: x.word_id, typed: false, played: true };
+      var w = W[x.word_id] || { id: x.word_id, term: x.term };
+      return histCard(w, x.target, { hint: "📜 " + (title || "") + " — " + T("q_no", { n: i + 1 }), ok: !!x.correct,
+        note: (x.correct ? T("past_ok") : T("past_bad")) + (x.choice ? "  ·  " + T("you_typed", { a: x.choice }) : "") });
     });
     G.rvFrom = "hist";
     renderReview(0, list);
   }
-  /* 📖 XEM LẠI TẤT CẢ các ván (TJ 2026-10-03): gom game_answers của mình ở MỌI ván, mỗi từ 1 thẻ "đúng N lần · sai M lần".
-     "❌ Chỉ từ hay sai": từ từng sai, sai nhiều nhất lên trước. */
+  /* 📖 XEM LẠI TẤT CẢ các ván (TJ 2026-10-03): gom game_answers của mình ở MỌI ván, mỗi từ (theo từng ngôn ngữ đã học)
+     1 thẻ "đúng N lần · sai M lần". "❌ Chỉ từ hay sai": từ từng sai, sai nhiều nhất lên trước. */
   async function allReview(onlyWrong) {
     if (!G.me) return;
     var rows = [], from = 0;
     for (;;) {
-      var a = await sb.from("game_answers").select("word_id,term,correct").eq("player_id", G.me.id).not("word_id", "is", null).range(from, from + 999);
+      var a = await sb.from("game_answers").select("word_id,term,correct,target").eq("player_id", G.me.id).not("word_id", "is", null).range(from, from + 999);
       if (a.error) { alert(a.error.message); return; }
       rows = rows.concat(a.data); if (a.data.length < 1000) break; from += 1000;
     }
     var agg = {}, order = [];
-    rows.forEach(function (x) { var g = agg[x.word_id]; if (!g) { g = agg[x.word_id] = { term: x.term, c: 0, w: 0 }; order.push(x.word_id); } if (x.correct) g.c++; else g.w++; });
-    var ids = order.filter(function (id) { return !onlyWrong || agg[id].w > 0; });
-    if (onlyWrong) ids.sort(function (a, b) { return agg[b].w - agg[a].w || agg[a].c - agg[b].c; });
-    if (!ids.length) { alert(T(onlyWrong ? "rv_none_wrong" : "no_answers")); return; }
-    var wr = await inIds("words", "id,term,level,meaning_vi,meaning_zh,meaning_es,def_en", "id", ids), W = {};
+    rows.forEach(function (x) { var key = x.word_id + "|" + (x.target || "en"), g = agg[key]; if (!g) { g = agg[key] = { id: x.word_id, tg: x.target || "en", term: x.term, c: 0, w: 0 }; order.push(key); } if (x.correct) g.c++; else g.w++; });
+    var keys = order.filter(function (k) { return !onlyWrong || agg[k].w > 0; });
+    if (onlyWrong) keys.sort(function (a, b) { return agg[b].w - agg[a].w || agg[a].c - agg[b].c; });
+    if (!keys.length) { alert(T(onlyWrong ? "rv_none_wrong" : "no_answers")); return; }
+    var ids = keys.map(function (k) { return agg[k].id; }).filter(function (v, i, arr) { return arr.indexOf(v) === i; });
+    var wr = await inIds("words", HIST_COLS, "id", ids), W = {};
     wr.forEach(function (w) { W[w.id] = w; });
-    var ml = effLang(G.myLang, G.st, "recall");
-    var list = ids.map(function (id, i) {
-      var g = agg[id], w = W[id] || { term: g.term }, mean = { vi: w.meaning_vi, en: w.def_en, es: w.meaning_es, zh: w.meaning_zh }, t = w.term || g.term;
-      return { hint: (onlyWrong ? "❌ " : "📖 ") + T("rv_word", { n: i + 1, m: ids.length }), vi: esc(t) + lvBadge(w.level), res: "", msg: "",
-               opts: '<div class="g-rvmean">' + esc(mean[ml] || mean.vi || mean.en || "") + "</div>", note: T("rv_tally", { c: g.c, w: g.w }), ok: g.w === 0,
-               ans: t, say: baseTerm(t), sl: "en", wid: id, typed: false, played: true };
+    var list = keys.map(function (k, i) {
+      var g = agg[k], w = W[g.id] || { id: g.id, term: g.term };
+      return histCard(w, g.tg, { hint: (onlyWrong ? "❌ " : "📖 ") + T("rv_word", { n: i + 1, m: keys.length }), ok: g.w === 0, note: T("rv_tally", { c: g.c, w: g.w }) });
     });
     G.rvFrom = "hist";
     renderReview(0, list);
@@ -2471,7 +2501,7 @@
     $("#p-msg").textContent = ok ? T("right") + gainTail(Math.round(POINTS * speedFactor(Date.now() - G.myQStart, FREE_MS.q))) : T("wrong", { a: zhA(q.ans) });
     logQ(q, choice, ok);
     speakQ(q, "ans");
-    sendAns({ pid: G.me.id, ok: ok, wid: q.wid, term: q.ans, ms: Date.now() - G.myQStart });
+    sendAns({ pid: G.me.id, ok: ok, wid: q.wid, term: q.ans, ms: Date.now() - G.myQStart, c: choice });
     recordMyProgress(q.wid, ok);
     showNext(G.st && G.st.race ? (ok ? 250 : 900) : (ok ? 800 : 1400));   /* đúng: giữ màu xanh 0.8s (0.5s trông như chớp giật trên điện thoại) */   /* ⚡ Đua: sang câu gần như ngay */
   }
