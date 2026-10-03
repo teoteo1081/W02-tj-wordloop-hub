@@ -94,6 +94,11 @@ alter table words add column if not exists freq text default '';
 alter table words add column if not exists meaning_zh text default '';
 alter table blocks add column if not exists framework_data jsonb default null;
 alter table words add column if not exists meaning_es text default '';
+-- 2026-10-03 (ĐÃ CHẠY): bản "gọn cho game" của nghĩa zh/es/vi — 1 cách nói, không giải thích/ngoặc.
+-- Game dùng quiz_<x> nếu có, không thì meaning_<x>. Cột gốc meaning_* giữ nguyên.
+alter table words add column if not exists quiz_zh text;
+alter table words add column if not exists quiz_es text;
+alter table words add column if not exists quiz_vi text;
 -- Lịch sử "🔄 Tạo lại" panel Framework (2026-09-15) — mảng, mới nhất ở
 -- đầu, tối đa 5 bản (FW_HISTORY_MAX trong detail.js), mỗi phần tử là 1
 -- bản framework_data cũ NGUYÊN VẸN (kèm _meta:{provider,cost_usd,

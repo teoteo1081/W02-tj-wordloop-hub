@@ -105,3 +105,8 @@ create policy shared_all on public.game_matches for all to anon, authenticated u
 -- 2026-09-30: cách tính điểm mỗi ván: q (theo câu, đúng +100) | speed (theo tốc độ, đúng 100 -> 50)
 alter table public.game_matches add column if not exists scoring text not null default 'q';
 alter table public.game_rooms add column if not exists scoring text not null default 'q';
+
+-- 2026-10-03 (ĐÃ CHẠY trên Supabase thật qua Management API): 🎯 ngôn ngữ đang học + lưu đáp án đã chọn
+alter table public.game_matches add column if not exists target text;   -- en | zh | es | vi (null = en, ván cũ)
+alter table public.game_answers add column if not exists target text;   -- như trên, theo từng câu
+alter table public.game_answers add column if not exists choice text;   -- đáp án người chơi đã chọn/gõ (xem lại ván cũ)
