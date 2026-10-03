@@ -503,3 +503,7 @@ body.embed .g-brand{display:none}
 .g-w.sel{background:var(--accent);color:#fff}
 .g-w{padding:2px 2px}
 @media (pointer:coarse){#rv-vi .g-tstem{line-height:2}.g-w{padding:4px 3px}}
+.g-ttraps{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+.g-ttrh{font-weight:700;margin-bottom:4px}
+.g-trap{margin:3px 0;font-size:14px;line-height:1.45}
+.g-tren{margin-top:6px;font-size:14px}.g-tren summary{cursor:pointer;color:var(--text-2)}
