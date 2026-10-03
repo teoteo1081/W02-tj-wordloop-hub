@@ -41,6 +41,8 @@
   - v73: đang xem lại/kết quả/lịch sử KHÔNG tự tải lại khi có bản mới (`busyReading`); phần xem lại lưu sessionStorage + nút 📖 ở phòng chờ.
   - v74: ⭐ "Để dành học lại" trong màn xem lại -> `word_progress.bookmarked` của TJ (vào Hub ⭐ ÔN RIÊNG); `progUid()` = hồ sơ TJ hoặc người chơi gắn `profile_id` = TJ. **Dữ liệu**: đã gắn người chơi "Thảo" (`2254ff04-…`) vào hồ sơ TJ -> câu Thảo trả lời ghi tiến trình + chu kỳ Tony Buzan của TJ. 📜 Lịch sử: nút 📖 xem lại từng ván cũ (từ game_answers — chỉ biết đúng/sai).
   - v76: 📜 Lịch sử › Của tôi: "📖 Xem lại tất cả các ván" + "❌ Chỉ từ hay sai"; ẩn ván trống 0/0.
+- **v77**: nhãn "🔒 Nghĩa: 🇨🇳 中文" cạnh ô Language khi host ép tiếng nghĩa (TJ chọn giữ giao diện theo từng người).
+- **v78**: 🎯 **Ngôn ngữ đang học** (phòng chờ, host chọn): English (mặc định) · 中文 · Español · Tiếng Việt. Khác English: từ = `meaning_<target>`, nghĩa theo tiếng mẹ đẻ (tiếng Anh = chính từ tiếng Anh), đọc giọng zh-CN/es-ES/vi-VN; chỉ dạng Nghĩa / Từ→Nghĩa / Gõ từ / Trộn; tắt điền chỗ trống/phiếu/dictation/đặt câu, nhãn CEFR, ghi tiến trình WordLoop + ⭐. Gõ từ chấp nhận 1 trong các cách nói ("牛肉 / 羊肉 / 猪肉"). Chưa làm: lưu `target` vào game_rooms/game_matches (hiện chỉ trong state, tải lại phòng về English); lịch sử/xem lại ván cũ luôn hiện từ tiếng Anh.
 - **Còn treo sau v76 (làm tiếp)**:
   - TJ xác nhận trên điện thoại thật: hết giật (v75) + âm thanh (v71).
   - Ván cũ không lưu ĐÁP ÁN ĐÃ CHỌN (game_answers chỉ có correct) — muốn xem lại đầy đủ cần cột mới (vd `game_answers.choice`) -> cần PAT.
