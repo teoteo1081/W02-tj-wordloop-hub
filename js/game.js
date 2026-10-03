@@ -67,7 +67,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 89;
+  var GAME_VER = 90;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -253,14 +253,42 @@
   /* ô "Dạng câu hỏi" của host ghi đúng NGÔN NGỮ ĐANG HỌC (TJ 2026-10-03: "chọn tiếng Trung thì dạng câu hỏi phải đổi qua
      tiếng Trung -> tiếng mẹ đẻ họ tự chọn"); dạng chỉ có ở tiếng Anh thì mờ. */
   var EN_ONLY = { gap: 1, sheet: 1, write: 1, dict: 1 };
+  /* 🕵️ CHẾ ĐỘ CHUNK (TJ 2026-10-03: "game này khác từ vựng định nghĩa — chỉ có câu 4 ngôn ngữ, chơi trò chunk"):
+     chủ đề mà phần lớn là CÂU có words.chunks (1000 câu CIA) -> chỉ còn 4 dạng chunk + Trộn, dạng từ vựng bị khoá,
+     tự chuyển sang 🕵️ Trộn 4 dạng chunk. */
+  var CHUNK_Q = { order: 1, chunk: 1, listen: 1, polite: 1, chunkmix: 1 };
+  function chunkMode() {
+    var p = G.pool || []; if (!p.length) return false;
+    var n = p.filter(function (it) { return it.sent && it.ch; }).length;
+    return n * 2 >= p.length;
+  }
   function paintQtypes() {
     var sel = $("#l-qtype"); if (!sel) return;
+    if (chunkMode()) {
+      $$("#l-qtype option").forEach(function (o) {
+        if (o.dataset.orig == null) o.dataset.orig = o.textContent;
+        o.disabled = !CHUNK_Q[o.value];
+        o.hidden = o.disabled;
+        o.textContent = o.dataset.orig;
+      });
+      if (!CHUNK_Q[sel.value]) {
+        sel.value = "chunkmix";
+        if (G.isHost && G.st && G.st.phase === "lobby") sel.dispatchEvent(new Event("change"));
+      }
+      return;
+    }
+    var loaded = (G.pool || []).length > 0;   /* chưa tải xong chủ đề -> chưa biết, không ẩn/đổi gì */
+    $$("#l-qtype option").forEach(function (o) { o.hidden = loaded && !!CHUNK_Q[o.value]; });
+    if (loaded && CHUNK_Q[sel.value]) {
+      sel.value = "meaning";
+      if (G.isHost && G.st && G.st.phase === "lobby") sel.dispatchEvent(new Event("change"));
+    }
     var t = tgt(), L = TGT_NAME.vi[t], other = t !== "en";
     var lab = { meaning: "🔤 Nghĩa (tiếng mẹ đẻ) → chọn từ " + L, en2m: "🔤 Từ " + L + " → chọn nghĩa (tiếng mẹ đẻ)",
                 recall: "⌨️ Gõ từ " + L + " (Active Recall)", mix: other ? "🔀 Trộn 3 dạng trên" : "🔀 Trộn 4 dạng trên" };
     $$("#l-qtype option").forEach(function (o) {
       if (o.dataset.orig == null) o.dataset.orig = o.textContent;
-      o.disabled = other && !!EN_ONLY[o.value];
+      o.disabled = (other && !!EN_ONLY[o.value]) || (loaded && !!CHUNK_Q[o.value]);   /* Safari iPhone không ẩn được <option hidden> */
       o.textContent = lab[o.value] || (o.dataset.orig + (o.disabled ? " — chỉ khi học English" : ""));
     });
     if (other && EN_ONLY[sel.value]) sel.value = "meaning";
@@ -731,7 +759,11 @@
     $("#l-autohint").textContent = on ? (a.n ? "→ " + a.n + (G.st.qtype === "sheet" ? " chỗ trống" : " từ") + " × " + a.qs + " giây" + (G.st.mode === "kahoot" ? " (+" + REVEAL_MS / 1000 + " giây xem đáp án)" : "") + " = " + fmtSec(a.sec) : "→ chọn chủ đề trước") : "";
   }
   function paintPoolInfo() {
-    paintLevels(); paintAutoTime();
+    paintLevels(); paintAutoTime(); paintQtypes();
+    if (G.st && G.st.scope && G.st.scope.length && chunkMode()) {
+      $("#l-pool").textContent = "🕵️ " + G.pool.length + " câu (4 ngôn ngữ) · 🔀 ghép mảnh " + chunkPool("order").length + " · 🧩 chunk " + chunkPool("chunk").length + " · 🎧 nghe " + chunkPool("listen").length + " · 🎭 lịch sự " + chunkPool("polite").length;
+      return;
+    }
     $("#l-pool").textContent = G.st && G.st.scope && G.st.scope.length
       ? G.pool.length + " từ khác nhau · có nghĩa: " + poolCounts() + " · 📝 " + G.gaps.length + " câu điền chỗ trống (📚 thư viện " + (G.gapLib || []).length + " · 📖 bài đọc " + (G.gapsSrc || []).length + ") · 📄 " + (G.sheets || []).length + " phiếu Block · 🎧 " + (G.dicts || []).length + " câu dictation"
       : "Chưa chọn chủ đề.";
