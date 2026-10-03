@@ -8,6 +8,7 @@ create table if not exists public.test_items (
   part        int  not null,               -- 1–7
   num         int  not null,               -- số câu trong đề: 101…200
   stem        text,                        -- câu hỏi (chỗ trống = _______)
+  stem_vi     text,                        -- bản dịch tiếng Việt của CẢ câu (đã điền đáp án)
   opts        jsonb not null,              -- ["(A) …","(B) …","(C) …","(D) …"]
   answer      text,                        -- 'A'..'D'
   tag         text,                        -- chủ điểm: Từ loại, Giới từ, Từ vựng…
@@ -20,3 +21,4 @@ create table if not exists public.test_items (
 create index if not exists test_items_tp on public.test_items (exam, test, part, num);
 alter table public.test_items enable row level security;
 create policy "test_items_all" on public.test_items for all to anon, authenticated using (true) with check (true);
+alter table public.test_items add column if not exists stem_vi text;   -- bảng tạo trước khi có cột dịch

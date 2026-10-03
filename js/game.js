@@ -726,7 +726,7 @@
     t = t || {}; var k = "toeic:" + t.test + ":" + t.part;
     if (G.poolKey === k && (G.tItems || []).length) return;
     G.poolKey = k; decks = {};
-    var r = await sb.from("test_items").select("id,num,stem,opts,answer,tag,explain,passage,answer_src").eq("exam", "toeic").eq("test", String(t.test)).eq("part", +t.part).order("num");
+    var r = await sb.from("test_items").select("id,num,stem,stem_vi,opts,answer,tag,explain,passage,answer_src").eq("exam", "toeic").eq("test", String(t.test)).eq("part", +t.part).order("num");
     if (G.poolKey !== k) return;
     G.tItems = r.data || [];
     G.pool = G.tItems.map(function (x) { return { wid: x.id, term: String(x.num), m: { vi: "-", en: "-", es: "-", zh: "-" } }; });   /* để các chỗ kiểm "kho có câu chưa" chạy đúng */
@@ -1179,7 +1179,7 @@
       var L = G.tItems || []; if (G.tMatch !== (G.st && G.st.matchId)) { G.tMatch = G.st && G.st.matchId; G.tIdx = 0; }
       var it = L[(G.tIdx++) % Math.max(1, L.length)] || {};
       var ai = "ABCD".indexOf(String(it.answer || "").trim().toUpperCase());
-      return { type: "toeic", wid: null, num: it.num, sent: it.stem || "", passage: it.passage || "", opts: (it.opts || []).slice(), ans: ai >= 0 ? (it.opts || [])[ai] : "", tag: it.tag || "", expl: it.explain || "", asrc: it.answer_src || "" };
+      return { type: "toeic", wid: null, num: it.num, sent: it.stem || "", passage: it.passage || "", opts: (it.opts || []).slice(), ans: ai >= 0 ? (it.opts || [])[ai] : "", tag: it.tag || "", expl: it.explain || "", vi: it.stem_vi || "", asrc: it.answer_src || "" };
     }
     if (t === "chunkmix") t = shuffle(CHUNK_TYPES.filter(function (x) { return chunkPool(x).length >= (x === "chunk" || x === "listen" ? 4 : 1); }))[0] || "listen";
     if (CHUNK_TYPES.indexOf(t) >= 0) { var cq = makeChunkQ(t, lang); if (cq) return cq; t = "meaning"; }
@@ -1572,7 +1572,7 @@
     var s = Object.assign({}, G.st, { hid: G.me && G.me.id, htab: G.tab, hsince: G.since, on: onlineIds(), left: G.endAt ? G.endAt - Date.now() : null, qLeft: G.qUntil ? G.qUntil - Date.now() : null });
     if (s.q) {
       var q = s.q, rev = !!q.revealed;
-      s.q = { qn: q.qn, n: q.n, wids: q.wids, word: q.word, lv: q.lv, aud: q.aud, tiles: q.tiles, sep: q.sep, reg: q.reg, ctx: q.ctx, full: q.full, optTexts: q.optTexts, type: q.type, texts: q.texts, sent: q.sent, opts: q.opts, len: q.len, wid: q.wid, term: q.term, text: q.text, bank: q.bank, say: q.say, limit: q.limit, grading: !!q.grading, num: q.num, passage: q.passage, tag: rev ? q.tag : null, expl: rev ? q.expl : null, asrc: q.asrc,
+      s.q = { qn: q.qn, n: q.n, wids: q.wids, word: q.word, lv: q.lv, aud: q.aud, tiles: q.tiles, sep: q.sep, reg: q.reg, ctx: q.ctx, full: q.full, optTexts: q.optTexts, type: q.type, texts: q.texts, sent: q.sent, opts: q.opts, len: q.len, wid: q.wid, term: q.term, text: q.text, bank: q.bank, say: q.say, limit: q.limit, grading: !!q.grading, num: q.num, passage: q.passage, tag: rev ? q.tag : null, expl: rev ? q.expl : null, vi: rev ? q.vi : null, asrc: q.asrc,
               res: rev ? q.res : null, revealed: rev, ans: rev ? q.ans : null, cnt: Object.keys(q.got).length,
               picks: rev ? Object.keys(q.got).reduce(function (o, pid) { o[pid] = q.got[pid].c; return o; }, {}) : null,
               oks: rev ? Object.keys(q.got).filter(function (pid) { return q.got[pid].ok; }) : null, fast: rev ? q.fast : null };
@@ -2546,7 +2546,7 @@
   /* tô đúng/sai + gắn ảnh những người đã chọn từng đáp án (dạng chọn 1 trong 4) */
   function toeicExpl(q) {
     if (!q || q.type !== "toeic" || !q.expl) return "";
-    return '<div class="g-texpl"><b>' + esc(q.ans) + "</b>" + (q.tag ? ' <span class="g-ttag">' + esc(q.tag) + "</span>" : "") + "<div>" + esc(q.expl) + "</div>" +
+    return '<div class="g-texpl"><b>' + esc(q.ans) + "</b>" + (q.tag ? ' <span class="g-ttag">' + esc(q.tag) + "</span>" : "") + (q.vi ? '<div class="g-tvi">🇻🇳 ' + esc(q.vi) + "</div>" : "") + "<div>💡 " + esc(q.expl) + "</div>" +
       (q.asrc === "claude" ? '<div class="g-sub">⚠️ Đáp án do Claude tự giải — chờ đối chiếu đáp án chính thức.</div>' : "") + "</div>";
   }
   function paintPickers(q, roster, sel) {
