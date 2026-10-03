@@ -198,7 +198,7 @@ body.big .g-top,body.big #g-main{display:none}
 /* v20: nhãn ô ngôn ngữ trên đầu trang */
 .g-langlbl{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--text-2)}
 .g-langlbl .g-mylang{margin-left:0}
-@media (max-width:440px){ .g-langlbl span{display:none} }
+@media (max-width:440px){ .g-langlbl > span{display:none} }   /* chỉ chữ "🌐 Language", không ẩn nhãn 🎯 */
 
 /* v22: ✓ đúng / ✗ sai thay điểm to */
 .g-tally{margin-left:auto;display:inline-flex;align-items:baseline;gap:6px;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -424,4 +424,9 @@ body.embed .g-brand{display:none}
 
 /* v77: nhãn "🔒 Nghĩa: …" khi host ép tiếng nghĩa */
 .g-forcenote{font-size:12px;font-weight:700;color:var(--amber);background:rgba(217,160,60,.12);border:1px solid rgba(217,160,60,.5);border-radius:999px;padding:1px 8px;white-space:nowrap;cursor:help}
-@media (max-width:440px){ .g-forcenote{font-size:11px;padding:1px 6px} .g-fnl{display:none} }
+
+
+/* v79: nhãn "🎯 Học · Nghĩa" (máy tính đầy đủ, điện thoại rút gọn) + ô tiếng mẹ đẻ trùng tiếng đang học bị mờ */
+.g-fns{display:none}
+@media (max-width:440px){ .g-forcenote{font-size:11px;padding:1px 6px} .g-fnl{display:none} .g-fns{display:inline} }
+.g-langs button.g-learning{opacity:.35;cursor:not-allowed;text-decoration:line-through}
