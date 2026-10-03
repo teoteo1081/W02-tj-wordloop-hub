@@ -485,3 +485,4 @@ body.embed .g-brand{display:none}
 .g-texpl{margin-top:10px;padding:10px 12px;background:var(--deep);border:1px solid var(--line);border-radius:10px;text-align:left;font-size:15px;line-height:1.5}
 .g-ttag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;background:var(--raise);color:var(--text-2);margin-left:6px}
 .g-tvi{margin:6px 0;color:var(--vi)}
+.g-opt.g-picked{border-color:var(--vi);background:rgba(143,184,232,.16)}
