@@ -22,3 +22,4 @@ create index if not exists test_items_tp on public.test_items (exam, test, part,
 alter table public.test_items enable row level security;
 create policy "test_items_all" on public.test_items for all to anon, authenticated using (true) with check (true);
 alter table public.test_items add column if not exists stem_vi text;   -- bảng tạo trước khi có cột dịch
+alter table public.test_items add column if not exists i18n jsonb;   -- lời giải đa ngôn ngữ {vi:{tag,explain,stem}, en:{tag,explain}, …} (TJ 2026-10-03)
