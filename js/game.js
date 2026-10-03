@@ -67,7 +67,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 83;
+  var GAME_VER = 84;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -135,11 +135,14 @@
   function show(id) { $$(".g-screen").forEach(function (s) { s.hidden = s.id !== id; }); document.body.classList.toggle("big", id === "s-screen"); paintSide(); }
   function norm(t) { return String(t || "").toLowerCase().replace(/\s+/g, " ").trim(); }
   /* chấm câu GÕ TAY giống WordLoop (w.normalizeAnswer): bỏ dấu câu/ngoặc, thường hoá, gộp khoảng trắng */
-  function normAns(s) { return String(s || "").normalize("NFC").toLowerCase().trim().replace(/[.,!?;:"'`()\[\]]/g, "").replace(/\s+/g, " "); }
+  function normAns(s) { return String(s || "").normalize("NFC").toLowerCase().trim().replace(/[.,!?;:"'`()\[\]。，！？；：、¿¡“”‘’（）「」]/g, "").replace(/\s*\/\s*/g, " / ").replace(/\s+/g, " ").trim(); }
+  /* bỏ dấu (es "atun" = "atún", vi "ca hoi" = "cá hồi") — chấm ĐÚNG, người chơi vẫn thấy đáp án chuẩn có dấu (QA 2026-10-03) */
+  function noMarks(s) { return normAns(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d"); }
   function typedOk(typed, ans) {   /* "subscribe (to)": gõ "subscribe to" hoặc "subscribe" đều đúng */
     var t = normAns(typed); if (!t) return false;
-    if (t === normAns(ans) || t === normAns(String(ans).replace(/\([^)]*\)/g, " "))) return true;
-    return String(ans).split(/\s*[\/;,，、；]\s*/).some(function (v) { v = v.replace(/\([^)]*\)|（[^）]*）/g, " ").trim(); return v && normAns(v) === t; });   /* nhiều cách nói: gõ 1 cách là đúng */
+    var whole = function (x) { return noMarks(String(x).replace(/\s*[\/;,，、；]\s*/g, "/")).replace(/\s*\/\s*/g, "/"); };   /* gõ đủ cụm với dấu phân cách khác vẫn đúng */
+    var cand = [ans, String(ans).replace(/\([^)]*\)|（[^）]*）/g, " ")].concat(String(ans).split(/\s*[\/;,，、；]\s*/).map(function (v) { return v.replace(/\([^)]*\)|（[^）]*）/g, " ").trim(); }));
+    return cand.some(function (v) { return v && (normAns(v) === t || noMarks(v) === noMarks(typed) || whole(v) === whole(typed)); });   /* nhiều cách nói: gõ 1 cách là đúng */
   }
   function clean(t) { return String(t || "").trim(); }
   /* bản dịch -> 1 cách nói cho game (khi chưa có cột quiz_<x>): bỏ ngoặc, lấy cách đầu, bỏ dấu câu cuối (chuyên gia ngôn ngữ 2026-10-03) */
@@ -271,7 +274,7 @@
     el.innerHTML = '<span class="g-fnl">' + esc(full) + '</span><span class="g-fns">' + esc(short) + "</span>";
     el.title = block ? T("pair_tt", { t: LANG_NAME[t], m: LANG_NAME[m] }) + (forced ? " " + T("force_tt", { l: LANG_NAME[m] }) : "") : T("force_tt", { l: LANG_NAME[m] });
   }
-  function myText(q) { var t = q.texts || {}; return t[effLang(G.myLang, G.st, q.type)] || t.en || t.vi || ""; }
+  function myText(q) { var t = q.texts || {}; return t[effLang(G.view === "screen" ? "room" : G.myLang, G.st, q.type)] || t.en || t.vi || ""; }
   function myFlag(q) { var t = q.texts || {}, l = effLang(G.myLang, G.st, q.type); return FLAG[t[l] ? l : t.en ? "en" : "vi"]; }
 
   /* ---------- 1. tên + ảnh ---------- */
@@ -841,6 +844,7 @@
       });
       pool = tp; gaps = []; sheets = []; dicts = [];
     }
+    if (G.poolKey !== scopeKey(scope)) return G.pool;   /* đã đổi chủ đề/ngôn ngữ trong lúc tải -> bỏ kết quả cũ */
     G.pool = pool; G.gaps = gaps; G.gapsSrc = gaps; G.gapLib = []; G.sheets = sheets; G.dicts = dicts;
     applyGap();
     if (G.gapsIn && G.gapsIn.key === G.poolKey) G.gaps = G.gapsIn.gaps;   /* người chơi: dùng câu ngắn host đã gửi */
@@ -1389,7 +1393,7 @@
   $("#l-target").addEventListener("change", async function () {
     if (!G.isHost || !G.st) return;
     G.st.target = this.value; paintForce(); if (this.value === "zh") loadPinyin();
-    if (this.value !== "en" && /^(gap|sheet|dict|write)$/.test(G.st.qtype)) { G.st.qtype = "meaning"; $("#l-qtype").value = "meaning"; }
+    if (this.value !== "en" && /^(gap|sheet|dict|write)$/.test(G.st.qtype)) { G.st.qtype = "meaning"; $("#l-qtype").value = "meaning"; sb.from("game_rooms").update({ qtype: "meaning" }).eq("id", G.room.id).then(function () {}); }
     push(); applyUI();
     G.poolKey = null; $("#l-pool").textContent = "Đang tải từ vựng…";
     await ensurePool(G.st.scope); paintPoolInfo(); paintAutoTime && paintAutoTime();
@@ -2552,7 +2556,7 @@
           G.qUntilLocal = 0;
           paintPickers(s.q, roster, "#sc-opts .g-opt");
           if ((s.q.type === "sheet" || s.q.type === "dict" || s.q.type === "write") && G.scRev !== s.q.qn) { G.scRev = s.q.qn; revealRich(s.q, roster, null, "#sc-res", "#sc-q"); }
-          if (s.q.type === "recall") $("#sc-opts").innerHTML = '<div class="sc-waiting"><b class="sc-ans">' + esc(s.q.ans) + "</b> · " + esc(T("n_right", { n: (s.q.oks || []).length })) + " " + (s.q.oks || []).map(function (pid) { return avatar((roster[pid] || {}).avatar); }).join("") + "</div>";
+          if (s.q.type === "recall") $("#sc-opts").innerHTML = '<div class="sc-waiting"><b class="sc-ans">' + esc(zhA(s.q.ans)) + "</b> · " + esc(T("n_right", { n: (s.q.oks || []).length })) + " " + (s.q.oks || []).map(function (pid) { return avatar((roster[pid] || {}).avatar); }).join("") + "</div>";
           var fast = s.q.fast ? roster[s.q.fast] : null;
           if (fast) $("#sc-status").textContent = T("fastest", { n: plain(fast) });
         }
@@ -2729,7 +2733,7 @@
   }
   async function histMine() {
     if (!G.me) { $("#hi-body").innerHTML = '<p class="g-sub">' + T("no_name") + "</p>"; return; }
-    var r = await sb.from("game_results").select("match_id,team,score,rank,correct,wrong,best_streak,created_at,game_matches(title,mode,qtype,meaning_lang,minutes,teams,scoring)").eq("player_id", G.me.id).not("match_id", "is", null).order("created_at", { ascending: false }).limit(200);
+    var r = await sb.from("game_results").select("match_id,team,score,rank,correct,wrong,best_streak,created_at,game_matches(title,mode,qtype,meaning_lang,target,minutes,teams,scoring)").eq("player_id", G.me.id).not("match_id", "is", null).order("created_at", { ascending: false }).limit(200);
     if (r.error) throw r.error;
     r.data = r.data.filter(function (x) { return (x.correct || 0) + (x.wrong || 0) > 0; });   /* ẩn ván trống 0/0 (bấm bắt đầu rồi kết thúc ngay) */
     if (!r.data.length) { $("#hi-body").innerHTML = '<p class="g-sub">' + T("no_games") + "</p>"; return; }
@@ -2746,7 +2750,7 @@
       r.data.map(function (x) {
         var rm = x.game_matches || {}, d = new Date(x.created_at);
         return "<tr><td>" + d.toLocaleDateString() + " " + d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + '</td><td><button type="button" class="g-mini g-rvbtn" title="' + esc(T("review_btn")) + '" data-rvmatch="' + esc(x.match_id) + '" data-title="' + esc(rm.title || "") + '">📖</button> <a href="?match=' + esc(x.match_id) + '">' + esc(rm.title || "—") + "</a>" +
-          '<div class="g-sub">' + (QT[rm.qtype] || "") + " " + (FLAG[rm.meaning_lang] || "") + " " + (rm.mode === "kahoot" ? T("m_kahoot") : T("m_free")) + (x.team && TEAM_C[x.team] ? " · " + TEAM_C[x.team].e + " " + esc(teamName(x.team)) : "") + "</div></td><td>" + tally({ c: x.correct, w: x.wrong }) + (x.correct === best && best ? " 🏆" : "") + "</td><td>" +
+          '<div class="g-sub">' + (QT[rm.qtype] || "") + " " + (rm.target && rm.target !== "en" ? "🎯" + FLAG[rm.target] + " " : "") + (FLAG[rm.meaning_lang] || "") + " " + (rm.mode === "kahoot" ? T("m_kahoot") : T("m_free")) + (x.team && TEAM_C[x.team] ? " · " + TEAM_C[x.team].e + " " + esc(teamName(x.team)) : "") + "</div></td><td>" + tally({ c: x.correct, w: x.wrong }) + (x.correct === best && best ? " 🏆" : "") + "</td><td>" +
           (x.rank === 1 ? "🥇" : x.rank) + "/" + (nIn[x.match_id] || "?") + "</td></tr>";
       }).join("") + "</tbody></table>";
   }
@@ -2760,8 +2764,15 @@
     if (G.st && G.st.phase === "play") {
       $("#p-mode").textContent = modeLine(G.st);
       var q = G.st.mode === "kahoot" ? G.st.q : G.myQ;
-      if (q && q.type !== "gap") $("#p-vi").textContent = myText(q) + (q.type === "recall" && q.len ? "  (" + q.len + ")" : "");
-      if (q) $("#p-hint").textContent = T(q.type === "gap" ? "q_gap" : q.type === "recall" ? "q_recall" : "q_meaning");
+      /* đổi tiếng mẹ đẻ giữa câu: GIỮ từ đang hỏi, chỉ dịch lại phần NGHĨA (QA 2026-10-03: đổi giữa câu Từ→Nghĩa từng
+         thay chữ Hán bằng nghĩa = lộ đáp án) */
+      if (q && q.type === "en2m") {
+        var ml2 = effLang(G.myLang, G.st, "en2m");
+        $$("#p-opts .g-opt").forEach(function (b) { var m = (q.optTexts || {})[b.dataset.opt] || {}, t = b.querySelector(".g-otext"); if (t) t.textContent = m[ml2] || m.en || m.vi || b.dataset.opt; });
+      } else if (q && (q.type === "meaning" || q.type === "recall")) {
+        var badge = $("#p-vi .g-lv"); $("#p-vi").textContent = myText(q) + (q.type === "recall" && q.len ? "  (" + q.len + ")" : ""); if (badge) $("#p-vi").appendChild(badge);
+      }
+      if (q) $("#p-hint").textContent = T(QHINT[q.type] || "q_meaning");
     }
   });
   async function loadProfile() {
