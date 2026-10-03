@@ -435,3 +435,8 @@ body.embed .g-brand{display:none}
 .g-spk{min-width:36px;min-height:32px;padding:4px 6px;font-size:1em;border-radius:8px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .g-spk:active{background:var(--raise)}
 #rv-say{touch-action:manipulation}
+
+/* v82: pinyin dưới chữ Hán */
+.g-zhw{display:inline-flex;flex-direction:column;align-items:center;line-height:1.15}
+.g-py{display:block;font-size:.62em;font-weight:500;color:var(--text-2);letter-spacing:.2px;margin-top:2px}
+.g-opt .g-py{font-size:13px;margin-top:0}
