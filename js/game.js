@@ -67,7 +67,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 91;
+  var GAME_VER = 92;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -742,6 +742,11 @@
       var ts = TQ_TYPES.filter(function (t) { return t !== "gap" || (G.gaps || []).length >= 4; });
       qs = Math.round(ts.reduce(function (a, t) { return a + tqOf(st, t); }, 0) / ts.length);
     }
+    if (CHUNK_Q[st.qtype]) {   /* dạng chunk có giây riêng (qLimit): ghép mảnh gấp đôi, nghe/lịch sự gấp rưỡi — QA 2026-10-03 */
+      var ct = st.qtype === "chunkmix" ? CHUNK_TYPES.filter(function (t) { return chunkPool(t).length >= (t === "chunk" || t === "listen" ? 4 : 1); }) : [st.qtype];
+      if (!ct.length) ct = ["listen"];
+      var q0 = qs; qs = Math.round(ct.reduce(function (a, t) { return a + qLimit({ type: t }, q0); }, 0) / ct.length);
+    }
     var per = qs + (st.mode === "kahoot" ? REVEAL_MS / 1000 : 0);
     return { n: n, qs: qs, per: per, sec: Math.max(30, Math.round(n * per)) };
   }
@@ -756,7 +761,7 @@
     if (mix) $$("#l-tq-wrap [data-tq]").forEach(function (i) { if (document.activeElement !== i) i.value = tqOf(G.st, i.dataset.tq); });
     $("#l-min").disabled = on;
     if (on) $("#l-min").value = Math.max(1, Math.ceil(a.sec / 60));
-    $("#l-autohint").textContent = on ? (a.n ? "→ " + a.n + (G.st.qtype === "sheet" ? " chỗ trống" : " từ") + " × " + a.qs + " giây" + (G.st.mode === "kahoot" ? " (+" + REVEAL_MS / 1000 + " giây xem đáp án)" : "") + " = " + fmtSec(a.sec) : "→ chọn chủ đề trước") : "";
+    $("#l-autohint").textContent = on ? (a.n ? "→ " + a.n + (G.st.qtype === "sheet" ? " chỗ trống" : CHUNK_Q[G.st.qtype] ? " câu" : " từ") + " × " + a.qs + " giây" + (G.st.mode === "kahoot" ? " (+" + REVEAL_MS / 1000 + " giây xem đáp án)" : "") + " = " + fmtSec(a.sec) : "→ chọn chủ đề trước") : "";
   }
   function paintPoolInfo() {
     paintLevels(); paintAutoTime(); paintQtypes();
@@ -2060,7 +2065,7 @@
       $(optsEl).innerHTML = '<div class="g-ordline" data-sep="' + esc(q.sep || "") + '"></div><div class="g-tiles">' + (q.tiles || []).map(function (t, i) {
         return '<button type="button" class="g-tile" data-i="' + i + '"' + (zhT ? ' data-zh="' + esc(t) + '"' : "") + "><span>" + esc(t) + "</span></button>"; }).join("") + "</div>" +
         (mine ? '<div class="g-row g-center"><button type="button" class="g-btn g-btn-soft g-btn-sm" id="p-ordreset">↺ ' + esc(T("redo")) + "</button></div>" : "");
-      decoratePy($(textEl).parentNode); return;
+      decoratePy($(textEl).parentNode); ordFix(); requestAnimationFrame(ordFix); setTimeout(ordFix, 400); return;   /* đo lại khi khung đã hiện + pinyin nạp xong */
     }
     if (q.type === "chunk") {
       $(textEl).innerHTML = '<span class="g-gapline">' + esc(q.sent).replace("{{GAP}}", '<span class="g-blank" style="width:' + (Math.max(3, String(q.ans || "").length) * 0.55).toFixed(1) + 'em"></span>') + "</span>" +
@@ -2284,11 +2289,23 @@
   });
 
   /* 🔀 GHÉP CÂU: bấm mảnh -> lên hàng câu; bấm mảnh trên hàng -> trả về; đủ mảnh -> tự nộp */
+  /* hàng câu cao bằng hàng mảnh (+ khoảng đệm) ngay từ đầu -> ghép thêm mảnh không làm khung cao/thấp đi */
+  function ordFix() {
+    var line = $("#p-opts .g-ordline"), tiles = $("#p-opts .g-tiles"); if (!line || !tiles) return;
+    if (tiles.offsetHeight) line.style.minHeight = (tiles.offsetHeight + 18) + "px";
+  }
   function ordPick(btn) {
     var s = G.st; if (!s || s.phase !== "play" || !iPlay() || btn.disabled) return;
     var line = $("#p-opts .g-ordline"), tiles = $("#p-opts .g-tiles"); if (!line || !tiles) return;
-    (btn.parentNode === line ? tiles : line).appendChild(btn);
-    var left = tiles.querySelectorAll(".g-tile").length;
+    /* KHÔNG chuyển nút giữa 2 hàng (2 hàng đổi chiều cao -> màn hình điện thoại nhảy 42px, QA 2026-10-03):
+       mảnh đã chọn để lại chỗ trống tàng hình ở hàng dưới, hàng câu có chiều cao cố định (ordFix) */
+    if (btn.parentNode === line) {
+      var src = tiles.querySelector('.g-tile[data-i="' + btn.dataset.i + '"]'); if (src) src.classList.remove("g-used");
+      btn.remove(); return;
+    }
+    if (btn.classList.contains("g-used")) return;
+    btn.classList.add("g-used"); line.appendChild(btn.cloneNode(true)).classList.remove("g-used");
+    var left = tiles.querySelectorAll(".g-tile:not(.g-used)").length;
     if (left) return;
     var sep = line.dataset.sep || "", ans = $$("#p-opts .g-ordline .g-tile").map(function (b) { return b.querySelector("span").textContent; }).join(sep);
     $$("#p-opts .g-tile, #p-ordreset").forEach(function (b) { b.disabled = true; });
@@ -2297,7 +2314,7 @@
   }
   $("#p-opts").addEventListener("click", function (e) {
     var t = e.target.closest(".g-tile"); if (t) return ordPick(t);
-    if (e.target.closest("#p-ordreset")) { var tiles = $("#p-opts .g-tiles"); $$("#p-opts .g-ordline .g-tile").forEach(function (b) { tiles.appendChild(b); }); }
+    if (e.target.closest("#p-ordreset")) { $$("#p-opts .g-ordline .g-tile").forEach(function (b) { b.remove(); }); $$("#p-opts .g-tiles .g-used").forEach(function (b) { b.classList.remove("g-used"); }); }
   });
 
   /* ---------- sang câu bằng tay + tự nộp khi hết giờ ---------- */

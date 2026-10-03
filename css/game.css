@@ -454,3 +454,8 @@ body.embed .g-brand{display:none}
 .g-qmean{display:block;margin-top:6px;font-size:14px;font-weight:500;color:var(--muted,#9aa)}
 .g-reg{display:inline-block;padding:4px 12px;border-radius:999px;background:var(--deep);border:1px solid var(--line)}
 #p-opts:has(.g-tiles){display:block}
+.g-tile.g-used{visibility:hidden}
+/* câu + nghĩa / nhãn mức lịch sự xếp TRÊN-DƯỚI (trước đây .g-qvi là flex hàng ngang -> câu bị bóp, nhãn gãy 3 dòng — QA 2026-10-03) */
+.g-qvi:has(.g-qmean){flex-direction:column;gap:4px}
+.g-qvi:has(.g-qmean) .g-gapline{max-width:100%}
+.g-reg{white-space:nowrap;font-size:16px;max-width:100%;overflow:hidden;text-overflow:ellipsis}
