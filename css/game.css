@@ -486,3 +486,18 @@ body.embed .g-brand{display:none}
 .g-ttag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;background:var(--raise);color:var(--text-2);margin-left:6px}
 .g-tvi{margin:6px 0;color:var(--vi)}
 .g-opt.g-picked:not(.ok):not(.bad){border-color:var(--vi);background:rgba(143,184,232,.16)}
+.g-tex{margin-top:4px}
+/* 🎯 đề thi · từ vựng ở Xem lại */
+.g-tvbox{margin-top:12px;padding:10px 12px;background:var(--deep);border:1px solid var(--line);border-radius:10px;text-align:left}
+.g-tvh{font-weight:700;margin-bottom:6px}
+.g-tvrow{display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-top:1px solid var(--line)}
+.g-tvrow:first-of-type{border-top:0}
+.g-tvstar{flex:none;width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--raise);font-size:18px;cursor:pointer;color:var(--amber)}
+.g-tvstar.on{background:var(--amber);color:#1a1918;border-color:var(--amber)}
+.g-tvw{min-width:0;flex:1}
+.g-tvm{font-size:14px;color:var(--text-2);margin-top:2px;line-height:1.45}
+.g-tvtip{margin-top:8px}
+.g-tvsel{margin-top:8px;padding:8px 10px;border:1px dashed var(--accent);border-radius:10px}
+.g-w{cursor:pointer;border-radius:4px;padding:0 1px}
+@media (hover:hover){.g-w:hover{background:var(--raise)}}
+.g-w.sel{background:var(--accent);color:#fff}
