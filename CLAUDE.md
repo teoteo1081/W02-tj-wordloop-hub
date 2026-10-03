@@ -31,6 +31,8 @@
 
 - **Push lên `main` phải là 1 lệnh RIÊNG** (`git push origin main`), đừng gộp nhiều nhánh trong 1 lệnh (`git push origin main main:<nhánh khác>`) — 2026-10-03 GitHub Pages bỏ qua cả 5 lần push gộp như vậy (web đứng ở v88 trong khi main đã v91); push riêng `main` thì Pages build lại ngay. Kiểm tra bằng danh sách workflow run "pages build and deployment".
 
+- **File đề thi TOEIC (TJ 2026-10-03, "sau này xài tiếp không cần nói lại")**: TJ gửi PDF/audio đề -> **nén** rồi tải lên **Supabase Storage bucket `toeic`** (tạo bằng `tools/toeic_storage.sql`), đúng thư mục: `reading/TEST_<n>_RC.pdf`, `listening/TEST_<n>_LC.pdf`, audio `listening/TEST_<n>_LC.mp3`; đáp án/lời giải để cạnh (vd `reading/TEST_<n>_RC_key.pdf`). **KHÔNG BAO GIỜ commit file đề vào repo** (sách đề ETS có bản quyền, repo + web PUBLIC). Nén PDF scan: `pdftoppm -r 150 -jpeg -jpegopt quality=72 in.pdf p && img2pdf p-*.jpg -o out.pdf` (`pip install img2pdf`) — 20 MB -> ~4.4 MB, chữ Part 7 vẫn rõ. Giới hạn: gói Free Supabase ~1 GB tổng Storage, 50 MB/file (bucket đặt 50 MB). Upload: `POST {SUPABASE_URL}/storage/v1/object/toeic/<path>` với anon key, header `x-upsert: true` để ghi đè.
+
 ## Kiến trúc tóm tắt (chi tiết xem README.md)
 - `js/db.js` là lớp duy nhất biết dữ liệu nằm ở local hay Supabase (`DB.mode`). Code khác **không bao giờ** đọc `localStorage` trực tiếp hay gọi Supabase trực tiếp — luôn qua `DB.xxx()`.
 - `S` (định nghĩa trong `app.js`, dùng chung sang `detail.js`) chỉ chứa dữ liệu của **Notebook đang mở** (`S.blocks`/`S.words`/`S.wp`/`S.bp`), KHÔNG phải toàn bộ app. Cần thống kê toàn app (vd Journey) phải gọi hàm riêng đọc thẳng `local()`/Supabase toàn cục (`DB.getJourneySummary`), không dùng `S`.
