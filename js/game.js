@@ -67,7 +67,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 92;
+  var GAME_VER = 93;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -750,7 +750,7 @@
     var per = qs + (st.mode === "kahoot" ? REVEAL_MS / 1000 : 0);
     return { n: n, qs: qs, per: per, sec: Math.max(30, Math.round(n * per)) };
   }
-  function fmtSec(s) { var m = Math.floor(s / 60), r = s % 60; return (m ? m + " phút " : "") + (r ? r + " giây" : m ? "" : "0 giây"); }
+  function fmtSec(s) { var m = Math.floor(s / 60), r = s % 60; return ((m ? m + " phút " : "") + (r ? r + " giây" : m ? "" : "0 giây")).trim(); }
   function paintAutoTime() {
     if (!G.st || !$("#l-auto")) return;
     var race = !!G.st.race, on = G.st.auto !== false && !race, a = autoSec();
@@ -1125,7 +1125,8 @@
     return out.length >= 2 ? out : null;
   }
   function keyFor(it) { var k = it.ch && it.ch.key && it.ch.key[tgt()]; return k && String(it.term).indexOf(k) >= 0 && k !== it.term ? k : null; }
-  function polFor(it) { var p = it.ch && it.ch.pol && it.ch.pol[tgt()]; return p && p.casual && p.neutral && p.formal ? p : null; }
+  /* 🎭 2 mức (TJ 2026-10-03 chọn gộp): 👫 thân mật / 🎩 lịch sự — bỏ "trung tính" (ranh giới mờ, chấm oan); dữ liệu cũ còn neutral thì bỏ qua */
+  function polFor(it) { var p = it.ch && it.ch.pol && it.ch.pol[tgt()]; return p && p.casual && p.formal && norm(p.casual) !== norm(p.formal) ? p : null; }
   function chunkPool(type) {
     return G.pool.filter(function (it) {
       if (type === "order") return !!tilesFor(it);
@@ -1146,8 +1147,11 @@
       var opts = [key]; others.forEach(function (k) { if (opts.length < 4 && !opts.some(function (o) { return norm(o) === norm(k); })) opts.push(k); });
       q = { type: "chunk", wid: w.wid, ans: key, full: w.term, sent: String(w.term).replace(key, "{{GAP}}"), texts: w.m, opts: shuffle(opts) };
     } else if (t === "polite") {
-      var pol = polFor(w), regs = ["casual", "neutral", "formal"], reg = regs[Math.floor(Math.random() * 3)];
-      q = { type: "polite", wid: w.wid, ans: pol[reg], reg: reg, ctx: (w.ch && w.ch.ctx) || "", texts: w.m, opts: shuffle([pol.casual, pol.neutral, pol.formal]) };
+      var pol = polFor(w), reg = Math.random() < 0.5 ? "casual" : "formal", opts = [pol.casual, pol.formal];
+      /* đáp án thứ 3: câu CÙNG mức nhưng KHÁC nghĩa (của câu khác) -> phải để ý cả nghĩa lẫn giọng */
+      var oth = shuffle(p.filter(function (x) { return x.wid !== w.wid; }))[0], o3 = oth && polFor(oth) && polFor(oth)[reg];
+      if (o3 && opts.every(function (o) { return norm(o) !== norm(o3); })) opts.push(o3);
+      q = { type: "polite", wid: w.wid, ans: pol[reg], reg: reg, ctx: (w.ch && w.ch.ctx) || "", texts: w.m, opts: shuffle(opts) };
     } else {
       var lp = poolFor(lang).filter(function (x) { return x.sent; }); if (lp.length < 4) lp = p;
       q = { type: "listen", wid: w.wid, word: w.term, ans: w.term, say: w.term, texts: w.m, opts: distractors(w, lp), optTexts: {} };
@@ -2292,7 +2296,7 @@
   /* hàng câu cao bằng hàng mảnh (+ khoảng đệm) ngay từ đầu -> ghép thêm mảnh không làm khung cao/thấp đi */
   function ordFix() {
     var line = $("#p-opts .g-ordline"), tiles = $("#p-opts .g-tiles"); if (!line || !tiles) return;
-    if (tiles.offsetHeight) line.style.minHeight = (tiles.offsetHeight + 18) + "px";
+    if (tiles.offsetHeight) line.style.minHeight = tiles.offsetHeight + "px";
   }
   function ordPick(btn) {
     var s = G.st; if (!s || s.phase !== "play" || !iPlay() || btn.disabled) return;

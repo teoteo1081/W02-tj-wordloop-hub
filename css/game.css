@@ -445,8 +445,9 @@ body.embed .g-brand{display:none}
 .g-novoice{bottom:calc(64px + env(safe-area-inset-bottom));white-space:normal;max-width:min(520px,calc(100% - 32px))}
 
 /* 🕵️ dạng câu nhớ chunk (v88) */
-.g-ordline{min-height:52px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;padding:8px;margin-top:12px;border-bottom:2px dashed var(--line)}
-.g-tiles{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px}
+/* 2 hàng CÙNG khung (padding/gap/viền) -> mảnh vừa 1 dòng ở hàng dưới thì lên hàng câu cũng vừa (QA v92: 中文 mảnh dài xuống dòng, hàng câu cao 75->138) */
+.g-ordline{min-height:52px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;padding:8px;margin-top:12px;border-bottom:2px dashed var(--line)}
+.g-tiles{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;padding:8px;margin-top:12px;border-bottom:2px solid transparent}
 .g-tile{min-height:44px;padding:8px 12px;border-radius:10px;border:2px solid var(--line);background:var(--deep);font-size:16px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .g-tile:disabled{cursor:default;opacity:.85}
 .g-ordline .g-tile{border-color:var(--accent)}
@@ -459,3 +460,5 @@ body.embed .g-brand{display:none}
 .g-qvi:has(.g-qmean){flex-direction:column;gap:4px}
 .g-qvi:has(.g-qmean) .g-gapline{max-width:100%}
 .g-reg{white-space:nowrap;font-size:16px;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+/* iPhone tự phóng to trang khi chạm ô nhập/chọn chữ < 16px (phòng chờ của host) */
+@media (max-width:600px){.g-settings select,.g-settings input{font-size:16px}}
