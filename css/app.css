@@ -2421,3 +2421,10 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
   .jrow .jrow-game{font-size:0;padding:.3rem .5rem;}   /* Journey: chỉ hiện 🎮 để còn chỗ cho tên Block */
   .jrow .jrow-game::before{content:"🎮";font-size:.9rem;}
 }
+
+/* ══════════════ Hub có trang riêng (js/hubpage.js, 2026-10-03): 🕵️ CIA_Top Secret = trang 1000 câu L00 ══════════════ */
+.hubpage-layer{display:flex;flex-direction:column;}
+.hubpage-layer[hidden]{display:none;}
+.hubpage-bar{display:flex;align-items:center;gap:.5rem;padding:.35rem .7rem;border-bottom:1px solid var(--border);background:var(--bg-card);font-size:.82rem;flex-wrap:wrap;}
+.hubpage-sp{flex:1;}
+.hubpage-layer iframe{flex:1;width:100%;border:0;display:block;min-height:0;}
