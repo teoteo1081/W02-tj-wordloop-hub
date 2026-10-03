@@ -67,7 +67,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 99;
+  var GAME_VER = 100;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -723,14 +723,16 @@
   function levelsOf() { return (G.st && G.st.levels) || []; }
   /* 🎯 đề thi: câu hỏi ở bảng test_items (Supabase), theo đề + Part */
   async function ensureTest(t) {
-    t = t || {}; var k = "toeic:" + t.test + ":" + t.part;
+    t = t || {}; var k = "toeic:" + t.test + ":" + t.part + ":" + (t.from || "") + "-" + (t.to || "") + ":" + (t.tag || "");
     if (G.poolKey === k && (G.tItems || []).length) return;
     G.poolKey = k; decks = {};
     var cols = "id,num,stem,stem_vi,opts,answer,tag,explain,passage,answer_src,vocab", q0 = function (c) { return sb.from("test_items").select(c).eq("exam", "toeic").eq("test", String(t.test)).eq("part", +t.part).order("num"); };
     var r = await q0(cols + ",i18n");
     if (r.error) r = await q0(cols);   /* bảng chưa có cột i18n (chưa chạy ALTER) -> vẫn chơi được, chỉ có lời giải tiếng Việt */
     if (G.poolKey !== k) return;
-    G.tItems = r.data || [];
+    G.tItems = (r.data || []).filter(function (x) {   /* đoạn câu + chủ điểm host chọn */
+      return (!t.from || x.num >= t.from) && (!t.to || x.num <= t.to) && (!t.tag || x.tag === t.tag);
+    });
     G.pool = G.tItems.map(function (x) { return { wid: x.id, term: String(x.num), m: { vi: "-", en: "-", es: "-", zh: "-" } }; });   /* để các chỗ kiểm "kho có câu chưa" chạy đúng */
     G.gaps = []; G.sheets = []; G.dicts = [];
   }
@@ -2482,7 +2484,13 @@
     el.innerHTML = '<div class="g-tplay"><div class="g-settings">' +
       '<label>Đề <select id="t-test"><option value="">Đang tải…</option></select></label>' +
       '<label>Kiểu chơi <select id="t-mode"><option value="free">Tự do — mỗi người tự làm, đọc lời giải</option><option value="kahoot">Cùng 1 câu (kiểu Kahoot)</option></select></label>' +
-      '<label>Giây mỗi câu <input id="t-qs" type="number" min="5" max="300" value="20"></label></div>' +
+      '<label>Giây mỗi câu <input id="t-qs" type="number" min="5" max="300" value="20"></label>' +
+      '<label>Từ câu <input id="t-from" type="number" min="1" max="200" value=""></label>' +
+      '<label>Đến câu <input id="t-to" type="number" min="1" max="200" value=""></label>' +
+      '<label>Chủ điểm <select id="t-tag"><option value="">Tất cả</option></select></label>' +
+      '<label>Cách tính điểm <select id="t-scoring"><option value="q">Theo câu — đúng +100</option><option value="speed">Theo tốc độ — đúng 100 → 50</option></select></label>' +
+      '<label>Hình thức thi đấu <select id="t-teams"><option value="0">Chơi lẻ</option><option value="2">2 đội</option><option value="3">3 đội</option><option value="4">4 đội</option></select></label>' +
+      '<label class="g-check"><input type="checkbox" id="t-hostplay" checked> Host cũng chơi</label></div>' +
       '<div class="g-row"><button class="g-btn" id="t-start" type="button">▶ Bắt đầu làm bài</button></div><p class="g-sub" id="t-info"></p></div>' +
       '<p class="g-sub">Hub này để <b>làm đề thi</b> (TOEIC trước): chơi từng Part, thi thử cả bài, hoặc gom câu theo <b>chủ điểm ngữ pháp</b>. Thời gian mặc định theo đề thật:</p>' +
       TOEIC.map(function (sk) {
@@ -2497,28 +2505,38 @@
   var T_SEC = { 1: 30, 2: 22, 3: 26, 4: 29, 5: 20, 6: 30, 7: 60 };   /* giây/câu mặc định theo nhịp đề thật (bảng TOEIC ở trên) */
   async function loadTestList() {
     var sel = $("#t-test"); if (!sel) return;
-    var r = await sb.from("test_items").select("test,part,answer_src").eq("exam", "toeic");
+    var r = await sb.from("test_items").select("test,part,num,tag,answer_src").eq("exam", "toeic");
     if (r.error) { sel.innerHTML = '<option value="">—</option>'; $("#t-info").textContent = "Chưa có bảng đề (cần chạy tools/toeic_items.sql)."; return; }
-    var cnt = {}, cl = {};
-    (r.data || []).forEach(function (x) { var k = x.test + "|" + x.part; cnt[k] = (cnt[k] || 0) + 1; if (x.answer_src === "claude") cl[k] = 1; });
+    var cnt = {}, cl = {}; G.tMeta = {};
+    (r.data || []).forEach(function (x) { var k = x.test + "|" + x.part; cnt[k] = (cnt[k] || 0) + 1; if (x.answer_src === "claude") cl[k] = 1;
+      var m = G.tMeta[k] = G.tMeta[k] || { min: 999, max: 0, tags: {} }; m.min = Math.min(m.min, x.num); m.max = Math.max(m.max, x.num); if (x.tag) m.tags[x.tag] = (m.tags[x.tag] || 0) + 1; });
     var keys = Object.keys(cnt).sort(function (a, b) { var A = a.split("|"), B = b.split("|"); return (+A[0] - +B[0]) || (+A[1] - +B[1]); });
     sel.innerHTML = keys.length ? keys.map(function (k) { var a = k.split("|"); return '<option value="' + k + '">Test ' + a[0] + " · Part " + a[1] + " — " + cnt[k] + " câu" + (cl[k] ? " (đáp án Claude giải)" : "") + "</option>"; }).join("")
       : '<option value="">Chưa có đề nào</option>';
     sel.dispatchEvent(new Event("change"));
   }
   document.addEventListener("change", function (e) {
-    if (e.target && e.target.id === "t-test" && e.target.value) { var p = +e.target.value.split("|")[1]; if (T_SEC[p]) $("#t-qs").value = T_SEC[p]; }
+    if (e.target && e.target.id === "t-test" && e.target.value) {
+      var p = +e.target.value.split("|")[1], m = (G.tMeta || {})[e.target.value]; if (T_SEC[p]) $("#t-qs").value = T_SEC[p];
+      if (m) { $("#t-from").value = m.min; $("#t-to").value = m.max; $("#t-from").min = $("#t-to").min = m.min; $("#t-from").max = $("#t-to").max = m.max;
+        $("#t-tag").innerHTML = '<option value="">Tất cả</option>' + Object.keys(m.tags).sort().map(function (t) { return '<option value="' + esc(t) + '">' + esc(t) + " (" + m.tags[t] + " câu)</option>"; }).join(""); }
+    }
+    /* đồng bộ sang ô chung của phòng (điểm / đội / host chơi) để danh sách đội ở phòng chờ hiện ngay như Hub từ vựng */
+    var map = { "t-scoring": "#l-scoring", "t-teams": "#l-teamn", "t-hostplay": "#l-hostplay" }, tgt0 = e.target && map[e.target.id];
+    if (tgt0 && G.isHost) { var o = $(tgt0); if (e.target.type === "checkbox") o.checked = e.target.checked; else o.value = e.target.value; o.dispatchEvent(new Event("change")); }
   });
   document.addEventListener("click", async function (e) {
     if (!e.target.closest || !e.target.closest("#t-start") || !G.isHost || !G.st) return;
     var v = $("#t-test").value; if (!v) { $("#t-info").textContent = "Chọn đề trước đã."; return; }
     var a = v.split("|"), st = G.st;
     if (st.qtype !== "toeic") { st.vocabQtype = st.qtype; st.vocabTitle = st.title; st.vocabMode = st.mode; st.vocabQs = st.qs; st.vocabRace = st.race; }
-    st.qtype = "toeic"; st.test = { test: a[0], part: +a[1] }; st.race = false; st.auto = true;
+    var fr = +$("#t-from").value || 0, to = +$("#t-to").value || 0, tg = $("#t-tag").value || "";
+    st.qtype = "toeic"; st.test = { test: a[0], part: +a[1], from: fr, to: to, tag: tg }; st.race = false; st.auto = true;
     st.mode = $("#t-mode").value; st.qs = Math.max(5, Math.min(300, +$("#t-qs").value || 20));
-    st.title = "🎯 TOEIC Test " + a[0] + " · Part " + a[1];
+    st.title = "🎯 TOEIC Test " + a[0] + " · Part " + a[1] + (tg ? " · " + tg : "") + (fr && to ? " · câu " + fr + "–" + to : "");
     $("#t-info").textContent = "Đang tải đề…";
     await ensureTest(st.test);
+    if (!(G.tItems || []).length) { $("#t-info").textContent = "Không có câu nào khớp đoạn câu / chủ điểm đã chọn."; return; }
     $("#t-info").textContent = (G.tItems || []).length + " câu sẵn sàng.";
     G.tStarting = true; $("#l-start").click();
   });
@@ -2529,7 +2547,10 @@
     box.classList.toggle("g-hubtest", h === "test");
     $$("#l-hubs [data-hub]").forEach(function (b) { var on = b.dataset.hub === h; b.classList.toggle("on", on); b.setAttribute("aria-selected", on ? "true" : "false"); });
     $("#l-hub-test").hidden = h !== "test";
-    if (h === "test") { paintTestHub(); loadTestList(); }
+    if (h === "test") {
+      paintTestHub(); loadTestList();
+      if ($("#t-scoring")) { $("#t-scoring").value = (G.st && G.st.scoring) || "q"; $("#t-teams").value = String((G.st && G.st.teams) || 0); $("#t-hostplay").checked = hostPlays(); }
+    }
     else if (G.st && G.st.qtype === "toeic" && G.isHost) {   /* về Hub từ vựng: trả lại dạng câu + chủ đề cũ, tải lại kho từ */
       G.st.qtype = G.st.vocabQtype || $("#l-qtype").value || "meaning"; if (G.st.vocabTitle != null) G.st.title = G.st.vocabTitle;
       if (G.st.vocabMode) G.st.mode = G.st.vocabMode; if (G.st.vocabQs) G.st.qs = G.st.vocabQs; G.st.race = !!G.st.vocabRace;
