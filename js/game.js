@@ -67,7 +67,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 88;
+  var GAME_VER = 89;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -740,7 +740,10 @@
   function readyMsg(qt, lang) {
     if (!G.st || !G.st.scope || !G.st.scope.length) return "Chọn chủ đề (nhánh từ vựng) trước đã.";
     if (tgt() !== "en" && /^(gap|sheet|dict|write)$/.test(qt)) return "Dạng câu này chỉ có khi học tiếng Anh. Khi học " + TGT_NAME.vi[tgt()] + " hãy chọn 🔤 Nghĩa, 🔤 Từ→Nghĩa, ⌨️ Gõ từ hoặc 🔀 Trộn.";
+    /* tiếng chung thiếu nghĩa (vd English = def_en: câu CIA không có) -> makeQ0 tự lấy cả kho, nghĩa hiện tiếng khác (myText).
+       Chỉ chặn khi CẢ KHO có < 4 từ có nghĩa (TJ 2026-10-03: "Block 1 mà hong có từ vựng để chơi") */
     var nm = poolFor(lang).length, ng = G.gaps.length;
+    if (nm < 4) nm = G.pool.length;
     if ((qt === "meaning" || qt === "recall" || qt === "en2m") && nm < 4) return "Chỉ có " + nm + " từ có nghĩa bằng tiếng đã chọn — cần ít nhất 4. (" + poolCounts() + ")";
     if (qt === "gap" && ng < 4) return "Phạm vi này chỉ có " + ng + " câu có chỗ trống trong bài đọc — cần ít nhất 4 (chọn Block/Page đã có bài đọc).";
     if (qt === "mix" && nm < 4) return "Chỉ có " + nm + " từ có nghĩa — cần ít nhất 4.";
