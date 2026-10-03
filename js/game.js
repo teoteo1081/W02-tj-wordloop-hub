@@ -67,7 +67,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 86;
+  var GAME_VER = 87;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -154,6 +154,15 @@
     return cand.some(function (v) { return v && (normAns(v) === t || noMarks(v) === noMarks(typed) || whole(v) === whole(typed)); });   /* nhiều cách nói: gõ 1 cách là đúng */
   }
   function clean(t) { return String(t || "").trim(); }
+  /* 🕵️ CÂU (Hub CIA, 1000 câu EN·ES·CN·VN, 2026-10-03): words.pos = "Câu" / "★ Câu sống còn" -> giữ nguyên cả câu (không cắt ở
+     dấu phẩy, không lọc "câu mẫu"). words.audio = {vi,en,es,zh: url mp3} -> phát file thay giọng máy. */
+  function isSent(pos) { return /^(★\s*)?câu(\s+sống còn)?$/i.test(String(pos || "").trim()); }
+  G.audioMap = {};
+  function regAudio(w) {
+    if (!w || !w.audio) return;
+    var t = { en: w.term, vi: w.meaning_vi, zh: w.meaning_zh, es: w.meaning_es };
+    Object.keys(w.audio).forEach(function (l) { var x = clean(t[l]); if (x && w.audio[l]) { G.audioMap[l + "|" + x] = w.audio[l]; G.audioMap[l + "|" + baseTerm(x)] = w.audio[l]; } });
+  }
   /* bản dịch -> 1 cách nói cho game (khi chưa có cột quiz_<x>): bỏ ngoặc, lấy cách đầu, bỏ dấu câu cuối (chuyên gia ngôn ngữ 2026-10-03) */
   function quizForm(t) {
     t = String(t || "").replace(/（[^）]*）|\([^)]*\)/g, " ").split(/\s*[\/;；,，、]\s*/)[0] || "";
@@ -789,7 +798,7 @@
     var extra = by("blocks").filter(function (id) { return !blkRows.some(function (b) { return b.id === id; }); });
     if (extra.length) blkRows = blkRows.concat(await inIds("blocks", "id,context_passage,context_passage_candidates", "id", extra));
     var blks = ids(blkRows);
-    var words = blks.length ? await inIds("words", "id,block_id,term,pos,level,meaning_vi,meaning_zh,meaning_es,def_en,quiz_vi,quiz_zh,quiz_es", "block_id", blks) : [];
+    var words = blks.length ? await inIds("words", "id,block_id,term,pos,level,meaning_vi,meaning_zh,meaning_es,def_en,quiz_vi,quiz_zh,quiz_es,audio", "block_id", blks) : [];
     /* số từ THẬT của từng Block (trước khi lọc cấp độ) — để xét "đã ôn đủ Block chưa" khi đẩy chu kỳ Tony Buzan */
     var bwn = {}, lvn = {};
     words.forEach(function (w) { bwn[w.block_id] = (bwn[w.block_id] || 0) + 1; var l = lvKey(w.level); lvn[l] = (lvn[l] || 0) + 1; });
@@ -802,7 +811,8 @@
       var k = norm(w.term), m = { vi: clean(w.quiz_vi || w.meaning_vi), en: clean(w.def_en), es: clean(w.quiz_es || w.meaning_es), zh: clean(w.quiz_zh || w.meaning_zh) };
       if (!k || seen[k] || !(m.vi || m.en || m.es || m.zh)) return;
       seen[k] = 1;
-      var it = { wid: w.id, term: clean(w.term), block: w.block_id, pos: norm(w.pos), lv: lvKey(w.level), m: m };
+      regAudio(w);
+      var it = { wid: w.id, term: clean(w.term), block: w.block_id, pos: norm(w.pos), lv: lvKey(w.level), m: m, sent: isSent(w.pos) };
       pool.push(it); byTerm[k] = it;
     });
     /* câu có chỗ trống: tách câu trong bài đọc giống Context.gapSentences (js/context.js) */
@@ -842,14 +852,14 @@
     if (tg !== "en") {   /* 🎯 học tiếng khác: từ = bản dịch meaning_<tg>, "nghĩa tiếng Anh" = chính từ tiếng Anh */
       var tp = [], tseen = {};
       pool.forEach(function (it) {
-        if (/\s\/\s/.test(it.term)) return;                                       /* "beef / lamb / pork": 1 dòng ghép 3 từ, không khớp 1-1 */
-        var word = quizForm(it.m[tg]); if (!word || tseen[norm(word)]) return;
+        if (!it.sent && /\s\/\s/.test(it.term)) return;                          /* "beef / lamb / pork": 1 dòng ghép 3 từ, không khớp 1-1 */
+        var word = it.sent ? clean(it.m[tg]) : quizForm(it.m[tg]); if (!word || tseen[norm(word)]) return;
         if (tg === "zh" && !hasZh(word)) return;                                   /* ô nghĩa tiếng Trung mà chứa chữ Latin (dữ liệu lỗi) */
         if (norm(word) === norm(it.term)) return;                                  /* chưa dịch, còn nguyên tiếng Anh */
-        if (/[.?!。？！]\s*$/.test(it.term) || it.term.split(/\s+/).length > 6) return;   /* câu mẫu ngữ pháp, không phải từ vựng */
+        if (!it.sent && (/[.?!。？！]\s*$/.test(it.term) || it.term.split(/\s+/).length > 6)) return;   /* câu mẫu ngữ pháp, không phải từ vựng */
         tseen[norm(word)] = 1;
         var m2 = Object.assign({}, it.m); m2.en = it.term; delete m2[tg];
-        tp.push({ wid: it.wid, term: word, block: it.block, pos: it.pos, lv: "-", m: m2, en: it.term });
+        tp.push({ wid: it.wid, term: word, block: it.block, pos: it.pos, lv: "-", m: m2, en: it.term, sent: it.sent });
       });
       pool = tp; gaps = []; sheets = []; dicts = [];
     }
@@ -1046,7 +1056,17 @@
     if (q.type === "dict") return Math.max(30, qs);
     return qs;
   }
+  /* câu hỏi mang theo link FILE ÂM THANH của từ/câu đang hỏi (Kahoot: máy người chơi không tải kho từ) */
   function makeQ(qtype, lang, langs) {
+    var q = makeQ0(qtype, lang, langs), aud = {}, n = 0;
+    [q.ans, q.word].forEach(function (t) {
+      if (typeof t !== "string") return;
+      [t.trim(), baseTerm(t)].forEach(function (x) { var k = tgt() + "|" + x; if (G.audioMap[k]) { aud[k] = G.audioMap[k]; n++; } });
+    });
+    if (n) q.aud = aud;
+    return q;
+  }
+  function makeQ0(qtype, lang, langs) {
     var t = qtype;
     if (t === "sheet") {
       var sh = draw("sheet", G.sheets);
@@ -1437,7 +1457,7 @@
     var s = Object.assign({}, G.st, { hid: G.me && G.me.id, htab: G.tab, hsince: G.since, on: onlineIds(), left: G.endAt ? G.endAt - Date.now() : null, qLeft: G.qUntil ? G.qUntil - Date.now() : null });
     if (s.q) {
       var q = s.q, rev = !!q.revealed;
-      s.q = { qn: q.qn, n: q.n, wids: q.wids, word: q.word, lv: q.lv, optTexts: q.optTexts, type: q.type, texts: q.texts, sent: q.sent, opts: q.opts, len: q.len, wid: q.wid, term: q.term, text: q.text, bank: q.bank, say: q.say, limit: q.limit, grading: !!q.grading,
+      s.q = { qn: q.qn, n: q.n, wids: q.wids, word: q.word, lv: q.lv, aud: q.aud, optTexts: q.optTexts, type: q.type, texts: q.texts, sent: q.sent, opts: q.opts, len: q.len, wid: q.wid, term: q.term, text: q.text, bank: q.bank, say: q.say, limit: q.limit, grading: !!q.grading,
               res: rev ? q.res : null, revealed: rev, ans: rev ? q.ans : null, cnt: Object.keys(q.got).length,
               picks: rev ? Object.keys(q.got).reduce(function (o, pid) { o[pid] = q.got[pid].c; return o; }, {}) : null,
               oks: rev ? Object.keys(q.got).filter(function (pid) { return q.got[pid].ok; }) : null, fast: rev ? q.fast : null };
@@ -1925,6 +1945,7 @@
     }).join("") + "</div>";
   }
   function paintQuestion(q, hintEl, textEl, optsEl) {
+    if (q.aud) Object.assign(G.audioMap, q.aud);
     /* câu mới HIỆN DẦN (0.16s) thay vì bật ra đột ngột — điện thoại đỡ cảm giác giật khi đổi câu (TJ 2026-10-02) */
     [textEl, optsEl].forEach(function (sel) { var el = $(sel); if (!el) return; el.classList.remove("g-in"); void el.offsetWidth; el.classList.add("g-in"); });
     $(hintEl).textContent = T(QHINT[q.type] || "q_meaning");
@@ -2066,10 +2087,11 @@
      đã chọn — chỉ biết đúng/sai. */
   /* thẻ xem lại 1 từ trong LỊCH SỬ theo đúng ngôn ngữ đã học ván đó (game_answers.target; null = English):
      từ = quiz_/meaning_<target> (tiếng Trung kèm pinyin), nghĩa = tiếng mẹ đẻ, đọc bằng giọng của tiếng đó */
-  var HIST_COLS = "id,term,level,meaning_vi,meaning_zh,meaning_es,def_en,quiz_vi,quiz_zh,quiz_es";
+  var HIST_COLS = "id,term,level,pos,meaning_vi,meaning_zh,meaning_es,def_en,quiz_vi,quiz_zh,quiz_es,audio";
   function histCard(w, tg, extra) {
     tg = tg || "en";
-    var t = tg === "en" ? w.term : quizForm(w["quiz_" + tg] || w["meaning_" + tg]) || w.term;
+    regAudio(w);
+    var t = tg === "en" ? w.term : (isSent(w.pos) ? clean(w["quiz_" + tg] || w["meaning_" + tg]) : quizForm(w["quiz_" + tg] || w["meaning_" + tg])) || w.term;
     var mean = { vi: w.quiz_vi || w.meaning_vi, en: tg === "en" ? w.def_en : w.term, es: w.quiz_es || w.meaning_es, zh: w.quiz_zh || w.meaning_zh };
     delete mean[tg];
     var ml = G.myLang && G.myLang !== "room" ? G.myLang : "vi"; if (ml === tg) ml = "en";
@@ -2315,8 +2337,25 @@
      - Giữ tham chiếu G.utt: Chrome có thể dọn rác utterance đang đọc -> tắt tiếng giữa chừng + không bao giờ báo onend.
      - Gỡ kẹt: 6 s không thấy onend (Chrome báo "đang đọc" mà thật ra im) -> huỷ, đọc tiếp câu đang chờ.
      - Lỗi âm thanh tạm (audio-busy / synthesis-failed) -> thử lại 1 lần. */
+  /* 🔊 FILE GHI ÂM có sẵn (words.audio) -> phát file; lỗi file thì đọc bằng giọng máy. Dùng 1 thẻ <audio> cho cả trang
+     (điện thoại cho phát sau lần chạm đầu). Tự đọc khi file đang phát -> xếp hàng như giọng máy. */
+  var AUD = null;
+  function playFile(url, text, now) {
+    if (!AUD) { AUD = new Audio(); AUD.preload = "auto"; }
+    if (!now && !AUD.paused && !AUD.ended) { G.nextSay = text; return true; }
+    try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) {}
+    AUD.onended = function () { if (G.nextSay) { var t = G.nextSay; G.nextSay = null; setTimeout(function () { sayIt(t); }, 60); } };
+    AUD.onerror = function () { sayIt._nofile = text; sayIt(text, true); };
+    AUD.src = url; AUD.volume = volLevel();
+    var p = AUD.play();
+    if (p && p.catch) p.catch(function (e) { if (e && e.name === "NotAllowedError") { G.blockedWord = text; tapHint(true); } else { sayIt._nofile = text; sayIt(text, true); } });
+    return true;
+  }
   function sayIt(text, now) {
     try {
+      var fl = sayIt._lang || tgt(), url = sayIt._nofile === text ? null : G.audioMap[fl + "|" + String(text || "").trim()];
+      sayIt._nofile = null;
+      if (url) { sayIt._lang = null; playFile(url, text, now); return; }
       var syn = window.speechSynthesis; if (!syn || !text) return;
       if (!now && G.saying && (syn.speaking || syn.pending)) { G.nextSay = text; return; }
       if (now) G.nextSay = null;
