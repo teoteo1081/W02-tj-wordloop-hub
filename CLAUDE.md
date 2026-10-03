@@ -29,6 +29,8 @@
     ```
   - Test nhanh sau khi deploy: `curl -s -X POST https://pqarpszsipbdugrumhfy.supabase.co/functions/v1/openai-proxy -H "Content-Type: application/json" -d '{"model":"gpt-4o-mini","sys":"Reply JSON only.","user":"Return {\"ok\":true}"}'` — phải trả JSON có `choices[0].message.content`, không phải lỗi 401/404.
 
+- **Push lên `main` phải là 1 lệnh RIÊNG** (`git push origin main`), đừng gộp nhiều nhánh trong 1 lệnh (`git push origin main main:<nhánh khác>`) — 2026-10-03 GitHub Pages bỏ qua cả 5 lần push gộp như vậy (web đứng ở v88 trong khi main đã v91); push riêng `main` thì Pages build lại ngay. Kiểm tra bằng danh sách workflow run "pages build and deployment".
+
 ## Kiến trúc tóm tắt (chi tiết xem README.md)
 - `js/db.js` là lớp duy nhất biết dữ liệu nằm ở local hay Supabase (`DB.mode`). Code khác **không bao giờ** đọc `localStorage` trực tiếp hay gọi Supabase trực tiếp — luôn qua `DB.xxx()`.
 - `S` (định nghĩa trong `app.js`, dùng chung sang `detail.js`) chỉ chứa dữ liệu của **Notebook đang mở** (`S.blocks`/`S.words`/`S.wp`/`S.bp`), KHÔNG phải toàn bộ app. Cần thống kê toàn app (vd Journey) phải gọi hàm riêng đọc thẳng `local()`/Supabase toàn cục (`DB.getJourneySummary`), không dùng `S`.
