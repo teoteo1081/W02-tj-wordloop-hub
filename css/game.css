@@ -475,3 +475,12 @@ body.embed .g-brand{display:none}
 .g-ttab td:first-child{white-space:nowrap;color:var(--text-2)}
 .g-ttab .g-num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 .g-ttab{table-layout:auto}.g-ttab td:nth-child(2){width:100%}
+/* 🎯 đề thi */
+.g-tplay{background:var(--deep);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px}
+.g-tstem{text-align:left;font-size:18px;line-height:1.6}
+.g-tnum{color:var(--amber);margin-right:4px}
+.g-tpass{text-align:left;font-size:15px;font-weight:400;color:var(--text);white-space:pre-wrap;max-height:45vh;overflow:auto;margin-bottom:10px;padding:10px;background:var(--deep);border-radius:10px}
+.g-topt{text-align:left;justify-content:flex-start}
+.g-qvi:has(.g-tstem){justify-content:flex-start}
+.g-texpl{margin-top:10px;padding:10px 12px;background:var(--deep);border:1px solid var(--line);border-radius:10px;text-align:left;font-size:15px;line-height:1.5}
+.g-ttag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;background:var(--raise);color:var(--text-2);margin-left:6px}
