@@ -67,7 +67,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 102;
+  var GAME_VER = 103;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -2487,7 +2487,7 @@
     var el = $("#l-hub-test"); if (!el || el.dataset.done) return; el.dataset.done = "1";
     el.innerHTML = '<div class="g-tplay"><div class="g-settings">' +
       '<label>Đề <select id="t-test"><option value="">Đang tải…</option></select></label>' +
-      '<label>Kiểu chơi <select id="t-mode"><option value="free">Tự do — mỗi người tự làm, đọc lời giải</option><option value="kahoot">Cùng 1 câu (kiểu Kahoot)</option></select></label>' +
+      '<label>Kiểu chơi <select id="t-mode"><option value="free">Tự do — mỗi người tự làm, đọc lời giải</option><option value="kahoot">Cùng 1 câu (kiểu Kahoot)</option><option value="race">⚡ Đua tốc độ — tổng giờ cố định, chọn là chốt, nhiều câu đúng nhất thắng</option></select></label>' +
       '<label>Giây mỗi câu <input id="t-qs" type="number" min="5" max="300" value="20"></label>' +
       '<label>Từ câu <input id="t-from" type="number" min="1" max="200" value=""></label>' +
       '<label>Đến câu <input id="t-to" type="number" min="1" max="200" value=""></label>' +
@@ -2535,12 +2535,16 @@
     var a = v.split("|"), st = G.st;
     var fr = +$("#t-from").value || 0, to = +$("#t-to").value || 0, tg = $("#t-tag").value || "";
     st.qtype = "toeic"; st.test = { test: a[0], part: +a[1], from: fr, to: to, tag: tg }; st.race = false; st.auto = true;
-    st.mode = $("#t-mode").value; st.qs = Math.max(5, Math.min(300, +$("#t-qs").value || 20));
+    var tm = $("#t-mode").value; st.race = tm === "race"; st.mode = st.race ? "free" : tm; st.qs = Math.max(5, Math.min(300, +$("#t-qs").value || 20));
     st.title = "🎯 TOEIC Test " + a[0] + " · Part " + a[1] + (tg ? " · " + tg : "") + (fr && to ? " · câu " + fr + "–" + to : "");
     $("#t-info").textContent = "Đang tải đề…";
     await ensureTest(st.test);
     if (!(G.tItems || []).length) { $("#t-info").textContent = "Không có câu nào khớp đoạn câu / chủ điểm đã chọn."; return; }
     $("#t-info").textContent = (G.tItems || []).length + " câu sẵn sàng.";
+    if (st.race) {   /* ⚡ Đua: tổng giờ theo đề thật (phút của Part × phần câu đã chọn), không giờ riêng từng câu */
+      var pm = 0; TOEIC.forEach(function (sk) { sk.parts.forEach(function (x) { if (x.p === +a[1]) pm = x.min / x.q; }); });
+      st.auto = false; st.minutes = Math.max(1, Math.ceil((pm || st.qs / 60) * G.tItems.length)); $("#l-min").value = st.minutes;
+    }
     G.tStarting = true; $("#l-start").click();
   });
   var LS_HUB = "tjwl_game_hub_v1";
@@ -2797,7 +2801,7 @@
     var b = e.target.closest(".g-opt"); if (!b || b.disabled) return;
     var s = G.st; if (!s || s.phase !== "play" || !iPlay()) return;
     if (s.mode === "kahoot") {
-      if (!s.q || s.q.revealed || (G.myChoice != null && (!isChoice(s.q) || (s.q.type === "toeic" && s.scoring === "speed")))) return;   /* đề thi tính tốc độ: chọn 1 lần là chốt */
+      if (!s.q || s.q.revealed || (G.myChoice != null && !isChoice(s.q))) return;
       if (G.myChoice != null && norm(G.myChoice) === norm(b.dataset.opt)) return;   /* bấm lại đúng ô đang chọn */
       $$("#p-opts .g-opt.picked").forEach(function (x) { x.classList.remove("picked"); });
       b.classList.add("picked");
@@ -3015,13 +3019,13 @@
     if (!q || q.done) return; q.done = true;
     var ok = q.pick != null && norm(q.pick) === norm(q.ans);
     lockAll(); logQ(q, q.pick == null ? null : q.pick, ok);
-    if (!noSend) sendAns({ pid: G.me.id, ok: ok, wid: q.wid, term: q.ans, ms: Date.now() - G.myQStart, c: q.pick });   /* bỏ trống = sai như Kahoot */
+    if (!noSend) sendAns({ pid: G.me.id, ok: ok, wid: q.wid, term: q.ans, ms: (q.pickAt || Date.now()) - G.myQStart, c: q.pick });   /* điểm tốc độ tính theo LÚC CHỌN đáp án cuối */   /* bỏ trống = sai như Kahoot */
   }
   /* kiểu tự do: mỗi máy tự sinh câu từ cùng kho, báo đúng/sai cho host chấm điểm */
   function freeNext() {
     if (!G.st || G.st.phase !== "play") return;
     $("#p-next").hidden = true;
-    G.tQEnd = G.st.qtype === "toeic" ? Date.now() + (+G.st.qs || 20) * 1000 : 0;   /* đề thi: mỗi câu có giờ riêng */
+    G.tQEnd = G.st.qtype === "toeic" && !G.st.race ? Date.now() + (+G.st.qs || 20) * 1000 : 0;   /* đề thi: mỗi câu có giờ riêng */
     if (G.st.qtype === "toeic" && G.tMatch === G.st.matchId && (G.tIdx || 0) >= (G.tItems || []).length) {   /* làm hết đề -> chờ ván kết thúc */
       G.tQEnd = 0;
       $("#p-hint").textContent = ""; $("#p-vi").textContent = "🏁"; $("#p-opts").innerHTML = ""; $("#p-res").innerHTML = "";
@@ -3067,8 +3071,8 @@
       return;   /* host chấm xong gửi "graded" -> hiện kết quả rồi câu mới */
     }
     var ok = q.type === "recall" ? typedOk(choice, q.ans) : norm(choice) === norm(q.ans);
-    if (q.type === "toeic" && G.st && G.st.scoring !== "speed") {   /* TJ: không tính tốc độ thì CHỌN LẠI được tới khi bấm "Câu tiếp" / hết giờ */
-      q.done = false; q.pick = choice;
+    if (q.type === "toeic" && G.st && !G.st.race) {   /* đề thi: còn giờ CÂU thì chọn lại được (kể cả tính điểm theo tốc độ — giống game từ vựng); ⚡ Đua mới chốt ngay */
+      q.done = false; q.pick = choice; q.pickAt = Date.now();
       $$("#p-opts .g-opt").forEach(function (x) { x.classList.toggle("g-picked", x === btn); });
       $("#p-msg").textContent = T("t_pick");
       return;   /* chốt khi HẾT GIỜ CÂU (G.tick) rồi tự sang câu — không ai phải bấm gì (TJ) */
@@ -3078,7 +3082,7 @@
       $("#p-msg").textContent = T("t_saved");
       logQ(q, choice, ok);
       sendAns({ pid: G.me.id, ok: ok, wid: q.wid, term: q.ans, ms: ms0, c: choice });
-      showNext(450); return;
+      showNext(300); return;
     }
     lockAll();
     $$(".g-opt").forEach(function (x) { if (norm(x.dataset.opt) === norm(q.ans)) x.classList.add("ok"); });
