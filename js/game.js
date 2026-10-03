@@ -67,7 +67,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 95;
+  var GAME_VER = 96;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -1472,7 +1472,7 @@
     if (!G.isHost && G.me) { $("#l-meav").innerHTML = avatar(G.me.avatar); $("#l-mename").innerHTML = label({ name: G.me.name, no: G.me.name_no }); }
     if (G.isHost) {
       var st = G.st || {};
-      $("#l-mode").value = st.race ? "race" : (st.mode || G.room.mode); $("#l-qtype").value = st.qtype || G.room.qtype || "meaning";
+      $("#l-mode").value = st.race ? "race" : (st.mode || G.room.mode); $("#l-qtype").value = st.qtype === "toeic" ? (st.vocabQtype || "meaning") : (st.qtype || G.room.qtype || "meaning");
       $("#l-min").value = st.minutes || G.room.minutes; $("#l-qs").value = st.qs || G.room.q_seconds;
       $("#l-target").value = st.target || "en";
       $("#l-lang").value = roomLang(st); $("#l-teamn").value = String(st.teams || 0); $("#l-force").checked = !!st.force;
@@ -2165,6 +2165,7 @@
       var opts = $("#p-opts").cloneNode(true);
       opts.querySelectorAll("#p-sheetgo").forEach(function (b) { b.remove(); });
       opts.querySelectorAll(".g-opt").forEach(function (b) {
+        b.classList.remove("g-picked");   /* 🎯 đề thi: dấu "đã chọn" lúc làm đè mất màu xanh/đỏ ở Xem lại (QA v95 T2) */
         b.disabled = true;
         if (typeof q.ans === "string" && norm(b.dataset.opt) === norm(q.ans)) b.classList.add("ok");
         else if (mine != null && norm(b.dataset.opt) === norm(mine)) b.classList.add("bad");
@@ -2173,7 +2174,7 @@
       G.log.push({ hint: $("#p-hint").textContent, vi: vi.innerHTML, opts: opts.innerHTML, msg: q.type === "toeic" ? (mine == null ? T("t_skip") : ok ? "✓ " + T("t_right") : "✗ " + T("t_wrong")) : $("#p-msg").textContent.split("  ·  " + T("wait_nextq")).join(""), res: q.type === "toeic" ? toeicExpl(q) : $("#p-res").innerHTML,
                    mine: typed ? (mine == null ? "" : String(mine)) : null, ans: typeof q.ans === "string" ? q.ans : "", ok: !!ok, typed: typed, played: iPlay(),
                    wid: q.type === "sheet" ? null : q.wid, tg: tgt() !== "en" ? tgt() : null, sl: q.type === "dict" ? "en" : tgt(),
-                   say: q.type === "toeic" ? "" : q.type === "dict" ? q.say || q.ans : q.type === "en2m" ? baseTerm(q.word) : q.type === "write" ? baseTerm(q.term) : typeof q.ans === "string" ? baseTerm(q.ans) : "" });
+                   say: q.type === "toeic" ? toeicFull(q) : q.type === "dict" ? q.say || q.ans : q.type === "en2m" ? baseTerm(q.word) : q.type === "write" ? baseTerm(q.term) : typeof q.ans === "string" ? baseTerm(q.ans) : "" });
       saveLog();
     } catch (e) { console.warn("logQ", e); }
   }
@@ -2376,7 +2377,7 @@
     if (!e.target.closest || !e.target.closest("#t-start") || !G.isHost || !G.st) return;
     var v = $("#t-test").value; if (!v) { $("#t-info").textContent = "Chọn đề trước đã."; return; }
     var a = v.split("|"), st = G.st;
-    if (st.qtype !== "toeic") { st.vocabQtype = st.qtype; st.vocabTitle = st.title; }
+    if (st.qtype !== "toeic") { st.vocabQtype = st.qtype; st.vocabTitle = st.title; st.vocabMode = st.mode; st.vocabQs = st.qs; st.vocabRace = st.race; }
     st.qtype = "toeic"; st.test = { test: a[0], part: +a[1] }; st.race = false; st.auto = true;
     st.mode = $("#t-mode").value; st.qs = Math.max(5, Math.min(300, +$("#t-qs").value || 20));
     st.title = "🎯 TOEIC Test " + a[0] + " · Part " + a[1];
@@ -2395,6 +2396,9 @@
     if (h === "test") { paintTestHub(); loadTestList(); }
     else if (G.st && G.st.qtype === "toeic" && G.isHost) {   /* về Hub từ vựng: trả lại dạng câu + chủ đề cũ, tải lại kho từ */
       G.st.qtype = G.st.vocabQtype || $("#l-qtype").value || "meaning"; if (G.st.vocabTitle != null) G.st.title = G.st.vocabTitle;
+      if (G.st.vocabMode) G.st.mode = G.st.vocabMode; if (G.st.vocabQs) G.st.qs = G.st.vocabQs; G.st.race = !!G.st.vocabRace;
+      $("#l-qtype").value = G.st.qtype; $("#l-mode").value = G.st.race ? "race" : G.st.mode; $("#l-qs").value = G.st.qs;   /* QA v95 T3: ô Dạng câu hỏi bị trống */
+      paintQtypes(); paintAutoTime();
       G.poolKey = null; ensurePool(G.st.scope).then(function () { if (G.st.phase === "lobby") paintPoolInfo(); }); push();
     }
     try { localStorage.setItem(LS_HUB, h); } catch (e) {}
@@ -2550,6 +2554,12 @@
     }
   }
   /* tô đúng/sai + gắn ảnh những người đã chọn từng đáp án (dạng chọn 1 trong 4) */
+  /* câu đề ĐÃ ĐIỀN đáp án (bỏ "(B) ") để 🔊 đọc cả câu ở Xem lại; Part 6/7 có đoạn văn thì đọc cả đoạn */
+  function toeicFull(q) {
+    var a = String(q.ans || "").replace(/^\([A-D]\)\s*/, ""), stem = String(q.sent || "");
+    stem = /_{3,}/.test(stem) ? stem.replace(/_{3,}/, a) : stem;
+    return ((q.passage ? q.passage + "\n" : "") + stem).trim();
+  }
   function toeicExpl(q) {
     if (!q || q.type !== "toeic" || !q.expl) return "";
     return '<div class="g-texpl"><b>' + esc(q.ans) + "</b>" + (q.tag ? ' <span class="g-ttag">' + esc(q.tag) + "</span>" : "") + (q.vi ? '<div class="g-tvi">🇻🇳 ' + esc(q.vi) + "</div>" : "") + "<div>💡 " + esc(q.expl) + "</div>" +
@@ -2943,6 +2953,8 @@
 
   /* ---------- kết quả ---------- */
   function renderEnd(s) {
+    var mq = G.myQ;   /* 🎯 đề thi (Tự do): câu đang làm dở lúc hết ván vẫn vào Xem lại, ghi "Bỏ qua" như Kahoot (QA v95 T4) */
+    if (mq && mq.type === "toeic" && !mq.done && s.mode === "free" && iPlay()) { mq.done = true; logQ(mq, null, false); }
     show("s-end");
     $("#e-info").textContent = G.isHost || s.saved ? (s.title || "") + " · " + modeLine(s) + " · " + s.minutes + "'" : "";
     $("#e-again").hidden = !G.isHost || s.saved;
