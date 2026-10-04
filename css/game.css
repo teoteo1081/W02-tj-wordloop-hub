@@ -552,5 +552,4 @@ body.embed .g-brand{display:none}
 .g-tblank.cur{background:var(--accent,#7c5cff);color:#fff;border-radius:6px;border-bottom:0}
 @media (max-width:600px){.g-tpass{max-height:38vh;font-size:14px}}
 /* TJ 2026-10-04: ảnh Part 1 to quá -> (C)(D) rơi khỏi màn hình; giới hạn theo chiều cao màn hình để cả hình + 4 nút vừa 1 màn */
-.g-timg{max-height:min(32vh,340px);width:auto;object-fit:contain}
-@media (max-width:600px){.g-timg{max-height:28vh}}
+.g-timg{max-height:32vh;width:auto;max-width:100%;object-fit:contain}   /* chỉ là mức tạm trước khi JS (fitTImg) đo đúng chỗ trống */

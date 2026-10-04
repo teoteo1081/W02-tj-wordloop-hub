@@ -67,7 +67,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 114;
+  var GAME_VER = 115;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -2098,6 +2098,26 @@
     var body = esc(txt).replace(/-{3,}\((\d+)\)/g, function (m, n) { return '<mark class="g-tblank' + (+n === +num ? " cur" : "") + '">(' + n + ")</mark>"; });
     return (txt ? '<div class="g-tpass">' + body + "</div>" : "") + img.map(function (u) { return '<img class="g-timg" alt="" src="' + esc(u) + '">'; }).join("");
   }
+  /* 📐 ảnh đề vừa KHÍT màn hình đang dùng (TJ 2026-10-04: "tuỳ kích cỡ màn hình mà phải phù hợp"): đo chỗ trống thật
+     = cao màn hình − phần phía trên ảnh − câu hỏi + 4 nút bên dưới. Không đủ chỗ (điện thoại, bảng vẽ đang mở) thì tính
+     sau khi đã cuộn tới đề. Đo lại khi ảnh tải xong / xoay máy / đổi cỡ cửa sổ. */
+  function fitTImg() {
+    $$(".g-timg").forEach(function (img) {
+      if (!img.offsetParent) return;
+      var box = img.closest(".g-qvi") || img.parentNode, card = box.parentNode;
+      var below = 0, sib = img.nextElementSibling; while (sib) { below += sib.offsetHeight; sib = sib.nextElementSibling; }
+      var ops = card && card.querySelector(".g-opts"), rv = card && card.querySelector("#p-reveal");
+      var after = ops ? ops.getBoundingClientRect().bottom - box.getBoundingClientRect().bottom + 28 : 0;   /* tới hết 4 nút + 1 dòng thông báo (Xem lại: không tính lời giải dài bên dưới) */
+      if (rv && !rv.hidden) after += rv.offsetHeight + 8;   /* host 🎧 theo audio: nút "Câu tiếp ▶" */
+      var docTop = img.getBoundingClientRect().top + window.scrollY, boxTop = box.getBoundingClientRect().top + window.scrollY;
+      var need = below + after + 24, vh = window.innerHeight;
+      var h = vh - docTop - need;                       /* vừa ngay không cần cuộn */
+      if (h < 180) h = vh - (docTop - boxTop) - need;   /* không đủ -> vừa sau khi cuộn tới đề */
+      img.style.maxHeight = Math.max(120, Math.round(h)) + "px";
+    });
+  }
+  window.addEventListener("resize", function () { clearTimeout(G.fitT); G.fitT = setTimeout(fitTImg, 150); });
+  document.addEventListener("load", function (e) { if (e.target && e.target.classList && e.target.classList.contains("g-timg")) fitTImg(); }, true);
   function paintQuestion(q, hintEl, textEl, optsEl) {
     if (q.aud) Object.assign(G.audioMap, q.aud);
     /* câu mới HIỆN DẦN (0.16s) thay vì bật ra đột ngột — điện thoại đỡ cảm giác giật khi đổi câu (TJ 2026-10-02) */
@@ -2110,6 +2130,7 @@
         '<span class="g-gapline g-tstem"><b class="g-tnum">' + esc(q.num) + ".</b> " + esc(q.sent).replace("_______", '<span class="g-blank" style="width:4em"></span>') + "</span>";
       if (mine) $("#p-type").hidden = true;
       if (mine && window.innerWidth < 700) { var qv = $(textEl); setTimeout(function () { qv.scrollIntoView({ block: "start", behavior: "smooth" }); }, 50); }   /* điện thoại: bảng điểm chiếm ~410px -> cuộn tới đề để thấy A–D (QA v109) */
+      setTimeout(fitTImg, 0);
       $(optsEl).innerHTML = (q.opts || []).map(function (o) { return '<button class="g-opt g-topt" data-opt="' + esc(o) + '"><span class="g-otext">' + esc(o) + '</span><span class="g-pickers"></span></button>'; }).join("");
       return;
     }
@@ -2248,6 +2269,7 @@
       '<div class="g-sub g-tvtip">👆 ' + esc(T("tv_tip")) + '</div><div class="g-tvsel" id="rv-tvsel" hidden></div></div>');
     /* chạm chọn từ trong câu */
     var stem = $("#rv-vi .g-tstem"); if (stem) wrapWords(stem);
+    setTimeout(fitTImg, 0);
     tvLoadSaved().then(function () { $$("#rv-res .g-tvstar").forEach(function (b) { var v = (q.vocab || [])[+b.dataset.tv]; if (v && tvSavedSet()["toe_w_" + tvSlug(v.t)]) { b.classList.add("on"); b.textContent = "★"; } }); });
   }
   function wrapWords(el) {
