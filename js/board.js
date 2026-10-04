@@ -66,6 +66,8 @@
       '<button type="button" class="bd-hb" id="bd-perm" hidden data-btt="permt" data-bt="perm"></button>' +
       '<button type="button" class="bd-hb" id="bd-min" data-btt="min">▁</button>' +
       '<button type="button" class="bd-hb" id="bd-close" hidden data-btt="close">✕</button></div>' +
+      /* 🧭 thanh Block (TJ 2026-10-04): đổi nhanh 📖 Bài đọc ⇄ 📋 Từ vựng của CÙNG Block/nhóm + ⏮ ⏭ sang Block (hoặc nhóm) liền kề, khỏi mò cây thư mục */
+      '<div class="bd-blk" id="bd-blk" hidden><button type="button" class="bd-hb" id="bd-bprev" title="Block trước">⏮</button><span class="bd-bseg"><button type="button" class="bd-hb" id="bd-bwl">📖 Bài đọc</button><button type="button" class="bd-hb" id="bd-bvt">📋 Từ vựng</button></span><button type="button" class="bd-hb" id="bd-bnext" title="Block sau">⏭</button><span class="bd-bname" id="bd-bname"></span></div>' +
       '<div class="bd-sw" id="bd-sw"><div class="bd-stage" id="bd-stage"><div class="bd-zoom" id="bd-zoom"><video id="bd-video" class="bd-video" autoplay playsinline muted hidden></video><div class="bd-doc" id="bd-doc"></div><canvas id="bd-cv"></canvas><div class="bd-texts" id="bd-texts"></div></div><button type="button" class="bd-aud" id="bd-aud" hidden data-bt="unmute"></button></div></div>' +
       '<div class="bd-tools" id="bd-tools">' +
         '<button type="button" data-tool="hand" data-btt="hand">✋</button>' +
@@ -125,6 +127,8 @@
     if (b.id === "bd-dpg") { var dj = curDoc(); if (dj && api.isHost() && dj.n > 1) { var pj = parseInt(prompt("1 – " + dj.n, dj.p || 1), 10); if (pj >= 1) docSet(Object.assign({}, dj, { p: Math.min(dj.n, pj) })); } return; }
     if (b.id === "bd-dswap") { var dw = curDoc(); if (dw && dw.k === "wl" && api.isHost()) { Lib.open(); Lib.tab = "wl"; Lib.paintPass(dw.bid, dw.name, true); } return; }
     if (b.id === "bd-dclose") { if (api.isHost()) docSet(null); return; }
+    if (b.id === "bd-bwl" || b.id === "bd-bvt") { var db = curDoc(); if (db && api.isHost()) openUnit(b.id === "bd-bvt" ? "vt" : "wl", db.bid, db.name); return; }
+    if (b.id === "bd-bprev" || b.id === "bd-bnext") { stepUnit(b.id === "bd-bnext" ? 1 : -1); return; }
     if (b.id === "bd-perm") { var pb = $("#bd-permbox"); pb.hidden = !pb.hidden; paintPerm(); paintOpen(); return; }   /* QA v106 L2: cập nhật phần đẩy nội dung xuống */
     if (b.dataset.perm) { api.togglePerm(b.dataset.perm); return; }
   }
@@ -477,9 +481,10 @@
       nav.hidden = !d || d.k === "img" || d.k === "office";
       $("#bd-dpg").textContent = d ? (d.p || 1) + (d.n ? " / " + d.n : "") : "";
       ["#bd-dprev", "#bd-dnext", "#bd-dclose"].forEach(function (x) { var e = $(x); if (e) e.hidden = !api.isHost(); });
-      var sw0 = $("#bd-dswap"); if (sw0) sw0.hidden = !(api.isHost() && d && d.k === "wl");
+      var sw0 = $("#bd-dswap"); if (sw0) sw0.hidden = !(api.isHost() && d && d.k === "wl" && !grpOf(d.bid));
       if (d && (d.k === "img" || d.k === "office")) { nav.hidden = !api.isHost(); ["#bd-dprev", "#bd-dnext"].forEach(function (x) { $(x).hidden = true; $("#bd-dpg").textContent = ""; }); }
     }
+    paintBlk(d);
     if (k === docKey) { if (d && d.k === "vt") paintHL(d); return; }
     stash[docKey] = { items: items, order: order };   /* cất nét của trang cũ */
     var sv = stash[k] || { items: {}, order: [] }; items = sv.items; order = sv.order; mine = []; redo = [];
@@ -487,6 +492,84 @@
     docKey = k; setAR(defAR(d)); if (wasDoc !== isDoc) zoomReset();
     var el = $("#bd"); if (el) { big = bigPref != null ? bigPref : !!d; paintOpen(); }
     draw(); paintTexts(); paintTools(); paintDoc(d);
+  }
+  /* ---------- 🧭 ĐƠN VỊ ĐANG MỞ: 1 Block, hoặc CẢ NHÓM (bid = "g:<batches|pages|sections>:<id>") ---------- */
+  var GMAX = 40;   /* tối đa 40 Block mỗi nhóm (bài đọc/từ vựng gộp không phình quá) */
+  function grpOf(bid) { var m = /^g:(batches|pages|sections):(.+)$/.exec(bid || ""); return m ? { t: m[1], id: m[2] } : null; }
+  function T_kids(T, list, key, id) { return T[list].filter(function (r) { return r[key] === id; }); }
+  function grpBlocks(T, g) {   /* Block của nhóm, đúng thứ tự như cây */
+    var bts = g.t === "batches" ? [{ id: g.id }] : g.t === "pages" ? T_kids(T, "batches", "page_id", g.id)
+      : T_kids(T, "pages", "section_id", g.id).reduce(function (a, pg) { return a.concat(T_kids(T, "batches", "page_id", pg.id)); }, []);
+    return bts.reduce(function (a, bt) { return a.concat(T_kids(T, "blocks", "batch_id", bt.id)); }, []);
+  }
+  function T_by(T, list, id) { return T[list].find(function (r) { return r.id === id; }) || {}; }
+  function T_path(T, bid) {   /* tổ tiên của 1 Block / 1 nhóm: {blocks,batches,pages,sections,notebooks[],hubs} */
+    var o = {}, g = grpOf(bid), t0 = g ? g.t : "blocks", id = g ? g.id : bid, chain = ["blocks", "batches", "pages", "sections"], keys = { blocks: "batch_id", batches: "page_id", pages: "section_id", sections: "notebook_id" };
+    for (var i = chain.indexOf(t0); i < chain.length; i++) { var r = T_by(T, chain[i], id); o[chain[i]] = r.id; id = r[keys[chain[i]]]; }
+    o.notebooks = []; var nb = T_by(T, "notebooks", id);
+    while (nb.id) { o.notebooks.push(nb.id); o.hubs = nb.hub_id; nb = nb.parent_notebook_id ? T_by(T, "notebooks", nb.parent_notebook_id) : {}; }
+    return o;
+  }
+  /* danh sách đơn vị cùng cấp trong CÙNG Hub, đúng thứ tự cây (để ⏮ ⏭) */
+  function T_flat(T, hubId, t0) {
+    var out = [];
+    function nbWalk(nb) {
+      T_kids(T, "notebooks", "parent_notebook_id", nb.id).forEach(nbWalk);
+      T_kids(T, "sections", "notebook_id", nb.id).forEach(function (sc) {
+        if (t0 === "sections") return out.push(sc);
+        T_kids(T, "pages", "section_id", sc.id).forEach(function (pg) {
+          if (t0 === "pages") return out.push(pg);
+          T_kids(T, "batches", "page_id", pg.id).forEach(function (bt) { if (t0 === "batches") return out.push(bt); out = out.concat(T_kids(T, "blocks", "batch_id", bt.id)); });
+        });
+      });
+    }
+    T.notebooks.filter(function (n) { return n.hub_id === hubId && !n.parent_notebook_id; }).forEach(nbWalk);
+    return out;
+  }
+  function grpLabel(t0) { return t0 === "batches" ? "Batch" : t0 === "pages" ? "Page" : "Section"; }
+  /* bài đọc nên mở của 1 Block: Hub bài học / Block có bài gốc -> bài gốc; còn lại -> bài đang dùng */
+  function pickPass(T, bid, b) {
+    var items = passList(b), info = pathInfo(T, bid), orig = items.find(function (x) { return x.orig; });
+    return (info.hubOrig || (items[0] && items[0].orig)) && orig ? orig : items[0] || null;
+  }
+  /* host mở 📖/📋 của 1 Block hoặc 1 nhóm (không qua hộp chọn) */
+  async function openUnit(k, bid, name) {
+    if (!api.isHost() || !bid) return;
+    if (k === "vt" || grpOf(bid)) return openDoc({ k: k, bid: bid, name: name || "", p: 1 });
+    try {
+      var T = await api.tree(), b = wlCache[bid] || (wlCache[bid] = await api.block(bid)), it = pickPass(T, bid, b);
+      openDoc(it ? { k: "wl", bid: bid, name: name || b.name || "", ph: it.ph, lb: it.label, p: 1 } : { k: "wl", bid: bid, name: name || b.name || "", p: 1 });
+    } catch (e) { openDoc({ k: "wl", bid: bid, name: name || "", p: 1 }); }
+  }
+  async function stepUnit(dir) {
+    var d = curDoc(); if (!d || !api.isHost() || (d.k !== "wl" && d.k !== "vt")) return;
+    var T = await api.tree(); if (!T) return;
+    var g = grpOf(d.bid), t0 = g ? g.t : "blocks", id = g ? g.id : d.bid, list = T_flat(T, T_path(T, d.bid).hubs, t0);
+    var i = list.findIndex(function (r) { return r.id === id; }), nx = list[i + dir];
+    if (i < 0 || !nx) { var bn = $("#bd-bname"); if (bn) { bn.textContent = dir > 0 ? "— hết rồi —" : "— đầu tiên —"; setTimeout(function () { paintBlk(curDoc()); }, 1200); } return; }
+    if (g) return openDoc({ k: d.k, bid: "g:" + t0 + ":" + nx.id, name: "☑ " + grpLabel(t0) + " · " + nx.name, p: 1 });
+    openUnit(d.k, nx.id, nx.name);
+  }
+  function paintBlk(d) {
+    var bar = $("#bd-blk"); if (!bar) return;
+    var on = !!d && (d.k === "wl" || d.k === "vt") && !!d.bid; bar.hidden = !on; if (!on) return;
+    var host = api.isHost();
+    ["#bd-bprev", "#bd-bnext", "#bd-bwl", "#bd-bvt"].forEach(function (x) { $(x).hidden = !host; });
+    $("#bd-bwl").classList.toggle("on", d.k === "wl"); $("#bd-bvt").classList.toggle("on", d.k === "vt");
+    var g = grpOf(d.bid); $("#bd-bprev").title = g ? grpLabel(g.t) + " trước" : "Block trước"; $("#bd-bnext").title = g ? grpLabel(g.t) + " sau" : "Block sau";
+    $("#bd-bname").textContent = d.name || "";
+  }
+  /* nội dung gộp của cả nhóm (mọi máy tự tải, chỉ bid nhóm đi qua kênh phòng) */
+  async function grpPassage(bid) {
+    var T = await api.tree(), bls = grpBlocks(T, grpOf(bid)).slice(0, GMAX);
+    var bs = await Promise.all(bls.map(function (bl) { return wlCache[bl.id] ? Promise.resolve(wlCache[bl.id]) : api.block(bl.id).then(function (b) { wlCache[bl.id] = b; return b; }); }));
+    return bls.map(function (bl, i) { var it = bs[i] && pickPass(T, bl.id, bs[i]); return it ? "§ " + bl.name + "\n\n" + metaOf(it.raw).text.trim() : ""; }).filter(Boolean).join("\n\n") || "(Nhóm này chưa có bài đọc)";
+  }
+  async function grpWords(bid) {
+    var T = await api.tree(), bls = grpBlocks(T, grpOf(bid)).slice(0, GMAX), seen = {}, out = [];
+    var all = await Promise.all(bls.map(function (bl) { return vtCache[bl.id] ? Promise.resolve(vtCache[bl.id]) : api.words(bl.id).then(function (r) { vtCache[bl.id] = r; return r; }); }));
+    all.forEach(function (rows) { (rows || []).forEach(function (w) { var k = String(w.term || "").trim().toLowerCase(); if (k && !seen[k]) { seen[k] = 1; out.push(w); } }); });
+    return out;
   }
   function paintDoc(d) {
     var box = $("#bd-doc"); if (!box) return;
@@ -551,15 +634,21 @@
   async function wlPage(d, job) {
     var box = $("#bd-doc"); box.innerHTML = '<div class="bd-docmsg">⏳</div>';
     try {
-      var b = wlCache[d.bid] || (wlCache[d.bid] = await api.block(d.bid)); if (job !== docJob) return;
-      var items = passList(b), pick = d.ph ? items.find(function (x) { return x.ph === d.ph; }) : null;
-      if (d.ph && !pick) { b = wlCache[d.bid] = await api.block(d.bid); items = passList(b); pick = items.find(function (x) { return x.ph === d.ph; }); if (job !== docJob) return; }   /* bài vừa tạo trên máy khác */
-      var mm = metaOf(pick ? pick.raw : items[0] ? items[0].raw : ""), raw = mm.text, meta = mm.meta;
+      var mm;
+      if (grpOf(d.bid)) { mm = { text: wlCache[d.bid] || (wlCache[d.bid] = await grpPassage(d.bid)), meta: {} }; if (job !== docJob) return; }
+      else {
+        var b = wlCache[d.bid] || (wlCache[d.bid] = await api.block(d.bid)); if (job !== docJob) return;
+        var items = passList(b), pick = d.ph ? items.find(function (x) { return x.ph === d.ph; }) : null;
+        if (d.ph && !pick) { b = wlCache[d.bid] = await api.block(d.bid); items = passList(b); pick = items.find(function (x) { return x.ph === d.ph; }); if (job !== docJob) return; }   /* bài vừa tạo trên máy khác */
+        mm = metaOf(pick ? pick.raw : items[0] ? items[0].raw : "");
+      }
+      var raw = mm.text, meta = mm.meta;
       var pages = splitPages(raw); if (!pages.length) pages = ["(Block này chưa có bài đọc)"];
       var n = pages.length; if (api.isHost() && d.n !== n) docSet(Object.assign({}, d, { n: n }));
       var pg = pages[Math.min(n, d.p || 1) - 1];
       var html = esc(pg).replace(/\[([^\]]{1,60})\]/g, '<b class="bd-term">$1</b>').replace(/\n\n/g, "</p><p>");
-      box.innerHTML = '<div class="bd-wl">' + ((d.p || 1) === 1 && (meta.title || d.name) ? "<h3>" + esc(meta.title || d.name) + "</h3>" : "") + "<p>" + html + "</p></div>";
+      html = ("<p>" + html + "</p>").replace(/<p>§ ([^<]*)<\/p>/g, '<h4 class="bd-gh">$1</h4>');   /* nhóm: tên từng Block làm tiêu đề nhỏ */
+      box.innerHTML = '<div class="bd-wl">' + ((d.p || 1) === 1 && (meta.title || d.name) ? "<h3>" + esc(meta.title || d.name) + "</h3>" : "") + html + "</div>";
       requestAnimationFrame(fitDocText);
     } catch (e) { if (job === docJob) box.innerHTML = '<div class="bd-docmsg">⚠ ' + esc(e.message || e) + "</div>"; }
   }
@@ -572,7 +661,7 @@
   async function vtPage(d, job) {
     var box = $("#bd-doc"); box.innerHTML = '<div class="bd-docmsg">⏳</div>';
     try {
-      var rows = vtCache[d.bid] || (vtCache[d.bid] = await api.words(d.bid)); if (job !== docJob) return;
+      var rows = vtCache[d.bid] || (vtCache[d.bid] = await (grpOf(d.bid) ? grpWords(d.bid) : api.words(d.bid))); if (job !== docJob) return;
       var n = Math.max(1, Math.ceil(rows.length / VT_ROWS)); if (api.isHost() && d.n !== n) docSet(Object.assign({}, d, { n: n }));
       var p = Math.min(n, d.p || 1), part = rows.slice((p - 1) * VT_ROWS, p * VT_ROWS);
       box.innerHTML = '<div class="bd-vt"><h3>📋 ' + esc(d.name || t("lib_vt")) + "</h3>" + (part.length ? part.map(function (w, i) {
@@ -707,6 +796,7 @@
       if (b.dataset.rec != null) { var rc = recents()[+b.dataset.rec]; if (!rc) return; var o2 = {}; Object.keys(rc).forEach(function (k) { if (k !== "key" && k !== "t" && rc[k] != null) o2[k] = rc[k]; }); Lib.close(); await openDoc(o2); return; }
       if (b.dataset.pw) { var nm0 = Lib.pName, lb0 = (b.querySelector("b") || {}).textContent || ""; Lib.close(); await openDoc({ k: "wl", bid: Lib.pBid, name: nm0, ph: b.dataset.pw, lb: lb0, p: 1 }); return; }
       if (b.dataset.pgen) return Lib.doGen();
+      if (b.dataset.wl && grpOf(b.dataset.wl)) { Lib.close(); await openDoc({ k: "wl", bid: b.dataset.wl, name: b.dataset.wn || "", p: 1 }); return; }
       if (b.dataset.wl) return Lib.paintPass(b.dataset.wl, b.dataset.wn || "", false);
       if (b.dataset.vt) { Lib.close(); await openDoc({ k: "vt", bid: b.dataset.vt, name: b.dataset.wn || "", p: 1 }); return; }
     },
@@ -753,8 +843,18 @@
     drawTree: function (q) {
       var T = Lib.T, box = $("#bd-wllist"); if (!box) return;
       function kids(list, key, id) { return T[list].filter(function (r) { return r[key] === id; }); }
+      /* mở sẵn đúng nhánh của bài đang mở trên bảng (hoặc bài 📖/📋 mở gần nhất trên máy này) */
+      var dc = curDoc(), rc = recents().find(function (x) { return (x.k === "wl" || x.k === "vt") && x.bid; }), cb = dc && (dc.k === "wl" || dc.k === "vt") && dc.bid ? dc.bid : rc ? rc.bid : "";
+      var cur = cb ? T_path(T, cb) : {}; cur.g = grpOf(cb);
+      var openIds = {}; ["blocks", "batches", "pages", "sections", "hubs"].forEach(function (k) { if (cur[k]) openIds[cur[k]] = 1; }); (cur.notebooks || []).forEach(function (id) { openIds[id] = 1; });
+      if (cur.g) delete openIds[cur.g.id];   /* nhóm đang mở: chỉ bung tới nhóm đó */
+      /* ☑ cả nhóm: 📖 đọc liền / 📋 từ vựng gộp của mọi Block trong Batch / Page / Section */
+      function grpRow(t0, r) {
+        var bid = "g:" + t0 + ":" + r.id, nm = "☑ " + grpLabel(t0) + " · " + r.name, on = cur.g && cur.g.id === r.id ? " cur" : "";
+        return '<div class="bd-lrow bd-tgrp' + on + '"><span class="bd-tn">☑ Cả ' + grpLabel(t0) + '</span><button type="button" data-wl="' + esc(bid) + '" data-wn="' + esc(nm) + '">📖 ' + esc(t("lib_rd")) + '</button><button type="button" data-vt="' + esc(bid) + '" data-wn="' + esc(nm) + '">📋 ' + esc(t("lib_vc")) + "</button></div>";
+      }
       function leaf(bl) {
-        return '<div class="bd-lrow bd-tleaf"><span class="bd-tn">' + esc(bl.name) + '</span><button type="button" data-wl="' + esc(bl.id) + '" data-wn="' + esc(bl.name) + '">📖 ' + esc(t("lib_rd")) + '</button><button type="button" data-vt="' + esc(bl.id) + '" data-wn="' + esc(bl.name) + '">📋 ' + esc(t("lib_vc")) + "</button></div>";
+        return '<div class="bd-lrow bd-tleaf' + (bl.id === cur.blocks && !cur.g ? " cur" : "") + '"><span class="bd-tn">' + esc(bl.name) + '</span><button type="button" data-wl="' + esc(bl.id) + '" data-wn="' + esc(bl.name) + '">📖 ' + esc(t("lib_rd")) + '</button><button type="button" data-vt="' + esc(bl.id) + '" data-wn="' + esc(bl.name) + '">📋 ' + esc(t("lib_vc")) + "</button></div>";
       }
       if (q && q.trim()) {   /* tìm: liệt kê Block có tên (hoặc thư mục cha) khớp, kèm đường dẫn */
         var ql = q.trim().toLowerCase(), byId = function (list, id) { return T[list].find(function (r) { return r.id === id; }) || {}; }, out = [];
@@ -765,18 +865,19 @@
         });
         box.innerHTML = out.join("") || '<div class="bd-libmsg">—</div>'; return;
       }
-      function node(name, inner, open) { return '<details' + (open ? " open" : "") + "><summary>" + esc(name) + "</summary>" + inner + "</details>"; }
+      function node(name, inner, id) { return '<details' + (openIds[id] ? " open" : "") + "><summary>" + esc(name) + "</summary>" + inner + "</details>"; }
       function nbTree(nb) {
         var sub = kids("notebooks", "parent_notebook_id", nb.id).map(nbTree).join("") + kids("sections", "notebook_id", nb.id).map(function (sc) {
-          return node(sc.name, kids("pages", "section_id", sc.id).map(function (pg) {
-            return node(pg.name, kids("batches", "page_id", pg.id).map(function (bt) {
-              return node(bt.name, kids("blocks", "batch_id", bt.id).map(leaf).join(""));
-            }).join(""));
-          }).join(""));
+          return node(sc.name, grpRow("sections", sc) + kids("pages", "section_id", sc.id).map(function (pg) {
+            return node(pg.name, grpRow("pages", pg) + kids("batches", "page_id", pg.id).map(function (bt) {
+              return node(bt.name, grpRow("batches", bt) + kids("blocks", "batch_id", bt.id).map(leaf).join(""), bt.id);
+            }).join(""), pg.id);
+          }).join(""), sc.id);
         }).join("");
-        return node(nb.name, sub);
+        return node(nb.name, sub, nb.id);
       }
-      box.innerHTML = T.hubs.map(function (h) { return node("🏠 " + h.name, T.notebooks.filter(function (n) { return n.hub_id === h.id && !n.parent_notebook_id; }).map(nbTree).join("")); }).join("");
+      box.innerHTML = T.hubs.map(function (h) { return node("🏠 " + h.name, T.notebooks.filter(function (n) { return n.hub_id === h.id && !n.parent_notebook_id; }).map(nbTree).join(""), h.id); }).join("");
+      var hit = box.querySelector(".cur"); if (hit) setTimeout(function () { hit.scrollIntoView({ block: "center" }); }, 30);
     }
   };
   /* ---------- 🖥 CHIA SẺ MÀN HÌNH (TJ 2026-10-04: trang TRẢ PHÍ chỉ tài khoản TJ mở được -> chia sẻ cho cả phòng như Google Meet) ----------

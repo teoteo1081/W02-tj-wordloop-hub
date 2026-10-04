@@ -737,3 +737,15 @@ body.bd-bigon{overflow:hidden}
 .bd-pass{white-space:normal!important;line-height:1.35;padding:8px 12px!important}
 .bd-pass small{display:block;opacity:.7;font-size:12px;margin:2px 0 0}
 .bd-pass em{opacity:.7;font-size:12px}
+/* 🧭 thanh Block trên bảng (v151): ⏮ 📖 Bài đọc | 📋 Từ vựng ⏭ + tên Block/nhóm */
+.bd-blk{display:flex;align-items:center;gap:6px;max-width:960px;margin:0 auto 6px;flex-wrap:wrap}
+.bd-blk .bd-hb{min-height:34px}
+.bd-bseg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.bd-bseg .bd-hb{border:0;border-radius:0;margin:0}
+.bd-bseg .bd-hb.on{background:var(--accent,#e07a5f);color:#fff}
+.bd-bname{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;opacity:.85}
+.bd-big .bd-blk{flex:none;margin-bottom:4px}
+.bd-tree .bd-tleaf.cur,.bd-tree .bd-tgrp.cur{background:rgba(224,122,95,.18);border-radius:8px}
+.bd-tree .bd-tleaf.cur .bd-tn::before{content:"👉 "}
+.bd-tgrp{align-items:center;padding:2px 0}.bd-tgrp .bd-tn{flex:1;font-size:13px;opacity:.8}
+.bd-wl .bd-gh{margin:.9em 0 .3em;font-size:.9em;opacity:.8}
