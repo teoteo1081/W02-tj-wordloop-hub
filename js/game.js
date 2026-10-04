@@ -67,7 +67,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 110;
+  var GAME_VER = 111;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -2551,6 +2551,7 @@
       var tmo = $("#t-mode"); if (tmo) { var want = p <= 4 ? "audio" : tmo.value === "audio" ? "free" : ""; if (want && tmo.value !== want) { tmo.value = want; tmo.dispatchEvent(new Event("change", { bubbles: true })); } }   /* QA v109 LC3: cả lúc danh sách đề tự chọn đề đầu; Part 5–7 thì bỏ chế độ audio */   /* 🎧 Listening: host mở audio -> cả phòng cùng câu, host bấm sang câu */
       var keep = !e.isTrusted && ($("#t-from").dataset.user || $("#t-to").dataset.user);   /* QA v104: host đã gõ đoạn câu trước khi danh sách đề tải xong -> giữ */
       if (e.isTrusted) { delete $("#t-from").dataset.user; delete $("#t-to").dataset.user; }
+      if (m && keep && !(+$("#t-from").value >= m.min && +$("#t-to").value <= m.max)) keep = false;   /* QA v110: đoạn câu cũ không thuộc đề mới -> điền lại */
       if (m && !keep) { $("#t-from").value = m.min; $("#t-to").value = m.max; }
       if (m) { $("#t-from").min = $("#t-to").min = m.min; $("#t-from").max = $("#t-to").max = m.max;
         $("#t-tag").innerHTML = '<option value="">Tất cả</option>' + Object.keys(m.tags).sort().map(function (t) { return '<option value="' + esc(t) + '">' + esc(t) + " (" + m.tags[t] + " câu)</option>"; }).join(""); }
