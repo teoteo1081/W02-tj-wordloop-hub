@@ -68,7 +68,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 140;
+  var GAME_VER = 141;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -1691,6 +1691,12 @@
       if (G.st.mode !== "kahoot" || !G.revealUntil || now >= G.revealUntil) return hostEnd();
       return;
     }
+    /* Tự do / Thi thật: CẢ PHÒNG đã làm hết số câu -> 4s sau tự Kết thúc (TJ 2026-10-04: làm xong 6/6 mà vẫn phải chờ 116 phút) */
+    if (G.st.mode === "free" && +G.st.total) {
+      var ps0 = players().filter(function (p) { return G.st.scores[p.id]; });
+      var fin = ps0.length && ps0.every(function (p) { var x = G.st.scores[p.id]; return (x.c || 0) + (x.w || 0) + (x.m || 0) >= +G.st.total; });
+      if (!fin) G.allDoneAt = 0; else if (!G.allDoneAt) G.allDoneAt = now; else if (now - G.allDoneAt > 4000) { G.allDoneAt = 0; return hostEnd(); }
+    }
     if (G.st.mode !== "kahoot" || !G.st.q) return;
     if (!G.st.q.revealed) {
       if (G.st.q.grading) return;
@@ -2449,6 +2455,12 @@
     });
   }
   window.addEventListener("resize", function () { clearTimeout(G.fitT); G.fitT = setTimeout(fitTImg, 150); });
+  /* 🔍 chạm hình đề -> phóng to cả màn hình (kéo 2 ngón để zoom), chạm lần nữa để đóng */
+  document.addEventListener("click", function (e) {
+    var im = e.target.closest && e.target.closest(".g-timg"); if (!im) return;
+    var lb = document.createElement("div"); lb.className = "g-lbox"; lb.innerHTML = '<img alt="" src="' + esc(im.src) + '"><button type="button" class="g-lbx" aria-label="Đóng">✕</button>';
+    lb.addEventListener("click", function () { lb.remove(); }); document.body.appendChild(lb);
+  });
   document.addEventListener("load", function (e) { if (e.target && e.target.classList && e.target.classList.contains("g-timg")) fitTImg(); }, true);
   function paintQuestion(q, hintEl, textEl, optsEl) {
     if (q.aud) Object.assign(G.audioMap, q.aud);
@@ -2484,7 +2496,7 @@
       if (mine && window.innerWidth < 700) { var qv = $(textEl); setTimeout(function () { qv.scrollIntoView({ block: "start", behavior: "smooth" }); }, 50); }   /* điện thoại: bảng điểm chiếm ~410px -> cuộn tới đề để thấy A–D (QA v109) */
       setTimeout(fitTImg, 0);
       var pk = (G.st && G.st.matchId || "") + ":" + q.num + ":" + (q.qn || ""); if (mine && tc && G.st && G.st.tplay && pk !== G.tPlayedQn) { G.tPlayedQn = pk; tAutoPlay(q); }
-      $(optsEl).innerHTML = (q.opts || []).map(function (o) { return '<button class="g-opt g-topt" data-opt="' + esc(o) + '"><span class="g-otext">' + esc(o) + '</span><span class="g-pickers"></span></button>'; }).join("");
+      $(optsEl).innerHTML = (q.opts || []).map(function (o) { return '<button class="g-opt g-topt" data-opt="' + esc(o) + '"><span class="g-otext">' + esc(o) + '</span><span class="g-pickers"></span></button>'; }).join(""); markLongOpts(optsEl);
       return;
     }
     if (q.type === "sheet") {
@@ -3788,6 +3800,9 @@
     [el].concat([].slice.call(el.querySelectorAll(".g-opts, .g-tsubopts"))).forEach(function (c) {
       var long = [].slice.call(c.querySelectorAll(":scope > .g-opt .g-otext")).some(function (t) { return t.textContent.length > 26; });
       c.classList.toggle("g-opts-1", long);
+      /* Part 1–2: đáp án chỉ là "(A)…(D)" (lời đọc trong audio) -> 1 hàng nút nhỏ, chừa chỗ cho hình vừa khung (TJ 2026-10-04) */
+      var tx = [].slice.call(c.querySelectorAll(":scope > .g-opt .g-otext")).map(function (t) { return t.textContent.trim(); });
+      c.classList.toggle("g-tabcd", tx.length >= 3 && tx.every(function (t) { return /^\([A-D]\)$/.test(t); }));
     });
   }
   function tSub(it) {
