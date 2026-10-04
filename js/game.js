@@ -68,7 +68,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 123;
+  var GAME_VER = 124;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -2126,7 +2126,10 @@
     return { url: cfg.SUPABASE_URL + "/storage/v1/object/public/toeic/listening/TEST_" + t + "_LC.mp3", q: [+m[1], +m[2]], g: m[3] ? [+m[3], +m[4]] : null };
   }
   var TAUD = null, tSeqTok = 0;
-  function tAudio() { if (!TAUD) { TAUD = new Audio(); TAUD.preload = "auto"; } return TAUD; }
+  function tAudio() { if (!TAUD) { TAUD = new Audio(); TAUD.preload = "auto"; } tVol(); return TAUD; }
+  /* audio đề nghe theo nút "🔇 Đã tắt tiếng" + thanh âm lượng của máy này (TJ 2026-10-04: tắt tiếng mà vẫn ra quá trời âm thanh).
+     Tắt tiếng vẫn CHẠY ngầm (im lặng) để nhịp tự sang câu theo audio của host vẫn đúng. */
+  function tVol(force) { if (!TAUD) return; TAUD.muted = !force && !soundOn(); TAUD.volume = volLevel(); }
   document.addEventListener("pointerdown", function () { if (G.tUnlocked) return; G.tUnlocked = true; var a = tAudio(); var p = a.play(); if (p && p.catch) p.then(function () { a.pause(); }).catch(function () {}); }, { once: false, capture: true });
   function tStop() { tSeqTok++; if (TAUD) TAUD.pause(); }
   function tPlaySeq(url, seq, onEnd) {   /* phát lần lượt các đoạn [từ, tới] của 1 file */
@@ -2166,7 +2169,7 @@
     var d = b.dataset.tcue.split("|"), seq = [d[1].split("-").map(Number)];
     if (d[2]) seq.unshift(d[2].split("-").map(Number));
     if (b.classList.contains("on")) { tStop(); b.classList.remove("on"); return; }
-    b.classList.add("on"); tPlaySeq(d[0], seq, function () { b.classList.remove("on"); });
+    b.classList.add("on"); tPlaySeq(d[0], seq, function () { b.classList.remove("on"); }); tVol(true);   /* bấm 🔊 tay = muốn nghe, kể cả đang tắt tiếng */
   });
   function tPassHTML(p, num) {
     if (!p) return "";
@@ -3214,6 +3217,7 @@
     var r = e.target.closest(".js-vol"); if (!r) return;
     try { localStorage.setItem(LS_VOL, r.value); } catch (er) {}
     $$(".js-vol").forEach(function (x) { if (x !== r) x.value = r.value; x.title = "Âm lượng: " + r.value + "%"; });
+    tVol();
     paintVolLabel();
   });
   document.addEventListener("change", function (e) {   /* thả tay -> đọc thử để nghe mức mới (không đọc lộ đáp án) */
@@ -3233,6 +3237,7 @@
       b.title = on ? "Bấm để tắt tiếng trên máy này (chơi kèm HelloTalk)" : "Bấm để bật lại: câu mới tự đọc từ tiếng Anh";
     });
     $$(".js-vol").forEach(function (r) { r.disabled = !on; r.title = "Âm lượng: " + r.value + "%"; });
+    tVol();
     $$(".js-sndck").forEach(function (c) { c.checked = on; });
     paintVolLabel();
   }
