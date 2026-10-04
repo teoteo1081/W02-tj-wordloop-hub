@@ -664,3 +664,4 @@ body:has(.bd-dock:not([hidden])) #g-main{padding-bottom:76px}
 .g-btn-sm{min-height:36px}
 @media (min-width:1100px){ body:has(#s-play:not([hidden])) #g-main,body:has(#s-review:not([hidden])) #g-main{max-width:1000px} }
 .g-bigcode{letter-spacing:.12em}
+.g-scr .g-aprow .g-btn{white-space:normal}   /* es: nút 🎯 dài không tràn màn hình 360px */

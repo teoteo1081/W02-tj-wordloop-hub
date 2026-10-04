@@ -68,7 +68,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 143;
+  var GAME_VER = 144;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -2334,7 +2334,7 @@
     if (!confirm(apT("del"))) return;
     apLocalSet(apLocal().filter(function (x) { return x !== id; }));
     if (G.me) { try { await sb.from("vocab_saves").delete().eq("player_id", G.me.id).eq("word_id", id); } catch (e) {} }
-    if (AP && AP.meta) apPaintMarks(); else apList();
+    if ($("#ap-lbody") && !$("#t-statsbox").hidden) apList(); else if (AP && AP.meta) apPaintMarks();
   }
   function apRow(k, label) {
     return '<div class="g-aprow g-apm"><button type="button" class="g-btn g-btn-soft g-btn-sm" data-ap="mplay" data-r="' + k.a + "-" + k.b + '">▶ ' + esc(label) + '</button><button type="button" class="g-btn g-btn-soft g-btn-sm" data-ap="mdel" data-id="' + esc(k.id) + '">✕</button></div>';
@@ -2382,8 +2382,16 @@
       scr.lines.forEach(function (l, i) { if (evAt[n] == null && scrNorm(l.t).indexOf(key.slice(0, 25)) >= 0) evAt[n] = i; });
     });
     var mark = {}; Object.keys(evAt).forEach(function (n) { (mark[evAt[n]] = mark[evAt[n]] || []).push(n); });
+    /* 🎯 câu có đáp án nằm giữa 1 lượt nói dài (Part 4 cả bài là 1 lượt): ước lượng đoạn con theo vị trí chữ, nới 1.5s */
+    var evR = {}; Object.keys(evAt).forEach(function (n) {
+      var l = scr.lines[evAt[n]], r = T0[evAt[n]], tx = String(l.t), k = tx.toLowerCase().indexOf(String(ev[n]).toLowerCase().slice(0, 30));
+      if (k < 0 || r[1] - r[0] < 12) { evR[n] = r; return; }
+      var d = r[1] - r[0], s0 = r[0] + d * k / tx.length, s1 = r[0] + d * Math.min(1, (k + String(ev[n]).length) / tx.length);
+      evR[n] = [Math.max(r[0], s0 - 1.5), Math.min(r[1], s1 + 1.5)];
+    });
+    if (AP && AP.segs && AP.segs[0] && T0[0] && T0[0][0] - 1 > AP.segs[0].a) { AP.segs[0].a = T0[0][0] - 1; if (!AP.live) apSeg(0); }   /* "Cả bài nói" bắt đầu ngay lời thoại, bỏ phần hướng dẫn đọc trước */
     var html = '<div class="g-scr"><div class="g-tvh">📜 ' + esc(apT("scr")) + ' <span class="g-sub">' + esc(apT("scrtip")) + "</span></div>" +
-      (Object.keys(evAt).length ? '<div class="g-aprow">' + Object.keys(evAt).sort(function (x, y) { return x - y; }).map(function (n) { var r = T0[evAt[n]]; return '<button type="button" class="g-btn g-btn-soft g-btn-sm" data-scrp="' + Math.max(span[0], r[0] - 1).toFixed(1) + "-" + Math.min(span[1], r[1] + 1).toFixed(1) + '">🎯 ' + esc(apT("evq")) + " " + n + "</button>"; }).join("") + "</div>" : "") +
+      (Object.keys(evAt).length ? '<div class="g-aprow">' + Object.keys(evAt).sort(function (x, y) { return x - y; }).map(function (n) { var r = evR[n]; return '<button type="button" class="g-btn g-btn-soft g-btn-sm" data-scrp="' + Math.max(span[0], r[0] - 1).toFixed(1) + "-" + Math.min(span[1], r[1] + 1).toFixed(1) + '">🎯 ' + esc(apT("evq")) + " " + n + "</button>"; }).join("") + "</div>" : "") +
       scr.lines.map(function (l, i) {
         var r = T0[i];
         return '<div class="g-scl' + (mark[i] ? " ev" : "") + '" data-scrp="' + Math.max(span[0], r[0] - 0.8).toFixed(1) + "-" + Math.min(span[1], r[1] + 0.5).toFixed(1) + '">' + (l.sp ? '<b class="g-scsp">' + esc(l.sp) + "</b> " : "") + esc(l.t) + (mark[i] ? ' <span class="g-scq">🎯 ' + mark[i].join(", ") + "</span>" : "") + "</div>";
@@ -2404,7 +2412,8 @@
     if (!box) { box = document.createElement("div"); box.id = "t-statsbox"; box.className = "g-tstats"; document.body.appendChild(box); }
     box.hidden = false;
     box.innerHTML = '<div class="g-tsin"><div class="g-h1row"><h2>' + esc(apT("list")) + '</h2><button class="g-btn g-btn-soft g-btn-sm" id="ts-close">✕</button></div><div id="ap-lplayer"></div><div id="ap-lbody">⏳</div></div>';
-    var close = function () { apStop(); box.hidden = true; };
+    var prevAP = AP && AP.meta ? AP : null;   /* thanh nghe ở 📖 Xem lại: trả lại sau khi đóng danh sách (QA) */
+    var close = function () { apStop(); box.hidden = true; if (prevAP && prevAP.box.isConnected) AP = prevAP; };
     $("#ts-close").onclick = close; box.onclick = function (e) { if (e.target === box) close(); };
     var L = (await apMarks()).sort(function (x, y) { return String(x.test).localeCompare(String(y.test), "en", { numeric: true }) || x.num - y.num || x.a - y.a; });
     var body = $("#ap-lbody"); if (!body) return;
@@ -2644,6 +2653,7 @@
   }
   function paintTVocab(L) {
     var q = L.tq, box = $("#rv-res"); if (!box) return;
+    if (!(q.vocab || []).length && !$("#rv-vi .g-tstem")) return;   /* Listening nhóm/Part 1–2: không có từ vựng lẫn câu để chạm -> khỏi hộp trống (QA) */
     var list = (q.vocab || []).map(function (v, i) {
       var on = tvSavedSet()["toe_w_" + tvSlug(v.t)];
       return '<div class="g-tvrow"><button type="button" class="g-tvstar' + (on ? " on" : "") + '" data-tv="' + i + '" title="Lưu để học">' + (on ? "★" : "☆") + '</button>' +
@@ -2768,13 +2778,13 @@
     $("#rv-back").textContent = G.rvFrom === "hist" ? T("back_hist") : T("back_res");
     $("#rv-hint").textContent = L.hint; $("#rv-vi").innerHTML = L.vi; $("#rv-opts").innerHTML = L.opts; $("#rv-opts").classList.toggle("g-tbook", !!L.tq); $("#rv-hint").hidden = !!L.tq; $$("#rv-vi .g-taud").forEach(function (x) { var r = x.closest(".g-row") || x; r.hidden = true; }); $("#rv-res").innerHTML = L.res; $("#rv-msg").textContent = L.msg;
     /* 🔊 nghe lại (TJ 2026-10-02): nút cạnh ◀ ▶ + loa nhỏ ngay sau từ đúng; đang bật tiếng thì sang câu tự đọc */
-    $("#rv-say").hidden = !L.say; $("#rv-say").dataset.say = L.say || ""; $("#rv-say").dataset.sl = L.sl || "en";
+    $("#rv-say").hidden = !L.say || !!(L.tq && /\[aud\]/.test(L.tq.full || "")); $("#rv-say").dataset.say = L.say || ""; $("#rv-say").dataset.sl = L.sl || "en";
     $$("#rv-vi .g-fill").forEach(function (f) { if (L.say && !L.tq) f.insertAdjacentHTML("afterend", spk(L.say, L.sl)); });   /* đề thi: nghe cả câu bằng nút #rv-say, không chen loa giữa câu */
     $("#rv-say").textContent = T("rv_listen");
     if (L.tg === "zh") { loadPinyin(); decoratePy($("#s-review"), true); }
     if (L.tq) paintTVocab(L);
     apStop(); if (L.tq) apReview(L);
-    if (L.say && soundOn()) { sayIt._lang = L.sl || "en"; sayIt(L.say, true); }
+    if (L.say && soundOn() && !L.tq) { sayIt._lang = L.sl || "en"; sayIt(L.say, true); }   /* đề thi: không tự đọc cả bài khi sang câu */
     var m = $("#rv-mine");
     m.className = "g-rvmine";
     if (L.note) { m.textContent = L.note; m.classList.add(L.ok ? "ok" : "bad"); }   /* ván cũ: chỉ biết đúng/sai */
@@ -2846,6 +2856,7 @@
     sb.from("game_matches").select("*").eq("id", matchId).maybeSingle().then(function (r) { G.rvMatch = r.data || null; var rp = $("#rv-replay"); if (rp) rp.hidden = !(G.isHost && G.room && G.st && G.st.phase !== "play" && G.rvMatch && G.rvMatch.qtype !== "toeic"); });   /* 🔁 chơi lại ván cũ (QA v128 #5) */
     var a = await sb.from("game_answers").select("word_id,term,correct,target,choice").eq("match_id", matchId).eq("player_id", G.me.id);
     var rows = (a.data || []).filter(function (x) { return x.word_id; });
+    if (!rows.length && (a.data || []).some(function (x) { return /^toeic:/.test(x.term || ""); })) { tStats(); return; }   /* ván đề thi: chưa dựng lại được từng câu -> mở 📊 điểm TOEIC (QA) */
     if (!rows.length) { alert(T("no_answers")); return; }
     var ids = rows.map(function (x) { return x.word_id; }).filter(function (v, i, arr) { return arr.indexOf(v) === i; });
     var wr = await inIds("words", HIST_COLS, "id", ids), W = {};
@@ -3000,8 +3011,8 @@
     box.hidden = false; box.innerHTML = '<div class="g-tsin"><p class="g-sub">⏳ Đang tính điểm…</p></div>';
     var pids = [pid || G.me.id];
     var L = await tAnswers(pids);
-    var tags = {}, ti = await sb.from("test_items").select("test,part,num,tag").eq("exam", "toeic");
-    (ti.data || []).forEach(function (x) { tags[x.test + ":" + x.num] = x.tag || ""; });
+    var tags = {}, LL = effLang(G.myLang, G.st, "toeic");   /* phân trang: máy chủ trả tối đa 1000 dòng/lần (QA) */
+    for (var fr0 = 0; ; fr0 += 1000) { var ti = await sb.from("test_items").select("test,part,num,tag,i18n").eq("exam", "toeic").range(fr0, fr0 + 999); (ti.data || []).forEach(function (x) { var I = x.i18n || {}; tags[x.test + ":" + x.num] = (I[LL] && I[LL].tag) || x.tag || ""; }); if (!ti.data || ti.data.length < 1000) break; }
     var by = {};   /* đề -> part -> {k,n} */
     L.forEach(function (x) { var t = by[x.test] = by[x.test] || {}; var c = t[x.part] = t[x.part] || { k: 0, n: 0 }; c.n++; if (x.ok) c.k++; });
     var tests = Object.keys(by).sort(function (a, b) { return a - b; });
@@ -3421,7 +3432,8 @@
   function toeicFull(q) {
     var a = String(q.ans || "").replace(/^\([A-D]\)\s*/, ""), stem = String(q.sent || "");
     stem = /_{3,}/.test(stem) ? stem.replace(/_{3,}/, a) : stem;
-    return ((q.passage ? q.passage + "\n" : "") + stem).trim();
+    var pas = String(q.passage || "").split("\n").filter(function (l) { return !/^\[(img|aud)\]/.test(l) && !/^🎧/.test(l); }).join("\n").replace(/^\[[^\]\n]{2,40}\]\s*$/gm, "").replace(/-{3,}\((\d+)\)/g, "blank $1");   /* đọc to: bỏ [img]/[aud]/nhãn (QA) */
+    return ((pas ? pas + "\n" : "") + stem).trim();
   }
   /* lời giải theo TIẾNG MẸ ĐẺ người xem (TJ 2026-10-03: "người chơi toàn thế giới — thêm tiếng Anh, sau này thêm tiếng khác"):
      i18n = {vi:{tag,explain,stem}, en:{tag,explain}, …}; tiếng chưa có -> tiếng Anh; bản cũ chỉ có cột explain/stem_vi = tiếng Việt */
