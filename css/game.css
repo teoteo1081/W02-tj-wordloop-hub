@@ -581,3 +581,4 @@ body.embed .g-brand{display:none}
 .g-expal button{padding:4px 0;border-radius:6px;border:1px solid var(--line,#3334);background:var(--deep,#0003);color:inherit;font-size:12px;cursor:pointer}
 .g-expal button.done{background:#1f8a4c55}.g-expal button.cur{outline:2px solid var(--accent,#7c5cff)}
 .g-exres{text-align:center}.g-exres p{margin:6px 0}.g-exsum{font-size:1.2em}
+.g-exnav{position:sticky;bottom:0;z-index:5;background:var(--card,#1c1c28);padding:6px 0;box-shadow:0 -6px 12px #0004}   /* QA v127: ◀ ▶ Nộp bài luôn thấy trên điện thoại */

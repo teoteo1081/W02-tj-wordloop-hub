@@ -68,7 +68,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 128;
+  var GAME_VER = 129;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -1634,7 +1634,7 @@
     if (need) { alert(need); return; }
     if (!players().length) { alert("Chưa có người chơi nào."); return; }
     fillTeams();
-    G.st.phase = "play"; G.st.scores = {}; G.st.q = null; G.st.tsheet = null; G.tSheet = null; G.tKeyMsg = ""; G.answers = []; G.myAns = []; G.srsHtml = "";
+    G.st.phase = "play"; G.st.scores = {}; G.st.q = null; G.st.tsheet = null; G.st.exSubmitAt = null; G.tSheet = null; G.tKeyMsg = ""; G.answers = []; G.myAns = []; G.srsHtml = "";
     G.st.total = G.st.race ? 0 : autoCount();
     G.st.hostplay = hostPlays();
     delete G.st.elapsed;   /* ván mới: tính lại thời gian chơi */   /* số câu của ván (= số từ; 📄 = số chỗ trống) để hiện "còn N câu"; ⚡ Đua = không giới hạn */
@@ -1854,6 +1854,10 @@
   }
   async function hostEnd() {
     if (G.st.phase === "end") return;
+    if (G.st.exam) {   /* 📝 Thi thật (QA v127 #1): báo cả phòng NỘP BÀI rồi chờ 3.5s nhận bài Reading trước khi chốt — trước đây kết thúc là mất bài chưa nộp */
+      if (!G.st.exSubmitAt) { G.st.exSubmitAt = Date.now(); if (G.ex && !G.ex.done && hostPlays()) exSubmit(); push(); setTimeout(hostEnd, 3500); return; }
+      if (Date.now() - G.st.exSubmitAt < 3300) return;
+    }
     G.st.elapsed = elapsedMs(G.st);   /* chốt thời gian chơi thật trước khi đổi phase -> câu/phút ở màn kết quả đúng */
     clearInterval(G.hostTimer);
     G.st.phase = "end"; G.st.q = null; G.endAt = 0; G.qUntil = 0;
@@ -2016,6 +2020,7 @@
     if (!G.langSet && !isTJ() && s.lang && G.myLang !== s.lang) { G.myLang = s.lang; $("#g-mylang").value = s.lang; applyUI(); }
     var was = G.st && G.st.phase, langWas = G.st && G.st.lang;
     if (!G.isHost) G.st = s;
+    if (s.exSubmitAt && G.ex && !G.ex.done && iPlay()) setTimeout(exSubmit, 0);   /* 📝 host kết thúc -> tự nộp bài */
     if (window.Board) Board.onState(G.isHost ? G.st : s);
     if (s.left != null) G.endAt = Date.now() + s.left;
     if (G.myLang === "room" && langWas !== s.lang) applyUI();   /* "theo phòng" -> host đổi tiếng thì giao diện đổi theo */
@@ -2464,7 +2469,7 @@
   var rvI = 0;
   /* G.rv = danh sách đang xem: ván vừa chơi (G.log) hoặc 1 ván cũ trong 📜 Lịch sử (pastReview) */
   function renderReview(i, list) {
-    var rp = $("#rv-replay"); if (rp) rp.hidden = !(G.isHost && G.room && G.st && G.st.phase !== "play" && (G.rvFrom === "end" || G.rvMatch));   /* 🔁 */
+    var rp = $("#rv-replay"); if (rp) rp.hidden = !(G.isHost && G.room && G.st && G.st.phase !== "play" && (G.rvFrom === "end" || (G.rvMatch && G.rvMatch.qtype !== "toeic")));   /* 🔁 ván cũ đề thi: chưa lưu đề/Part nên không chơi lại được */
     if (list) G.rv = list;
     var R = G.rv || G.log;
     if (!R.length) return;
@@ -2542,6 +2547,8 @@
   }
   async function pastReview(matchId, title) {
     if (!G.me) return;
+    G.rvMatch = null;
+    sb.from("game_matches").select("*").eq("id", matchId).maybeSingle().then(function (r) { G.rvMatch = r.data || null; var rp = $("#rv-replay"); if (rp) rp.hidden = !(G.isHost && G.room && G.st && G.st.phase !== "play" && G.rvMatch && G.rvMatch.qtype !== "toeic"); });   /* 🔁 chơi lại ván cũ (QA v128 #5) */
     var a = await sb.from("game_answers").select("word_id,term,correct,target,choice").eq("match_id", matchId).eq("player_id", G.me.id);
     var rows = (a.data || []).filter(function (x) { return x.word_id; });
     if (!rows.length) { alert(T("no_answers")); return; }
@@ -2654,7 +2661,7 @@
               (p.sec ? p.sec : fmtMin(p.min) + (p.each ? "<br><small>" + p.each + " phút/câu</small>" : "")) + "</td></tr>"; }).join("") + "</tbody></table></div>";
       }).join("") +
       tScoreGuide() +
-      '<p class="g-sub">Đã có: Test 1 đủ 200 câu (đáp án chính thức, audio). Đang soạn: Test 2–10. Sắp có: 📝 thi thử full 2 giờ · ✍️🎙 Viết/Nói dạng ghép câu + AI chấm theo đúng tiêu chí ở trên.</p>';
+      '<p class="g-sub">Đã có: ETS 2024 Test 1–10, mỗi đề đủ 200 câu (đáp án chính thức, audio Listening, lời giải Reading 4 thứ tiếng). Sắp có: 📝 thi thử full 2 giờ · ✍️🎙 Viết/Nói dạng ghép câu + AI chấm theo đúng tiêu chí ở trên.</p>';
   }
   /* ---------- 📊 ĐIỂM TOEIC & CÂU HAY SAI (TJ 2026-10-04: "từng Part nhớ điểm, full bài xem đạt bao nhiêu, thống kê câu hay sai, cho luyện thêm") ----------
      Nguồn: game_answers.term = "toeic:<đề>:<part>:<câu>" (mỗi lần trả lời 1 dòng). Mỗi câu lấy LẦN LÀM GẦN NHẤT.
@@ -2813,7 +2820,7 @@
   function paintParts() {
     var t = $("#t-tnum").value, ps = tPartsOf(t), sel = $("#t-test"), keep = sel.value;
     sel.innerHTML = ps.map(function (p) { var k = t + "|" + p; return '<option value="' + k + '">Part ' + p + " — " + G.tCnt[k] + " câu" + (G.tCl[k] ? " (đáp án Claude giải)" : G.tNk[k] ? " (chưa có đáp án)" : "") + "</option>"; }).join("");
-    if (keep && ps.indexOf(+keep.split("|")[1]) >= 0) sel.value = keep;
+    if (keep && ps.indexOf(+keep.split("|")[1]) >= 0) sel.value = t + "|" + keep.split("|")[1];   /* đổi Đề: giữ Part đang chọn (QA v127 #3) */
     $$(".t-pck").forEach(function (c) { c.disabled = ps.indexOf(+c.value) < 0; if (c.disabled) c.checked = false; });
     paintScope();
     if (G.tLastTest !== sel.value) { G.tLastTest = sel.value; sel.dispatchEvent(new Event("change", { bubbles: true })); }
@@ -2833,6 +2840,9 @@
     var multi = !one;
     $("#t-qs").disabled = multi || (ps[0] <= 4); $("#t-qs").title = multi ? "Nhiều Part: giờ TỰ TÍNH theo từng Part (Listening theo audio, Reading theo nhịp đề thật)" : $("#t-qs").title;
     var tmo = $("#t-mode"); if (tmo && multi && (sc === "full" || sc === "lc" || sc === "rc") && tmo.value !== "exam" && !tmo.dataset.user) tmo.value = "exam";
+    if (tmo && one && tmo.value === "exam" && !tmo.dataset.user) tmo.value = ps[0] <= 4 ? "audio" : "free";   /* QA v127 #4: về Từng Part thì bỏ Thi thật */
+    var all = tPartsOf($("#t-tnum").value), hasL = all.some(function (p) { return p <= 4; }), hasR = all.some(function (p) { return p >= 5; });
+    $$("#t-scope option").forEach(function (o) { o.disabled = (o.value === "lc" && !hasL) || (o.value === "rc" && !hasR) || (o.value === "full" && !(hasL && hasR)); });
   }
   document.addEventListener("change", function (e) {
     var id = e.target && e.target.id;
@@ -3408,7 +3418,7 @@
     var e = G.ex; if (!e || e.done) return; e.done = true; tStop();
     var batch = [];
     e.qs.forEach(function (q) {   /* ghi Xem lại từng câu như chế độ khác */
-      var ok = q.pick != null && norm(q.pick) === norm(q.ans);
+      var ok = q.pick != null && norm(q.pick) === norm(q.ans); q.done = true;
       G.myQ = q; paintQuestion(q, "#p-hint", "#p-vi", "#p-opts"); logQ(q, q.pick, ok);
       batch.push({ ok: ok, tk: tKey(q), c: q.pick });
     });
@@ -3666,13 +3676,13 @@
   }
   function renderEnd(s) {
     var mq = G.myQ;   /* 🎯 đề thi (Tự do): câu đang làm dở lúc hết ván vẫn vào Xem lại, ghi "Bỏ qua" như Kahoot (QA v95 T4) */
-    if (G.ex && !G.ex.done && iPlay()) { exSubmit(); }   /* 📝 Thi thật: host bấm Kết thúc khi chưa nộp -> chấm phần đã làm (vào 📖 Xem lại) */
+    if (G.ex) { if (!G.ex.done && iPlay()) exSubmit(); }   /* 📝 Thi thật: host bấm Kết thúc khi chưa nộp -> chấm phần đã làm (vào 📖 Xem lại) */
     else if (mq && mq.type === "toeic" && !mq.done && s.mode === "free" && iPlay()) toeicCommit(mq, true);   /* ván đã chấm xong -> chỉ ghi vào Xem lại */
     show("s-end");
     $("#e-info").textContent = G.isHost || s.saved ? (s.title || "") + " · " + modeLine(s) + " · " + s.minutes + "'" : "";
     $("#e-again").hidden = !G.isHost || s.saved;
     if (!s.saved) G.rvMatch = null;
-    $("#e-replay").hidden = !(G.isHost && G.room && (!s.saved || G.rvMatch));
+    $("#e-replay").hidden = !(G.isHost && G.room && (!s.saved || (G.rvMatch && G.rvMatch.qtype !== "toeic")));
     $("#e-hostnav").hidden = false;   /* 📜 cho MỌI người (trước chỉ host) */
     $("#e-review").hidden = s.saved || !G.log.length;
     $("#e-wait").hidden = G.isHost || !!s.saved;
