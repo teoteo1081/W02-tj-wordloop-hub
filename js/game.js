@@ -68,7 +68,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 129;
+  var GAME_VER = 130;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -3387,7 +3387,7 @@
     exPaint();
   }
   function exPaint() {
-    var e = G.ex, q = e.qs[e.i]; G.myQ = q; G.myQStart = Date.now();
+    var e = G.ex, q = e.qs[e.i]; G.myQ = q; G.myQStart = Date.now(); document.body.classList.add("g-exam");
     paintQuestion(q, "#p-hint", "#p-vi", "#p-opts");
     if (q.pick != null) $$("#p-opts .g-opt").forEach(function (x) { x.classList.toggle("g-picked", norm(x.dataset.opt) === norm(q.pick)); });
     exNav(); exInfo();
@@ -3415,7 +3415,7 @@
     exPaint();
   });
   function exSubmit() {
-    var e = G.ex; if (!e || e.done) return; e.done = true; tStop();
+    var e = G.ex; if (!e || e.done) return; e.done = true; tStop(); document.body.classList.remove("g-exam");
     var batch = [];
     e.qs.forEach(function (q) {   /* ghi Xem lại từng câu như chế độ khác */
       var ok = q.pick != null && norm(q.pick) === norm(q.ans); q.done = true;
