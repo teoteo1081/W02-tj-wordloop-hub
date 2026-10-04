@@ -68,7 +68,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 117;
+  var GAME_VER = 118;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -76,7 +76,15 @@
     if (G.st && G.st.phase === "play") return;
     if (busyReading()) return;
     fetch("game-version.json?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (j) {
-      if (j && +j.v > GAME_VER && !(G.st && G.st.phase === "play") && !busyReading()) { var u = new URL(location.href); u.searchParams.set("gv", j.v); location.replace(u.toString()); }
+      if (!(j && +j.v > GAME_VER) || (G.st && G.st.phase === "play") || busyReading()) return;
+      var u = new URL(location.href); u.searchParams.set("gv", j.v);
+      /* máy TJ (host): KHÔNG tự tải lại giữa buổi (TJ 2026-10-04: "tự refresh tự out") — hiện nút để TJ tự bấm lúc tiện */
+      if (isTJ() || G.isHost) {
+        if (document.getElementById("g-upd")) return;
+        var b = document.createElement("button"); b.id = "g-upd"; b.type = "button"; b.className = "g-btn g-upd"; b.textContent = "🔄 Có bản mới — bấm để cập nhật";
+        b.onclick = function () { location.replace(u.toString()); }; document.body.appendChild(b); return;
+      }
+      location.replace(u.toString());
     }).catch(function () {});
   }
   setTimeout(checkVersion, 3000); setInterval(checkVersion, 120000);
