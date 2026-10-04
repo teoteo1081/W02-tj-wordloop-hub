@@ -68,7 +68,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 134;
+  var GAME_VER = 135;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -1204,7 +1204,7 @@
       }
       var it = L[(G.tIdx++) % Math.max(1, L.length)] || {};
       var a0 = String(it.answer || "").trim().toUpperCase(), ai = a0 ? "ABCD".indexOf(a0) : -1;   /* QA v109 LC1: "ABCD".indexOf("") = 0 -> câu chưa có đáp án bị coi là (A) */
-      return { type: "toeic", wid: null, num: it.num, sent: it.stem || "", passage: it.passage || "", opts: (it.opts || []).slice(), ans: ai >= 0 ? (it.opts || [])[ai] : "", tag: it.tag || "", expl: it.explain || "", vi: it.stem_vi || "", i18n: it.i18n || null, vocab: it.vocab || null, test: G.st && G.st.test ? G.st.test.test : null, part: it.part || (G.st && G.st.test ? G.st.test.part : null), asrc: it.answer_src || "", pend: ai < 0 };   /* pend = câu CHƯA có đáp án (vd Listening chờ đáp án): vẫn chọn được, cuối ván ra phiếu cả phòng + 🔑 nhập đáp án */
+      return { type: "toeic", wid: null, num: it.num, sent: tStemOf(it), passage: it.passage || "", opts: (it.opts || []).slice(), ans: ai >= 0 ? (it.opts || [])[ai] : "", tag: it.tag || "", expl: it.explain || "", vi: it.stem_vi || "", i18n: it.i18n || null, vocab: it.vocab || null, test: G.st && G.st.test ? G.st.test.test : null, part: it.part || (G.st && G.st.test ? G.st.test.part : null), asrc: it.answer_src || "", pend: ai < 0 };   /* pend = câu CHƯA có đáp án (vd Listening chờ đáp án): vẫn chọn được, cuối ván ra phiếu cả phòng + 🔑 nhập đáp án */
     }
     if (t === "chunkmix") t = shuffle(CHUNK_TYPES.filter(function (x) { return chunkPool(x).length >= (x === "chunk" || x === "listen" ? 4 : 1); }))[0] || "listen";
     if (CHUNK_TYPES.indexOf(t) >= 0) { var cq = makeChunkQ(t, lang); if (cq) return cq; t = "meaning"; }
@@ -2494,7 +2494,7 @@
         var m = (q.optTexts || {})[o] || {}, t = m[ml] || m.en || m.vi || o;
         return '<button class="g-opt" data-opt="' + esc(o) + '"><span class="g-otext">' + esc(t) + '</span><span class="g-pickers"></span></button>';
       }).join("");
-      decoratePy($(textEl).parentNode);
+      decoratePy($(textEl).parentNode); markLongOpts(optsEl);
       return;
     }
     /* bọc cả câu trong 1 span: .g-qvi là flex -> trước đây chữ trước/ô trống/chữ sau thành 3 cột rời, lủng khoảng lớn.
@@ -2509,7 +2509,7 @@
       var zh = tgt() === "zh";
       $(optsEl).innerHTML = q.opts.map(function (o) { return '<button class="g-opt" data-opt="' + esc(o) + '"' + (zh ? ' data-zh="' + esc(o) + '"' : "") + '><span class="g-otext">' + esc(o) + '</span><span class="g-pickers"></span></button>'; }).join("");
     }
-    decoratePy($(textEl).parentNode);
+    decoratePy($(textEl).parentNode); markLongOpts(optsEl);
   }
   /* ---------- 📖 XEM LẠI ĐÁP ÁN (TJ 2026-10-01: "chơi xong phải để người chơi xem lại tất cả đáp án") ----------
      Mỗi máy tự ghi lại câu hỏi NGAY LÚC LỘ ĐÁP ÁN (chụp khung câu hỏi đang hiện: đúng/sai đã tô màu, ai chọn gì),
@@ -3651,7 +3651,7 @@
      Xong hiện điểm quy đổi LC/RC/tổng (bảng tham khảo) + 📖 Xem lại có đáp án, lời giải. */
   function exQ(it) {
     var ai = "ABCD".indexOf(String(it.answer || "").trim().toUpperCase());
-    return { type: "toeic", wid: null, num: it.num, part: it.part, sent: it.stem || "", passage: it.passage || "", opts: (it.opts || []).slice(), ans: ai >= 0 ? it.opts[ai] : "", tag: it.tag || "", expl: it.explain || "", vi: it.stem_vi || "", i18n: it.i18n || null, vocab: it.vocab || null, test: G.st.test.test, asrc: it.answer_src || "", pick: null };
+    return { type: "toeic", wid: null, num: it.num, part: it.part, sent: tStemOf(it), passage: it.passage || "", opts: (it.opts || []).slice(), ans: ai >= 0 ? it.opts[ai] : "", tag: it.tag || "", expl: it.explain || "", vi: it.stem_vi || "", i18n: it.i18n || null, vocab: it.vocab || null, test: G.st.test.test, asrc: it.answer_src || "", pick: null };
   }
   function exStart() {
     var rest = (G.tItems || []).slice(G.tIdx || 0); G.tIdx = (G.tItems || []).length;
@@ -3715,9 +3715,19 @@
     var out = [it]; while (out.length < 3 && L[i + out.length] && tGOf(L[i + out.length]) === g && L[i + out.length].answer) out.push(L[i + out.length]);
     return out;
   }
+  /* Part 6 "Choose the best answer for blank (131)." -> bỏ số lặp (số câu đã hiện ở đầu dòng, chỗ trống đang làm được tô màu trong bài) */
+  function tStemOf(it) { return String((it && it.stem) || "").replace(/^Choose the best answer for blank \(\d+\)\.?$/, "Choose the best answer for the highlighted blank."); }
+  /* đáp án dài (câu chèn Part 6, Part 3–4/7) -> xếp 1 cột cho dễ đọc, nhất là trên điện thoại */
+  function markLongOpts(el) {
+    el = typeof el === "string" ? $(el) : el; if (!el) return;
+    [el].concat([].slice.call(el.querySelectorAll(".g-opts, .g-tsubopts"))).forEach(function (c) {
+      var long = [].slice.call(c.querySelectorAll(":scope > .g-opt .g-otext")).some(function (t) { return t.textContent.length > 26; });
+      c.classList.toggle("g-opts-1", long);
+    });
+  }
   function tSub(it) {
     var ai = "ABCD".indexOf(String(it.answer || "").trim().toUpperCase());
-    return { num: it.num, part: it.part, test: G.st && G.st.test ? G.st.test.test : null, sent: it.stem || "", opts: (it.opts || []).slice(), ans: ai >= 0 ? it.opts[ai] : "" };
+    return { num: it.num, part: it.part, test: G.st && G.st.test ? G.st.test.test : null, sent: tStemOf(it), opts: (it.opts || []).slice(), ans: ai >= 0 ? it.opts[ai] : "" };
   }
   function tGraphic(q) { return /look at the graphic/i.test(q.sent || "") || (q.subs || []).some(function (x) { return /look at the graphic/i.test(x.sent); }); }
   function tKey(q) { return "toeic:" + (q.test || (G.st && G.st.test && G.st.test.test)) + ":" + (q.part || (G.st && G.st.test && G.st.test.part)) + ":" + q.num; }   /* game_answers.term của câu đề thi -> 📊 điểm từng Part / câu hay sai */

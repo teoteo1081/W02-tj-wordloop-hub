@@ -550,7 +550,7 @@ body.embed .g-brand{display:none}
 .g-tstem{white-space:pre-line}
 .g-tblank{background:none;color:inherit;border-bottom:2px solid currentColor;padding:0 6px;white-space:nowrap;font-weight:700}
 .g-tblank.cur{background:var(--accent,#7c5cff);color:#fff;border-radius:6px;border-bottom:0}
-@media (max-width:600px){.g-tpass{max-height:38vh;font-size:14px}}
+@media (max-width:600px){.g-tpass{max-height:none;overflow:visible;font-size:16px;line-height:1.6;padding:12px}.g-qvi .g-tstem{font-size:17px}}   /* điện thoại: bài đọc chữ to, 1 lớp cuộn (cuộn cả trang) */
 /* TJ 2026-10-04: ảnh Part 1 to quá -> (C)(D) rơi khỏi màn hình; giới hạn theo chiều cao màn hình để cả hình + 4 nút vừa 1 màn */
 .g-timg{max-height:32vh;width:auto;max-width:100%;object-fit:contain}   /* chỉ là mức tạm trước khi JS (fitTImg) đo đúng chỗ trống */
 .bd-phost{cursor:default;opacity:.95}
@@ -603,3 +603,6 @@ body.g-tahead #p-opts .g-tsub{display:none}body.g-tahead #p-opts .g-tnext{opacit
 .g-apmarks:empty{display:none}
 .g-apm .g-btn:first-child{flex:1;text-align:left}
 .g-aptip{font-size:.85em}
+/* đáp án dài -> 1 cột, chữ canh trái (câu chèn Part 6, câu hỏi Part 3–4/7) */
+.g-opts.g-opts-1,.g-tsubopts.g-opts-1{grid-template-columns:1fr}
+.g-opts-1 > .g-opt{text-align:left;justify-content:flex-start;font-weight:500;line-height:1.4}
