@@ -106,7 +106,7 @@
     w.$("#workspace").scrollTop = 0;
     w.$("#detail-title").textContent = "📕 " + b.name + " — Collocation Builder";
 
-    D.showTab(tab || "study");
+    D.showTab(tab && w.$("#pane-" + tab) ? tab : "study");   /* tab lưu cũ không còn (vd "final") -> khỏi sập lúc mở app (QA) */
     D.renderStats();
     D.renderStudy();
     D.renderProgress();
@@ -1327,7 +1327,7 @@
         (item.def_en ? "<br><span style=\"opacity:.85\">" + w.esc(item.def_en) + "</span>" : "") +
       "</div>";
 
-    w.$("#q-check").textContent = "Câu tiếp →";
+    w.$("#q-check").textContent = "Câu tiếp →"; w.$("#q-check").focus();   /* Enter sang câu tiếp (ô gõ đã khoá) — QA */
     w.$("#q-check").onclick = function () { D.nextQuestion(); };
     w.$("#q-hint").disabled = true;
     w.Speech.speakWord(item.term);

@@ -5118,6 +5118,7 @@
     });
 
     await App.ensureOnRieng();
+    try { await refreshVisibleHubIds(); } catch (e) {}   /* lần đầu: Notebook Ôn riêng vừa tạo -> hiện tab Hub ngay, khỏi phải tải lại (QA) */
     S.hubs = await getHubsForUser();
     var sel = readSel();
     S.hubId = pick(S.hubs, sel.hubId);

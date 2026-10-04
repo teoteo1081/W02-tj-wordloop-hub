@@ -369,7 +369,7 @@
           : "Đã lưu vào ⭐ Từ đã lưu", "ok");
       } else if (meaning && meaning !== hit.meaning_vi) {
         hit.meaning_vi = meaning;
-        if (w.DB.updateWord) { try { await w.DB.updateWord(hit.id, { meaning_vi: meaning }); } catch (e) {} }
+        try { await w.DB.patch("words", hit.id, { meaning_vi: meaning }); } catch (e) {}   /* DB.updateWord không tồn tại -> Cloud mất nghĩa vừa sửa (QA) */
       }
 
       var prev = S().wp[hit.id] || { attempts: 0, correct: 0 };
@@ -413,6 +413,8 @@
       R.forceClose();
       return;
     }
+    if (w.S && w.S.notebookId && w.App && w.App.myRoleInNotebook && w.App.myRoleInNotebook(w.S.notebookId) === "view") { w.toast("Bạn chỉ có quyền xem Notebook này.", "err"); return; }
+    if (!confirm("Xoá hẳn \"" + hit.term + "\" khỏi kho từ vựng?")) return;
     try {
       await w.DB.remove("words", hit.id);
       S().words = S().words.filter(function (x) { return x.id !== hit.id; });
@@ -554,7 +556,7 @@
       var text = plain.slice(s, e2).replace(/\s+/g, " ").trim();
 
       /* bỏ dấu câu thừa ở hai đầu, giữ dấu nối trong từ (kiểu well-known) */
-      text = text.replace(/^[^\w'-]+/, "").replace(/[^\w'-]+$/, "");
+      text = text.replace(/^[^\p{L}\p{N}'-]+|[^\p{L}\p{N}'-]+$/gu, "");   /* Unicode: không cắt "café", "résumé" (QA) */
       if (!text) return;
 
       var n = text.split(" ").length;
@@ -587,7 +589,7 @@
     w.$("#wp-meaning").addEventListener("input", function () { this.dataset.auto = "0"; });
     w.$("#wp-say").onclick = function () { w.Speech.speakWord(R.term); };
     w.$("#wp-del").onclick = function () { R.removeWord(); };
-    w.$$("#wp-levels .lvl-btn").forEach(function (b) {
+    w.$$("#wp-levels .lvl-btn[data-lv]").forEach(function (b) {   /* KHÔNG gồm #wp-del (cũng là .lvl-btn) — trước đây ghi đè nút 🗑 thành "lưu mức NaN" (QA) */
       b.onclick = function () { R.saveLevel(+b.dataset.lv); };
     });
     w.$("#wp-meaning").addEventListener("keydown", function (e) {

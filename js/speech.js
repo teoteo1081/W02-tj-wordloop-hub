@@ -452,7 +452,7 @@
   }
 
   S.stop = function () {
-    S._listStop = true;
+    S._listStop = true; S._pausedForWord = false;   /* ⏹ khi đang tạm dừng để tra từ -> đóng bảng tra KHÔNG tự đọc tiếp (QA) */
     /* Dừng giữa bài -> nhớ câu đang đọc (nút "▶ Đọc tiếp"), báo onEnd
        {stopped:true} NGAY để nơi gọi đổi nhãn nút — trước đây onEnd tới
        trễ qua onend của câu bị cắt; giờ token chặn onend đó rồi. */

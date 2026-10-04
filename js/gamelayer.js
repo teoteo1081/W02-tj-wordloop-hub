@@ -35,14 +35,14 @@
     learnWasHidden = learn.hidden;
     learn.hidden = false;          /* "📖 Learning" = về lại trang đang học */
     layer.hidden = false;
-    try { sessionStorage.setItem("tjwl_game_open", "1"); localStorage.setItem("tjwl_game_open_at", String(Date.now())); } catch (e) {}   /* F5 khi đang ở Game -> mở lại Game (TJ 2026-10-02) */
+    try { sessionStorage.setItem("tjwl_game_open", "1"); localStorage.setItem("tjwl_game_open_at", String(Date.now())); if (!/tjwl_game/.test(w.name || "")) w.name = (w.name || "") + " tjwl_game"; } catch (e) {}   /* F5 khi đang ở Game -> mở lại Game (TJ 2026-10-02) */
     btn.classList.add("active");
     if (mbtn) { w.$$(".mobile-nav button").forEach(function (x) { x.classList.toggle("active", x === mbtn); }); }
     document.body.classList.add("game-on");
   }
   function close() {
     layer.hidden = true;
-    try { sessionStorage.removeItem("tjwl_game_open"); localStorage.removeItem("tjwl_game_open_at"); } catch (e) {}
+    try { sessionStorage.removeItem("tjwl_game_open"); localStorage.removeItem("tjwl_game_open_at"); w.name = String(w.name || "").replace(/\s*tjwl_game/g, ""); } catch (e) {}
     learn.hidden = learnWasHidden;
     btn.classList.remove("active");
     if (mbtn) mbtn.classList.remove("active");
@@ -88,7 +88,9 @@
      learning hoặc trang ngẫu nhiên"). Trước: chờ nhận ra hồ sơ TJ tối đa 30 giây, mạng chậm là bỏ cuộc. Nay mở luôn,
      chỉ đóng khi đã chắc chắn KHÔNG phải TJ. Dự phòng localStorage (≤ 15 phút) nếu trình duyệt mất sessionStorage. */
   var wasOpen = false;
-  try { wasOpen = sessionStorage.getItem("tjwl_game_open") === "1" || Date.now() - (+localStorage.getItem("tjwl_game_open_at") || 0) < 15 * 60000; } catch (e) {}
+  /* dự phòng localStorage CHỈ cho đúng tab đã mở game (đánh dấu window.name: giữ qua F5, tab khác không có) — trước đây
+     mọi tab mới cùng trình duyệt đều tự mở game trong 15 phút (QA 2026-10-04) */
+  try { wasOpen = sessionStorage.getItem("tjwl_game_open") === "1" || (/tjwl_game/.test(w.name || "") && Date.now() - (+localStorage.getItem("tjwl_game_open_at") || 0) < 15 * 60000); } catch (e) {}
   if (wasOpen) open();
   var tries = 0, t = setInterval(function () {   /* Auth.init chạy bất đồng bộ */
     syncBtn();
