@@ -310,6 +310,7 @@
   window.Board = {
     attach: function (a) { api = a; build(); },
     onMsg: onMsg, onState: onState,
+    resync: function () { if (open) setTimeout(function () { send({ t: "hello" }); }, 400); },
     isOpen: function () { return open; }
   };
 })();

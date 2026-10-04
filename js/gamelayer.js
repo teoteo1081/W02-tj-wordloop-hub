@@ -12,7 +12,15 @@
 
   function isTJ() { return !!(w.Auth && w.Auth.user && w.Auth.user.id === TJ_ID && !w.Auth.viewAsUserId && w.DB && w.DB.mode === "cloud"); }
   var settled = false;   /* chưa biết chắc là ai (đang đăng nhập / mạng chậm) -> KHÔNG đóng game vừa mở lại */
-  function syncBtn() { if (isTJ() || (w.Auth && w.Auth.user && w.Auth.user.id !== TJ_ID)) settled = true; btn.hidden = !isTJ() && !(isOpen() && !settled); if (mbtn) mbtn.hidden = btn.hidden; if (settled && !isTJ() && isOpen()) close(); }
+  /* chỉ coi là "chắc chắn KHÔNG phải TJ" khi kho đang Cloud và đăng nhập người khác. Mất mạng -> DB rơi về Local, Auth thành hồ sơ máy
+     -> KHÔNG đóng game, không xoá dấu mở lại (QA 2026-10-04: F5 lúc mất mạng bị kẹt ở Learning) */
+  function notTJ() { return !!(w.Auth && w.Auth.user && w.Auth.user.id !== TJ_ID && w.DB && w.DB.mode === "cloud" && !w.Auth.viewAsUserId); }
+  function syncBtn() {
+    if (isTJ() || notTJ()) settled = true;
+    btn.hidden = !isTJ() && !(isOpen() && !notTJ()); if (mbtn) mbtn.hidden = btn.hidden;
+    if (notTJ() && isOpen()) { close(); kill(); }
+  }
+  function kill() { while (layer.firstChild) layer.removeChild(layer.firstChild); }   /* không phải TJ -> bỏ hẳn iframe: trước chỉ ẩn, game vẫn chạy & ngồi trong phòng TJ như "người chơi ma" */
   function isOpen() { return !layer.hidden; }
 
   function open() {

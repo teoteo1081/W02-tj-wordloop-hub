@@ -68,7 +68,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 116;
+  var GAME_VER = 117;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -1254,6 +1254,10 @@
     code = code.toUpperCase();
     if (G.view !== "screen" && !G.asleep && !G.room && !(await claimTab(false))) return;
     var r = await sb.from("game_rooms").select("*").eq("code", code).maybeSingle();
+    if (r.error && G.view !== "screen") {   /* lỗi MẠNG (không phải "không có phòng") -> thử lại, không đá về màn hình chính (QA 2026-10-04) */
+      show("s-home"); $("#h-err").textContent = "⏳ Mất mạng — đang thử vào lại phòng " + code + "…";
+      clearTimeout(G.joinRetry); G.joinRetry = setTimeout(function () { if (!G.room) joinRoom(code); }, 3000); return;
+    }
     if (r.error || !r.data) {
       if (G.view === "screen") { show("s-screen"); $("#sc-status").textContent = T("no_room", { c: code }); return; }
       show("s-home"); $("#h-err").textContent = T("no_room", { c: code }); return;
@@ -1346,6 +1350,7 @@
         return;
       }
       if (s !== "SUBSCRIBED" || ch !== G.ch) return;
+      if (window.Board && Board.resync) Board.resync();   /* nối lại kênh -> xin lại nét vẽ bị lỡ lúc mất mạng (gộp, không xoá) */
       if (G.view !== "screen") await track();
       if (G.isHost) {
         if (!G.st) G.st = { phase: "lobby", sound: true, auto: true, levels: [], gapsrc: "lib", scoring: G.room.scoring || "q", scope: G.room.scope || [], title: G.room.title || "", mode: G.room.mode, qtype: G.room.qtype || "meaning", lang: G.room.meaning_lang || "vi", force: false, minutes: +G.room.minutes, qs: G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
