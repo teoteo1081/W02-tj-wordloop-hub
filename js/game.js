@@ -67,7 +67,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 105;
+  var GAME_VER = 106;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -1310,6 +1310,7 @@
       onState(d);
     });
     G.ch.on("broadcast", { event: "ans" }, function (m) { if (G.isHost) hostOnAnswer(m.payload); });
+    G.ch.on("broadcast", { event: "board" }, function (m) { if (window.Board) Board.onMsg(m.payload); });   /* 🖤 bảng vẽ chung (js/board.js) */
     G.ch.on("broadcast", { event: "gaps" }, function (m) {   /* câu điền chỗ trống ngắn từ host (kiểu Tự do) */
       if (G.isHost || !m.payload) return;
       G.gapsIn = m.payload;
@@ -1586,7 +1587,15 @@
     }
     return s;
   }
-  function push() { G.lastPush = Date.now(); if (G.ch) G.ch.send({ type: "broadcast", event: "state", payload: pub() }); saveHost(); }
+  function push() { G.lastPush = Date.now(); if (G.ch) G.ch.send({ type: "broadcast", event: "state", payload: pub() }); saveHost(); if (window.Board) Board.onState(G.st); }
+  /* 🖤 bảng vẽ chung (js/board.js) — host mở/đóng cho cả phòng + cấp quyền từng người (st.board / st.bperm) */
+  if (window.Board) Board.attach({
+    ch: function () { return G.ch; }, me: function () { return G.me; }, st: function () { return G.st; },
+    isHost: function () { return !!G.isHost; }, players: function () { return players(); },
+    isHostId: function (id) { return !!(G.me && G.isHost && id === G.me.id) || !!(G.st && G.st.hid === id); },
+    setBoard: function (v) { if (!G.isHost || !G.st) return; G.st.board = !!v; push(); },
+    togglePerm: function (pid) { if (!G.isHost || !G.st) return; var p = G.st.bperm = Object.assign({}, G.st.bperm || {}); if (p[pid]) delete p[pid]; else p[pid] = 1; push(); }
+  });
   $("#l-start").addEventListener("click", async function () {
     if (!G.isHost) return;
     if (G.st && G.st.qtype === "toeic" && !G.tStarting) G.st.qtype = $("#l-qtype").value || "meaning";   /* ▶ của Hub từ vựng không được chạy đề thi còn sót */
@@ -1967,6 +1976,7 @@
     if (!G.langSet && !isTJ() && s.lang && G.myLang !== s.lang) { G.myLang = s.lang; $("#g-mylang").value = s.lang; applyUI(); }
     var was = G.st && G.st.phase, langWas = G.st && G.st.lang;
     if (!G.isHost) G.st = s;
+    if (window.Board) Board.onState(G.isHost ? G.st : s);
     if (s.left != null) G.endAt = Date.now() + s.left;
     if (G.myLang === "room" && langWas !== s.lang) applyUI();   /* "theo phòng" -> host đổi tiếng thì giao diện đổi theo */
     if (G.view === "screen") return paintScreen(s);

@@ -507,3 +507,28 @@ body.embed .g-brand{display:none}
 .g-ttrh{font-weight:700;margin-bottom:4px}
 .g-trap{margin:3px 0;font-size:14px;line-height:1.45}
 .g-tren{margin-top:6px;font-size:14px}.g-tren summary{cursor:pointer;color:var(--text-2)}
+/* 🖤 BẢNG VẼ CHUNG (js/board.js) — bảng nằm trên cùng, cố định tỉ lệ 16:9 */
+.bd{position:fixed;top:0;left:0;right:0;z-index:60;background:var(--deep);border-bottom:1px solid var(--line);padding:calc(6px + env(safe-area-inset-top,0px)) 8px 6px;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.bd-head{display:flex;align-items:center;gap:6px;max-width:960px;margin:0 auto 6px;font-size:14px}
+.bd-who{font-size:12px;color:var(--text-2);margin-right:auto}
+.bd-hb{background:var(--raise);border:1px solid var(--line);border-radius:8px;padding:4px 10px;font-size:13px;cursor:pointer}
+.bd-permbox{max-width:960px;margin:0 auto 6px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.bd-ph{font-size:12px;color:var(--text-2);width:100%}
+.bd-pp{background:var(--raise);border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:13px;cursor:pointer}
+.bd-pp.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.bd-stage{position:relative;width:min(100%, 960px, calc((100vh - 170px) * 16 / 9));aspect-ratio:16/9;margin:0 auto;background:#1d2a24;border-radius:10px;border:6px solid #5a4632;overflow:hidden;box-sizing:border-box}
+.bd-stage canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+.bd-texts{position:absolute;inset:0;pointer-events:none}
+.bd-tx{position:absolute;pointer-events:auto;font-family:"Segoe Print","Comic Sans MS",system-ui,sans-serif;line-height:1.2;white-space:pre-wrap;max-width:60%;outline:none;padding:0 2px;border-radius:4px;cursor:text}
+.bd-tx.empty{opacity:.5}
+.bd-tx.edit{background:rgba(255,255,255,.08);outline:1px dashed rgba(255,255,255,.5)}
+.bd-tools{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;align-items:center;max-width:960px;margin:6px auto 0}
+.bd-tools button{min-width:36px;height:36px;border-radius:8px;border:1px solid var(--line);background:var(--raise);font-size:16px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.bd-tools button.on{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent) inset}
+.bd-tools button:disabled{opacity:.4;cursor:default}
+.bd-col{width:28px;min-width:28px!important;height:28px!important;border-radius:50%!important;background:var(--c)!important}
+.bd-sz i{display:block;border-radius:50%;background:var(--text)}
+.bd-sep{width:1px;height:24px;background:var(--line);margin:0 2px}
+.bd-view{text-align:center;font-size:12px;color:var(--text-2);margin-top:6px}
+.bd-dock{position:fixed;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:61;background:var(--accent);color:#fff;border:none;border-radius:999px;padding:10px 16px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.4);cursor:pointer}
+.bd-openbtn{right:auto;left:12px;background:#1d2a24;border:2px solid #5a4632}
