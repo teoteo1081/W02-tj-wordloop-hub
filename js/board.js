@@ -209,7 +209,7 @@
     curQ = qOf();
     var w = Math.round(cw * dpr * q), h = Math.round(ch * dpr * q);
     if (w !== cv.width || h !== cv.height) { cv.width = w; cv.height = h; bgDirty = true; render(); }   /* chỉ dựng lại khi ĐỔI cỡ (iPhone chớp/mất nét đang vẽ) */
-    paintTexts(); applyZ();
+    paintTexts(); applyZ(); fitDocText();
   }
   function sx() { return cv.width / W; }
   function toLogic(e) { var r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width * W, y: (e.clientY - r.top) / r.height * H }; }   /* getBoundingClientRect đã tính cả phóng to */
@@ -480,19 +480,34 @@
       if (job !== docJob) return; box.innerHTML = ""; box.appendChild(c);
     } catch (e) { if (job === docJob) box.innerHTML = '<div class="bd-docmsg">⚠ ' + esc(e.message || e) + "</div>"; }
   }
+  /* 🔠 CỠ CHỮ TỰ VỪA KHUNG (TJ 2026-10-04: "chữ fit với khung, không mất chữ"): tìm cỡ chữ LỚN NHẤT mà nội dung vẫn nằm gọn trong khung
+     (nhị phân, từ 2.2% tới 5.8% bề rộng khung). Trang chia theo số ký tự giống nhau trên mọi máy; cỡ chữ thì mỗi máy tự đo theo khung của mình. */
+  function fitDocText() {
+    var doc = $("#bd-doc"), box = doc && doc.querySelector(".bd-wl, .bd-vt"); if (!box) return;
+    var w = doc.clientWidth, h = doc.clientHeight; if (!w || !h) return;
+    var lo = w * 0.022, hi = w * 0.058;
+    box.style.fontSize = hi + "px";
+    if (box.scrollHeight <= box.clientHeight + 1) return;   /* chữ to nhất vẫn vừa */
+    for (var i = 0; i < 12; i++) { var mid = (lo + hi) / 2; box.style.fontSize = mid + "px"; if (box.scrollHeight <= box.clientHeight + 1) lo = mid; else hi = mid; }
+    box.style.fontSize = lo + "px";
+  }
   /* chia bài đọc thành trang theo CÂU (cùng kết quả trên mọi máy) */
   function splitPages(raw) {
-    var cjk = (raw.match(/[　-鿿가-힯]/g) || []).length / Math.max(1, raw.length) > 0.3, budget = cjk ? 230 : 540;
+    var cjk = (raw.match(/[\u3000-\u9fff\uac00-\ud7af]/g) || []).length / Math.max(1, raw.length) > 0.3, budget = cjk ? 260 : 600;
     var paras = raw.split(/\n\s*\n/).map(function (x) { return x.trim(); }).filter(Boolean), pages = [], curP = "";
     paras.forEach(function (p) {
-      var sents = p.match(/[^.!?。！？]+[.!?。！？]+["')\]]*\s*|[^.!?。！？]+$/g) || [p], buf = "";
-      sents.forEach(function (st0) {
-        if (curP && (curP + buf + st0).length > budget) { if (buf) { curP += (curP ? "\n\n" : "") + buf; buf = ""; } pages.push(curP); curP = ""; }
-        buf += st0;
+      var units = p.match(/[^.!?。！？]+[.!?。！？]+["')\]]*\s*|[^.!?。！？]+$/g) || [p], flat = [];
+      units.forEach(function (u) {   /* câu quá dài (không có dấu chấm) -> cắt cứng theo từ/ký tự để trang không phình */
+        while (u.length > budget * 1.3) { var cut = cjk ? budget : u.lastIndexOf(" ", budget); if (cut < budget * 0.5) cut = budget; flat.push(u.slice(0, cut)); u = u.slice(cut); }
+        flat.push(u);
       });
-      if (buf) { if (curP && (curP + buf).length > budget) { pages.push(curP); curP = ""; } curP += (curP ? "\n\n" : "") + buf.trim(); }
+      flat.forEach(function (u, i) {
+        var sep = curP ? (i === 0 ? "\n\n" : "") : "";
+        if (curP && (curP + sep + u).length > budget) { pages.push(curP.trim()); curP = ""; sep = ""; }
+        curP += (curP && i === 0 ? "\n\n" : "") + u;
+      });
     });
-    if (curP) pages.push(curP);
+    if (curP.trim()) pages.push(curP.trim());
     return pages;
   }
   async function wlPage(d, job) {
@@ -506,6 +521,7 @@
       var pg = pages[Math.min(n, d.p || 1) - 1];
       var html = esc(pg).replace(/\[([^\]]{1,60})\]/g, '<b class="bd-term">$1</b>').replace(/\n\n/g, "</p><p>");
       box.innerHTML = '<div class="bd-wl">' + ((d.p || 1) === 1 && (meta.title || d.name) ? "<h3>" + esc(meta.title || d.name) + "</h3>" : "") + "<p>" + html + "</p></div>";
+      requestAnimationFrame(fitDocText);
     } catch (e) { if (job === docJob) box.innerHTML = '<div class="bd-docmsg">⚠ ' + esc(e.message || e) + "</div>"; }
   }
   /* 📋 bảng từ vựng của Block: 6 dòng/trang; nghĩa theo tiếng giao diện của TỪNG người xem */
@@ -524,7 +540,7 @@
         var idx = (p - 1) * VT_ROWS + i;
         return '<div class="bd-vr" data-i="' + idx + '"><span class="bd-vn">' + (idx + 1) + '</span><div class="bd-vm"><b>' + esc(w.term) + "</b>" + (w.ipa ? ' <small class="bd-vi">' + esc(w.ipa) + "</small>" : "") + (w.pos ? ' <i class="bd-vp">' + esc(w.pos) + "</i>" : "") + '</div><div class="bd-vd">' + esc(vtMeaning(w)) + '</div><span class="bd-vsay" data-say="' + esc(w.term) + '">🔊</span></div>';
       }).join("") : '<div class="bd-docmsg">—</div>') + "</div>";
-      paintHL(d);
+      paintHL(d); requestAnimationFrame(fitDocText);
     } catch (e) { if (job === docJob) box.innerHTML = '<div class="bd-docmsg">⚠ ' + esc(e.message || e) + "</div>"; }
   }
   function paintHL(d) { document.querySelectorAll("#bd-doc .bd-vr").forEach(function (r) { r.classList.toggle("hl", d && d.hl != null && +r.dataset.i === +d.hl); }); }
