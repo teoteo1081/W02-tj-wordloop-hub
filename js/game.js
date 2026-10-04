@@ -54,6 +54,7 @@
      WordLoop có 2 admin (TJ + Anti_TJ) — Anti_TJ vào game chỉ là người chơi thường. */
   var HOST_PROFILE_ID = "f3fd95c9-06e8-4d39-b6f2-efc113d436cf";
   function isTJ() { return !!(G.profile && G.profile.id === HOST_PROFILE_ID); }
+  function isTJPlayer() { return !!(G.me && String(G.me.name || "").trim().toLowerCase() === "tj"); }   /* người chơi của chính TJ (Thảo gắn hồ sơ TJ nhưng tên khác) */
   /* TIẾN TRÌNH HỌC ghi cho ai (TJ 2026-10-03: "các TK Thảo, TJ ... kết quả của Thảo ghi về cho TJ trong TJ WordLoop"):
      máy đăng nhập hồ sơ TJ, HOẶC người chơi game được gắn hồ sơ TJ (game_players.profile_id = TJ, vd "Thảo").
      Gắn/bỏ gắn: 👥 Quản lý người chơi hoặc sửa cột profile_id. null = không ghi (người chơi thường). */
@@ -67,7 +68,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 115;
+  var GAME_VER = 116;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -1261,7 +1262,10 @@
     /* ỨNG VIÊN host = máy đăng nhập WordLoop bằng hồ sơ TJ. Nhiều máy/cửa sổ cùng đăng nhập TJ (vd 1 trình duyệt đặt tên
        người chơi "Anti_TJ" nhưng từng mở link ?u= của TJ) -> CHỈ máy vào phòng SỚM NHẤT điều khiển, các máy kia là người chơi
        (xem onPresence). Máy host thoát -> máy TJ kế tiếp tự lên thay. */
-    G.cand = G.view !== "screen" && isTJ() && G.profile.id === G.room.host_id;
+    /* TJ 2026-10-04: "TJ là quyền cao nhất, Thảo chỉ gộp tiến trình" — máy của người khác (Thảo, Anti_TJ…) dù từng đăng nhập
+       hồ sơ TJ cũng KHÔNG được làm host: chỉ người chơi tên "TJ" (trên máy hồ sơ TJ). Trước: 2 máy cùng hồ sơ TJ giành host
+       -> màn hình cả phòng giật liên tục. */
+    G.cand = G.view !== "screen" && isTJ() && G.profile.id === G.room.host_id && isTJPlayer();
     G.since = Date.now();
     /* KHÔNG tự nhận host ngay: chờ presence xem có tab/máy TJ nào vào trước không (onPresence -> setHost).
        Trước đây tab TJ mới tự làm host rồi gửi "phòng chờ" ngay -> cả phòng đang chơi bị giật về phòng chờ. */
