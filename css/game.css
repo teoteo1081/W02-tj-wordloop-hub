@@ -516,7 +516,7 @@ body.embed .g-brand{display:none}
 .bd-ph{font-size:12px;color:var(--text-2);width:100%}
 .bd-pp{background:var(--raise);border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:13px;cursor:pointer}
 .bd-pp.on{background:var(--accent);border-color:var(--accent);color:#fff}
-.bd-stage{position:relative;width:min(100%, 960px, calc((100vh - 170px) * 16 / 9));aspect-ratio:16/9;margin:0 auto;background:#1d2a24;border-radius:10px;border:6px solid #5a4632;overflow:hidden;box-sizing:border-box}
+.bd-stage{position:relative;width:min(100% - 12px, 948px, calc((100vh - 170px) * 16 / 9));aspect-ratio:16/9;margin:0 auto;background:#1d2a24;border-radius:10px;border:6px solid #5a4632;overflow:hidden;box-sizing:content-box}   /* content-box: PHẦN TRONG viền đúng 16:9 -> nét/ô chữ khớp mọi máy */
 .bd-stage canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
 .bd-texts{position:absolute;inset:0;pointer-events:none}
 .bd-tx{position:absolute;pointer-events:auto;font-family:"Segoe Print","Comic Sans MS",system-ui,sans-serif;line-height:1.2;white-space:pre-wrap;max-width:60%;outline:none;padding:0 2px;border-radius:4px;cursor:text}

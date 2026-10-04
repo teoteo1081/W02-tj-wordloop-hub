@@ -81,7 +81,7 @@
     if (b.id === "bd-clear") { if (api.isHost() && confirm("Xoá hết nét vẽ và ô chữ trên bảng?")) { clearAll(); send({ t: "clear" }); } return; }
     if (b.id === "bd-min") { mini = true; paintOpen(); return; }
     if (b.id === "bd-close") { api.setBoard(false); return; }
-    if (b.id === "bd-perm") { var pb = $("#bd-permbox"); pb.hidden = !pb.hidden; paintPerm(); return; }
+    if (b.id === "bd-perm") { var pb = $("#bd-permbox"); pb.hidden = !pb.hidden; paintPerm(); paintOpen(); return; }   /* QA v106 L2: cập nhật phần đẩy nội dung xuống */
     if (b.dataset.perm) { api.togglePerm(b.dataset.perm); return; }
   }
   function paintTools() {
@@ -113,7 +113,7 @@
   /* ---------- vẽ ---------- */
   function fit() {
     if (!cv || $("#bd").hidden) return;
-    var r = wrap.getBoundingClientRect(); dpr = window.devicePixelRatio || 1;
+    var r = cv.getBoundingClientRect(); dpr = window.devicePixelRatio || 1;   /* đo CHÍNH canvas (trong viền gỗ) — QA v106 L1 */
     cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr);
     draw(); paintTexts();
   }
@@ -191,13 +191,13 @@
   }
   function paintTexts() {
     var box = $("#bd-texts"); if (!box || !cv) return;
-    var r = wrap.getBoundingClientRect(), k = r.width / W;
+    var r = cv.getBoundingClientRect(), k = r.width / W, ky = r.height / H;
     var have = {};
     order.forEach(function (id) {
       var it = items[id]; if (!it || it.k !== "t") return; have[id] = 1;
       var d = box.querySelector('[data-id="' + id + '"]');
       if (!d) { d = document.createElement("div"); d.className = "bd-tx"; d.dataset.id = id; box.appendChild(d); }
-      d.style.left = (it.x * k) + "px"; d.style.top = (it.y * k) + "px"; d.style.color = it.c; d.style.fontSize = (it.z * k) + "px";
+      d.style.left = (it.x * k) + "px"; d.style.top = (it.y * ky) + "px"; d.style.color = it.c; d.style.fontSize = (it.z * k) + "px";
       if (editing !== id) d.textContent = it.text || "…";
       d.classList.toggle("empty", !it.text);
     });
@@ -209,11 +209,13 @@
     d.focus();
     var sel = window.getSelection(), rg = document.createRange(); rg.selectNodeContents(d); rg.collapse(false); sel.removeAllRanges(); sel.addRange(rg);
   }
-  var textT = 0;
+  var textT = 0, textLast = 0;
   document.addEventListener("input", function (e) {
     var d = e.target.closest && e.target.closest(".bd-tx"); if (!d || !items[d.dataset.id]) return;
     items[d.dataset.id].text = d.innerText.replace(/\n+$/, "");
-    clearTimeout(textT); textT = setTimeout(function () { var it = items[d.dataset.id]; if (it) send({ t: "t", id: it.id, x: it.x, y: it.y, c: it.c, z: it.z, text: it.text }); }, 250);   /* gõ tới đâu cả phòng thấy tới đó */
+    var id = d.dataset.id, flush = function () { var it = items[id]; textLast = Date.now(); if (it) send({ t: "t", id: it.id, x: it.x, y: it.y, c: it.c, z: it.z, text: it.text }); };
+    clearTimeout(textT);
+    if (Date.now() - textLast > 250) flush(); else textT = setTimeout(flush, 250);   /* gõ tới đâu cả phòng thấy tới đó (gửi đều ~4 lần/giây, QA v106 L3) */
   });
   document.addEventListener("focusout", function (e) {
     var d = e.target.closest && e.target.closest(".bd-tx"); if (!d) return;
