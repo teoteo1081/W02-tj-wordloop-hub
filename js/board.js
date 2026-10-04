@@ -29,6 +29,12 @@
     var s = st(), p = s && s.bperm; return !!(p && me() && p[me().id]);
   }
   function send(m) { var ch = api && api.ch(); if (!ch) return; m.cid = cid; m.pid = myId(); ch.send({ type: "broadcast", event: "board", payload: m }); }
+  /* ✍️ ai đang gõ ô chữ nào (kiểu Google Docs, TJ 2026-10-04): mỗi tin "t" đang gõ mang ed=1 + tên; máy khác viền màu người đó
+     + nhãn tên trên ô; 4 giây không nghe gì (hoặc ed=0 khi rời ô) thì tắt. Màu cố định theo id người chơi. */
+  var typing = {}, PCOL = ["#ff6b5e", "#7cc4ff", "#7be0a1", "#ffd84d", "#ff8fb1", "#c9a0ff", "#ffa94d"];
+  function pcol(id) { var h = 0; String(id).split("").forEach(function (c) { h = (h * 31 + c.charCodeAt(0)) | 0; }); return PCOL[Math.abs(h) % PCOL.length]; }
+  function tmsg(it, ed) { var m = { t: "t", id: it.id, x: it.x, y: it.y, c: it.c, z: it.z, text: it.text }; if (ed != null) { m.ed = ed ? 1 : 0; m.n = me() ? me().name : ""; } return m; }
+  setInterval(function () { var ch = false, now = Date.now(); Object.keys(typing).forEach(function (id) { if (now - typing[id].at > 4000) { delete typing[id]; ch = true; } }); if (ch) paintTexts(); }, 1000);
   function uid() { return myId().slice(0, 6) + "_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5); }
 
   /* ---------- giao diện ---------- */
@@ -203,12 +209,15 @@
       d.style.left = (it.x * k) + "px"; d.style.top = (it.y * ky) + "px"; d.style.color = it.c; d.style.fontSize = (it.z * k) + "px";
       if (editing !== id) d.textContent = it.text || "…";
       d.classList.toggle("empty", !it.text);
+      var w = typing[id];
+      d.classList.toggle("remote", !!w); d.dataset.who = w ? "✍️ " + w.name : "";
+      if (w) d.style.setProperty("--who", w.col);
     });
     box.querySelectorAll(".bd-tx").forEach(function (d) { if (!have[d.dataset.id]) d.remove(); });
   }
   function editText(id) {
     var d = $('#bd-texts [data-id="' + id + '"]'); if (!d || !canDraw()) return;
-    editing = id; d.contentEditable = "true"; d.classList.add("edit"); if (!items[id].text) d.textContent = "";
+    editing = id; d.contentEditable = "true"; d.classList.add("edit"); if (items[id].text) send(tmsg(items[id], true)); if (!items[id].text) d.textContent = "";
     d.focus();
     var sel = window.getSelection(), rg = document.createRange(); rg.selectNodeContents(d); rg.collapse(false); sel.removeAllRanges(); sel.addRange(rg);
   }
@@ -216,7 +225,7 @@
   document.addEventListener("input", function (e) {
     var d = e.target.closest && e.target.closest(".bd-tx"); if (!d || !items[d.dataset.id]) return;
     items[d.dataset.id].text = d.innerText.replace(/\n+$/, "");
-    var id = d.dataset.id, flush = function () { var it = items[id]; textLast = Date.now(); if (it) send({ t: "t", id: it.id, x: it.x, y: it.y, c: it.c, z: it.z, text: it.text }); };
+    var id = d.dataset.id, flush = function () { var it = items[id]; textLast = Date.now(); if (it) send(tmsg(it, true)); };
     clearTimeout(textT);
     if (Date.now() - textLast > 250) flush(); else textT = setTimeout(flush, 250);   /* gõ tới đâu cả phòng thấy tới đó (gửi đều ~4 lần/giây, QA v106 L3) */
   });
@@ -225,7 +234,7 @@
     d.contentEditable = "false"; d.classList.remove("edit"); editing = null;
     var it = items[d.dataset.id]; if (!it) return;
     if (!it.text.trim()) { removeItem(it.id); send({ t: "del", id: it.id }); mine = mine.filter(function (x) { return x !== it.id; }); }
-    else send({ t: "t", id: it.id, x: it.x, y: it.y, c: it.c, z: it.z, text: it.text });
+    else send(tmsg(it, false));
     paintTexts(); paintTools();
   });
   document.addEventListener("click", function (e) {   /* chạm lại ô chữ để sửa / gõ tiếp (ai có quyền cũng sửa được) */
@@ -258,6 +267,7 @@
     } else if (m.t === "t") {
       var t = items[m.id] || (items[m.id] = { k: "t", id: m.id, by: m.pid });
       t.x = m.x; t.y = m.y; t.c = m.c; t.z = m.z; t.text = m.text; if (order.indexOf(m.id) < 0) order.push(m.id);
+      if (m.ed === 1) typing[m.id] = { name: m.n || "", col: pcol(m.pid), at: Date.now() }; else if (m.ed === 0) delete typing[m.id];
       paintTexts();
     } else if (m.t === "del") { removeItem(m.id); draw(); paintTexts(); }
     else if (m.t === "clear") clearAll();
