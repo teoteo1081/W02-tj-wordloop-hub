@@ -532,3 +532,4 @@ body.embed .g-brand{display:none}
 .bd-view{text-align:center;font-size:12px;color:var(--text-2);margin-top:6px}
 .bd-dock{position:fixed;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:61;background:var(--accent);color:#fff;border:none;border-radius:999px;padding:10px 16px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.4);cursor:pointer}
 .bd-openbtn{right:auto;left:12px;background:#1d2a24;border:2px solid #5a4632}
+.g-tpdet{margin-top:8px;text-align:left}.g-tpdet summary{cursor:pointer;font-weight:600;padding:4px 0}.g-tpdet .g-tpass{margin-top:6px;max-height:50vh}
