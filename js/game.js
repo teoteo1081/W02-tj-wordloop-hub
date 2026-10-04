@@ -68,7 +68,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 144;
+  var GAME_VER = 145;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -1193,16 +1193,17 @@
   function makeQ0(qtype, lang, langs) {
     var t = qtype;
     if (t === "toeic") {   /* 🎯 đề thi: hỏi LẦN LƯỢT theo số câu (101, 102…) như làm đề thật; hết thì quay lại đầu */
-      var L = G.tItems || []; if (G.tMatch !== (G.st && G.st.matchId)) { G.tMatch = G.st && G.st.matchId; G.tIdx = 0; G.ex = null; G.exLC = []; }
+      var L = G.tItems || []; if (G.tMatch !== (G.st && G.st.matchId)) tPosLoad();
+      var i0 = G.tIdx || 0, frq = G.st && G.st.mode === "free";   /* Tự do: lưu vị trí ĐẦU câu đang làm (F5 -> làm lại đúng câu chưa nộp); Kahoot host: câu đang chiếu đã nằm trong st.q -> lưu vị trí SAU */
       var g0 = tGroupAt(L, G.tIdx || 0);
       if (g0) {   /* 🎧 Part 3–4: 3 câu của 1 hội thoại hiện CÙNG LÚC như đề thật (TJ 2026-10-04) */
-        G.tIdx += g0.length;
+        G.tIdx += g0.length; tPosSave(frq ? i0 : null);
         var nx = tGroupAt(L, G.tIdx) || [];
         return { type: "toeic", wid: null, num: g0[0].num, sent: "", passage: g0[0].passage || "", opts: [], ans: "", subs: g0.map(tSub), gEnd: tCueEnd(g0[g0.length - 1]),
                  nxt: nx.map(function (x) { return { num: x.num, sent: x.stem || "", opts: (x.opts || []).slice() }; }),
                  test: G.st && G.st.test ? G.st.test.test : null, part: g0[0].part, asrc: g0[0].answer_src || "" };
       }
-      var it = L[(G.tIdx++) % Math.max(1, L.length)] || {};
+      var it = L[(G.tIdx++) % Math.max(1, L.length)] || {}; tPosSave(frq ? i0 : null);
       var a0 = String(it.answer || "").trim().toUpperCase(), ai = a0 ? "ABCD".indexOf(a0) : -1;   /* QA v109 LC1: "ABCD".indexOf("") = 0 -> câu chưa có đáp án bị coi là (A) */
       return { type: "toeic", wid: null, num: it.num, sent: tStemOf(it), passage: it.passage || "", opts: (it.opts || []).slice(), ans: ai >= 0 ? (it.opts || [])[ai] : "", tag: it.tag || "", expl: it.explain || "", vi: it.stem_vi || "", i18n: it.i18n || null, vocab: it.vocab || null, test: G.st && G.st.test ? G.st.test.test : null, part: it.part || (G.st && G.st.test ? G.st.test.part : null), asrc: it.answer_src || "", pend: ai < 0 };   /* pend = câu CHƯA có đáp án (vd Listening chờ đáp án): vẫn chọn được, cuối ván ra phiếu cả phòng + 🔑 nhập đáp án */
     }
@@ -1644,7 +1645,7 @@
     if (!players().length) { alert("Chưa có người chơi nào."); return; }
     fillTeams();
     G.st.phase = "play"; G.st.scores = {}; G.st.q = null; G.st.tsheet = null; G.st.exSubmitAt = null; G.tSheet = null; G.tKeyMsg = ""; G.answers = []; G.myAns = []; G.srsHtml = "";
-    G.st.total = G.st.race ? 0 : autoCount();
+    G.st.total = G.st.qtype === "toeic" ? (G.tItems || []).length : G.st.race ? 0 : autoCount();   /* ⚡ Đua đề thi cũng tự kết thúc khi cả phòng làm xong (QA) */
     G.st.hostplay = hostPlays();
     delete G.st.elapsed;   /* ván mới: tính lại thời gian chơi */   /* số câu của ván (= số từ; 📄 = số chỗ trống) để hiện "còn N câu"; ⚡ Đua = không giới hạn */
     players().forEach(function (p) { G.st.scores[p.id] = { s: 0, c: 0, w: 0, st: 0, best: 0 }; });
@@ -2116,7 +2117,7 @@
     var done = me ? (me.c || 0) + (me.w || 0) : 0;
     var qi = s.mode === "kahoot" && s.q ? s.q.qn : done + 1;   /* số thứ tự câu đang làm */
     var tile = function (v, lbl, tip, cls) { return '<div class="g-stat' + (cls ? " " + cls : "") + '"' + (tip ? ' title="' + esc(tip) + '"' : "") + "><b>" + esc(v) + "</b><span>" + esc(lbl) + "</span></div>"; };
-    var used = s.mode === "kahoot" && s.q ? (s.q.revealed ? s.q.qn : s.q.qn - 1) : done;   /* Kahoot: theo câu của phòng; Tự do: câu mình đã làm */
+    var used = s.qtype === "toeic" ? done : s.mode === "kahoot" && s.q ? (s.q.revealed ? s.q.qn : s.q.qn - 1) : done;   /* đề thi: nhóm 3 câu = 3 câu, không phải 1 (QA) */   /* Kahoot: theo câu của phòng; Tự do: câu mình đã làm */
     if (me && iPlay()) {
       var n = done, acc = n ? Math.round(100 * (me.c || 0) / n) + "%" : "—", el2 = elapsedMs(s);
       html = tile(me.c || 0, T("st_right"), "", "ok") + tile(me.w || 0, T("st_wrong"), "", "bad") +
@@ -3214,7 +3215,7 @@
     if (!one) { fr = 0; to = 0; }
     st.qtype = "toeic"; st.test = { test: tt, part: parts[0], parts: parts, from: fr, to: to, tag: tg }; st.race = false; st.auto = true;
     var tm = $("#t-mode").value; st.exam = tm === "exam"; if (st.exam) tm = "free"; st.race = tm === "race"; st.hostpace = tm === "audio"; st.taud = $("#t-aud") ? $("#t-aud").value : "host"; if (st.exam && st.taud === "host") st.taud = "all"; st.tplay = st.taud !== "off"; G.tLastG = ""; st.mode = st.race ? "free" : st.hostpace ? "kahoot" : tm;
-    if (st.hostpace || (+a[1] <= 4 && st.tplay) || parts.length > 1 || st.exam) { st.auto = false; st.minutes = 120; $("#l-min").value = 120; }   /* Listening: audio dẫn nhịp, ván dài đủ cả đề; hết câu tự kết thúc */   /* không đếm giờ từng câu; ván dài đủ cả đề nghe, hết câu tự kết thúc */ st.qs = Math.max(5, Math.min(300, +$("#t-qs").value || 20));
+    if (st.hostpace || +a[1] <= 4 || parts.length > 1 || st.exam) { st.auto = false; st.minutes = 120; $("#l-min").value = 120; }   /* Listening: audio dẫn nhịp, ván dài đủ cả đề; hết câu tự kết thúc */   /* không đếm giờ từng câu; ván dài đủ cả đề nghe, hết câu tự kết thúc */ st.qs = Math.max(5, Math.min(300, +$("#t-qs").value || 20));
     if ($("#t-wrong") && $("#t-wrong").checked) {   /* ❌ chỉ câu từng sai: lần làm GẦN NHẤT của từng người đang trong phòng còn sai */
       var W = []; for (var pi = 0; pi < parts.length; pi++) W = W.concat(await tWrongNums(tt, parts[pi], G.online.map(function (p) { return p.id; })));
       if (!W.length) { $("#t-info").textContent = "Cả phòng chưa sai câu nào ở Part này 🎉 (hoặc chưa làm)."; return; }
@@ -3368,7 +3369,7 @@
     lockAll();
     if (q.type === "toeic") {   /* 🎯 làm đề: hết giờ câu chỉ ghi nhận, không lộ đáp án — xem lại sau khi làm xong */
       if (G.revealedN === q.qn) return; G.revealedN = q.qn;
-      $("#p-msg").textContent = G.myChoice == null ? T("t_skip") : T("t_saved");
+      $("#p-msg").textContent = (q.subs ? !(G.myPicks || []).some(function (x) { return x != null; }) : G.myChoice == null) ? T("t_skip") : T("t_saved");
       var okT = q.subs ? (G.myPicks || []) : G.myChoice != null && norm(G.myChoice) === norm(q.ans);
       if (q.subs) { logQ(q, G.myPicks || [], okT); return; }
       logQ(q, G.myChoice, okT); return;
@@ -3811,6 +3812,7 @@
       "<p>📖 Reading: <b>" + rk + "/" + batch.length + "</b> → ~<b>" + rs + "</b></p>" +
       (ls != null ? '<p class="g-exsum">' + esc(T("ex_total")) + " ~<b>" + (ls + rs) + "</b> / 990</p>" : "") +
       '<p class="g-sub">' + esc(T("ex_note")) + "</p></div>";
+    G.exRes = { m: G.st && G.st.matchId, html: $("#p-vi").innerHTML };   /* giữ để hiện lại ở màn kết quả (QA: chỉ thấy ~7 giây) */
     $("#p-res").innerHTML = ""; $("#p-msg").textContent = T("t_alldone");
   }
   /* nhóm câu Part 3–4: các câu LIÊN TIẾP cùng đoạn hội thoại (cùng g= trong [aud]), đều đã có đáp án */
@@ -3835,6 +3837,13 @@
       c.classList.toggle("g-tabcd", tx.length >= 3 && tx.every(function (t) { return /^\([A-D]\)$/.test(t); }));
     });
   }
+  /* vị trí câu đang làm của ván đề thi — giữ qua F5 (QA: host/người chơi tải lại giữa ván bị làm lại từ câu đầu, điểm cộng trùng) */
+  function tPosLoad() {
+    G.tMatch = G.st && G.st.matchId; G.ex = null; var sv = null;
+    try { sv = JSON.parse(sessionStorage.getItem("tjwl_tpos") || "null"); } catch (e) {}
+    if (sv && sv.m && sv.m === G.tMatch) { G.tIdx = sv.i || 0; G.exLC = sv.lc || []; } else { G.tIdx = 0; G.exLC = []; }
+  }
+  function tPosSave(i) { try { sessionStorage.setItem("tjwl_tpos", JSON.stringify({ m: G.tMatch, i: i != null ? i : G.tIdx || 0, lc: G.exLC || [] })); } catch (e) {} }
   function tSub(it) {
     var ai = "ABCD".indexOf(String(it.answer || "").trim().toUpperCase());
     return { num: it.num, part: it.part, test: G.st && G.st.test ? G.st.test.test : null, sent: tStemOf(it), opts: (it.opts || []).slice(), ans: ai >= 0 ? it.opts[ai] : "" };
@@ -3843,6 +3852,7 @@
   function tKey(q) { return "toeic:" + (q.test || (G.st && G.st.test && G.st.test.test)) + ":" + (q.part || (G.st && G.st.test && G.st.test.part)) + ":" + q.num; }   /* game_answers.term của câu đề thi -> 📊 điểm từng Part / câu hay sai */
   function toeicCommit(q, noSend) {
     if (!q || q.done) return;
+    if (G.st && G.st.qtype === "toeic" && G.tMatch === G.st.matchId) tPosSave();   /* đã nộp câu này -> F5 thì sang câu sau (lưu NGAY, trước khi câu kế ghi vị trí của nó) */
     if (q.subs) {   /* nhóm 3 câu: chấm từng câu, gửi host 1 lần */
       q.done = true; lockAll();
       var pk = q.picks || [], batch = q.subs.map(function (sq, i) { var ok = pk[i] != null && norm(pk[i]) === norm(sq.ans); if (G.st && G.st.exam) (G.exLC = G.exLC || []).push({ part: sq.part, ok: ok }); return { ok: ok, tk: tKey(sq), c: pk[i] }; });
@@ -3861,7 +3871,7 @@
   function freeNext() {
     if (!G.st || G.st.phase !== "play") return;
     $("#p-next").hidden = true;
-    if (G.st.qtype === "toeic" && G.tMatch !== G.st.matchId) { G.tMatch = G.st.matchId; G.tIdx = 0; G.ex = null; G.exLC = []; }   /* ván mới */
+    if (G.st.qtype === "toeic" && G.tMatch !== G.st.matchId) tPosLoad();   /* ván mới (hoặc tải lại giữa ván -> làm tiếp đúng câu) */
     var nx = G.st.qtype === "toeic" ? (G.tItems || [])[G.tIdx || 0] : null, multi = G.st.test && (G.st.test.parts || []).length > 1;
     G.tQEnd = G.st.qtype === "toeic" && !G.st.race ? Date.now() + ((multi && nx && T_SEC[nx.part]) || +G.st.qs || 20) * 1000 : 0;   /* đề thi: mỗi câu có giờ riêng (nhiều Part: theo từng Part) */
     if (G.st.exam && G.tMatch === G.st.matchId && nx && nx.part >= 5) { G.tQEnd = 0; return exStart(); }   /* 📝 Thi thật: tới Reading -> làm tự do cả phần, nộp bài */
@@ -4096,6 +4106,12 @@
     show("s-end");
     $("#e-info").textContent = G.isHost || s.saved ? (s.title || "") + " · " + modeLine(s) + " · " + s.minutes + "'" : "";
     $("#e-again").hidden = !G.isHost || s.saved;
+    /* 📝 Thi thật: điểm quy đổi của MÌNH ở màn kết quả (cả khi chỉ làm Listening) */
+    var exBox = $("#e-exres"); if (!exBox) { exBox = document.createElement("div"); exBox.id = "e-exres"; $("#e-info").insertAdjacentElement("afterend", exBox); }
+    var lcO = G.exLC || [];
+    if (s.exam && G.exRes && G.exRes.m === s.matchId) exBox.innerHTML = G.exRes.html;
+    else if (s.exam && G.tMatch === s.matchId && lcO.length) { var lk0 = lcO.filter(function (x) { return x.ok; }).length; exBox.innerHTML = '<div class="g-exres"><h2>📝 ' + esc(T("ex_done")) + "</h2><p>🎧 Listening: <b>" + lk0 + "/" + lcO.length + "</b> → ~<b>" + tScaled("L", lcO.length >= 100 ? lk0 : Math.round(lk0 / lcO.length * 100)) + "</b></p>" + '<p class="g-sub">' + esc(T("ex_note")) + "</p></div>"; }
+    else exBox.innerHTML = "";
     if (!s.saved) G.rvMatch = null;
     $("#e-replay").hidden = !(G.isHost && G.room && (!s.saved || (G.rvMatch && G.rvMatch.qtype !== "toeic")));
     $("#e-hostnav").hidden = false;   /* 📜 cho MỌI người (trước chỉ host) */
