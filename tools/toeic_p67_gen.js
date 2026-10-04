@@ -12,7 +12,10 @@ const TAGS={
   purpose:['Mục đích bài','Purpose','文章目的','Propósito'], detail:['Chi tiết','Detail','细节题','Detalle'], inference:['Suy luận','Inference','推断题','Inferencia'],
   synonym:['Từ đồng nghĩa','Synonym','同义词','Sinónimo'], position:['Vị trí câu [1]–[4]','Sentence position','句子位置','Posición de la oración'],
   not_true:['Câu hỏi NOT','NOT question','NOT题','Pregunta NOT'], intent:['Ý người viết','Writer\'s intent','作者意图','Intención del autor'],
-  audience:['Đối tượng / nơi đăng','Audience & location','对象与出处','Destinatario y lugar'], multi:['Liên kết nhiều bài','Cross-reference','多篇关联','Referencia cruzada']};
+  audience:['Đối tượng / nơi đăng','Audience & location','对象与出处','Destinatario y lugar'], multi:['Liên kết nhiều bài','Cross-reference','多篇关联','Referencia cruzada'],
+  preposition:['Giới từ','Preposition','介词','Preposición'], relative:['Đại từ quan hệ','Relative pronoun','关系代词','Pronombre relativo'],
+  comparison:['So sánh','Comparison','比较级','Comparación'], participle:['Phân từ (V-ing / V-ed)','Participle','分词','Participio'],
+  conjunction:['Liên từ','Conjunction','连词','Conjunción'], collocation:['Cụm từ cố định','Collocation','固定搭配','Colocación']};
 async function ai(sys,user,tries=3){
   for(let t=0;t<tries;t++){try{const r=await fetch(SB+'/functions/v1/openai-proxy',{method:'POST',headers:{...H,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',sys,user,temperature:0.2})});
     const j=await r.json();return JSON.parse(j.choices[0].message.content.replace(/^```(json)?|```$/g,'').trim());}catch(e){if(t==tries-1)throw e;await new Promise(r=>setTimeout(r,2500));}}
@@ -23,7 +26,7 @@ Return JSON only:
  "vi":{"stem":"","explain":"","traps":{"<wrong letter>":""},"trap_type":""}, "en":{...}, "zh":{...}, "es":{...},
  "vocab":[{"t":"","pos":"n|v|adj|adv|phr","vi":"","en":"","zh":"","es":""}]}
 Rules:
-- "stem": Part 6 = natural translation of the passage sentence containing the blank, with the correct answer filled in; Part 7 = translation of the question together with the correct answer (e.g. "Thông báo dành cho ai? → Nông dân"). For "en", stem is the English sentence/question+answer itself.
+- "stem": Part 5 = natural translation of the full sentence with the blank filled by the correct answer; Part 6 = natural translation of the passage sentence containing the blank, with the correct answer filled in; Part 7 = translation of the question together with the correct answer (e.g. "Thông báo dành cho ai? → Nông dân"). For "en", stem is the English sentence/question+answer itself.
 - "explain": 1–3 short sentences, simple words (learners are beginners). Point to the EVIDENCE in the passage by quoting the exact English words in single quotes; every English word/phrase in quotes or after → MUST stay in English, never translated.
 - "traps": for EACH of the 3 wrong letters, one short sentence why it is tempting but wrong (quote English words in single quotes, keep them English). "trap_type": a 2–5 word label of the trap kind.
 - "vocab": 3–4 useful words/phrases from the passage that this question depends on (base form), with short meanings; "en" = short English definition.
@@ -32,7 +35,7 @@ const SYS_P=l=>`Translate the TOEIC reading passage into natural ${NAME[l]} for 
 (async()=>{
   const save=()=>fs.writeFileSync(F,JSON.stringify(rows,null,1));
   const groups={}; rows.forEach(r=>(groups[r.group]=groups[r.group]||[]).push(r));
-  for(const g of Object.keys(groups)){ const rs=groups[g], src=rs[0];
+  for(const g of Object.keys(groups)){ const rs=groups[g], src=rs[0]; if(!src.passage) continue;   /* Part 5: không có bài đọc */
     for(const l of ['vi','zh','es']){ if(src.ptr&&src.ptr[l])continue;
       const res=await ai(SYS_P(l),src.passage); if(!res.text)throw new Error('no text '+g+l);
       rs.forEach(r=>{r.ptr=r.ptr||{};r.ptr[l]=res.text;}); save(); console.log('passage',g,l);}

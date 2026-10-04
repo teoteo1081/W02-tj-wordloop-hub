@@ -565,3 +565,4 @@ body.embed .g-brand{display:none}
 .g-tspb{border:1px solid var(--line,#3334);border-radius:10px;padding:6px 8px;display:flex;flex-direction:column}.g-tspb.worst{border-color:#c0392b;background:#c0392b22}
 .g-tstip{background:var(--deep,#0003);padding:8px 10px;border-radius:10px}
 .g-tsweak{display:flex;flex-direction:column;gap:6px}.g-tswr{display:flex;gap:10px;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line,#3334);padding:4px 0}
+.g-guide summary{cursor:pointer;padding:6px 0}.g-guide .g-ttab th{text-align:left;font-size:12px;opacity:.8}

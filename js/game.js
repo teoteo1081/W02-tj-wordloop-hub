@@ -68,7 +68,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 121;
+  var GAME_VER = 122;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -2626,7 +2626,8 @@
             return "<tr><td>" + (typeof p.p === "number" ? "Part " : "Câu ") + p.p + "</td><td>" + esc(p.name) + '</td><td class="g-num">' + p.q + ' câu</td><td class="g-num">' +
               (p.sec ? p.sec : fmtMin(p.min) + (p.each ? "<br><small>" + p.each + " phút/câu</small>" : "")) + "</td></tr>"; }).join("") + "</tbody></table></div>";
       }).join("") +
-      '<p class="g-sub">Sắp có: 🎯 Test 1–7 (Reading) · 📝 Thi thử full 75 phút · 🎯 Theo chủ điểm ngữ pháp · 🎧 Listening có audio · ✍️🎙 Viết/Nói dạng ghép câu + AI chấm.</p>';
+      tScoreGuide() +
+      '<p class="g-sub">Đã có: Test 1 đủ 200 câu (đáp án chính thức, audio). Đang soạn: Test 2–10. Sắp có: 📝 thi thử full 2 giờ · ✍️🎙 Viết/Nói dạng ghép câu + AI chấm theo đúng tiêu chí ở trên.</p>';
   }
   /* ---------- 📊 ĐIỂM TOEIC & CÂU HAY SAI (TJ 2026-10-04: "từng Part nhớ điểm, full bài xem đạt bao nhiêu, thống kê câu hay sai, cho luyện thêm") ----------
      Nguồn: game_answers.term = "toeic:<đề>:<part>:<câu>" (mỗi lần trả lời 1 dòng). Mỗi câu lấy LẦN LÀM GẦN NHẤT.
@@ -2721,6 +2722,30 @@
     };
   }
   document.addEventListener("click", function (e) { var b = e.target.closest && e.target.closest("#t-stats, #l-tstats, #e-tstats"); if (b) tStats(); });
+  /* 📐 hướng dẫn cách tính điểm (TJ 2026-10-04: "phải có bảng quy đổi điểm, cách chấm Speaking/Writing, tiêu chí") */
+  function tScoreGuide() {
+    var rows = [];
+    for (var r = 100; r >= 0; r -= 10) rows.push("<tr><td>" + (r === 100 ? "96–100" : r === 0 ? "0–5" : r + "–" + (r + 9)) + '</td><td class="g-num">' + tScaled("L", r === 100 ? 96 : r) + '</td><td class="g-num">' + tScaled("R", r) + "</td></tr>");
+    var tb = function (h, list) { return '<table class="g-ttab"><thead><tr>' + h.map(function (x) { return "<th>" + x + "</th>"; }).join("") + "</tr></thead><tbody>" + list.map(function (r) { return "<tr>" + r.map(function (x) { return "<td>" + x + "</td>"; }).join("") + "</tr>"; }).join("") + "</tbody></table>"; };
+    return '<details class="g-tsk g-guide"><summary><b>📐 Cách tính điểm TOEIC</b> <span class="g-sub">— Listening & Reading 10–990 · Speaking 0–200 · Writing 0–200</span></summary>' +
+      '<p class="g-sub"><b>Listening & Reading:</b> mỗi phần 100 câu, không trừ điểm câu sai (đừng bỏ trống!). Số câu đúng được quy ra thang <b>5–495</b> mỗi phần, cộng lại <b>10–990</b>. ETS không công bố bảng thật (mỗi đề 1 bảng theo độ khó) — bảng dưới là bảng <b>tham khảo</b> game dùng để ước lượng:</p>' +
+      '<table class="g-ttab"><thead><tr><th>Số câu đúng</th><th>🎧 Listening</th><th>📖 Reading</th></tr></thead><tbody>' + rows.join("") + "</tbody></table>" +
+      '<p class="g-sub">Mốc hay dùng: 450 (đầu ra nhiều trường) · 550–650 (xin việc phổ thông) · 750+ (làm việc bằng tiếng Anh) · 860+ (rất tốt) · 945+ (gần tối đa). Muốn 900+: Listening ~92+ câu, Reading ~88+ câu đúng.</p>' +
+      '<p class="g-sub"><b>🎙 Speaking (11 câu, ~20 phút) — thang 0–200</b>, mỗi câu được chấm điểm thô rồi quy đổi:</p>' +
+      tb(["Câu", "Dạng", "Thang", "Tiêu chí chấm"], [
+        ["1–2", "Đọc to đoạn văn", "0–3", "Phát âm · ngữ điệu, trọng âm"],
+        ["3–4", "Mô tả tranh", "0–3", "+ ngữ pháp, từ vựng, mạch lạc"],
+        ["5–7", "Trả lời câu hỏi", "0–3", "+ đúng trọng tâm, đủ ý"],
+        ["8–10", "Trả lời theo thông tin cho sẵn", "0–3", "+ thông tin chính xác"],
+        ["11", "Nêu quan điểm", "0–5", "Lập luận + lý do/ví dụ, ngữ pháp, từ vựng, mạch lạc, phát âm"]]) +
+      '<p class="g-sub">Điểm Speaking được xếp 8 mức (Level 1–8); 160+ ≈ Level 7 (giao tiếp công việc tốt), 180–200 = Level 8.</p>' +
+      '<p class="g-sub"><b>✍️ Writing (8 câu, 60 phút) — thang 0–200:</b></p>' +
+      tb(["Câu", "Dạng", "Thang", "Tiêu chí chấm"], [
+        ["1–5", "Viết 1 câu theo tranh (dùng 2 từ cho sẵn)", "0–3", "Đúng ngữ pháp · câu hợp với tranh · dùng đủ 2 từ"],
+        ["6–7", "Trả lời email", "0–4", "Câu đa dạng, đúng · từ vựng · bố cục · làm ĐỦ các yêu cầu của đề"],
+        ["8", "Bài luận nêu quan điểm (≥300 từ)", "0–5", "Có lập luận rõ + lý do & ví dụ · ngữ pháp · từ vựng · bố cục mạch lạc"]]) +
+      '<p class="g-sub">Writing xếp 9 mức (Level 1–9); 170+ ≈ Level 8, 200 = Level 9. Mẹo: câu 1–5 viết 1 câu ĐƠN GIẢN đúng là đủ 3 điểm; email phải trả lời đủ mọi câu hỏi/yêu cầu; bài luận nên 4 đoạn (mở – 2 lý do có ví dụ – kết).</p></details>';
+  }
   /* danh sách đề + Part đã có câu trong test_items */
   var T_SEC = { 1: 30, 2: 22, 3: 26, 4: 29, 5: 20, 6: 30, 7: 60 };   /* giây/câu mặc định theo nhịp đề thật (bảng TOEIC ở trên) */
   async function loadTestList() {
