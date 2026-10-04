@@ -16,7 +16,7 @@
   var items = {}, order = [];          /* id -> {k:"s"|"t", ...}; order = thứ tự vẽ */
   var mine = [], redo = [];            /* id nét/ô chữ của mình để hoàn tác */
   var lasers = {};                     /* pid -> {pts:[{x,y,t}], name, at} */
-  var cv, ctx, wrap, dpr = 1, cur = null, sendT = 0, lastLaserSend = 0, laserTail = 0, raf = 0, editing = null;
+  var cv, ctx, wrap, dpr = 1, cur = null, sendT = 0, lastLaserSend = 0, laserTail = 0, raf = 0, editing = null, bg = null, bgDirty = true;
   var cid = Math.random().toString(36).slice(2, 9);   /* mã máy này — bỏ qua tin của chính mình (kênh bật self) */
 
   /* chữ trên bảng theo NGÔN NGỮ GIAO DIỆN của người xem (TJ 2026-10-04: chọn 中文 mà bảng vẫn tiếng Việt) — game.js truyền api.lang() */
@@ -148,13 +148,13 @@
     if (!cv || $("#bd").hidden) return;
     var r = cv.getBoundingClientRect(); dpr = window.devicePixelRatio || 1;   /* đo CHÍNH canvas (trong viền gỗ) — QA v106 L1 */
     var w = Math.round(r.width * dpr), h = Math.round(r.height * dpr);
-    if (w !== cv.width || h !== cv.height) { cv.width = w; cv.height = h; draw(); }   /* trạng thái phòng tới vài giây/lần -> chỉ dựng lại khi ĐỔI cỡ (iPhone chớp/mất nét đang vẽ) */
+    if (w !== cv.width || h !== cv.height) { cv.width = w; cv.height = h; bgDirty = true; render(); }   /* trạng thái phòng tới vài giây/lần -> chỉ dựng lại khi ĐỔI cỡ (iPhone chớp/mất nét đang vẽ) */
     paintTexts();
   }
   function sx() { return cv.width / W; }
   function toLogic(e) { var r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width * W, y: (e.clientY - r.top) / r.height * H }; }
-  function strokePath(s) {
-    var p = s.pts; if (!p || !p.length) return;
+  function strokePath(s, c) {
+    var ctx = c; var p = s.pts; if (!p || !p.length) return;
     var k = sx();
     ctx.strokeStyle = s.c; ctx.fillStyle = s.c; ctx.lineWidth = s.w * k; ctx.lineCap = "round"; ctx.lineJoin = "round";
     if (p.length < 4) { ctx.beginPath(); ctx.arc(p[0] * k, p[1] * k, s.w * k / 2, 0, 7); ctx.fill(); return; }
@@ -162,11 +162,24 @@
     for (var i = 2; i < p.length - 2; i += 2) { var mx = (p[i] + p[i + 2]) / 2, my = (p[i + 1] + p[i + 3]) / 2; ctx.quadraticCurveTo(p[i] * k, p[i + 1] * k, mx * k, my * k); }
     ctx.lineTo(p[p.length - 2] * k, p[p.length - 1] * k); ctx.stroke();
   }
-  function draw() {
+  /* ⚡ CHỐNG GIẬT (TJ 2026-10-04 "bảng mở lên lag quá"): trước đây MỖI lần rê bút / mỗi tin nhận được đều vẽ lại TẤT CẢ nét từ đầu.
+     Giờ: nét đã xong vẽ sẵn vào 1 lớp nền (bg, chỉ dựng lại khi danh sách nét đổi) + gộp mọi lần vẽ vào 1 khung hình (requestAnimationFrame);
+     mỗi khung chỉ dán lớp nền + nét đang kéo + laser. draw() = có đổi nét (dựng lại nền); drawLite() = chỉ nét đang kéo/laser. */
+  function draw() { bgDirty = true; sched(); }
+  function drawLite() { sched(); }
+  function sched() { if (!raf) raf = requestAnimationFrame(function () { raf = 0; render(); }); }
+  function render() {
     if (!ctx) return;
+    if (!bg) bg = document.createElement("canvas");
+    if (bg.width !== cv.width || bg.height !== cv.height) { bg.width = cv.width; bg.height = cv.height; bgDirty = true; }
+    if (bgDirty) {
+      var bc = bg.getContext("2d"); bc.clearRect(0, 0, bg.width, bg.height);
+      order.forEach(function (id) { var it = items[id]; if (it && it.k === "s") strokePath(it, bc); });
+      bgDirty = false;
+    }
     ctx.clearRect(0, 0, cv.width, cv.height);
-    order.forEach(function (id) { var it = items[id]; if (it && it.k === "s") strokePath(it); });
-    if (cur) strokePath(cur);
+    ctx.drawImage(bg, 0, 0);
+    if (cur && !cur.laser) strokePath(cur, ctx);
     var now = Date.now(), k = sx(), any = false;
     Object.keys(lasers).forEach(function (pid) {
       var L = lasers[pid]; L.pts = L.pts.filter(function (q) { return now - q.t < 600; });
@@ -178,11 +191,11 @@
         ctx.beginPath(); ctx.moveTo(a.x * k, a.y * k); ctx.lineTo(b.x * k, b.y * k); ctx.stroke();
       }
       var h = L.pts[L.pts.length - 1];
-      ctx.fillStyle = "rgba(255,40,40,.95)"; ctx.shadowColor = "rgba(255,60,60,.9)"; ctx.shadowBlur = 14 * k;
-      ctx.beginPath(); ctx.arc(h.x * k, h.y * k, 9 * k, 0, 7); ctx.fill(); ctx.shadowBlur = 0;
+      ctx.fillStyle = "rgba(255,40,40,.95)"; ctx.beginPath(); ctx.arc(h.x * k, h.y * k, 9 * k, 0, 7); ctx.fill();   /* bỏ shadowBlur (rất nặng trên máy yếu) */
+      ctx.strokeStyle = "rgba(255,120,120,.5)"; ctx.lineWidth = 4 * k; ctx.beginPath(); ctx.arc(h.x * k, h.y * k, 13 * k, 0, 7); ctx.stroke();
       if (L.name) { ctx.font = (22 * k) + "px system-ui,sans-serif"; ctx.fillStyle = "rgba(255,255,255,.85)"; ctx.fillText(L.name, h.x * k + 14 * k, h.y * k - 12 * k); }
     });
-    if (any && !raf) raf = requestAnimationFrame(function () { raf = 0; draw(); });
+    if (any) sched();
   }
   function down(e) {
     if (!canDraw() || e.button > 0) return;
@@ -200,7 +213,7 @@
     if (cur.laser) return laserAt(p);
     var n = cur.pts.length, lx = cur.pts[n - 2], ly = cur.pts[n - 1];
     if (Math.abs(p.x - lx) + Math.abs(p.y - ly) < 2) return;
-    cur.pts.push(Math.round(p.x), Math.round(p.y)); draw();
+    cur.pts.push(Math.round(p.x), Math.round(p.y)); drawLite();
     if (Date.now() - sendT > 80) { sendT = Date.now(); var f = cur.sent; cur.sent = cur.pts.length; send({ t: "s", id: cur.id, c: cur.c, w: cur.w, from: f, pts: cur.pts.slice(f), done: false }); }   /* ~12 lần/giây, CHỈ gửi phần mới (trước gửi lại cả nét mỗi lần -> tin to dần, kênh dễ nghẽn) */
   }
   function up() {
@@ -213,7 +226,7 @@
   }
   function laserAt(p) {
     var name = me() ? me().name : "";
-    var L = lasers[myId()] = lasers[myId()] || { pts: [], name: name }; L.pts.push({ x: p.x, y: p.y, t: Date.now() }); draw();
+    var L = lasers[myId()] = lasers[myId()] || { pts: [], name: name }; L.pts.push({ x: p.x, y: p.y, t: Date.now() }); drawLite();
     var msg = { t: "l", x: Math.round(p.x), y: Math.round(p.y), n: name };
     clearTimeout(laserTail);
     if (Date.now() - lastLaserSend > 80) { lastLaserSend = Date.now(); send(msg); }
