@@ -31,6 +31,7 @@
   function send(m) { var ch = api && api.ch(); if (!ch) return; m.cid = cid; m.pid = myId(); ch.send({ type: "broadcast", event: "board", payload: m }); }
   /* ✍️ ai đang gõ ô chữ nào (kiểu Google Docs, TJ 2026-10-04): mỗi tin "t" đang gõ mang ed=1 + tên; máy khác viền màu người đó
      + nhãn tên trên ô; 4 giây không nghe gì (hoặc ed=0 khi rời ô) thì tắt. Màu cố định theo id người chơi. */
+  var answered = {};   /* cid đã có người gửi "full" -> moderator khỏi gửi trùng */
   var typing = {}, PCOL = ["#ff6b5e", "#7cc4ff", "#7be0a1", "#ffd84d", "#ff8fb1", "#c9a0ff", "#ffa94d"];
   function pcol(id) { var h = 0; String(id).split("").forEach(function (c) { h = (h * 31 + c.charCodeAt(0)) | 0; }); return PCOL[Math.abs(h) % PCOL.length]; }
   function tmsg(it, ed) { var m = { t: "t", id: it.id, x: it.x, y: it.y, c: it.c, z: it.z, text: it.text }; if (ed != null) { m.ed = ed ? 1 : 0; m.n = me() ? me().name : ""; } return m; }
@@ -284,17 +285,24 @@
     } else if (m.t === "del") { removeItem(m.id); draw(); paintTexts(); }
     else if (m.t === "clear") clearAll();
     else if (m.t === "l") { var L = lasers[m.pid] = lasers[m.pid] || { pts: [] }; L.name = m.n; L.pts.push({ x: m.x, y: m.y, t: Date.now() }); draw(); }
-    else if (m.t === "hello" && api.isHost()) send({ t: "full", to: m.cid, items: order.map(function (id) { return items[id]; }).filter(Boolean) });
-    else if (m.t === "full" && m.to === cid) {
-      items = {}; order = [];
-      (m.items || []).forEach(function (it) { items[it.id] = it; order.push(it.id); });
+    /* xin bản đầy đủ: host trả lời ngay; HOST VẮNG (mất mạng) thì người được cấp quyền (moderator) có nét trên bảng trả lời thay
+       (chờ ngẫu nhiên 0.3–1s, ai đã thấy người khác trả lời thì thôi) — TJ 2026-10-04: "host mất mạng mà có moderator thì bảng vẫn ổn" */
+    else if (m.t === "hello") {
+      var full = function () { send({ t: "full", to: m.cid, items: order.map(function (id) { return items[id]; }).filter(Boolean) }); };
+      if (api.isHost()) full();
+      else if (order.length) { answered[m.cid] = 0; setTimeout(function () { if (!answered[m.cid]) full(); delete answered[m.cid]; }, (canDraw() ? 300 : 1200) + Math.random() * 700); }   /* moderator trả lời trước, người xem làm dự phòng */
+    }
+    else if (m.t === "full") {
+      answered[m.to] = 1;
+      if (m.to !== cid) return;
+      (m.items || []).forEach(function (it) { if (!items[it.id]) { items[it.id] = it; order.push(it.id); } });   /* GỘP (không xoá): host vừa tải lại vẫn giữ nét đang có */
       draw(); paintTexts();
     }
   }
   function onState(s) {
     if (!s) return;
     var want = !!s.board;
-    if (want && !open) { open = true; mini = false; build(); paintOpen(); if (!api.isHost()) send({ t: "hello" }); }
+    if (want && !open) { open = true; mini = false; build(); paintOpen(); if (!api.isHost() || !order.length) send({ t: "hello" }); }   /* host tải lại trang (bảng trống) cũng xin lại nét từ moderator/người chơi */
     else if (!want && open) { open = false; paintOpen(); }
     paintOpen();
     if (open) { paintTools(); paintPerm(); var who = $("#bd-who"); if (who) who.textContent = canDraw() ? "✍️ bạn được dùng bảng" : "👀 chỉ xem"; }
