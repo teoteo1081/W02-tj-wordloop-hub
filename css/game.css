@@ -477,9 +477,9 @@ body.embed .g-brand{display:none}
 .g-ttab{table-layout:auto}.g-ttab td:nth-child(2){width:100%}
 /* 🎯 đề thi */
 .g-tplay{background:var(--deep);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px}
-.g-tstem{text-align:left;font-size:18px;line-height:1.6}
+.g-tstem{text-align:left;font-size:17px;line-height:1.6}
 .g-tnum{color:var(--amber);margin-right:4px}
-.g-tpass{text-align:left;font-size:15px;font-weight:400;color:var(--text);white-space:pre-wrap;max-height:45vh;overflow:auto;margin-bottom:10px;padding:10px;background:var(--deep);border-radius:10px}
+.g-tpass{text-align:left;font-size:16px;line-height:1.6;font-weight:400;color:var(--text);white-space:pre-wrap;max-height:45vh;overflow:auto;margin-bottom:10px;padding:10px;background:var(--deep);border-radius:10px}
 .g-topt{text-align:left;justify-content:flex-start}
 .g-qvi:has(.g-tstem){justify-content:flex-start}
 .g-texpl{margin-top:10px;padding:10px 12px;background:var(--deep);border:1px solid var(--line);border-radius:10px;text-align:left;font-size:15px;line-height:1.5}
@@ -550,7 +550,7 @@ body.embed .g-brand{display:none}
 .g-tstem{white-space:pre-line}
 .g-tblank{background:none;color:inherit;border-bottom:2px solid currentColor;padding:0 6px;white-space:nowrap;font-weight:700}
 .g-tblank.cur{background:var(--accent,#7c5cff);color:#fff;border-radius:6px;border-bottom:0}
-@media (max-width:600px){.g-tpass{max-height:none;overflow:visible;font-size:16px;line-height:1.6;padding:12px}.g-qvi .g-tstem{font-size:17px}}   /* điện thoại: bài đọc chữ to, 1 lớp cuộn (cuộn cả trang) */
+@media (max-width:600px){.g-tpass{max-height:none;overflow:visible;font-size:17px;line-height:1.6;padding:12px}.g-qvi .g-tstem{font-size:17px}.g-opts-1 > .g-opt{font-size:17px}}   /* điện thoại: bài đọc chữ to, 1 lớp cuộn (cuộn cả trang) */
 /* TJ 2026-10-04: ảnh Part 1 to quá -> (C)(D) rơi khỏi màn hình; giới hạn theo chiều cao màn hình để cả hình + 4 nút vừa 1 màn */
 .g-timg{max-height:32vh;width:auto;max-width:100%;object-fit:contain}   /* chỉ là mức tạm trước khi JS (fitTImg) đo đúng chỗ trống */
 .bd-phost{cursor:default;opacity:.95}
