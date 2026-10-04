@@ -583,3 +583,4 @@ body.embed .g-brand{display:none}
 .g-exres{text-align:center}.g-exres p{margin:6px 0}.g-exsum{font-size:1.2em}
 .g-exnav{position:sticky;bottom:0;z-index:5;background:var(--card,#1c1c28);padding:6px 0;box-shadow:0 -6px 12px #0004}   /* QA v127: ◀ ▶ Nộp bài luôn thấy trên điện thoại */
 @media (max-width:700px){ body.g-exam .g-exnav{position:fixed;left:0;right:0;bottom:0;margin:0;justify-content:center;padding:8px 12px calc(8px + env(safe-area-inset-bottom))} body.g-exam #s-play{padding-bottom:80px} }   /* QA v129 #6: điện thoại — ◀ ▶ Nộp bài luôn nằm đáy màn hình */
+.g-tips details{border-bottom:1px solid var(--line,#3334);padding:6px 0}.g-tips summary{cursor:pointer;padding:4px 0}.g-tips ul{margin:6px 0 4px;padding-left:20px}.g-tips li{margin:6px 0;line-height:1.5}
