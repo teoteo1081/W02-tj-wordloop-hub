@@ -44,9 +44,15 @@
   }, true);
   w.$$(".mobile-nav button").forEach(function (b) { b.addEventListener("click", function () { if (!layer.hidden) close(); }, true); });
   /* mở WordLoop mà Hub đang chọn là Hub có trang riêng -> mở luôn trang (chờ app.js vẽ tab Hub) */
+  /* TJ 2026-10-04: tải lại trang lúc đang ở 🎮 Game mà Hub đang chọn là CIA -> trước đây tự mở trang CIA VÀ ĐÓNG GAME
+     ("refresh là bị trả về learning CIA"). Đang/đã ở Game thì KHÔNG tự mở trang Hub — chỉ mở khi người dùng bấm tab Hub. */
+  function gameWanted() {
+    var g = w.$("#game-layer"); if (g && !g.hidden) return true;
+    try { return sessionStorage.getItem("tjwl_game_open") === "1" || Date.now() - (+localStorage.getItem("tjwl_game_open_at") || 0) < 15 * 60000; } catch (e) { return false; }
+  }
   var tries = 0, t = setInterval(function () {
     var a = w.$("#hub-tabs .hub-tab.active");
-    if (a || ++tries > 40) { clearInterval(t); if (a && HUB_PAGES[a.dataset.hub]) open(a.dataset.hub); }
+    if (a || ++tries > 40) { clearInterval(t); if (a && HUB_PAGES[a.dataset.hub] && !gameWanted()) open(a.dataset.hub); }
   }, 250);
   w.HubPage = { open: open, close: close, pages: HUB_PAGES };
 })(window);
