@@ -647,3 +647,4 @@ body.g-tahead #p-opts .g-tsub{display:none}body.g-tahead #p-opts .g-tnext{opacit
 .g-lbox{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;touch-action:pinch-zoom;cursor:zoom-out}
 .g-lbox img{max-width:100vw;max-height:100vh;object-fit:contain;background:#fff}
 .g-lbx{position:fixed;top:calc(10px + env(safe-area-inset-top));right:12px;width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.2);color:#fff;font-size:20px}
+.g-needtap{position:fixed;left:50%;top:calc(62px + env(safe-area-inset-top));transform:translateX(-50%);z-index:60;padding:12px 22px;border-radius:999px;border:0;background:var(--amber);color:#222;font-size:17px;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,.4)}
