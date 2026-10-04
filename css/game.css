@@ -584,3 +584,9 @@ body.embed .g-brand{display:none}
 .g-exnav{position:sticky;bottom:0;z-index:5;background:var(--card,#1c1c28);padding:6px 0;box-shadow:0 -6px 12px #0004}   /* QA v127: ◀ ▶ Nộp bài luôn thấy trên điện thoại */
 @media (max-width:700px){ body.g-exam .g-exnav{position:fixed;left:0;right:0;bottom:0;margin:0;justify-content:center;padding:8px 12px calc(8px + env(safe-area-inset-bottom))} body.g-exam #s-play{padding-bottom:80px} }   /* QA v129 #6: điện thoại — ◀ ▶ Nộp bài luôn nằm đáy màn hình */
 .g-tips details{border-bottom:1px solid var(--line,#3334);padding:6px 0}.g-tips summary{cursor:pointer;padding:4px 0}.g-tips ul{margin:6px 0 4px;padding-left:20px}.g-tips li{margin:6px 0;line-height:1.5}
+/* 🎧 nhóm 3 câu Part 3–4 */
+.g-tsub{margin:10px 0 4px;text-align:left}.g-tsub .g-tstem{margin-bottom:6px}
+.g-tsubopts{display:grid;grid-template-columns:1fr 1fr;gap:6px}@media (max-width:600px){.g-tsubopts{grid-template-columns:1fr}}
+.g-tnext{margin-top:12px;padding:8px 10px;border:1px dashed var(--line,#3335);border-radius:10px;text-align:left;opacity:.85}
+.g-tnq{margin:6px 0}.g-tnq small{display:block;opacity:.75;margin-top:2px}
+body.g-tahead #p-opts .g-tsub{display:none}body.g-tahead #p-opts .g-tnext{opacity:1;border-style:solid}
