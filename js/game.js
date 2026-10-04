@@ -67,7 +67,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 108;
+  var GAME_VER = 109;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -2087,10 +2087,12 @@
     }).join("") + "</div>";
   }
   /* đoạn văn đề thi: dòng "[img] <url>" = ảnh (Part 1 / hình "Look at the graphic" của Listening, ảnh nằm ở bucket toeic) */
-  function tPassHTML(p) {
+  function tPassHTML(p, num) {
     if (!p) return "";
     var img = [], txt = String(p).split("\n").filter(function (l) { var m = l.match(/^\[img\]\s*(https:\/\/\S+)$/); if (m) img.push(m[1]); return !m; }).join("\n").trim();
-    return (txt ? '<div class="g-tpass">' + esc(txt) + "</div>" : "") + img.map(function (u) { return '<img class="g-timg" alt="" src="' + esc(u) + '">'; }).join("");
+    /* chỗ trống Part 6 "-------(131)" -> ô không xuống dòng giữa chừng, tô ô của CÂU ĐANG LÀM (QA v107) */
+    var body = esc(txt).replace(/-{3,}\((\d+)\)/g, function (m, n) { return '<mark class="g-tblank' + (+n === +num ? " cur" : "") + '">(' + n + ")</mark>"; });
+    return (txt ? '<div class="g-tpass">' + body + "</div>" : "") + img.map(function (u) { return '<img class="g-timg" alt="" src="' + esc(u) + '">'; }).join("");
   }
   function paintQuestion(q, hintEl, textEl, optsEl) {
     if (q.aud) Object.assign(G.audioMap, q.aud);
@@ -2100,7 +2102,7 @@
     var mine = optsEl === "#p-opts";
     if (mine) { $("#p-saywrap").hidden = q.type !== "dict" && q.type !== "listen"; $("#p-res").innerHTML = ""; paintSoundBtn(); paintReplay(q); }
     if (q.type === "toeic") {
-      $(textEl).innerHTML = tPassHTML(q.passage) +
+      $(textEl).innerHTML = tPassHTML(q.passage, q.num) +
         '<span class="g-gapline g-tstem"><b class="g-tnum">' + esc(q.num) + ".</b> " + esc(q.sent).replace("_______", '<span class="g-blank" style="width:4em"></span>') + "</span>";
       if (mine) $("#p-type").hidden = true;
       $(optsEl).innerHTML = (q.opts || []).map(function (o) { return '<button class="g-opt g-topt" data-opt="' + esc(o) + '"><span class="g-otext">' + esc(o) + '</span><span class="g-pickers"></span></button>'; }).join("");
