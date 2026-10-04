@@ -68,7 +68,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 136;
+  var GAME_VER = 139;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -2214,10 +2214,10 @@
        word_id = "aud:<test>:<part>:<num>:<từ>-<tới>" + test/part/num; máy chưa có hồ sơ -> chỉ lưu trên máy (tjwl_audmarks_v1).
      · "🔖 Đoạn nghe đã lưu" (Hub TEST / phòng chờ / màn Xem lại): nghe lại mọi đoạn đã lưu, xoá được. */
   var AP_TX = {
-    vi: { qon: "Đã để dành — làm lại sau", qoff: "Để dành làm lại câu này", h: "Nghe lại", all: "📻 Cả bài nói", q: "❓ Câu hỏi", loop: "Lặp lại", mark: "🔖 Đánh dấu từ đây", mark2: "🔖 Kết thúc & lưu", saveall: "🔖 Lưu cả đoạn này", saved: "✓ Đã lưu đoạn", mine: "🔖 Đoạn đã lưu của câu này", list: "🔖 Đoạn nghe đã lưu", none: "Chưa lưu đoạn nào — ở 📖 Xem lại câu Listening, bấm 🔖 để lưu đoạn khó.", del: "Xoá đoạn này?", tip: "Kéo thanh để tua · đoạn khó thì bấm 🔖 để nghe lại sau (sau này luyện chép chính tả từ đây).", seg: "Đoạn", qn: "Câu" },
-    en: { qon: "Saved — redo later", qoff: "Save this question to redo", h: "Listen again", all: "📻 Whole talk", q: "❓ Question", loop: "Repeat", mark: "🔖 Mark from here", mark2: "🔖 End & save", saveall: "🔖 Save this whole part", saved: "✓ Saved", mine: "🔖 Saved parts of this question", list: "🔖 Saved listening parts", none: "Nothing saved yet — in 📖 Review of a Listening question, press 🔖 to save a hard part.", del: "Delete this part?", tip: "Drag the bar to seek · press 🔖 on hard parts to listen again later (dictation practice later).", seg: "Part", qn: "Q" },
-    zh: { qon: "已收藏——以后重做", qoff: "收藏此题以后重做", h: "再听一遍", all: "📻 整段对话", q: "❓ 问题", loop: "循环", mark: "🔖 从这里标记", mark2: "🔖 结束并保存", saveall: "🔖 保存整段", saved: "✓ 已保存", mine: "🔖 本题已保存的片段", list: "🔖 已保存的听力片段", none: "还没有保存——在听力题的 📖 查看答案 中点 🔖 保存难的片段。", del: "删除这个片段？", tip: "拖动进度条快进/后退 · 难的片段点 🔖 保存以后再听（之后可做听写练习）。", seg: "片段", qn: "第" },
-    es: { qon: "Guardada — repetir luego", qoff: "Guardar para repetir", h: "Escuchar de nuevo", all: "📻 Todo el audio", q: "❓ Pregunta", loop: "Repetir", mark: "🔖 Marcar desde aquí", mark2: "🔖 Terminar y guardar", saveall: "🔖 Guardar todo el fragmento", saved: "✓ Guardado", mine: "🔖 Fragmentos guardados de esta pregunta", list: "🔖 Fragmentos guardados", none: "Aún no hay nada — en 📖 Revisar de una pregunta de Listening, pulsa 🔖 para guardar un fragmento difícil.", del: "¿Borrar este fragmento?", tip: "Arrastra la barra para avanzar/retroceder · pulsa 🔖 en lo difícil para escucharlo luego (dictado más adelante).", seg: "Fragmento", qn: "P" }
+    vi: { scr: "Lời thoại", scrtip: "bấm 1 câu để nghe đúng câu đó", evq: "Nghe đoạn có đáp án câu", qon: "Đã để dành — làm lại sau", qoff: "Để dành làm lại câu này", h: "Nghe lại", all: "📻 Cả bài nói", q: "❓ Câu hỏi", loop: "Lặp lại", mark: "🔖 Đánh dấu từ đây", mark2: "🔖 Kết thúc & lưu", saveall: "🔖 Lưu cả đoạn này", saved: "✓ Đã lưu đoạn", mine: "🔖 Đoạn đã lưu của câu này", list: "🔖 Đoạn nghe đã lưu", none: "Chưa lưu đoạn nào — ở 📖 Xem lại câu Listening, bấm 🔖 để lưu đoạn khó.", del: "Xoá đoạn này?", tip: "Kéo thanh để tua · đoạn khó thì bấm 🔖 để nghe lại sau (sau này luyện chép chính tả từ đây).", seg: "Đoạn", qn: "Câu" },
+    en: { scr: "Audio script", scrtip: "tap a line to hear it", evq: "Hear the answer part of Q", qon: "Saved — redo later", qoff: "Save this question to redo", h: "Listen again", all: "📻 Whole talk", q: "❓ Question", loop: "Repeat", mark: "🔖 Mark from here", mark2: "🔖 End & save", saveall: "🔖 Save this whole part", saved: "✓ Saved", mine: "🔖 Saved parts of this question", list: "🔖 Saved listening parts", none: "Nothing saved yet — in 📖 Review of a Listening question, press 🔖 to save a hard part.", del: "Delete this part?", tip: "Drag the bar to seek · press 🔖 on hard parts to listen again later (dictation practice later).", seg: "Part", qn: "Q" },
+    zh: { scr: "听力原文", scrtip: "点一句即可播放这一句", evq: "听答案所在片段 第", qon: "已收藏——以后重做", qoff: "收藏此题以后重做", h: "再听一遍", all: "📻 整段对话", q: "❓ 问题", loop: "循环", mark: "🔖 从这里标记", mark2: "🔖 结束并保存", saveall: "🔖 保存整段", saved: "✓ 已保存", mine: "🔖 本题已保存的片段", list: "🔖 已保存的听力片段", none: "还没有保存——在听力题的 📖 查看答案 中点 🔖 保存难的片段。", del: "删除这个片段？", tip: "拖动进度条快进/后退 · 难的片段点 🔖 保存以后再听（之后可做听写练习）。", seg: "片段", qn: "第" },
+    es: { scr: "Transcripción", scrtip: "toca una línea para escucharla", evq: "Escuchar la parte de la respuesta P", qon: "Guardada — repetir luego", qoff: "Guardar para repetir", h: "Escuchar de nuevo", all: "📻 Todo el audio", q: "❓ Pregunta", loop: "Repetir", mark: "🔖 Marcar desde aquí", mark2: "🔖 Terminar y guardar", saveall: "🔖 Guardar todo el fragmento", saved: "✓ Guardado", mine: "🔖 Fragmentos guardados de esta pregunta", list: "🔖 Fragmentos guardados", none: "Aún no hay nada — en 📖 Revisar de una pregunta de Listening, pulsa 🔖 para guardar un fragmento difícil.", del: "¿Borrar este fragmento?", tip: "Arrastra la barra para avanzar/retroceder · pulsa 🔖 en lo difícil para escucharlo luego (dictado más adelante).", seg: "Fragmento", qn: "P" }
   };
   function apT(k) { var d = AP_TX[uiLang()] || AP_TX.vi; return d[k] || AP_TX.vi[k] || k; }
   function apUrl(t) { return cfg.SUPABASE_URL + "/storage/v1/object/public/toeic/listening/TEST_" + t + "_LC.mp3"; }
@@ -2334,7 +2334,48 @@
     var box = $("#rv-res"); if (!box) return;
     box.insertAdjacentHTML("afterbegin", '<div class="g-apwrap"><div class="g-tvh">🎚 ' + esc(apT("h")) + "</div><div id=\"rv-ap\"></div></div>");
     apMount($("#rv-ap"), { url: apUrl(q.test), segs: segs, meta: { test: q.test, part: q.part, num: q.num, last: q.last || q.num } });
+    scrLoad(q).then(function (scr) { if (scr && AP && $("#rv-ap")) scrPaint(scr, q, m[3] ? [+m[3], +m[4]] : [qa, +m[2]]); });
   }
+  /* 📜 LỜI THOẠI (TJ 2026-10-04: "xem full bài, nghe lại full bài hoặc đúng đoạn có đáp án") — test_items.i18n.scr = {lines:[{sp,t}], ev:{num:"câu chứa đáp án"}}
+     lấy từ sách lời giải ETS (tools/toeic_script_struct.js). Mốc từng câu = ƯỚC LƯỢNG theo độ dài chữ trong đoạn audio (chưa có mốc từng câu thật) -> lùi 1s cho chắc. */
+  var SCR = {};
+  async function scrLoad(q) {
+    var k = q.test + ":" + q.num; if (SCR[k] !== undefined) return SCR[k];
+    var it = (G.tItems || []).filter(function (x) { return x.num === q.num && String(x.test || q.test) === String(q.test); })[0];
+    if (it && it.i18n && it.i18n.scr) return (SCR[k] = it.i18n.scr);
+    try { var r = await sb.from("test_items").select("i18n").eq("exam", "toeic").eq("test", String(q.test)).eq("num", q.num).maybeSingle(); SCR[k] = (r.data && r.data.i18n && r.data.i18n.scr) || null; } catch (e) { SCR[k] = null; }
+    return SCR[k];
+  }
+  function scrNorm(t) { return String(t || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
+  /* chia đoạn [a,b] theo độ dài chữ từng lượt nói (+ chút nghỉ giữa các lượt); Part 1–2 bỏ ~1.5s đầu đọc số câu */
+  function scrTimes(lines, span, part) {
+    var a = span[0] + (+part <= 2 ? 1.5 : 0.3), b = span[1], w = lines.map(function (l) { return String(l.t).length + 12; }), tot = w.reduce(function (x, y) { return x + y; }, 0) || 1, t = a;
+    return lines.map(function (l, i) { var d = (b - a) * w[i] / tot, r = [t, t + d]; t += d; return r; });
+  }
+  function scrPaint(scr, q, span) {
+    var box = $("#rv-ap"); if (!box || !scr.lines || !scr.lines.length) return;
+    var T0 = scr.lines.every(function (l) { return l.a != null; }) ? scr.lines.map(function (l) { return [l.a, l.b]; }) : scrTimes(scr.lines, span, q.part), ev = scr.ev || {}, evAt = {};   /* a/b = mốc thật (nghe ra chữ, tools/toeic_script_align.py) */
+    Object.keys(ev).forEach(function (n) {
+      var key = scrNorm(ev[n]).slice(0, 40); if (!key) return;
+      scr.lines.forEach(function (l, i) { if (evAt[n] == null && scrNorm(l.t).indexOf(key.slice(0, 25)) >= 0) evAt[n] = i; });
+    });
+    var mark = {}; Object.keys(evAt).forEach(function (n) { (mark[evAt[n]] = mark[evAt[n]] || []).push(n); });
+    var html = '<div class="g-scr"><div class="g-tvh">📜 ' + esc(apT("scr")) + ' <span class="g-sub">' + esc(apT("scrtip")) + "</span></div>" +
+      (Object.keys(evAt).length ? '<div class="g-aprow">' + Object.keys(evAt).sort(function (x, y) { return x - y; }).map(function (n) { var r = T0[evAt[n]]; return '<button type="button" class="g-btn g-btn-soft g-btn-sm" data-scrp="' + Math.max(span[0], r[0] - 1).toFixed(1) + "-" + Math.min(span[1], r[1] + 1).toFixed(1) + '">🎯 ' + esc(apT("evq")) + " " + n + "</button>"; }).join("") + "</div>" : "") +
+      scr.lines.map(function (l, i) {
+        var r = T0[i];
+        return '<div class="g-scl' + (mark[i] ? " ev" : "") + '" data-scrp="' + Math.max(span[0], r[0] - 0.8).toFixed(1) + "-" + Math.min(span[1], r[1] + 0.5).toFixed(1) + '">' + (l.sp ? '<b class="g-scsp">' + esc(l.sp) + "</b> " : "") + esc(l.t) + (mark[i] ? ' <span class="g-scq">🎯 ' + mark[i].join(", ") + "</span>" : "") + "</div>";
+      }).join("") + "</div>";
+    box.insertAdjacentHTML("beforeend", html);
+  }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-scrp]"); if (!b || !AP) return;
+    var r = b.dataset.scrp.split("-").map(Number);
+    $$(".g-scl.on").forEach(function (x) { x.classList.remove("on"); }); if (b.classList.contains("g-scl")) b.classList.add("on");
+    AP.a = r[0]; AP.b = r[1]; var bar = AP.box.querySelector(".g-apbar"); if (bar) { bar.min = r[0]; bar.max = r[1]; }
+    AP.box.querySelectorAll("[data-apseg]").forEach(function (x) { x.classList.add("g-btn-soft"); });
+    apPlay(r[0]);
+  });
   /* 🔖 danh sách mọi đoạn đã lưu (nghe lại theo Test) */
   async function apList() {
     var box = $("#t-statsbox");
@@ -2384,6 +2425,8 @@
     var img = [], txt = String(p).split("\n").filter(function (l) { if (/^\[aud\]/.test(l)) return false; var m = l.match(/^\[img\]\s*(https:\/\/\S+)$/); if (m) img.push(m[1]); return !m; }).join("\n").trim();
     /* chỗ trống Part 6 "-------(131)" -> ô không xuống dòng giữa chừng, tô ô của CÂU ĐANG LÀM (QA v107) */
     var body = esc(txt).replace(/-{3,}\((\d+)\)/g, function (m, n) { return '<mark class="g-tblank' + (+n === +num ? " cur" : "") + '">(' + n + ")</mark>"; });
+    /* OCR ghi chú định dạng bằng chữ "7:00 A.M. (underlined)" -> gạch chân thật (TJ 2026-10-04: thấy lạ) */
+    body = body.replace(/([^\n—–]*?\S)\s*\((underlined|bold|bolded|in bold|italic|italics|circled|highlighted)\)/gi, function (m, t, k) { k = k.toLowerCase(); return /under/.test(k) ? "<u>" + t + "</u>" : /ital/.test(k) ? "<i>" + t + "</i>" : "<b>" + t + "</b>"; });
     return (txt ? '<div class="g-tpass">' + body + "</div>" : "") + img.map(function (u) { return '<img class="g-timg" alt="" src="' + esc(u) + '">'; }).join("");
   }
   /* 📐 ảnh đề vừa KHÍT màn hình đang dùng (TJ 2026-10-04: "tuỳ kích cỡ màn hình mà phải phù hợp"): đo chỗ trống thật
@@ -2413,6 +2456,7 @@
     $(hintEl).textContent = T(QHINT[q.type] || "q_meaning");
     var mine = optsEl === "#p-opts";
     if (mine) { $("#p-saywrap").hidden = q.type !== "dict" && q.type !== "listen"; $("#p-res").innerHTML = ""; paintSoundBtn(); paintReplay(q); }
+    var oe0 = $(optsEl); if (oe0) oe0.classList.toggle("g-tbook", q.type === "toeic");   /* 📖 đề thi: đáp án xếp dọc như sách (TJ 2026-10-04) */
     if (q.type === "toeic") {
       var tc = tCue(q);
       if (q.subs) {   /* 🎧 nhóm 3 câu Part 3–4 */
@@ -2691,7 +2735,7 @@
     $("#rv-prev").disabled = rvI === 0; $("#rv-next").disabled = rvI === R.length - 1;
     paintStar(L);
     $("#rv-back").textContent = G.rvFrom === "hist" ? T("back_hist") : T("back_res");
-    $("#rv-hint").textContent = L.hint; $("#rv-vi").innerHTML = L.vi; $("#rv-opts").innerHTML = L.opts; $("#rv-res").innerHTML = L.res; $("#rv-msg").textContent = L.msg;
+    $("#rv-hint").textContent = L.hint; $("#rv-vi").innerHTML = L.vi; $("#rv-opts").innerHTML = L.opts; $("#rv-opts").classList.toggle("g-tbook", !!L.tq); $("#rv-res").innerHTML = L.res; $("#rv-msg").textContent = L.msg;
     /* 🔊 nghe lại (TJ 2026-10-02): nút cạnh ◀ ▶ + loa nhỏ ngay sau từ đúng; đang bật tiếng thì sang câu tự đọc */
     $("#rv-say").hidden = !L.say; $("#rv-say").dataset.say = L.say || ""; $("#rv-say").dataset.sl = L.sl || "en";
     $$("#rv-vi .g-fill").forEach(function (f) { if (L.say && !L.tq) f.insertAdjacentHTML("afterend", spk(L.say, L.sl)); });   /* đề thi: nghe cả câu bằng nút #rv-say, không chen loa giữa câu */
@@ -3544,7 +3588,7 @@
     el.addEventListener("click", function () { el.remove(); });
     document.body.appendChild(el); setTimeout(function () { el.remove(); }, 9000);
   }
-  function tapHint(on) { $$(".js-taphint").forEach(function (x) { x.hidden = !on; }); }
+  function tapHint(on) { $$(".js-taphint").forEach(function (x) { x.hidden = !on; }); clearTimeout(G.tapHintT); if (on) G.tapHintT = setTimeout(function () { tapHint(false); }, 7000); }   /* tự ẩn sau 7s — không che đáp án */
   /* nhắc sẵn ở phòng chờ: đang bật tiếng mà trang chưa từng được chạm (Chrome sẽ chặn câu đầu) */
   function tapHintIfNeeded() {
     var ua = navigator.userActivation;

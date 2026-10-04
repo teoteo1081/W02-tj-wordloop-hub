@@ -399,7 +399,7 @@ body.embed .g-brand{display:none}
 @keyframes gIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 .g-in{animation:gIn .16s ease-out}
 @media (prefers-reduced-motion: reduce){ .g-in{animation:none} }
-.g-taphint{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:50;max-width:calc(100% - 32px);margin:0;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+.g-taphint{position:fixed;left:50%;top:calc(62px + env(safe-area-inset-top));transform:translateX(-50%);z-index:50;max-width:calc(100% - 32px);margin:0;box-shadow:0 6px 20px rgba(0,0,0,.35)}
 
 /* v72: giây riêng từng loại khi Trộn */
 .g-tq{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;margin:4px 0}
@@ -606,3 +606,25 @@ body.g-tahead #p-opts .g-tsub{display:none}body.g-tahead #p-opts .g-tnext{opacit
 /* đáp án dài -> 1 cột, chữ canh trái (câu chèn Part 6, câu hỏi Part 3–4/7) */
 .g-opts.g-opts-1,.g-tsubopts.g-opts-1{grid-template-columns:1fr}
 .g-opts-1 > .g-opt{text-align:left;justify-content:flex-start;font-weight:500;line-height:1.4}
+/* 📜 lời thoại ở 📖 Xem lại */
+.g-scr{margin-top:10px;text-align:left}
+.g-scl{padding:6px 8px;border-radius:8px;line-height:1.55;cursor:pointer;font-size:16px}
+.g-scl:hover{background:var(--raise)}
+.g-scl.on{background:var(--raise);outline:1px solid var(--line)}
+.g-scl.ev{border-left:3px solid var(--amber)}
+.g-scsp{color:var(--text-2);font-size:.85em;margin-right:4px}
+.g-scq{font-size:.8em;color:var(--amber);white-space:nowrap}
+/* 📖 ĐỀ THI TRÌNH BÀY NHƯ SÁCH (TJ 2026-10-04): đáp án xếp DỌC, chữ vừa, canh trái; nhóm nhiều câu -> 2 cột trên màn rộng, 1 cột trên điện thoại */
+.g-opts.g-tbook{display:flex;flex-direction:column;gap:6px;text-align:left}
+.g-tbook .g-opt{display:flex;align-items:center;gap:8px;min-height:44px;padding:8px 12px;border-width:1px;border-radius:9px;text-align:left;font-size:16px;font-weight:500;line-height:1.4}
+.g-tbook .g-opt .g-otext{flex:1;min-width:0}
+.g-tbook .g-tsub{margin:6px 0 12px}
+.g-tbook .g-tsub .g-tstem{font-size:16px;font-weight:600;padding-left:2.1em;text-indent:-2.1em;margin-bottom:6px}
+.g-tbook .g-tsubopts{display:flex;flex-direction:column;gap:5px;padding-left:2.1em}
+@media (min-width:820px){
+  .g-opts.g-tbook:has(.g-tsub){display:grid;grid-template-columns:1fr 1fr;column-gap:22px;align-items:start}
+  .g-tbook > .g-row,.g-tbook > .g-tnext{grid-column:1/-1}
+}
+@media (max-width:600px){ .g-tbook .g-tsubopts{padding-left:0} .g-tbook .g-tsub .g-tstem{font-size:17px} .g-tbook .g-opt{font-size:17px} }
+.g-tbook .g-opt,.g-tbook .g-opt .g-otext{text-align:left!important;justify-content:flex-start!important}
+.g-tbook .g-opt{min-height:40px;padding:7px 12px;flex-direction:row}
