@@ -555,3 +555,4 @@ body.embed .g-brand{display:none}
 .g-timg{max-height:32vh;width:auto;max-width:100%;object-fit:contain}   /* chỉ là mức tạm trước khi JS (fitTImg) đo đúng chỗ trống */
 .bd-phost{cursor:default;opacity:.95}
 .g-upd{position:fixed;right:12px;bottom:12px;z-index:60;box-shadow:0 4px 16px #0006}
+.g-tplay{margin:2px auto 6px}.g-tplay.on{background:var(--accent,#7c5cff);color:#fff}
