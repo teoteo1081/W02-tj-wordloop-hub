@@ -67,7 +67,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 109;
+  var GAME_VER = 110;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -1185,7 +1185,7 @@
     if (t === "toeic") {   /* 🎯 đề thi: hỏi LẦN LƯỢT theo số câu (101, 102…) như làm đề thật; hết thì quay lại đầu */
       var L = G.tItems || []; if (G.tMatch !== (G.st && G.st.matchId)) { G.tMatch = G.st && G.st.matchId; G.tIdx = 0; }
       var it = L[(G.tIdx++) % Math.max(1, L.length)] || {};
-      var ai = "ABCD".indexOf(String(it.answer || "").trim().toUpperCase());
+      var a0 = String(it.answer || "").trim().toUpperCase(), ai = a0 ? "ABCD".indexOf(a0) : -1;   /* QA v109 LC1: "ABCD".indexOf("") = 0 -> câu chưa có đáp án bị coi là (A) */
       return { type: "toeic", wid: null, num: it.num, sent: it.stem || "", passage: it.passage || "", opts: (it.opts || []).slice(), ans: ai >= 0 ? (it.opts || [])[ai] : "", tag: it.tag || "", expl: it.explain || "", vi: it.stem_vi || "", i18n: it.i18n || null, vocab: it.vocab || null, test: G.st && G.st.test ? G.st.test.test : null, part: G.st && G.st.test ? G.st.test.part : null, asrc: it.answer_src || "", pend: ai < 0 };   /* pend = câu CHƯA có đáp án (vd Listening chờ đáp án): vẫn chọn được, cuối ván ra phiếu cả phòng + 🔑 nhập đáp án */
     }
     if (t === "chunkmix") t = shuffle(CHUNK_TYPES.filter(function (x) { return chunkPool(x).length >= (x === "chunk" || x === "listen" ? 4 : 1); }))[0] || "listen";
@@ -1580,7 +1580,7 @@
     var s = Object.assign({}, G.st, { hid: G.me && G.me.id, htab: G.tab, hsince: G.since, on: onlineIds(), left: G.endAt ? G.endAt - Date.now() : null, qLeft: G.qUntil ? G.qUntil - Date.now() : null });
     if (s.q) {
       var q = s.q, rev = !!q.revealed;
-      s.q = { qn: q.qn, n: q.n, wids: q.wids, word: q.word, lv: q.lv, aud: q.aud, tiles: q.tiles, sep: q.sep, reg: q.reg, ctx: q.ctx, full: q.full, optTexts: q.optTexts, type: q.type, texts: q.texts, sent: q.sent, opts: q.opts, len: q.len, wid: q.wid, term: q.term, text: q.text, bank: q.bank, say: q.say, limit: q.limit, grading: !!q.grading, num: q.num, passage: q.passage, tag: rev ? q.tag : null, expl: rev ? q.expl : null, vi: rev ? q.vi : null, i18n: rev ? q.i18n : null, vocab: rev ? q.vocab : null, test: q.test, part: q.part, asrc: q.asrc,
+      s.q = { qn: q.qn, n: q.n, wids: q.wids, word: q.word, lv: q.lv, aud: q.aud, tiles: q.tiles, sep: q.sep, reg: q.reg, ctx: q.ctx, full: q.full, optTexts: q.optTexts, type: q.type, texts: q.texts, sent: q.sent, opts: q.opts, len: q.len, wid: q.wid, term: q.term, text: q.text, bank: q.bank, say: q.say, limit: q.limit, grading: !!q.grading, num: q.num, passage: q.passage, tag: rev ? q.tag : null, expl: rev ? q.expl : null, vi: rev ? q.vi : null, i18n: rev ? q.i18n : null, vocab: rev ? q.vocab : null, test: q.test, part: q.part, asrc: q.asrc, pend: q.pend,
               res: rev ? q.res : null, revealed: rev, ans: rev ? q.ans : null, cnt: Object.keys(q.got).length,
               picks: rev ? Object.keys(q.got).reduce(function (o, pid) { o[pid] = q.got[pid].c; return o; }, {}) : null,
               oks: rev ? Object.keys(q.got).filter(function (pid) { return q.got[pid].ok; }) : null, fast: rev ? q.fast : null };
@@ -1610,7 +1610,7 @@
     if (need) { alert(need); return; }
     if (!players().length) { alert("Chưa có người chơi nào."); return; }
     fillTeams();
-    G.st.phase = "play"; G.st.scores = {}; G.st.q = null; G.st.tsheet = null; G.tSheet = null; G.answers = []; G.myAns = []; G.srsHtml = "";
+    G.st.phase = "play"; G.st.scores = {}; G.st.q = null; G.st.tsheet = null; G.tSheet = null; G.tKeyMsg = ""; G.answers = []; G.myAns = []; G.srsHtml = "";
     G.st.total = G.st.race ? 0 : autoCount();
     G.st.hostplay = hostPlays();
     delete G.st.elapsed;   /* ván mới: tính lại thời gian chơi */   /* số câu của ván (= số từ; 📄 = số chỗ trống) để hiện "còn N câu"; ⚡ Đua = không giới hạn */
@@ -2105,6 +2105,7 @@
       $(textEl).innerHTML = tPassHTML(q.passage, q.num) +
         '<span class="g-gapline g-tstem"><b class="g-tnum">' + esc(q.num) + ".</b> " + esc(q.sent).replace("_______", '<span class="g-blank" style="width:4em"></span>') + "</span>";
       if (mine) $("#p-type").hidden = true;
+      if (mine && window.innerWidth < 700) { var qv = $(textEl); setTimeout(function () { qv.scrollIntoView({ block: "start", behavior: "smooth" }); }, 50); }   /* điện thoại: bảng điểm chiếm ~410px -> cuộn tới đề để thấy A–D (QA v109) */
       $(optsEl).innerHTML = (q.opts || []).map(function (o) { return '<button class="g-opt g-topt" data-opt="' + esc(o) + '"><span class="g-otext">' + esc(o) + '</span><span class="g-pickers"></span></button>'; }).join("");
       return;
     }
@@ -2547,7 +2548,7 @@
     if (e.target && e.target.id === "t-test" && e.target.value) {
       G.tLastTest = e.target.value;
       var p = +e.target.value.split("|")[1], m = (G.tMeta || {})[e.target.value]; if (T_SEC[p]) $("#t-qs").value = T_SEC[p];
-      if (e.isTrusted && p <= 4 && $("#t-mode")) { $("#t-mode").value = "audio"; $("#t-mode").dispatchEvent(new Event("change", { bubbles: true })); }   /* 🎧 Listening: host mở audio -> cả phòng cùng câu, host bấm sang câu */
+      var tmo = $("#t-mode"); if (tmo) { var want = p <= 4 ? "audio" : tmo.value === "audio" ? "free" : ""; if (want && tmo.value !== want) { tmo.value = want; tmo.dispatchEvent(new Event("change", { bubbles: true })); } }   /* QA v109 LC3: cả lúc danh sách đề tự chọn đề đầu; Part 5–7 thì bỏ chế độ audio */   /* 🎧 Listening: host mở audio -> cả phòng cùng câu, host bấm sang câu */
       var keep = !e.isTrusted && ($("#t-from").dataset.user || $("#t-to").dataset.user);   /* QA v104: host đã gõ đoạn câu trước khi danh sách đề tải xong -> giữ */
       if (e.isTrusted) { delete $("#t-from").dataset.user; delete $("#t-to").dataset.user; }
       if (m && !keep) { $("#t-from").value = m.min; $("#t-to").value = m.max; }
@@ -3240,7 +3241,7 @@
       (G.isHost && !s.saved ? '<details class="g-tkey"' + (hasKey ? "" : " open") + "><summary>🔑 " + esc(T("tsh_key")) + "</summary>" +
         '<p class="g-sub">' + esc(T("tsh_keytip", { a: S.nums[0], b: S.nums[S.nums.length - 1] })) + "</p>" +
         '<textarea id="e-key" rows="3" placeholder="' + esc(S.nums[0] + "C " + (S.nums[0] + 1) + "A … / CABD…") + '">' + esc(S.nums.filter(function (n) { return key[n]; }).map(function (n) { return n + key[n]; }).join(" ")) + "</textarea>" +
-        '<div class="g-row"><button class="g-btn" id="e-keysave">💾 ' + esc(T("tsh_save")) + '</button></div><p class="g-sub" id="e-keymsg"></p></details>' : "");
+        '<div class="g-row"><button class="g-btn" id="e-keysave">💾 ' + esc(T("tsh_save")) + '</button></div><p class="g-sub" id="e-keymsg">' + esc(G.tKeyMsg || "") + "</p></details>" : "");
     var b = $("#e-keysave"); if (b) b.onclick = function () { tSaveKey(S); };
   }
   function tParseKey(txt, nums) {
@@ -3259,9 +3260,9 @@
       if (r.error) fail++;
     }
     S.key = Object.assign({}, S.key || {}, key);
+    G.tKeyMsg = fail ? T("tsh_fail", { n: fail }) : T("tsh_ok", { n: ks.length });   /* QA v109 LC4: giữ thông báo qua lần vẽ lại sau push() */
     G.st.tsheet = S; writeLS("tjwl_game_tsheet_" + G.st.matchId, S); push();
     paintTSheet(G.st);
-    $("#e-keymsg").textContent = fail ? T("tsh_fail", { n: fail }) : T("tsh_ok", { n: ks.length });
   }
   function renderEnd(s) {
     var mq = G.myQ;   /* 🎯 đề thi (Tự do): câu đang làm dở lúc hết ván vẫn vào Xem lại, ghi "Bỏ qua" như Kahoot (QA v95 T4) */
