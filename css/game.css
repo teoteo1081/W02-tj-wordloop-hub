@@ -665,3 +665,26 @@ body:has(.bd-dock:not([hidden])) #g-main{padding-bottom:76px}
 @media (min-width:1100px){ body:has(#s-play:not([hidden])) #g-main,body:has(#s-review:not([hidden])) #g-main{max-width:1000px} }
 .g-bigcode{letter-spacing:.12em}
 .g-scr .g-aprow .g-btn{white-space:normal}   /* es: nút 🎯 dài không tràn màn hình 360px */
+/* 📁 tài liệu trên bảng */
+.bd-doc{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;pointer-events:none}
+.bd-doc img,.bd-doc .bd-pdfc{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;background:#fff}
+.bd-doc .bd-pdfc{width:100%;height:100%;object-fit:contain}
+.bd-docmsg{color:#cfe;font-size:16px}
+.bd-wl{position:absolute;inset:0;padding:4% 6%;color:#f3efe6;line-height:1.55;text-align:left;overflow:hidden}
+.bd-wl h3{margin:0 0 .5em;color:#ffd27a;font-size:1.15em}
+.bd-wl p{margin:0 0 .7em}
+.bd-wl .bd-term{color:#ffd27a;text-decoration:underline;text-underline-offset:3px}
+.bd-docnav{display:inline-flex;align-items:center;gap:4px;margin-left:6px}
+.bd-docnav b{min-width:3.5em;text-align:center;font-variant-numeric:tabular-nums}
+.bd-libm{position:fixed;inset:0;z-index:120;background:rgba(0,0,0,.6);display:flex;align-items:flex-start;justify-content:center;padding:6vh 12px;overflow:auto}
+.bd-libin{background:var(--card);border:1px solid var(--line);border-radius:14px;width:min(720px,100%);padding:14px;text-align:left}
+.bd-libh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}.bd-libh > b{font-size:17px}
+.bd-libh > button{margin-left:auto}
+.bd-libtabs{display:flex;gap:6px}.bd-libtabs button.on{border-color:var(--accent);color:var(--accent)}
+.bd-libm button,.bd-libup{min-height:38px;padding:6px 12px;border-radius:9px;border:1px solid var(--line);background:var(--deep);color:var(--text);cursor:pointer;font:inherit}
+.bd-libbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.bd-liblist{display:flex;flex-direction:column;gap:6px;max-height:60vh;overflow:auto}
+.bd-lrow{display:flex;gap:6px}.bd-lrow .bd-lopen{flex:1;text-align:left;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bd-lrow small{color:var(--text-2);margin-left:6px}
+.bd-libmsg{color:var(--text-2);font-size:14px;margin-top:6px}
+#bd-wlq{width:100%;box-sizing:border-box;min-height:40px;padding:8px 12px;border-radius:9px;border:1px solid var(--line);background:var(--deep);color:var(--text);margin-bottom:8px;font-size:16px}

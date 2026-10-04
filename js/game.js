@@ -68,7 +68,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 145;
+  var GAME_VER = 146;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -1628,6 +1628,26 @@
     isHost: function () { return !!G.isHost; }, players: function () { return players(); },
     isHostId: function (id) { return !!(G.me && G.isHost && id === G.me.id) || !!(G.st && G.st.hid === id); },
     setBoard: function (v) { if (!G.isHost || !G.st) return; G.st.board = !!v; push(); },
+    /* 📁 tài liệu trên bảng (board.js Lib): file ở bucket toeic/lib/…, bài đọc WordLoop từ bảng blocks */
+    setDoc: function (d) { if (!G.isHost || !G.st) return; G.st.bdoc = d || null; push(); },
+    lib: {
+      list: async function (folder) {
+        var r = await sb.storage.from("toeic").list("lib" + (folder ? "/" + folder : ""), { limit: 500, sortBy: { column: "name", order: "asc" } });
+        if (r.error) return { error: r.error.message };
+        return { items: (r.data || []).filter(function (x) { return x.name !== ".emptyFolderPlaceholder"; }).map(function (x) { return { name: x.name, dir: !x.id, size: x.metadata && x.metadata.size }; }) };
+      },
+      upload: async function (path, file) { var r = await sb.storage.from("toeic").upload("lib/" + path, file, { upsert: true, contentType: file.type || undefined }); return { error: r.error && r.error.message }; },
+      remove: async function (path) { var r = await sb.storage.from("toeic").remove(["lib/" + path]); return { error: r.error ? r.error.message : (r.data && !r.data.length ? "Không xoá được (chưa có quyền xoá trong kho)" : null) }; },
+      move: async function (a, b) { var r = await sb.storage.from("toeic").move("lib/" + a, "lib/" + b); return { error: r.error && r.error.message }; },
+      url: function (path) { return cfg.SUPABASE_URL + "/storage/v1/object/public/toeic/lib/" + path.split("/").map(encodeURIComponent).join("/"); }
+    },
+    block: async function (id) { var r = await sb.from("blocks").select("id,name,context_passage").eq("id", id).maybeSingle(); return r.data; },
+    blocks: async function (q) {
+      var qq = sb.from("blocks").select("id,name,context_passage").not("context_passage", "is", null).neq("context_passage", "").order("updated_at", { ascending: false }).limit(25);
+      if (q && q.trim()) { var v = q.trim().replace(/[%,()]/g, " "); qq = qq.or("name.ilike.%" + v + "%,context_passage.ilike.%" + v + "%"); }
+      var r = await qq;
+      return (r.data || []).map(function (b) { var raw = String(b.context_passage || ""), i = raw.indexOf("\n<<<TJWL_META>>>\n"), ti = ""; if (i >= 0) { try { ti = JSON.parse(raw.slice(i + 17)).title || ""; } catch (e) {} } return { id: b.id, name: b.name, title: ti, snip: (i >= 0 ? raw.slice(0, i) : raw).replace(/[\[\]]/g, "").replace(/\s+/g, " ").trim().slice(0, 90) + "…" }; });
+    },
     togglePerm: function (pid) { if (!G.isHost || !G.st) return; var p = G.st.bperm = Object.assign({}, G.st.bperm || {}); if (p[pid]) delete p[pid]; else p[pid] = 1; push(); }
   });
   $("#l-start").addEventListener("click", async function () {

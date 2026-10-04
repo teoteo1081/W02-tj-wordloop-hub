@@ -21,10 +21,10 @@
 
   /* chữ trên bảng theo NGÔN NGỮ GIAO DIỆN của người xem (TJ 2026-10-04: chọn 中文 mà bảng vẫn tiếng Việt) — game.js truyền api.lang() */
   var TX = {
-    vi: { board: "🖤 Bảng", can: "✍️ bạn được dùng bảng", view: "👀 chỉ xem", viewmsg: "👀 Bạn đang xem — host cấp quyền thì mới dùng được bút", perm: "👥 Quyền", permt: "Cấp quyền dùng bảng", min: "Thu nhỏ trên máy mình", close: "Đóng bảng cho cả phòng", laser: "Laser", pen: "Bút vẽ", text: "Ô chữ", color: "Màu", size: "Cỡ nét", undo: "Hoàn tác", redo: "Làm lại", clearAll: "Xoá cả bảng", clearMine: "Xoá nét của tôi", dock: "🖤 Mở bảng", open: "🖤 Bảng", qAll: "Xoá hết nét vẽ và ô chữ trên bảng (của cả phòng)?", qMine: "Xoá hết nét vẽ và ô chữ của bạn?", who: "Ai được dùng bảng (bút, laser, ô chữ):", none: "Chưa có người chơi nào.", share: "🖥 Chia sẻ màn hình", unshare: "⏹ Dừng chia sẻ", sharet: "Chia sẻ màn hình của bạn cho cả phòng (như Google Meet) — người có quyền vẫn vẽ/laser lên trên", sharing: "🖥 Bạn đang chia sẻ màn hình", nview: "👁 {n} người xem", watching: "🖥 {n} đang chia sẻ màn hình", conn: "🖥 đang kết nối…", fail: "⚠️ Không kết nối được — mạng có thể chặn (cần TURN)", full: "⚠️ Đã đủ 10 người xem — chờ có chỗ trống", hostfull: "⚠️ Tối đa 10 người xem — {n} người chưa xem được", unmute: "🔊 Bật tiếng", mute: "🔇 Tắt tiếng", shErr: "Không chia sẻ được màn hình: " },
-    en: { board: "🖤 Board", can: "✍️ you can use the board", view: "👀 view only", viewmsg: "👀 You are watching — the host must give you permission to draw", perm: "👥 Access", permt: "Give board access", min: "Minimise on my screen", close: "Close the board for everyone", laser: "Laser", pen: "Pen", text: "Text box", color: "Colour", size: "Size", undo: "Undo", redo: "Redo", clearAll: "Clear the whole board", clearMine: "Clear my marks", dock: "🖤 Open board", open: "🖤 Board", qAll: "Clear all drawings and text on the board (for everyone)?", qMine: "Clear all your drawings and text?", who: "Who can use the board (pen, laser, text):", none: "No players yet.", share: "🖥 Share screen", unshare: "⏹ Stop sharing", sharet: "Share your screen with the whole room (like Google Meet) — people with access can still draw/laser on top", sharing: "🖥 You are sharing your screen", nview: "👁 {n} watching", watching: "🖥 {n} is sharing their screen", conn: "🖥 connecting…", fail: "⚠️ Could not connect — the network may be blocking it (TURN needed)", full: "⚠️ 10 viewers already — waiting for a free spot", hostfull: "⚠️ Max 10 viewers — {n} people cannot watch", unmute: "🔊 Turn sound on", mute: "🔇 Mute", shErr: "Could not share the screen: " },
-    zh: { board: "🖤 白板", can: "✍️ 你可以使用白板", view: "👀 仅观看", viewmsg: "👀 你正在观看 — 主持人授权后才能使用画笔", perm: "👥 权限", permt: "授权使用白板", min: "在我的屏幕上最小化", close: "为全房间关闭白板", laser: "激光笔", pen: "画笔", text: "文本框", color: "颜色", size: "粗细", undo: "撤销", redo: "重做", clearAll: "清空整个白板", clearMine: "清除我的笔迹", dock: "🖤 打开白板", open: "🖤 白板", qAll: "清除白板上所有笔迹和文字（全房间）？", qMine: "清除你所有的笔迹和文字？", who: "谁可以使用白板（画笔、激光笔、文本框）：", none: "还没有玩家。", share: "🖥 共享屏幕", unshare: "⏹ 停止共享", sharet: "把你的屏幕共享给全房间（像 Google Meet）— 有权限的人仍可在上面画画/用激光笔", sharing: "🖥 你正在共享屏幕", nview: "👁 {n} 人观看", watching: "🖥 {n} 正在共享屏幕", conn: "🖥 正在连接…", fail: "⚠️ 无法连接 — 网络可能被拦截（需要 TURN）", full: "⚠️ 观看人数已满 10 人 — 等待空位", hostfull: "⚠️ 最多 10 人观看 — 还有 {n} 人看不到", unmute: "🔊 打开声音", mute: "🔇 静音", shErr: "无法共享屏幕：" },
-    es: { board: "🖤 Pizarra", can: "✍️ puedes usar la pizarra", view: "👀 solo ver", viewmsg: "👀 Estás mirando — el anfitrión debe darte permiso para dibujar", perm: "👥 Permisos", permt: "Dar acceso a la pizarra", min: "Minimizar en mi pantalla", close: "Cerrar la pizarra para todos", laser: "Láser", pen: "Lápiz", text: "Cuadro de texto", color: "Color", size: "Grosor", undo: "Deshacer", redo: "Rehacer", clearAll: "Borrar toda la pizarra", clearMine: "Borrar mis trazos", dock: "🖤 Abrir pizarra", open: "🖤 Pizarra", qAll: "¿Borrar todos los trazos y textos de la pizarra (para todos)?", qMine: "¿Borrar todos tus trazos y textos?", who: "Quién puede usar la pizarra (lápiz, láser, texto):", none: "Aún no hay jugadores.", share: "🖥 Compartir pantalla", unshare: "⏹ Dejar de compartir", sharet: "Comparte tu pantalla con toda la sala (como Google Meet) — quien tenga permiso puede seguir dibujando/usando el láser encima", sharing: "🖥 Estás compartiendo tu pantalla", nview: "👁 {n} mirando", watching: "🖥 {n} está compartiendo su pantalla", conn: "🖥 conectando…", fail: "⚠️ No se pudo conectar — la red puede estar bloqueándolo (hace falta TURN)", full: "⚠️ Ya hay 10 espectadores — esperando un hueco", hostfull: "⚠️ Máximo 10 espectadores — {n} personas no pueden ver", unmute: "🔊 Activar sonido", mute: "🔇 Silenciar", shErr: "No se pudo compartir la pantalla: " }
+    vi: { lib: "📁 Tài liệu", lib_img: "Ảnh", lib_wl: "Bài đọc WordLoop", lib_wlq: "Tìm bài đọc (tên Block / chữ trong bài)…", lib_up: "Tải lên", lib_newf: "Thư mục mới", lib_empty: "Thư mục trống — bấm ⬆️ Tải lên để thêm PDF/ảnh", lib_newhint: "Đã vào thư mục mới — tải file lên là thư mục được tạo", board: "🖤 Bảng", can: "✍️ bạn được dùng bảng", view: "👀 chỉ xem", viewmsg: "👀 Bạn đang xem — host cấp quyền thì mới dùng được bút", perm: "👥 Quyền", permt: "Cấp quyền dùng bảng", min: "Thu nhỏ trên máy mình", close: "Đóng bảng cho cả phòng", laser: "Laser", pen: "Bút vẽ", text: "Ô chữ", color: "Màu", size: "Cỡ nét", undo: "Hoàn tác", redo: "Làm lại", clearAll: "Xoá cả bảng", clearMine: "Xoá nét của tôi", dock: "🖤 Mở bảng", open: "🖤 Bảng", qAll: "Xoá hết nét vẽ và ô chữ trên bảng (của cả phòng)?", qMine: "Xoá hết nét vẽ và ô chữ của bạn?", who: "Ai được dùng bảng (bút, laser, ô chữ):", none: "Chưa có người chơi nào.", share: "🖥 Chia sẻ màn hình", unshare: "⏹ Dừng chia sẻ", sharet: "Chia sẻ màn hình của bạn cho cả phòng (như Google Meet) — người có quyền vẫn vẽ/laser lên trên", sharing: "🖥 Bạn đang chia sẻ màn hình", nview: "👁 {n} người xem", watching: "🖥 {n} đang chia sẻ màn hình", conn: "🖥 đang kết nối…", fail: "⚠️ Không kết nối được — mạng có thể chặn (cần TURN)", full: "⚠️ Đã đủ 10 người xem — chờ có chỗ trống", hostfull: "⚠️ Tối đa 10 người xem — {n} người chưa xem được", unmute: "🔊 Bật tiếng", mute: "🔇 Tắt tiếng", shErr: "Không chia sẻ được màn hình: " },
+    en: { lib: "📁 Materials", lib_img: "Images", lib_wl: "WordLoop readings", lib_wlq: "Search readings (Block name / text)…", lib_up: "Upload", lib_newf: "New folder", lib_empty: "Empty folder — press ⬆️ Upload to add PDFs/images", lib_newhint: "In the new folder — upload a file to create it", board: "🖤 Board", can: "✍️ you can use the board", view: "👀 view only", viewmsg: "👀 You are watching — the host must give you permission to draw", perm: "👥 Access", permt: "Give board access", min: "Minimise on my screen", close: "Close the board for everyone", laser: "Laser", pen: "Pen", text: "Text box", color: "Colour", size: "Size", undo: "Undo", redo: "Redo", clearAll: "Clear the whole board", clearMine: "Clear my marks", dock: "🖤 Open board", open: "🖤 Board", qAll: "Clear all drawings and text on the board (for everyone)?", qMine: "Clear all your drawings and text?", who: "Who can use the board (pen, laser, text):", none: "No players yet.", share: "🖥 Share screen", unshare: "⏹ Stop sharing", sharet: "Share your screen with the whole room (like Google Meet) — people with access can still draw/laser on top", sharing: "🖥 You are sharing your screen", nview: "👁 {n} watching", watching: "🖥 {n} is sharing their screen", conn: "🖥 connecting…", fail: "⚠️ Could not connect — the network may be blocking it (TURN needed)", full: "⚠️ 10 viewers already — waiting for a free spot", hostfull: "⚠️ Max 10 viewers — {n} people cannot watch", unmute: "🔊 Turn sound on", mute: "🔇 Mute", shErr: "Could not share the screen: " },
+    zh: { lib: "📁 资料", lib_img: "图片", lib_wl: "WordLoop 阅读", lib_wlq: "搜索阅读（Block 名称 / 文中词）…", lib_up: "上传", lib_newf: "新文件夹", lib_empty: "空文件夹 — 点 ⬆️ 上传 添加 PDF/图片", lib_newhint: "已进入新文件夹 — 上传文件即创建", board: "🖤 白板", can: "✍️ 你可以使用白板", view: "👀 仅观看", viewmsg: "👀 你正在观看 — 主持人授权后才能使用画笔", perm: "👥 权限", permt: "授权使用白板", min: "在我的屏幕上最小化", close: "为全房间关闭白板", laser: "激光笔", pen: "画笔", text: "文本框", color: "颜色", size: "粗细", undo: "撤销", redo: "重做", clearAll: "清空整个白板", clearMine: "清除我的笔迹", dock: "🖤 打开白板", open: "🖤 白板", qAll: "清除白板上所有笔迹和文字（全房间）？", qMine: "清除你所有的笔迹和文字？", who: "谁可以使用白板（画笔、激光笔、文本框）：", none: "还没有玩家。", share: "🖥 共享屏幕", unshare: "⏹ 停止共享", sharet: "把你的屏幕共享给全房间（像 Google Meet）— 有权限的人仍可在上面画画/用激光笔", sharing: "🖥 你正在共享屏幕", nview: "👁 {n} 人观看", watching: "🖥 {n} 正在共享屏幕", conn: "🖥 正在连接…", fail: "⚠️ 无法连接 — 网络可能被拦截（需要 TURN）", full: "⚠️ 观看人数已满 10 人 — 等待空位", hostfull: "⚠️ 最多 10 人观看 — 还有 {n} 人看不到", unmute: "🔊 打开声音", mute: "🔇 静音", shErr: "无法共享屏幕：" },
+    es: { lib: "📁 Materiales", lib_img: "Imágenes", lib_wl: "Lecturas WordLoop", lib_wlq: "Buscar lecturas (nombre del Block / texto)…", lib_up: "Subir", lib_newf: "Nueva carpeta", lib_empty: "Carpeta vacía — pulsa ⬆️ Subir para añadir PDF/imágenes", lib_newhint: "En la carpeta nueva — sube un archivo para crearla", board: "🖤 Pizarra", can: "✍️ puedes usar la pizarra", view: "👀 solo ver", viewmsg: "👀 Estás mirando — el anfitrión debe darte permiso para dibujar", perm: "👥 Permisos", permt: "Dar acceso a la pizarra", min: "Minimizar en mi pantalla", close: "Cerrar la pizarra para todos", laser: "Láser", pen: "Lápiz", text: "Cuadro de texto", color: "Color", size: "Grosor", undo: "Deshacer", redo: "Rehacer", clearAll: "Borrar toda la pizarra", clearMine: "Borrar mis trazos", dock: "🖤 Abrir pizarra", open: "🖤 Pizarra", qAll: "¿Borrar todos los trazos y textos de la pizarra (para todos)?", qMine: "¿Borrar todos tus trazos y textos?", who: "Quién puede usar la pizarra (lápiz, láser, texto):", none: "Aún no hay jugadores.", share: "🖥 Compartir pantalla", unshare: "⏹ Dejar de compartir", sharet: "Comparte tu pantalla con toda la sala (como Google Meet) — quien tenga permiso puede seguir dibujando/usando el láser encima", sharing: "🖥 Estás compartiendo tu pantalla", nview: "👁 {n} mirando", watching: "🖥 {n} está compartiendo su pantalla", conn: "🖥 conectando…", fail: "⚠️ No se pudo conectar — la red puede estar bloqueándolo (hace falta TURN)", full: "⚠️ Ya hay 10 espectadores — esperando un hueco", hostfull: "⚠️ Máximo 10 espectadores — {n} personas no pueden ver", unmute: "🔊 Activar sonido", mute: "🔇 Silenciar", shErr: "No se pudo compartir la pantalla: " }
   };
   function t(k) { var l = api && api.lang ? api.lang() : "vi"; return (TX[l] || TX.vi)[k] || TX.vi[k] || k; }
   function relabel() {
@@ -58,11 +58,13 @@
     el.id = "bd"; el.className = "bd"; el.hidden = true;
     el.innerHTML =
       '<div class="bd-head"><b data-bt="board"></b><span class="bd-who" id="bd-who"></span><span class="bd-scr" id="bd-scr"></span>' +
+      '<span class="bd-docnav" id="bd-docnav" hidden><button type="button" class="bd-hb" id="bd-dprev">◀</button><b id="bd-dpg"></b><button type="button" class="bd-hb" id="bd-dnext">▶</button><button type="button" class="bd-hb" id="bd-dclose" title="Đóng tài liệu">✕</button></span>' +
+      '<button type="button" class="bd-hb" id="bd-lib" hidden data-bt="lib"></button>' +   /* 📁 tài liệu: PDF / ảnh / bài đọc WordLoop lên bảng (chỉ host) */
       '<button type="button" class="bd-hb" id="bd-share" hidden data-btt="sharet" data-bt="share"></button>' +   /* 🖥 chia sẻ màn hình (chỉ host, máy tính) */
       '<button type="button" class="bd-hb" id="bd-perm" hidden data-btt="permt" data-bt="perm"></button>' +
       '<button type="button" class="bd-hb" id="bd-min" data-btt="min">▁</button>' +
       '<button type="button" class="bd-hb" id="bd-close" hidden data-btt="close">✕</button></div>' +
-      '<div class="bd-stage" id="bd-stage"><video id="bd-video" class="bd-video" autoplay playsinline muted hidden></video><canvas id="bd-cv"></canvas><div class="bd-texts" id="bd-texts"></div><button type="button" class="bd-aud" id="bd-aud" hidden data-bt="unmute"></button></div>' +
+      '<div class="bd-stage" id="bd-stage"><div class="bd-doc" id="bd-doc"></div><video id="bd-video" class="bd-video" autoplay playsinline muted hidden></video><canvas id="bd-cv"></canvas><div class="bd-texts" id="bd-texts"></div><button type="button" class="bd-aud" id="bd-aud" hidden data-bt="unmute"></button></div>' +
       '<div class="bd-tools" id="bd-tools">' +
         '<button type="button" data-tool="laser" data-btt="laser">🔴</button>' +
         '<button type="button" data-tool="pen" data-btt="pen">✏️</button>' +
@@ -110,6 +112,9 @@
     if (b.id === "bd-aud") { var v = $("#bd-video"); v.muted = !v.muted; if (!v.muted) v.play().catch(function () {}); paintShare(); return; }
     if (b.id === "bd-min") { mini = true; paintOpen(); return; }
     if (b.id === "bd-close") { api.setBoard(false); return; }
+    if (b.id === "bd-lib") { Lib.open(); return; }
+    if (b.id === "bd-dprev" || b.id === "bd-dnext") { var d0 = curDoc(); if (d0 && api.isHost()) api.setDoc(Object.assign({}, d0, { p: Math.max(1, Math.min(d0.n || 999, (d0.p || 1) + (b.id === "bd-dnext" ? 1 : -1))) })); return; }
+    if (b.id === "bd-dclose") { if (api.isHost()) api.setDoc(null); return; }
     if (b.id === "bd-perm") { var pb = $("#bd-permbox"); pb.hidden = !pb.hidden; paintPerm(); paintOpen(); return; }   /* QA v106 L2: cập nhật phần đẩy nội dung xuống */
     if (b.dataset.perm) { api.togglePerm(b.dataset.perm); return; }
   }
@@ -336,7 +341,124 @@
     else if (!want && open) { open = false; paintOpen(); if (shStream) stopShare(); }   /* host đóng bảng = dừng chia sẻ màn hình */
     paintOpen();
     if (open) { paintTools(); paintPerm(); var who = $("#bd-who"); if (who) who.textContent = t(canDraw() ? "can" : "view"); }
+    if (open) { var lb = $("#bd-lib"); if (lb) lb.hidden = !api.isHost(); syncDoc(s.bdoc || null); }
   }
+  /* ---------- 📁 TÀI LIỆU TRÊN BẢNG (TJ 2026-10-04): PDF / ảnh trong thư viện Supabase + bài đọc WordLoop ----------
+     Host chọn -> st.bdoc = {k:"pdf"|"img"|"wl", url|bid, name, p, n} -> mọi máy tự vẽ tài liệu làm NỀN dưới lớp bút (khung 16:9 như nhau
+     nên nét vẽ khớp đúng chỗ trên mọi máy). Nét vẽ RIÊNG từng trang: đổi trang/tài liệu thì cất nét trang cũ, lấy lại nét trang mới. */
+  var docKey = "", docJob = 0, stash = {}, pdfCache = {}, wlCache = {};
+  function curDoc() { var s0 = st(); return s0 && s0.bdoc || null; }
+  function keyOf(d) { return d ? (d.k + ":" + (d.url || d.bid) + ":" + (d.p || 1)) : ""; }
+  function syncDoc(d) {
+    var k = keyOf(d);
+    var nav = $("#bd-docnav"); if (nav) { nav.hidden = !d || d.k === "img"; $("#bd-dpg").textContent = d ? (d.p || 1) + (d.n ? " / " + d.n : "") : ""; ["#bd-dprev", "#bd-dnext", "#bd-dclose"].forEach(function (x) { var e = $(x); if (e) e.hidden = !api.isHost(); }); if (d && d.k === "img") nav.hidden = !api.isHost(); }
+    if (k === docKey) return;
+    stash[docKey] = { items: items, order: order };   /* cất nét của trang cũ */
+    var sv = stash[k] || { items: {}, order: [] }; items = sv.items; order = sv.order; mine = []; redo = [];
+    docKey = k; draw(); paintTexts(); paintTools(); paintDoc(d);
+  }
+  function paintDoc(d) {
+    var box = $("#bd-doc"); if (!box) return;
+    var job = ++docJob; box.innerHTML = ""; wrap.classList.toggle("bd-hasdoc", !!d);
+    if (!d) return;
+    if (d.k === "img") { box.innerHTML = '<img alt="" src="' + esc(d.url) + '">'; return; }
+    if (d.k === "pdf") return pdfPage(d, job);
+    if (d.k === "wl") return wlPage(d, job);
+  }
+  function loadScript(src) { return new Promise(function (ok, no) { var sc = document.createElement("script"); sc.src = src; sc.onload = ok; sc.onerror = no; document.head.appendChild(sc); }); }
+  var PDFJS = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/";
+  async function pdfLib() {
+    if (!window.pdfjsLib) await loadScript(PDFJS + "pdf.min.js");
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS + "pdf.worker.min.js"; return window.pdfjsLib;
+  }
+  async function pdfPage(d, job) {
+    var box = $("#bd-doc"); box.innerHTML = '<div class="bd-docmsg">⏳ PDF…</div>';
+    try {
+      var lib = await pdfLib(); var doc = pdfCache[d.url] || (pdfCache[d.url] = await lib.getDocument(d.url).promise);
+      if (job !== docJob) return;
+      var n = doc.numPages; if (api.isHost() && d.n !== n) { api.setDoc(Object.assign({}, d, { n: n })); }
+      var page = await doc.getPage(Math.min(n, d.p || 1)); if (job !== docJob) return;
+      var r = wrap.getBoundingClientRect(), pr = window.devicePixelRatio || 1, vp0 = page.getViewport({ scale: 1 });
+      var sc = Math.min(r.width / vp0.width, r.height / vp0.height) * pr, vp = page.getViewport({ scale: sc });
+      var c = document.createElement("canvas"); c.width = Math.round(vp.width); c.height = Math.round(vp.height); c.className = "bd-pdfc";
+      await page.render({ canvasContext: c.getContext("2d"), viewport: vp }).promise;
+      if (job !== docJob) return; box.innerHTML = ""; box.appendChild(c);
+    } catch (e) { if (job === docJob) box.innerHTML = '<div class="bd-docmsg">⚠ ' + esc(e.message || e) + "</div>"; }
+  }
+  /* 📖 bài đọc WordLoop: chia trang theo đoạn (~650 ký tự/trang), từ cần học [term] tô đậm */
+  async function wlPage(d, job) {
+    var box = $("#bd-doc"); box.innerHTML = '<div class="bd-docmsg">⏳</div>';
+    try {
+      var b = wlCache[d.bid] || (wlCache[d.bid] = await api.block(d.bid)); if (job !== docJob) return;
+      var raw = String((b && b.context_passage) || ""), cut = raw.indexOf("\n<<<TJWL_META>>>\n"), meta = {};
+      if (cut >= 0) { try { meta = JSON.parse(raw.slice(cut + 17)); } catch (e) {} raw = raw.slice(0, cut); }
+      var paras = raw.split(/\n\s*\n/).map(function (x) { return x.trim(); }).filter(Boolean), pages = [], curP = "";
+      paras.forEach(function (p) { if (curP && (curP + p).length > 950) { pages.push(curP); curP = ""; } curP += (curP ? "\n\n" : "") + p; }); if (curP) pages.push(curP);
+      if (!pages.length) pages = ["(Block này chưa có bài đọc)"];
+      var n = pages.length; if (api.isHost() && d.n !== n) api.setDoc(Object.assign({}, d, { n: n }));
+      var pg = pages[Math.min(n, d.p || 1) - 1];
+      var html = esc(pg).replace(/\[([^\]]{1,60})\]/g, '<b class="bd-term">$1</b>').replace(/\n\n/g, "</p><p>");
+      box.innerHTML = '<div class="bd-wl">' + ((d.p || 1) === 1 && (meta.title || d.name) ? '<h3>' + esc(meta.title || d.name) + "</h3>" : "") + "<p>" + html + "</p></div>";
+      var wl = box.firstChild; wl.style.fontSize = Math.max(10, wrap.getBoundingClientRect().width * 0.024) + "px";
+    } catch (e) { if (job === docJob) box.innerHTML = '<div class="bd-docmsg">⚠ ' + esc(e.message || e) + "</div>"; }
+  }
+  window.addEventListener("resize", function () { clearTimeout(window.__bdDocT); window.__bdDocT = setTimeout(function () { var d = curDoc(); if (open && d && d.k !== "img") paintDoc(d); }, 250); });   /* đổi cỡ: vẽ lại nền cho nét, giữ nguyên nét */
+  /* 📁 hộp thư viện (host): thư mục theo môn trong bucket toeic/lib/<môn>/…, tải lên / đổi tên / xoá; tab bài đọc WordLoop */
+  var Lib = {
+    folder: "", tab: "files",
+    open: function () {
+      var m = $("#bd-libm"); if (!m) { m = document.createElement("div"); m.id = "bd-libm"; m.className = "bd-libm"; document.body.appendChild(m); m.addEventListener("click", Lib.click); m.addEventListener("change", Lib.change); }
+      m.hidden = false; Lib.paint();
+    },
+    close: function () { var m = $("#bd-libm"); if (m) m.hidden = true; },
+    paint: async function () {
+      var m = $("#bd-libm"); if (!m) return;
+      var head = '<div class="bd-libin"><div class="bd-libh"><b>📁 ' + esc(t("lib")) + '</b><span class="bd-libtabs"><button type="button" data-lt="files" class="' + (Lib.tab === "files" ? "on" : "") + '">📄 PDF / 🖼 ' + esc(t("lib_img")) + '</button><button type="button" data-lt="wl" class="' + (Lib.tab === "wl" ? "on" : "") + '">📖 ' + esc(t("lib_wl")) + '</button></span><button type="button" data-lx="1">✕</button></div>';
+      if (Lib.tab === "wl") { m.innerHTML = head + '<input type="search" id="bd-wlq" placeholder="' + esc(t("lib_wlq")) + '"><div id="bd-wllist" class="bd-liblist">⏳</div></div>'; Lib.searchWL(""); return; }
+      m.innerHTML = head + '<div class="bd-libbar"><span>📂 <b>' + esc(Lib.folder || "lib") + '</b></span>' + (Lib.folder ? ' <button type="button" data-lup="1">⬆ ..</button>' : "") +
+        ' <label class="bd-libup">⬆️ ' + esc(t("lib_up")) + '<input type="file" id="bd-libfile" accept="application/pdf,image/*" multiple hidden></label> <button type="button" data-lnew="1">➕ ' + esc(t("lib_newf")) + '</button></div><div id="bd-liblist" class="bd-liblist">⏳</div><div class="bd-libmsg" id="bd-libmsg"></div></div>';
+      var r = await api.lib.list(Lib.folder), box = $("#bd-liblist"); if (!box) return;
+      if (r.error) { box.textContent = "⚠ " + r.error; return; }
+      box.innerHTML = (r.items || []).map(function (x) {
+        if (x.dir) return '<div class="bd-lrow"><button type="button" class="bd-lopen" data-ldir="' + esc(x.name) + '">📂 ' + esc(x.name) + "</button></div>";
+        var isPdf = /\.pdf$/i.test(x.name);
+        return '<div class="bd-lrow"><button type="button" class="bd-lopen" data-lfile="' + esc(x.name) + '">' + (isPdf ? "📄 " : "🖼 ") + esc(x.name) + ' <small>' + (x.size ? Math.round(x.size / 1024) + " KB" : "") + '</small></button><button type="button" data-lren="' + esc(x.name) + '" title="Đổi tên">✏️</button><button type="button" data-ldel="' + esc(x.name) + '" title="Xoá">🗑</button></div>';
+      }).join("") || '<div class="bd-libmsg">' + esc(t("lib_empty")) + "</div>";
+    },
+    path: function (n) { return (Lib.folder ? Lib.folder + "/" : "") + n; },
+    msg: function (x) { var e = $("#bd-libmsg"); if (e) e.textContent = x; },
+    click: async function (e) {
+      var b = e.target.closest("button"); var m = $("#bd-libm");
+      if (e.target === m) return Lib.close();
+      if (!b) return;
+      if (b.dataset.lx) return Lib.close();
+      if (b.dataset.lt) { Lib.tab = b.dataset.lt; return Lib.paint(); }
+      if (b.dataset.ldir) { Lib.folder = Lib.path(b.dataset.ldir); return Lib.paint(); }
+      if (b.dataset.lup) { Lib.folder = Lib.folder.split("/").slice(0, -1).join("/"); return Lib.paint(); }
+      if (b.dataset.lnew) { var nf = prompt(t("lib_newf")); if (!nf) return; nf = nf.trim().replace(/[\/\\#?%]+/g, "-"); if (!nf) return; Lib.folder = Lib.path(nf); Lib.paint(); Lib.msg(t("lib_newhint")); return; }
+      if (b.dataset.lfile) { var n = b.dataset.lfile, url = api.lib.url(Lib.path(n)); api.setDoc({ k: /\.pdf$/i.test(n) ? "pdf" : "img", url: url, name: n, p: 1 }); return Lib.close(); }
+      if (b.dataset.ldel) { if (!confirm("Xoá \"" + b.dataset.ldel + "\"?")) return; var r1 = await api.lib.remove(Lib.path(b.dataset.ldel)); if (r1.error) return Lib.msg("⚠ " + r1.error); return Lib.paint(); }
+      if (b.dataset.lren) { var nn = prompt("Tên mới", b.dataset.lren); if (!nn || nn === b.dataset.lren) return; var r2 = await api.lib.move(Lib.path(b.dataset.lren), Lib.path(nn.replace(/[\/\\#?%]+/g, "-"))); if (r2.error) return Lib.msg("⚠ " + r2.error); return Lib.paint(); }
+      if (b.dataset.wl) { api.setDoc({ k: "wl", bid: b.dataset.wl, name: b.dataset.wn || "", p: 1 }); return Lib.close(); }
+    },
+    change: async function (e) {
+      if (e.target.id !== "bd-libfile") return;
+      var fs = [].slice.call(e.target.files || []); if (!fs.length) return;
+      for (var i = 0; i < fs.length; i++) {
+        var f0 = fs[i]; if (f0.size > 50 * 1024 * 1024) { Lib.msg("⚠ " + f0.name + ": > 50 MB"); continue; }
+        Lib.msg("⏳ " + (i + 1) + "/" + fs.length + " " + f0.name);
+        var nm = f0.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").replace(/[^A-Za-z0-9._-]+/g, "_");
+        var r = await api.lib.upload(Lib.path(nm), f0); if (r.error) { Lib.msg("⚠ " + f0.name + ": " + r.error); return; }
+      }
+      Lib.msg("✓"); Lib.paint();
+    },
+    searchWL: async function (q) {
+      var box = $("#bd-wllist"); if (!box) return;
+      var inp = $("#bd-wlq"); if (inp && !inp.dataset.on) { inp.dataset.on = 1; inp.addEventListener("input", function () { clearTimeout(Lib.qt); var v = inp.value; Lib.qt = setTimeout(function () { Lib.searchWL(v); }, 350); }); }
+      var L = await api.blocks(q); if (!$("#bd-wllist")) return;
+      box.innerHTML = (L || []).map(function (x) { return '<div class="bd-lrow"><button type="button" class="bd-lopen" data-wl="' + esc(x.id) + '" data-wn="' + esc(x.title || x.name) + '">📖 <b>' + esc(x.title || x.name) + "</b> " + (x.snip ? '<small>' + esc(x.snip) + "</small>" : "") + "</button></div>"; }).join("") || '<div class="bd-libmsg">—</div>';
+    }
+  };
   /* ---------- 🖥 CHIA SẺ MÀN HÌNH (TJ 2026-10-04: trang TRẢ PHÍ chỉ tài khoản TJ mở được -> chia sẻ cho cả phòng như Google Meet) ----------
      · Chỉ host, chỉ trình duyệt máy tính có getDisplayMedia (điện thoại không có -> ẩn nút).
      · WebRTC dạng LƯỚI (mesh): host mở 1 RTCPeerConnection cho MỖI người xem (tối đa MAXV=10, mỗi luồng ~1.2 Mbps).
