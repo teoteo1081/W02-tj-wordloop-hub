@@ -575,3 +575,9 @@ body.embed .g-brand{display:none}
 .bd-stage.bd-screen{background:#000}
 .bd-aud{position:absolute;right:8px;top:8px;z-index:2;background:rgba(0,0,0,.65);color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:999px;padding:5px 12px;font-size:13px;cursor:pointer}
 .bd-aud[hidden]{display:none}
+/* 📝 Thi thật */
+.g-tparts{display:flex;flex-wrap:wrap;gap:6px 12px}
+.g-exnav{gap:8px;margin:6px 0}.g-expal{display:grid;grid-template-columns:repeat(auto-fill,minmax(42px,1fr));gap:4px;margin-top:6px}
+.g-expal button{padding:4px 0;border-radius:6px;border:1px solid var(--line,#3334);background:var(--deep,#0003);color:inherit;font-size:12px;cursor:pointer}
+.g-expal button.done{background:#1f8a4c55}.g-expal button.cur{outline:2px solid var(--accent,#7c5cff)}
+.g-exres{text-align:center}.g-exres p{margin:6px 0}.g-exsum{font-size:1.2em}
