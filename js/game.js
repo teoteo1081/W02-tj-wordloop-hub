@@ -68,7 +68,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 125;
+  var GAME_VER = 126;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -1327,6 +1327,7 @@
     });
     G.ch.on("broadcast", { event: "ans" }, function (m) { if (G.isHost) hostOnAnswer(m.payload); });
     G.ch.on("broadcast", { event: "board" }, function (m) { if (window.Board) Board.onMsg(m.payload); });   /* 🖤 bảng vẽ chung (js/board.js) */
+    G.ch.on("broadcast", { event: "rtc" }, function (m) { if (window.Board && Board.onRtc) Board.onRtc(m.payload); });   /* 🖥 chia sẻ màn hình: báo hiệu WebRTC (js/board.js, TJ 2026-10-04) */
     G.ch.on("broadcast", { event: "gaps" }, function (m) {   /* câu điền chỗ trống ngắn từ host (kiểu Tự do) */
       if (G.isHost || !m.payload) return;
       G.gapsIn = m.payload;
