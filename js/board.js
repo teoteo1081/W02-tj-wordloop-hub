@@ -15,7 +15,7 @@
   var items = {}, order = [];          /* id -> {k:"s"|"t", ...}; order = thứ tự vẽ */
   var mine = [], redo = [];            /* id nét/ô chữ của mình để hoàn tác */
   var lasers = {};                     /* pid -> {pts:[{x,y,t}], name, at} */
-  var cv, ctx, wrap, dpr = 1, cur = null, sendT = 0, lastLaserSend = 0, raf = 0, editing = null;
+  var cv, ctx, wrap, dpr = 1, cur = null, sendT = 0, lastLaserSend = 0, laserTail = 0, raf = 0, editing = null;
   var cid = Math.random().toString(36).slice(2, 9);   /* mã máy này — bỏ qua tin của chính mình (kênh bật self) */
 
   function $(s) { return document.querySelector(s); }
@@ -180,7 +180,10 @@
   function laserAt(p) {
     var name = me() ? me().name : "";
     var L = lasers[myId()] = lasers[myId()] || { pts: [], name: name }; L.pts.push({ x: p.x, y: p.y, t: Date.now() }); draw();
-    if (Date.now() - lastLaserSend > 50) { lastLaserSend = Date.now(); send({ t: "l", x: Math.round(p.x), y: Math.round(p.y), n: name }); }
+    var msg = { t: "l", x: Math.round(p.x), y: Math.round(p.y), n: name };
+    clearTimeout(laserTail);
+    if (Date.now() - lastLaserSend > 50) { lastLaserSend = Date.now(); send(msg); }
+    else laserTail = setTimeout(function () { lastLaserSend = Date.now(); send(msg); }, 60); // gửi bù vị trí cuối khi dừng tay
   }
 
   /* ---------- ô chữ ---------- */
