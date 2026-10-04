@@ -11,7 +11,8 @@
   var learnWasHidden = true;
 
   function isTJ() { return !!(w.Auth && w.Auth.user && w.Auth.user.id === TJ_ID && !w.Auth.viewAsUserId && w.DB && w.DB.mode === "cloud"); }
-  function syncBtn() { btn.hidden = !isTJ(); if (mbtn) mbtn.hidden = btn.hidden; if (btn.hidden && isOpen()) close(); }
+  var settled = false;   /* chưa biết chắc là ai (đang đăng nhập / mạng chậm) -> KHÔNG đóng game vừa mở lại */
+  function syncBtn() { if (isTJ() || (w.Auth && w.Auth.user && w.Auth.user.id !== TJ_ID)) settled = true; btn.hidden = !isTJ() && !(isOpen() && !settled); if (mbtn) mbtn.hidden = btn.hidden; if (settled && !isTJ() && isOpen()) close(); }
   function isOpen() { return !layer.hidden; }
 
   function open() {
@@ -26,14 +27,14 @@
     learnWasHidden = learn.hidden;
     learn.hidden = false;          /* "📖 Learning" = về lại trang đang học */
     layer.hidden = false;
-    try { sessionStorage.setItem("tjwl_game_open", "1"); } catch (e) {}   /* F5 khi đang ở Game -> mở lại Game (TJ 2026-10-02) */
+    try { sessionStorage.setItem("tjwl_game_open", "1"); localStorage.setItem("tjwl_game_open_at", String(Date.now())); } catch (e) {}   /* F5 khi đang ở Game -> mở lại Game (TJ 2026-10-02) */
     btn.classList.add("active");
     if (mbtn) { w.$$(".mobile-nav button").forEach(function (x) { x.classList.toggle("active", x === mbtn); }); }
     document.body.classList.add("game-on");
   }
   function close() {
     layer.hidden = true;
-    try { sessionStorage.removeItem("tjwl_game_open"); } catch (e) {}
+    try { sessionStorage.removeItem("tjwl_game_open"); localStorage.removeItem("tjwl_game_open_at"); } catch (e) {}
     learn.hidden = learnWasHidden;
     btn.classList.remove("active");
     if (mbtn) mbtn.classList.remove("active");
@@ -75,11 +76,16 @@
   w.$$(".mobile-nav button").forEach(function (b) { if (b !== mbtn) b.addEventListener("click", function () { if (isOpen()) close(); }, true); });
 
   if (w.Auth && w.Auth.onChange) w.Auth.onChange(syncBtn);
-  var wasOpen = false; try { wasOpen = sessionStorage.getItem("tjwl_game_open") === "1"; } catch (e) {}
+  /* F5 / mất mạng tự tải lại / trình duyệt tự nạp lại tab khi đang ở Game -> MỞ LẠI GAME NGAY (TJ 2026-10-04: "bị trả về trang
+     learning hoặc trang ngẫu nhiên"). Trước: chờ nhận ra hồ sơ TJ tối đa 30 giây, mạng chậm là bỏ cuộc. Nay mở luôn,
+     chỉ đóng khi đã chắc chắn KHÔNG phải TJ. Dự phòng localStorage (≤ 15 phút) nếu trình duyệt mất sessionStorage. */
+  var wasOpen = false;
+  try { wasOpen = sessionStorage.getItem("tjwl_game_open") === "1" || Date.now() - (+localStorage.getItem("tjwl_game_open_at") || 0) < 15 * 60000; } catch (e) {}
+  if (wasOpen) open();
   var tries = 0, t = setInterval(function () {   /* Auth.init chạy bất đồng bộ */
     syncBtn();
-    if (!btn.hidden && wasOpen && !isOpen()) { wasOpen = false; open(); }
-    if (++tries > 30 || !btn.hidden) clearInterval(t);
+    if (++tries > 120) { settled = true; syncBtn(); }
+    if (settled) clearInterval(t);
   }, 1000);
   syncBtn();
   w.GameLayer = { open: open, close: close, isOpen: isOpen, openScope: openScope };

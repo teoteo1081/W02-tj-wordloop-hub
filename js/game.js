@@ -67,7 +67,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 113;
+  var GAME_VER = 114;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -1282,7 +1282,7 @@
   function saveHost() {
     if (!G.isHost || !G.room || !G.st) return;
     var k = LS_HOST + G.room.code;
-    if (G.st.phase !== "play") { writeLS(k, null); return; }
+    if (G.st.phase !== "play") { writeLS(k, { at: Date.now(), tab: G.tab, st: G.st }); return; }   /* phòng chờ / kết quả cũng nhớ (bảng vẽ, quyền, phiếu trả lời) -> tải lại trang host về ĐÚNG chỗ (TJ 2026-10-04) */
     writeLS(k, { at: Date.now(), tab: G.tab, st: G.st, answers: G.answers || [], myAns: G.myAns || [], endAt: G.endAt, qUntil: G.qUntil, revealUntil: G.revealUntil || 0 });
   }
   function restoreHost() {   /* chỉ GIỮ ván còn mới của phòng này (G.snap); ván cũ / phòng khác thì dọn */
@@ -1290,7 +1290,7 @@
     try {
       Object.keys(localStorage).forEach(function (k) {
         if (k.indexOf(LS_HOST) !== 0) return;
-        var v = readLS(k), fresh = v && v.st && v.st.phase === "play" && Date.now() - v.at < SNAP_MAX_AGE && Date.now() < (v.endAt || 0) + 30000;
+        var v = readLS(k), fresh = v && v.st && (v.st.phase === "play" ? Date.now() - v.at < SNAP_MAX_AGE && Date.now() < (v.endAt || 0) + 30000 : Date.now() - v.at < 30 * 60000);
         if (k === LS_HOST + G.room.code && fresh) G.snap = v; else localStorage.removeItem(k);
       });
     } catch (e) {}
@@ -1417,7 +1417,10 @@
     }
     var sn = G.snap; G.snap = null;
     if (sn && sn.st && sn.st.phase === "play" && Date.now() < (sn.endAt || 0) + 30000) return resumeHost(sn);
-    var pv = G.st || {};   /* trạng thái nhận từ host cũ -> lấy lại CÀI ĐẶT, còn ván đang dở thì bỏ (về phòng chờ) */
+    if (sn && sn.st && sn.st.phase === "end") {   /* đang ở màn kết quả mà tải lại -> về lại đúng màn kết quả (bảng điểm, 📝 phiếu, bảng vẽ) */
+      G.st = sn.st; G.endAt = 0; G.qUntil = 0; clearInterval(G.hostTimer); push(); renderEnd(G.st); return;
+    }
+    var pv = (sn && sn.st && sn.st.phase === "lobby" ? sn.st : null) || G.st || {};   /* phòng chờ: lấy lại cài đặt + bảng vẽ đã lưu */   /* trạng thái nhận từ host cũ -> lấy lại CÀI ĐẶT, còn ván đang dở thì bỏ (về phòng chờ) */
     G.st = { phase: "lobby", sound: pv.sound !== false, auto: pv.auto !== false, levels: pv.levels || [], gapsrc: pv.gapsrc || "lib", scoring: pv.scoring || G.room.scoring || "q", scope: pv.scope || G.room.scope || [], title: pv.title || G.room.title || "", mode: pv.mode || G.room.mode, qtype: pv.qtype || G.room.qtype || "meaning", lang: pv.lang || G.room.meaning_lang || "vi", force: !!pv.force, minutes: pv.minutes || +G.room.minutes, qs: pv.qs || G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
     if (pv.board) { G.st.board = true; G.st.bperm = pv.bperm || {}; }   /* đổi máy giữ phòng (mạng chập chờn) -> bảng vẽ KHÔNG tự đóng (TJ 2026-10-04: "bảng tự trả về màn hình chính") */
     G.endAt = 0; G.qUntil = 0; clearInterval(G.hostTimer);
@@ -1823,7 +1826,7 @@
     G.st.phase = "end"; G.st.q = null; G.endAt = 0; G.qUntil = 0;
     if (G.tSheet) { G.st.tsheet = G.tSheet; writeLS("tjwl_game_tsheet_" + G.st.matchId, G.tSheet); }   /* phiếu trả lời câu chưa có đáp án -> cả phòng xem, host chấm */
     push();
-    writeLS(LS_HOST + G.room.code, null);
+    saveHost();   /* nhớ màn kết quả (trước: xoá -> tải lại trang là mất) */
     try {
       var ranked = rankList(G.st.scores);
       if (ranked.length) {
