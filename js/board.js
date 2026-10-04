@@ -47,7 +47,6 @@
       '<button type="button" class="bd-hb" id="bd-perm" hidden title="Cấp quyền dùng bảng">👥 Quyền</button>' +
       '<button type="button" class="bd-hb" id="bd-min" title="Thu nhỏ trên máy mình">▁</button>' +
       '<button type="button" class="bd-hb" id="bd-close" hidden title="Đóng bảng cho cả phòng">✕</button></div>' +
-      '<div class="bd-permbox" id="bd-permbox" hidden></div>' +
       '<div class="bd-stage" id="bd-stage"><canvas id="bd-cv"></canvas><div class="bd-texts" id="bd-texts"></div></div>' +
       '<div class="bd-tools" id="bd-tools">' +
         '<button type="button" data-tool="laser" title="Laser pointer">🔴</button>' +
@@ -60,7 +59,8 @@
         '<span class="bd-sep"></span>' +
         '<button type="button" id="bd-undo" title="Hoàn tác">↶</button><button type="button" id="bd-redo" title="Làm lại">↷</button>' +
         '<button type="button" id="bd-clear" hidden title="Xoá cả bảng">🗑</button>' +
-      '</div><div class="bd-view" id="bd-view">👀 Bạn đang xem — host cấp quyền thì mới dùng được bút</div>';
+      '</div><div class="bd-permbox" id="bd-permbox" hidden></div>' +   /* danh sách người được cấp quyền nằm DƯỚI hàng nút như HelloTalk (TJ 2026-10-04) */
+      '<div class="bd-view" id="bd-view">👀 Bạn đang xem — host cấp quyền thì mới dùng được bút</div>';
     document.body.appendChild(el);
     var dock = document.createElement("button");
     dock.id = "bd-dock"; dock.type = "button"; dock.className = "bd-dock"; dock.hidden = true; dock.textContent = "🖤 Mở bảng";
