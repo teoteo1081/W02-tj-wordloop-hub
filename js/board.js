@@ -109,8 +109,11 @@
   }
   function paintPerm() {
     var box = $("#bd-permbox"); if (!box || box.hidden) return;
-    var s = st() || {}, p = s.bperm || {}, list = api.players().filter(function (x) { return !api.isHostId(x.id); });
-    box.innerHTML = '<div class="bd-ph">Ai được dùng bảng (bút, laser, ô chữ):</div>' + (list.length ? list.map(function (x) {
+    var s = st() || {}, p = s.bperm || {}, all = api.players(), list = all.filter(function (x) { return !api.isHostId(x.id); });
+    var hosts = all.filter(function (x) { return api.isHostId(x.id); });
+    if (!hosts.length && api.isHost() && me()) hosts = [me()];   /* host làm MC (không chơi) không nằm trong danh sách người chơi */   /* host luôn có quyền: hiện đầu danh sách, không bấm tắt được (TJ 2026-10-04) */
+    box.innerHTML = '<div class="bd-ph">Ai được dùng bảng (bút, laser, ô chữ):</div>' +
+      hosts.map(function (x) { return '<span class="bd-pp on bd-phost">👑 ' + esc(x.name || "Host") + " · host</span>"; }).join("") + (list.length ? list.map(function (x) {
       return '<button type="button" class="bd-pp' + (p[x.id] ? " on" : "") + '" data-perm="' + esc(x.id) + '">' + (p[x.id] ? "🛡 " : "👤 ") + esc(x.name || "?") + "</button>"; }).join("") : '<span class="bd-ph">Chưa có người chơi nào.</span>');
   }
   function paintOpen() {
