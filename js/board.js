@@ -84,7 +84,13 @@
     if (b.dataset.sz) { size = +b.dataset.sz; paintTools(); return; }
     if (b.id === "bd-undo") return undo();
     if (b.id === "bd-redo") return redoOne();
-    if (b.id === "bd-clear") { if (api.isHost() && confirm("Xoá hết nét vẽ và ô chữ trên bảng?")) { clearAll(); send({ t: "clear" }); } return; }
+    if (b.id === "bd-clear") {
+      if (api.isHost()) { if (confirm("Xoá hết nét vẽ và ô chữ trên bảng (của cả phòng)?")) { clearAll(); send({ t: "clear" }); } return; }
+      /* người được cấp quyền: sọt rác chỉ xoá nét + ô chữ CỦA MÌNH (TJ 2026-10-04) */
+      var me0 = myId(), ids = order.filter(function (id) { return items[id] && items[id].by === me0; });
+      if (ids.length && confirm("Xoá hết nét vẽ và ô chữ của bạn?")) { ids.forEach(function (id) { removeItem(id); send({ t: "del", id: id }); }); mine = []; redo = []; draw(); paintTexts(); paintTools(); }
+      return;
+    }
     if (b.id === "bd-min") { mini = true; paintOpen(); return; }
     if (b.id === "bd-close") { api.setBoard(false); return; }
     if (b.id === "bd-perm") { var pb = $("#bd-permbox"); pb.hidden = !pb.hidden; paintPerm(); paintOpen(); return; }   /* QA v106 L2: cập nhật phần đẩy nội dung xuống */
@@ -97,7 +103,7 @@
     document.querySelectorAll("#bd-tools [data-tool]").forEach(function (b) { b.classList.toggle("on", b.dataset.tool === tool); });
     document.querySelectorAll("#bd-tools [data-col]").forEach(function (b) { b.classList.toggle("on", b.dataset.col === color); });
     document.querySelectorAll("#bd-tools [data-sz]").forEach(function (b) { b.classList.toggle("on", +b.dataset.sz === size); });
-    $("#bd-clear").hidden = !api.isHost(); $("#bd-close").hidden = !api.isHost(); $("#bd-perm").hidden = !api.isHost();
+    $("#bd-clear").hidden = !ok; $("#bd-clear").title = api.isHost() ? "Xoá cả bảng" : "Xoá nét của tôi"; $("#bd-close").hidden = !api.isHost(); $("#bd-perm").hidden = !api.isHost();
     cv.style.cursor = !ok ? "default" : tool === "text" ? "text" : "crosshair";
     $("#bd-undo").disabled = !mine.length; $("#bd-redo").disabled = !redo.length;
   }
@@ -120,8 +126,9 @@
   function fit() {
     if (!cv || $("#bd").hidden) return;
     var r = cv.getBoundingClientRect(); dpr = window.devicePixelRatio || 1;   /* đo CHÍNH canvas (trong viền gỗ) — QA v106 L1 */
-    cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr);
-    draw(); paintTexts();
+    var w = Math.round(r.width * dpr), h = Math.round(r.height * dpr);
+    if (w !== cv.width || h !== cv.height) { cv.width = w; cv.height = h; draw(); }   /* trạng thái phòng tới vài giây/lần -> chỉ dựng lại khi ĐỔI cỡ (iPhone chớp/mất nét đang vẽ) */
+    paintTexts();
   }
   function sx() { return cv.width / W; }
   function toLogic(e) { var r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width * W, y: (e.clientY - r.top) / r.height * H }; }
@@ -163,7 +170,7 @@
     cv.setPointerCapture && cv.setPointerCapture(e.pointerId);
     if (tool === "laser") { cur = { laser: true }; laserAt(p); return; }
     cur = { k: "s", id: uid(), c: color, w: size, pts: [Math.round(p.x), Math.round(p.y)], by: myId() };
-    sendT = Date.now(); send({ t: "s", id: cur.id, c: cur.c, w: cur.w, pts: cur.pts.slice(), done: false });
+    sendT = Date.now(); cur.sent = cur.pts.length; send({ t: "s", id: cur.id, c: cur.c, w: cur.w, from: 0, pts: cur.pts.slice(), done: false });
     draw();
   }
   function move(e) {
@@ -173,12 +180,12 @@
     var n = cur.pts.length, lx = cur.pts[n - 2], ly = cur.pts[n - 1];
     if (Math.abs(p.x - lx) + Math.abs(p.y - ly) < 2) return;
     cur.pts.push(Math.round(p.x), Math.round(p.y)); draw();
-    if (Date.now() - sendT > 60) { sendT = Date.now(); send({ t: "s", id: cur.id, c: cur.c, w: cur.w, pts: cur.pts.slice(), done: false }); }   /* gom ~16 lần/giây */
+    if (Date.now() - sendT > 80) { sendT = Date.now(); var f = cur.sent; cur.sent = cur.pts.length; send({ t: "s", id: cur.id, c: cur.c, w: cur.w, from: f, pts: cur.pts.slice(f), done: false }); }   /* ~12 lần/giây, CHỈ gửi phần mới (trước gửi lại cả nét mỗi lần -> tin to dần, kênh dễ nghẽn) */
   }
   function up() {
     if (!cur) return;
     if (cur.laser) { cur = null; return; }
-    var s = cur; cur = null;
+    var s = cur; cur = null; delete s.sent;
     items[s.id] = s; order.push(s.id); mine.push(s.id); redo = [];
     send({ t: "s", id: s.id, c: s.c, w: s.w, pts: s.pts, done: true });
     draw(); paintTools();
@@ -188,8 +195,8 @@
     var L = lasers[myId()] = lasers[myId()] || { pts: [], name: name }; L.pts.push({ x: p.x, y: p.y, t: Date.now() }); draw();
     var msg = { t: "l", x: Math.round(p.x), y: Math.round(p.y), n: name };
     clearTimeout(laserTail);
-    if (Date.now() - lastLaserSend > 50) { lastLaserSend = Date.now(); send(msg); }
-    else laserTail = setTimeout(function () { lastLaserSend = Date.now(); send(msg); }, 60); // gửi bù vị trí cuối khi dừng tay
+    if (Date.now() - lastLaserSend > 80) { lastLaserSend = Date.now(); send(msg); }
+    else laserTail = setTimeout(function () { lastLaserSend = Date.now(); send(msg); }, 90); // gửi bù vị trí cuối khi dừng tay
   }
 
   /* ---------- ô chữ ---------- */
@@ -262,7 +269,9 @@
     if (!m || m.cid === cid) return;
     if (m.t === "s") {
       var it = items[m.id] || (items[m.id] = { k: "s", id: m.id, by: m.pid });
-      it.c = m.c; it.w = m.w; it.pts = m.pts; if (order.indexOf(m.id) < 0) order.push(m.id);
+      it.c = m.c; it.w = m.w;
+      it.pts = m.from > 0 && !m.done ? (it.pts || []).slice(0, m.from).concat(m.pts) : m.pts;   /* phần nối tiếp; tin cuối (done) mang cả nét -> sửa nếu lỡ rớt 1 phần */
+      if (order.indexOf(m.id) < 0) order.push(m.id);
       draw();
     } else if (m.t === "t") {
       var t = items[m.id] || (items[m.id] = { k: "t", id: m.id, by: m.pid });
