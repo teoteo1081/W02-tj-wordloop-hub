@@ -5,6 +5,7 @@
    · Quyền: chỉ host + người host cấp quyền (st.bperm) mới dùng công cụ; người khác CHỈ XEM.
    · Đồng bộ qua kênh realtime sẵn có của phòng (broadcast event "board"); host giữ bản đầy đủ, máy vào sau xin "hello"
      thì host gửi lại toàn bộ. Không lưu vào DB (lưu phiên bản buổi học = bước sau).
+   · 🖥 Host chia sẻ màn hình vào bảng (WebRTC, broadcast event "rtc" -> Board.onRtc) — xem mục "CHIA SẺ MÀN HÌNH" bên dưới.
    game.js gắn vào qua Board.attach(api) và chuyển mọi tin "board" vào Board.onMsg(payload), trạng thái phòng vào Board.onState(st). */
 (function () {
   "use strict";
@@ -20,10 +21,10 @@
 
   /* chữ trên bảng theo NGÔN NGỮ GIAO DIỆN của người xem (TJ 2026-10-04: chọn 中文 mà bảng vẫn tiếng Việt) — game.js truyền api.lang() */
   var TX = {
-    vi: { board: "🖤 Bảng", can: "✍️ bạn được dùng bảng", view: "👀 chỉ xem", viewmsg: "👀 Bạn đang xem — host cấp quyền thì mới dùng được bút", perm: "👥 Quyền", permt: "Cấp quyền dùng bảng", min: "Thu nhỏ trên máy mình", close: "Đóng bảng cho cả phòng", laser: "Laser", pen: "Bút vẽ", text: "Ô chữ", color: "Màu", size: "Cỡ nét", undo: "Hoàn tác", redo: "Làm lại", clearAll: "Xoá cả bảng", clearMine: "Xoá nét của tôi", dock: "🖤 Mở bảng", open: "🖤 Bảng", qAll: "Xoá hết nét vẽ và ô chữ trên bảng (của cả phòng)?", qMine: "Xoá hết nét vẽ và ô chữ của bạn?", who: "Ai được dùng bảng (bút, laser, ô chữ):", none: "Chưa có người chơi nào." },
-    en: { board: "🖤 Board", can: "✍️ you can use the board", view: "👀 view only", viewmsg: "👀 You are watching — the host must give you permission to draw", perm: "👥 Access", permt: "Give board access", min: "Minimise on my screen", close: "Close the board for everyone", laser: "Laser", pen: "Pen", text: "Text box", color: "Colour", size: "Size", undo: "Undo", redo: "Redo", clearAll: "Clear the whole board", clearMine: "Clear my marks", dock: "🖤 Open board", open: "🖤 Board", qAll: "Clear all drawings and text on the board (for everyone)?", qMine: "Clear all your drawings and text?", who: "Who can use the board (pen, laser, text):", none: "No players yet." },
-    zh: { board: "🖤 白板", can: "✍️ 你可以使用白板", view: "👀 仅观看", viewmsg: "👀 你正在观看 — 主持人授权后才能使用画笔", perm: "👥 权限", permt: "授权使用白板", min: "在我的屏幕上最小化", close: "为全房间关闭白板", laser: "激光笔", pen: "画笔", text: "文本框", color: "颜色", size: "粗细", undo: "撤销", redo: "重做", clearAll: "清空整个白板", clearMine: "清除我的笔迹", dock: "🖤 打开白板", open: "🖤 白板", qAll: "清除白板上所有笔迹和文字（全房间）？", qMine: "清除你所有的笔迹和文字？", who: "谁可以使用白板（画笔、激光笔、文本框）：", none: "还没有玩家。" },
-    es: { board: "🖤 Pizarra", can: "✍️ puedes usar la pizarra", view: "👀 solo ver", viewmsg: "👀 Estás mirando — el anfitrión debe darte permiso para dibujar", perm: "👥 Permisos", permt: "Dar acceso a la pizarra", min: "Minimizar en mi pantalla", close: "Cerrar la pizarra para todos", laser: "Láser", pen: "Lápiz", text: "Cuadro de texto", color: "Color", size: "Grosor", undo: "Deshacer", redo: "Rehacer", clearAll: "Borrar toda la pizarra", clearMine: "Borrar mis trazos", dock: "🖤 Abrir pizarra", open: "🖤 Pizarra", qAll: "¿Borrar todos los trazos y textos de la pizarra (para todos)?", qMine: "¿Borrar todos tus trazos y textos?", who: "Quién puede usar la pizarra (lápiz, láser, texto):", none: "Aún no hay jugadores." }
+    vi: { board: "🖤 Bảng", can: "✍️ bạn được dùng bảng", view: "👀 chỉ xem", viewmsg: "👀 Bạn đang xem — host cấp quyền thì mới dùng được bút", perm: "👥 Quyền", permt: "Cấp quyền dùng bảng", min: "Thu nhỏ trên máy mình", close: "Đóng bảng cho cả phòng", laser: "Laser", pen: "Bút vẽ", text: "Ô chữ", color: "Màu", size: "Cỡ nét", undo: "Hoàn tác", redo: "Làm lại", clearAll: "Xoá cả bảng", clearMine: "Xoá nét của tôi", dock: "🖤 Mở bảng", open: "🖤 Bảng", qAll: "Xoá hết nét vẽ và ô chữ trên bảng (của cả phòng)?", qMine: "Xoá hết nét vẽ và ô chữ của bạn?", who: "Ai được dùng bảng (bút, laser, ô chữ):", none: "Chưa có người chơi nào.", share: "🖥 Chia sẻ màn hình", unshare: "⏹ Dừng chia sẻ", sharet: "Chia sẻ màn hình của bạn cho cả phòng (như Google Meet) — người có quyền vẫn vẽ/laser lên trên", sharing: "🖥 Bạn đang chia sẻ màn hình", nview: "👁 {n} người xem", watching: "🖥 {n} đang chia sẻ màn hình", conn: "🖥 đang kết nối…", fail: "⚠️ Không kết nối được — mạng có thể chặn (cần TURN)", full: "⚠️ Đã đủ 10 người xem — chờ có chỗ trống", hostfull: "⚠️ Tối đa 10 người xem — {n} người chưa xem được", unmute: "🔊 Bật tiếng", mute: "🔇 Tắt tiếng", shErr: "Không chia sẻ được màn hình: " },
+    en: { board: "🖤 Board", can: "✍️ you can use the board", view: "👀 view only", viewmsg: "👀 You are watching — the host must give you permission to draw", perm: "👥 Access", permt: "Give board access", min: "Minimise on my screen", close: "Close the board for everyone", laser: "Laser", pen: "Pen", text: "Text box", color: "Colour", size: "Size", undo: "Undo", redo: "Redo", clearAll: "Clear the whole board", clearMine: "Clear my marks", dock: "🖤 Open board", open: "🖤 Board", qAll: "Clear all drawings and text on the board (for everyone)?", qMine: "Clear all your drawings and text?", who: "Who can use the board (pen, laser, text):", none: "No players yet.", share: "🖥 Share screen", unshare: "⏹ Stop sharing", sharet: "Share your screen with the whole room (like Google Meet) — people with access can still draw/laser on top", sharing: "🖥 You are sharing your screen", nview: "👁 {n} watching", watching: "🖥 {n} is sharing their screen", conn: "🖥 connecting…", fail: "⚠️ Could not connect — the network may be blocking it (TURN needed)", full: "⚠️ 10 viewers already — waiting for a free spot", hostfull: "⚠️ Max 10 viewers — {n} people cannot watch", unmute: "🔊 Turn sound on", mute: "🔇 Mute", shErr: "Could not share the screen: " },
+    zh: { board: "🖤 白板", can: "✍️ 你可以使用白板", view: "👀 仅观看", viewmsg: "👀 你正在观看 — 主持人授权后才能使用画笔", perm: "👥 权限", permt: "授权使用白板", min: "在我的屏幕上最小化", close: "为全房间关闭白板", laser: "激光笔", pen: "画笔", text: "文本框", color: "颜色", size: "粗细", undo: "撤销", redo: "重做", clearAll: "清空整个白板", clearMine: "清除我的笔迹", dock: "🖤 打开白板", open: "🖤 白板", qAll: "清除白板上所有笔迹和文字（全房间）？", qMine: "清除你所有的笔迹和文字？", who: "谁可以使用白板（画笔、激光笔、文本框）：", none: "还没有玩家。", share: "🖥 共享屏幕", unshare: "⏹ 停止共享", sharet: "把你的屏幕共享给全房间（像 Google Meet）— 有权限的人仍可在上面画画/用激光笔", sharing: "🖥 你正在共享屏幕", nview: "👁 {n} 人观看", watching: "🖥 {n} 正在共享屏幕", conn: "🖥 正在连接…", fail: "⚠️ 无法连接 — 网络可能被拦截（需要 TURN）", full: "⚠️ 观看人数已满 10 人 — 等待空位", hostfull: "⚠️ 最多 10 人观看 — 还有 {n} 人看不到", unmute: "🔊 打开声音", mute: "🔇 静音", shErr: "无法共享屏幕：" },
+    es: { board: "🖤 Pizarra", can: "✍️ puedes usar la pizarra", view: "👀 solo ver", viewmsg: "👀 Estás mirando — el anfitrión debe darte permiso para dibujar", perm: "👥 Permisos", permt: "Dar acceso a la pizarra", min: "Minimizar en mi pantalla", close: "Cerrar la pizarra para todos", laser: "Láser", pen: "Lápiz", text: "Cuadro de texto", color: "Color", size: "Grosor", undo: "Deshacer", redo: "Rehacer", clearAll: "Borrar toda la pizarra", clearMine: "Borrar mis trazos", dock: "🖤 Abrir pizarra", open: "🖤 Pizarra", qAll: "¿Borrar todos los trazos y textos de la pizarra (para todos)?", qMine: "¿Borrar todos tus trazos y textos?", who: "Quién puede usar la pizarra (lápiz, láser, texto):", none: "Aún no hay jugadores.", share: "🖥 Compartir pantalla", unshare: "⏹ Dejar de compartir", sharet: "Comparte tu pantalla con toda la sala (como Google Meet) — quien tenga permiso puede seguir dibujando/usando el láser encima", sharing: "🖥 Estás compartiendo tu pantalla", nview: "👁 {n} mirando", watching: "🖥 {n} está compartiendo su pantalla", conn: "🖥 conectando…", fail: "⚠️ No se pudo conectar — la red puede estar bloqueándolo (hace falta TURN)", full: "⚠️ Ya hay 10 espectadores — esperando un hueco", hostfull: "⚠️ Máximo 10 espectadores — {n} personas no pueden ver", unmute: "🔊 Activar sonido", mute: "🔇 Silenciar", shErr: "No se pudo compartir la pantalla: " }
   };
   function t(k) { var l = api && api.lang ? api.lang() : "vi"; return (TX[l] || TX.vi)[k] || TX.vi[k] || k; }
   function relabel() {
@@ -56,11 +57,12 @@
     var el = document.createElement("section");
     el.id = "bd"; el.className = "bd"; el.hidden = true;
     el.innerHTML =
-      '<div class="bd-head"><b data-bt="board"></b><span class="bd-who" id="bd-who"></span>' +
+      '<div class="bd-head"><b data-bt="board"></b><span class="bd-who" id="bd-who"></span><span class="bd-scr" id="bd-scr"></span>' +
+      '<button type="button" class="bd-hb" id="bd-share" hidden data-btt="sharet" data-bt="share"></button>' +   /* 🖥 chia sẻ màn hình (chỉ host, máy tính) */
       '<button type="button" class="bd-hb" id="bd-perm" hidden data-btt="permt" data-bt="perm"></button>' +
       '<button type="button" class="bd-hb" id="bd-min" data-btt="min">▁</button>' +
       '<button type="button" class="bd-hb" id="bd-close" hidden data-btt="close">✕</button></div>' +
-      '<div class="bd-stage" id="bd-stage"><canvas id="bd-cv"></canvas><div class="bd-texts" id="bd-texts"></div></div>' +
+      '<div class="bd-stage" id="bd-stage"><video id="bd-video" class="bd-video" autoplay playsinline muted hidden></video><canvas id="bd-cv"></canvas><div class="bd-texts" id="bd-texts"></div><button type="button" class="bd-aud" id="bd-aud" hidden data-bt="unmute"></button></div>' +
       '<div class="bd-tools" id="bd-tools">' +
         '<button type="button" data-tool="laser" data-btt="laser">🔴</button>' +
         '<button type="button" data-tool="pen" data-btt="pen">✏️</button>' +
@@ -104,6 +106,8 @@
       if (ids.length && confirm(t("qMine"))) { ids.forEach(function (id) { removeItem(id); send({ t: "del", id: id }); }); mine = []; redo = []; draw(); paintTexts(); paintTools(); }
       return;
     }
+    if (b.id === "bd-share") { if (shStream) stopShare(); else startShare(); return; }
+    if (b.id === "bd-aud") { var v = $("#bd-video"); v.muted = !v.muted; if (!v.muted) v.play().catch(function () {}); paintShare(); return; }
     if (b.id === "bd-min") { mini = true; paintOpen(); return; }
     if (b.id === "bd-close") { api.setBoard(false); return; }
     if (b.id === "bd-perm") { var pb = $("#bd-permbox"); pb.hidden = !pb.hidden; paintPerm(); paintOpen(); return; }   /* QA v106 L2: cập nhật phần đẩy nội dung xuống */
@@ -119,6 +123,7 @@
     $("#bd-clear").hidden = !ok; $("#bd-clear").title = t(api.isHost() ? "clearAll" : "clearMine"); relabel(); $("#bd-close").hidden = !api.isHost(); $("#bd-perm").hidden = !api.isHost();
     cv.style.cursor = !ok ? "default" : tool === "text" ? "text" : "crosshair";
     $("#bd-undo").disabled = !mine.length; $("#bd-redo").disabled = !redo.length;
+    paintShare();
   }
   function paintPerm() {
     var box = $("#bd-permbox"); if (!box || box.hidden) return;
@@ -301,7 +306,7 @@
        (chờ ngẫu nhiên 0.3–1s, ai đã thấy người khác trả lời thì thôi) — TJ 2026-10-04: "host mất mạng mà có moderator thì bảng vẫn ổn" */
     else if (m.t === "hello") {
       var full = function () { send({ t: "full", to: m.cid, items: order.map(function (id) { return items[id]; }).filter(Boolean) }); };
-      if (api.isHost()) full();
+      if (api.isHost()) { full(); if (shStream) announce(); }   /* máy vừa mở bảng -> báo ngay đang chia sẻ màn hình (khỏi chờ 5 giây) */
       else if (order.length) { answered[m.cid] = 0; setTimeout(function () { if (!answered[m.cid]) full(); delete answered[m.cid]; }, (canDraw() ? 300 : 1200) + Math.random() * 700); }   /* moderator trả lời trước, người xem làm dự phòng */
     }
     else if (m.t === "full") {
@@ -315,13 +320,182 @@
     if (!s) return;
     var want = !!s.board;
     if (want && !open) { open = true; mini = false; build(); paintOpen(); if (!api.isHost() || !order.length) send({ t: "hello" }); }   /* host tải lại trang (bảng trống) cũng xin lại nét từ moderator/người chơi */
-    else if (!want && open) { open = false; paintOpen(); }
+    else if (!want && open) { open = false; paintOpen(); if (shStream) stopShare(); }   /* host đóng bảng = dừng chia sẻ màn hình */
     paintOpen();
     if (open) { paintTools(); paintPerm(); var who = $("#bd-who"); if (who) who.textContent = t(canDraw() ? "can" : "view"); }
   }
+  /* ---------- 🖥 CHIA SẺ MÀN HÌNH (TJ 2026-10-04: trang TRẢ PHÍ chỉ tài khoản TJ mở được -> chia sẻ cho cả phòng như Google Meet) ----------
+     · Chỉ host, chỉ trình duyệt máy tính có getDisplayMedia (điện thoại không có -> ẩn nút).
+     · WebRTC dạng LƯỚI (mesh): host mở 1 RTCPeerConnection cho MỖI người xem (tối đa MAXV=10, mỗi luồng ~1.2 Mbps).
+       Báo hiệu qua kênh phòng sẵn có, broadcast event "rtc" (tin mang cid máy gửi + to = cid máy nhận):
+       host báo share-on (lặp lại 5 giây/lần + trả lời ngay khi có máy "hello" mở bảng) -> máy chưa nối gửi want -> host offer
+       -> người xem answer -> trao ICE 2 chiều. Host dừng (nút / nút "Dừng chia sẻ" của trình duyệt) -> share-off, đóng hết kết nối.
+     · Video nằm DƯỚI canvas (canvas trong suốt) -> laser/bút/ô chữ của người được cấp quyền vẽ đè lên màn hình đang chia sẻ.
+     · Chỉ STUN Google; TURN tuỳ chọn qua window.APP_CONFIG.TURN (mảng RTCIceServer) — KHÔNG để mật khẩu TURN trong repo.
+       Không có TURN thì mạng chặn chặt (công ty, China…) có thể không nối được -> hiện lỗi "cần TURN". */
+  var MAXV = 10, BITRATE = 1200000;
+  var canShare = !!(navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia && window.RTCPeerConnection);
+  var shStream = null, shAnn = 0, peers = {}, shFull = {};   /* host: cid người xem -> {pc, q, bad}; shFull = máy bị từ chối vì đủ 10 */
+  var rv = null, rvHost = null, rvName = "", rvLastOn = 0, rvRetryAt = 0, rvErr = "";   /* người xem: rv = {host, pc, q, ok, at, dis, stream, pend} */
+  function iceServers() {
+    var s = [{ urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] }], c = window.APP_CONFIG;
+    if (c && Array.isArray(c.TURN)) s = s.concat(c.TURN);
+    return s;
+  }
+  function rtc(m) { var ch = api && api.ch(); if (!ch) return; m.cid = cid; m.pid = myId(); ch.send({ type: "broadcast", event: "rtc", payload: m }); }
+  function chain(o, f) { o.q = o.q.then(f).catch(function (e) { console.warn("[board rtc]", e); }); }   /* xếp hàng thao tác SDP/ICE của 1 kết nối -> ICE tới sớm không lỗi */
+  function cand(c) { return c.toJSON ? c.toJSON() : { candidate: c.candidate, sdpMid: c.sdpMid, sdpMLineIndex: c.sdpMLineIndex }; }
+  function desc(d) { return { type: d.type, sdp: d.sdp }; }
+  function announce() { if (shStream) rtc({ t: "share-on", n: me() ? me().name : "" }); }
+  function showVideo(stream, local) {
+    var v = $("#bd-video"); if (!v) return;
+    if (v.srcObject !== (stream || null)) v.srcObject = stream || null;
+    v.hidden = !stream; if (local || !stream) v.muted = true;   /* tự phát cần muted; người xem bấm 🔊 Bật tiếng */
+    if (stream) v.play().catch(function () {});
+    $("#bd-stage").classList.toggle("bd-screen", !!stream);
+    paintShare();
+  }
+
+  /* host */
+  function startShare() {
+    if (!canShare || !api || !api.isHost() || shStream) return;
+    var gdm = function (a) { return navigator.mediaDevices.getDisplayMedia({ video: { frameRate: { ideal: 15, max: 24 } }, audio: a }); };
+    gdm(true).catch(function (e) { if (e && (e.name === "NotAllowedError" || e.name === "AbortError")) throw e; return gdm(false); })   /* trình duyệt không cho kèm tiếng -> chỉ hình */
+      .then(function (s) {
+        shStream = s; shFull = {};
+        s.getVideoTracks().forEach(function (tr) { try { tr.contentHint = "detail"; } catch (e) {} tr.onended = stopShare; });   /* chữ trang web rõ hơn; bấm "Dừng chia sẻ" của trình duyệt */
+        if (!open) api.setBoard(true);   /* bảng chưa mở cho phòng -> mở luôn (màn hình chia sẻ nằm trong bảng) */
+        mini = false; paintOpen();
+        showVideo(s, true); announce();
+        clearInterval(shAnn); shAnn = setInterval(announce, 5000);   /* máy vào sau / lỡ tin -> 5 giây sau tự xin nối */
+      }, function (e) { if (e && e.name !== "NotAllowedError" && e.name !== "AbortError") alert(t("shErr") + (e.message || e.name)); });
+  }
+  function stopShare() {
+    if (!shStream) return;
+    var s = shStream; shStream = null; clearInterval(shAnn);
+    s.getTracks().forEach(function (tr) { tr.onended = null; tr.stop(); });
+    Object.keys(peers).forEach(dropPeer); shFull = {};
+    rtc({ t: "share-off" }); showVideo(null);
+  }
+  function dropPeer(vc) { var p = peers[vc]; if (!p) return; delete peers[vc]; clearTimeout(p.bad); try { p.pc.close(); } catch (e) {} paintShare(); }
+  function capRate(pc) {   /* giới hạn ~1.2 Mbps/người xem -> mesh 10 người ~12 Mbps tải lên */
+    pc.getSenders().forEach(function (sd) {
+      if (!sd.track || sd.track.kind !== "video" || !sd.getParameters || !sd.setParameters) return;
+      try { var pr = sd.getParameters(); if (!pr.encodings || !pr.encodings.length) pr.encodings = [{}]; pr.encodings[0].maxBitrate = BITRATE; sd.setParameters(pr).catch(function () {}); } catch (e) {}
+    });
+  }
+  function hostPeer(vc) {
+    if (peers[vc]) dropPeer(vc);   /* người xem xin lại (kết nối cũ hỏng) -> dựng mới */
+    delete shFull[vc];
+    var pc = new RTCPeerConnection({ iceServers: iceServers() }), p = peers[vc] = { pc: pc, q: Promise.resolve(), bad: 0, ok: false, at: Date.now() };
+    shStream.getTracks().forEach(function (tr) { pc.addTrack(tr, shStream); });
+    pc.onicecandidate = function (e) { if (e.candidate) rtc({ t: "ice", to: vc, c: cand(e.candidate) }); };
+    pc.onconnectionstatechange = function () {
+      if (peers[vc] !== p) return;
+      var s = pc.connectionState;
+      if (s === "connected") { clearTimeout(p.bad); p.bad = 0; p.ok = true; }
+      else if ((s === "failed" || s === "disconnected") && !p.bad) p.bad = setTimeout(function () { if (peers[vc] === p) dropPeer(vc); }, 15000);   /* người xem rời phòng / mất mạng 15 giây -> đóng */
+      else if (s === "closed") dropPeer(vc);
+      paintShare();
+    };
+    chain(p, function () { return pc.createOffer().then(function (o) { return pc.setLocalDescription(o); }).then(function () { rtc({ t: "offer", to: vc, sdp: desc(pc.localDescription) }); }); });
+    paintShare();
+  }
+
+  /* người xem */
+  function rvClose(err) {
+    var o = rv; rv = null;
+    if (o && o.pc) try { o.pc.close(); } catch (e) {}
+    rvErr = err || ""; if (err) rvRetryAt = Date.now() + 15000;   /* lỗi / đủ chỗ -> 15 giây sau mới thử lại */
+    showVideo(null);
+  }
+  function rvWant() {
+    if (rv && rv.pc) try { rv.pc.close(); } catch (e) {}
+    rv = { host: rvHost, pc: null, q: Promise.resolve(), ok: false, at: Date.now(), dis: 0, stream: null, pend: [] };
+    rvErr = ""; rtc({ t: "want", to: rvHost }); paintShare();
+  }
+  function rvOffer(m) {
+    if (!rv || m.cid !== rv.host) return;
+    if (rv.pc) try { rv.pc.close(); } catch (e) {}
+    var o = rv, pc = o.pc = new RTCPeerConnection({ iceServers: iceServers() });
+    o.q = Promise.resolve(); o.at = Date.now();
+    pc.ontrack = function (e) {
+      if (rv !== o) return;
+      var ms = (e.streams && e.streams[0]) || o.stream || new MediaStream();
+      if (ms.getTracks().indexOf(e.track) < 0) ms.addTrack(e.track);
+      o.stream = ms; showVideo(ms);
+    };
+    pc.onicecandidate = function (e) { if (e.candidate && rv === o) rtc({ t: "ice", to: o.host, c: cand(e.candidate) }); };
+    pc.onconnectionstatechange = function () {
+      if (rv !== o) return;
+      var s = pc.connectionState;
+      if (s === "connected") { o.ok = true; o.dis = 0; rvErr = ""; }
+      else if (s === "disconnected") o.dis = o.dis || Date.now();
+      else if (s === "failed") return rvClose("fail");
+      paintShare();
+    };
+    chain(o, function () {
+      return pc.setRemoteDescription(m.sdp).then(function () { return pc.createAnswer(); }).then(function (a) { return pc.setLocalDescription(a); })
+        .then(function () { rtc({ t: "answer", to: o.host, sdp: desc(pc.localDescription) }); var pd = o.pend; o.pend = []; return Promise.all(pd.map(function (c) { return pc.addIceCandidate(c).catch(function () {}); })); });
+    });
+    paintShare();
+  }
+  setInterval(function () {   /* canh: nối mãi không xong / rớt lâu / host biến mất không kịp báo */
+    var now = Date.now();
+    if (rv) {
+      if (!rv.ok && now - rv.at > 20000) rvClose("fail");
+      else if (rv.dis && now - rv.dis > 15000) rvClose(now - rvLastOn < 12000 ? "fail" : "");
+    } else if (rvHost && now - rvLastOn > 16000) { rvHost = null; rvErr = ""; paintShare(); }
+    Object.keys(peers).forEach(function (vc) { var p = peers[vc]; if (!p.ok && now - p.at > 30000) dropPeer(vc); });   /* host: 30 giây chưa nối được -> trả chỗ (tối đa 10) */
+  }, 2000);
+  window.addEventListener("pagehide", function () { if (shStream) rtc({ t: "share-off" }); else if (rv) rtc({ t: "bye", to: rv.host }); });
+
+  function onRtc(m) {
+    if (!m || !api || m.cid === cid || (m.to && m.to !== cid)) return;
+    var p = peers[m.cid];
+    if (m.t === "share-on") {
+      if (shStream) return;
+      rvLastOn = Date.now(); rvName = m.n || "";
+      if (rv && rv.host !== m.cid) rvClose();   /* host tải lại trang / đổi máy */
+      rvHost = m.cid;
+      if (!rv && open && Date.now() >= rvRetryAt) rvWant();
+      paintShare();
+    } else if (m.t === "share-off") {
+      if (m.cid !== rvHost) return;
+      rvClose(); rvHost = null; rvErr = ""; rvRetryAt = 0; paintShare();
+    } else if (m.t === "want") {
+      if (!shStream) return;
+      if (!p && Object.keys(peers).length >= MAXV) { shFull[m.cid] = 1; rtc({ t: "full", to: m.cid }); paintShare(); return; }
+      hostPeer(m.cid);
+    } else if (m.t === "answer") {
+      if (p) chain(p, function () { return p.pc.setRemoteDescription(m.sdp).then(function () { capRate(p.pc); }); });
+    } else if (m.t === "bye") {
+      if (p) dropPeer(m.cid); delete shFull[m.cid]; paintShare();
+    } else if (m.t === "offer") rvOffer(m);
+    else if (m.t === "full") { if (rv && rv.host === m.cid) rvClose("full"); }
+    else if (m.t === "ice" && m.c) {
+      if (p) chain(p, function () { return p.pc.addIceCandidate(m.c); });
+      else if (rv && rv.host === m.cid) { if (rv.pc) { var o = rv; chain(o, function () { return o.pc.addIceCandidate(m.c); }); } else rv.pend.push(m.c); }
+    }
+  }
+  function paintShare() {
+    var b = $("#bd-share"); if (!b || !api) return;
+    b.hidden = !api.isHost() || !canShare;
+    b.dataset.bt = shStream ? "unshare" : "share"; b.textContent = t(b.dataset.bt); b.classList.toggle("on", !!shStream);
+    var line = "";
+    if (shStream) {
+      var nc = Object.keys(peers).filter(function (k) { return peers[k].pc.connectionState === "connected"; }).length, nf = Object.keys(shFull).length;
+      line = t("sharing") + " · " + t("nview").replace("{n}", nc) + (nf ? " · " + t("hostfull").replace("{n}", nf) : "");
+    } else if (rvErr) line = t(rvErr);
+    else if (rv) line = rv.ok ? t("watching").replace("{n}", rvName || "Host") : t("conn");
+    var sc = $("#bd-scr"); sc.textContent = line; sc.classList.toggle("err", !shStream && !!rvErr);
+    var a = $("#bd-aud"), v = $("#bd-video"), au = !shStream && rv && rv.stream && rv.stream.getAudioTracks().length;
+    a.hidden = !au; if (au) { a.dataset.bt = v.muted ? "unmute" : "mute"; a.textContent = t(a.dataset.bt); }
+  }
+
   window.Board = {
     attach: function (a) { api = a; build(); },
-    onMsg: onMsg, onState: onState,
+    onMsg: onMsg, onState: onState, onRtc: onRtc,
     resync: function () { if (open) setTimeout(function () { send({ t: "hello" }); }, 400); },
     isOpen: function () { return open; }
   };

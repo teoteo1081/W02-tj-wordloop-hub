@@ -566,3 +566,12 @@ body.embed .g-brand{display:none}
 .g-tstip{background:var(--deep,#0003);padding:8px 10px;border-radius:10px}
 .g-tsweak{display:flex;flex-direction:column;gap:6px}.g-tswr{display:flex;gap:10px;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line,#3334);padding:4px 0}
 .g-guide summary{cursor:pointer;padding:6px 0}.g-guide .g-ttab th{text-align:left;font-size:12px;opacity:.8}
+/* 🖥 chia sẻ màn hình trong bảng (board.js, TJ 2026-10-04): video DƯỚI canvas trong suốt -> laser/bút vẽ đè lên được */
+.bd-head{flex-wrap:wrap}.bd-head .bd-who{margin-right:0}
+.bd-scr{font-size:12px;color:var(--text-2);margin-right:auto}.bd-scr.err{color:#ff8a7a}
+.bd-hb.on{background:#c0392b;border-color:#c0392b;color:#fff}
+.bd-video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000;pointer-events:none}
+.bd-video[hidden]{display:none}
+.bd-stage.bd-screen{background:#000}
+.bd-aud{position:absolute;right:8px;top:8px;z-index:2;background:rgba(0,0,0,.65);color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:999px;padding:5px 12px;font-size:13px;cursor:pointer}
+.bd-aud[hidden]{display:none}
