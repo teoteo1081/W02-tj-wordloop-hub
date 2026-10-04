@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marketing Quest</title>
+<meta name="description" content="Game ôn Digital Marketing: từ vựng, trắc nghiệm, chọn kênh nhanh và tình huống tư vấn chủ shop.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📣</text></svg>">
+<link rel="stylesheet" href="../quest.css?v=1">
+</head>
+<body>
+<!-- Mở thẳng (không nằm trong Góc tự học của game.html) thì có nút quay về phòng game. Trong iframe thì thanh của game.html lo việc này. -->
+<a class="quest-home" href="../../game.html" hidden>🎮 Về phòng game</a>
+<main id="app" aria-live="polite"></main>
+<div id="toast" role="status"></div>
+<noscript>Game cần bật JavaScript để chạy nha 🥺</noscript>
+<script>
+if (window.top === window) document.querySelector(".quest-home").hidden = false;
+window.QUEST_CONFIG = {
+  storeKey: "dm-quest-v1",
+  lessonBase: "https://github.com/teoteo1081/L02-digital-marketing-beginner/blob/main/",
+  parts: { 1: { label: "Nền tảng", name: "Funnel, persona, chọn kênh" }, 2: { label: "Quảng cáo", name: "Facebook, TikTok, Google, Zalo Ads" }, 3: { label: "Organic & đo lường", name: "SEO, cộng đồng, KPI, tối ưu" } },
+  mock: { perPart: { 1: 7, 2: 6, 3: 7 }, minutes: 20 },
+  typeLabel: { channel: "🎯 Kênh nào?", metric: "📊 Chỉ số nào?", tool: "🛠️ Cài đặt nào?", flag: "🚩 Điểm bất thường" },
+  ranks: [
+    { xp: 0, emoji: "🐣", vi: "Thực tập sinh marketing", en: "Marketing Intern" },
+    { xp: 150, emoji: "✍️", vi: "Người viết nội dung", en: "Content Creator" },
+    { xp: 400, emoji: "📱", vi: "Quản lý Fanpage", en: "Social Media Executive" },
+    { xp: 800, emoji: "🎯", vi: "Người chạy quảng cáo", en: "Performance Marketer" },
+    { xp: 1500, emoji: "📊", vi: "Chuyên viên đo lường", en: "Growth Analyst" },
+    { xp: 2500, emoji: "🚀", vi: "Trưởng nhóm marketing", en: "Marketing Lead" },
+    { xp: 4000, emoji: "🧠", vi: "Chiến lược gia", en: "Marketing Strategist" },
+    { xp: 6000, emoji: "👑", vi: "Huyền thoại marketing", en: "Marketing Legend" }
+  ],
+  text: {
+    pathTitle: "🗺️ Lộ trình từ số 0 đến marketer",
+    quizIntro: "Câu hỏi bám theo 10 module của khoá Digital Marketing. Sai câu nào sẽ vào <b>Sổ lỗi sai</b> để làm lại 💪",
+    mockDesc: "20 câu trộn cả khoá · 20 phút",
+    mockPass: "Bạn nắm chắc kiến thức nền rồi đó! 🚀",
+    mockFail: "Xem lại các câu sai bên dưới rồi thử lại nha 💪",
+    sprintName: "Marketing Sprint",
+    sprintTile: "Chọn kênh & chỉ số trong 90 giây",
+    sprintIntro: "Marketer giỏi là người <b>chọn đúng kênh, đọc đúng chỉ số</b> và <b>thấy ngay chỗ bất thường</b>. Bạn có 90 giây, trả lời càng nhiều càng tốt! Mỗi câu đúng +6 XP.",
+    sprintGuide: "90 giây chọn thật nhanh kênh nào, chỉ số nào, cài đặt nào, và chỗ nào bất thường.",
+    caseIntro: "Chủ shop tới nhờ bạn tư vấn! Mỗi tình huống có 4 bước:<br>① Chọn dữ liệu cần xin chủ shop<br>② Giải thích bằng <b>ngôn ngữ chuyên môn</b><br>③ Giải thích bằng <b>ngôn ngữ của chủ shop</b><br>④ Câu hỏi bẫy, chỉ có 60 giây ⏱️<br>Làm xong tình huống này thì mở tình huống sau nha.",
+    docsTitle: "① Bạn sẽ xin chủ shop những dữ liệu nào?",
+    docsHint: "Chọn tất cả thứ CẦN THIẾT. Xin thừa thứ không liên quan sẽ bị trừ điểm (chủ shop thấy phiền!).",
+    docsUnit: "mục",
+    legalTitle: "② Ngôn ngữ chuyên môn 📊",
+    legalShort: "Ngôn ngữ chuyên môn",
+    goal: "Đưa bạn từ con số 0 thành marketer biết: <b>hiểu thuật ngữ</b> → <b>nắm kiến thức</b> → <b>chọn kênh, đọc chỉ số nhanh</b> → <b>tư vấn chủ shop</b> bằng cả ngôn ngữ chuyên môn lẫn lời dễ hiểu.",
+    disclaimer: "Game dùng để ôn tập theo khoá Digital Marketing cho người mới. Tính năng và giao diện các nền tảng quảng cáo thay đổi thường xuyên, khi làm thật nhớ kiểm tra lại hướng dẫn mới nhất của từng nền tảng nha."
+  }
+};
+</script>
+<script src="data/lessons-data.js?v=1"></script>
+<script src="data/cases.js?v=1"></script>
+<script src="data/research.js?v=1"></script>
+<script src="../quest.js?v=1"></script>
+</body>
+</html>

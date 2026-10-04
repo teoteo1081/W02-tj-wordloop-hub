@@ -688,3 +688,14 @@ body:has(.bd-dock:not([hidden])) #g-main{padding-bottom:76px}
 .bd-lrow small{color:var(--text-2);margin-left:6px}
 .bd-libmsg{color:var(--text-2);font-size:14px;margin-top:6px}
 #bd-wlq{width:100%;box-sizing:border-box;min-height:40px;padding:8px 12px;border-radius:9px;border:1px solid var(--line);background:var(--deep);color:var(--text);margin-bottom:8px;font-size:16px}
+/* 📚 Góc tự học (js/learn.js): hàng thẻ Phòng game / EA / Marketing ở dòng riêng dưới thanh trên cùng + lớp phủ iframe */
+.g-top{flex-wrap:wrap}
+.g-learn{order:10;flex-basis:100%;display:flex;gap:6px;overflow-x:auto}
+.g-learn button{flex:1;min-width:0;white-space:nowrap;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 10px;font-size:13px;cursor:pointer;color:var(--text-2)}
+.g-learn button.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.g-learnlayer{position:fixed;left:0;right:0;bottom:0;z-index:4;background:var(--bg)}
+.g-learnlayer[hidden]{display:none}
+.g-learnlayer iframe{width:100%;height:100%;border:0;display:block}
+.g-learnlayer iframe[hidden]{display:none}
+body.learn-on{overflow:hidden}
+body.big .g-learnlayer{display:none}

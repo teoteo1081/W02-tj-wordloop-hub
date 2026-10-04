@@ -8,7 +8,7 @@
 <!-- Google tag (gtag.js) — cùng property GA4 với WordLoop -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM');</script>
-<link rel="stylesheet" href="css/game.css?v=92">
+<link rel="stylesheet" href="css/game.css?v=93">
 </head>
 <body>
 <!-- 🎮 Phòng game chơi chung — xem README.md "Việc còn dang dở" > PHÒNG GAME, bảng: tools/game_schema.sql.
@@ -20,6 +20,8 @@
   <span class="g-room" id="g-room-badge" hidden></span>
   <label class="g-langlbl"><span>🌐 Language</span><select class="g-mylang" id="g-mylang" data-tt="mother_tt"><option value="vi">🇻🇳 Tiếng Việt</option><option value="en">🇺🇸 English</option><option value="es">🇪🇸 Español</option><option value="zh">🇨🇳 中文</option></select><b class="g-forcenote" id="g-forcenote" hidden></b></label>
   <button class="g-me" id="g-me" hidden></button>
+  <!-- 📚 Góc tự học (js/learn.js): Phòng game = game từ vựng + TOEIC sẵn có; EA / Marketing = game tự học trong learn/ -->
+  <nav class="g-learn" id="g-learn" aria-label="Góc tự học"><button type="button" data-learn="" class="on">🎮 Phòng game</button><button type="button" data-learn="ea">🧾 EA</button><button type="button" data-learn="dm">📣 Marketing</button></nav>
 </header>
 
 <!-- 📚 Cây chủ đề — CỘT TRÁI kiểu sidebar Notebooks của WordLoop (TJ 2026-10-01): chỉ HOST, chỉ ở phòng chờ.
@@ -229,5 +231,6 @@
 <script src="js/toeic_tips.js?v=1"></script>
 <script src="js/board.js?v=13"></script>
 <script src="js/game.js?v=147"></script>
+<script src="js/learn.js?v=1"></script>
 </body>
 </html>
