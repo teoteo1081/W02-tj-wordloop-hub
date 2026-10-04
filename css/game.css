@@ -628,3 +628,13 @@ body.g-tahead #p-opts .g-tsub{display:none}body.g-tahead #p-opts .g-tnext{opacit
 @media (max-width:600px){ .g-tbook .g-tsubopts{padding-left:0} .g-tbook .g-tsub .g-tstem{font-size:17px} .g-tbook .g-opt{font-size:17px} }
 .g-tbook .g-opt,.g-tbook .g-opt .g-otext{text-align:left!important;justify-content:flex-start!important}
 .g-tbook .g-opt{min-height:40px;padding:7px 12px;flex-direction:row}
+/* 🎯 phòng chờ người chơi: giới thiệu TOEIC + chiến thuật */
+.g-tintro{text-align:left;line-height:1.55}
+.g-tintro .g-tih{margin:0 0 6px;font-size:18px}
+.g-tintro .g-tit{font-weight:700;color:var(--amber);margin-bottom:6px}
+.g-tintro .g-tiw{margin:0 0 6px}
+.g-tintro .g-til{margin:0 0 10px;padding-left:1.2em}
+.g-tintro .g-tih2{font-weight:700;margin:8px 0 4px}
+.g-tintro details{margin:4px 0;padding:6px 10px;background:var(--deep);border-radius:8px}
+.g-tintro details summary{cursor:pointer}
+.g-tintro details ul{margin:6px 0 2px;padding-left:1.2em}
