@@ -9,11 +9,11 @@ q = lambda s: "'" + str(s).replace("'", "''") + "'"
 def short(vi): return re.sub(r"\s*\(.*?\)", "", vi).strip()
 
 out = ["-- Hub 📈 DIGITAL MARKETING (khoá L02, 11 module × 10 từ) — SINH TỰ ĐỘNG bởi tools/dm_hub_gen.py, đừng sửa tay.",
-       "-- Đặt Hub ngay SAU Hub EA (tìm theo code/tên có chữ EA đứng riêng); không thấy EA thì đặt cuối.",
+       "-- Đặt Hub ngay SAU Hub EA2025 (id hub_ea2025); không thấy EA thì đặt cuối.",
        "begin;",
        "do $$ declare ea int; begin",
        f"  if exists (select 1 from hubs where id = {q(HUB)}) then return; end if;",
-       "  select sort into ea from hubs where coalesce(code,'') ~ '\\mEA\\M' or name ~ '\\mEA\\M' order by sort limit 1;",
+       "  select sort into ea from hubs where id = 'hub_ea2025';",
        "  if ea is null then select coalesce(max(sort), 0) into ea from hubs; raise notice 'Không thấy Hub EA -> đặt cuối'; end if;",
        "  update hubs set sort = sort + 1 where sort > ea;",
        f"  insert into hubs (id, code, name, sort, name_en, name_zh) values ({q(HUB)}, 'DIGITAL_MARKETING', '📈 DIGITAL MARKETING', ea + 1, '📈 DIGITAL MARKETING', '📈 数字营销');",
