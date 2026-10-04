@@ -68,7 +68,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 147;
+  var GAME_VER = 148;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -1640,7 +1640,31 @@
       upload: async function (path, file) { var r = await sb.storage.from("toeic").upload("lib/" + path, file, { upsert: true, contentType: file.type || undefined }); return { error: r.error && r.error.message }; },
       remove: async function (path) { var r = await sb.storage.from("toeic").remove(["lib/" + path]); return { error: r.error ? r.error.message : (r.data && !r.data.length ? "Không xoá được (chưa có quyền xoá trong kho)" : null) }; },
       move: async function (a, b) { var r = await sb.storage.from("toeic").move("lib/" + a, "lib/" + b); return { error: r.error && r.error.message }; },
+      folders: async function () {   /* mọi thư mục trong lib/ (sâu tối đa 3 cấp) */
+        var out = [], level = [""];
+        for (var d = 0; d < 3 && level.length; d++) {
+          var next = [];
+          await Promise.all(level.map(async function (p) {
+            var r = await sb.storage.from("toeic").list("lib" + (p ? "/" + p : ""), { limit: 300 });
+            (r.data || []).forEach(function (x) { if (!x.id && x.name && x.name[0] !== "." && x.name[0] !== "_") { var q = (p ? p + "/" : "") + x.name; out.push(q); next.push(q); } });
+          }));
+          level = next;
+        }
+        return out.sort();
+      },
+      mkdir: async function (path) { var r = await sb.storage.from("toeic").upload("lib/" + path + "/.emptyFolderPlaceholder", new Blob([""], { type: "application/octet-stream" }), { upsert: true, contentType: "application/octet-stream" }); return { error: r.error && r.error.message }; },
       url: function (path) { return cfg.SUPABASE_URL + "/storage/v1/object/public/toeic/lib/" + path.split("/").map(encodeURIComponent).join("/"); }
+    },
+    tree: async function () { if (!TREE) await loadTree(true); return TREE; },   /* cây Hub › Notebook › … › Block của game, dùng chung cho hộp chọn bài ở bảng */
+    say: function (text) { try { if (!soundOn()) return; sayIt._lang = "en"; sayIt(String(text || ""), true); } catch (e) {} },
+    words: async function (bid) {
+      var cols = "id,term,ipa,pos,level,def_en,meaning_vi,meaning_zh,meaning_es,sort";
+      var r = await sb.from("words").select(cols).eq("block_id", bid).limit(300), rows = r.data || [];
+      if (!rows.length) {   /* Block "Ôn riêng": từ nằm ở Block gốc, ref_word_ids giữ danh sách */
+        var b = await sb.from("blocks").select("ref_word_ids").eq("id", bid).maybeSingle(), ids = (b.data && b.data.ref_word_ids) || [];
+        if (ids.length) { var r2 = await sb.from("words").select(cols).in("id", ids.slice(0, 200)); rows = r2.data || []; }
+      }
+      return rows.sort(function (a, b2) { return (+a.sort || 0) - (+b2.sort || 0); });
     },
     block: async function (id) { var r = await sb.from("blocks").select("id,name,context_passage").eq("id", id).maybeSingle(); return r.data; },
     blocks: async function (q) {

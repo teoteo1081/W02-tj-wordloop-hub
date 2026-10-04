@@ -9,22 +9,23 @@
    game.js gắn vào qua Board.attach(api) và chuyển mọi tin "board" vào Board.onMsg(payload), trạng thái phòng vào Board.onState(st). */
 (function () {
   "use strict";
-  var W = 1600, H = 900;
+  var W = 1600, H = 900, AR = 16 / 9;   /* H đổi theo tỉ lệ tài liệu đang mở (PDF dọc, bài đọc 3:4…) — mọi máy cùng tỉ lệ nên nét vẽ khớp */
   var COLORS = ["#f5f4ef", "#ffd84d", "#ff8fb1", "#7cc4ff", "#7be0a1", "#ff6b5e"];
   var SIZES = [4, 8, 16];
-  var api = null, open = false, mini = false, tool = "pen", color = COLORS[0], size = SIZES[1];
+  var api = null, open = false, mini = false, tool = "hand", color = COLORS[0], size = SIZES[1];
   var items = {}, order = [];          /* id -> {k:"s"|"t", ...}; order = thứ tự vẽ */
   var mine = [], redo = [];            /* id nét/ô chữ của mình để hoàn tác */
   var lasers = {};                     /* pid -> {pts:[{x,y,t}], name, at} */
+  var Z = { s: 1, x: 0, y: 0 }, big = false, bigPref = null, curQ = 1, ptrs = {}, gest = null, lastTap = 0, zT = 0;   /* 🔍 phóng to/kéo bằng tay: riêng từng máy */
   var cv, ctx, wrap, dpr = 1, cur = null, sendT = 0, lastLaserSend = 0, laserTail = 0, raf = 0, editing = null, bg = null, bgDirty = true;
   var cid = Math.random().toString(36).slice(2, 9);   /* mã máy này — bỏ qua tin của chính mình (kênh bật self) */
 
   /* chữ trên bảng theo NGÔN NGỮ GIAO DIỆN của người xem (TJ 2026-10-04: chọn 中文 mà bảng vẫn tiếng Việt) — game.js truyền api.lang() */
   var TX = {
-    vi: { lib: "📁 Tài liệu", lib_img: "Ảnh", lib_wl: "Bài đọc WordLoop", lib_wlq: "Tìm bài đọc (tên Block / chữ trong bài)…", lib_up: "Tải lên", lib_newf: "Thư mục mới", lib_empty: "Thư mục trống — bấm ⬆️ Tải lên để thêm PDF/ảnh", lib_newhint: "Đã vào thư mục mới — tải file lên là thư mục được tạo", board: "🖤 Bảng", can: "✍️ bạn được dùng bảng", view: "👀 chỉ xem", viewmsg: "👀 Bạn đang xem — host cấp quyền thì mới dùng được bút", perm: "👥 Quyền", permt: "Cấp quyền dùng bảng", min: "Thu nhỏ trên máy mình", close: "Đóng bảng cho cả phòng", laser: "Laser", pen: "Bút vẽ", text: "Ô chữ", color: "Màu", size: "Cỡ nét", undo: "Hoàn tác", redo: "Làm lại", clearAll: "Xoá cả bảng", clearMine: "Xoá nét của tôi", dock: "🖤 Mở bảng", open: "🖤 Bảng", qAll: "Xoá hết nét vẽ và ô chữ trên bảng (của cả phòng)?", qMine: "Xoá hết nét vẽ và ô chữ của bạn?", who: "Ai được dùng bảng (bút, laser, ô chữ):", none: "Chưa có người chơi nào.", share: "🖥 Chia sẻ màn hình", unshare: "⏹ Dừng chia sẻ", sharet: "Chia sẻ màn hình của bạn cho cả phòng (như Google Meet) — người có quyền vẫn vẽ/laser lên trên", sharing: "🖥 Bạn đang chia sẻ màn hình", nview: "👁 {n} người xem", watching: "🖥 {n} đang chia sẻ màn hình", conn: "🖥 đang kết nối…", fail: "⚠️ Không kết nối được — mạng có thể chặn (cần TURN)", full: "⚠️ Đã đủ 10 người xem — chờ có chỗ trống", hostfull: "⚠️ Tối đa 10 người xem — {n} người chưa xem được", unmute: "🔊 Bật tiếng", mute: "🔇 Tắt tiếng", shErr: "Không chia sẻ được màn hình: " },
-    en: { lib: "📁 Materials", lib_img: "Images", lib_wl: "WordLoop readings", lib_wlq: "Search readings (Block name / text)…", lib_up: "Upload", lib_newf: "New folder", lib_empty: "Empty folder — press ⬆️ Upload to add PDFs/images", lib_newhint: "In the new folder — upload a file to create it", board: "🖤 Board", can: "✍️ you can use the board", view: "👀 view only", viewmsg: "👀 You are watching — the host must give you permission to draw", perm: "👥 Access", permt: "Give board access", min: "Minimise on my screen", close: "Close the board for everyone", laser: "Laser", pen: "Pen", text: "Text box", color: "Colour", size: "Size", undo: "Undo", redo: "Redo", clearAll: "Clear the whole board", clearMine: "Clear my marks", dock: "🖤 Open board", open: "🖤 Board", qAll: "Clear all drawings and text on the board (for everyone)?", qMine: "Clear all your drawings and text?", who: "Who can use the board (pen, laser, text):", none: "No players yet.", share: "🖥 Share screen", unshare: "⏹ Stop sharing", sharet: "Share your screen with the whole room (like Google Meet) — people with access can still draw/laser on top", sharing: "🖥 You are sharing your screen", nview: "👁 {n} watching", watching: "🖥 {n} is sharing their screen", conn: "🖥 connecting…", fail: "⚠️ Could not connect — the network may be blocking it (TURN needed)", full: "⚠️ 10 viewers already — waiting for a free spot", hostfull: "⚠️ Max 10 viewers — {n} people cannot watch", unmute: "🔊 Turn sound on", mute: "🔇 Mute", shErr: "Could not share the screen: " },
-    zh: { lib: "📁 资料", lib_img: "图片", lib_wl: "WordLoop 阅读", lib_wlq: "搜索阅读（Block 名称 / 文中词）…", lib_up: "上传", lib_newf: "新文件夹", lib_empty: "空文件夹 — 点 ⬆️ 上传 添加 PDF/图片", lib_newhint: "已进入新文件夹 — 上传文件即创建", board: "🖤 白板", can: "✍️ 你可以使用白板", view: "👀 仅观看", viewmsg: "👀 你正在观看 — 主持人授权后才能使用画笔", perm: "👥 权限", permt: "授权使用白板", min: "在我的屏幕上最小化", close: "为全房间关闭白板", laser: "激光笔", pen: "画笔", text: "文本框", color: "颜色", size: "粗细", undo: "撤销", redo: "重做", clearAll: "清空整个白板", clearMine: "清除我的笔迹", dock: "🖤 打开白板", open: "🖤 白板", qAll: "清除白板上所有笔迹和文字（全房间）？", qMine: "清除你所有的笔迹和文字？", who: "谁可以使用白板（画笔、激光笔、文本框）：", none: "还没有玩家。", share: "🖥 共享屏幕", unshare: "⏹ 停止共享", sharet: "把你的屏幕共享给全房间（像 Google Meet）— 有权限的人仍可在上面画画/用激光笔", sharing: "🖥 你正在共享屏幕", nview: "👁 {n} 人观看", watching: "🖥 {n} 正在共享屏幕", conn: "🖥 正在连接…", fail: "⚠️ 无法连接 — 网络可能被拦截（需要 TURN）", full: "⚠️ 观看人数已满 10 人 — 等待空位", hostfull: "⚠️ 最多 10 人观看 — 还有 {n} 人看不到", unmute: "🔊 打开声音", mute: "🔇 静音", shErr: "无法共享屏幕：" },
-    es: { lib: "📁 Materiales", lib_img: "Imágenes", lib_wl: "Lecturas WordLoop", lib_wlq: "Buscar lecturas (nombre del Block / texto)…", lib_up: "Subir", lib_newf: "Nueva carpeta", lib_empty: "Carpeta vacía — pulsa ⬆️ Subir para añadir PDF/imágenes", lib_newhint: "En la carpeta nueva — sube un archivo para crearla", board: "🖤 Pizarra", can: "✍️ puedes usar la pizarra", view: "👀 solo ver", viewmsg: "👀 Estás mirando — el anfitrión debe darte permiso para dibujar", perm: "👥 Permisos", permt: "Dar acceso a la pizarra", min: "Minimizar en mi pantalla", close: "Cerrar la pizarra para todos", laser: "Láser", pen: "Lápiz", text: "Cuadro de texto", color: "Color", size: "Grosor", undo: "Deshacer", redo: "Rehacer", clearAll: "Borrar toda la pizarra", clearMine: "Borrar mis trazos", dock: "🖤 Abrir pizarra", open: "🖤 Pizarra", qAll: "¿Borrar todos los trazos y textos de la pizarra (para todos)?", qMine: "¿Borrar todos tus trazos y textos?", who: "Quién puede usar la pizarra (lápiz, láser, texto):", none: "Aún no hay jugadores.", share: "🖥 Compartir pantalla", unshare: "⏹ Dejar de compartir", sharet: "Comparte tu pantalla con toda la sala (como Google Meet) — quien tenga permiso puede seguir dibujando/usando el láser encima", sharing: "🖥 Estás compartiendo tu pantalla", nview: "👁 {n} mirando", watching: "🖥 {n} está compartiendo su pantalla", conn: "🖥 conectando…", fail: "⚠️ No se pudo conectar — la red puede estar bloqueándolo (hace falta TURN)", full: "⚠️ Ya hay 10 espectadores — esperando un hueco", hostfull: "⚠️ Máximo 10 espectadores — {n} personas no pueden ver", unmute: "🔊 Activar sonido", mute: "🔇 Silenciar", shErr: "No se pudo compartir la pantalla: " }
+    vi: { lib_root: "gốc", hand: "Di chuyển / phóng to bằng tay (không vẽ)", zout: "Chữ nhỏ lại", zin: "Chữ to lên", zfit: "Vừa khung", big: "Bảng to / nhỏ", lib_vt: "Bảng từ vựng", lib_pick: "Chọn bài trong cây thư mục", lib_find: "Tìm Block…", lib_dest: "Cất vào thư mục", lib_cur: "Thư mục hiện tại", lib_mk: "➕ Tạo thư mục mới…", lib_mkn: "Tên thư mục mới", lib_go: "Tải lên", lib_no: "Huỷ", lib_mv: "Chuyển", lib_mvt: "Chuyển file này vào thư mục", lib_trash: "Đã chuyển vào Thùng rác (_Trash)", lib_rd: "Đọc", lib_vc: "Từ vựng", lib_office: "Mở file Word/Excel", lib: "📁 Tài liệu", lib_img: "Ảnh", lib_wl: "Bài đọc WordLoop", lib_wlq: "Tìm bài đọc (tên Block / chữ trong bài)…", lib_up: "Tải lên", lib_newf: "Thư mục mới", lib_empty: "Thư mục trống — bấm ⬆️ Tải lên để thêm PDF/ảnh", lib_newhint: "Đã vào thư mục mới — tải file lên là thư mục được tạo", board: "🖤 Bảng", can: "✍️ bạn được dùng bảng", view: "👀 chỉ xem", viewmsg: "👀 Bạn đang xem — host cấp quyền thì mới dùng được bút", perm: "👥 Quyền", permt: "Cấp quyền dùng bảng", min: "Thu nhỏ trên máy mình", close: "Đóng bảng cho cả phòng", laser: "Laser", pen: "Bút vẽ", text: "Ô chữ", color: "Màu", size: "Cỡ nét", undo: "Hoàn tác", redo: "Làm lại", clearAll: "Xoá cả bảng", clearMine: "Xoá nét của tôi", dock: "🖤 Mở bảng", open: "🖤 Bảng", qAll: "Xoá hết nét vẽ và ô chữ trên bảng (của cả phòng)?", qMine: "Xoá hết nét vẽ và ô chữ của bạn?", who: "Ai được dùng bảng (bút, laser, ô chữ):", none: "Chưa có người chơi nào.", share: "🖥 Chia sẻ màn hình", unshare: "⏹ Dừng chia sẻ", sharet: "Chia sẻ màn hình của bạn cho cả phòng (như Google Meet) — người có quyền vẫn vẽ/laser lên trên", sharing: "🖥 Bạn đang chia sẻ màn hình", nview: "👁 {n} người xem", watching: "🖥 {n} đang chia sẻ màn hình", conn: "🖥 đang kết nối…", fail: "⚠️ Không kết nối được — mạng có thể chặn (cần TURN)", full: "⚠️ Đã đủ 10 người xem — chờ có chỗ trống", hostfull: "⚠️ Tối đa 10 người xem — {n} người chưa xem được", unmute: "🔊 Bật tiếng", mute: "🔇 Tắt tiếng", shErr: "Không chia sẻ được màn hình: " },
+    en: { lib_root: "root", hand: "Move / zoom with fingers (no drawing)", zout: "Smaller text", zin: "Bigger text", zfit: "Fit", big: "Big / small board", lib_vt: "Vocabulary table", lib_pick: "Pick a lesson from the folder tree", lib_find: "Find a Block…", lib_dest: "Save into folder", lib_cur: "Current folder", lib_mk: "➕ New folder…", lib_mkn: "New folder name", lib_go: "Upload", lib_no: "Cancel", lib_mv: "Move", lib_mvt: "Move this file to a folder", lib_trash: "Moved to Trash (_Trash)", lib_rd: "Reading", lib_vc: "Vocab", lib_office: "Open Word/Excel file", lib: "📁 Materials", lib_img: "Images", lib_wl: "WordLoop readings", lib_wlq: "Search readings (Block name / text)…", lib_up: "Upload", lib_newf: "New folder", lib_empty: "Empty folder — press ⬆️ Upload to add PDFs/images", lib_newhint: "In the new folder — upload a file to create it", board: "🖤 Board", can: "✍️ you can use the board", view: "👀 view only", viewmsg: "👀 You are watching — the host must give you permission to draw", perm: "👥 Access", permt: "Give board access", min: "Minimise on my screen", close: "Close the board for everyone", laser: "Laser", pen: "Pen", text: "Text box", color: "Colour", size: "Size", undo: "Undo", redo: "Redo", clearAll: "Clear the whole board", clearMine: "Clear my marks", dock: "🖤 Open board", open: "🖤 Board", qAll: "Clear all drawings and text on the board (for everyone)?", qMine: "Clear all your drawings and text?", who: "Who can use the board (pen, laser, text):", none: "No players yet.", share: "🖥 Share screen", unshare: "⏹ Stop sharing", sharet: "Share your screen with the whole room (like Google Meet) — people with access can still draw/laser on top", sharing: "🖥 You are sharing your screen", nview: "👁 {n} watching", watching: "🖥 {n} is sharing their screen", conn: "🖥 connecting…", fail: "⚠️ Could not connect — the network may be blocking it (TURN needed)", full: "⚠️ 10 viewers already — waiting for a free spot", hostfull: "⚠️ Max 10 viewers — {n} people cannot watch", unmute: "🔊 Turn sound on", mute: "🔇 Mute", shErr: "Could not share the screen: " },
+    zh: { lib_root: "根目录", hand: "用手指移动/缩放（不画）", zout: "缩小文字", zin: "放大文字", zfit: "适合屏幕", big: "白板 大/小", lib_vt: "词汇表", lib_pick: "在文件夹树中选择课文", lib_find: "查找 Block…", lib_dest: "保存到文件夹", lib_cur: "当前文件夹", lib_mk: "➕ 新建文件夹…", lib_mkn: "新文件夹名称", lib_go: "上传", lib_no: "取消", lib_mv: "移动", lib_mvt: "把这个文件移到文件夹", lib_trash: "已移到回收站 (_Trash)", lib_rd: "阅读", lib_vc: "词汇", lib_office: "打开 Word/Excel 文件", lib: "📁 资料", lib_img: "图片", lib_wl: "WordLoop 阅读", lib_wlq: "搜索阅读（Block 名称 / 文中词）…", lib_up: "上传", lib_newf: "新文件夹", lib_empty: "空文件夹 — 点 ⬆️ 上传 添加 PDF/图片", lib_newhint: "已进入新文件夹 — 上传文件即创建", board: "🖤 白板", can: "✍️ 你可以使用白板", view: "👀 仅观看", viewmsg: "👀 你正在观看 — 主持人授权后才能使用画笔", perm: "👥 权限", permt: "授权使用白板", min: "在我的屏幕上最小化", close: "为全房间关闭白板", laser: "激光笔", pen: "画笔", text: "文本框", color: "颜色", size: "粗细", undo: "撤销", redo: "重做", clearAll: "清空整个白板", clearMine: "清除我的笔迹", dock: "🖤 打开白板", open: "🖤 白板", qAll: "清除白板上所有笔迹和文字（全房间）？", qMine: "清除你所有的笔迹和文字？", who: "谁可以使用白板（画笔、激光笔、文本框）：", none: "还没有玩家。", share: "🖥 共享屏幕", unshare: "⏹ 停止共享", sharet: "把你的屏幕共享给全房间（像 Google Meet）— 有权限的人仍可在上面画画/用激光笔", sharing: "🖥 你正在共享屏幕", nview: "👁 {n} 人观看", watching: "🖥 {n} 正在共享屏幕", conn: "🖥 正在连接…", fail: "⚠️ 无法连接 — 网络可能被拦截（需要 TURN）", full: "⚠️ 观看人数已满 10 人 — 等待空位", hostfull: "⚠️ 最多 10 人观看 — 还有 {n} 人看不到", unmute: "🔊 打开声音", mute: "🔇 静音", shErr: "无法共享屏幕：" },
+    es: { lib_root: "raíz", hand: "Mover / hacer zoom con los dedos (sin dibujar)", zout: "Texto más pequeño", zin: "Texto más grande", zfit: "Ajustar", big: "Pizarra grande / pequeña", lib_vt: "Tabla de vocabulario", lib_pick: "Elige una lección en el árbol de carpetas", lib_find: "Buscar Block…", lib_dest: "Guardar en la carpeta", lib_cur: "Carpeta actual", lib_mk: "➕ Nueva carpeta…", lib_mkn: "Nombre de la carpeta nueva", lib_go: "Subir", lib_no: "Cancelar", lib_mv: "Mover", lib_mvt: "Mover este archivo a una carpeta", lib_trash: "Movido a la papelera (_Trash)", lib_rd: "Lectura", lib_vc: "Vocab", lib_office: "Abrir archivo Word/Excel", lib: "📁 Materiales", lib_img: "Imágenes", lib_wl: "Lecturas WordLoop", lib_wlq: "Buscar lecturas (nombre del Block / texto)…", lib_up: "Subir", lib_newf: "Nueva carpeta", lib_empty: "Carpeta vacía — pulsa ⬆️ Subir para añadir PDF/imágenes", lib_newhint: "En la carpeta nueva — sube un archivo para crearla", board: "🖤 Pizarra", can: "✍️ puedes usar la pizarra", view: "👀 solo ver", viewmsg: "👀 Estás mirando — el anfitrión debe darte permiso para dibujar", perm: "👥 Permisos", permt: "Dar acceso a la pizarra", min: "Minimizar en mi pantalla", close: "Cerrar la pizarra para todos", laser: "Láser", pen: "Lápiz", text: "Cuadro de texto", color: "Color", size: "Grosor", undo: "Deshacer", redo: "Rehacer", clearAll: "Borrar toda la pizarra", clearMine: "Borrar mis trazos", dock: "🖤 Abrir pizarra", open: "🖤 Pizarra", qAll: "¿Borrar todos los trazos y textos de la pizarra (para todos)?", qMine: "¿Borrar todos tus trazos y textos?", who: "Quién puede usar la pizarra (lápiz, láser, texto):", none: "Aún no hay jugadores.", share: "🖥 Compartir pantalla", unshare: "⏹ Dejar de compartir", sharet: "Comparte tu pantalla con toda la sala (como Google Meet) — quien tenga permiso puede seguir dibujando/usando el láser encima", sharing: "🖥 Estás compartiendo tu pantalla", nview: "👁 {n} mirando", watching: "🖥 {n} está compartiendo su pantalla", conn: "🖥 conectando…", fail: "⚠️ No se pudo conectar — la red puede estar bloqueándolo (hace falta TURN)", full: "⚠️ Ya hay 10 espectadores — esperando un hueco", hostfull: "⚠️ Máximo 10 espectadores — {n} personas no pueden ver", unmute: "🔊 Activar sonido", mute: "🔇 Silenciar", shErr: "No se pudo compartir la pantalla: " }
   };
   function t(k) { var l = api && api.lang ? api.lang() : "vi"; return (TX[l] || TX.vi)[k] || TX.vi[k] || k; }
   function relabel() {
@@ -58,24 +59,28 @@
     el.id = "bd"; el.className = "bd"; el.hidden = true;
     el.innerHTML =
       '<div class="bd-head"><b data-bt="board"></b><span class="bd-who" id="bd-who"></span><span class="bd-scr" id="bd-scr"></span>' +
-      '<span class="bd-docnav" id="bd-docnav" hidden><button type="button" class="bd-hb" id="bd-dprev">◀</button><b id="bd-dpg"></b><button type="button" class="bd-hb" id="bd-dnext">▶</button><button type="button" class="bd-hb" id="bd-dclose" title="Đóng tài liệu">✕</button></span>' +
-      '<button type="button" class="bd-hb" id="bd-lib" hidden data-bt="lib"></button>' +   /* 📁 tài liệu: PDF / ảnh / bài đọc WordLoop lên bảng (chỉ host) */
+      '<span class="bd-docnav" id="bd-docnav" hidden><button type="button" class="bd-hb" id="bd-dprev">◀</button><button type="button" class="bd-hb" id="bd-dpg" title="Nhảy tới trang…"></button><button type="button" class="bd-hb" id="bd-dnext">▶</button><button type="button" class="bd-hb" id="bd-dclose" title="Đóng tài liệu">✕</button></span>' +
+      '<button type="button" class="bd-hb" id="bd-lib" hidden data-bt="lib"></button>' +
+      '<button type="button" class="bd-hb" id="bd-big" data-btt="big">⛶</button>' +   /* 📁 tài liệu: PDF / ảnh / bài đọc WordLoop lên bảng (chỉ host) */
       '<button type="button" class="bd-hb" id="bd-share" hidden data-btt="sharet" data-bt="share"></button>' +   /* 🖥 chia sẻ màn hình (chỉ host, máy tính) */
       '<button type="button" class="bd-hb" id="bd-perm" hidden data-btt="permt" data-bt="perm"></button>' +
       '<button type="button" class="bd-hb" id="bd-min" data-btt="min">▁</button>' +
       '<button type="button" class="bd-hb" id="bd-close" hidden data-btt="close">✕</button></div>' +
-      '<div class="bd-stage" id="bd-stage"><div class="bd-doc" id="bd-doc"></div><video id="bd-video" class="bd-video" autoplay playsinline muted hidden></video><canvas id="bd-cv"></canvas><div class="bd-texts" id="bd-texts"></div><button type="button" class="bd-aud" id="bd-aud" hidden data-bt="unmute"></button></div>' +
+      '<div class="bd-sw" id="bd-sw"><div class="bd-stage" id="bd-stage"><div class="bd-zoom" id="bd-zoom"><video id="bd-video" class="bd-video" autoplay playsinline muted hidden></video><div class="bd-doc" id="bd-doc"></div><canvas id="bd-cv"></canvas><div class="bd-texts" id="bd-texts"></div></div><button type="button" class="bd-aud" id="bd-aud" hidden data-bt="unmute"></button></div></div>' +
       '<div class="bd-tools" id="bd-tools">' +
+        '<button type="button" data-tool="hand" data-btt="hand">✋</button>' +
         '<button type="button" data-tool="laser" data-btt="laser">🔴</button>' +
         '<button type="button" data-tool="pen" data-btt="pen">✏️</button>' +
         '<button type="button" data-tool="text" data-btt="text">T</button>' +
         '<span class="bd-sep"></span>' +
+        '<button type="button" data-z="out" data-btt="zout" class="bd-za">A−</button><button type="button" data-z="fit" data-btt="zfit" id="bd-zfit">⤢ 100%</button><button type="button" data-z="in" data-btt="zin" class="bd-za">A+</button>' +
+        '<span class="bd-extras" id="bd-extras"><span class="bd-sep"></span>' +
         COLORS.map(function (c) { return '<button type="button" class="bd-col" data-col="' + c + '" style="--c:' + c + '" data-btt="color"></button>'; }).join("") +
         '<span class="bd-sep"></span>' +
         SIZES.map(function (z, i) { return '<button type="button" class="bd-sz" data-sz="' + z + '" data-btt="size"><i style="width:' + (6 + i * 5) + 'px;height:' + (6 + i * 5) + 'px"></i></button>'; }).join("") +
         '<span class="bd-sep"></span>' +
         '<button type="button" id="bd-undo" data-btt="undo">↶</button><button type="button" id="bd-redo" data-btt="redo">↷</button>' +
-        '<button type="button" id="bd-clear" hidden>🗑</button>' +
+        '<button type="button" id="bd-clear" hidden>🗑</button></span>' +
       '</div><div class="bd-permbox" id="bd-permbox" hidden></div>' +   /* danh sách người được cấp quyền nằm DƯỚI hàng nút như HelloTalk (TJ 2026-10-04) */
       '<div class="bd-view" id="bd-view" data-bt="viewmsg"></div>';
     document.body.appendChild(el);
@@ -90,14 +95,17 @@
     document.body.appendChild(ob);
     ob.addEventListener("click", function () { api.setBoard(true); });
     cv.addEventListener("pointerdown", down); cv.addEventListener("pointermove", move);
-    window.addEventListener("pointerup", up); window.addEventListener("pointercancel", up);
-    window.addEventListener("resize", fit);
+    window.addEventListener("pointerup", upEv); window.addEventListener("pointercancel", upEv);
+    window.addEventListener("resize", fit); window.addEventListener("orientationchange", function () { setTimeout(fit, 250); });
+    wrap.addEventListener("wheel", function (e) { if (!(e.ctrlKey || big)) return; e.preventDefault(); var c = stageRel(e.clientX, e.clientY); zoomAt(Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.002)), c.x, c.y); }, { passive: false });
     paintTools();
   }
   function onClick(e) {
     var b = e.target.closest("button"); if (!b) return;
     if (b.dataset.tool) { tool = b.dataset.tool; paintTools(); return; }
-    if (b.dataset.col) { color = b.dataset.col; if (tool === "laser") tool = "pen"; paintTools(); return; }
+    if (b.dataset.z) { var zr = wrap.clientWidth / 2, zq = wrap.clientHeight / 2; if (b.dataset.z === "fit") zoomReset(); else zoomAt(b.dataset.z === "in" ? 1.3 : 1 / 1.3, zr, zq); return; }
+    if (b.id === "bd-big") { bigPref = !big; paintOpen(); return; }
+    if (b.dataset.col) { color = b.dataset.col; if (tool === "laser" || tool === "hand") tool = "pen"; paintTools(); return; }
     if (b.dataset.sz) { size = +b.dataset.sz; paintTools(); return; }
     if (b.id === "bd-undo") return undo();
     if (b.id === "bd-redo") return redoOne();
@@ -114,6 +122,7 @@
     if (b.id === "bd-close") { api.setBoard(false); return; }
     if (b.id === "bd-lib") { Lib.open(); return; }
     if (b.id === "bd-dprev" || b.id === "bd-dnext") { var d0 = curDoc(); if (d0 && api.isHost()) api.setDoc(Object.assign({}, d0, { p: Math.max(1, Math.min(d0.n || 999, (d0.p || 1) + (b.id === "bd-dnext" ? 1 : -1))) })); return; }
+    if (b.id === "bd-dpg") { var dj = curDoc(); if (dj && api.isHost() && dj.n > 1) { var pj = parseInt(prompt("1 – " + dj.n, dj.p || 1), 10); if (pj >= 1) api.setDoc(Object.assign({}, dj, { p: Math.min(dj.n, pj) })); } return; }
     if (b.id === "bd-dclose") { if (api.isHost()) api.setDoc(null); return; }
     if (b.id === "bd-perm") { var pb = $("#bd-permbox"); pb.hidden = !pb.hidden; paintPerm(); paintOpen(); return; }   /* QA v106 L2: cập nhật phần đẩy nội dung xuống */
     if (b.dataset.perm) { api.togglePerm(b.dataset.perm); return; }
@@ -121,14 +130,16 @@
   function paintTools() {
     if (!$("#bd")) return;
     var ok = canDraw();
-    $("#bd-tools").hidden = !ok; $("#bd-view").hidden = ok;
-    document.querySelectorAll("#bd-tools [data-tool]").forEach(function (b) { b.classList.toggle("on", b.dataset.tool === tool); });
+    if (!ok && tool !== "hand") tool = "hand";
+    $("#bd-tools").hidden = false; $("#bd-view").hidden = ok;
+    document.querySelectorAll("#bd-tools [data-tool]").forEach(function (b) { b.classList.toggle("on", b.dataset.tool === tool); if (b.dataset.tool !== "hand") b.hidden = !ok; });
     document.querySelectorAll("#bd-tools [data-col]").forEach(function (b) { b.classList.toggle("on", b.dataset.col === color); });
     document.querySelectorAll("#bd-tools [data-sz]").forEach(function (b) { b.classList.toggle("on", +b.dataset.sz === size); });
+    var ex = $("#bd-extras"); if (ex) ex.classList.toggle("off", !(ok && (tool === "pen" || tool === "text")));   /* màu/cỡ/hoàn tác chỉ hiện khi cầm bút hoặc ô chữ */
     $("#bd-clear").hidden = !ok; $("#bd-clear").title = t(api.isHost() ? "clearAll" : "clearMine"); relabel(); $("#bd-close").hidden = !api.isHost(); $("#bd-perm").hidden = !api.isHost();
-    cv.style.cursor = !ok ? "default" : tool === "text" ? "text" : "crosshair";
+    cv.style.cursor = !ok || tool === "hand" ? (Z.s > 1 ? "grab" : "default") : tool === "text" ? "text" : "crosshair";
     $("#bd-undo").disabled = !mine.length; $("#bd-redo").disabled = !redo.length;
-    paintShare();
+    paintShare(); paintZ();
   }
   function paintPerm() {
     var box = $("#bd-permbox"); if (!box || box.hidden) return;
@@ -141,23 +152,67 @@
   }
   function paintOpen() {
     var el = $("#bd"); if (!el) return;
+    big = bigPref != null ? bigPref : !!curDoc();
     el.hidden = !open || mini; $("#bd-dock").hidden = !open || !mini;
     $("#bd-open").hidden = open || !api || !api.isHost() || !api.ch();
-    document.body.classList.toggle("bd-on", open && !mini);
-    if (open && !mini) { fit(); paintTools(); paintPerm(); }
-    document.body.style.paddingTop = open && !mini ? el.offsetHeight + "px" : "";   /* bảng nằm trên cùng, nội dung game đẩy xuống dưới */
+    var show = open && !mini;
+    document.body.classList.toggle("bd-on", show); document.body.classList.toggle("bd-bigon", show && big);
+    el.classList.toggle("bd-big", big);
+    if (show) { fit(); paintTools(); paintPerm(); }
+    document.body.style.paddingTop = show && !big ? el.offsetHeight + "px" : "";   /* bảng nhỏ nằm trên cùng, game đẩy xuống dưới; bảng to phủ cả màn hình */
+  }
+  /* khung bảng: tỉ lệ theo tài liệu; chế độ to = lớn nhất vừa phần còn lại của màn hình */
+  function layoutStage() {
+    if (!wrap) return;
+    wrap.style.setProperty("--ar", AR.toFixed(4));
+    if (!big) { wrap.style.width = ""; wrap.style.height = ""; return; }
+    var sw = $("#bd-sw"), aw = sw.clientWidth - 12, ah = sw.clientHeight - 12;
+    if (aw < 60 || ah < 60) return;
+    var w = Math.min(aw, ah * AR); wrap.style.width = Math.floor(w) + "px"; wrap.style.height = Math.floor(w / AR) + "px";
+  }
+  function setAR(ar) {
+    ar = Math.max(0.3, Math.min(3, +ar || 16 / 9));
+    if (Math.abs(ar - AR) < 0.001) return;
+    AR = ar; H = Math.round(W / ar); bgDirty = true;
+  }
+
+  /* ---------- 🔍 phóng to / kéo bằng tay (TJ 2026-10-04: "không zoom được, chạm là vẽ tùm lum") ---------- */
+  function stageRel(px, py) { var r = wrap.getBoundingClientRect(); return { x: px - r.left - wrap.clientLeft, y: py - r.top - wrap.clientTop }; }
+  function clampZ() {
+    var w = wrap.clientWidth, h = wrap.clientHeight;
+    Z.s = Math.max(1, Math.min(6, Z.s)); Z.x = Math.min(0, Math.max(w * (1 - Z.s), Z.x)); Z.y = Math.min(0, Math.max(h * (1 - Z.s), Z.y));
+  }
+  function applyZ() {
+    clampZ(); var zw = $("#bd-zoom"); if (!zw) return;
+    zw.style.transform = Z.s === 1 && !Z.x && !Z.y ? "" : "translate(" + Z.x.toFixed(1) + "px," + Z.y.toFixed(1) + "px) scale(" + Z.s.toFixed(3) + ")";
+    clearTimeout(zT); zT = setTimeout(function () { if (qOf() !== curQ) fit(); }, 220);   /* dừng tay rồi mới vẽ lại nét cho nét hơn */
+    paintZ();
+  }
+  function zoomAt(f, cx, cy) { var s0 = Z.s, s1 = Math.max(1, Math.min(6, s0 * f)), k = s1 / s0; Z.x = cx - (cx - Z.x) * k; Z.y = cy - (cy - Z.y) * k; Z.s = s1; applyZ(); }
+  function zoomReset() { Z.s = 1; Z.x = 0; Z.y = 0; applyZ(); }
+  function paintZ() { var b = $("#bd-zfit"); if (b) b.textContent = "⤢ " + Math.round(Z.s * 100) + "%"; if (cv && (!canDraw() || tool === "hand")) cv.style.cursor = Z.s > 1 ? "grab" : "default"; }
+  function qOf() { return Math.min(3, Math.max(1, Math.ceil(Z.s - 0.05))); }
+  function pinfo() { var ids = Object.keys(ptrs), a = ptrs[ids[0]], b = ptrs[ids[1]]; return { d: Math.hypot(a.x - b.x, a.y - b.y) || 1, cx: (a.x + b.x) / 2, cy: (a.y + b.y) / 2 }; }
+  function beginPinch() { var p = pinfo(); gest = { m: "pinch", d0: p.d, s0: Z.s, x0: Z.x, y0: Z.y, c0: stageRel(p.cx, p.cy) }; }
+  function movePinch() {
+    var p = pinfo(), c = stageRel(p.cx, p.cy), s1 = Math.max(1, Math.min(6, gest.s0 * p.d / gest.d0)), k = s1 / gest.s0;
+    Z.s = s1; Z.x = c.x - (gest.c0.x - gest.x0) * k; Z.y = c.y - (gest.c0.y - gest.y0) * k; applyZ();
   }
 
   /* ---------- vẽ ---------- */
   function fit() {
     if (!cv || $("#bd").hidden) return;
-    var r = cv.getBoundingClientRect(); dpr = window.devicePixelRatio || 1;   /* đo CHÍNH canvas (trong viền gỗ) — QA v106 L1 */
-    var w = Math.round(r.width * dpr), h = Math.round(r.height * dpr);
-    if (w !== cv.width || h !== cv.height) { cv.width = w; cv.height = h; bgDirty = true; render(); }   /* trạng thái phòng tới vài giây/lần -> chỉ dựng lại khi ĐỔI cỡ (iPhone chớp/mất nét đang vẽ) */
-    paintTexts();
+    layoutStage();
+    dpr = window.devicePixelRatio || 1;
+    var cw = cv.offsetWidth, ch = cv.offsetHeight, q = qOf();
+    while (q > 1 && cw * ch * dpr * dpr * q * q > 7e6) q--;   /* trần ~7 triệu điểm ảnh mỗi lớp */
+    curQ = qOf();
+    var w = Math.round(cw * dpr * q), h = Math.round(ch * dpr * q);
+    if (w !== cv.width || h !== cv.height) { cv.width = w; cv.height = h; bgDirty = true; render(); }   /* chỉ dựng lại khi ĐỔI cỡ (iPhone chớp/mất nét đang vẽ) */
+    paintTexts(); applyZ();
   }
   function sx() { return cv.width / W; }
-  function toLogic(e) { var r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width * W, y: (e.clientY - r.top) / r.height * H }; }
+  function toLogic(e) { var r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width * W, y: (e.clientY - r.top) / r.height * H }; }   /* getBoundingClientRect đã tính cả phóng to */
   function strokePath(s, c) {
     var ctx = c; var p = s.pts; if (!p || !p.length) return;
     var k = sx();
@@ -203,23 +258,49 @@
     if (any) sched();
   }
   function down(e) {
-    if (!canDraw() || e.button > 0) return;
+    ptrs[e.pointerId] = { x: e.clientX, y: e.clientY };
+    var n = Object.keys(ptrs).length;
+    if (n === 2) { if (cur) up(); e.preventDefault(); return beginPinch(); }   /* 2 ngón = phóng to, đang vẽ dở thì chốt nét */
+    if (n > 2 || e.button > 0) return;
+    cv.setPointerCapture && cv.setPointerCapture(e.pointerId);
+    if (tool === "hand" || !canDraw()) { gest = { m: "pan", sx: e.clientX, sy: e.clientY, x0: Z.x, y0: Z.y, moved: false, t: Date.now() }; return; }   /* mặc định KHÔNG vẽ: chỉ kéo/phóng */
     var p = toLogic(e);
     if (tool === "text") { e.preventDefault(); return newText(p); }
-    cv.setPointerCapture && cv.setPointerCapture(e.pointerId);
     if (tool === "laser") { cur = { laser: true }; laserAt(p); return; }
     cur = { k: "s", id: uid(), c: color, w: size, pts: [Math.round(p.x), Math.round(p.y)], by: myId() };
     sendT = Date.now(); cur.sent = cur.pts.length; send({ t: "s", id: cur.id, c: cur.c, w: cur.w, from: 0, pts: cur.pts.slice(), done: false });
     draw();
   }
   function move(e) {
+    if (ptrs[e.pointerId]) { ptrs[e.pointerId].x = e.clientX; ptrs[e.pointerId].y = e.clientY; }
+    if (gest) {
+      if (gest.m === "pinch") return movePinch();
+      var dx = e.clientX - gest.sx, dy = e.clientY - gest.sy; if (Math.abs(dx) + Math.abs(dy) > 6) gest.moved = true;
+      if (gest.moved) { Z.x = gest.x0 + dx; Z.y = gest.y0 + dy; applyZ(); }
+      return;
+    }
     if (!cur) return;
     var p = toLogic(e);
     if (cur.laser) return laserAt(p);
     var n = cur.pts.length, lx = cur.pts[n - 2], ly = cur.pts[n - 1];
     if (Math.abs(p.x - lx) + Math.abs(p.y - ly) < 2) return;
     cur.pts.push(Math.round(p.x), Math.round(p.y)); drawLite();
-    if (Date.now() - sendT > 80) { sendT = Date.now(); var f = cur.sent; cur.sent = cur.pts.length; send({ t: "s", id: cur.id, c: cur.c, w: cur.w, from: f, pts: cur.pts.slice(f), done: false }); }   /* ~12 lần/giây, CHỈ gửi phần mới (trước gửi lại cả nét mỗi lần -> tin to dần, kênh dễ nghẽn) */
+    if (Date.now() - sendT > 80) { sendT = Date.now(); var f = cur.sent; cur.sent = cur.pts.length; send({ t: "s", id: cur.id, c: cur.c, w: cur.w, from: f, pts: cur.pts.slice(f), done: false }); }   /* ~12 lần/giây, CHỈ gửi phần mới */
+  }
+  function upEv(e) {
+    if (e && e.pointerId != null) delete ptrs[e.pointerId];
+    if (gest) {
+      var g = gest;
+      if (g.m === "pinch") { if (Object.keys(ptrs).length < 2) gest = null; return; }
+      gest = null;
+      if (!g.moved && Date.now() - g.t < 350 && e) {   /* chạm nhanh: chạm đôi = phóng/thu; chạm 1 lần trên bảng từ vựng = chỉ dòng */
+        var now = Date.now(), c = stageRel(e.clientX, e.clientY);
+        if (now - lastTap < 350) { lastTap = 0; if (Z.s > 1.2) zoomReset(); else zoomAt(2.5, c.x, c.y); }
+        else { lastTap = now; docTap(e.clientX, e.clientY); }
+      }
+      return;
+    }
+    up();
   }
   function up() {
     if (!cur) return;
@@ -246,7 +327,7 @@
   }
   function paintTexts() {
     var box = $("#bd-texts"); if (!box || !cv) return;
-    var r = cv.getBoundingClientRect(), k = r.width / W, ky = r.height / H;
+    var k = cv.offsetWidth / W, ky = cv.offsetHeight / H;   /* cỡ gốc (chưa phóng) vì ô chữ nằm TRONG lớp được phóng */
     var have = {};
     order.forEach(function (id) {
       var it = items[id]; if (!it || it.k !== "t") return; have[id] = 1;
@@ -284,7 +365,7 @@
     paintTexts(); paintTools();
   });
   document.addEventListener("click", function (e) {   /* chạm lại ô chữ để sửa / gõ tiếp (ai có quyền cũng sửa được) */
-    var d = e.target.closest && e.target.closest(".bd-tx"); if (!d || editing === d.dataset.id || !canDraw() || tool === "laser") return;
+    var d = e.target.closest && e.target.closest(".bd-tx"); if (!d || editing === d.dataset.id || !canDraw() || tool === "laser" || tool === "hand") return;
     editText(d.dataset.id);
   });
 
@@ -343,27 +424,41 @@
     if (open) { paintTools(); paintPerm(); var who = $("#bd-who"); if (who) who.textContent = t(canDraw() ? "can" : "view"); }
     if (open) { var lb = $("#bd-lib"); if (lb) lb.hidden = !api.isHost(); syncDoc(s.bdoc || null); }
   }
-  /* ---------- 📁 TÀI LIỆU TRÊN BẢNG (TJ 2026-10-04): PDF / ảnh trong thư viện Supabase + bài đọc WordLoop ----------
-     Host chọn -> st.bdoc = {k:"pdf"|"img"|"wl", url|bid, name, p, n} -> mọi máy tự vẽ tài liệu làm NỀN dưới lớp bút (khung 16:9 như nhau
-     nên nét vẽ khớp đúng chỗ trên mọi máy). Nét vẽ RIÊNG từng trang: đổi trang/tài liệu thì cất nét trang cũ, lấy lại nét trang mới. */
-  var docKey = "", docJob = 0, stash = {}, pdfCache = {}, wlCache = {};
+  /* ---------- 📁 TÀI LIỆU TRÊN BẢNG (TJ 2026-10-04) ----------
+     Host chọn -> st.bdoc = {k:"pdf"|"img"|"wl"|"vt"|"office", url|bid, name, p, n, ar, hl} -> mọi máy tự vẽ tài liệu làm NỀN dưới lớp bút.
+     · ar = tỉ lệ khung (rộng/cao) của tài liệu: PDF/ảnh theo trang thật, bài đọc + bảng từ vựng 3:4 → khung bảng đổi theo, nét vẽ vẫn khớp.
+     · Nét vẽ RIÊNG từng trang (cất/lấy lại khi lật trang). Phóng to/kéo là riêng từng máy.
+     · "wl" bài đọc WordLoop · "vt" bảng từ vựng của Block (nghĩa theo tiếng của từng người; host chạm 1 dòng = chỉ cho cả phòng) ·
+       "office" Word/Excel/PowerPoint qua trình xem của Microsoft (mỗi người tự cuộn, không vẽ lên được). */
+  var docKey = "", docJob = 0, stash = {}, pdfCache = {}, wlCache = {}, vtCache = {};
   function curDoc() { var s0 = st(); return s0 && s0.bdoc || null; }
   function keyOf(d) { return d ? (d.k + ":" + (d.url || d.bid) + ":" + (d.p || 1)) : ""; }
+  function defAR(d) { return !d ? 16 / 9 : d.ar ? d.ar : (d.k === "wl" || d.k === "vt") ? 0.75 : d.k === "office" ? 0.75 : 0.7071; }
   function syncDoc(d) {
-    var k = keyOf(d);
-    var nav = $("#bd-docnav"); if (nav) { nav.hidden = !d || d.k === "img"; $("#bd-dpg").textContent = d ? (d.p || 1) + (d.n ? " / " + d.n : "") : ""; ["#bd-dprev", "#bd-dnext", "#bd-dclose"].forEach(function (x) { var e = $(x); if (e) e.hidden = !api.isHost(); }); if (d && d.k === "img") nav.hidden = !api.isHost(); }
-    if (k === docKey) return;
+    var k = keyOf(d), nav = $("#bd-docnav");
+    if (nav) {
+      nav.hidden = !d || d.k === "img" || d.k === "office";
+      $("#bd-dpg").textContent = d ? (d.p || 1) + (d.n ? " / " + d.n : "") : "";
+      ["#bd-dprev", "#bd-dnext", "#bd-dclose"].forEach(function (x) { var e = $(x); if (e) e.hidden = !api.isHost(); });
+      if (d && (d.k === "img" || d.k === "office")) { nav.hidden = !api.isHost(); ["#bd-dprev", "#bd-dnext"].forEach(function (x) { $(x).hidden = true; $("#bd-dpg").textContent = ""; }); }
+    }
+    if (k === docKey) { if (d && d.k === "vt") paintHL(d); return; }
     stash[docKey] = { items: items, order: order };   /* cất nét của trang cũ */
     var sv = stash[k] || { items: {}, order: [] }; items = sv.items; order = sv.order; mine = []; redo = [];
-    docKey = k; draw(); paintTexts(); paintTools(); paintDoc(d);
+    var wasDoc = docKey.split(":").slice(0, 2).join(":"), isDoc = k.split(":").slice(0, 2).join(":");
+    docKey = k; setAR(defAR(d)); if (wasDoc !== isDoc) zoomReset();
+    var el = $("#bd"); if (el) { big = bigPref != null ? bigPref : !!d; paintOpen(); }
+    draw(); paintTexts(); paintTools(); paintDoc(d);
   }
   function paintDoc(d) {
     var box = $("#bd-doc"); if (!box) return;
-    var job = ++docJob; box.innerHTML = ""; wrap.classList.toggle("bd-hasdoc", !!d);
+    var job = ++docJob; box.innerHTML = ""; wrap.classList.toggle("bd-hasdoc", !!d); wrap.classList.toggle("bd-office", !!(d && d.k === "office"));
     if (!d) return;
     if (d.k === "img") { box.innerHTML = '<img alt="" src="' + esc(d.url) + '">'; return; }
     if (d.k === "pdf") return pdfPage(d, job);
     if (d.k === "wl") return wlPage(d, job);
+    if (d.k === "vt") return vtPage(d, job);
+    if (d.k === "office") { box.innerHTML = '<iframe class="bd-office-f" src="https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(d.url) + '" allowfullscreen></iframe><a class="bd-office-a" target="_blank" rel="noopener" href="' + esc(d.url) + '">⬇ ' + esc(d.name || "file") + "</a>"; return; }
   }
   function loadScript(src) { return new Promise(function (ok, no) { var sc = document.createElement("script"); sc.src = src; sc.onload = ok; sc.onerror = no; document.head.appendChild(sc); }); }
   var PDFJS = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/";
@@ -378,85 +473,220 @@
       if (job !== docJob) return;
       var n = doc.numPages; if (api.isHost() && d.n !== n) { api.setDoc(Object.assign({}, d, { n: n })); }
       var page = await doc.getPage(Math.min(n, d.p || 1)); if (job !== docJob) return;
-      var r = wrap.getBoundingClientRect(), pr = window.devicePixelRatio || 1, vp0 = page.getViewport({ scale: 1 });
-      var sc = Math.min(r.width / vp0.width, r.height / vp0.height) * pr, vp = page.getViewport({ scale: sc });
+      var vp0 = page.getViewport({ scale: 1 }), pr = window.devicePixelRatio || 1;
+      var want = Math.min(3000, Math.max(wrap.clientWidth * pr * 2.5, 900)), sc = want / vp0.width, vp = page.getViewport({ scale: sc });   /* vẽ dày gấp ~2.5 lần để phóng to vẫn nét */
       var c = document.createElement("canvas"); c.width = Math.round(vp.width); c.height = Math.round(vp.height); c.className = "bd-pdfc";
       await page.render({ canvasContext: c.getContext("2d"), viewport: vp }).promise;
       if (job !== docJob) return; box.innerHTML = ""; box.appendChild(c);
     } catch (e) { if (job === docJob) box.innerHTML = '<div class="bd-docmsg">⚠ ' + esc(e.message || e) + "</div>"; }
   }
-  /* 📖 bài đọc WordLoop: chia trang theo đoạn (~650 ký tự/trang), từ cần học [term] tô đậm */
+  /* chia bài đọc thành trang theo CÂU (cùng kết quả trên mọi máy) */
+  function splitPages(raw) {
+    var cjk = (raw.match(/[　-鿿가-힯]/g) || []).length / Math.max(1, raw.length) > 0.3, budget = cjk ? 230 : 540;
+    var paras = raw.split(/\n\s*\n/).map(function (x) { return x.trim(); }).filter(Boolean), pages = [], curP = "";
+    paras.forEach(function (p) {
+      var sents = p.match(/[^.!?。！？]+[.!?。！？]+["')\]]*\s*|[^.!?。！？]+$/g) || [p], buf = "";
+      sents.forEach(function (st0) {
+        if (curP && (curP + buf + st0).length > budget) { if (buf) { curP += (curP ? "\n\n" : "") + buf; buf = ""; } pages.push(curP); curP = ""; }
+        buf += st0;
+      });
+      if (buf) { if (curP && (curP + buf).length > budget) { pages.push(curP); curP = ""; } curP += (curP ? "\n\n" : "") + buf.trim(); }
+    });
+    if (curP) pages.push(curP);
+    return pages;
+  }
   async function wlPage(d, job) {
     var box = $("#bd-doc"); box.innerHTML = '<div class="bd-docmsg">⏳</div>';
     try {
       var b = wlCache[d.bid] || (wlCache[d.bid] = await api.block(d.bid)); if (job !== docJob) return;
       var raw = String((b && b.context_passage) || ""), cut = raw.indexOf("\n<<<TJWL_META>>>\n"), meta = {};
       if (cut >= 0) { try { meta = JSON.parse(raw.slice(cut + 17)); } catch (e) {} raw = raw.slice(0, cut); }
-      var paras = raw.split(/\n\s*\n/).map(function (x) { return x.trim(); }).filter(Boolean), pages = [], curP = "";
-      paras.forEach(function (p) { if (curP && (curP + p).length > 950) { pages.push(curP); curP = ""; } curP += (curP ? "\n\n" : "") + p; }); if (curP) pages.push(curP);
-      if (!pages.length) pages = ["(Block này chưa có bài đọc)"];
+      var pages = splitPages(raw); if (!pages.length) pages = ["(Block này chưa có bài đọc)"];
       var n = pages.length; if (api.isHost() && d.n !== n) api.setDoc(Object.assign({}, d, { n: n }));
       var pg = pages[Math.min(n, d.p || 1) - 1];
       var html = esc(pg).replace(/\[([^\]]{1,60})\]/g, '<b class="bd-term">$1</b>').replace(/\n\n/g, "</p><p>");
-      box.innerHTML = '<div class="bd-wl">' + ((d.p || 1) === 1 && (meta.title || d.name) ? '<h3>' + esc(meta.title || d.name) + "</h3>" : "") + "<p>" + html + "</p></div>";
-      var wl = box.firstChild; wl.style.fontSize = Math.max(10, wrap.getBoundingClientRect().width * 0.024) + "px";
+      box.innerHTML = '<div class="bd-wl">' + ((d.p || 1) === 1 && (meta.title || d.name) ? "<h3>" + esc(meta.title || d.name) + "</h3>" : "") + "<p>" + html + "</p></div>";
     } catch (e) { if (job === docJob) box.innerHTML = '<div class="bd-docmsg">⚠ ' + esc(e.message || e) + "</div>"; }
   }
-  window.addEventListener("resize", function () { clearTimeout(window.__bdDocT); window.__bdDocT = setTimeout(function () { var d = curDoc(); if (open && d && d.k !== "img") paintDoc(d); }, 250); });   /* đổi cỡ: vẽ lại nền cho nét, giữ nguyên nét */
-  /* 📁 hộp thư viện (host): thư mục theo môn trong bucket toeic/lib/<môn>/…, tải lên / đổi tên / xoá; tab bài đọc WordLoop */
+  /* 📋 bảng từ vựng của Block: 6 dòng/trang; nghĩa theo tiếng giao diện của TỪNG người xem */
+  var VT_ROWS = 6;
+  function vtMeaning(w) {
+    var l = api && api.lang ? api.lang() : "vi";
+    return (l === "en" ? (w.def_en || w.meaning_vi) : l === "zh" ? (w.meaning_zh || w.meaning_vi) : l === "es" ? (w.meaning_es || w.meaning_vi) : w.meaning_vi) || "";
+  }
+  async function vtPage(d, job) {
+    var box = $("#bd-doc"); box.innerHTML = '<div class="bd-docmsg">⏳</div>';
+    try {
+      var rows = vtCache[d.bid] || (vtCache[d.bid] = await api.words(d.bid)); if (job !== docJob) return;
+      var n = Math.max(1, Math.ceil(rows.length / VT_ROWS)); if (api.isHost() && d.n !== n) api.setDoc(Object.assign({}, d, { n: n }));
+      var p = Math.min(n, d.p || 1), part = rows.slice((p - 1) * VT_ROWS, p * VT_ROWS);
+      box.innerHTML = '<div class="bd-vt"><h3>📋 ' + esc(d.name || t("lib_vt")) + "</h3>" + (part.length ? part.map(function (w, i) {
+        var idx = (p - 1) * VT_ROWS + i;
+        return '<div class="bd-vr" data-i="' + idx + '"><span class="bd-vn">' + (idx + 1) + '</span><div class="bd-vm"><b>' + esc(w.term) + "</b>" + (w.ipa ? ' <small class="bd-vi">' + esc(w.ipa) + "</small>" : "") + (w.pos ? ' <i class="bd-vp">' + esc(w.pos) + "</i>" : "") + '</div><div class="bd-vd">' + esc(vtMeaning(w)) + '</div><span class="bd-vsay" data-say="' + esc(w.term) + '">🔊</span></div>';
+      }).join("") : '<div class="bd-docmsg">—</div>') + "</div>";
+      paintHL(d);
+    } catch (e) { if (job === docJob) box.innerHTML = '<div class="bd-docmsg">⚠ ' + esc(e.message || e) + "</div>"; }
+  }
+  function paintHL(d) { document.querySelectorAll("#bd-doc .bd-vr").forEach(function (r) { r.classList.toggle("hl", d && d.hl != null && +r.dataset.i === +d.hl); }); }
+  /* chạm 1 lần (bàn tay): 🔊 = nghe từ trên máy mình; host chạm dòng = tô sáng cho cả phòng */
+  function docTap(x, y) {
+    var d = curDoc(); if (!d || d.k !== "vt") return;
+    var rows = document.querySelectorAll("#bd-doc .bd-vr");
+    for (var i = 0; i < rows.length; i++) {
+      var r = rows[i].getBoundingClientRect();
+      if (x < r.left || x > r.right || y < r.top || y > r.bottom) continue;
+      var sy = rows[i].querySelector(".bd-vsay"), sr = sy.getBoundingClientRect();
+      if (x >= sr.left - 10) { api.say(sy.dataset.say); return; }
+      if (api.isHost()) api.setDoc(Object.assign({}, d, { hl: +d.hl === +rows[i].dataset.i ? null : +rows[i].dataset.i }));
+      return;
+    }
+  }
+  window.addEventListener("resize", function () { clearTimeout(window.__bdDocT); window.__bdDocT = setTimeout(function () { var d = curDoc(); if (open && d && (d.k === "pdf")) paintDoc(d); }, 300); });
+  /* host mở tài liệu: dò tỉ lệ + số trang TRƯỚC khi báo cả phòng (mọi máy cùng khung ngay) */
+  async function openDoc(d) {
+    try {
+      if (d.k === "pdf") { var lib = await pdfLib(), doc = pdfCache[d.url] || (pdfCache[d.url] = await lib.getDocument(d.url).promise), pg = await doc.getPage(1), v = pg.getViewport({ scale: 1 }); d.n = doc.numPages; d.ar = +(v.width / v.height).toFixed(4); }
+      else if (d.k === "img") { d.ar = await new Promise(function (ok) { var im = new Image(); im.onload = function () { ok(+(im.naturalWidth / im.naturalHeight).toFixed(4)); }; im.onerror = function () { ok(0.75); }; im.src = d.url; }); }
+    } catch (e) { /* không dò được: dùng tỉ lệ mặc định */ }
+    api.setDoc(d);
+  }
+
+  /* ---------- 📁 hộp thư viện (host) ---------- */
   var Lib = {
-    folder: "", tab: "files",
+    folder: "", tab: "files", mode: "list", pending: null, mvFile: null, folders: [],
     open: function () {
-      var m = $("#bd-libm"); if (!m) { m = document.createElement("div"); m.id = "bd-libm"; m.className = "bd-libm"; document.body.appendChild(m); m.addEventListener("click", Lib.click); m.addEventListener("change", Lib.change); }
-      m.hidden = false; Lib.paint();
+      var m = $("#bd-libm"); if (!m) { m = document.createElement("div"); m.id = "bd-libm"; m.className = "bd-libm"; document.body.appendChild(m); m.addEventListener("click", Lib.click); m.addEventListener("change", Lib.change); m.addEventListener("input", Lib.input); }
+      m.hidden = false; Lib.mode = "list"; Lib.paint();
     },
     close: function () { var m = $("#bd-libm"); if (m) m.hidden = true; },
-    paint: async function () {
-      var m = $("#bd-libm"); if (!m) return;
-      var head = '<div class="bd-libin"><div class="bd-libh"><b>📁 ' + esc(t("lib")) + '</b><span class="bd-libtabs"><button type="button" data-lt="files" class="' + (Lib.tab === "files" ? "on" : "") + '">📄 PDF / 🖼 ' + esc(t("lib_img")) + '</button><button type="button" data-lt="wl" class="' + (Lib.tab === "wl" ? "on" : "") + '">📖 ' + esc(t("lib_wl")) + '</button></span><button type="button" data-lx="1">✕</button></div>';
-      if (Lib.tab === "wl") { m.innerHTML = head + '<input type="search" id="bd-wlq" placeholder="' + esc(t("lib_wlq")) + '"><div id="bd-wllist" class="bd-liblist">⏳</div></div>'; Lib.searchWL(""); return; }
-      m.innerHTML = head + '<div class="bd-libbar"><span>📂 <b>' + esc(Lib.folder || "lib") + '</b></span>' + (Lib.folder ? ' <button type="button" data-lup="1">⬆ ..</button>' : "") +
-        ' <label class="bd-libup">⬆️ ' + esc(t("lib_up")) + '<input type="file" id="bd-libfile" accept="application/pdf,image/*" multiple hidden></label> <button type="button" data-lnew="1">➕ ' + esc(t("lib_newf")) + '</button></div><div id="bd-liblist" class="bd-liblist">⏳</div><div class="bd-libmsg" id="bd-libmsg"></div></div>';
-      var r = await api.lib.list(Lib.folder), box = $("#bd-liblist"); if (!box) return;
-      if (r.error) { box.textContent = "⚠ " + r.error; return; }
-      box.innerHTML = (r.items || []).map(function (x) {
-        if (x.dir) return '<div class="bd-lrow"><button type="button" class="bd-lopen" data-ldir="' + esc(x.name) + '">📂 ' + esc(x.name) + "</button></div>";
-        var isPdf = /\.pdf$/i.test(x.name);
-        return '<div class="bd-lrow"><button type="button" class="bd-lopen" data-lfile="' + esc(x.name) + '">' + (isPdf ? "📄 " : "🖼 ") + esc(x.name) + ' <small>' + (x.size ? Math.round(x.size / 1024) + " KB" : "") + '</small></button><button type="button" data-lren="' + esc(x.name) + '" title="Đổi tên">✏️</button><button type="button" data-ldel="' + esc(x.name) + '" title="Xoá">🗑</button></div>';
-      }).join("") || '<div class="bd-libmsg">' + esc(t("lib_empty")) + "</div>";
-    },
     path: function (n) { return (Lib.folder ? Lib.folder + "/" : "") + n; },
     msg: function (x) { var e = $("#bd-libmsg"); if (e) e.textContent = x; },
+    head: function () {
+      return '<div class="bd-libin"><div class="bd-libh"><b>' + esc(t("lib")) + '</b><button type="button" data-lx="1" class="bd-libx">✕</button></div>' +
+        '<div class="bd-libtabs"><button type="button" data-lt="files" class="' + (Lib.tab === "files" ? "on" : "") + '">📄 PDF · 🖼 ' + esc(t("lib_img")) + ' · Word/Excel</button><button type="button" data-lt="wl" class="' + (Lib.tab === "wl" ? "on" : "") + '">📖 ' + esc(t("lib_wl")) + " · 📋 " + esc(t("lib_vt")) + "</button></div>";
+    },
+    paint: async function () {
+      var m = $("#bd-libm"); if (!m) return;
+      if (Lib.tab === "wl") return Lib.paintWL();
+      if (Lib.mode === "dest") return Lib.paintDest();
+      var crumbs = '<button type="button" data-lgo="">lib</button>' + (Lib.folder ? Lib.folder.split("/").map(function (seg, i, arr) { return ' › <button type="button" data-lgo="' + esc(arr.slice(0, i + 1).join("/")) + '">' + esc(seg) + "</button>"; }).join("") : "");
+      m.innerHTML = Lib.head() + '<div class="bd-libbar"><span class="bd-crumb">📂 ' + crumbs + '</span></div><div class="bd-libbar"><label class="bd-libup">⬆️ ' + esc(t("lib_up")) + '<input type="file" id="bd-libfile" accept="application/pdf,image/*,.docx,.xlsx,.pptx,.doc,.xls,.ppt" multiple hidden></label> <button type="button" data-lnew="1">➕ ' + esc(t("lib_newf")) + '</button></div><div id="bd-liblist" class="bd-liblist">⏳</div><div class="bd-libmsg" id="bd-libmsg"></div></div>';
+      var r = await api.lib.list(Lib.folder), box = $("#bd-liblist"); if (!box) return;
+      if (r.error) { box.textContent = "⚠ " + r.error; return; }
+      var items = (r.items || []).filter(function (x) { return x.name[0] !== "."; });
+      items.sort(function (a, b) { return (b.dir ? 1 : 0) - (a.dir ? 1 : 0) || a.name.localeCompare(b.name, "vi", { numeric: true }); });
+      box.innerHTML = items.map(function (x) {
+        if (x.dir) return '<div class="bd-lrow"><button type="button" class="bd-lopen" data-ldir="' + esc(x.name) + '">📂 ' + esc(x.name) + "</button></div>";
+        var ico = /\.pdf$/i.test(x.name) ? "📄" : /\.(docx?|rtf)$/i.test(x.name) ? "📝" : /\.(xlsx?|csv)$/i.test(x.name) ? "📊" : /\.(pptx?)$/i.test(x.name) ? "📽" : "🖼";
+        return '<div class="bd-lrow"><button type="button" class="bd-lopen" data-lfile="' + esc(x.name) + '">' + ico + " " + esc(x.name) + " <small>" + (x.size ? (x.size > 1048576 ? (x.size / 1048576).toFixed(1) + " MB" : Math.round(x.size / 1024) + " KB") : "") + '</small></button><button type="button" data-lmv="' + esc(x.name) + '" title="' + esc(t("lib_mvt")) + '">📂➜</button><button type="button" data-lren="' + esc(x.name) + '" title="Đổi tên">✏️</button><button type="button" data-ldel="' + esc(x.name) + '" title="Xoá">🗑</button></div>';
+      }).join("") || '<div class="bd-libmsg">' + esc(t("lib_empty")) + "</div>";
+    },
+    /* chọn thư mục đích (tải lên / chuyển file): chọn có sẵn hoặc tạo mới */
+    paintDest: async function () {
+      var m = $("#bd-libm"), isUp = !!Lib.pending, what = isUp ? Lib.pending.map(function (f) { return f.name; }).join(", ") : Lib.mvFile;
+      m.innerHTML = Lib.head() + '<div class="bd-dest"><div class="bd-libmsg">' + (isUp ? "⬆️ " : "📂➜ ") + esc(what) + '</div><label>' + esc(t("lib_dest")) + ':<select id="bd-destsel"><option value="">⏳</option></select></label><input type="text" id="bd-destnew" placeholder="' + esc(t("lib_mkn")) + ' (vd: TOEIC/Test-1)" hidden><div class="bd-libbar"><button type="button" data-ldok="1" class="bd-go">' + (isUp ? "⬆️ " + esc(t("lib_go")) : "📂➜ " + esc(t("lib_mv"))) + '</button><button type="button" data-ldno="1">' + esc(t("lib_no")) + '</button></div></div><div class="bd-libmsg" id="bd-libmsg"></div></div>';
+      var fs0 = await api.lib.folders(); Lib.folders = fs0;
+      var sel = $("#bd-destsel"); if (!sel) return;
+      sel.innerHTML = '<option value="">lib (' + esc(t("lib_root")) + ")</option>" + fs0.map(function (p) { return '<option value="' + esc(p) + '">📂 ' + esc(p) + "</option>"; }).join("") + '<option value="__new">' + esc(t("lib_mk")) + "</option>";
+      sel.value = Lib.folder && fs0.indexOf(Lib.folder) >= 0 ? Lib.folder : "";
+    },
+    input: function () {},
     click: async function (e) {
-      var b = e.target.closest("button"); var m = $("#bd-libm");
+      var b = e.target.closest("button"), m = $("#bd-libm");
       if (e.target === m) return Lib.close();
       if (!b) return;
       if (b.dataset.lx) return Lib.close();
-      if (b.dataset.lt) { Lib.tab = b.dataset.lt; return Lib.paint(); }
+      if (b.dataset.lt) { Lib.tab = b.dataset.lt; Lib.mode = "list"; Lib.pending = null; Lib.mvFile = null; return Lib.paint(); }
+      if (b.dataset.lgo != null) { Lib.folder = b.dataset.lgo; return Lib.paint(); }
       if (b.dataset.ldir) { Lib.folder = Lib.path(b.dataset.ldir); return Lib.paint(); }
-      if (b.dataset.lup) { Lib.folder = Lib.folder.split("/").slice(0, -1).join("/"); return Lib.paint(); }
-      if (b.dataset.lnew) { var nf = prompt(t("lib_newf")); if (!nf) return; nf = nf.trim().replace(/[\/\\#?%]+/g, "-"); if (!nf) return; Lib.folder = Lib.path(nf); Lib.paint(); Lib.msg(t("lib_newhint")); return; }
-      if (b.dataset.lfile) { var n = b.dataset.lfile, url = api.lib.url(Lib.path(n)); api.setDoc({ k: /\.pdf$/i.test(n) ? "pdf" : "img", url: url, name: n, p: 1 }); return Lib.close(); }
-      if (b.dataset.ldel) { if (!confirm("Xoá \"" + b.dataset.ldel + "\"?")) return; var r1 = await api.lib.remove(Lib.path(b.dataset.ldel)); if (r1.error) return Lib.msg("⚠ " + r1.error); return Lib.paint(); }
-      if (b.dataset.lren) { var nn = prompt("Tên mới", b.dataset.lren); if (!nn || nn === b.dataset.lren) return; var r2 = await api.lib.move(Lib.path(b.dataset.lren), Lib.path(nn.replace(/[\/\\#?%]+/g, "-"))); if (r2.error) return Lib.msg("⚠ " + r2.error); return Lib.paint(); }
-      if (b.dataset.wl) { api.setDoc({ k: "wl", bid: b.dataset.wl, name: b.dataset.wn || "", p: 1 }); return Lib.close(); }
+      if (b.dataset.lnew) {
+        var nf = prompt(t("lib_mkn")); if (!nf) return; nf = nf.trim().replace(/[\\#?%:*"<>|]+/g, "-").replace(/^\/+|\/+$/g, ""); if (!nf) return;
+        var rr = await api.lib.mkdir(Lib.path(nf)); if (rr.error) return Lib.msg("⚠ " + rr.error); Lib.folder = Lib.path(nf); return Lib.paint();
+      }
+      if (b.dataset.lfile) {
+        var n = b.dataset.lfile, url = api.lib.url(Lib.path(n)), k = /\.pdf$/i.test(n) ? "pdf" : /\.(docx?|xlsx?|pptx?|rtf|csv)$/i.test(n) ? "office" : "img";
+        Lib.msg("⏳…"); await openDoc({ k: k, url: url, name: n, p: 1 }); return Lib.close();
+      }
+      if (b.dataset.lmv) { Lib.mvFile = b.dataset.lmv; Lib.pending = null; Lib.mode = "dest"; return Lib.paint(); }
+      if (b.dataset.ldno) { Lib.mode = "list"; Lib.pending = null; Lib.mvFile = null; return Lib.paint(); }
+      if (b.dataset.ldok) return Lib.doDest();
+      if (b.dataset.ldel) {
+        if (!confirm("Xoá \"" + b.dataset.ldel + "\"? (nếu kho chưa cho xoá thì file được chuyển vào Thùng rác)")) return;
+        var rd = await api.lib.remove(Lib.path(b.dataset.ldel));
+        if (rd.error) { var rm = await api.lib.move(Lib.path(b.dataset.ldel), "_Trash/" + Date.now().toString(36) + "_" + b.dataset.ldel); if (rm.error) return Lib.msg("⚠ " + rm.error); Lib.msg(t("lib_trash")); }
+        return Lib.paint();
+      }
+      if (b.dataset.lren) { var nn = prompt("Tên mới", b.dataset.lren); if (!nn || nn === b.dataset.lren) return; var r2 = await api.lib.move(Lib.path(b.dataset.lren), Lib.path(nn.replace(/[\\/\\\\#?%]+/g, "-"))); if (r2.error) return Lib.msg("⚠ " + r2.error); return Lib.paint(); }
+      if (b.dataset.wl) { Lib.close(); var nm = b.dataset.wn || ""; await openDoc({ k: "wl", bid: b.dataset.wl, name: nm, p: 1 }); return; }
+      if (b.dataset.vt) { Lib.close(); await openDoc({ k: "vt", bid: b.dataset.vt, name: b.dataset.wn || "", p: 1 }); return; }
     },
     change: async function (e) {
+      if (e.target.id === "bd-destsel") { var nw = $("#bd-destnew"); if (nw) nw.hidden = e.target.value !== "__new"; return; }
       if (e.target.id !== "bd-libfile") return;
       var fs = [].slice.call(e.target.files || []); if (!fs.length) return;
-      for (var i = 0; i < fs.length; i++) {
-        var f0 = fs[i]; if (f0.size > 50 * 1024 * 1024) { Lib.msg("⚠ " + f0.name + ": > 50 MB"); continue; }
-        Lib.msg("⏳ " + (i + 1) + "/" + fs.length + " " + f0.name);
-        var nm = f0.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").replace(/[^A-Za-z0-9._-]+/g, "_");
-        var r = await api.lib.upload(Lib.path(nm), f0); if (r.error) { Lib.msg("⚠ " + f0.name + ": " + r.error); return; }
-      }
-      Lib.msg("✓"); Lib.paint();
+      Lib.pending = fs.filter(function (f0) { if (f0.size > 50 * 1024 * 1024) { Lib.msg("⚠ " + f0.name + ": > 50 MB"); return false; } return true; });
+      if (!Lib.pending.length) return;
+      Lib.mode = "dest"; Lib.paint();
     },
-    searchWL: async function (q) {
-      var box = $("#bd-wllist"); if (!box) return;
-      var inp = $("#bd-wlq"); if (inp && !inp.dataset.on) { inp.dataset.on = 1; inp.addEventListener("input", function () { clearTimeout(Lib.qt); var v = inp.value; Lib.qt = setTimeout(function () { Lib.searchWL(v); }, 350); }); }
-      var L = await api.blocks(q); if (!$("#bd-wllist")) return;
-      box.innerHTML = (L || []).map(function (x) { return '<div class="bd-lrow"><button type="button" class="bd-lopen" data-wl="' + esc(x.id) + '" data-wn="' + esc(x.title || x.name) + '">📖 <b>' + esc(x.title || x.name) + "</b> " + (x.snip ? '<small>' + esc(x.snip) + "</small>" : "") + "</button></div>"; }).join("") || '<div class="bd-libmsg">—</div>';
+    doDest: async function () {
+      var sel = $("#bd-destsel"); if (!sel) return;
+      var dest = sel.value;
+      if (dest === "__new") {
+        dest = ($("#bd-destnew").value || "").trim().replace(/[\\#?%:*"<>|]+/g, "-").replace(/^\/+|\/+$/g, "");
+        if (!dest) return Lib.msg("⚠ " + t("lib_mkn"));
+        var rr = await api.lib.mkdir(dest); if (rr.error) return Lib.msg("⚠ " + rr.error);
+      }
+      var pre = dest ? dest + "/" : "";
+      if (Lib.pending) {
+        var fs = Lib.pending;
+        for (var i = 0; i < fs.length; i++) {
+          var f0 = fs[i]; Lib.msg("⏳ " + (i + 1) + "/" + fs.length + " " + f0.name);
+          var nm = f0.name.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").replace(/[^A-Za-z0-9._-]+/g, "_");
+          var r = await api.lib.upload(pre + nm, f0); if (r.error) { Lib.msg("⚠ " + f0.name + ": " + r.error + (/mime/i.test(r.error) ? " — cần mở loại file này trong Supabase (xem hướng dẫn của Claude)" : "")); return; }
+        }
+        Lib.pending = null; Lib.folder = dest;
+      } else if (Lib.mvFile) {
+        var r3 = await api.lib.move(Lib.path(Lib.mvFile), pre + Lib.mvFile); if (r3.error) return Lib.msg("⚠ " + r3.error);
+        Lib.mvFile = null; Lib.folder = dest;
+      }
+      Lib.mode = "list"; Lib.paint();
+    },
+    /* 📖 chọn bài đọc / 📋 bảng từ vựng bằng CÂY THƯ MỤC như trong game (Hub › Notebook › Section › Page › Batch › Block) */
+    paintWL: async function () {
+      var m = $("#bd-libm"); if (!m) return;
+      m.innerHTML = Lib.head() + '<div class="bd-libmsg">' + esc(t("lib_pick")) + '</div><input type="search" id="bd-wlq" placeholder="' + esc(t("lib_find")) + '"><div id="bd-wllist" class="bd-liblist bd-tree">⏳</div></div>';
+      var T = await api.tree(); if (!$("#bd-wllist")) return;
+      if (!T) { $("#bd-wllist").textContent = "⚠"; return; }
+      Lib.T = T; Lib.drawTree("");
+      $("#bd-wlq").addEventListener("input", function () { var v = this.value; clearTimeout(Lib.qt); Lib.qt = setTimeout(function () { Lib.drawTree(v); }, 250); });
+    },
+    drawTree: function (q) {
+      var T = Lib.T, box = $("#bd-wllist"); if (!box) return;
+      function kids(list, key, id) { return T[list].filter(function (r) { return r[key] === id; }); }
+      function leaf(bl) {
+        return '<div class="bd-lrow bd-tleaf"><span class="bd-tn">' + esc(bl.name) + '</span><button type="button" data-wl="' + esc(bl.id) + '" data-wn="' + esc(bl.name) + '">📖 ' + esc(t("lib_rd")) + '</button><button type="button" data-vt="' + esc(bl.id) + '" data-wn="' + esc(bl.name) + '">📋 ' + esc(t("lib_vc")) + "</button></div>";
+      }
+      if (q && q.trim()) {   /* tìm: liệt kê Block có tên (hoặc thư mục cha) khớp, kèm đường dẫn */
+        var ql = q.trim().toLowerCase(), byId = function (list, id) { return T[list].find(function (r) { return r.id === id; }) || {}; }, out = [];
+        T.blocks.forEach(function (bl) {
+          var bt = byId("batches", bl.batch_id), pg = byId("pages", bt.page_id), sc = byId("sections", pg.section_id), nb = byId("notebooks", sc.notebook_id), hb = byId("hubs", nb.hub_id);
+          var path = [hb.name, nb.name, sc.name, pg.name, bt.name].filter(Boolean).join(" › ");
+          if ((path + " " + bl.name).toLowerCase().indexOf(ql) >= 0 && out.length < 60) out.push('<div class="bd-tpath">' + esc(path) + "</div>" + leaf(bl));
+        });
+        box.innerHTML = out.join("") || '<div class="bd-libmsg">—</div>'; return;
+      }
+      function node(name, inner, open) { return '<details' + (open ? " open" : "") + "><summary>" + esc(name) + "</summary>" + inner + "</details>"; }
+      function nbTree(nb) {
+        var sub = kids("notebooks", "parent_notebook_id", nb.id).map(nbTree).join("") + kids("sections", "notebook_id", nb.id).map(function (sc) {
+          return node(sc.name, kids("pages", "section_id", sc.id).map(function (pg) {
+            return node(pg.name, kids("batches", "page_id", pg.id).map(function (bt) {
+              return node(bt.name, kids("blocks", "batch_id", bt.id).map(leaf).join(""));
+            }).join(""));
+          }).join(""));
+        }).join("");
+        return node(nb.name, sub);
+      }
+      box.innerHTML = T.hubs.map(function (h) { return node("🏠 " + h.name, T.notebooks.filter(function (n) { return n.hub_id === h.id && !n.parent_notebook_id; }).map(nbTree).join("")); }).join("");
     }
   };
   /* ---------- 🖥 CHIA SẺ MÀN HÌNH (TJ 2026-10-04: trang TRẢ PHÍ chỉ tài khoản TJ mở được -> chia sẻ cho cả phòng như Google Meet) ----------
