@@ -68,7 +68,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 124;
+  var GAME_VER = 125;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -2149,6 +2149,9 @@
      (5s Part 1–2, 8s Part 3–4, 12s câu "Look at the graphic") thì tự sang câu. */
   function tAutoPlay(q) {
     var c = tCue(q); if (!c || !G.st || !G.st.tplay) return;
+    /* 📢 "chỉ máy host phát" (TJ 2026-10-04: nhiều người chơi chung mà máy nào cũng phát là loạn): kiểu Cùng 1 câu / theo audio -> máy người chơi im;
+       Tự do / ⚡ Đua mỗi người 1 nhịp nên vẫn phát trên từng máy */
+    if (G.st.taud === "host" && !G.isHost && G.st.mode === "kahoot") return;
     if (G.tMatchG !== G.st.matchId) { G.tMatchG = G.st.matchId; G.tLastG = ""; }   /* ván mới: câu đầu nhóm lại phát hội thoại */
     var gk = c.g ? c.g.join("-") : "", seq = [];
     if (c.g && G.tLastG !== gk) seq.push(c.g);
@@ -2628,7 +2631,7 @@
       '<label>Hình thức thi đấu <select id="t-teams"><option value="0">Chơi lẻ</option><option value="2">2 đội</option><option value="3">3 đội</option><option value="4">4 đội</option></select></label>' +
       '<label class="g-check"><input type="checkbox" id="t-hostplay" checked> Host cũng chơi</label>' +
       '<label class="g-check" title="Chỉ ra các câu của đề/Part này mà người trong phòng từng làm SAI (lần làm gần nhất)"><input type="checkbox" id="t-wrong"> ❌ Chỉ câu từng làm sai (cả phòng)</label>' +
-      '<label class="g-check" title="Listening: mỗi máy tự phát đúng đoạn audio của câu; chế độ 🎧 theo audio thì hết đoạn tự sang câu như đề thật"><input type="checkbox" id="t-tplay" checked> 🔊 Phát audio đề trên máy từng người</label></div>' +
+      '<label title="Listening: audio đề phát ở đâu. Chơi chung qua HelloTalk/loa -> chỉ máy host phát cho khỏi loạn. Kiểu Tự do / ⚡ Đua mỗi người 1 nhịp nên luôn phát trên từng máy (đeo tai nghe).">🔊 Audio đề <select id="t-aud"><option value="host">📢 Chỉ máy host phát (cả phòng nghe qua HelloTalk/loa)</option><option value="all">🎧 Mỗi máy tự phát (ai cũng đeo tai nghe)</option><option value="off">🔇 Không phát (host tự mở audio ngoài)</option></select></label></div>' +
       '<div class="g-row"><button class="g-btn" id="t-start" type="button">▶ Bắt đầu làm bài</button><button class="g-btn g-btn-soft" id="t-stats" type="button">📊 Điểm TOEIC & câu hay sai</button></div><p class="g-sub" id="t-info"></p></div>' +
       '<p class="g-sub">Hub này để <b>làm đề thi</b> (TOEIC trước): chơi từng Part, thi thử cả bài, hoặc gom câu theo <b>chủ điểm ngữ pháp</b>. Thời gian mặc định theo đề thật:</p>' +
       TOEIC.map(function (sk) {
@@ -2796,7 +2799,7 @@
     var a = v.split("|"), st = G.st;
     var fr = +$("#t-from").value || 0, to = +$("#t-to").value || 0, tg = $("#t-tag").value || "";
     st.qtype = "toeic"; st.test = { test: a[0], part: +a[1], from: fr, to: to, tag: tg }; st.race = false; st.auto = true;
-    var tm = $("#t-mode").value; st.race = tm === "race"; st.hostpace = tm === "audio"; st.tplay = !$("#t-tplay") || $("#t-tplay").checked; G.tLastG = ""; st.mode = st.race ? "free" : st.hostpace ? "kahoot" : tm;
+    var tm = $("#t-mode").value; st.race = tm === "race"; st.hostpace = tm === "audio"; st.taud = $("#t-aud") ? $("#t-aud").value : "host"; st.tplay = st.taud !== "off"; G.tLastG = ""; st.mode = st.race ? "free" : st.hostpace ? "kahoot" : tm;
     if (st.hostpace || (+a[1] <= 4 && st.tplay)) { st.auto = false; st.minutes = 120; $("#l-min").value = 120; }   /* Listening: audio dẫn nhịp, ván dài đủ cả đề; hết câu tự kết thúc */   /* không đếm giờ từng câu; ván dài đủ cả đề nghe, hết câu tự kết thúc */ st.qs = Math.max(5, Math.min(300, +$("#t-qs").value || 20));
     if ($("#t-wrong") && $("#t-wrong").checked) {   /* ❌ chỉ câu từng sai: lần làm GẦN NHẤT của từng người đang trong phòng còn sai */
       var W = await tWrongNums(a[0], +a[1], G.online.map(function (p) { return p.id; }));
