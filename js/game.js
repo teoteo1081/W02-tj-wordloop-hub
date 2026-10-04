@@ -68,7 +68,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 133;
+  var GAME_VER = 134;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -2164,6 +2164,7 @@
   function tStop() { tSeqTok++; if (TAUD) TAUD.pause(); }
   function tPlaySeq(url, seq, onEnd) {   /* phát lần lượt các đoạn [từ, tới] của 1 file */
     var a = tAudio(), tok = ++tSeqTok, i = 0;
+    a.playbackRate = 1; if (AP) AP.live = false;
     if (a.dataset.src !== url) { a.src = url; a.dataset.src = url; }
     function next() {
       if (tok !== tSeqTok) return;
@@ -2206,6 +2207,178 @@
     if (b.classList.contains("on")) { tStop(); b.classList.remove("on"); return; }
     b.classList.add("on"); tPlaySeq(d[0], seq, function () { b.classList.remove("on"); }); tVol(true);   /* bấm 🔊 tay = muốn nghe, kể cả đang tắt tiếng */
   });
+  /* ---------- 🎚 THANH NGHE LẠI + 🔖 ĐOẠN KHÓ (TJ 2026-10-04: "lúc review có thanh âm thanh chỉnh tới lui, bấm bookmark để nghe lại
+     sau nếu đoạn đó khó — để dành chơi dictation sau này") ----------
+     · Xem lại câu Listening: thanh kéo trong phạm vi đoạn (cả bài nói / câu hỏi), ⏪5s ⏩5s, tốc độ 1×/0.75×/0.5×, 🔁 lặp.
+     · 🔖 2 bước: "Đánh dấu từ đây" -> "Kết thúc & lưu" (hoặc lưu cả đoạn đang nghe). Lưu vào vocab_saves (không cần bảng mới):
+       word_id = "aud:<test>:<part>:<num>:<từ>-<tới>" + test/part/num; máy chưa có hồ sơ -> chỉ lưu trên máy (tjwl_audmarks_v1).
+     · "🔖 Đoạn nghe đã lưu" (Hub TEST / phòng chờ / màn Xem lại): nghe lại mọi đoạn đã lưu, xoá được. */
+  var AP_TX = {
+    vi: { qon: "Đã để dành — làm lại sau", qoff: "Để dành làm lại câu này", h: "Nghe lại", all: "📻 Cả bài nói", q: "❓ Câu hỏi", loop: "Lặp lại", mark: "🔖 Đánh dấu từ đây", mark2: "🔖 Kết thúc & lưu", saveall: "🔖 Lưu cả đoạn này", saved: "✓ Đã lưu đoạn", mine: "🔖 Đoạn đã lưu của câu này", list: "🔖 Đoạn nghe đã lưu", none: "Chưa lưu đoạn nào — ở 📖 Xem lại câu Listening, bấm 🔖 để lưu đoạn khó.", del: "Xoá đoạn này?", tip: "Kéo thanh để tua · đoạn khó thì bấm 🔖 để nghe lại sau (sau này luyện chép chính tả từ đây).", seg: "Đoạn", qn: "Câu" },
+    en: { qon: "Saved — redo later", qoff: "Save this question to redo", h: "Listen again", all: "📻 Whole talk", q: "❓ Question", loop: "Repeat", mark: "🔖 Mark from here", mark2: "🔖 End & save", saveall: "🔖 Save this whole part", saved: "✓ Saved", mine: "🔖 Saved parts of this question", list: "🔖 Saved listening parts", none: "Nothing saved yet — in 📖 Review of a Listening question, press 🔖 to save a hard part.", del: "Delete this part?", tip: "Drag the bar to seek · press 🔖 on hard parts to listen again later (dictation practice later).", seg: "Part", qn: "Q" },
+    zh: { qon: "已收藏——以后重做", qoff: "收藏此题以后重做", h: "再听一遍", all: "📻 整段对话", q: "❓ 问题", loop: "循环", mark: "🔖 从这里标记", mark2: "🔖 结束并保存", saveall: "🔖 保存整段", saved: "✓ 已保存", mine: "🔖 本题已保存的片段", list: "🔖 已保存的听力片段", none: "还没有保存——在听力题的 📖 查看答案 中点 🔖 保存难的片段。", del: "删除这个片段？", tip: "拖动进度条快进/后退 · 难的片段点 🔖 保存以后再听（之后可做听写练习）。", seg: "片段", qn: "第" },
+    es: { qon: "Guardada — repetir luego", qoff: "Guardar para repetir", h: "Escuchar de nuevo", all: "📻 Todo el audio", q: "❓ Pregunta", loop: "Repetir", mark: "🔖 Marcar desde aquí", mark2: "🔖 Terminar y guardar", saveall: "🔖 Guardar todo el fragmento", saved: "✓ Guardado", mine: "🔖 Fragmentos guardados de esta pregunta", list: "🔖 Fragmentos guardados", none: "Aún no hay nada — en 📖 Revisar de una pregunta de Listening, pulsa 🔖 para guardar un fragmento difícil.", del: "¿Borrar este fragmento?", tip: "Arrastra la barra para avanzar/retroceder · pulsa 🔖 en lo difícil para escucharlo luego (dictado más adelante).", seg: "Fragmento", qn: "P" }
+  };
+  function apT(k) { var d = AP_TX[uiLang()] || AP_TX.vi; return d[k] || AP_TX.vi[k] || k; }
+  function apUrl(t) { return cfg.SUPABASE_URL + "/storage/v1/object/public/toeic/listening/TEST_" + t + "_LC.mp3"; }
+  function apClock(s) { s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ":" + ("0" + s % 60).slice(-2); }
+  var AP = null;   /* {box, url, a, b, loop, meta, A(mốc đánh dấu)} */
+  function apStop() { if (AP && TAUD) { TAUD.pause(); TAUD.ontimeupdate = null; } if (AP) apSync(); }
+  function apSync() {
+    if (!AP || !AP.box || !AP.box.isConnected) return;
+    var a = TAUD, cur = a && a.dataset.src === AP.url ? a.currentTime : AP.a, on = a && !a.paused && a.dataset.src === AP.url && AP.live;
+    cur = Math.max(AP.a, Math.min(AP.b, cur));
+    var bar = AP.box.querySelector(".g-apbar"); if (bar && !AP.drag) bar.value = cur;
+    var tm = AP.box.querySelector(".g-aptm"); if (tm) tm.textContent = apClock(cur - AP.a) + " / " + apClock(AP.b - AP.a);
+    var pb = AP.box.querySelector('[data-ap="play"]'); if (pb) pb.textContent = on ? "⏸" : "▶";
+    var mk = AP.box.querySelector('[data-ap="mark"]'); if (mk) { mk.textContent = AP.A != null ? apT("mark2") + " (" + apClock(AP.A - AP.a) + "→)" : apT("mark"); mk.classList.toggle("on", AP.A != null); }
+  }
+  function apPlay(from) {
+    if (!AP) return;
+    tSeqTok++;   /* dừng mọi lượt phát tự động / nút 🔊 */
+    var a = tAudio(), go = function () {
+      try { a.currentTime = from != null ? from : (a.dataset.src === AP.url && a.currentTime >= AP.a && a.currentTime < AP.b - 0.3 ? a.currentTime : AP.a); } catch (e) {}
+      a.playbackRate = AP.rate || 1; tVol(true); AP.live = true;
+      var p = a.play(); if (p && p.catch) p.catch(function () {});
+    };
+    if (a.dataset.src !== AP.url) { a.src = AP.url; a.dataset.src = AP.url; }
+    a.ontimeupdate = function () {
+      if (!AP || !AP.live) return;
+      if (a.currentTime >= AP.b) { if (AP.loop) { try { a.currentTime = AP.a; } catch (e) {} } else { a.pause(); AP.live = false; try { a.currentTime = AP.a; } catch (e) {} } }
+      apSync();
+    };
+    a.onpause = a.onplay = apSync;
+    if (a.readyState >= 1) go(); else a.addEventListener("loadedmetadata", go, { once: true });
+  }
+  /* box: chỗ vẽ; o = {url, segs:[{k,label,a,b}], meta:{test,part,num}, marks:true} */
+  function apMount(box, o) {
+    if (AP && AP.live) apStop();
+    var s0 = o.segs[0];
+    AP = { box: box, url: o.url, a: s0.a, b: s0.b, segs: o.segs, meta: o.meta, loop: false, rate: 1, A: null };
+    box.innerHTML = '<div class="g-ap">' +
+      (o.segs.length > 1 ? '<div class="g-aprow g-apsegs">' + o.segs.map(function (s, i) { return '<button type="button" class="g-btn g-btn-sm' + (i ? " g-btn-soft" : "") + '" data-apseg="' + i + '">' + esc(s.label) + "</button>"; }).join("") + "</div>" : "") +
+      '<div class="g-aprow"><button type="button" class="g-btn g-btn-soft g-btn-sm" data-ap="back">⏪ 5s</button><button type="button" class="g-btn g-btn-sm g-applay" data-ap="play">▶</button><button type="button" class="g-btn g-btn-soft g-btn-sm" data-ap="fwd">5s ⏩</button>' +
+      '<button type="button" class="g-btn g-btn-soft g-btn-sm" data-ap="rate">1×</button><button type="button" class="g-btn g-btn-soft g-btn-sm" data-ap="loop" title="' + esc(apT("loop")) + '">🔁</button></div>' +
+      '<div class="g-aprow g-apline"><input type="range" class="g-apbar" step="0.1"><span class="g-aptm"></span></div>' +
+      (o.meta ? '<div class="g-aprow"><button type="button" class="g-btn g-btn-soft g-btn-sm" data-ap="mark"></button><button type="button" class="g-btn g-btn-soft g-btn-sm" data-ap="saveall">' + esc(apT("saveall")) + '</button><span class="g-apmsg"></span></div><div class="g-apmarks"></div>' : "") +
+      '<div class="g-sub g-aptip">' + esc(apT("tip")) + "</div></div>";
+    apSeg(0);
+    if (o.meta) apPaintMarks();
+  }
+  function apSeg(i) {
+    var s = AP.segs[i]; if (!s) return;
+    AP.a = s.a; AP.b = s.b; AP.A = null;
+    var bar = AP.box.querySelector(".g-apbar"); bar.min = s.a; bar.max = s.b; bar.value = s.a;
+    AP.box.querySelectorAll("[data-apseg]").forEach(function (b) { b.classList.toggle("g-btn-soft", +b.dataset.apseg !== i); });
+    if (AP.live) apPlay(s.a); else apSync();
+  }
+  document.addEventListener("input", function (e) { if (AP && e.target.classList && e.target.classList.contains("g-apbar")) { AP.drag = true; var tm = AP.box.querySelector(".g-aptm"); if (tm) tm.textContent = apClock(+e.target.value - AP.a) + " / " + apClock(AP.b - AP.a); } });
+  document.addEventListener("change", function (e) { if (AP && e.target.classList && e.target.classList.contains("g-apbar")) { AP.drag = false; apPlay(+e.target.value); } });
+  document.addEventListener("click", function (e) {
+    if (!AP || !e.target.closest) return;
+    var sg = e.target.closest("[data-apseg]"); if (sg && AP.box.contains(sg)) { apSeg(+sg.dataset.apseg); if (!AP.live) apPlay(AP.a); return; }
+    var b = e.target.closest("[data-ap]"); if (!b || !AP.box.contains(b)) return;
+    var k = b.dataset.ap, a = TAUD, cur = a && a.dataset.src === AP.url ? a.currentTime : AP.a;
+    if (k === "play") { if (AP.live && a && !a.paused) { a.pause(); AP.live = false; apSync(); } else apPlay(); }
+    else if (k === "back" || k === "fwd") { var t = Math.max(AP.a, Math.min(AP.b - 0.2, cur + (k === "back" ? -5 : 5))); if (AP.live && a && !a.paused) { try { a.currentTime = t; } catch (x) {} } else apPlay(t); }
+    else if (k === "rate") { AP.rate = AP.rate === 1 ? 0.75 : AP.rate === 0.75 ? 0.5 : 1; b.textContent = AP.rate + "×"; if (a) a.playbackRate = AP.rate; }
+    else if (k === "loop") { AP.loop = !AP.loop; b.classList.toggle("on", AP.loop); b.classList.toggle("g-btn-soft", !AP.loop); }
+    else if (k === "mark") {
+      if (AP.A == null) { AP.A = Math.max(AP.a, cur - 1); if (!(a && !a.paused)) apPlay(AP.A); apSync(); }
+      else { var x = AP.A, y = Math.min(AP.b, Math.max(cur, x + 3)); AP.A = null; apSync(); apSave(x, y); }
+    } else if (k === "saveall") apSave(AP.a, AP.b);
+    else if (k === "mplay") { var r = b.dataset.r.split("-").map(Number); AP.a = r[0]; AP.b = r[1]; var bar = AP.box.querySelector(".g-apbar"); bar.min = r[0]; bar.max = r[1]; AP.box.querySelectorAll("[data-apseg]").forEach(function (s) { s.classList.add("g-btn-soft"); }); apPlay(r[0]); }
+    else if (k === "mdel") apDel(b.dataset.id);
+  });
+  /* 🔖 kho đoạn đã lưu: Supabase vocab_saves (theo người chơi) + bản trên máy */
+  var LS_AUDM = "tjwl_audmarks_v1";
+  function apLocal() { try { return JSON.parse(localStorage.getItem(LS_AUDM) || "[]"); } catch (e) { return []; } }
+  function apLocalSet(a) { try { localStorage.setItem(LS_AUDM, JSON.stringify(a)); } catch (e) {} }
+  function apId(m, x, y) { return "aud:" + m.test + ":" + m.part + ":" + m.num + ":" + x.toFixed(1) + "-" + y.toFixed(1); }
+  function apParse(id) { var p = String(id).split(":"); if (p[0] !== "aud" || p.length < 5) return null; var r = p[4].split("-").map(Number); return { id: id, test: p[1], part: +p[2], num: +p[3], a: r[0], b: r[1] }; }
+  async function apMarks() {
+    var ids = apLocal();
+    if (G.me) { try { var r = await sb.from("vocab_saves").select("word_id").eq("player_id", G.me.id).like("word_id", "aud:%"); (r.data || []).forEach(function (x) { if (ids.indexOf(x.word_id) < 0) ids.push(x.word_id); }); } catch (e) {} }
+    return ids.map(apParse).filter(Boolean);
+  }
+  async function apSave(x, y) {
+    var m = AP && AP.meta; if (!m) return;
+    var id = apId(m, x, y), loc = apLocal(); if (loc.indexOf(id) < 0) { loc.push(id); apLocalSet(loc); }
+    if (G.me) { try { await sb.from("vocab_saves").upsert({ player_id: G.me.id, word_id: id, test: String(m.test), part: +m.part || null, num: +m.num || null }, { onConflict: "player_id,word_id" }); } catch (e) {} }
+    var msg = AP.box.querySelector(".g-apmsg"); if (msg) msg.textContent = apT("saved") + " " + apClock(x - AP.segs[0].a) + "–" + apClock(y - AP.segs[0].a);
+    apPaintMarks();
+  }
+  async function apDel(id) {
+    if (!confirm(apT("del"))) return;
+    apLocalSet(apLocal().filter(function (x) { return x !== id; }));
+    if (G.me) { try { await sb.from("vocab_saves").delete().eq("player_id", G.me.id).eq("word_id", id); } catch (e) {} }
+    if (AP && AP.meta) apPaintMarks(); else apList();
+  }
+  function apRow(k, label) {
+    return '<div class="g-aprow g-apm"><button type="button" class="g-btn g-btn-soft g-btn-sm" data-ap="mplay" data-r="' + k.a + "-" + k.b + '">▶ ' + esc(label) + '</button><button type="button" class="g-btn g-btn-soft g-btn-sm" data-ap="mdel" data-id="' + esc(k.id) + '">✕</button></div>';
+  }
+  async function apPaintMarks() {
+    var m = AP && AP.meta; if (!m) return;
+    var box = AP.box.querySelector(".g-apmarks"); if (!box) return;
+    var L = (await apMarks()).filter(function (k) { return String(k.test) === String(m.test) && k.num >= m.num && k.num <= (m.last || m.num); });
+    var base = AP.segs[0].a;
+    box.innerHTML = L.length ? '<div class="g-sub">' + esc(apT("mine")) + "</div>" + L.map(function (k) { return apRow(k, apClock(k.a - base) + "–" + apClock(k.b - base)); }).join("") : "";
+  }
+  /* 📖 Xem lại: gắn thanh nghe vào đầu phần lời giải câu Listening */
+  function apReview(L) {
+    var q = L && L.tq; if (!q || !q.full) return;
+    var m = String(q.full).match(/^\[aud\] q=([\d.]+)-([\d.]+)(?: g=([\d.]+)-([\d.]+))?/m); if (!m) return;
+    var qa = +m[1], qb = q.gEnd || +m[2], segs = [];
+    if (m[3]) { segs.push({ label: apT("all"), a: +m[3], b: qb }); segs.push({ label: apT("q"), a: qa, b: qb }); }
+    else segs.push({ label: apT("q"), a: qa, b: qb });
+    var box = $("#rv-res"); if (!box) return;
+    box.insertAdjacentHTML("afterbegin", '<div class="g-apwrap"><div class="g-tvh">🎚 ' + esc(apT("h")) + "</div><div id=\"rv-ap\"></div></div>");
+    apMount($("#rv-ap"), { url: apUrl(q.test), segs: segs, meta: { test: q.test, part: q.part, num: q.num, last: q.last || q.num } });
+  }
+  /* 🔖 danh sách mọi đoạn đã lưu (nghe lại theo Test) */
+  async function apList() {
+    var box = $("#t-statsbox");
+    if (!box) { box = document.createElement("div"); box.id = "t-statsbox"; box.className = "g-tstats"; document.body.appendChild(box); }
+    box.hidden = false;
+    box.innerHTML = '<div class="g-tsin"><div class="g-h1row"><h2>' + esc(apT("list")) + '</h2><button class="g-btn g-btn-soft g-btn-sm" id="ts-close">✕</button></div><div id="ap-lplayer"></div><div id="ap-lbody">⏳</div></div>';
+    var close = function () { apStop(); box.hidden = true; };
+    $("#ts-close").onclick = close; box.onclick = function (e) { if (e.target === box) close(); };
+    var L = (await apMarks()).sort(function (x, y) { return String(x.test).localeCompare(String(y.test), "en", { numeric: true }) || x.num - y.num || x.a - y.a; });
+    var body = $("#ap-lbody"); if (!body) return;
+    if (!L.length) { body.innerHTML = '<p class="g-sub">' + esc(apT("none")) + "</p>"; return; }
+    body.innerHTML = L.map(function (k, i) {
+      return '<div class="g-aprow g-apm"><button type="button" class="g-btn g-btn-soft g-btn-sm" data-apl="' + i + '">▶ ' + esc(tName(k.test)) + " · Part " + k.part + " · " + esc(apT("qn")) + " " + k.num + " · " + apClock(k.b - k.a) + '</button><button type="button" class="g-btn g-btn-soft g-btn-sm" data-ap-ldel="' + esc(k.id) + '">✕</button></div>';
+    }).join("");
+    body.onclick = function (e) {
+      var p = e.target.closest("[data-apl]"), d = e.target.closest("[data-ap-ldel]");
+      if (p) { var k = L[+p.dataset.apl]; apMount($("#ap-lplayer"), { url: apUrl(k.test), segs: [{ label: apT("seg"), a: k.a, b: k.b }], meta: null }); apPlay(k.a); }
+      if (d) apDel(d.dataset.apLdel);
+    };
+  }
+  document.addEventListener("click", function (e) { var b = e.target.closest && e.target.closest("#t-marks, #l-tmarks, #rv-tmarks"); if (b) apList(); });
+  /* 🔖 câu đề thi để dành làm lại: vocab_saves.word_id = "tq:<test>:<part>:<num>[-<num cuối nhóm>]" (+ bản trên máy tjwl_tqmarks_v1) */
+  var LS_TQM = "tjwl_tqmarks_v1";
+  function tqKey(q) { return "tq:" + q.test + ":" + q.part + ":" + q.num + (q.last && q.last !== q.num ? "-" + q.last : ""); }
+  function tqLocal() { try { return JSON.parse(localStorage.getItem(LS_TQM) || "{}"); } catch (e) { return {}; } }
+  async function tqMarks() {
+    if (G.tqM) return G.tqM;
+    var M = tqLocal();
+    if (G.me) { try { var r = await sb.from("vocab_saves").select("word_id").eq("player_id", G.me.id).like("word_id", "tq:%"); (r.data || []).forEach(function (x) { M[x.word_id] = 1; }); } catch (e) {} }
+    return (G.tqM = M);
+  }
+  async function tqSet(k, on) {
+    var M = await tqMarks(), L = tqLocal(); if (on) { M[k] = 1; L[k] = 1; } else { delete M[k]; delete L[k]; }
+    try { localStorage.setItem(LS_TQM, JSON.stringify(L)); } catch (e) {}
+    if (!G.me) return;
+    var p = k.split(":");
+    try { if (on) await sb.from("vocab_saves").upsert({ player_id: G.me.id, word_id: k, test: p[1], part: +p[2] || null, num: parseInt(p[3], 10) || null }, { onConflict: "player_id,word_id" }); else await sb.from("vocab_saves").delete().eq("player_id", G.me.id).eq("word_id", k); } catch (e) {}
+  }
+  /* số câu đã để dành của 1 đề + các Part (nhóm Part 3–4 -> cả 3 câu) */
+  async function tqNums(test, parts) {
+    var M = await tqMarks(), out = {};
+    Object.keys(M).forEach(function (k) { var p = k.split(":"); if (p[1] !== String(test) || parts.indexOf(+p[2]) < 0) return; var r = p[3].split("-").map(Number); for (var n = r[0]; n <= (r[1] || r[0]); n++) out[n] = 1; });
+    return Object.keys(out).map(Number).sort(function (a, b) { return a - b; });
+  }
   function tPassHTML(p, num) {
     if (!p) return "";
     var img = [], txt = String(p).split("\n").filter(function (l) { if (/^\[aud\]/.test(l)) return false; var m = l.match(/^\[img\]\s*(https:\/\/\S+)$/); if (m) img.push(m[1]); return !m; }).join("\n").trim();
@@ -2371,7 +2544,7 @@
       G.log.push({ hint: $("#p-hint").textContent, vi: vi.innerHTML, opts: opts.innerHTML, msg: q.subs ? "✓ " + q.subs.filter(function (sq, i) { return (mine || [])[i] != null && norm(mine[i]) === norm(sq.ans); }).length + "/" + q.subs.length : q.type === "toeic" ? (mine == null ? T("t_skip") : q.pend ? "📝 " + T("t_pend", { a: mine }) : ok ? "✓ " + T("t_right") : "✗ " + T("t_wrong")) : $("#p-msg").textContent.split("  ·  " + T("wait_nextq")).join(""), res: q.type === "toeic" ? (q.pend ? '<div class="g-sub">⏳ ' + esc(T("t_nokey")) + "</div>" : toeicExpl(q)) : $("#p-res").innerHTML,
                    mine: typed ? (mine == null ? "" : String(mine)) : null, ans: typeof q.ans === "string" ? q.ans : "", ok: !!ok, typed: typed, played: iPlay(),
                    wid: q.type === "sheet" ? null : q.wid, tg: tgt() !== "en" ? tgt() : null, sl: q.type === "dict" ? "en" : tgt(),
-                   tq: q.type === "toeic" ? { test: q.test || (G.st && G.st.test && G.st.test.test), part: q.part || (G.st && G.st.test && G.st.test.part), num: q.num, vocab: q.vocab || [], full: toeicFull(q) } : null,
+                   tq: q.type === "toeic" ? { test: q.test || (G.st && G.st.test && G.st.test.test), part: q.part || (G.st && G.st.test && G.st.test.part), num: q.num, vocab: q.vocab || [], full: toeicFull(q), gEnd: q.gEnd || null, last: q.subs ? q.subs[q.subs.length - 1].num : q.num } : null,
                    say: q.type === "toeic" ? toeicFull(q) : q.type === "dict" ? q.say || q.ans : q.type === "en2m" ? baseTerm(q.word) : q.type === "write" ? baseTerm(q.term) : typeof q.ans === "string" ? baseTerm(q.ans) : "" });
       saveLog();
     } catch (e) { console.warn("logQ", e); }
@@ -2525,6 +2698,7 @@
     $("#rv-say").textContent = T("rv_listen");
     if (L.tg === "zh") { loadPinyin(); decoratePy($("#s-review"), true); }
     if (L.tq) paintTVocab(L);
+    apStop(); if (L.tq) apReview(L);
     if (L.say && soundOn()) { sayIt._lang = L.sl || "en"; sayIt(L.say, true); }
     var m = $("#rv-mine");
     m.className = "g-rvmine";
@@ -2542,6 +2716,14 @@
   G.stars = {};
   async function paintStar(L) {
     var b = $("#rv-star"), uid = progUid();
+    if (L && L.tq) {   /* 🔖 đề thi: để dành CÂU này để làm lại (TJ 2026-10-04: "khó thì làm lại cho nhớ") */
+      b.hidden = false; b.dataset.wid = ""; b.dataset.tqk = tqKey(L.tq);
+      var on0 = (await tqMarks())[b.dataset.tqk];
+      if (b.dataset.tqk !== tqKey(L.tq)) return;
+      b.textContent = on0 ? "🔖 " + apT("qon") : "🔖 " + apT("qoff"); b.classList.toggle("on", !!on0);
+      return;
+    }
+    delete b.dataset.tqk;
     b.hidden = !(uid && L && L.wid && !L.tg);
     if (b.hidden) return;
     b.dataset.wid = L.wid;
@@ -2556,6 +2738,7 @@
     b.classList.toggle("on", on);
   }
   $("#rv-star").addEventListener("click", async function () {
+    if (this.dataset.tqk) { var k = this.dataset.tqk, M = await tqMarks(), on1 = !M[k]; await tqSet(k, on1); this.textContent = "🔖 " + apT(on1 ? "qon" : "qoff"); this.classList.toggle("on", on1); return; }
     var uid = progUid(), wid = this.dataset.wid; if (!uid || !wid) return;
     var on = !G.stars[wid], b = this;
     b.disabled = true;
@@ -2634,7 +2817,7 @@
   document.addEventListener("click", function (e) { var b = e.target.closest("[data-say]"); if (b && b.dataset.say) { sayIt._lang = b.dataset.sl || null; sayIt(b.dataset.say, true); } });
   $("#rv-prev").addEventListener("click", function () { renderReview(rvI - 1); });
   $("#rv-next").addEventListener("click", function () { renderReview(rvI + 1); });
-  $("#rv-back").addEventListener("click", function () {   /* về đúng màn hiện tại của phòng (ván mới đã mở thì về phòng chờ) */
+  $("#rv-back").addEventListener("click", function () { apStop();   /* về đúng màn hiện tại của phòng (ván mới đã mở thì về phòng chờ) */
     if (G.rvFrom === "hist") { G.rvFrom = null; return renderHistory("me"); }   /* xem ván cũ -> về 📜 Lịch sử */
     G.inHist = false;
     var s = G.st;
@@ -2687,9 +2870,9 @@
       '<label>Cách tính điểm <select id="t-scoring"><option value="q">Theo câu — đúng +100</option><option value="speed">Theo tốc độ — đúng 100 → 50</option></select></label>' +
       '<label>Hình thức thi đấu <select id="t-teams"><option value="0">Chơi lẻ</option><option value="2">2 đội</option><option value="3">3 đội</option><option value="4">4 đội</option></select></label>' +
       '<label class="g-check"><input type="checkbox" id="t-hostplay" checked> Host cũng chơi</label>' +
-      '<label class="g-check" title="Chỉ ra các câu của đề/Part này mà người trong phòng từng làm SAI (lần làm gần nhất)"><input type="checkbox" id="t-wrong"> ❌ Chỉ câu từng làm sai (cả phòng)</label>' +
+      '<label class="g-check" title="Chỉ ra các câu của đề/Part này mà người trong phòng từng làm SAI (lần làm gần nhất)"><input type="checkbox" id="t-wrong"> ❌ Chỉ câu từng làm sai (cả phòng)</label><label class="g-check" title="Các câu bạn đã bấm 🔖 ở 📖 Xem lại"><input type="checkbox" id="t-bm"> 🔖 Chỉ câu tôi đã để dành</label>' +
       '<label title="Listening: audio đề phát ở đâu. Chơi chung qua HelloTalk/loa -> chỉ máy host phát cho khỏi loạn. Kiểu Tự do / ⚡ Đua mỗi người 1 nhịp nên luôn phát trên từng máy (đeo tai nghe).">🔊 Audio đề <select id="t-aud"><option value="host">📢 Chỉ máy host phát (cả phòng nghe qua HelloTalk/loa)</option><option value="all">🎧 Mỗi máy tự phát (ai cũng đeo tai nghe)</option><option value="off">🔇 Không phát (host tự mở audio ngoài)</option></select></label></div>' +
-      '<div class="g-row"><button class="g-btn" id="t-start" type="button">▶ Bắt đầu làm bài</button><button class="g-btn g-btn-soft" id="t-stats" type="button">📊 Điểm TOEIC & câu hay sai</button><button class="g-btn g-btn-soft" id="t-tips" type="button">🧠 Chiến thuật đạt điểm cao</button></div><p class="g-sub" id="t-info"></p></div>' +
+      '<div class="g-row"><button class="g-btn" id="t-start" type="button">▶ Bắt đầu làm bài</button><button class="g-btn g-btn-soft" id="t-stats" type="button">📊 Điểm TOEIC & câu hay sai</button><button class="g-btn g-btn-soft" id="t-tips" type="button">🧠 Chiến thuật đạt điểm cao</button><button class="g-btn g-btn-soft" id="t-marks" type="button">🔖 Đoạn nghe đã lưu</button></div><p class="g-sub" id="t-info"></p></div>' +
       '<p class="g-sub">Hub này để <b>làm đề thi</b> (TOEIC trước): chơi từng Part, thi thử cả bài, hoặc gom câu theo <b>chủ điểm ngữ pháp</b>. Thời gian mặc định theo đề thật:</p>' +
       TOEIC.map(function (sk) {
         return '<div class="g-tsk"><div class="g-tskh"><b>' + sk.name + '</b><span class="g-sub">' + sk.parts.reduce(function (a, p) { return a + p.q; }, 0) + " câu · " + sk.min + " phút" + (sk.note ? " · " + esc(sk.note) : "") + "</span></div>" +
@@ -2932,7 +3115,13 @@
       if (!W.length) { $("#t-info").textContent = "Cả phòng chưa sai câu nào ở Part này 🎉 (hoặc chưa làm)."; return; }
       st.test.only = W;
     }
-    st.title = (st.exam ? "📝 " : "🎯 ") + tName(tt) + " · " + ({ full: "Full Test", lc: "Full Listening", rc: "Full Reading" }[sc] || "Part " + parts.join(", ")) + (tg ? " · " + tg : "") + (fr && to ? " · câu " + fr + "–" + to : "") + (st.test.only ? " · ❌ câu sai" : "");
+    if ($("#t-bm") && $("#t-bm").checked) {   /* 🔖 chỉ câu MÌNH đã để dành (TJ 2026-10-04: khó thì làm lại cho nhớ) */
+      G.tqM = null; var B = await tqNums(tt, parts);
+      if (st.test.only) B = B.filter(function (n) { return st.test.only.indexOf(n) >= 0; });
+      if (!B.length) { $("#t-info").textContent = "Chưa để dành câu nào ở phần đã chọn — vào 📖 Xem lại, bấm 🔖 ở câu khó."; return; }
+      st.test.only = B; st.title0bm = 1;
+    }
+    st.title = (st.exam ? "📝 " : "🎯 ") + tName(tt) + " · " + ({ full: "Full Test", lc: "Full Listening", rc: "Full Reading" }[sc] || "Part " + parts.join(", ")) + (tg ? " · " + tg : "") + (fr && to ? " · câu " + fr + "–" + to : "") + (st.title0bm ? " · 🔖 câu để dành" : st.test.only ? " · ❌ câu sai" : ""); delete st.title0bm;
     $("#t-info").textContent = "Đang tải đề…";
     await ensureTest(st.test);
     if (!(G.tItems || []).length) { $("#t-info").textContent = "Không có câu nào khớp đoạn câu / chủ điểm đã chọn."; return; }

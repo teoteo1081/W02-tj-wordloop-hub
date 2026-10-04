@@ -590,3 +590,16 @@ body.embed .g-brand{display:none}
 .g-tnext{margin-top:12px;padding:8px 10px;border:1px dashed var(--line,#3335);border-radius:10px;text-align:left;opacity:.85}
 .g-tnq{margin:6px 0}.g-tnq small{display:block;opacity:.75;margin-top:2px}
 body.g-tahead #p-opts .g-tsub{display:none}body.g-tahead #p-opts .g-tnext{opacity:1;border-style:solid}
+/* 🎚 thanh nghe lại + 🔖 đoạn khó (Xem lại câu Listening) */
+.g-apwrap{margin:0 0 12px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--deep)}
+.g-ap{display:flex;flex-direction:column;gap:8px}
+.g-aprow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.g-apline{flex-wrap:nowrap}
+.g-apbar{flex:1;min-width:0;accent-color:#6c5ce7;height:28px}
+.g-aptm{font-variant-numeric:tabular-nums;font-size:.9em;white-space:nowrap}
+.g-applay{min-width:56px}
+.g-ap [data-ap].on{background:var(--amber);color:#222}
+.g-apmsg{font-size:.9em;color:#00a86b}
+.g-apmarks:empty{display:none}
+.g-apm .g-btn:first-child{flex:1;text-align:left}
+.g-aptip{font-size:.85em}
