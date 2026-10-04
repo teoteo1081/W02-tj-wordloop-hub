@@ -8,7 +8,7 @@
 <!-- Google tag (gtag.js) — cùng property GA4 với WordLoop -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM');</script>
-<link rel="stylesheet" href="css/game.css?v=91">
+<link rel="stylesheet" href="css/game.css?v=95">
 </head>
 <body>
 <!-- 🎮 Phòng game chơi chung — xem README.md "Việc còn dang dở" > PHÒNG GAME, bảng: tools/game_schema.sql.
@@ -94,7 +94,7 @@
     <div class="g-h2row"><h2><span data-t="players">Người chơi</span> (<span id="l-count">0</span>) <span class="g-sub" id="l-teamhint"></span></h2>
     <span class="g-row g-row-tight"><button class="g-btn g-btn-soft g-btn-sm" id="l-users" hidden>👥 Quản lý người chơi</button><button class="g-btn g-btn-soft g-btn-sm" id="l-review" hidden data-t="review_btn">📖 Xem lại đáp án</button><button class="g-btn g-btn-soft g-btn-sm" id="l-hist" data-t="hist_btn">📜 Lịch sử & Xếp hạng</button><button class="g-btn g-btn-soft g-btn-sm" id="l-tstats" data-t="tstats_btn">📊 Điểm TOEIC</button><button class="g-btn g-btn-soft g-btn-sm" id="l-ttips" data-t="tips_btn">🧠 Chiến thuật</button><button class="g-btn g-btn-soft g-btn-sm" id="l-tmarks" data-t="tmarks_btn">🔖 Đoạn nghe</button></span></div>
     <!-- âm thanh RIÊNG máy này (người chơi tự bật/tắt + âm lượng, không phụ thuộc host) — TJ 2026-10-02 -->
-    <div class="g-taphint js-taphint" hidden>🔈 Chạm vào màn hình 1 lần để bật tiếng đọc</div>
+    <div class="g-taphint js-taphint" hidden data-t="taphint">🔈 Chạm vào màn hình 1 lần để bật tiếng đọc</div>
     <div class="g-sndrow"><span class="g-sub" data-t="snd_you">Âm thanh của bạn:</span><button class="g-mute js-snd" type="button"></button><span class="g-volbox"><span class="g-volval js-volval"></span><input type="range" class="g-vol js-vol" min="0" max="100" step="5" aria-label="Âm lượng đọc từ"></span></div>
     <div class="g-teams" id="l-teams"></div>
     <div class="g-players" id="l-players"></div>
@@ -141,7 +141,7 @@
 
   <!-- 4. Đang chơi: nửa trên bảng xếp hạng, nửa dưới trả lời -->
   <section class="g-screen g-play" id="s-play" hidden>
-    <div class="g-taphint js-taphint" hidden>🔈 Chạm vào màn hình 1 lần để bật tiếng đọc</div>
+    <div class="g-taphint js-taphint" hidden data-t="taphint">🔈 Chạm vào màn hình 1 lần để bật tiếng đọc</div>
     <div class="g-alert" id="p-hostlost" hidden data-t="host_lost">⚠ Host mất kết nối — chờ host quay lại…</div>
     <div class="g-clock"><span id="p-left">5:00</span><span class="g-sub" id="p-mode"></span><span class="g-qtools"><button class="g-replay" id="p-replay" type="button" title="Nghe lại từ tiếng Anh" disabled>🔊</button><button class="g-mute js-snd" type="button"></button><input type="range" class="g-vol js-vol" min="0" max="100" step="5" aria-label="Âm lượng đọc từ"></span><button class="g-btn g-btn-soft g-btn-sm" id="p-stop" hidden>⏹ Kết thúc</button></div>
     <!-- 📊 dải ô thống kê của MÌNH (TJ 2026-10-02: hàng trên "kỳ quá" -> tách 2 tầng, số to + nhãn nhỏ) -->
@@ -227,7 +227,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="js/config.js?v=4"></script>
 <script src="js/toeic_tips.js?v=1"></script>
-<script src="js/board.js?v=12"></script>
-<script src="js/game.js?v=144"></script>
+<script src="js/board.js?v=16"></script>
+<script src="js/game.js?v=150"></script>
 </body>
 </html>
