@@ -18,6 +18,18 @@
   var cv, ctx, wrap, dpr = 1, cur = null, sendT = 0, lastLaserSend = 0, laserTail = 0, raf = 0, editing = null;
   var cid = Math.random().toString(36).slice(2, 9);   /* mã máy này — bỏ qua tin của chính mình (kênh bật self) */
 
+  /* chữ trên bảng theo NGÔN NGỮ GIAO DIỆN của người xem (TJ 2026-10-04: chọn 中文 mà bảng vẫn tiếng Việt) — game.js truyền api.lang() */
+  var TX = {
+    vi: { board: "🖤 Bảng", can: "✍️ bạn được dùng bảng", view: "👀 chỉ xem", viewmsg: "👀 Bạn đang xem — host cấp quyền thì mới dùng được bút", perm: "👥 Quyền", permt: "Cấp quyền dùng bảng", min: "Thu nhỏ trên máy mình", close: "Đóng bảng cho cả phòng", laser: "Laser", pen: "Bút vẽ", text: "Ô chữ", color: "Màu", size: "Cỡ nét", undo: "Hoàn tác", redo: "Làm lại", clearAll: "Xoá cả bảng", clearMine: "Xoá nét của tôi", dock: "🖤 Mở bảng", open: "🖤 Bảng", qAll: "Xoá hết nét vẽ và ô chữ trên bảng (của cả phòng)?", qMine: "Xoá hết nét vẽ và ô chữ của bạn?", who: "Ai được dùng bảng (bút, laser, ô chữ):", none: "Chưa có người chơi nào." },
+    en: { board: "🖤 Board", can: "✍️ you can use the board", view: "👀 view only", viewmsg: "👀 You are watching — the host must give you permission to draw", perm: "👥 Access", permt: "Give board access", min: "Minimise on my screen", close: "Close the board for everyone", laser: "Laser", pen: "Pen", text: "Text box", color: "Colour", size: "Size", undo: "Undo", redo: "Redo", clearAll: "Clear the whole board", clearMine: "Clear my marks", dock: "🖤 Open board", open: "🖤 Board", qAll: "Clear all drawings and text on the board (for everyone)?", qMine: "Clear all your drawings and text?", who: "Who can use the board (pen, laser, text):", none: "No players yet." },
+    zh: { board: "🖤 白板", can: "✍️ 你可以使用白板", view: "👀 仅观看", viewmsg: "👀 你正在观看 — 主持人授权后才能使用画笔", perm: "👥 权限", permt: "授权使用白板", min: "在我的屏幕上最小化", close: "为全房间关闭白板", laser: "激光笔", pen: "画笔", text: "文本框", color: "颜色", size: "粗细", undo: "撤销", redo: "重做", clearAll: "清空整个白板", clearMine: "清除我的笔迹", dock: "🖤 打开白板", open: "🖤 白板", qAll: "清除白板上所有笔迹和文字（全房间）？", qMine: "清除你所有的笔迹和文字？", who: "谁可以使用白板（画笔、激光笔、文本框）：", none: "还没有玩家。" },
+    es: { board: "🖤 Pizarra", can: "✍️ puedes usar la pizarra", view: "👀 solo ver", viewmsg: "👀 Estás mirando — el anfitrión debe darte permiso para dibujar", perm: "👥 Permisos", permt: "Dar acceso a la pizarra", min: "Minimizar en mi pantalla", close: "Cerrar la pizarra para todos", laser: "Láser", pen: "Lápiz", text: "Cuadro de texto", color: "Color", size: "Grosor", undo: "Deshacer", redo: "Rehacer", clearAll: "Borrar toda la pizarra", clearMine: "Borrar mis trazos", dock: "🖤 Abrir pizarra", open: "🖤 Pizarra", qAll: "¿Borrar todos los trazos y textos de la pizarra (para todos)?", qMine: "¿Borrar todos tus trazos y textos?", who: "Quién puede usar la pizarra (lápiz, láser, texto):", none: "Aún no hay jugadores." }
+  };
+  function t(k) { var l = api && api.lang ? api.lang() : "vi"; return (TX[l] || TX.vi)[k] || TX.vi[k] || k; }
+  function relabel() {
+    document.querySelectorAll("[data-bt]").forEach(function (e) { e.textContent = t(e.dataset.bt); });
+    document.querySelectorAll("[data-btt]").forEach(function (e) { e.title = t(e.dataset.btt); });
+  }
   function $(s) { return document.querySelector(s); }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function me() { return api && api.me ? api.me() : null; }
@@ -44,33 +56,33 @@
     var el = document.createElement("section");
     el.id = "bd"; el.className = "bd"; el.hidden = true;
     el.innerHTML =
-      '<div class="bd-head"><b>🖤 Bảng</b><span class="bd-who" id="bd-who"></span>' +
-      '<button type="button" class="bd-hb" id="bd-perm" hidden title="Cấp quyền dùng bảng">👥 Quyền</button>' +
-      '<button type="button" class="bd-hb" id="bd-min" title="Thu nhỏ trên máy mình">▁</button>' +
-      '<button type="button" class="bd-hb" id="bd-close" hidden title="Đóng bảng cho cả phòng">✕</button></div>' +
+      '<div class="bd-head"><b data-bt="board"></b><span class="bd-who" id="bd-who"></span>' +
+      '<button type="button" class="bd-hb" id="bd-perm" hidden data-btt="permt" data-bt="perm"></button>' +
+      '<button type="button" class="bd-hb" id="bd-min" data-btt="min">▁</button>' +
+      '<button type="button" class="bd-hb" id="bd-close" hidden data-btt="close">✕</button></div>' +
       '<div class="bd-stage" id="bd-stage"><canvas id="bd-cv"></canvas><div class="bd-texts" id="bd-texts"></div></div>' +
       '<div class="bd-tools" id="bd-tools">' +
-        '<button type="button" data-tool="laser" title="Laser pointer">🔴</button>' +
-        '<button type="button" data-tool="pen" title="Bút vẽ">✏️</button>' +
-        '<button type="button" data-tool="text" title="Ô chữ">T</button>' +
+        '<button type="button" data-tool="laser" data-btt="laser">🔴</button>' +
+        '<button type="button" data-tool="pen" data-btt="pen">✏️</button>' +
+        '<button type="button" data-tool="text" data-btt="text">T</button>' +
         '<span class="bd-sep"></span>' +
-        COLORS.map(function (c) { return '<button type="button" class="bd-col" data-col="' + c + '" style="--c:' + c + '" title="Màu"></button>'; }).join("") +
+        COLORS.map(function (c) { return '<button type="button" class="bd-col" data-col="' + c + '" style="--c:' + c + '" data-btt="color"></button>'; }).join("") +
         '<span class="bd-sep"></span>' +
-        SIZES.map(function (z, i) { return '<button type="button" class="bd-sz" data-sz="' + z + '" title="Cỡ nét"><i style="width:' + (6 + i * 5) + 'px;height:' + (6 + i * 5) + 'px"></i></button>'; }).join("") +
+        SIZES.map(function (z, i) { return '<button type="button" class="bd-sz" data-sz="' + z + '" data-btt="size"><i style="width:' + (6 + i * 5) + 'px;height:' + (6 + i * 5) + 'px"></i></button>'; }).join("") +
         '<span class="bd-sep"></span>' +
-        '<button type="button" id="bd-undo" title="Hoàn tác">↶</button><button type="button" id="bd-redo" title="Làm lại">↷</button>' +
-        '<button type="button" id="bd-clear" hidden title="Xoá cả bảng">🗑</button>' +
+        '<button type="button" id="bd-undo" data-btt="undo">↶</button><button type="button" id="bd-redo" data-btt="redo">↷</button>' +
+        '<button type="button" id="bd-clear" hidden>🗑</button>' +
       '</div><div class="bd-permbox" id="bd-permbox" hidden></div>' +   /* danh sách người được cấp quyền nằm DƯỚI hàng nút như HelloTalk (TJ 2026-10-04) */
-      '<div class="bd-view" id="bd-view">👀 Bạn đang xem — host cấp quyền thì mới dùng được bút</div>';
+      '<div class="bd-view" id="bd-view" data-bt="viewmsg"></div>';
     document.body.appendChild(el);
     var dock = document.createElement("button");
-    dock.id = "bd-dock"; dock.type = "button"; dock.className = "bd-dock"; dock.hidden = true; dock.textContent = "🖤 Mở bảng";
+    dock.id = "bd-dock"; dock.type = "button"; dock.className = "bd-dock"; dock.hidden = true; dock.dataset.bt = "dock";
     document.body.appendChild(dock);
     cv = $("#bd-cv"); ctx = cv.getContext("2d"); wrap = $("#bd-stage");
     el.addEventListener("click", onClick);
     dock.addEventListener("click", function () { mini = false; paintOpen(); });
     var ob = document.createElement("button");   /* host: mở bảng cho cả phòng */
-    ob.id = "bd-open"; ob.type = "button"; ob.className = "bd-dock bd-openbtn"; ob.hidden = true; ob.textContent = "🖤 Bảng";
+    ob.id = "bd-open"; ob.type = "button"; ob.className = "bd-dock bd-openbtn"; ob.hidden = true; ob.dataset.bt = "open";
     document.body.appendChild(ob);
     ob.addEventListener("click", function () { api.setBoard(true); });
     cv.addEventListener("pointerdown", down); cv.addEventListener("pointermove", move);
@@ -86,10 +98,10 @@
     if (b.id === "bd-undo") return undo();
     if (b.id === "bd-redo") return redoOne();
     if (b.id === "bd-clear") {
-      if (api.isHost()) { if (confirm("Xoá hết nét vẽ và ô chữ trên bảng (của cả phòng)?")) { clearAll(); send({ t: "clear" }); } return; }
+      if (api.isHost()) { if (confirm(t("qAll"))) { clearAll(); send({ t: "clear" }); } return; }
       /* người được cấp quyền: sọt rác chỉ xoá nét + ô chữ CỦA MÌNH (TJ 2026-10-04) */
       var me0 = myId(), ids = order.filter(function (id) { return items[id] && items[id].by === me0; });
-      if (ids.length && confirm("Xoá hết nét vẽ và ô chữ của bạn?")) { ids.forEach(function (id) { removeItem(id); send({ t: "del", id: id }); }); mine = []; redo = []; draw(); paintTexts(); paintTools(); }
+      if (ids.length && confirm(t("qMine"))) { ids.forEach(function (id) { removeItem(id); send({ t: "del", id: id }); }); mine = []; redo = []; draw(); paintTexts(); paintTools(); }
       return;
     }
     if (b.id === "bd-min") { mini = true; paintOpen(); return; }
@@ -104,7 +116,7 @@
     document.querySelectorAll("#bd-tools [data-tool]").forEach(function (b) { b.classList.toggle("on", b.dataset.tool === tool); });
     document.querySelectorAll("#bd-tools [data-col]").forEach(function (b) { b.classList.toggle("on", b.dataset.col === color); });
     document.querySelectorAll("#bd-tools [data-sz]").forEach(function (b) { b.classList.toggle("on", +b.dataset.sz === size); });
-    $("#bd-clear").hidden = !ok; $("#bd-clear").title = api.isHost() ? "Xoá cả bảng" : "Xoá nét của tôi"; $("#bd-close").hidden = !api.isHost(); $("#bd-perm").hidden = !api.isHost();
+    $("#bd-clear").hidden = !ok; $("#bd-clear").title = t(api.isHost() ? "clearAll" : "clearMine"); relabel(); $("#bd-close").hidden = !api.isHost(); $("#bd-perm").hidden = !api.isHost();
     cv.style.cursor = !ok ? "default" : tool === "text" ? "text" : "crosshair";
     $("#bd-undo").disabled = !mine.length; $("#bd-redo").disabled = !redo.length;
   }
@@ -113,9 +125,9 @@
     var s = st() || {}, p = s.bperm || {}, all = api.players(), list = all.filter(function (x) { return !api.isHostId(x.id); });
     var hosts = all.filter(function (x) { return api.isHostId(x.id); });
     if (!hosts.length && api.isHost() && me()) hosts = [me()];   /* host làm MC (không chơi) không nằm trong danh sách người chơi */   /* host luôn có quyền: hiện đầu danh sách, không bấm tắt được (TJ 2026-10-04) */
-    box.innerHTML = '<div class="bd-ph">Ai được dùng bảng (bút, laser, ô chữ):</div>' +
+    box.innerHTML = '<div class="bd-ph">' + esc(t("who")) + "</div>" +
       hosts.map(function (x) { return '<span class="bd-pp on bd-phost">👑 ' + esc(x.name || "Host") + " · host</span>"; }).join("") + (list.length ? list.map(function (x) {
-      return '<button type="button" class="bd-pp' + (p[x.id] ? " on" : "") + '" data-perm="' + esc(x.id) + '">' + (p[x.id] ? "🛡 " : "👤 ") + esc(x.name || "?") + "</button>"; }).join("") : '<span class="bd-ph">Chưa có người chơi nào.</span>');
+      return '<button type="button" class="bd-pp' + (p[x.id] ? " on" : "") + '" data-perm="' + esc(x.id) + '">' + (p[x.id] ? "🛡 " : "👤 ") + esc(x.name || "?") + "</button>"; }).join("") : '<span class="bd-ph">' + esc(t("none")) + "</span>");
   }
   function paintOpen() {
     var el = $("#bd"); if (!el) return;
@@ -305,7 +317,7 @@
     if (want && !open) { open = true; mini = false; build(); paintOpen(); if (!api.isHost() || !order.length) send({ t: "hello" }); }   /* host tải lại trang (bảng trống) cũng xin lại nét từ moderator/người chơi */
     else if (!want && open) { open = false; paintOpen(); }
     paintOpen();
-    if (open) { paintTools(); paintPerm(); var who = $("#bd-who"); if (who) who.textContent = canDraw() ? "✍️ bạn được dùng bảng" : "👀 chỉ xem"; }
+    if (open) { paintTools(); paintPerm(); var who = $("#bd-who"); if (who) who.textContent = t(canDraw() ? "can" : "view"); }
   }
   window.Board = {
     attach: function (a) { api = a; build(); },
