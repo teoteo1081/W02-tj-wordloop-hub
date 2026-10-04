@@ -59,7 +59,7 @@
     el.id = "bd"; el.className = "bd"; el.hidden = true;
     el.innerHTML =
       '<div class="bd-head"><b data-bt="board"></b><span class="bd-who" id="bd-who"></span><span class="bd-scr" id="bd-scr"></span>' +
-      '<span class="bd-docnav" id="bd-docnav" hidden><button type="button" class="bd-hb" id="bd-dprev">◀</button><button type="button" class="bd-hb" id="bd-dpg" title="Nhảy tới trang…"></button><button type="button" class="bd-hb" id="bd-dnext">▶</button><button type="button" class="bd-hb" id="bd-dclose" title="Đóng tài liệu">✕</button></span>' +
+      '<span class="bd-docnav" id="bd-docnav" hidden><button type="button" class="bd-hb" id="bd-dprev">◀</button><button type="button" class="bd-hb" id="bd-dpg" title="Nhảy tới trang…"></button><button type="button" class="bd-hb" id="bd-dnext">▶</button><button type="button" class="bd-hb" id="bd-dswap" title="Đổi bài đọc / tạo bài mới" hidden>🔀</button><button type="button" class="bd-hb" id="bd-dclose" title="Đóng tài liệu">✕</button></span>' +
       '<button type="button" class="bd-hb" id="bd-lib" hidden data-bt="lib"></button>' +
       '<button type="button" class="bd-hb" id="bd-big" data-btt="big">⛶</button>' +   /* 📁 tài liệu: PDF / ảnh / bài đọc WordLoop lên bảng (chỉ host) */
       '<button type="button" class="bd-hb" id="bd-share" hidden data-btt="sharet" data-bt="share"></button>' +   /* 🖥 chia sẻ màn hình (chỉ host, máy tính) */
@@ -121,9 +121,10 @@
     if (b.id === "bd-min") { mini = true; paintOpen(); return; }
     if (b.id === "bd-close") { api.setBoard(false); return; }
     if (b.id === "bd-lib") { Lib.open(); return; }
-    if (b.id === "bd-dprev" || b.id === "bd-dnext") { var d0 = curDoc(); if (d0 && api.isHost()) api.setDoc(Object.assign({}, d0, { p: Math.max(1, Math.min(d0.n || 999, (d0.p || 1) + (b.id === "bd-dnext" ? 1 : -1))) })); return; }
-    if (b.id === "bd-dpg") { var dj = curDoc(); if (dj && api.isHost() && dj.n > 1) { var pj = parseInt(prompt("1 – " + dj.n, dj.p || 1), 10); if (pj >= 1) api.setDoc(Object.assign({}, dj, { p: Math.min(dj.n, pj) })); } return; }
-    if (b.id === "bd-dclose") { if (api.isHost()) api.setDoc(null); return; }
+    if (b.id === "bd-dprev" || b.id === "bd-dnext") { var d0 = curDoc(); if (d0 && api.isHost()) docSet(Object.assign({}, d0, { p: Math.max(1, Math.min(d0.n || 999, (d0.p || 1) + (b.id === "bd-dnext" ? 1 : -1))) })); return; }
+    if (b.id === "bd-dpg") { var dj = curDoc(); if (dj && api.isHost() && dj.n > 1) { var pj = parseInt(prompt("1 – " + dj.n, dj.p || 1), 10); if (pj >= 1) docSet(Object.assign({}, dj, { p: Math.min(dj.n, pj) })); } return; }
+    if (b.id === "bd-dswap") { var dw = curDoc(); if (dw && dw.k === "wl" && api.isHost()) { Lib.open(); Lib.tab = "wl"; Lib.paintPass(dw.bid, dw.name, true); } return; }
+    if (b.id === "bd-dclose") { if (api.isHost()) docSet(null); return; }
     if (b.id === "bd-perm") { var pb = $("#bd-permbox"); pb.hidden = !pb.hidden; paintPerm(); paintOpen(); return; }   /* QA v106 L2: cập nhật phần đẩy nội dung xuống */
     if (b.dataset.perm) { api.togglePerm(b.dataset.perm); return; }
   }
@@ -432,6 +433,42 @@
        "office" Word/Excel/PowerPoint qua trình xem của Microsoft (mỗi người tự cuộn, không vẽ lên được). */
   var docKey = "", docJob = 0, stash = {}, pdfCache = {}, wlCache = {}, vtCache = {};
   function curDoc() { var s0 = st(); return s0 && s0.bdoc || null; }
+  /* 🕘 GẦN ĐÂY (TJ 2026-10-04): nhớ tài liệu/bài đã mở + trang đang đọc, trên MÁY này (localStorage) */
+  var RK = "tjwl_bd_recent_v1";
+  function recents() { try { return JSON.parse(localStorage.getItem(RK) || "[]") || []; } catch (e) { return []; } }
+  function recentPut(d) {
+    if (!d) return;
+    var key = d.k + ":" + (d.url || d.bid) + (d.ph ? ":" + d.ph : "");
+    var L = recents().filter(function (x) { return x.key !== key; });
+    L.unshift({ key: key, k: d.k, url: d.url, bid: d.bid, name: d.name, lb: d.lb, ph: d.ph, p: d.p || 1, ar: d.ar, n: d.n, t: Date.now() });
+    try { localStorage.setItem(RK, JSON.stringify(L.slice(0, 15))); } catch (e) {}
+  }
+  function docSet(d) { api.setDoc(d); if (d && api.isHost()) recentPut(d); }
+  /* nhận diện bài đọc: bài GỐC (văn bản lesson không có dấu AI / bài dán / nguyên văn bài báo) hay bài AI sinh */
+  var SEPM = "\n<<<TJWL_META>>>\n";
+  function metaOf(raw) {
+    var s0 = String(raw || ""), i = s0.indexOf(SEPM), m = {};
+    if (i >= 0) { try { m = JSON.parse(s0.slice(i + SEPM.length)) || {}; } catch (e) {} }
+    return { text: i >= 0 ? s0.slice(0, i) : s0, meta: m, plain: i < 0 };
+  }
+  function hashOf(raw) { var h = 5381, s0 = String(raw || ""); for (var i = 0; i < s0.length; i++) h = ((h << 5) + h + s0.charCodeAt(i)) | 0; return (h >>> 0).toString(36) + s0.length.toString(36); }
+  function passList(b) {
+    var seen = {}, out = [];
+    [b && b.context_passage].concat((b && b.context_passage_candidates) || []).forEach(function (raw, i) {
+      if (!raw || !String(raw).trim() || seen[raw]) return; seen[raw] = 1;
+      var m = metaOf(raw), mt = m.meta, orig = m.plain || !!mt.pasted || /dán|nguyên văn/i.test(mt.source || "");
+      var label = orig ? "📄 Bài gốc" : mt.claude ? "🤖 Claude" : mt.provider === "openai" ? "✨ OpenAI" : mt.provider === "gemini" ? "✨ Gemini" : "📝 Khác";
+      out.push({ raw: raw, ph: hashOf(raw), orig: orig, label: label, cur: i === 0, title: mt.title || "", snip: m.text.replace(/[\[\]]/g, "").replace(/\s+/g, " ").trim().slice(0, 90) });
+    });
+    return out;
+  }
+  var ORIG_HUBS = ["hub_ea2025", "hub_digital_marketing", "hub_taxform1040", "hub_cia"];   /* bài học: luôn đọc bài gốc */
+  function pathInfo(T, bid) {
+    if (!T) return { hubOrig: false, hint: "" };
+    var g = function (list, id) { return T[list].find(function (r) { return r.id === id; }) || {}; };
+    var bl = g("blocks", bid), bt = g("batches", bl.batch_id), pg = g("pages", bt.page_id), sc = g("sections", pg.section_id), nb = g("notebooks", sc.notebook_id), hb = g("hubs", nb.hub_id);
+    return { hubOrig: ORIG_HUBS.indexOf(hb.id) >= 0, hint: [nb.name, sc.name].filter(Boolean).join(" › ") };
+  }
   function keyOf(d) { return d ? (d.k + ":" + (d.url || d.bid) + ":" + (d.p || 1)) : ""; }
   function defAR(d) { return !d ? 16 / 9 : d.ar ? d.ar : (d.k === "wl" || d.k === "vt") ? 0.75 : d.k === "office" ? 0.75 : 0.7071; }
   function syncDoc(d) {
@@ -440,6 +477,7 @@
       nav.hidden = !d || d.k === "img" || d.k === "office";
       $("#bd-dpg").textContent = d ? (d.p || 1) + (d.n ? " / " + d.n : "") : "";
       ["#bd-dprev", "#bd-dnext", "#bd-dclose"].forEach(function (x) { var e = $(x); if (e) e.hidden = !api.isHost(); });
+      var sw0 = $("#bd-dswap"); if (sw0) sw0.hidden = !(api.isHost() && d && d.k === "wl");
       if (d && (d.k === "img" || d.k === "office")) { nav.hidden = !api.isHost(); ["#bd-dprev", "#bd-dnext"].forEach(function (x) { $(x).hidden = true; $("#bd-dpg").textContent = ""; }); }
     }
     if (k === docKey) { if (d && d.k === "vt") paintHL(d); return; }
@@ -471,7 +509,7 @@
     try {
       var lib = await pdfLib(); var doc = pdfCache[d.url] || (pdfCache[d.url] = await lib.getDocument(d.url).promise);
       if (job !== docJob) return;
-      var n = doc.numPages; if (api.isHost() && d.n !== n) { api.setDoc(Object.assign({}, d, { n: n })); }
+      var n = doc.numPages; if (api.isHost() && d.n !== n) { docSet(Object.assign({}, d, { n: n })); }
       var page = await doc.getPage(Math.min(n, d.p || 1)); if (job !== docJob) return;
       var vp0 = page.getViewport({ scale: 1 }), pr = window.devicePixelRatio || 1;
       var want = Math.min(3000, Math.max(wrap.clientWidth * pr * 2.5, 900)), sc = want / vp0.width, vp = page.getViewport({ scale: sc });   /* vẽ dày gấp ~2.5 lần để phóng to vẫn nét */
@@ -514,10 +552,11 @@
     var box = $("#bd-doc"); box.innerHTML = '<div class="bd-docmsg">⏳</div>';
     try {
       var b = wlCache[d.bid] || (wlCache[d.bid] = await api.block(d.bid)); if (job !== docJob) return;
-      var raw = String((b && b.context_passage) || ""), cut = raw.indexOf("\n<<<TJWL_META>>>\n"), meta = {};
-      if (cut >= 0) { try { meta = JSON.parse(raw.slice(cut + 17)); } catch (e) {} raw = raw.slice(0, cut); }
+      var items = passList(b), pick = d.ph ? items.find(function (x) { return x.ph === d.ph; }) : null;
+      if (d.ph && !pick) { b = wlCache[d.bid] = await api.block(d.bid); items = passList(b); pick = items.find(function (x) { return x.ph === d.ph; }); if (job !== docJob) return; }   /* bài vừa tạo trên máy khác */
+      var mm = metaOf(pick ? pick.raw : items[0] ? items[0].raw : ""), raw = mm.text, meta = mm.meta;
       var pages = splitPages(raw); if (!pages.length) pages = ["(Block này chưa có bài đọc)"];
-      var n = pages.length; if (api.isHost() && d.n !== n) api.setDoc(Object.assign({}, d, { n: n }));
+      var n = pages.length; if (api.isHost() && d.n !== n) docSet(Object.assign({}, d, { n: n }));
       var pg = pages[Math.min(n, d.p || 1) - 1];
       var html = esc(pg).replace(/\[([^\]]{1,60})\]/g, '<b class="bd-term">$1</b>').replace(/\n\n/g, "</p><p>");
       box.innerHTML = '<div class="bd-wl">' + ((d.p || 1) === 1 && (meta.title || d.name) ? "<h3>" + esc(meta.title || d.name) + "</h3>" : "") + "<p>" + html + "</p></div>";
@@ -534,7 +573,7 @@
     var box = $("#bd-doc"); box.innerHTML = '<div class="bd-docmsg">⏳</div>';
     try {
       var rows = vtCache[d.bid] || (vtCache[d.bid] = await api.words(d.bid)); if (job !== docJob) return;
-      var n = Math.max(1, Math.ceil(rows.length / VT_ROWS)); if (api.isHost() && d.n !== n) api.setDoc(Object.assign({}, d, { n: n }));
+      var n = Math.max(1, Math.ceil(rows.length / VT_ROWS)); if (api.isHost() && d.n !== n) docSet(Object.assign({}, d, { n: n }));
       var p = Math.min(n, d.p || 1), part = rows.slice((p - 1) * VT_ROWS, p * VT_ROWS);
       box.innerHTML = '<div class="bd-vt"><h3>📋 ' + esc(d.name || t("lib_vt")) + "</h3>" + (part.length ? part.map(function (w, i) {
         var idx = (p - 1) * VT_ROWS + i;
@@ -553,7 +592,7 @@
       if (x < r.left || x > r.right || y < r.top || y > r.bottom) continue;
       var sy = rows[i].querySelector(".bd-vsay"), sr = sy.getBoundingClientRect();
       if (x >= sr.left - 10) { api.say(sy.dataset.say); return; }
-      if (api.isHost()) api.setDoc(Object.assign({}, d, { hl: +d.hl === +rows[i].dataset.i ? null : +rows[i].dataset.i }));
+      if (api.isHost()) docSet(Object.assign({}, d, { hl: +d.hl === +rows[i].dataset.i ? null : +rows[i].dataset.i }));
       return;
     }
   }
@@ -564,7 +603,7 @@
       if (d.k === "pdf") { var lib = await pdfLib(), doc = pdfCache[d.url] || (pdfCache[d.url] = await lib.getDocument(d.url).promise), pg = await doc.getPage(1), v = pg.getViewport({ scale: 1 }); d.n = doc.numPages; d.ar = +(v.width / v.height).toFixed(4); }
       else if (d.k === "img") { d.ar = await new Promise(function (ok) { var im = new Image(); im.onload = function () { ok(+(im.naturalWidth / im.naturalHeight).toFixed(4)); }; im.onerror = function () { ok(0.75); }; im.src = d.url; }); }
     } catch (e) { /* không dò được: dùng tỉ lệ mặc định */ }
-    api.setDoc(d);
+    docSet(d);
   }
 
   /* ---------- 📁 hộp thư viện (host) ---------- */
@@ -586,7 +625,7 @@
       if (Lib.tab === "wl") return Lib.paintWL();
       if (Lib.mode === "dest") return Lib.paintDest();
       var crumbs = '<button type="button" data-lgo="">lib</button>' + (Lib.folder ? Lib.folder.split("/").map(function (seg, i, arr) { return ' › <button type="button" data-lgo="' + esc(arr.slice(0, i + 1).join("/")) + '">' + esc(seg) + "</button>"; }).join("") : "");
-      m.innerHTML = Lib.head() + '<div class="bd-libbar"><span class="bd-crumb">📂 ' + crumbs + '</span></div><div class="bd-libbar"><label class="bd-libup">⬆️ ' + esc(t("lib_up")) + '<input type="file" id="bd-libfile" accept="application/pdf,image/*,.docx,.xlsx,.pptx,.doc,.xls,.ppt" multiple hidden></label> <button type="button" data-lnew="1">➕ ' + esc(t("lib_newf")) + '</button></div><div id="bd-liblist" class="bd-liblist">⏳</div><div class="bd-libmsg" id="bd-libmsg"></div></div>';
+      m.innerHTML = Lib.head() + Lib.recentHTML() + '<div class="bd-libbar"><span class="bd-crumb">📂 ' + crumbs + '</span></div><div class="bd-libbar"><label class="bd-libup">⬆️ ' + esc(t("lib_up")) + '<input type="file" id="bd-libfile" accept="application/pdf,image/*,.docx,.xlsx,.pptx,.doc,.xls,.ppt" multiple hidden></label> <button type="button" data-lnew="1">➕ ' + esc(t("lib_newf")) + '</button></div><div id="bd-liblist" class="bd-liblist">⏳</div><div class="bd-libmsg" id="bd-libmsg"></div></div>';
       var r = await api.lib.list(Lib.folder), box = $("#bd-liblist"); if (!box) return;
       if (r.error) { box.textContent = "⚠ " + r.error; return; }
       var items = (r.items || []).filter(function (x) { return x.name[0] !== "."; });
@@ -607,6 +646,38 @@
       sel.value = Lib.folder && fs0.indexOf(Lib.folder) >= 0 ? Lib.folder : "";
     },
     input: function () {},
+    recentHTML: function () {
+      var L = recents().slice(0, 8); if (!L.length) return "";
+      return '<div class="bd-rec"><div class="bd-recH">🕘 Gần đây</div><div class="bd-recL">' + L.map(function (x, i) {
+        var ico = x.k === "pdf" ? "📄" : x.k === "img" ? "🖼" : x.k === "office" ? "📝" : x.k === "vt" ? "📋" : "📖";
+        return '<button type="button" data-rec="' + i + '">' + ico + " <span>" + esc(x.name || x.url || "") + "</span>" + (x.lb ? " <small>" + esc(x.lb) + "</small>" : "") + (x.p > 1 ? " <small>tr." + x.p + "</small>" : "") + "</button>";
+      }).join("") + "</div></div>";
+    },
+    /* 📖 chọn bài đọc của 1 Block: bài gốc / OpenAI / Gemini / Claude / dán… + tạo bài mới */
+    pBid: "", pName: "", pOrig: false, pHint: "",
+    paintPass: async function (bid, name, force) {
+      var m = $("#bd-libm"); if (!m) return;
+      Lib.pBid = bid; Lib.pName = name || "";
+      m.innerHTML = Lib.head() + '<div class="bd-libmsg">⏳ ' + esc(name || "") + "</div></div>";
+      var b, T;
+      try { b = await api.block(bid); wlCache[bid] = b; T = await api.tree(); } catch (e) { m.innerHTML = Lib.head() + '<div class="bd-libmsg">⚠ ' + esc(e.message || e) + "</div></div>"; return; }
+      var items = passList(b), info = pathInfo(T, bid), orig = items.find(function (x) { return x.orig; });
+      Lib.pOrig = info.hubOrig || !!(items[0] && items[0].orig); Lib.pHint = info.hint;
+      if (!force && Lib.pOrig && orig) { Lib.close(); return openDoc({ k: "wl", bid: bid, name: name, ph: orig.ph, lb: orig.label, p: 1 }); }   /* bài học EA / Digital Marketing / bài báo: đọc bài gốc luôn */
+      m.innerHTML = Lib.head() + '<div class="bd-libmsg">📖 <b>' + esc(name || "") + "</b> — chọn bài đọc" + (Lib.pOrig ? " · Block này có <b>bài gốc</b>, bài AI chỉ lưu thêm (không thay bài gốc)" : "") + "</div>" +
+        '<div class="bd-liblist">' + (items.length ? items.map(function (x) {
+          return '<div class="bd-lrow"><button type="button" class="bd-lopen bd-pass" data-pw="' + esc(x.ph) + '"><b>' + esc(x.label) + "</b>" + (x.cur ? ' <em>(đang dùng)</em>' : "") + (x.title ? " · " + esc(x.title) : "") + "<small>" + esc(x.snip) + "…</small></button></div>";
+        }).join("") : '<div class="bd-libmsg">Block này chưa có bài đọc.</div>') + '</div><div class="bd-libbar"><button type="button" data-pgen="1" class="bd-go">✨ Tạo bài mới bằng AI (Gemini, không được thì OpenAI)</button></div><div class="bd-libmsg" id="bd-libmsg"></div></div>';
+    },
+    doGen: async function () {
+      var btn = document.querySelector("#bd-libm [data-pgen]"); if (!btn || btn.disabled) return;
+      btn.disabled = true; Lib.msg("⏳ Đang nhờ AI viết bài (Gemini trước, không được thì OpenAI) — khoảng 10–30 giây…");
+      try {
+        var r = await api.generate(Lib.pBid, { keepCurrent: Lib.pOrig, topicHint: Lib.pHint });
+        delete wlCache[Lib.pBid];
+        Lib.close(); await openDoc({ k: "wl", bid: Lib.pBid, name: Lib.pName, ph: hashOf(r.raw), lb: r.provider === "gemini" ? "✨ Gemini" : r.provider === "openai" ? "✨ OpenAI" : "✨ AI", p: 1 });
+      } catch (e) { btn.disabled = false; Lib.msg("⚠ " + (e && e.message ? e.message : e) + (e && e.kind === "no_key" ? " (chưa có khoá AI)" : "")); }
+    },
     click: async function (e) {
       var b = e.target.closest("button"), m = $("#bd-libm");
       if (e.target === m) return Lib.close();
@@ -633,7 +704,10 @@
         return Lib.paint();
       }
       if (b.dataset.lren) { var nn = prompt("Tên mới", b.dataset.lren); if (!nn || nn === b.dataset.lren) return; var r2 = await api.lib.move(Lib.path(b.dataset.lren), Lib.path(nn.replace(/[\\/\\\\#?%]+/g, "-"))); if (r2.error) return Lib.msg("⚠ " + r2.error); return Lib.paint(); }
-      if (b.dataset.wl) { Lib.close(); var nm = b.dataset.wn || ""; await openDoc({ k: "wl", bid: b.dataset.wl, name: nm, p: 1 }); return; }
+      if (b.dataset.rec != null) { var rc = recents()[+b.dataset.rec]; if (!rc) return; var o2 = {}; Object.keys(rc).forEach(function (k) { if (k !== "key" && k !== "t" && rc[k] != null) o2[k] = rc[k]; }); Lib.close(); await openDoc(o2); return; }
+      if (b.dataset.pw) { var nm0 = Lib.pName, lb0 = (b.querySelector("b") || {}).textContent || ""; Lib.close(); await openDoc({ k: "wl", bid: Lib.pBid, name: nm0, ph: b.dataset.pw, lb: lb0, p: 1 }); return; }
+      if (b.dataset.pgen) return Lib.doGen();
+      if (b.dataset.wl) return Lib.paintPass(b.dataset.wl, b.dataset.wn || "", false);
       if (b.dataset.vt) { Lib.close(); await openDoc({ k: "vt", bid: b.dataset.vt, name: b.dataset.wn || "", p: 1 }); return; }
     },
     change: async function (e) {
@@ -670,7 +744,7 @@
     /* 📖 chọn bài đọc / 📋 bảng từ vựng bằng CÂY THƯ MỤC như trong game (Hub › Notebook › Section › Page › Batch › Block) */
     paintWL: async function () {
       var m = $("#bd-libm"); if (!m) return;
-      m.innerHTML = Lib.head() + '<div class="bd-libmsg">' + esc(t("lib_pick")) + '</div><input type="search" id="bd-wlq" placeholder="' + esc(t("lib_find")) + '"><div id="bd-wllist" class="bd-liblist bd-tree">⏳</div></div>';
+      m.innerHTML = Lib.head() + Lib.recentHTML() + '<div class="bd-libmsg">' + esc(t("lib_pick")) + '</div><input type="search" id="bd-wlq" placeholder="' + esc(t("lib_find")) + '"><div id="bd-wllist" class="bd-liblist bd-tree">⏳</div></div>';
       var T = await api.tree(); if (!$("#bd-wllist")) return;
       if (!T) { $("#bd-wllist").textContent = "⚠"; return; }
       Lib.T = T; Lib.drawTree("");

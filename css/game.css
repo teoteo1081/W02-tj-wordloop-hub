@@ -728,3 +728,12 @@ body.bd-bigon{overflow:hidden}
 .g-tbook .g-opt{flex-wrap:wrap}
 .g-tbook .g-opt .g-pickers{flex:0 0 100%;justify-content:flex-start;margin-top:4px}
 .g-tbook .g-opt .g-cnt{margin-left:2px;font-size:12px;opacity:.8}
+
+/* 🕘 gần đây + chọn bài đọc */
+.bd-rec{margin:0 0 10px}.bd-recH{font-size:13px;color:var(--text-2);margin-bottom:4px}
+.bd-recL{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.bd-recL button{flex:0 0 auto;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:38px}
+.bd-recL small{opacity:.7}
+.bd-pass{white-space:normal!important;line-height:1.35;padding:8px 12px!important}
+.bd-pass small{display:block;opacity:.7;font-size:12px;margin:2px 0 0}
+.bd-pass em{opacity:.7;font-size:12px}

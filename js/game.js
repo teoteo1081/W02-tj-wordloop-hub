@@ -68,7 +68,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 149;
+  var GAME_VER = 150;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -1657,16 +1657,29 @@
     },
     tree: async function () { if (!TREE) await loadTree(true); return TREE; },   /* cây Hub › Notebook › … › Block của game, dùng chung cho hộp chọn bài ở bảng */
     say: function (text) { try { if (!soundOn()) return; sayIt._lang = "en"; sayIt(String(text || ""), true); } catch (e) {} },
-    words: async function (bid) {
-      var cols = "id,term,ipa,pos,level,def_en,meaning_vi,meaning_zh,meaning_es,sort";
-      var r = await sb.from("words").select(cols).eq("block_id", bid).limit(300), rows = r.data || [];
-      if (!rows.length) {   /* Block "Ôn riêng": từ nằm ở Block gốc, ref_word_ids giữ danh sách */
-        var b = await sb.from("blocks").select("ref_word_ids").eq("id", bid).maybeSingle(), ids = (b.data && b.data.ref_word_ids) || [];
-        if (ids.length) { var r2 = await sb.from("words").select(cols).in("id", ids.slice(0, 200)); rows = r2.data || []; }
-      }
-      return rows.sort(function (a, b2) { return (+a.sort || 0) - (+b2.sort || 0); });
+    words: function (bid) { return boardWords(bid); },
+    block: async function (id) { var r = await sb.from("blocks").select("id,name,context_passage,context_passage_candidates").eq("id", id).maybeSingle(); return r.data; },
+    /* ✨ Tạo bài đọc mới cho Block ngay trên bảng (TJ 2026-10-04): dùng đúng Context.generateAI của WordLoop (Gemini qua gemini-proxy trước, lỗi thì OpenAI qua
+       openai-proxy). LƯU NHƯ CŨ: bài mới nối vào CUỐI đúng nhóm nguồn trong context_passage_candidates (không giới hạn, không mất bài cũ) VÀ áp dụng làm
+       context_passage — trừ Block đang có bài GỐC (bài học EA/Digital Marketing, bài báo...): chỉ lưu vào candidates, KHÔNG thay bài gốc. */
+    generate: async function (bid, opts) {
+      opts = opts || {};
+      await ensureContext();
+      var b = (await sb.from("blocks").select("id,name,context_passage,context_passage_candidates").eq("id", bid).maybeSingle()).data;
+      if (!b) throw new Error("Không tìm thấy Block");
+      var ws = await boardWords(bid); if (!ws.length) throw new Error("Block chưa có từ vựng");
+      var cands = Array.isArray(b.context_passage_candidates) ? b.context_passage_candidates.slice() : [];
+      var avoid = [b.context_passage].concat(cands).map(function (raw) { return raw ? Context.parseMeta(raw).title : ""; }).filter(function (t, i, a) { return t && a.indexOf(t) === i; });
+      var raw = await Context.generateAI(ws, cfg, null, null, opts.topicHint || "", null, avoid);   /* quotaCtx null: host là admin, không tính hạn mức 3 Block/ngày */
+      var prov = Context._lastProvider === "openai" ? "openai" : Context._lastProvider === "gemini" ? "gemini" : null;
+      var groupOf = function (r) { var m = Context.parseMeta(r); return m.pasted ? "paste" : m.claude ? "claude" : m.provider === "openai" ? "openai" : m.provider === "gemini" ? "gemini" : "other"; };
+      var add = function (list, r) { var g = { paste: [], claude: [], openai: [], gemini: [], other: [] }; list.forEach(function (x) { g[groupOf(x)].push(x); }); if (list.indexOf(r) < 0) g[groupOf(r)].push(r); return g.paste.concat(g.claude, g.openai, g.gemini, g.other); };
+      if (!opts.keepCurrent && b.context_passage && String(b.context_passage).trim()) cands = add(cands, b.context_passage);   /* bài đang dùng chưa nằm trong candidates thì giữ lại, khỏi mất khi bị thay */
+      cands = add(cands, raw);
+      var patch = { context_passage_candidates: cands }; if (!opts.keepCurrent) patch.context_passage = raw;
+      var r = await sb.from("blocks").update(patch).eq("id", bid); if (r.error) throw r.error;
+      return { raw: raw, provider: prov, applied: !opts.keepCurrent };
     },
-    block: async function (id) { var r = await sb.from("blocks").select("id,name,context_passage").eq("id", id).maybeSingle(); return r.data; },
     blocks: async function (q) {
       var qq = sb.from("blocks").select("id,name,context_passage").not("context_passage", "is", null).neq("context_passage", "").order("updated_at", { ascending: false }).limit(25);
       if (q && q.trim()) { var v = q.trim().replace(/[%,()]/g, " "); qq = qq.or("name.ilike.%" + v + "%,context_passage.ilike.%" + v + "%"); }
@@ -3657,6 +3670,24 @@
     var p = AUD.play();
     if (p && p.catch) p.catch(function (e) { if (e && e.name === "NotAllowedError") { playFile._tok++; G.blockedWord = text; tapHint(true); } else fail(); });
     return true;
+  }
+  /* từ của 1 Block (cho bảng từ vựng + tạo bài đọc); Block "Ôn riêng" giữ từ gốc ở ref_word_ids */
+  async function boardWords(bid) {
+    var cols = "id,term,ipa,pos,level,def_en,meaning_vi,meaning_zh,meaning_es,sort";
+    var r = await sb.from("words").select(cols).eq("block_id", bid).limit(300), rows = r.data || [];
+    if (!rows.length) {
+      var b = await sb.from("blocks").select("ref_word_ids").eq("id", bid).maybeSingle(), ids = (b.data && b.data.ref_word_ids) || [];
+      if (ids.length) { var r2 = await sb.from("words").select(cols).in("id", ids.slice(0, 200)); rows = r2.data || []; }
+    }
+    return rows.sort(function (a, b2) { return (+a.sort || 0) - (+b2.sort || 0); });
+  }
+  /* nạp js/context.js (bộ sinh bài đọc AI của WordLoop, ~130 KB) khi cần lần đầu — nó chỉ cần window.esc */
+  var CTX_VER = 34, ctxP = null;
+  function ensureContext() {
+    if (window.Context) return Promise.resolve();
+    if (ctxP) return ctxP;
+    window.esc = window.esc || esc;
+    return (ctxP = new Promise(function (ok, no) { var sc = document.createElement("script"); sc.src = "js/context.js?v=" + CTX_VER; sc.onload = ok; sc.onerror = function () { ctxP = null; no(new Error("Không tải được bộ tạo bài đọc")); }; document.head.appendChild(sc); }));
   }
   function sayIt(text, now) {
     try {
