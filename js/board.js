@@ -646,7 +646,7 @@
      (nhị phân, từ 2.2% tới 5.8% bề rộng khung). Trang chia theo số ký tự giống nhau trên mọi máy; cỡ chữ thì mỗi máy tự đo theo khung của mình. */
   /* cỡ chữ CHUNG (TJ 2026-10-05: "chữ giữa các slide không đều"): mọi trang cùng 1 cỡ theo mức fs (0..4); chữ nhỏ -> mỗi trang nhiều chữ hơn,
      chữ to -> ít hơn. Số chữ mỗi trang tính từ mức fs (cùng kết quả trên mọi máy), KHÔNG co chữ theo từng trang nữa. */
-  var FS = [0.030, 0.036, 0.043, 0.052, 0.062], FS_DEF = 2, VT_ROWL = [7, 6, 5, 4, 3];
+  var FS = [0.030, 0.036, 0.043, 0.052, 0.062], FS_DEF = 2, VT_ROWL = [12, 12, 12, 12, 12];
   function fsOf(d) { var f = d && d.fs; return f == null ? FS_DEF : Math.max(0, Math.min(FS.length - 1, +f || 0)); }
   function fitDocText() {
     var doc = $("#bd-doc"), box = doc && doc.querySelector(".bd-wl, .bd-vt"); if (!box) return;
@@ -743,9 +743,10 @@
       var VR0 = VT_ROWL[fsOf(d)], n = Math.max(1, Math.ceil(rows.length / VR0)), VR = Math.max(1, Math.ceil(rows.length / n)), p = Math.min(n, d.p || 1);   /* chia đều các trang */
       if (api.isHost() && (d.n !== n || (d.p || 1) !== p)) docSet(Object.assign({}, d, { n: n, p: p }));
       var part = rows.slice((p - 1) * VR, p * VR);
-      box.innerHTML = '<div class="bd-vt"><h3>📋 ' + esc(d.name || t("lib_vt")) + "</h3>" + (part.length ? part.map(function (w, i) {
+      var vtHead = '<div class="bd-vh"><span></span><span>Vocabulary</span><span>Level</span><span>Word form</span><span>Phonetic</span><span>English definition</span><span>' + (api.lang && api.lang() === "en" ? "Meaning" : api.lang && api.lang() === "zh" ? "中文意思" : api.lang && api.lang() === "es" ? "Significado" : "Vietnamese meaning") + "</span></div>";
+      box.innerHTML = '<div class="bd-vt"><h3>📘 1. Danh sách từ vựng cần học' + (d.name ? ' <small>· ' + esc(d.name) + "</small>" : "") + "</h3>" + vtHead + (part.length ? part.map(function (w, i) {
         var idx = (p - 1) * VR + i;
-        return '<div class="bd-vr" data-i="' + idx + '"><span class="bd-vn">' + (idx + 1) + '</span><div class="bd-vm"><b>' + esc(w.term) + "</b>" + (w.ipa ? ' <small class="bd-vi">' + esc(w.ipa) + "</small>" : "") + (w.pos ? ' <i class="bd-vp">' + esc(w.pos) + "</i>" : "") + '</div><div class="bd-vd">' + esc(vtMeaning(w)) + '</div><span class="bd-vsay" data-say="' + esc(w.term) + '">🔊</span></div>';
+        return '<div class="bd-vr" data-i="' + idx + '"><span class="bd-vsay" data-say="' + esc(w.term) + '">🔊</span><b class="bd-vterm">' + esc(w.term) + '</b><span class="bd-vl">' + esc(w.level || "") + '</span><span class="bd-vf">' + (w.pos ? "<i>" + esc(w.pos) + "</i>" : "") + '</span><span class="bd-vph">' + (w.ipa ? esc(w.ipa) : "—") + '</span><span class="bd-ve">' + esc(w.def_en || "") + '</span><span class="bd-vd">' + esc(vtMeaning(w)) + "</span></div>";
       }).join("") : '<div class="bd-docmsg">—</div>') + "</div>";
       paintHL(d); requestAnimationFrame(fitDocText);
     } catch (e) { if (job === docJob) box.innerHTML = '<div class="bd-docmsg">⚠ ' + esc(e.message || e) + "</div>"; }
@@ -848,7 +849,7 @@
       var r = rows[i].getBoundingClientRect();
       if (x < r.left || x > r.right || y < r.top || y > r.bottom) continue;
       var sy = rows[i].querySelector(".bd-vsay"), sr2 = sy.getBoundingClientRect();
-      if (x >= sr2.left - 10) { api.say(sy.dataset.say); return; }
+      if (x >= sr2.left - 10 && x <= sr2.right + 10) { api.say(sy.dataset.say); return; }
       if (edge) { flip(dir); return; }
       if (api.isHost()) docSet(Object.assign({}, d, { hl: +d.hl === +rows[i].dataset.i ? null : +rows[i].dataset.i }));
       return;
