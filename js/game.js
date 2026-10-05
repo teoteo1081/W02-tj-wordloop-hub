@@ -3078,6 +3078,7 @@
   }
   $("#hi-body").addEventListener("click", function (e) {
     var all = e.target.closest("[data-rvall]"); if (all) { allReview(all.dataset.rvall === "wrong"); return; }
+    var rp = e.target.closest("[data-replay]"); if (rp) { replayMatch(rp.dataset.replay); return; }
     var b = e.target.closest("[data-rvmatch]"); if (!b) return;
     e.preventDefault(); pastReview(b.dataset.rvmatch, b.dataset.title);
   });
@@ -4491,6 +4492,23 @@
         }).join("") + "</tbody></table>" : '<p class="g-sub">' + T(tab === "week" ? "no_week" : "no_all") + "</p>";
     } catch (e) { $("#hi-body").innerHTML = '<p class="g-err">' + T("err") + ": " + esc(e.message || e) + "</p>"; }
   }
+  /* 🎮 CHƠI GAME LẠI 1 ván cũ (TJ 2026-10-05): lấy lại chủ đề + kiểu chơi của ván đó, về phòng chờ rồi bắt đầu ván mới. Hiện chỉ host (người chơi tự chơi lại một mình: làm sau). */
+  async function replayMatch(mid) {
+    if (!G.isHost || !G.st) { alert("Chỉ host mới bắt đầu được ván mới."); return; }
+    if (G.st.phase !== "lobby") { alert("Đang giữa ván — về phòng chờ trước rồi bấm lại."); return; }
+    var r = await sb.from("game_matches").select("scope,title,mode,qtype,meaning_lang,q_seconds").eq("id", mid).maybeSingle();
+    var m = r.data;
+    if (!m || !m.scope || !m.scope.length) { alert("Ván này không còn thông tin chủ đề để chơi lại."); return; }
+    picked = m.scope.map(function (p) { return { table: p.table, id: p.id, title: p.title }; });
+    if (m.mode) G.st.mode = m.mode;
+    if (m.qtype && m.qtype !== "toeic") G.st.qtype = m.qtype;
+    if (m.meaning_lang) G.st.lang = m.meaning_lang;
+    if (m.q_seconds) G.st.qs = m.q_seconds;
+    G.inHist = false;
+    hostSetScope();
+    renderLobby();
+    setTimeout(function () { var b = $("#l-start"); if (b) b.click(); }, 600);
+  }
   async function histMine() {
     if (!G.me) { $("#hi-body").innerHTML = '<p class="g-sub">' + T("no_name") + "</p>"; return; }
     var r = await sb.from("game_results").select("match_id,team,score,rank,correct,wrong,best_streak,created_at,game_matches(title,mode,qtype,meaning_lang,target,minutes,teams,scoring)").eq("player_id", G.me.id).not("match_id", "is", null).order("created_at", { ascending: false }).limit(200);
@@ -4509,7 +4527,8 @@
       '<table class="g-table"><thead><tr><th>' + T("h_date") + "</th><th>" + T("h_topic") + "</th><th>" + T("h_rw") + "</th><th>" + T("h_rank") + "</th></tr></thead><tbody>" +
       r.data.map(function (x) {
         var rm = x.game_matches || {}, d = new Date(x.created_at);
-        return "<tr><td>" + d.toLocaleDateString() + " " + d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + '</td><td><button type="button" class="g-mini g-rvbtn" title="' + esc(T("review_btn")) + '" data-rvmatch="' + esc(x.match_id) + '" data-title="' + esc(rm.title || "") + '">📖</button> <a href="?match=' + esc(x.match_id) + '">' + esc(rm.title || "—") + "</a>" +
+        return "<tr><td>" + d.toLocaleDateString() + " " + d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + '</td><td><a href="?match=' + esc(x.match_id) + '">' + esc(rm.title || "—") + "</a>" +
+          '<div class="g-rvact"><button type="button" class="g-btn g-btn-sm g-btn-rv g-rvbtn" data-rvmatch="' + esc(x.match_id) + '" data-title="' + esc(rm.title || "") + '">📖 Xem lại</button>' + (G.isHost ? '<button type="button" class="g-btn g-btn-sm g-btn-play" data-replay="' + esc(x.match_id) + '">🎮 Chơi game lại</button>' : "") + "</div>" +
           '<div class="g-sub">' + (QT[rm.qtype] || "") + " " + (rm.target && rm.target !== "en" ? "🎯" + FLAG[rm.target] + " " : "") + (FLAG[rm.meaning_lang] || "") + " " + (rm.mode === "kahoot" ? T("m_kahoot") : T("m_free")) + (x.team && TEAM_C[x.team] ? " · " + TEAM_C[x.team].e + " " + esc(teamName(x.team)) : "") + "</div></td><td>" + tally({ c: x.correct, w: x.wrong }) + (x.correct === best && best ? " 🏆" : "") + "</td><td>" +
           (x.rank === 1 ? "🥇" : x.rank) + "/" + (nIn[x.match_id] || "?") + "</td></tr>";
       }).join("") + "</tbody></table>";

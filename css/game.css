@@ -803,3 +803,12 @@ body.bd-on .g-dotmenu{z-index:80}
 .bd-acttog{display:none;opacity:.5}.bd-acttog.on{opacity:1}.bd-acttog span{display:inline-block;transform:rotate(45deg)}.bd-acttog.on span{transform:none}
 .bd-cplay{margin-left:auto;background:#7c4dff;border-color:#7c4dff;color:#fff;font-weight:700}
 @media (max-width:700px){.bd-acttog{display:inline-flex;align-items:center;gap:4px}.bd-card{padding:6px 8px}.bd-chips{max-height:44px}}
+
+/* TJ 2026-10-05: lịch sử — nút cam "Xem lại" + nút tím "Chơi game lại"; "Chỉ từ hay sai" nhấp nháy; gỡ Chiến thuật + Đoạn nghe khỏi phòng chờ */
+.g-rvact{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}
+.g-btn-rv{background:#e8833a;color:#fff}.g-btn-rv:hover{background:#d27229}
+.g-btn-play{background:#7c4dff;color:#fff}.g-btn-play:hover{background:#6a3de8}
+[data-rvall="wrong"]{background:#c0392b;color:#fff;border:none;animation:g-blink 1.3s ease-in-out infinite}
+@keyframes g-blink{0%,100%{box-shadow:0 0 0 0 rgba(217,105,95,.75);filter:brightness(1)}50%{box-shadow:0 0 0 9px rgba(217,105,95,0);filter:brightness(1.25)}}
+@media (prefers-reduced-motion:reduce){[data-rvall="wrong"]{animation:none}}
+#l-ttips,#l-tmarks{display:none !important}
