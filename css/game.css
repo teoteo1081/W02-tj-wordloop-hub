@@ -937,3 +937,11 @@ body.embed .bd-drawer .bd-pane{display:none !important}
 .bd-seg button{background:var(--card);color:var(--text);border:0;padding:4px 12px;font:inherit;font-size:12px;cursor:pointer;min-height:26px}
 .bd-seg button[aria-pressed="true"]{background:var(--accent);color:#fff;font-weight:700}
 @media (max-width:480px){.bd-card .bd-clv{display:none}.bd-seg button{padding:4px 9px}}
+
+/* v172: vùng nội dung theo PHẦN TRĂM khung (9% trên, 11% dưới) -> mọi máy cùng cách chia trang; dải nút gọn để lọt trong 11% dưới */
+.bd .bd-stage .bd-doc,.bd .bd-stage .bd-video{inset:9% 0 11% 0}
+.bd .bd-card{height:9%;min-height:40px}
+.bd.bd-isHost .bd-card{min-height:48px}
+.bd .bd-bottom{bottom:12px;height:38px}
+.bd .bd-bottom .bd-docnav,.bd .bd-bottom .bd-tools{height:38px}
+.bd .bd-bottom .bd-docnav .bd-hb,.bd .bd-bottom .bd-tools button{min-height:30px;min-width:32px}

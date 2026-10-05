@@ -637,16 +637,18 @@
      (nhị phân, từ 2.2% tới 5.8% bề rộng khung). Trang chia theo số ký tự giống nhau trên mọi máy; cỡ chữ thì mỗi máy tự đo theo khung của mình. */
   /* cỡ chữ CHUNG (TJ 2026-10-05: "chữ giữa các slide không đều"): mọi trang cùng 1 cỡ theo mức fs (0..4); chữ nhỏ -> mỗi trang nhiều chữ hơn,
      chữ to -> ít hơn. Số chữ mỗi trang tính từ mức fs (cùng kết quả trên mọi máy), KHÔNG co chữ theo từng trang nữa. */
-  var FS = [0.030, 0.036, 0.043, 0.052, 0.062], FS_DEF = 2, VT_ROWL = [8, 6, 5, 4, 3];
+  var FS = [0.030, 0.036, 0.043, 0.052, 0.062], FS_DEF = 2, VT_ROWL = [4, 3, 2, 2, 1];
   function fsOf(d) { var f = d && d.fs; return f == null ? FS_DEF : Math.max(0, Math.min(FS.length - 1, +f || 0)); }
   function fitDocText() {
     var doc = $("#bd-doc"), box = doc && doc.querySelector(".bd-wl, .bd-vt"); if (!box) return;
     var w = doc.clientWidth; if (!w) return;
-    box.style.fontSize = (w * FS[fsOf(curDoc())]).toFixed(2) + "px";
+    var fz = w * FS[fsOf(curDoc())], lim = fz * 0.55;
+    box.style.fontSize = fz.toFixed(2) + "px";
+    for (var n = 0; n < 14 && fz > lim && box.scrollHeight > box.clientHeight + 2; n++) { fz *= 0.94; box.style.fontSize = fz.toFixed(2) + "px"; }   /* không bao giờ cắt chữ ở đáy (TJ 2026-10-05) */
   }
   /* chia bài đọc thành trang theo CÂU (cùng kết quả trên mọi máy) */
   function splitPages(raw, lvl) {
-    var cjk = (raw.match(/[\u3000-\u9fff\uac00-\ud7af]/g) || []).length / Math.max(1, raw.length) > 0.3, f = FS[lvl == null ? FS_DEF : lvl], budget = Math.round((cjk ? 0.5 : 1.05) / (f * f));
+    var cjk = (raw.match(/[\u3000-\u9fff\uac00-\ud7af]/g) || []).length / Math.max(1, raw.length) > 0.3, f = FS[lvl == null ? FS_DEF : lvl], budget = Math.round((cjk ? 0.24 : 0.5) / (f * f));   /* v172: khung 4:3, vùng chữ ~80% chiều cao -> ít chữ hơn mỗi trang (trước: khung dọc 3:4) */
     var paras = raw.split(/\n\s*\n/).map(function (x) { return x.trim(); }).filter(Boolean), pages = [], curP = "";
     paras.forEach(function (p) {
       var units = p.match(/[^.!?。！？]+[.!?。！？]+["')\]]*\s*|[^.!?。！？]+$/g) || [p], flat = [];
