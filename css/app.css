@@ -2449,3 +2449,25 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
 body.board-skin #workspace{background:#1d2a24;box-shadow:inset 0 0 0 6px #5a4632;border-radius:12px}
 body.board-skin .block-card{cursor:pointer}
 #btn-board.active{background:#3a2c26;color:#ffd0bf}
+/* TJ 2026-10-05: "đang mở Bảng mà sao hiển thị đang ở tab 187 từ sai?" — viền đỏ .has-wrong (báo có từ sai) nổi hơn nút Bảng đang bật nên trông như tab đang chọn.
+   Chế độ bảng: nút 🖤 Bảng sáng hẳn như tab đang mở; nút Fix lỗi sai bỏ viền đỏ (số từ sai vẫn đỏ). */
+body.board-mode #btn-board.active{background:#ffd0bf;color:#2a1a14;border-color:#ffd0bf;font-weight:700}
+body.board-mode #btn-fixwrong.has-wrong{border-color:var(--border)}
+
+/* TJ 2026-10-06: màn danh sách Block trên nền bảng (Admin vừa bấm 🖤 Bảng): avatar mình ở trên, người trong phòng game ở dưới (kiểu HelloTalk) */
+.lbd-me,.lbd-people{display:none}
+body.board-skin .lbd-me{display:flex;align-items:center;gap:10px;padding:10px 4px 6px;flex:none}
+body.board-skin .lbd-people{display:flex;gap:14px;overflow-x:auto;position:sticky;bottom:0;z-index:5;margin:auto -1.2rem 0;padding:10px 1.2rem 12px;background:linear-gradient(to top,#1d2a24 75%,rgba(29,42,36,0));flex:none;scrollbar-width:none}
+body.board-skin .lbd-people::-webkit-scrollbar{display:none}
+.lbd-ring{position:relative;flex:none;width:44px;height:44px;border-radius:50%;padding:2px;background:linear-gradient(135deg,#ffd27a,#e07a5f);box-sizing:border-box}
+.lbd-ring img,.lbd-ring .lbd-av{width:100%;height:100%;border-radius:50%;object-fit:cover;background:#2c3a33;display:flex;align-items:center;justify-content:center;font-size:23px;line-height:1;border:2px solid #1d2a24;box-sizing:border-box}
+.lbd-ring i,.lbd-ring u{position:absolute;bottom:-3px;font-style:normal;text-decoration:none;font-size:12px;width:19px;height:19px;border-radius:50%;background:#1d2a24;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,210,122,.5)}
+.lbd-ring i{right:-4px}.lbd-ring u{left:-4px;border-color:rgba(255,255,255,.25)}
+.lbd-me b{font-size:15px;color:#f3efe6}
+.lbd-hint{margin-left:auto;font-size:13px;color:#a8c4b4}
+.lbd-p{flex:none;width:58px;display:flex;flex-direction:column;align-items:center;gap:3px}
+.lbd-p .lbd-ring{width:48px;height:48px;background:rgba(255,255,255,.18)}
+.lbd-p.me .lbd-ring{background:linear-gradient(135deg,#ffd27a,#e07a5f)}
+.lbd-p b{max-width:58px;font-size:12px;font-weight:600;color:#cfcac0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lbd-p.me b{color:#f3efe6}
+@media (max-width:700px){.lbd-hint{display:none}body.board-skin .lbd-people{margin:auto -.8rem 0;padding:10px .8rem 12px}}

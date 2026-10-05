@@ -80,6 +80,27 @@
     if (!gameOpened) learn.hidden = boardLearnWas;
     refreshLb();
   }
+  /* TJ 2026-10-06: "Admin bấm Bảng thì ở trên là avatar, bên dưới là những người đang trong phòng game" — màn danh sách Block (Learning trên nền bảng)
+     không có lớp game, nên Learning tự vẽ 2 dải này từ danh sách game gửi sang (tjwl-board-people). Chỉ hiện khi body.board-skin. */
+  var lbdPeople = null;
+  function lbdAv(a) { a = String(a || ""); return /^https?:/.test(a) ? '<img alt="" src="' + w.esc(a) + '">' : '<span class="lbd-av">' + w.esc(a || "👤") + "</span>"; }
+  var LFLAG = { vi: "🇻🇳", en: "🇺🇸", zh: "🇨🇳", es: "🇪🇸" };
+  function lbdRender() {
+    var ws = w.$("#workspace"), d = lbdPeople; if (!ws || !d) return;
+    var top = w.$("#lbd-me"), bot = w.$("#lbd-people");
+    if (!top) { top = document.createElement("div"); top.id = "lbd-me"; top.className = "lbd-me"; }
+    if (!bot) { bot = document.createElement("div"); bot.id = "lbd-people"; bot.className = "lbd-people"; }
+    if (ws.firstChild !== top) ws.insertBefore(top, ws.firstChild);
+    if (ws.lastChild !== bot) ws.appendChild(bot);
+    var m = d.me;
+    top.innerHTML = m ? '<span class="lbd-ring">' + lbdAv(m.avatar) + (m.host ? "<i>👑</i>" : "") + "</span><b>" + w.esc(m.name || "") + '</b><span class="lbd-hint">Chọn 1 Block để mở lên bảng cho cả phòng</span>' : "";
+    var L = (d.people || []).slice().sort(function (a, b) { return (b.id === d.mine) - (a.id === d.mine) || (!!b.host - !!a.host) || String(a.name || "").localeCompare(String(b.name || "")); });
+    bot.innerHTML = L.map(function (p) { return '<div class="lbd-p' + (p.id === d.mine ? " me" : "") + '" title="' + w.esc(p.name || "") + '"><span class="lbd-ring">' + lbdAv(p.avatar) + (p.host ? "<i>👑</i>" : "") + (LFLAG[p.lang] ? "<u>" + LFLAG[p.lang] + "</u>" : "") + "</span><b>" + w.esc(p.name || "?") + "</b></div>"; }).join("");
+  }
+  w.addEventListener("message", function (e) {
+    if (e.origin !== location.origin || !e.data || e.data.type !== "tjwl-board-people") return;
+    lbdPeople = e.data; lbdRender();
+  });
   w.addEventListener("message", function (e) {
     if (e.origin !== location.origin || !e.data || e.data.type !== "tjwl-board-on") return;
     var on = !!e.data.on, doc = !!e.data.doc;
@@ -119,14 +140,30 @@
     if (mbtn) mbtn.classList.remove("active");
     document.body.classList.remove("game-on");
   }
-  btn.addEventListener("click", function () { isOpen() ? close() : open(); });
+  /* TJ 2026-10-06: "Bấm game là ra trang game, bấm bảng là ra trang bảng, đừng kẹt bảng trong game" —
+     🎮 khi đang ở chế độ bảng: tắt bảng (cả phòng về game) rồi mở trang game; bảng phòng còn bật thì cũng tắt để trang game không bị bảng đè. */
+  btn.addEventListener("click", function () {
+    if (boardMode) { closeBoardMode(); leaveBoard(); open(); return; }
+    if (isOpen()) { close(); return; }
+    if (boardOnState) closeBoardMode();
+    open();
+  });
 
   /* 🖤 nút "Bảng" cạnh "Game": bật bảng ở màn DANH SÁCH Block (màn hình Learning trên nền bảng) / tắt bảng (TJ 2026-10-05) */
   bb = document.createElement("button"); bb.id = "btn-board"; bb.type = "button";
   bb.className = String(btn.className || "").replace(/\bactive\b/g, "").trim(); bb.textContent = "🖤 Bảng"; bb.title = "Bật / tắt bảng chung";
   bb.hidden = btn.hidden; btn.parentNode.insertBefore(bb, btn.nextSibling);
   setInterval(function () { bb.hidden = btn.hidden; }, 1000);
-  bb.addEventListener("click", function () { boardOnState ? closeBoardMode() : openBoardIdle(); });
+  bb.addEventListener("click", function () {
+    if (boardMode) { closeBoardMode(); return; }
+    if (gameOpened) dropGame();   /* đang ở trang game -> rời trang game, sang trang bảng */
+    openBoardIdle();
+  });
+  function dropGame() {
+    gameOpened = false; btn.classList.remove("active"); if (mbtn) mbtn.classList.remove("active"); learn.hidden = learnWasHidden;
+    document.body.classList.remove("game-on");
+    try { sessionStorage.removeItem("tjwl_game_open"); localStorage.removeItem("tjwl_game_open_at"); w.name = String(w.name || "").replace(/\s*tjwl_game/g, ""); } catch (e) {}
+  }
   function openBoardIdle() {
     if (!layer.firstChild) {
       var f = document.createElement("iframe");

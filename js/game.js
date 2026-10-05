@@ -1729,6 +1729,7 @@
     ch: function () { return G.ch; }, me: function () { return G.me; }, st: function () { return G.st; },
     lang: function () { return uiLang(); },
     isHost: function () { return !!G.isHost; }, players: function () { return players(); },
+    online: function () { return G.online || []; },   /* v201: dải avatar mọi người trong phòng dưới bảng (kể cả host làm MC) */
     isHostId: function (id) { return !!(G.me && G.isHost && id === G.me.id) || !!(G.st && G.st.hid === id); },
     setBoard: function (v) { if (!G.isHost || !G.st) return; G.st.board = !!v; push(); },
     /* 📁 tài liệu trên bảng (board.js Lib): file ở bucket toeic/lib/…, bài đọc WordLoop từ bảng blocks */
@@ -1749,6 +1750,14 @@
         return !!on;
       }
       var m = readLS("tjwl_board_stars_v1") || {}; if (on) m[wid] = 1; else delete m[wid]; writeLS("tjwl_board_stars_v1", m); return !!on;
+    },
+    /* 🔖 lưu từ chạm trong bài đọc trên bảng mà KHÔNG thuộc Block (TJ 2026-10-06): sổ riêng vocab_saves "lk:<từ>" + bản trên máy kèm nghĩa (tjwl_board_saved_v1) */
+    savedWord: function (term) { var m = readLS("tjwl_board_saved_v1") || {}; return !!m[String(term || "").toLowerCase().trim()]; },
+    saveWord: async function (term, v, on) {
+      var k = String(term || "").toLowerCase().trim(); if (!k) return false;
+      var m = readLS("tjwl_board_saved_v1") || {}; if (on) m[k] = { w: term, v: v || null, at: Date.now() }; else delete m[k]; writeLS("tjwl_board_saved_v1", m);
+      if (G.me) { try { if (on) await sb.from("vocab_saves").upsert({ player_id: G.me.id, word_id: "lk:" + k, test: "board", part: null, num: null }, { onConflict: "player_id,word_id" }); else await sb.from("vocab_saves").delete().eq("player_id", G.me.id).eq("word_id", "lk:" + k); } catch (e) {} }
+      return !!on;
     },
     /* 🪪 thẻ Block trên bảng: đường dẫn, cấp độ, từ; riêng host-TJ thêm tiến độ + hạn ôn (word_progress / block_progress của TJ) */
     blockInfo: async function (bid) {
@@ -2974,7 +2983,7 @@
       var res = await fetch(cfg.SUPABASE_URL.replace(/\/$/, "") + "/functions/v1/gemini-proxy", {
         signal: ac ? ac.signal : undefined, method: "POST", headers: { "Content-Type": "application/json", "Authorization": "Bearer " + cfg.SUPABASE_ANON_KEY, "apikey": cfg.SUPABASE_ANON_KEY },
         body: JSON.stringify({ model: cfg.GEMINI_MODEL || "gemini-3.5-flash-lite", user_id: null, block_id: null, sys: "You are a concise bilingual dictionary for English learners. Reply JSON only.",
-          user: "Word/phrase: " + JSON.stringify(t) + (ctx ? ". Paragraph: " + JSON.stringify(String(ctx).slice(0, 700)) : "") + ". Give its meaning" + (ctx ? " IN THIS PARAGRAPH" : "") + ". Return JSON {\"pos\":\"n|v|adj|adv|phr|…\",\"en\":\"short English definition\"" + langs.map(function (l) { return ",\"" + l + "\":\"short meaning in " + LANG_NAME[l] + "\""; }).join("") + "}" }) });
+          user: "Word/phrase: " + JSON.stringify(t) + (ctx ? ". Paragraph: " + JSON.stringify(String(ctx).slice(0, 700)) : "") + ". Give its meaning" + (ctx ? " IN THIS PARAGRAPH" : "") + ". Return JSON {\"pos\":\"n|v|adj|adv|phr|…\",\"ipa\":\"IPA pronunciation like /ˈwɛə.haʊs/\",\"en\":\"short English definition\"" + langs.map(function (l) { return ",\"" + l + "\":\"short meaning in " + LANG_NAME[l] + "\""; }).join("") + "}" }) });
       var d = await res.json(), raw = d.candidates && d.candidates[0] && d.candidates[0].content.parts[0].text;
       var v = JSON.parse(String(raw || "").replace(/^```(json)?|```$/g, "").trim()); blCache[k] = v; return v;
     } catch (e) { return null; } finally { if (tm) clearTimeout(tm); }
@@ -4662,6 +4671,14 @@
         if (lk.data && lk.data[0]) { G.me = { id: lk.data[0].id, name: lk.data[0].name, name_no: lk.data[0].name_no, avatar: lk.data[0].avatar }; writeLS(LS_ME, G.me); }
         else if (cur.data && !cur.data.profile_id) sb.from("game_players").update({ profile_id: G.profile.id }).eq("id", G.me.id).then(function () {});   /* hồ sơ chưa có người chơi nào -> gắn luôn người chơi này */
       }
+    }
+    /* TJ 2026-10-06: "đang tài khoản admin mà bấm Game lại ra Thảo" — máy đăng nhập hồ sơ TJ mở thẻ 🎮 Game (embed) nhưng đang NHỚ người chơi khác
+       gắn cùng hồ sơ (vd Thảo, do từng mở link ?p= để thử) -> không ai làm host ("Host chưa vào phòng"). Đổi về người chơi tên "TJ" của hồ sơ.
+       Không đụng link ?p= (G.fromLink: vẫn đóng vai đúng người trong link) và không áp cho game.html mở riêng của người chơi. */
+    if (G.embed && !G.fromLink && G.profile.id === HOST_PROFILE_ID && !isTJPlayer()) {
+      var hp = await sb.from("game_players").select("id,name,name_no,avatar").eq("profile_id", G.profile.id).order("created_at");
+      var tjp = (hp.data || []).find(function (x) { return String(x.name || "").trim().toLowerCase() === "tj"; });
+      if (tjp) { G.me = { id: tjp.id, name: tjp.name, name_no: tjp.name_no, avatar: tjp.avatar }; writeLS(LS_ME, G.me); }
     }
     /* máy mới chưa có người chơi: dùng lại người chơi cũ của hồ sơ này (tên + ảnh + lịch sử) thay vì bắt tạo mới */
     if (!G.me) {

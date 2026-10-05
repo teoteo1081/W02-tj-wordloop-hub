@@ -1117,21 +1117,153 @@ body.embed .bd.bd-big .bd-feed{flex:none;width:auto;min-width:0;align-self:stret
 /* v197: bỏ 2 nút ▲▼ — đã có ◀ ▶ sang trang */
 .bd .bd-pager,.bd-pager{display:none !important}
 
-/* v198 (2026-10-05, TJ: "bố trí trên điện thoại kỳ quá"): điện thoại, bảng trong Learning — phần Block phía trên chiếm tới 600px (chip từ + dòng cấp độ + 7 icon + nút Chơi game) làm khung 4:3 bị ép nhỏ, chữ tí hon.
+/* v199: áp cho MỌI điện thoại (cả người chơi Kahoot vào thẳng game.html), không chỉ trong Learning.
+   v198 (2026-10-05, TJ: "bố trí trên điện thoại kỳ quá"): điện thoại, bảng trong Learning — phần Block phía trên chiếm tới 600px (chip từ + dòng cấp độ + 7 icon + nút Chơi game) làm khung 4:3 bị ép nhỏ, chữ tí hon.
    Rút gọn còn: đường dẫn + tên Block (← →) + 1 hàng công cụ; chip từ / cấp độ / thanh tiến độ ẩn (đã có ở Learning). Khay công cụ mặc định đóng (📚 Công cụ mở ra). */
 @media (max-width:759px){
-  body.embed .bd-top{padding:6px 10px 8px;margin-bottom:4px}
-  body.embed .bd-top .bd-chips,body.embed .bd-top .bd-cprog,body.embed .bd-top #bd-clv,body.embed .bd-top #bd-ctag,body.embed .bd-top #bd-cst{display:none !important}
-  body.embed .bd-top .bd-crow .bd-crumb{font-size:12px}
-  body.embed .bd-top .bd-ctitle{gap:6px;flex-wrap:nowrap}
-  body.embed .bd-top .bd-ctitle b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:16px}
-  body.embed .bd-top .bd-tlg #bd-back{font-size:0;min-width:40px}   /* "← Quay lại danh sách Block" -> chỉ còn ☰ (khỏi lẫn với ← → Block trước/sau) */
-  body.embed .bd-top .bd-tlg #bd-back::before{content:"☰";font-size:17px}
-  body.embed .bd-top .bd-act{margin-top:4px;flex-wrap:nowrap;gap:6px}
-  body.embed .bd-top .bd-act .bd-acttools{flex:1 1 auto;min-width:0;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}   /* 7 icon: 1 hàng, vuốt ngang (không xuống 2 hàng) */
-  body.embed .bd-top .bd-act .bd-acttools::-webkit-scrollbar{display:none}
-  body.embed .bd-top .bd-act .bd-acttools .bd-hb{flex:0 0 auto}
-  body.embed .bd-top .bd-act .bd-cplay{flex:0 0 auto;margin-left:0;font-size:0;min-width:40px}   /* "🎮 Chơi game →" chỉ còn 🎮 (không tràn mép phải) */
-  body.embed .bd-top .bd-act .bd-cplay::before{content:"🎮";font-size:18px}
-  body.embed .bd.bd-big .bd-sfx{padding-left:0;padding-right:0;align-items:flex-start;padding-top:4px}   /* khung sát phía trên, chỗ trống dồn xuống dưới (nơi hiện nghĩa từ vừa chạm) thay vì nằm giữa */
+  .bd-top{padding:6px 10px 8px;margin-bottom:4px}
+  .bd-top .bd-cprog,.bd-top #bd-ctag,.bd-top #bd-cst{display:none !important}
+  body.bd-dev-phone .bd-top .bd-chips,body.bd-dev-phone .bd-top #bd-clv{display:none !important}   /* v201: chip từ chỉ ẩn trên điện thoại THẬT; web Admin (cột Learning hẹp) vẫn thấy */
+  .bd-top .bd-crow .bd-crumb{font-size:12px}
+  .bd-top .bd-ctitle{gap:6px;flex-wrap:nowrap}
+  .bd-top .bd-ctitle b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:16px}
+  .bd-top .bd-tlg #bd-back{font-size:0;min-width:40px}   /* "← Quay lại danh sách Block" -> chỉ còn ☰ (khỏi lẫn với ← → Block trước/sau) */
+  .bd-top .bd-tlg #bd-back::before{content:"☰";font-size:17px}
+  .bd-top .bd-act{margin-top:4px;flex-wrap:nowrap;gap:6px}
+  .bd-top .bd-act .bd-acttools{flex:1 1 auto;min-width:0;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}   /* 7 icon: 1 hàng, vuốt ngang (không xuống 2 hàng) */
+  .bd-top .bd-act .bd-acttools::-webkit-scrollbar{display:none}
+  .bd-top .bd-act .bd-acttools .bd-hb{flex:0 0 auto}
+  .bd-top .bd-act .bd-cplay{flex:0 0 auto;margin-left:0;font-size:0;min-width:40px}   /* "🎮 Chơi game →" chỉ còn 🎮 (không tràn mép phải) */
+  .bd-top .bd-act .bd-cplay::before{content:"🎮";font-size:18px}
+  .bd.bd-big .bd-sfx{padding-left:0;padding-right:0;align-items:flex-start;padding-top:4px}   /* khung sát phía trên, chỗ trống dồn xuống dưới (nơi hiện nghĩa từ vừa chạm) thay vì nằm giữa */
 }
+
+/* v200 (TJ 2026-10-05: "1 trang duy nhất, hất lên hất xuống để đọc"): bài đọc + bảng từ là 1 trang CUỘN (vuốt / lăn chuột, trình duyệt tự lo quán tính).
+   Giống .bd-office: lớp vẽ + ô chữ nhường chạm cho bài; chạm 1 câu = tô sáng cho cả phòng; người chơi tự cuộn thì hiện "📍 Theo host". */
+.bd-txt .bd-doc{pointer-events:auto}
+.bd-txt canvas,.bd-txt .bd-texts{pointer-events:none}
+.bd-txt .bd-stage,.bd-txt .bd-zoom{touch-action:auto}
+.bd-wl.bd-scroll,.bd-vt.bd-scroll{overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;scrollbar-width:thin;scrollbar-color:rgba(255,210,122,.35) transparent}
+.bd-wl.bd-scroll::after,.bd-vt.bd-scroll::after{content:"";display:block;height:3em}   /* dòng cuối cuộn lên được khỏi hàng nút dưới */
+.bd-wl.bd-scroll h3{font-size:1.25em}
+.bd-s{cursor:pointer;border-radius:4px;transition:background .2s}
+.bd-s.bd-shl{background:rgba(255,210,122,.22);box-shadow:0 0 0 3px rgba(255,210,122,.22)}
+.bd-follow{position:absolute;left:50%;bottom:64px;transform:translateX(-50%);z-index:6;background:#ffd27a !important;color:#2a1a14 !important;font-weight:700;border-radius:999px;padding:8px 16px;box-shadow:0 4px 14px rgba(0,0,0,.4)}
+.bd-follow[hidden]{display:none}
+/* v200 (TJ 2026-10-05: "Notebook cất đi rồi sao lại lòi ra cái chủ đề? bỏ đi, trùng rồi"): trong Learning (embed) đang mở bảng — cây "📚 Chủ đề" + nhãn "Phòng TJ" của game
+   trùng với cột Notebooks của Learning (body.bd-on .g-side từng có z-index 70 nổi TRÊN bảng) -> ẩn hẳn; chọn Block bằng cột Notebooks / danh sách Block của Learning. */
+body.embed.bd-on #g-side,body.embed.bd-on #h-sidetab,body.embed.bd-on #h-sidebd,body.embed.bd-on #g-room-badge{display:none !important}
+/* v200: bài đọc trên màn rộng — giới hạn bề rộng dòng ~46em (dễ đọc như trang sách), căn giữa khung */
+.bd-wl.bd-scroll > h3,.bd-wl.bd-scroll > p{max-width:46em;margin-left:auto;margin-right:auto}
+/* v200: bảng từ trong khung HẸP (điện thoại, cột Learning hẹp) — 7 cột chen nhau làm chữ đè lên nhau -> mỗi từ 1 THẺ:
+   🔊 từ ☆ ……… cấp độ / loại từ · phiên âm / định nghĩa tiếng Anh / nghĩa tiếng mẹ đẻ (đầy đủ, không cắt) */
+@container (max-width: 760px){
+  .bd-vt.bd-scroll .bd-vh{display:none}
+  .bd-vt.bd-scroll .bd-vr,.bd-vt.bd-scroll.compact .bd-vr{grid-template-columns:1.6em auto minmax(0,1fr) auto;grid-template-areas:"say tm tm lv" ". vf ph ph" ". ve ve ve" ". vd vd vd";gap:.15em .5em;align-items:baseline;padding:.65em .35em}
+  .bd-vt.bd-scroll .bd-vr > *{display:block !important}
+  .bd-vt.bd-scroll .bd-vsay{grid-area:say}
+  .bd-vt.bd-scroll .bd-vtm{grid-area:tm;display:flex !important}
+  .bd-vt.bd-scroll .bd-vl{grid-area:lv;justify-self:end;font-size:.85em;border:1px solid rgba(255,255,255,.25);border-radius:6px;padding:0 .4em}
+  .bd-vt.bd-scroll .bd-vf{grid-area:vf}
+  .bd-vt.bd-scroll .bd-vph{grid-area:ph}
+  .bd-vt.bd-scroll .bd-ve{grid-area:ve;font-size:.92em}
+  .bd-vt.bd-scroll .bd-vd{grid-area:vd;-webkit-line-clamp:unset;display:block !important;overflow:visible}
+  .bd-vt.bd-scroll.compact .bd-ve{display:none !important}
+}
+
+/* v201 (TJ 2026-10-05): người chơi chỉ có khung bảng full màn hình; "📖 Bài đọc | 📋 Bảng từ" nằm trên thẻ Block cạnh 🎮 (Admin); trong bảng chỉ còn nội dung */
+.bd-act .bd-segcard{margin-left:auto;display:inline-flex;flex:none;padding:3px;gap:2px;border-radius:999px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.12)}
+.bd-act .bd-segcard button{border:0;border-radius:999px;background:transparent;color:#d6d2ca;padding:6px 14px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;min-height:32px;white-space:nowrap}
+.bd-act .bd-segcard button[aria-pressed="true"]{background:#e07a5f;color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.35)}
+.bd-act .bd-segcard + .bd-cplay{margin-left:8px}
+.bd-act .bd-segcard[hidden]{display:none}
+.bd-act .bd-segcard[hidden] + .bd-cplay{margin-left:auto}
+.bd.bd-txt .bd-stage .bd-doc{inset:6px 0 0 0}   /* không còn dải thẻ trong bảng: nội dung lên sát mép */
+.bd-wl.bd-scroll::after,.bd-vt.bd-scroll::after{height:4.5em}   /* dòng cuối cuộn lên khỏi hàng nút A−/A+ */
+.bd-wait{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#cfe8d6;font-size:18px;opacity:.85}
+@media (max-width:759px){
+  .bd-act .bd-segcard button{padding:6px 11px;font-size:16px}
+  .bd-act .bd-segcard button span{display:none}   /* điện thoại: chỉ icon 📖 | 📋 (nút đang chọn vẫn tô màu) */
+  .bd-top .bd-act .bd-acttools{flex:1 1 0}
+}
+
+/* v201: hàng nút trên thẻ Block (Admin) không được giãn quá bề ngang thẻ — 7 icon tự co + vuốt ngang, 📖|📋 và 🎮 luôn thấy */
+.bd-top .bd-act{width:100%;max-width:100%;min-width:0;box-sizing:border-box}
+/* v201 (TJ 2026-10-05: "avatar giống HelloTalk" · "vòng tròn và avatar và tên" · "bảng vàng xịt lên xíu để hiển thị các user bên dưới, ở trên là User đang xài và 2 tab"):
+   TRÊN bảng: người đang dùng máy này (vòng tròn + tên) bên trái, 📖 Bài đọc | 📋 Từ vựng bên phải · DƯỚI bảng: mọi người trong phòng. */
+.bd-mebar{flex:none;display:flex;align-items:center;gap:10px;padding:2px 6px 4px;min-width:0}
+.bd-mebar .bd-segcard{margin-left:auto;display:inline-flex;flex:none;padding:3px;gap:2px;border-radius:999px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.12)}
+.bd-mebar .bd-segcard[hidden]{display:none}
+.bd-mebar .bd-segcard button{border:0;border-radius:999px;background:transparent;color:#d6d2ca;padding:7px 16px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;min-height:34px;white-space:nowrap}
+.bd-mebar .bd-segcard button[aria-pressed="true"]{background:#e07a5f;color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.35)}
+.bd-me{display:flex;align-items:center;gap:8px;min-width:0;color:var(--text,#f3efe6)}
+.bd-me[hidden]{display:none}
+.bd-mering{position:relative;flex:none;width:44px;height:44px;border-radius:50%;padding:2px;background:linear-gradient(135deg,#ffd27a,#e07a5f);box-sizing:border-box}
+.bd-mering img,.bd-mering .bd-meav{width:100%;height:100%;border-radius:50%;object-fit:cover;background:#2c3a33;display:flex;align-items:center;justify-content:center;font-size:23px;line-height:1;border:2px solid var(--bg,#151a17);box-sizing:border-box}
+.bd-mering i{position:absolute;right:-4px;bottom:-3px;font-style:normal;font-size:12px;width:19px;height:19px;border-radius:50%;background:#1d2a24;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,210,122,.5)}
+.bd-me b{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bd-people{flex:none;display:flex;gap:12px;overflow-x:auto;padding:8px 8px 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.bd-people::-webkit-scrollbar{display:none}
+.bd-people[hidden]{display:none}
+.bd-pp1{flex:none;width:58px;display:flex;flex-direction:column;align-items:center;gap:3px}
+.bd-pp1 .bd-mering{width:48px;height:48px;background:rgba(255,255,255,.18)}
+.bd-pp1.me .bd-mering{background:linear-gradient(135deg,#ffd27a,#e07a5f)}
+.bd-pp1 b{max-width:58px;font-size:12px;font-weight:600;color:var(--text-2,#cfcac0);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bd-pp1.me b{color:var(--text,#f3efe6)}
+.bd.bd-txt .bd-stage .bd-doc{inset:6px 0 0 0}
+@media (max-width:759px){
+  .bd-mebar .bd-segcard button{padding:6px 12px;font-size:13px}
+  .bd-mebar .bd-segcard button span{display:inline}
+  .bd-me b{font-size:14px}
+}
+.bd-mering u{position:absolute;left:-4px;bottom:-3px;text-decoration:none;font-size:12px;width:19px;height:19px;border-radius:50%;background:#1d2a24;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.25)}   /* cờ quốc gia góc dưới trái (kiểu HelloTalk) */
+/* TJ 2026-10-06: "Bỏ 7 cái icon luôn cho gọn" — thẻ Block chỉ còn: đường dẫn · ☰ ← → tên Block ⋯ 🎮 */
+.bd-top .bd-act{display:none !important}
+.bd-ctitle .bd-cplay{margin-left:auto;flex:none}
+@media (max-width:759px){
+  .bd-ctitle .bd-cplay{font-size:0;min-width:40px;padding:6px 10px}
+  .bd-ctitle .bd-cplay::before{content:"🎮";font-size:18px}
+}
+/* TJ 2026-10-06: "bảng xanh full màn hình viền vàng, cách trình bày giống bên Learning cho cuộn để kéo xuống" — bài đọc trên bảng theo kiểu khung đọc của Learning:
+   giãn dòng ~1.85, cột chữ ~40em, tiêu đề vàng, từ vựng TÔ NỀN vàng (không gạch chân) */
+.bd-wl.bd-scroll{line-height:1.85;letter-spacing:.005em}
+.bd-wl.bd-scroll > h3,.bd-wl.bd-scroll > p{max-width:40em}
+.bd-wl.bd-scroll h3{font-size:1.3em;line-height:1.35;margin-bottom:.7em;color:#ffd27a}
+.bd-wl.bd-scroll p{margin:0 auto 1.1em}
+.bd-wl.bd-scroll .bd-term{background:#e0b84a;color:#1d2a24;text-decoration:none;border-radius:4px;padding:.05em .25em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.bd-wl.bd-scroll .bd-s.bd-shl .bd-term{background:#ffd27a}
+/* TJ 2026-10-06: khung "Từ vừa tra" dưới bảng — luôn chừa chỗ khi đang đọc, từ mới nhất ở trên, kéo lên xuống xem lại;
+   mỗi dòng như bảng từ vựng: 🔊 · từ · phiên âm · loại từ · ☆ Lưu · 🇺🇸 nghĩa Anh · 🇻🇳 nghĩa Việt */
+.bd .bd-feed,.bd.bd-big .bd-feed,body.embed .bd.bd-big .bd-feed{flex:none !important;height:clamp(140px,26vh,260px);max-height:none;width:auto;min-width:0;align-self:stretch;overflow-y:auto;overscroll-behavior:contain;margin-top:6px;padding:6px 12px 8px}
+.bd-feed .bd-fh{position:sticky;top:-6px;z-index:1;background:var(--card);padding:4px 0 6px;margin:0}
+.bd-fe2{display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 10px;align-items:start;padding:9px 2px;border-top:1px solid rgba(255,255,255,.08);border-radius:8px;transition:background .6s}
+.bd-fe2.new{background:rgba(255,210,122,.14)}
+.bd-fe2 .bd-fsay{font-size:17px;min-width:36px;min-height:34px;padding:0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px}
+.bd-fe2h{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0}
+.bd-fe2h b{color:#ef8f73;font-size:16px}
+.bd-fe2ipa{color:#a8a296;font-size:13px}
+.bd-fe2h i{font-style:normal;font-size:11px;border:1px solid rgba(255,255,255,.25);border-radius:6px;padding:0 6px;color:#d6d2ca}
+.bd-fe2star{min-width:0;min-height:0;padding:0 4px;background:none !important;border:0 !important;font-size:18px;color:#cfcac0;line-height:1}
+.bd-fe2star.on{color:#ffd84d}
+.bd-fe2h .by{margin-left:auto;color:var(--text-2);font-size:11px}
+.bd-fe2en,.bd-fe2vi{display:flex;gap:7px;align-items:baseline;margin-top:3px;line-height:1.4}
+.bd-fe2en{color:#d6d2ca;font-size:14px}
+.bd-fe2vi b{color:#f3efe6;font-size:15px}
+.bd-fe2en span,.bd-fe2vi span{flex:none;font-size:13px}
+/* nút của Admin ở hàng nút dưới bảng (☰ ← → … 🎮): người chơi không thấy */
+.bd:not(.bd-isHost) .bd-hostonly{display:none !important}
+#bd-docnav #bd-cplay{background:#7c4dff;border-color:#7c4dff;color:#fff;font-size:17px;margin-left:0}
+/* thu nhỏ trình duyệt: không phần nào được giãn rộng hơn khung -> hết tràn ngang */
+.bd-sw{overflow:hidden}
+.bd-fx,.bd-mebar,.bd-sfx,.bd-feed,.bd-people{min-width:0;max-width:100%;box-sizing:border-box}
+.bd-docnav{max-width:calc(100% - 12px);overflow-x:auto;scrollbar-width:none}
+.bd-docnav::-webkit-scrollbar{display:none}
+/* TJ 2026-10-06: "chữ phải canh đều giống Word, không canh trái nhìn lộn xộn" */
+.bd-wl.bd-scroll p{text-align:justify;text-justify:inter-word;-webkit-hyphens:auto;hyphens:auto}
+/* thanh đọc bài (giống bảng từ vựng): tốc độ · 🔊 Đọc bài · ⏹ Dừng; câu đang đọc sáng lên */
+.bd-wlbar{max-width:40em;margin:0 auto 1em;display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:14px;line-height:1.2}
+.bd-wlbar select{background:#151a17;color:#f3efe6;border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 8px;font:inherit}
+.bd-wlbar .bd-hb{font-size:14px;padding:6px 12px;min-height:34px}
+.bd-wlbar .bd-wlgo{background:#e07a5f;border-color:#e07a5f;color:#fff;font-weight:700}
+.bd-wlbar .bd-wlgo.on{box-shadow:0 0 0 3px rgba(224,122,95,.35)}
+.bd-s.bd-rd{background:rgba(124,170,255,.22);box-shadow:0 0 0 3px rgba(124,170,255,.22);border-radius:4px}
