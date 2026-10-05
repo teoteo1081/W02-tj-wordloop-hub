@@ -888,3 +888,14 @@ body.embed .bd-drawer .bd-pane{display:none !important}
 /* PDF / ảnh: lọt giữa khung cố định, hai bên chừa nền */
 .bd-doc img,.bd-pdfc{object-fit:contain;background:#fff}
 @media (max-width:520px){.bd-rail{top:50px}.bd-pager{bottom:56px}}
+
+/* v168: NỘI DUNG NẰM GỌN GIỮA DẢI MỜ TRÊN VÀ DẢI MỜ DƯỚI (TJ 2026-10-05): vùng nội dung cố định, các nút nổi không bao giờ đè chữ / PDF,
+   bảng to hay nhỏ đều vậy. Dải trên = thẻ Block; dải dưới = hàng qua lại trang (hoặc công cụ vẽ) — cao bằng nhau nên đổi qua lại không làm nội dung nhảy. */
+.bd-doc,.bd-video{inset:48px 54px 54px 54px;width:auto;height:auto}
+.bd-card{height:46px;box-sizing:border-box;overflow:hidden;align-content:center}
+.bd-bottom{bottom:6px;height:44px;align-items:center}
+.bd-bottom .bd-docnav,.bd-bottom .bd-tools{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;justify-content:flex-start;height:44px;box-sizing:border-box;align-items:center}
+.bd-bottom .bd-docnav::-webkit-scrollbar,.bd-bottom .bd-tools::-webkit-scrollbar{display:none}
+.bd-bottom .bd-docnav > *,.bd-bottom .bd-tools > *{flex:none}
+.bd-bottom .bd-docnav{margin:0 auto}
+.bd-bottom .bd-tools{margin:0 auto}
