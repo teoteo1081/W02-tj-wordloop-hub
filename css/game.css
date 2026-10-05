@@ -1113,3 +1113,6 @@ body.embed .bd.bd-big .bd-feed{flex:none;width:auto;min-width:0;align-self:stret
 .bd-wl{padding:2.5% 8% 2% 5%}
 .bd-vt{padding:2% 8% 2% 4%}
 .bd-segtop,.bd .bd-segtop{top:6px}
+
+/* v197: bỏ 2 nút ▲▼ — đã có ◀ ▶ sang trang */
+.bd .bd-pager,.bd-pager{display:none !important}
