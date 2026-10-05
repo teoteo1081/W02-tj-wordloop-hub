@@ -117,7 +117,7 @@
         '</div>' +
       '</div>' +
       '<div class="bd-feed" id="bd-feed" hidden>' +
-        '<div class="bd-fh"><span class="bd-ftabs"><button type="button" data-ftab="all" aria-pressed="true">Tra nghĩa <i id="bd-fn">0</i></button><button type="button" data-ftab="saved" aria-pressed="false">Đã lưu của phiên <i id="bd-fs">0</i></button></span>' +
+        '<div class="bd-fh"><span class="bd-ftit">Nghĩa vừa tra <i id="bd-fn">0</i><i id="bd-fs" hidden>0</i></span>' +
         '<span class="bd-fq" id="bd-fq" hidden><input type="search" id="bd-lkin" placeholder="Gõ từ / cụm từ cần tra…" autocomplete="off" autocapitalize="off"><button type="button" class="bd-hb" id="bd-lkgo">Tra</button></span>' +
         '<button type="button" class="bd-hb" id="bd-fread" title="Đọc các từ đã lưu" hidden>🔊 Đọc</button></div>' +
         '<div class="bd-fl" id="bd-fl"></div></div>' +
@@ -913,13 +913,13 @@
   function paintFeed() {
     var f = $("#bd-feed"); if (!f) return;
     f.hidden = !(lookMode || lkFeed.length || phoneP());
-    var saved = lkFeed.filter(function (e) { return e.saved; }), list = lkTab === "saved" ? saved : lkFeed;
+    var saved = [], list = lkFeed;   /* TJ 2026-10-05: tra từ không cần lưu — chạm là thấy nghĩa */
     $("#bd-fn").textContent = lkFeed.length; $("#bd-fs").textContent = saved.length;
     document.querySelectorAll("#bd-feed [data-ftab]").forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.ftab === lkTab); });
     var rd = $("#bd-fread"); if (rd) rd.hidden = !(lkTab === "saved" && list.length);
     var fq = $("#bd-fq"); if (fq) fq.hidden = !lookMode;
     $("#bd-fl").innerHTML = list.length ? list.map(function (e) {
-      return '<div class="bd-fe"><div><b>' + esc(e.w) + '</b> <button type="button" class="bd-hb bd-fsay" data-lksay="' + esc(e.w) + '">🔊</button>' + (e.v && e.v.ipa ? " <small>" + esc(e.v.ipa) + "</small>" : "") + (e.by ? ' <span class="by">· ' + esc(e.by) + "</span>" : "") + '</div><div class="mn">' + mnOf(e.v) + '</div><button type="button" class="bd-hb bd-fsave' + (e.saved ? " on" : "") + '" data-fsave="' + esc(e.id) + '">' + (e.saved ? "★ Đã lưu" : "☆ Lưu") + "</button></div>";
+      return '<div class="bd-fe"><div><b>' + esc(e.w) + '</b> <button type="button" class="bd-hb bd-fsay" data-lksay="' + esc(e.w) + '">🔊</button>' + (e.v && e.v.ipa ? " <small>" + esc(e.v.ipa) + "</small>" : "") + (e.by ? ' <span class="by">· ' + esc(e.by) + "</span>" : "") + '</div><div class="mn">' + mnOf(e.v) + '</div></div>';
     }).join("") : '<div class="bd-fempty">' + (lkTab === "saved" ? "Chưa có từ nào được lưu trong phiên." : lookMode ? "Chạm vào một từ trong bài đọc để tra nghĩa. Cả phòng cùng thấy." : "") + "</div>";
     relayout();
   }

@@ -1102,3 +1102,8 @@ body.embed .bd.bd-big .bd-feed{flex:none;width:auto;min-width:0;align-self:stret
   #bd-big,#bd-min,.bd-dock,#bd-open{display:none !important}
   .bd.bd-big{padding:0;height:100vh;height:100dvh}
 }
+
+/* v195: khung nghĩa vừa tra — không còn nút Lưu / tab Đã lưu */
+.bd-ftit{font-size:12px;color:var(--text-2);font-weight:700;letter-spacing:.03em}
+.bd-ftit i{font-style:normal;margin-left:4px;opacity:.8}
+.bd-fe{grid-template-columns:1fr}
