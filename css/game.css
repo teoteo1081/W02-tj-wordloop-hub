@@ -1070,3 +1070,11 @@ body.embed .bd-drawer .bd-pane{display:none !important}
 
 /* v188: người chơi cũng thấy đường dẫn (sau khi quay về bản thẻ Block + 3 mũi tên) */
 .bd:not(.bd-isHost) .bd-top .bd-crow{display:flex}
+
+/* v189: thẻ Block y chang Learning: dòng 1 = đường dẫn; dòng 2 = [← Quay lại danh sách Block][←][→] Block 104 [cấp độ] ··· ● Ôn sau · nhãn · ✓ Done */
+.bd .bd-top .bd-ctitle{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.bd .bd-top .bd-ctitle .bd-tlg{position:static;display:flex;gap:6px;flex:none;margin-right:6px}
+.bd .bd-top .bd-ctitle .bd-tlg .bd-hb{height:30px}
+.bd .bd-top .bd-ctitle .bd-tlg[hidden]{display:none}
+.bd .bd-top .bd-dots{background:none;border:0;color:var(--text-2);font-size:16px;letter-spacing:1px;padding:0 4px;cursor:pointer}
+.bd .bd-top .bd-dots[hidden]{display:none}

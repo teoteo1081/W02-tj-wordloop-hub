@@ -58,8 +58,8 @@
     el.innerHTML =
       '<aside class="bd-side" id="bd-side" hidden><div class="bd-sidehd"><b>Notebooks</b><span><button type="button" class="bd-hb" id="bd-sidepin" title="Ghim cột (luôn mở bên trái)">📌</button><button type="button" class="bd-hb" id="bd-sideexp" title="Mở hết">⊞</button><button type="button" class="bd-hb" id="bd-sidecol" title="Thu hết">⊟</button><button type="button" class="bd-hb" id="bd-sidex" title="Đóng">✕</button></span></div><input type="search" id="bd-sideq" placeholder="Tìm Block…"><div class="bd-tree bd-sidelist" id="bd-sidelist">⏳</div><div id="bd-sidebar"></div></aside>' +
       '<div class="bd-sw" id="bd-sw"><div class="bd-fx" id="bd-fx">' + '<div class="bd-top" id="bd-card" hidden>' +
-          '<div class="bd-crow"><span class="bd-tlg" id="bd-tlg" hidden><button type="button" class="bd-hb" id="bd-back" title="Quay lại danh sách Block">← <span>Quay lại danh sách Block</span></button><button type="button" class="bd-hb" id="bd-bprev" title="Block trước">←</button><button type="button" class="bd-hb" id="bd-bnext" title="Block sau">→</button></span><span class="bd-crumb" id="bd-crumb"></span></div>' +
-          '<div class="bd-ctitle"><b id="bd-cname"></b><span class="bd-clv" id="bd-clv"></span><span class="bd-pill" id="bd-cdue" hidden></span><span class="bd-pill bd-ctag" id="bd-ctag" hidden></span><span class="bd-cst" id="bd-cst" hidden></span></div>' +
+          '<div class="bd-crow"><span class="bd-crumb" id="bd-crumb"></span></div>' +
+          '<div class="bd-ctitle"><span class="bd-tlg" id="bd-tlg" hidden><button type="button" class="bd-hb" id="bd-back" title="Quay lại danh sách Block">← <span>Quay lại danh sách Block</span></button><button type="button" class="bd-hb" id="bd-bprev" title="Block trước">←</button><button type="button" class="bd-hb" id="bd-bnext" title="Block sau">→</button></span><b id="bd-cname"></b><span class="bd-clv" id="bd-clv"></span><button type="button" class="bd-dots" id="bd-dots" title="Thêm (khay công cụ)" hidden>···</button><span class="bd-pill" id="bd-cdue" hidden></span><span class="bd-pill bd-ctag" id="bd-ctag" hidden></span><span class="bd-cst" id="bd-cst" hidden></span></div>' +
           '<div class="bd-chips" id="bd-chips"></div><div class="bd-cprog" id="bd-cprog" hidden><i></i></div>' +
           '<div class="bd-act" id="bd-act" hidden><button type="button" class="bd-hb bd-acttog" id="bd-acttog" title="Bật/tắt khay công cụ (như nút ghim của Notebooks)">📚 Công cụ <span>📌</span></button><span class="bd-acttools" id="bd-acttools">' +
         '<button type="button" class="bd-hb" data-at="study" title="Bài học & Đọc">📘</button><button type="button" class="bd-hb" data-at="meaning" title="Nghĩa">🔀</button><button type="button" class="bd-hb" data-at="quiz" title="Active Recall Quiz">📝</button><button type="button" class="bd-hb" data-at="dictation" title="Dictation">🎧</button><button type="button" class="bd-hb" data-at="sheet" title="Phiếu đầy đủ">📋</button><button type="button" class="bd-hb" data-at="single" title="Từng câu">🔤</button><button type="button" class="bd-hb" data-at="progress" title="Tiến trình trí nhớ">📊</button></span>' +
@@ -148,6 +148,7 @@
   function onClick(e) {
     var b = e.target.closest("button"); if (!b) return;
     if (b.id === "bd-penbtn") { setPen(!penMode); return; }
+    if (b.id === "bd-dots") { var dw0 = $("#bd-drawer"); if (dw0) { dw0.hidden = !dw0.hidden; var mb = $("#bd-more"); if (mb) mb.classList.toggle("on", !dw0.hidden); } poke(); return; }
     if (b.id === "bd-lkbtn") { setLook(!lookMode); return; }
     if (b.dataset.fsave) { toggleSave(b.dataset.fsave); return; }
     if (b.dataset.ftab) { lkTab = b.dataset.ftab; paintFeed(); return; }
@@ -586,7 +587,7 @@
     var card = $("#bd-card"), act = $("#bd-act"); if (!card) return;
     var bid = d && (d.k === "wl" || d.k === "vt") ? d.bid : null, host = api.isHost();
     card.hidden = !bid; if (act) act.hidden = !(bid && host); var sg0 = $("#bd-seg"); if (sg0 && !bid) sg0.hidden = true;
-    var mo = $("#bd-more"); if (mo) mo.hidden = !(bid && host);
+    var mo = $("#bd-more"); if (mo) mo.hidden = !(bid && host); var dt = $("#bd-dots"); if (dt) dt.hidden = !(bid && host);
     if (!bid) { extraH(); return; }
     paintAct();
     var sg = $("#bd-seg"); if (sg) { sg.hidden = false; sg.querySelectorAll("[data-sw]").forEach(function (x) { x.setAttribute("aria-pressed", x.dataset.sw === d.k); }); }
@@ -602,7 +603,7 @@
       if (a) { st.textContent = (inf.adm.passed ? "✓ Done · " : "") + inf.adm.pct + "%"; pg.firstChild.style.width = inf.adm.pct + "%"; }
       var du = $("#bd-cdue"), tg = $("#bd-ctag"), dd = curDoc();
       if (du) { du.hidden = !(a && inf.adm.due); du.textContent = a && inf.adm.due ? "● " + inf.adm.due : ""; }
-      if (tg) { tg.hidden = !(a && dd && dd.lb); tg.textContent = dd && dd.lb ? dd.lb : ""; }
+      if (tg) { var lbl = dd && dd.lb ? String(dd.lb).replace(/^[^A-Za-zÀ-ỹ]+/, "").trim() : ""; tg.hidden = !(a && lbl); tg.textContent = lbl ? "🤖 " + lbl + " · Free" : ""; }
       extraH(); relayout();
     };
     if (cardInfo[bid] && (!host || cardInfo[bid].adm !== undefined)) { show(cardInfo[bid]); return; }
