@@ -68,7 +68,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 152;
+  var GAME_VER = 153;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -938,6 +938,7 @@
       });
       pool = tp; gaps = []; sheets = []; dicts = [];
     }
+    await Promise.race([loadTraps(pool), new Promise(function (r) { setTimeout(r, 4000); })]);   /* 🪤 bẫy của các từ trong pool (tối đa chờ 4s) */
     if (G.poolKey !== scopeKey(scope)) return G.pool;   /* đã đổi chủ đề/ngôn ngữ trong lúc tải -> bỏ kết quả cũ */
     G.pool = pool; G.gaps = gaps; G.gapsSrc = gaps; G.gapLib = []; G.sheets = sheets; G.dicts = dicts;
     applyGap();
@@ -1110,18 +1111,24 @@
     zh: { look: "🔤 字形相似", family: "👪 同词族", syn: "🔀 意思相近", false: "⚠️ 假朋友" },
     es: { look: "🔤 Se parece", family: "👪 Misma familia", syn: "🔀 Significado cercano", false: "⚠️ Falso amigo" } };
   var TRAP_HIT = { vi: "Bạn dính bẫy", en: "You fell for a trap", zh: "你中了陷阱", es: "Caíste en la trampa" };
-  async function loadTraps() {
-    if (TRAPS) return;
+  var trapDone = {};
+  /* tải bẫy CHỈ cho các từ trong pool (đã có ~15.000 bẫy duyệt -> không tải hết): 80 từ/lượt, 5 lượt song song */
+  async function loadTraps(pool) {
     try {
-      var map = {}, from = 0;
-      for (;;) {
-        var r = await sb.from("word_traps").select("word_term,kind,trap_term,trap_en,trap_vi,trap_zh,trap_es,why").eq("status", "approved").order("word_term").range(from, from + 999);
-        if (r.error) return;
-        (r.data || []).forEach(function (x) { (map[x.word_term] = map[x.word_term] || []).push(x); });
-        if ((r.data || []).length < 1000) break; from += 1000;
-      }
-      TRAPS = map;
-    } catch (e) { /* chưa tạo bảng: dùng đáp án nhiễu cũ */ }
+      if (!TRAPS) TRAPS = {};
+      var terms = []; (pool || []).forEach(function (w) { var k = norm(w.term); if (k && !trapDone[k] && k.length < 60) { trapDone[k] = 1; terms.push(k); } });
+      var chunks = []; for (var i = 0; i < terms.length; i += 80) chunks.push(terms.slice(i, i + 80));
+      var next = 0;
+      var work = async function () {
+        while (next < chunks.length) {
+          var c = chunks[next++];
+          var r = await sb.from("word_traps").select("word_term,kind,trap_term,trap_en,trap_vi,trap_zh,trap_es,why").eq("status", "approved").in("word_term", c);
+          if (r.error) { next = chunks.length; return; }   /* chưa có bảng: dùng đáp án nhiễu cũ */
+          (r.data || []).forEach(function (x) { (TRAPS[x.word_term] = TRAPS[x.word_term] || []).push(x); });
+        }
+      };
+      await Promise.all([work(), work(), work(), work(), work()]);
+    } catch (e) { /* bỏ qua */ }
   }
   function distractors(w, p, mode) {
     /* không lấy đáp án nhiễu TRÙNG NGHĨA với đáp án đúng ở bất kỳ tiếng nào (lucky/fortunate cùng "may mắn",
@@ -1656,7 +1663,6 @@
   }
   function push() { if (G.isHost && G.st && G.hub && G.st.phase === "lobby") G.st.hub = G.hub; G.lastPush = Date.now(); if (G.ch) G.ch.send({ type: "broadcast", event: "state", payload: pub() }); saveHost(); if (window.Board) Board.onState(G.st); }
   /* 🖤 bảng vẽ chung (js/board.js) — host mở/đóng cho cả phòng + cấp quyền từng người (st.board / st.bperm) */
-  loadTraps();
   if (window.Board) Board.attach({
     ch: function () { return G.ch; }, me: function () { return G.me; }, st: function () { return G.st; },
     lang: function () { return uiLang(); },
