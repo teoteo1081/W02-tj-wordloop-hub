@@ -1,6 +1,6 @@
 # 🎯 EXAMS_PLAN.md — Thêm hub đề thi EA / IELTS / Digital Marketing vào game (TJ chốt 2026-10-04)
 
-Bộ nhớ quyết định cho dự án này. Cập nhật tại đây khi có chốt mới; việc nhiều-phiên còn dang dở cũng được trỏ từ `README.md` mục "Việc còn dang dở". Đội và cổng kiểm tra: `docs/TEAM.md`.
+Bộ nhớ quyết định cho dự án này. Điểm móc vào `game.js` (đã điều tra): `docs/EXAMS_HOOKS.md`. Cập nhật tại đây khi có chốt mới; việc nhiều-phiên còn dang dở cũng được trỏ từ `README.md` mục "Việc còn dang dở". Đội và cổng kiểm tra: `docs/TEAM.md`.
 
 ## 0. Trạng thái
 | Hạng mục | Trạng thái |
