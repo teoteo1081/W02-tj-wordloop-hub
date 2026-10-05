@@ -68,7 +68,12 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 154;
+  var GAME_VER = (function () {   /* lấy từ ?v= của chính game.js trong game.html -> chỉ còn 2 nơi phải khớp (game.html + game-version.json), không thể quên GAME_VER nữa (lỗi 2026-10-05: nút "Có bản mới" hiện mãi) */
+    try { var sc = document.currentScript && document.currentScript.src; var v = sc && +new URL(sc).searchParams.get("v"); if (v > 0) return v; } catch (e) {}
+    return 155;
+  })();
+  var updPending = false;
+  function boardOpen() { try { return !!(window.Board && window.Board.isOpen && window.Board.isOpen()); } catch (e) { return false; } }
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -80,6 +85,9 @@
       var u = new URL(location.href); u.searchParams.set("gv", j.v);
       /* máy TJ (host): KHÔNG tự tải lại giữa buổi (TJ 2026-10-04: "tự refresh tự out") — hiện nút để TJ tự bấm lúc tiện */
       if (isTJ() || G.isHost) {
+        /* TJ 2026-10-05: "tự cập nhật cho website chứ" -> máy host tự tải lại khi RẢNH: tab đang ẩn (TJ không nhìn), không giữa ván, không mở bảng, không xem lại. Còn lại giữ nút để TJ tự bấm. */
+        updPending = true;
+        if (document.hidden && !boardOpen()) { location.replace(u.toString()); return; }
         if (document.getElementById("g-upd")) return;
         var b = document.createElement("button"); b.id = "g-upd"; b.type = "button"; b.className = "g-btn g-upd"; b.textContent = "🔄 Có bản mới — bấm để cập nhật";
         b.onclick = function () { location.replace(u.toString()); }; document.body.appendChild(b); return;
@@ -88,6 +96,7 @@
     }).catch(function () {});
   }
   setTimeout(checkVersion, 3000); setInterval(checkVersion, 120000);
+  document.addEventListener("visibilitychange", function () { if (document.hidden && updPending && !boardOpen() && !busyReading() && !(G.st && G.st.phase === "play")) checkVersion(); });
   var POINTS = 100, REVEAL_MS = 3500, HOST_LOST_MS = 7000, HEARTBEAT_MS = 3000;
   var NO_END = 1e11;   /* ván "∞ không tính giờ": hạn chót rất xa, host bấm Kết thúc */
   function untimed(s) { return !!(s && s.hostpace); }   /* luôn tính giờ (TJ 2026-10-01) — TRỪ 🎧 đề Listening "Theo audio": host bấm sang câu theo nhịp audio (TJ 2026-10-04) */

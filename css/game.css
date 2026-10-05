@@ -780,3 +780,11 @@ body.bd-on .g-side{z-index:70}
 body.bd-on .g-sidetab{z-index:71}
 body.bd-on .g-sidebd{z-index:69}
 body.bd-on .g-dotmenu{z-index:80}
+
+/* 📌 đồng bộ với cột Notebooks của WordLoop (TJ 2026-10-05): chữ tiêu đề đậm, nút trong suốt, ghim tắt thì mờ + xoay */
+.g-side-head .g-side-title{font-size:.95rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text)}
+.g-side-head .g-mini,.bd-sidehd .bd-hb{width:auto;height:auto;min-width:0;min-height:0;background:transparent;border:none;padding:.25rem .35rem;border-radius:5px;font-size:.9rem;line-height:1;opacity:.85}
+.g-side-head .g-mini:hover,.bd-sidehd .bd-hb:hover{background:var(--raise);opacity:1}
+.g-side-head #h-pin,.bd-sidehd #bd-sidepin{opacity:.4;transform:rotate(45deg)}
+.g-side-head #h-pin.on,.bd-sidehd #bd-sidepin.on{opacity:.9;transform:none;border:none;background:transparent}
+.bd-sidehd > b{font-size:.95rem;font-weight:700;color:var(--text)}
