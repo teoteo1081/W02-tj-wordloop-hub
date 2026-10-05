@@ -139,6 +139,7 @@
     if (mb0) {
       var vb0 = $("#bd-vtbar"); if (vb0) { vb0.classList.remove("bd-hud"); vb0.classList.add("bd-audio"); mb0.appendChild(vb0); }
       if (vb0) { var rd0 = document.createElement("button"); rd0.type = "button"; rd0.className = "pri"; rd0.setAttribute("data-wlread", ""); rd0.title = "Đọc cả bài đọc"; rd0.innerHTML = '🔊 <span>Đọc bài</span>'; vb0.appendChild(rd0); }
+      mb0.addEventListener("change", function (e) { if (e.target.id === "bd-vtrate" && api.isHost()) send({ t: "rt", r: parseFloat(e.target.value) }); });
       mb0.addEventListener("click", function (e) { var t = e.target; if (!t.closest) return; if (t.closest("[data-wlread]")) readPassage(); else if (t.closest("[data-snd]")) { if (api.toggleSound) { api.toggleSound(); rsTok++; paintSndBtn(); } } });
     }
     setInterval(function () { if (open && !mini) { paintPeople(); paintHostAway(); paintSndBtn(); } }, 2000);
@@ -535,7 +536,8 @@
     else if (m.t === "lksave") { var le = lkFeed.find(function (x) { return x.id === m.id; }); if (le) { le.saved = !!m.on; paintFeed(); } }
     else if (m.t === "navreq") { if (api.isHost()) { if (m.k === "fs") fsStep(m.dir | 0); else if (m.k === "sw") swKind(m.dir > 0 ? "vt" : "wl"); else if (m.k === "page") flip(m.dir > 0 ? 1 : -1); else if (m.k === "hs") hlSentence(m.dir | 0); else navStep(m.k, m.dir > 0 ? 1 : -1); } }
     else if (m.t === "sc") { applyAnchor(m.a); if (readRemote) soonEnsure(); }
-    else if (m.t === "rd") { readRemote = m.k ? m : null; if (!readOn) { applyReadHL(m, true); remoteSpeak(m); } }   /* người khác đang đọc: tô sáng + cuộn theo (máy này không phát tiếng) */
+    else if (m.t === "rt") setRateUI(m.r);   /* host đổi tốc độ -> mọi máy hiện cùng mức */
+    else if (m.t === "rd") { if (m.r) setRateUI(m.r); readRemote = m.k ? m : null; if (!readOn) { applyReadHL(m, true); remoteSpeak(m); } }   /* người khác đang đọc: tô sáng + cuộn theo (máy này không phát tiếng) */
     else if (m.t === "sw") { var WL = wordEls(); selWord(m.i >= 0 && WL[m.i] ? WL[m.i] : null); }
     else if (m.t === "zf") { if (setZoom(m.v)) { persistZoom(); } if (m.a) applyAnchor(m.a); }
     else if (m.t === "l") { var L = lasers[m.pid] = lasers[m.pid] || { pts: [] }; L.name = m.n; L.pts.push({ x: m.x, y: m.y, t: Date.now() }); draw(); }
@@ -543,7 +545,7 @@
        (chờ ngẫu nhiên 0.3–1s, ai đã thấy người khác trả lời thì thôi) — TJ 2026-10-04: "host mất mạng mà có moderator thì bảng vẫn ổn" */
     else if (m.t === "hello") {
       var full = function () { send({ t: "full", to: m.cid, items: order.map(function (id) { return items[id]; }).filter(Boolean), lk: lkFeed.slice(0, 40) }); };
-      if (api.isHost()) { full(); sendAnchor(); if (shStream) announce(); }   /* máy vừa mở bảng -> báo ngay đang chia sẻ màn hình (khỏi chờ 5 giây) */
+      if (api.isHost()) { full(); sendAnchor(); send({ t: "rt", r: curRate() }); if (shStream) announce(); }   /* máy vừa mở bảng -> báo ngay đang chia sẻ màn hình (khỏi chờ 5 giây) */
       else if (order.length) { answered[m.cid] = 0; setTimeout(function () { if (!answered[m.cid]) full(); delete answered[m.cid]; }, (canDraw() ? 300 : 1200) + Math.random() * 700); }   /* moderator trả lời trước, người xem làm dự phòng */
     }
     else if (m.t === "full") {
@@ -960,6 +962,7 @@
   function shareRead(m) { applyReadHL(m); send(Object.assign({ t: "rd" }, m)); }
   function paintSndBtn() {
     var b = document.querySelector("#bd-vtbar [data-snd]"); if (!b || !api || !api.soundOn) return;
+    var rsel = $("#bd-vtrate"); if (rsel) rsel.disabled = !api.isHost();   /* người chơi: chỉ xem tốc độ của host */
     var vr = document.querySelector("#bd-vtbar .bd-vol");   /* thanh âm lượng: giá trị lấy từ game (lưu trên máy), tắt tiếng thì làm mờ như game */
     if (vr && api.volume && document.activeElement !== vr) { var vv = Math.round(api.volume() * 100); if (+vr.value !== vv) vr.value = vv; }
     var on = api.soundOn(), k = on ? "1" : "0"; if (vr) vr.disabled = !on;
@@ -1004,14 +1007,14 @@
     for (var k = 0; k < els.length; k++) { var r = document.createRange(); r.selectNodeContents(sn); r.setEnd(els[k], 0); out.push({ start: r.toString().length }); }
     return out;
   }
-  async function readSentence(sn, i, rate, my) {
-    var text = sn.textContent, ws = sentWords(sn), wi = -2, gotB = false, timers = [], cpms = 66 / Math.max(.25, rate);
-    function mark(k) { if (my !== reading || k === wi) return; wi = k; if (readPos) readPos.w = k; shareRead(k === -1 ? { k: "wl", s: i, w: k, sp: 1, r: rate } : { k: "wl", s: i, w: k }); }   /* sp = bắt đầu câu mới: máy khác đang bật tiếng thì đọc theo */
-    mark(-1);
-    ws.forEach(function (w, k) { timers.push(setTimeout(function () { if (!gotB) mark(k); }, 250 + w.start * cpms)); });   /* giọng không báo ranh giới từ -> ước lượng theo tốc độ */
-    await speakOne(text, "en-US", rate, function (ci) { gotB = true; for (var k = ws.length - 1; k >= 0; k--) { if (ws[k].start <= ci) { mark(k); break; } } });
-    timers.forEach(clearTimeout);
+  async function readSentence(sn, i, rate, my) {   /* TJ 2026-10-06: bỏ karaoke từng chữ (nhảy bậy) — chỉ tô sáng + cuộn theo NGUYÊN CÂU */
+    if (my !== reading) return;
+    if (readPos) readPos.w = -1;
+    shareRead({ k: "wl", s: i, w: -1, sp: 1, r: rate });   /* sp = bắt đầu câu mới: máy khác đang BẬT tiếng thì đọc theo; r = tốc độ của host */
+    await speakOne(sn.textContent, "en-US", rate);
   }
+  function curRate() { var sel = $("#bd-vtrate"); return sel ? parseFloat(sel.value) || 0.85 : 0.85; }   /* đọc lại từ ô tốc độ ở MỖI câu / từ -> đổi giữa chừng có hiệu lực ngay */
+  function setRateUI(r) { var sel = $("#bd-vtrate"); if (sel && r && Math.abs(parseFloat(sel.value) - r) > 0.001) sel.value = String(r); }
   async function readPassage(fromS) {
     if (!window.speechSynthesis || !canRead()) return;
     stopReading(); var my = reading; readPos = null;
@@ -1019,7 +1022,7 @@
     var b = scBox(), sel = $("#bd-vtrate"), rate = sel ? +sel.value || 0.85 : 0.85, ss = b ? b.querySelectorAll(".bd-s") : [];
     if (!ss.length) return;
     readOn = true; paintReadBtn(); if (api.soundOn && !api.soundOn()) feedNote("🔇 Máy này đang TẮT tiếng — bấm 🔊 trên thanh trên để nghe (màn hình vẫn chạy theo lời đọc).");
-    for (var i = fromS | 0; i < ss.length && my === reading; i++) { readPos = { k: "wl", s: i }; await readSentence(ss[i], i, rate, my); }
+    for (var i = fromS | 0; i < ss.length && my === reading; i++) { readPos = { k: "wl", s: i }; await readSentence(ss[i], i, curRate(), my); }
     if (my === reading) { readOn = false; readPos = null; shareRead({ k: null }); }
   }
   async function readAll(withDef, from) {
@@ -1029,7 +1032,7 @@
     var rate = parseFloat(($("#bd-vtrate") || {}).value) || 0.85, ws = vtCache[d.bid] || [];
     readOn = true; paintReadBtn(); if (api.soundOn && !api.soundOn()) feedNote("🔇 Máy này đang TẮT tiếng — bấm 🔊 trên thanh trên để nghe (màn hình vẫn chạy theo lời đọc).");
     for (var i = from | 0; i < ws.length && my === reading; i++) {
-      readPos = { k: "vt", i: i, def: withDef ? 1 : 0 }; shareRead({ k: "vt", i: i, sp: 1, def: withDef ? 1 : 0, r: rate });
+      rate = curRate(); readPos = { k: "vt", i: i, def: withDef ? 1 : 0 }; shareRead({ k: "vt", i: i, sp: 1, def: withDef ? 1 : 0, r: rate });
       await speakOne(ws[i].term, "en-US", rate); if (my !== reading) break;
       if (withDef && ws[i].def_en) { await speakOne("it means " + ws[i].def_en, "en-US", rate); if (my !== reading) break; }   /* y như Learning: từ -> "it means" + định nghĩa tiếng Anh (không đọc nghĩa Việt) */
     }

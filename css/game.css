@@ -1379,3 +1379,6 @@ body.embed.bd-on .g-top{display:none !important}
 @container (max-width: 400px){ .bd-mebar .bd-audio .bd-vol{width:48px} }
 /* người chơi KHÔNG có nút điều khiển đọc — chỉ nút 🔊/🔇 + âm lượng của máy mình (HOST điều khiển cho cả phòng, TJ 2026-10-06) */
 .bd:not(.bd-isHost) .bd-vtbar select,.bd:not(.bd-isHost) .bd-vtbar [data-vt],.bd:not(.bd-isHost) .bd-vtbar [data-wlread]{display:none !important}
+
+/* người chơi thấy tốc độ của host (khoá, không đổi được); chỉ ẩn các nút điều khiển đọc */
+.bd:not(.bd-isHost) .bd-vtbar select{display:inline-block !important;opacity:.7;pointer-events:none}
