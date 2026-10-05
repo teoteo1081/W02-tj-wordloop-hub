@@ -1014,3 +1014,19 @@ body.embed .bd-drawer .bd-pane{display:none !important}
   .bd-vt .bd-vh,.bd-vt .bd-vr{grid-template-columns:1.6em minmax(0,1.4fr) 2.1em minmax(0,1.7fr) minmax(0,1.3fr)}
   .bd-vt .bd-vh > :nth-child(4),.bd-vt .bd-vh > :nth-child(5),.bd-vt .bd-vr > :nth-child(4),.bd-vt .bd-vr > :nth-child(5){display:none}
 }
+
+/* v181: thanh công cụ bảng từ + ⭐ + đang đọc */
+.bd-vtph{height:max(2.3em,36px);flex:none}
+.bd-vtbar{position:absolute;display:flex;gap:6px;align-items:center;flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;scrollbar-width:none;z-index:6}
+.bd-vtbar::-webkit-scrollbar{display:none}
+.bd-vtbar > *{flex:none;height:28px;border-radius:8px;border:1px solid var(--line);background:rgba(36,35,33,.9);color:#f3f1ea;font:inherit;font-size:12px;padding:0 10px;cursor:pointer}
+.bd-vtbar .pri{background:#d97757;border-color:#d97757;color:#fff;font-weight:700}
+.bd-vtbar select{padding:0 6px}
+@media (max-width:700px){.bd-vtbar span{display:none}.bd-vtbar > *{padding:0 8px}}
+.bd-vt .bd-vtm{display:flex;align-items:center;gap:.4em;min-width:0}
+.bd-vt .bd-vstar{opacity:.65;cursor:pointer;font-size:.95em}
+.bd-vt .bd-vstar.on{color:#ffd84d;opacity:1}
+.bd-vt .bd-vr.rd{background:rgba(255,210,122,.18);outline:1px solid #ffd27a;outline-offset:-1px}
+/* Thu gọn: chỉ còn Từ · Level · Nghĩa */
+.bd-vt.compact .bd-vh,.bd-vt.compact .bd-vr{grid-template-columns:1.6em minmax(0,1.5fr) 2.3em minmax(0,1.5fr)}
+.bd-vt.compact .bd-vh > :nth-child(4),.bd-vt.compact .bd-vh > :nth-child(5),.bd-vt.compact .bd-vh > :nth-child(6),.bd-vt.compact .bd-vr > :nth-child(4),.bd-vt.compact .bd-vr > :nth-child(5),.bd-vt.compact .bd-vr > :nth-child(6){display:none}

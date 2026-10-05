@@ -70,6 +70,12 @@
         '<button type="button" class="bd-aud" id="bd-aud" hidden data-bt="unmute"></button>' +
         '</div>' +
         '<div class="bd-hudl" id="bd-hudl">' +
+          '<div class="bd-vtbar bd-hud" id="bd-vtbar" hidden>' +
+            '<select id="bd-vtrate" title="Tốc độ đọc"><option value="0.7">0.7x</option><option value="0.85" selected>0.85x</option><option value="1">1x</option><option value="1.15">1.15x</option></select>' +
+            '<button type="button" data-vt="stop" title="Dừng đọc">■ <span>Dừng</span></button>' +
+            '<button type="button" class="pri" data-vt="readall" title="Đọc tất cả từ">🔊 <span>Đọc tất cả từ</span></button>' +
+            '<button type="button" class="pri" data-vt="readdef" title="Đọc từ + định nghĩa">🔊 <span>Đọc + định nghĩa</span></button>' +
+          '</div>' +
           '<span class="bd-seg bd-segtop bd-hud" id="bd-seg" hidden><button type="button" data-sw="wl" aria-pressed="true">📖 Bài đọc</button><button type="button" data-sw="vt" aria-pressed="false">📋 Bảng từ</button></span>' +
           '<button type="button" class="bd-hb bd-fab bd-hud bd-tl" id="bd-close" hidden data-btt="close">✕</button>' +
           '<button type="button" class="bd-hb bd-fab bd-hud bd-tr" id="bd-big" data-btt="big">⛶</button>' +
@@ -161,6 +167,7 @@
     if (b.id === "bd-min") { mini = true; paintOpen(); return; }
     if (b.id === "bd-close") { api.setBoard(false); return; }
     if (b.id === "bd-lib") { Lib.open(); return; }
+    if (b.dataset.vt) { vtAction(b.dataset.vt); return; }
     if (b.dataset.sw) { swKind(b.dataset.sw); return; }
     if (b.dataset.nv) { var pz = b.dataset.nv.split(":"); navStep(pz[0], +pz[1]); return; }
     if (b.dataset.at) { var dA = curDoc(); if (dA && dA.bid && api.isHost() && api.openInApp) api.openInApp(dA.bid, b.dataset.at); return; }
@@ -614,6 +621,8 @@
   }
   function paintDoc(d) {
     var box = $("#bd-doc"); if (!box) return;
+    var vtb = $("#bd-vtbar"); if (vtb) { vtb.hidden = !(d && d.k === "vt"); var va = $("#bd-vtadd"); if (va) va.hidden = !api.isHost(); }
+    stopReading();
     var job = ++docJob; box.innerHTML = ""; wrap.classList.toggle("bd-hasdoc", !!d); wrap.classList.toggle("bd-office", !!(d && d.k === "office"));
     if (!d) return;
     if (d.k === "img") { box.innerHTML = '<img alt="" src="' + esc(d.url) + '">'; return; }
@@ -730,6 +739,54 @@
       requestAnimationFrame(fitDocText);
     } catch (e) { if (job === docJob) box.innerHTML = '<div class="bd-docmsg">⚠ ' + esc(e.message || e) + "</div>"; }
   }
+  /* ====== BẢNG TỪ: chức năng y chang Learning (TJ 2026-10-05) — Thu gọn · tốc độ · Copy · Bổ sung từ · Dừng · Đọc tất cả từ · Đọc + định nghĩa · ⭐ ====== */
+  var starMap = {}, reading = 0;
+  function paintStars(rows) {
+    var ids = (rows || []).map(function (w) { return w.id; }).filter(Boolean); if (!ids.length || !api.starState) return;
+    api.starState(ids).then(function (m) {
+      Object.keys(m || {}).forEach(function (k) { starMap[k] = !!m[k]; });
+      document.querySelectorAll("#bd-doc .bd-vstar").forEach(function (e) { var on = !!starMap[e.dataset.star]; e.textContent = on ? "★" : "☆"; e.classList.toggle("on", on); });
+    }).catch(function () {});
+  }
+  async function toggleStar(el) {
+    var id = el.dataset.star; if (!id || !api.toggleStar) return;
+    var on = await api.toggleStar(id, !starMap[id]); starMap[id] = !!on; el.textContent = on ? "★" : "☆"; el.classList.toggle("on", !!on);
+  }
+  function placeVtBar() {
+    var bar = $("#bd-vtbar"), ph = document.querySelector("#bd-doc .bd-vtph"), hl = $("#bd-hudl"); if (!bar || bar.hidden || !ph || !hl) return;
+    var a = ph.getBoundingClientRect(), b = hl.getBoundingClientRect();
+    bar.style.left = Math.round(a.left - b.left) + "px"; bar.style.top = Math.round(a.top - b.top + (a.height - bar.offsetHeight) / 2) + "px"; bar.style.width = Math.round(a.width) + "px";
+  }
+  function stopReading() { reading++; try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) {} document.querySelectorAll("#bd-doc .bd-vr.rd").forEach(function (r) { r.classList.remove("rd"); }); }
+  var SPL = { vi: "vi-VN", zh: "zh-CN", es: "es-ES", en: "en-US" };
+  function speakOne(text, lang, rate) {
+    return new Promise(function (ok) {
+      try { var u = new SpeechSynthesisUtterance(text); u.lang = lang; u.rate = rate; u.onend = u.onerror = function () { ok(); }; window.speechSynthesis.speak(u); } catch (e) { ok(); }
+    });
+  }
+  async function readAll(withDef) {
+    var d = curDoc(); if (!d || d.k !== "vt" || !window.speechSynthesis) return;
+    stopReading(); var my = reading, rate = parseFloat(($("#bd-vtrate") || {}).value) || 0.85, ws = vtCache[d.bid] || [], ml = api.lang ? api.lang() : "vi";
+    for (var i = 0; i < ws.length && my === reading; i++) {
+      var row = document.querySelector('#bd-doc .bd-vr[data-i="' + i + '"]'); document.querySelectorAll("#bd-doc .bd-vr.rd").forEach(function (r) { r.classList.remove("rd"); }); if (row) row.classList.add("rd");
+      await speakOne(ws[i].term, "en-US", rate); if (my !== reading) break;
+      if (withDef) { if (ws[i].def_en) await speakOne(ws[i].def_en, "en-US", rate); if (my !== reading) break; var mv = vtMeaning(ws[i]); if (mv && ml !== "en") await speakOne(mv, SPL[ml] || "vi-VN", rate); }
+    }
+    if (my === reading) document.querySelectorAll("#bd-doc .bd-vr.rd").forEach(function (r) { r.classList.remove("rd"); });
+  }
+  function vtAction(a) {
+    var d = curDoc(); if (!d || d.k !== "vt") return;
+    if (a === "readall") return readAll(false);
+    if (a === "readdef") return readAll(true);
+    if (a === "stop") return stopReading();
+    if (a === "collapse") { var v = document.querySelector("#bd-doc .bd-vt"); if (v) { v.classList.toggle("compact"); var cs = document.querySelector('#bd-vtbar [data-vt="collapse"] span'); if (cs) cs.textContent = v.classList.contains("compact") ? "Mở rộng" : "Thu gọn"; requestAnimationFrame(function () { fitDocText(); placeVtBar(); }); } return; }
+    if (a === "copy") {
+      var txt = (vtCache[d.bid] || []).map(function (w) { return w.term + "\t" + vtMeaning(w); }).join("\n");
+      try { navigator.clipboard.writeText(txt).then(function () { if (window.toast) toast("Đã copy " + (vtCache[d.bid] || []).length + " từ", "ok"); }); } catch (e) {}
+      return;
+    }
+    if (a === "add") { if (api.isHost() && api.openInApp) api.openInApp(d.bid, "study"); return; }
+  }
   /* 📋 bảng từ vựng của Block: 6 dòng/trang; nghĩa theo tiếng giao diện của TỪNG người xem */
   
   function vtMeaning(w) {
@@ -744,11 +801,11 @@
       if (api.isHost() && (d.n !== n || (d.p || 1) !== p)) docSet(Object.assign({}, d, { n: n, p: p }));
       var part = rows.slice((p - 1) * VR, p * VR);
       var vtHead = '<div class="bd-vh"><span></span><span>Vocabulary</span><span>Level</span><span>Word form</span><span>Phonetic</span><span>English definition</span><span>' + (api.lang && api.lang() === "en" ? "Meaning" : api.lang && api.lang() === "zh" ? "中文意思" : api.lang && api.lang() === "es" ? "Significado" : "Vietnamese meaning") + "</span></div>";
-      box.innerHTML = '<div class="bd-vt"><h3>📘 1. Danh sách từ vựng cần học' + (d.name ? ' <small>· ' + esc(d.name) + "</small>" : "") + "</h3>" + vtHead + (part.length ? part.map(function (w, i) {
+      box.innerHTML = '<div class="bd-vt"><h3>📘 1. Danh sách từ vựng cần học' + (d.name ? ' <small>· ' + esc(d.name) + "</small>" : "") + "</h3>" + '<div class="bd-vtph"></div>' + vtHead + (part.length ? part.map(function (w, i) {
         var idx = (p - 1) * VR + i;
-        return '<div class="bd-vr" data-i="' + idx + '"><span class="bd-vsay" data-say="' + esc(w.term) + '">🔊</span><b class="bd-vterm">' + esc(w.term) + '</b><span class="bd-vl">' + esc(w.level || "") + '</span><span class="bd-vf">' + (w.pos ? "<i>" + esc(w.pos) + "</i>" : "") + '</span><span class="bd-vph">' + (w.ipa ? esc(w.ipa) : "—") + '</span><span class="bd-ve">' + esc(w.def_en || "") + '</span><span class="bd-vd">' + esc(vtMeaning(w)) + "</span></div>";
+        return '<div class="bd-vr" data-i="' + idx + '"><span class="bd-vsay" data-say="' + esc(w.term) + '">🔊</span><span class="bd-vtm"><b class="bd-vterm">' + esc(w.term) + '</b><span class="bd-vstar" data-star="' + esc(w.id || "") + '">☆</span></span><span class="bd-vl">' + esc(w.level || "") + '</span><span class="bd-vf">' + (w.pos ? "<i>" + esc(w.pos) + "</i>" : "") + '</span><span class="bd-vph">' + (w.ipa ? esc(w.ipa) : "—") + '</span><span class="bd-ve">' + esc(w.def_en || "") + '</span><span class="bd-vd">' + esc(vtMeaning(w)) + "</span></div>";
       }).join("") : '<div class="bd-docmsg">—</div>') + "</div>";
-      paintHL(d); requestAnimationFrame(fitDocText);
+      paintHL(d); paintStars(rows); requestAnimationFrame(function () { fitDocText(); placeVtBar(); });
     } catch (e) { if (job === docJob) box.innerHTML = '<div class="bd-docmsg">⚠ ' + esc(e.message || e) + "</div>"; }
   }
   function paintHL(d) { document.querySelectorAll("#bd-doc .bd-vr").forEach(function (r) { r.classList.toggle("hl", d && d.hl != null && +r.dataset.i === +d.hl); }); }
@@ -848,6 +905,8 @@
     for (var i = 0; i < rows.length; i++) {
       var r = rows[i].getBoundingClientRect();
       if (x < r.left || x > r.right || y < r.top || y > r.bottom) continue;
+      var stEl = rows[i].querySelector(".bd-vstar");
+      if (stEl) { var rr = stEl.getBoundingClientRect(); if (x >= rr.left - 10 && x <= rr.right + 10 && y >= rr.top - 8 && y <= rr.bottom + 8) { toggleStar(stEl); return; } }
       var sy = rows[i].querySelector(".bd-vsay"), sr2 = sy.getBoundingClientRect();
       if (x >= sr2.left - 10 && x <= sr2.right + 10) { api.say(sy.dataset.say); return; }
       if (edge) { flip(dir); return; }

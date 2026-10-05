@@ -1723,6 +1723,23 @@
     setBoard: function (v) { if (!G.isHost || !G.st) return; G.st.board = !!v; push(); },
     /* 📁 tài liệu trên bảng (board.js Lib): file ở bucket toeic/lib/…, bài đọc WordLoop từ bảng blocks */
     setDoc: function (d) { if (!G.isHost || !G.st) return; G.st.bdoc = d || null; push(); },
+    /* ⭐ lưu từ trên bảng từ: TJ -> word_progress.bookmarked (vào ⭐ Ôn riêng); người chơi -> danh sách riêng lưu trên máy */
+    starState: async function (ids) {
+      var out = {};
+      if (isTJ()) {
+        var r = await sb.from("word_progress").select("word_id,bookmarked").eq("user_id", HOST_PROFILE_ID).in("word_id", ids);
+        (r.data || []).forEach(function (x) { out[x.word_id] = !!x.bookmarked; });
+      } else { var m = readLS("tjwl_board_stars_v1") || {}; ids.forEach(function (i) { out[i] = !!m[i]; }); }
+      return out;
+    },
+    toggleStar: async function (wid, on) {
+      if (isTJ()) {
+        var r = await sb.from("word_progress").upsert({ user_id: HOST_PROFILE_ID, word_id: wid, bookmarked: !!on }, { onConflict: "user_id,word_id" });
+        if (r.error) { console.warn("bookmark", r.error.message); return !on; }
+        return !!on;
+      }
+      var m = readLS("tjwl_board_stars_v1") || {}; if (on) m[wid] = 1; else delete m[wid]; writeLS("tjwl_board_stars_v1", m); return !!on;
+    },
     /* 🪪 thẻ Block trên bảng: đường dẫn, cấp độ, từ; riêng host-TJ thêm tiến độ + hạn ôn (word_progress / block_progress của TJ) */
     blockInfo: async function (bid) {
       var out = { bid: bid, path: "", name: "", lv: {}, terms: [], adm: G.isHost && isTJ() ? null : undefined };
