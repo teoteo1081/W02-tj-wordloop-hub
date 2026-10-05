@@ -56,6 +56,7 @@
     var el = document.createElement("section");
     el.id = "bd"; el.className = "bd"; el.hidden = true;
     el.innerHTML =
+      '<aside class="bd-side" id="bd-side" hidden><div class="bd-sidehd"><b>Notebooks</b><span><button type="button" class="bd-hb" id="bd-sidepin" title="Ghim cột (luôn mở bên trái)">📌</button><button type="button" class="bd-hb" id="bd-sideexp" title="Mở hết">⊞</button><button type="button" class="bd-hb" id="bd-sidecol" title="Thu hết">⊟</button><button type="button" class="bd-hb" id="bd-sidex" title="Đóng">✕</button></span></div><input type="search" id="bd-sideq" placeholder="Tìm Block…"><div class="bd-tree bd-sidelist" id="bd-sidelist">⏳</div><div id="bd-sidebar"></div></aside>' +
       '<div class="bd-frame" id="bd-frame"><div class="bd-head"><span class="bd-pane" id="bd-pane" hidden><button type="button" class="bd-pname" id="bd-pname" title="Mở / đóng cây Notebooks">Notebooks</button><button type="button" class="bd-ppin" id="bd-ppin" title="Ghim / bỏ ghim cột Notebooks" aria-label="Ghim / bỏ ghim cột Notebooks">📌</button></span><b data-bt="board"></b><span class="bd-who" id="bd-who"></span><span class="bd-scr" id="bd-scr"></span>' +
       '<button type="button" class="bd-hb" id="bd-lib" hidden data-bt="lib"></button>' +
       '<button type="button" class="bd-hb" id="bd-big" data-btt="big">⛶</button>' +   /* 📁 tài liệu: PDF / ảnh / bài đọc WordLoop lên bảng (chỉ host) */
@@ -68,7 +69,7 @@
         '<button type="button" class="bd-hb" data-at="study" title="Bài học & Đọc">📘</button><button type="button" class="bd-hb" data-at="meaning" title="Nghĩa">🔀</button><button type="button" class="bd-hb" data-at="quiz" title="Active Recall Quiz">📝</button><button type="button" class="bd-hb" data-at="dictation" title="Dictation">🎧</button><button type="button" class="bd-hb" data-at="sheet" title="Phiếu đầy đủ">📋</button><button type="button" class="bd-hb" data-at="single" title="Từng câu">🔤</button><button type="button" class="bd-hb" data-at="progress" title="Tiến trình trí nhớ">📊</button></span>' +
         '<button type="button" class="bd-hb bd-cplay" id="bd-cplay">🎮 Chơi game →</button></div>' +
       '</div></div>' +
-      '<div class="bd-sw" id="bd-sw"><aside class="bd-side" id="bd-side" hidden><div class="bd-sidehd"><b>Notebooks</b><span><button type="button" class="bd-hb" id="bd-sidepin" title="Ghim cột (luôn mở bên trái)">📌</button><button type="button" class="bd-hb" id="bd-sideexp" title="Mở hết">⊞</button><button type="button" class="bd-hb" id="bd-sidecol" title="Thu hết">⊟</button><button type="button" class="bd-hb" id="bd-sidex" title="Đóng">✕</button></span></div><input type="search" id="bd-sideq" placeholder="Tìm Block…"><div class="bd-tree bd-sidelist" id="bd-sidelist">⏳</div><div id="bd-sidebar"></div></aside><div class="bd-stage" id="bd-stage"><div class="bd-zoom" id="bd-zoom"><video id="bd-video" class="bd-video" autoplay playsinline muted hidden></video><div class="bd-doc" id="bd-doc"></div><canvas id="bd-cv"></canvas><div class="bd-texts" id="bd-texts"></div></div><button type="button" class="bd-aud" id="bd-aud" hidden data-bt="unmute"></button></div></div>' +
+      '<div class="bd-sw" id="bd-sw"><div class="bd-stage" id="bd-stage"><div class="bd-zoom" id="bd-zoom"><video id="bd-video" class="bd-video" autoplay playsinline muted hidden></video><div class="bd-doc" id="bd-doc"></div><canvas id="bd-cv"></canvas><div class="bd-texts" id="bd-texts"></div></div><button type="button" class="bd-aud" id="bd-aud" hidden data-bt="unmute"></button></div></div>' +
       '<div class="bd-docnav" id="bd-docnav" hidden>' +
         '<button type="button" class="bd-hb" data-nv="batch:-1" title="Batch trước">⏮</button><button type="button" class="bd-hb" data-nv="block:-1" title="Block trước">⏪</button>' +
         '<button type="button" class="bd-hb" id="bd-dprev" title="Trang trước">◀</button><button type="button" class="bd-hb" id="bd-dpg" title="Nhảy tới trang…"></button><button type="button" class="bd-hb" id="bd-dnext" title="Trang sau">▶</button>' +
@@ -125,7 +126,7 @@
     if (b.id === "bd-undo") return undo();
     if (b.id === "bd-redo") return redoOne();
     if (b.id === "bd-clear") {
-      if (api.isHost()) { if (confirm(t("qAll"))) { clearAll(); send({ t: "clear" }); } return; }
+      if (confirm(t("qAll"))) { clearAll(); send({ t: "clear" }); } return;   /* TJ 2026-10-05: người chơi cũng xoá hết được (undo vẫn dùng được) */
       /* người được cấp quyền: sọt rác chỉ xoá nét + ô chữ CỦA MÌNH (TJ 2026-10-04) */
       var me0 = myId(), ids = order.filter(function (id) { return items[id] && items[id].by === me0; });
       if (ids.length && confirm(t("qMine"))) { ids.forEach(function (id) { removeItem(id); send({ t: "del", id: id }); }); mine = []; redo = []; draw(); paintTexts(); paintTools(); }
@@ -162,7 +163,7 @@
     document.querySelectorAll("#bd-tools [data-col]").forEach(function (b) { b.classList.toggle("on", b.dataset.col === color); });
     document.querySelectorAll("#bd-tools [data-sz]").forEach(function (b) { b.classList.toggle("on", +b.dataset.sz === size); });
     var ex = $("#bd-extras"); if (ex) ex.classList.toggle("off", !(ok && (tool === "pen" || tool === "text")));   /* màu/cỡ/hoàn tác chỉ hiện khi cầm bút hoặc ô chữ */
-    $("#bd-clear").hidden = !ok; $("#bd-clear").title = t(api.isHost() ? "clearAll" : "clearMine"); relabel(); $("#bd-close").hidden = !api.isHost(); var pn = $("#bd-pane"); if (pn) pn.hidden = !api.isHost(); $("#bd-perm").hidden = true;
+    $("#bd-clear").hidden = !ok; $("#bd-clear").title = t("clearAll"); relabel(); $("#bd-close").hidden = !api.isHost(); var pn = $("#bd-pane"); if (pn) pn.hidden = !api.isHost(); $("#bd-perm").hidden = true;
     cv.style.cursor = !ok || tool === "hand" ? (Z.s > 1 ? "grab" : "default") : tool === "text" ? "text" : "crosshair";
     $("#bd-undo").disabled = !mine.length; $("#bd-redo").disabled = !redo.length;
     paintShare(); paintZ();
@@ -194,7 +195,7 @@
     wrap.style.setProperty("--ar", AR.toFixed(4));
     var pin = sideOn && sidePinned() && big && window.innerWidth >= 900; $("#bd").classList.toggle("bd-sidepin", pin);
     if (!big) { wrap.style.width = ""; wrap.style.height = ""; return; }
-    var sw = $("#bd-sw"), aw = sw.clientWidth - 12 - (pin ? 300 : 0), ah = sw.clientHeight - 12;
+    var sw = $("#bd-sw"), aw = sw.clientWidth - 12, ah = sw.clientHeight - 12;
     if (aw < 60 || ah < 60) return;
     var w = Math.min(aw, ah * AR); wrap.style.width = Math.floor(w) + "px"; wrap.style.height = Math.floor(w / AR) + "px";
   }

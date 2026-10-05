@@ -830,3 +830,10 @@ body.bd-on .g-dotmenu{z-index:80}
 .bd-frame .bd-card{max-width:none;margin:0;padding:0;border:none;border-left:none;background:transparent;border-radius:0}
 .bd-docnav .bd-hb{min-width:38px}
 body.bd-on .g-sidetab{display:none}
+
+/* KHUNG GIỐNG LEARNING (TJ 2026-10-05): cột Notebooks chạy suốt chiều cao bên trái; GHIM = cột chiếm chỗ -> bảng nhỏ lại; KHÔNG GHIM = bảng rộng hết, cột trượt ra khi cần */
+.bd-sidepin .bd-sw{padding-left:0}
+.bd.bd-big.bd-sidepin{padding-left:306px}
+.bd.bd-big.bd-sidepin .bd-side{left:6px;top:6px;bottom:6px;width:292px}
+.bd-sidepin .bd-pane{display:none}
+.bd > .bd-side{z-index:8}
