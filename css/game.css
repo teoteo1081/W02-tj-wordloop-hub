@@ -1309,7 +1309,7 @@ body.embed.bd-on #g-side,body.embed.bd-on #h-sidetab,body.embed.bd-on #h-sidebd,
 .bd-mebar .bd-audio{flex:1 1 0 !important;order:0 !important;min-width:0;justify-content:flex-end;gap:5px}
 .bd-mebar .bd-audio > *{height:28px;font-size:12px;padding:0 9px;border-radius:8px}
 .bd-mebar .bd-audio select{padding:0 4px;max-width:64px}
-@container (max-width: 640px){
+@container (max-width: 1100px){
   .bd-mebar .bd-audio span{display:none !important}
   .bd-mebar .bd-audio > *{padding:0 8px;font-size:14px}
   .bd-mebar .bd-me b{max-width:64px;overflow:hidden;text-overflow:ellipsis}
@@ -1324,7 +1324,7 @@ body.embed.bd-on #g-side,body.embed.bd-on #h-sidetab,body.embed.bd-on #h-sidebd,
 .bd-iconbar{padding-top:4px}
 .bd-iconbar .bd-hb{min-width:36px;min-height:34px;padding:0 8px;font-size:15px}
 /* nút chỉ còn icon thì vẫn có nhãn ngắn để phân biệt: 🔊 Từ · 🔊 Từ+nghĩa · 🔊 Bài */
-@container (max-width: 640px){
+@container (max-width: 1100px){
   .bd-mebar .bd-audio [data-vt="readall"]::after{content:" Từ"}
   .bd-mebar .bd-audio [data-vt="readdef"]::after{content:" Từ+nghĩa"}
   .bd-mebar .bd-audio [data-wlread]::after{content:" Bài"}
@@ -1382,3 +1382,38 @@ body.embed.bd-on .g-top{display:none !important}
 
 /* người chơi thấy tốc độ của host (khoá, không đổi được); chỉ ẩn các nút điều khiển đọc */
 .bd:not(.bd-isHost) .bd-vtbar select{display:inline-block !important;opacity:.7;pointer-events:none}
+
+/* TJ 2026-10-06: bỏ kính lúp; avatar mọi người nằm ở THANH TRÊN (giữa avatar của mình và nhóm âm thanh); icon dưới bảng dồn sang phải; khung Từ vừa tra cao hơn */
+#bd-dsrch,#bd-lkbtn{display:none !important}
+.bd-mebar > .bd-people{flex:1 1 0;min-width:0;padding:0 2px;gap:7px;align-items:flex-start;overflow-x:auto}
+.bd-mebar > .bd-people .bd-pp1{width:34px;gap:0}
+.bd-mebar > .bd-people .bd-mering{width:26px;height:26px;padding:1.5px}
+.bd-mebar > .bd-people .bd-mering img,.bd-mebar > .bd-people .bd-mering .bd-meav{font-size:14px;border-width:1px}
+.bd-mebar > .bd-people .bd-mering i,.bd-mebar > .bd-people .bd-mering u{width:12px;height:12px;font-size:8px}
+.bd-mebar > .bd-people .bd-pp1 b{max-width:34px;font-size:9px;line-height:1.1}
+.bd-mebar .bd-me b{display:none}   /* tên của mình hiện ngay dưới avatar trong dải, khỏi lặp */
+.bd-iconbar{justify-content:flex-end}
+.bd-iconbar .bd-docnav{margin-left:auto}
+.bd .bd-feed,.bd.bd-big .bd-feed,body.embed .bd.bd-big .bd-feed{height:clamp(150px,29vh,300px) !important}
+.bd-feed .bd-fh{flex-wrap:nowrap}
+.bd-feed .bd-fq{display:flex !important;gap:6px;flex:1;min-width:0}
+.bd-feed .bd-fq input{flex:1;min-width:0}
+
+/* bôi chọn nhiều từ trong bài đọc */
+.bd-both .bd-wl,.bd-both .bd-wl *{-webkit-user-select:text;user-select:text}
+.bd-both .bd-wl ::selection{background:rgba(124,170,255,.45)}
+.bd-wsel{background:rgba(124,170,255,.4) !important;border-radius:4px;box-shadow:0 0 0 2px rgba(124,170,255,.4)}
+
+/* avatar của mình đã đứng đầu dải -> ẩn avatar to bên trái cho khỏi lặp (không có dải thì vẫn hiện) */
+.bd-mebar:has(> .bd-people:not([hidden])) .bd-me{display:none}
+.bd-mebar > .bd-people{flex:1 1 0}
+.bd-mebar .bd-audio{flex:0 1 auto;max-width:72%}
+.bd-mebar .bd-audio > *{flex:none}
+/* TJ 2026-10-06: "mỗi bên 1 nửa thanh ngang và cho lướt để di chuyển" — thanh trên chia ĐÔI: trái = avatar mọi người, phải = âm thanh; mỗi nửa tự vuốt ngang */
+.bd-mebar{flex-wrap:nowrap !important;gap:8px}
+.bd-mebar > .bd-people{flex:0 0 calc(50% - 4px) !important;max-width:calc(50% - 4px);width:calc(50% - 4px);min-width:0;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-x;justify-content:flex-start}
+.bd-mebar > .bd-audio{flex:0 0 calc(50% - 4px) !important;max-width:calc(50% - 4px) !important;width:calc(50% - 4px);min-width:0;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-x;justify-content:flex-start !important}
+.bd-mebar > .bd-audio > *{flex:none}
+.bd-mebar > .bd-people,.bd-mebar > .bd-audio{scrollbar-width:none}
+.bd-mebar > .bd-people::-webkit-scrollbar,.bd-mebar > .bd-audio::-webkit-scrollbar{display:none}
+.bd-mebar > .bd-audio[hidden]{display:none !important}

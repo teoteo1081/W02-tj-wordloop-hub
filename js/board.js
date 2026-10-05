@@ -156,7 +156,7 @@
         var cl0 = $("#bd-close"); if (cl0) { cl0.classList.add("bd-ibtn"); dn0.appendChild(cl0); }
       }
     }
-    if (ppl0 && fd0) fd0.parentNode.insertBefore(ppl0, fd0.nextSibling);   /* thứ tự: bảng -> Từ vừa tra -> mọi người trong phòng */   /* ai vào / ra phòng -> dải avatar tự cập nhật */
+    if (ppl0 && mb0) mb0.insertBefore(ppl0, $("#bd-vtbar"));   /* TJ 2026-10-06: avatar mọi người lên thanh trên cho tiết kiệm chỗ, khung Từ vừa tra cao hơn */   /* thứ tự: bảng -> Từ vừa tra -> mọi người trong phòng */   /* ai vào / ra phòng -> dải avatar tự cập nhật */
     try { document.body.classList.toggle("bd-dev-phone", Math.min(screen.width, screen.height) < 600); } catch (e) {}   /* máy THẬT là điện thoại (iframe trong Learning hẹp không tính) */
     el.addEventListener("click", onClick);
     ["pointerdown", "pointermove", "keydown", "touchstart"].forEach(function (ev) { el.addEventListener(ev, poke, { passive: true }); });
@@ -234,7 +234,7 @@
     if (b.id === "bd-dsrch") { var lq = $("#bd-lkq"), lk = $("#bd-lk"); var showq = lq.hidden; lq.hidden = !showq; lk.hidden = showq ? false : !$("#bd-lkr").innerHTML; if (showq) { $("#bd-lkin").focus(); } setTimeout(fit, 0); return; }
     if (b.id === "bd-lkx") { $("#bd-lk").hidden = true; $("#bd-lkq").hidden = true; $("#bd-lkr").innerHTML = ""; selWord(null); setTimeout(fit, 0); return; }
     if (b.id === "bd-lkgo") { var qv = $("#bd-lkin").value.trim(); if (qv) lookupShow(qv, "", true); return; }
-    if (b.dataset.lksay) { api.say(b.dataset.lksay, true); return; }
+    if (b.dataset.lksay) { sayWord(b.dataset.lksay); return; }
     if (b.id === "bd-dpg") { var dj = curDoc(); if (dj && api.isHost() && dj.n > 1) { var pj = parseInt(prompt("1 – " + dj.n, dj.p || 1), 10); if (pj >= 1) docSet(Object.assign({}, dj, { p: Math.min(dj.n, pj) })); } return; }
     if (b.id === "bd-dswap") { var dw = curDoc(); if (dw && dw.k === "wl" && api.isHost()) { Lib.open(); Lib.tab = "wl"; Lib.paintPass(dw.bid, dw.name, true); } return; }
     if (b.id === "bd-dclose") { if (api.isHost()) docSet(null); return; }
@@ -293,7 +293,7 @@
     wrap.style.setProperty("--ar", AR.toFixed(4));
     var pin = sideOn && sidePinned() && big && window.innerWidth >= 900; $("#bd").classList.toggle("bd-sidepin", pin);
     if (!big) { wrap.style.width = ""; wrap.style.height = ""; return; }
-    var sw = $("#bd-sw"), aw = sw.clientWidth - 12, ah = sw.clientHeight - 12 - ((function () { var t = $("#bd-card"), f = $("#bd-feed"); var mb = $("#bd-mebar"), pp = $("#bd-people"), ibr = $("#bd-iconbar"), pth = $("#bd-path"); return (pth && !pth.hidden ? pth.offsetHeight : 0) + (ibr && !ibr.hidden ? ibr.offsetHeight + 6 : 0) + (t && !t.hidden ? t.offsetHeight + 8 : 0) + (f && !f.hidden ? f.offsetHeight + 8 : 0) + (mb && !mb.hidden ? mb.offsetHeight + 6 : 0) + (pp && !pp.hidden ? pp.offsetHeight + 6 : 0); })());
+    var sw = $("#bd-sw"), aw = sw.clientWidth - 12, ah = sw.clientHeight - 12 - ((function () { var t = $("#bd-card"), f = $("#bd-feed"); var mb = $("#bd-mebar"), pp = $("#bd-people"), ibr = $("#bd-iconbar"), pth = $("#bd-path"); return (pth && !pth.hidden ? pth.offsetHeight : 0) + (ibr && !ibr.hidden ? ibr.offsetHeight + 6 : 0) + (t && !t.hidden ? t.offsetHeight + 8 : 0) + (f && !f.hidden ? f.offsetHeight + 8 : 0) + (mb && !mb.hidden ? mb.offsetHeight + 6 : 0) + 0; })());
     if (aw < 60 || ah < 60) return;
     /* TJ 2026-10-05: "đừng cố định nữa" — bảng to lấp KÍN chỗ trống (điện thoại dọc, cột Learning hẹp), không ép 4:3 nữa.
        Nét vẽ tính theo bề ngang (k = cv.width / W) nên đổi tỉ lệ không méo; trang bài đọc vẫn chia chung, chỉ cỡ chữ mỗi máy tự phóng cho đầy khung. */
@@ -538,8 +538,8 @@
     else if (m.t === "sc") { applyAnchor(m.a); if (readRemote) soonEnsure(); }
     else if (m.t === "rt") setRateUI(m.r);   /* host đổi tốc độ -> mọi máy hiện cùng mức */
     else if (m.t === "rd") { if (m.r) setRateUI(m.r); readRemote = m.k ? m : null; if (!readOn) { applyReadHL(m, true); remoteSpeak(m); } }   /* người khác đang đọc: tô sáng + cuộn theo (máy này không phát tiếng) */
-    else if (m.t === "sw") { var WL = wordEls(); selWord(m.i >= 0 && WL[m.i] ? WL[m.i] : null); }
-    else if (m.t === "zf") { if (setZoom(m.v)) { persistZoom(); } if (m.a) applyAnchor(m.a); }
+    else if (m.t === "sw") { if (m.i >= 0) selRange(m.i, m.j == null ? m.i : m.j); else selWord(null); }
+    else if (m.t === "zf") { if (setZoom(m.v)) { persistZoom(); } if (m.a) { lastA = m.a; goAnchor(scBox(), m.a); } }   /* sau khi đổi cỡ chữ: về đúng chỗ người phóng đang xem */
     else if (m.t === "l") { var L = lasers[m.pid] = lasers[m.pid] || { pts: [] }; L.name = m.n; L.pts.push({ x: m.x, y: m.y, t: Date.now() }); draw(); }
     /* xin bản đầy đủ: host trả lời ngay; HOST VẮNG (mất mạng) thì người được cấp quyền (moderator) có nét trên bảng trả lời thay
        (chờ ngẫu nhiên 0.3–1s, ai đã thấy người khác trả lời thì thôi) — TJ 2026-10-04: "host mất mạng mà có moderator thì bảng vẫn ổn" */
@@ -933,6 +933,10 @@
   function stopReading() { reading++; readOn = false; try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) {} }
   function clearReadHL() { document.querySelectorAll("#bd-doc .bd-rd, #bd-doc .bd-rw, #bd-doc .bd-vr.rd").forEach(function (x) { x.classList.remove("bd-rd", "bd-rw", "rd"); }); }
   function endRead() { remoteStop(); stopReading(); readPos = null; clearReadHL(); paintReadBtn(); }   /* đổi tài liệu / kết thúc: xoá sạch, không phát tin */
+  var lastSayAt = 0;
+  function sayWord(w) {   /* bấm loa / chạm từ / gõ tra từ: đọc ĐÚNG từ đó. Đang đọc cả bài thì tạm dừng (kẻo câu kế tiếp đọc đè lên) */
+    lastSayAt = Date.now(); if (readOn) pauseRead(); remoteStop(); api.say(w, true);
+  }
   var READ_TOP = 70;   /* px từ mép trên khung tới chỗ đang đọc — CÙNG trên mọi máy */
   function keepInView(b, el, force) {   /* trả true nếu đã cuộn */
     var r = el.getBoundingClientRect(), br = b.getBoundingClientRect();
@@ -976,6 +980,7 @@
   function remoteSpeak(m) {
     if (!m.k || m.paused) { remoteStop(); return; }
     if (!m.sp || !api.soundOn || !api.soundOn() || !window.speechSynthesis) return;
+    if (Date.now() - lastSayAt < 5000) return;   /* đang nghe 1 từ mình vừa bấm -> không chen câu của host vào */
     var my = ++rsTok, d = curDoc(), rate = +m.r || 0.85;
     try { window.speechSynthesis.cancel(); } catch (e) {}
     (async function () {
@@ -1084,7 +1089,7 @@
      AI cuộn -> gửi "phần tử đầu tiên đang thấy" (câu / dòng từ, KHÔNG gửi pixel vì mỗi máy xuống dòng khác nhau) -> mọi máy cuộn tới đúng chỗ đó.
      AI phóng / thu chữ (A−/A+, 2 ngón, Ctrl+lăn) -> gửi hệ số cỡ chữ + vị trí -> mọi máy đổi theo; host lưu vào bdoc.zf cho máy vào sau.
      Cùng lúc nhiều người thao tác: người thao tác SAU CÙNG thắng; máy đang tự cuộn thì bỏ qua tin đến trong 0.35s (khỏi giằng co). */
-  var lastA = null, progAt = 0, scSendT = 0, scTimer = 0, userScrollAt = 0, zfSendT = 0, zfTimer = 0, zfPersistT = 0, scrollingT = 0;
+  var progTop = -1, userInputAt = 0, lastA = null, progAt = 0, scSendT = 0, scTimer = 0, userScrollAt = 0, zfSendT = 0, zfTimer = 0, zfPersistT = 0, scrollingT = 0;
   function isTxt(d) { return !!(d && (d.k === "wl" || d.k === "vt")); }
   function scBox() { return document.querySelector("#bd-doc .bd-scroll"); }
   function anchorEls(b) { return b.querySelectorAll("h3, .bd-vh, .bd-vr, .bd-w, .bd-term"); }   /* neo theo TỪNG TỪ (đầu dòng đang thấy) -> mọi máy khớp đúng dòng, không chỉ đúng câu */
@@ -1098,9 +1103,10 @@
     if (!b || !a) return; var els = anchorEls(b), el = els[Math.min(a.i, els.length - 1)]; if (!el) return;
     var r = el.getBoundingClientRect(), bt = b.getBoundingClientRect().top;
     progAt = Date.now(); b.scrollTop = a.i === 0 && !a.f ? 0 : Math.round(b.scrollTop + (r.top - bt) + (a.f || 0) * r.height);
+    progTop = b.scrollTop;   /* vị trí THỰC TẾ máy vừa tự đặt (đã bị chặn bởi đầu/cuối trang) — cú cuộn này không phải của người dùng, không gửi ngược lại */
   }
   function sendAnchor() { var b = scBox(); if (!b) return; lastA = anchorOf(b); send({ t: "sc", a: lastA }); }
-  function applyAnchor(a) { if (!a) return; lastA = a; if (Date.now() - userScrollAt < 350) return; goAnchor(scBox(), a); }
+  function applyAnchor(a) { if (!a) return; lastA = a; if (Date.now() - userScrollAt < 350 && Date.now() - userInputAt < 1600) return; goAnchor(scBox(), a); }   /* chỉ nhường khi CHÍNH máy này đang được người dùng kéo */
   function setZoom(v) { v = Math.max(0.7, Math.min(2.6, +v || 1)); if (Math.abs(v - lfz) < 0.004) return false; lfz = v; fitDocText(); paintZ(); return true; }
   function persistZoom() {   /* host ghi hệ số vào bdoc.zf để máy vào sau / tải lại thấy đúng cỡ (không vẽ lại: cùng keyOf) */
     if (!api.isHost()) return; clearTimeout(zfPersistT);
@@ -1119,8 +1125,11 @@
       var b = scBox(); paintFeed(); fitDocText(); paintHL(d); paintReadBtn();   /* khung "Từ vừa tra" chừa chỗ ngay khi mở bài */
       if (!b) return;
       if (lastA) goAnchor(b, lastA);   /* máy vào sau / tải lại: cuộn tới đúng chỗ cả phòng đang xem */
+      ["wheel", "touchstart", "touchmove", "pointerdown", "keydown"].forEach(function (ev) { b.addEventListener(ev, function () { userInputAt = Date.now(); }, { passive: true }); });
       b.addEventListener("scroll", function () {
-        if (Date.now() - progAt < 150) return;   /* cuộn do máy tự theo người khác, không phải người dùng */
+        if (Math.abs(b.scrollTop - progTop) < 2 && Date.now() - progAt < 1500) return;   /* dội lại cú cuộn do chính máy này vừa đặt */
+        if (Date.now() - userInputAt > 1600) return;   /* TJ 2026-10-06: đổi cỡ chữ / xuống dòng / máy khác kéo làm trang tự dịch -> KHÔNG phải người dùng cuộn, không gửi, không đè vị trí chung (trước đây 3 máy gửi đè nhau -> mỗi máy 1 chỗ). 1.6s = đủ cho quán tính vuốt */
+        if (Date.now() - progAt < 150) return;
         userScrollAt = Date.now(); b.classList.add("bd-scrolling"); clearTimeout(scrollingT); scrollingT = setTimeout(function () { b.classList.remove("bd-scrolling"); }, 900);   /* thanh trượt chỉ lộ lúc đang cuộn */
         var now = Date.now(); clearTimeout(scTimer);
         if (now - scSendT > 110) { scSendT = now; sendAnchor(); } else scTimer = setTimeout(function () { scSendT = Date.now(); sendAnchor(); }, 120);
@@ -1187,10 +1196,16 @@
   /* ---------- 🔍 tra nghĩa: chạm 1 từ trong bài đọc, hoặc gõ vào ô 🔍 (riêng từng máy, không đồng bộ) ---------- */
   var lkSeq = 0, lkEl = null;
   function wordEls() { return document.querySelectorAll("#bd-doc .bd-w, #bd-doc .bd-term"); }
+  function selRange(i, j) {   /* tô sáng các từ i..j (1 hoặc nhiều từ) */
+    var L = wordEls(), els = []; for (var k = Math.max(0, i); k <= Math.min(L.length - 1, j == null ? i : j); k++) els.push(L[k]);
+    selWord(null); lkEl = els[0] || null; lkEls = els; els.forEach(function (x) { x.classList.add("bd-wsel"); });
+  }
+  function shareSelRange(i, j) { selRange(i, j); send({ t: "sw", i: i, j: j }); }
   function shareSel(el) {   /* từ vừa chạm sáng GIỐNG NHAU trên mọi máy (TJ 2026-10-06: "cùng nội dung y chang, chỉ khác to nhỏ") */
     var i = el ? Array.prototype.indexOf.call(wordEls(), el) : -1; selWord(el); send({ t: "sw", i: i });
   }
-  function selWord(el) { if (lkEl) lkEl.classList.remove("bd-wsel"); lkEl = el; if (el) el.classList.add("bd-wsel"); }
+  var lkEls = [];
+  function selWord(el) { lkEls.forEach(function (x) { x.classList.remove("bd-wsel"); }); if (lkEl) lkEl.classList.remove("bd-wsel"); lkEl = el; lkEls = el ? [el] : []; if (el) el.classList.add("bd-wsel"); }
   function mnOf(v) {
     var l = api && api.lang ? api.lang() : "vi", own = v && v[l];
     return (v && v.pos ? "<i>" + esc(v.pos) + "</i> " : "") + (own ? "<b>" + esc(own) + "</b>" : "") + (v && v.en ? (own ? "<br><small>" : "") + esc(v.en) + (own ? "</small>" : "") : "");
@@ -1214,7 +1229,7 @@
     $("#bd-fn").textContent = lkFeed.length; $("#bd-fs").textContent = saved.length;
     document.querySelectorAll("#bd-feed [data-ftab]").forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.ftab === lkTab); });
     var rd = $("#bd-fread"); if (rd) rd.hidden = !(lkTab === "saved" && list.length);
-    var fq = $("#bd-fq"); if (fq) fq.hidden = !lookMode;
+    var fq = $("#bd-fq"); if (fq) fq.hidden = false;   /* TJ 2026-10-06: bỏ kính lúp — ô gõ tra từ luôn nằm sẵn ở đầu khung "Từ vừa tra" */
     var l0 = api && api.lang ? api.lang() : "vi", FL0 = { vi: "🇻🇳", zh: "🇨🇳", es: "🇪🇸" }, d0 = curDoc(), rows0 = d0 && d0.bid ? vtCache[d0.bid] : null;
     $("#bd-fl").innerHTML = list.length ? list.map(function (e, i) {
       var v = e.v || {}, own = l0 !== "en" ? v[l0] : "", row = rows0 ? rows0.find(function (w) { return String(w.term || "").toLowerCase() === e.w.toLowerCase(); }) : null;
@@ -1242,6 +1257,7 @@
   function feedNote(txt) { var l = $("#bd-fl"); if (l) { var n = document.createElement("div"); n.className = "bd-fempty"; n.textContent = txt; l.insertBefore(n, l.firstChild); setTimeout(function () { if (n.parentNode) n.parentNode.removeChild(n); }, 4000); } }
   async function lookupShow(phrase, ctx, typed) {
     var ph = String(phrase || "").trim(); if (!ph) return;
+    if (typed) sayWord(ph);   /* gõ từ rồi Enter: đọc đúng từ vừa gõ ngay */
     var ex = lkFeed.find(function (e) { return e.w.toLowerCase() === ph.toLowerCase(); });
     if (ex) { ex.t = Date.now(); ex.who = ex.who || {}; ex.who[myId()] = whoMe(); lkAdd({ id: ex.id, w: ex.w, v: ex.v, t: ex.t, who: ex.who }); send({ t: "lk", e: { id: ex.id, w: ex.w, v: ex.v, t: ex.t, who: ex.who } }); return; }
     if (!lkAllow()) { feedNote("Bạn đã tra nhiều lần trong giờ này, thử lại sau ít phút nhé."); return; }
@@ -1284,6 +1300,7 @@
   /* chạm 1 lần (bàn tay): bảng từ = 🔊 nghe / host tô dòng; bài đọc = chạm từ để tra; host chạm MÉP trái/phải = lật trang */
   function docTap(x, y) {
     var d = curDoc(); if (!d) return;
+    var gs = window.getSelection && window.getSelection(); if ((gs && !gs.isCollapsed) || Date.now() - selDoneAt < 700) return;   /* đang bôi nhiều từ: để phần bôi xử lý */
     var sr = wrap.getBoundingClientRect(), rx = (x - sr.left) / Math.max(1, sr.width), edge = api.isHost() && Z.s <= 1.05 && (rx < 0.18 || rx > 0.82), dir = rx < 0.5 ? -1 : 1;
     if (d.k === "pdf" || d.k === "img") { if (edge && d.k === "pdf") flip(dir); return; }
     var el0 = document.elementFromPoint(x, y), inVt = !!(el0 && el0.closest && el0.closest("#bd-doc .bd-vt"));
@@ -1293,7 +1310,7 @@
       if (hit && lookMode) { shareSel(hit); var para = hit.closest("p"); lookupShow(hit.textContent.trim(), para ? para.textContent : "", false); return; }
       if (hit) {   /* TJ 2026-10-06: chạm từ = đọc to + từ đó lên ĐẦU khung "Từ vừa tra" dưới bảng (🔊 · phiên âm · nghĩa Anh · nghĩa Việt · ☆ Lưu) */
         shareSel(hit); var ph0 = hit.textContent.trim().replace(/^[^A-Za-z]+|[^A-Za-z]+$/g, ""), pa0 = hit.closest("p");
-        if (ph0) { api.say(ph0); lookupShow(ph0, pa0 ? pa0.textContent : "", false); }
+        if (ph0) { sayWord(ph0); lookupShow(ph0, pa0 ? pa0.textContent : "", false); }
         return;
       }
       if (lkEl) shareSel(null);
@@ -1307,12 +1324,31 @@
       var stEl = rows[i].querySelector(".bd-vstar");
       if (stEl) { var rr = stEl.getBoundingClientRect(); if (x >= rr.left - 10 && x <= rr.right + 10 && y >= rr.top - 8 && y <= rr.bottom + 8) { toggleStar(stEl); return; } }
       var sy = rows[i].querySelector(".bd-vsay"), sr2 = sy.getBoundingClientRect();
-      if (x >= sr2.left - 10 && x <= sr2.right + 10) { api.say(sy.dataset.say, true); return; }
+      if (x >= sr2.left - 10 && x <= sr2.right + 10) { sayWord(sy.dataset.say); return; }
       if (api.isHost()) docSet(Object.assign({}, d, { hl: +d.hl === +rows[i].dataset.i ? null : +rows[i].dataset.i }));
       return;
     }
     if (edge) flip(dir);
   }
+  /* ====== ✍ BÔI CHỌN 1 / 2 / NHIỀU TỪ (TJ 2026-10-06: "bôi từ vựng cho 1 hoặc 2 hoặc nhiều từ được") ======
+     Kéo chuột / giữ rồi kéo trên bài đọc -> cụm từ được bôi: tô sáng giống nhau trên mọi máy, đọc to cụm đó, tra nghĩa cả cụm vào khung "Từ vừa tra" (tối đa 8 từ). */
+  var selT = 0;
+  document.addEventListener("selectionchange", function () {
+    clearTimeout(selT); selT = setTimeout(function () {
+      var sel = window.getSelection(); if (!sel || sel.isCollapsed || !sel.rangeCount) return;
+      var r = sel.getRangeAt(0), wl = document.querySelector("#bd-doc .bd-wl"); if (!wl || !wl.contains(r.commonAncestorContainer)) return;
+      var L = wordEls(), first = -1, last = -1;
+      for (var k = 0; k < L.length; k++) if (r.intersectsNode(L[k])) { if (first < 0) first = k; last = k; }
+      if (first < 0) return;
+      if (last - first > 7) last = first + 7;
+      var els = []; for (var q = first; q <= last; q++) els.push(L[q]);
+      var ph = els.map(function (e) { return e.textContent.trim(); }).join(" ").replace(/^[^A-Za-z]+|[^A-Za-z]+$/g, "");
+      sel.removeAllRanges(); selDoneAt = Date.now();
+      if (!ph) return; var para = els[0].closest("p");
+      shareSelRange(first, last); sayWord(ph); lookupShow(ph, para ? para.textContent : "", false);
+    }, 380);
+  });
+  var selDoneAt = 0;
   function hlSentence(i) {
     var d = curDoc(); if (!d || d.k !== "wl") return;
     if (!api.isHost()) { send({ t: "navreq", k: "hs", dir: i }); return; }
