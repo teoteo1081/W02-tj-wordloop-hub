@@ -1693,8 +1693,8 @@
       if (!TREE) await loadTree(true);
       var b = TREE && TREE.blocks.find(function (r) { return r.id === bid; });
       if (b) { out.name = b.name; out.path = pathOf({ table: "blocks", id: bid, title: b.name }); }
-      var r = await sb.from("words").select("id,term,level").eq("block_id", bid).limit(300), ids = [];
-      (r.data || []).forEach(function (w) { out.terms.push(w.term); ids.push(w.id); var k = lvKey(w.level); out.lv[k] = (out.lv[k] || 0) + 1; });
+      var r = await sb.from("words").select("id,term,level,sort").eq("block_id", bid).limit(300), ids = [];
+      (r.data || []).sort(function (a, b) { return (a.sort || 0) - (b.sort || 0); }).forEach(function (w) { out.terms.push(w.term); ids.push(w.id); var k = lvKey(w.level); out.lv[k] = (out.lv[k] || 0) + 1; });
       if (G.isHost && isTJ() && ids.length) {
         var p = await sb.from("word_progress").select("word_id,mastered").eq("user_id", HOST_PROFILE_ID).in("word_id", ids);
         var m = (p.data || []).filter(function (x) { return x.mastered; }).length;

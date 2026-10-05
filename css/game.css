@@ -812,3 +812,7 @@ body.bd-on .g-dotmenu{z-index:80}
 @keyframes g-blink{0%,100%{box-shadow:0 0 0 0 rgba(217,105,95,.75);filter:brightness(1)}50%{box-shadow:0 0 0 9px rgba(217,105,95,0);filter:brightness(1.25)}}
 @media (prefers-reduced-motion:reduce){[data-rvall="wrong"]{animation:none}}
 #l-ttips,#l-tmarks{display:none !important}
+
+/* khay 7 tab + 🎮 Chơi game NẰM TRONG thẻ Block (y chang thẻ Block ở Learning, TJ 2026-10-05: "đừng tách ra") */
+.bd-card .bd-act{max-width:none;margin:8px 0 0;padding-top:2px}
+.bd-card .bd-act .bd-hb{min-width:38px;min-height:32px}
