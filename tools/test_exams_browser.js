@@ -29,49 +29,7 @@ const out = (ok, msg) => { if (ok === "skip") skips++; else if (!ok) fails++; co
 const HOST = "f3fd95c9-06e8-4d39-b6f2-efc113d436cf";   /* id hồ sơ host — hằng số công khai trong js/game.js (HOST_PROFILE_ID) */
 const ROOM = "ZZDM";
 
-/* ---------- supabase GIẢ (chạy trong trang) ---------- */
-function STUB(arg) {
-  const HOST = arg.HOST, ROOM = arg.ROOM;
-  window.__inserts = []; window.__channels = []; window.__rooms = [];
-  const TABLE = {
-    profiles: { id: HOST, display_name: "TJ", is_admin: true },
-    game_rooms: { id: "room-zz", code: ROOM, host_id: HOST, scoring: "q", mode: "kahoot", qtype: "meaning", minutes: 5, q_seconds: 15, scope: [], title: "", meaning_lang: "vi", team_mode: false, teams: 0, status: "lobby" },
-    game_matches: { id: "00000000-0000-4000-8000-000000000001" }
-  };
-  function builder(table) {
-    const st = { table, single: false, op: "select", rows: null, eq: {} };
-    const res = () => {
-      if (st.op === "insert" && st.rows) window.__inserts.push({ table, rows: st.rows });
-      if (table === "game_rooms") for (const k of Object.keys(st.eq)) if (k === "code") window.__rooms.push(String(st.eq[k]));
-      if (st.single) return { data: TABLE[table] || null, error: null };
-      return { data: [], error: null };
-    };
-    const b = new Proxy(function () {}, { get(_, k) {
-      if (k === "then") return (a, c) => Promise.resolve(res()).then(a, c);
-      if (k === "maybeSingle" || k === "single") return () => { st.single = true; return b; };
-      if (k === "insert" || k === "upsert") return (rows) => { st.op = "insert"; st.rows = rows; return b; };
-      if (k === "eq") return (c, v) => { st.eq[c] = v; return b; };
-      return () => b;
-    } });
-    return b;
-  }
-  function channel(name, cfg) {
-    window.__channels.push(name);
-    const h = {}, ps = {}, key = ((cfg || {}).config || {}).presence ? cfg.config.presence.key : "k";
-    const ch = {
-      on(type, opts, fn) { const ev = type === "presence" ? "presence" : opts.event; (h[ev] = h[ev] || []).push(fn); return ch; },
-      subscribe(cb) { setTimeout(() => cb("SUBSCRIBED"), 0); return ch; },
-      track(p) { ps[key] = [p]; setTimeout(() => (h.presence || []).forEach((f) => f()), 0); return Promise.resolve("ok"); },
-      untrack() { return Promise.resolve(); }, presenceState() { return ps; },
-      send(m) { if (m && m.type === "broadcast") setTimeout(() => (h[m.event] || []).forEach((f) => f({ payload: JSON.parse(JSON.stringify(m.payload)) })), 0); return Promise.resolve("ok"); }
-    };
-    return ch;
-  }
-  const storage = { from: () => ({ list: async () => ({ data: [], error: null }), upload: async () => ({ error: null }), remove: async () => ({ data: [], error: null }), move: async () => ({ error: null }), getPublicUrl: () => ({ data: { publicUrl: "" } }) }) };
-  window.supabase = { createClient: () => ({ from: builder, channel, removeChannel() {}, storage }) };
-  try { localStorage.setItem("tjwl_game_player_v1", JSON.stringify({ id: "p-tj", name: "TJ", name_no: 1, avatar: "🦊" })); localStorage.setItem("tjwl_link_user_id_v1", HOST); localStorage.setItem("tjwl_game_lang_v1", "vi"); } catch (e) {}
-  window.WebSocket = function () { throw new Error("WebSocket bị chặn"); };
-}
+const { STUB } = require("./_exams_stub.js");
 
 (async () => {
   const main = await serve(ROOT);
@@ -84,9 +42,10 @@ function STUB(arg) {
   const browser = await pw.chromium.launch({ executablePath: process.env.CHROMIUM_PATH || undefined }).catch(() => pw.chromium.launch({ executablePath: "/opt/pw-browsers/chromium" })).catch(() => pw.chromium.launch());
   const errs = [], dialogs = [];
 
-  async function open(origin, vp) {
+  async function open(origin, vp, blockExams) {
     const ctx = await browser.newContext({ viewport: vp || { width: 1280, height: 900 } });
     await ctx.route((u) => !/^http:\/\/127\.0\.0\.1:/.test(u.toString()), (r) => r.request().url().includes("supabase-js") ? r.fulfill({ status: 200, contentType: "text/javascript", body: "/* thư viện thật bị thay bằng bản giả */" }) : r.abort());
+    if (blockExams) await ctx.route(/\/js\/exams\.js/, (r) => r.abort());
     await ctx.addInitScript(STUB, { HOST, ROOM });
     const page = await ctx.newPage();
     page.on("pageerror", (e) => errs.push(String(e.message).slice(0, 160)));
@@ -175,7 +134,7 @@ function STUB(arg) {
       await A.page.click("#p-stop"); await A.page.waitForFunction(() => !document.querySelector("#s-end").hidden, null, { timeout: 10000 }).catch(() => {});
       await A.page.waitForTimeout(500);
       const ans = await A.page.evaluate(() => window.__inserts.filter((x) => x.table === "game_answers").flatMap((x) => x.rows.map((r) => r.term)));
-      out(ans.length > 0 && ans.every((t) => /^dm:1:1:\d+$/.test(t)), 'game_answers.term dùng tiền tố "dm:" (không đụng "toeic:"): ' + JSON.stringify(ans));
+      out(ans.length > 0 && ans.every((t) => /^dm:dm1:1:\d+$/.test(t)), 'game_answers.term dùng tiền tố "dm:dm1:" (không đụng "toeic:"): ' + JSON.stringify(ans));
       if (await A.page.evaluate(() => !document.querySelector("#s-end").hidden && !document.querySelector("#e-review").hidden)) {
         await A.page.click("#e-review"); await A.page.waitForSelector("#rv-res .g-texpl", { timeout: 5000 }).catch(() => {});
         const v = await A.page.evaluate(() => ({ lvl: !!document.querySelector("#rv-res .g-lvl"), star: document.querySelector("#rv-star").hidden, say: document.querySelector("#rv-say").hidden, tv: !!document.querySelector("#rv-res .g-tvbox"), pass: !!document.querySelector("#rv-vi .g-tpass") }));
@@ -202,6 +161,21 @@ function STUB(arg) {
       out(!!itemsAll.find((x) => x.passage.trim() === nx.pass), "câu kế là câu thật trong dm_items.json");
     }
     await E.ctx.close();
+
+    /* ===== G. exams.js LỖI TẢI: nút Marketing không được hiện/bấm; TOEIC + từ vựng vẫn chạy ===== */
+    const nerr = errs.length, X = await open(main.base, null, true);
+    const g0 = await X.page.evaluate(() => { const b = document.querySelector('#l-hubs [data-hub="dm"]'); return { has: !!b, hidden: !b || b.hidden || getComputedStyle(b).display === "none", exams: typeof window.Exams }; });
+    out(g0.exams === "undefined" && g0.hidden, "exams.js bị chặn: nút 🕵️ Marketing ẩn (không bấm được)");
+    await X.page.evaluate(() => document.querySelector('#l-hubs [data-hub="dm"]').click());   /* ép bấm bằng mã: không được rơi vào hub DM rỗng */
+    await X.page.waitForTimeout(300);
+    const g1 = await X.page.evaluate(() => ({ on: document.querySelector("#l-hubs .on").dataset.hub, dmHidden: document.querySelector("#l-hub-dm").hidden, hostCls: document.querySelector("#l-host").classList.contains("g-hubtest") }));
+    out(g1.on === "vocab" && g1.dmHidden && !g1.hostCls, "exams.js bị chặn + ép bấm nút DM: về hub từ vựng, hộp DM ẩn (hub nhận: " + g1.on + ")");
+    await X.page.click('#l-hubs [data-hub="test"]'); await X.page.waitForSelector("#t-start", { timeout: 5000 });
+    out(await X.page.evaluate(() => !document.querySelector("#l-hub-test").hidden && document.querySelector("#l-hub-dm").hidden), "exams.js bị chặn: hub TOEIC vẫn mở bình thường");
+    await X.page.click('#l-hubs [data-hub="vocab"]'); await X.page.waitForTimeout(200);
+    out(await X.page.evaluate(() => document.querySelector("#l-hub-test").hidden && !!document.querySelector("#l-levels")), "exams.js bị chặn: hub từ vựng vẫn mở bình thường");
+    out(errs.length === nerr, "exams.js bị chặn: không phát sinh lỗi JS chưa bắt" + (errs.length > nerr ? " — " + errs.slice(nerr, nerr + 2).join(" | ") : ""));
+    await X.ctx.close();
 
     /* ===== F. AN TOÀN ===== */
     const probe = await open(main.base);
