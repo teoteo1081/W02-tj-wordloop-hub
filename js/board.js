@@ -135,15 +135,10 @@
     /* TJ 2026-10-06: "tốc độ, Đọc, Dừng… ra bên ngoài cái bảng; bài đọc + từ vựng sát avatar, mấy cái đó ra phía sau" — nhóm âm thanh nằm ở thanh trên cùng, SAU hai tab */
     if (mb0) {
       var vb0 = $("#bd-vtbar"); if (vb0) { vb0.classList.remove("bd-hud"); vb0.classList.add("bd-audio"); mb0.appendChild(vb0); }
-      var wa0 = document.createElement("div"); wa0.id = "bd-wlaud"; wa0.className = "bd-vtbar bd-audio"; wa0.hidden = true;
-      var rt1 = 0.85; try { rt1 = +localStorage.getItem("tjwl_bd_wlrate_v1") || 0.85; } catch (e) {}
-      wa0.innerHTML = '<select id="bd-wlrate" title="Tốc độ đọc">' + [0.7, 0.85, 1, 1.15].map(function (r) { return '<option value="' + r + '"' + (r === rt1 ? " selected" : "") + ">" + r + "x</option>"; }).join("") + "</select>" +
-        '<button type="button" class="pri" data-wlread title="Đọc cả bài">🔊 <span>Đọc bài</span></button><button type="button" data-wlstop title="Dừng đọc">■ <span>Dừng</span></button>';
-      mb0.appendChild(wa0);
-      mb0.addEventListener("click", function (e) { var t = e.target; if (!t.closest) return; if (t.closest("[data-wlread]")) readPassage(); else if (t.closest("[data-wlstop]")) stopReading(); });
-      mb0.addEventListener("change", function (e) { if (e.target.id === "bd-wlrate") { try { localStorage.setItem("tjwl_bd_wlrate_v1", e.target.value); } catch (er) {} } });
+      if (vb0) { var rd0 = document.createElement("button"); rd0.type = "button"; rd0.className = "pri"; rd0.setAttribute("data-wlread", ""); rd0.title = "Đọc cả bài đọc"; rd0.innerHTML = '🔊 <span>Đọc bài</span>'; vb0.appendChild(rd0); }
+      mb0.addEventListener("click", function (e) { var t = e.target; if (t.closest && t.closest("[data-wlread]")) readPassage(); });
     }
-    setInterval(function () { if (open && !mini) paintPeople(); }, 2000);
+    setInterval(function () { if (open && !mini) { paintPeople(); paintHostAway(); } }, 2000);
     var dn0 = $("#bd-docnav"), ppl0 = $("#bd-people"), fd0 = $("#bd-feed");
     if (dn0) {   /* ☰ ← → (trước) và 🎮 (sau) vào hàng nút dưới bảng — chỉ host thấy */
       ["bd-bnext", "bd-bprev", "bd-back"].forEach(function (id) { var e = $("#" + id); if (e) { e.classList.add("bd-hostonly"); dn0.insertBefore(e, dn0.firstChild); } });
@@ -170,13 +165,21 @@
     document.body.appendChild(ob);
     ob.addEventListener("click", function () { api.setBoard(true); });
     cv.addEventListener("pointerdown", down); cv.addEventListener("pointermove", move);
+    (function () {   /* 2 ngón chụm / bung trên bài = phóng / thu CHỮ cho cả phòng (cỡ chữ đổi thật, không bể nét) */
+      var dc = $("#bd-doc"), pp = {}, p0 = null;
+      function dist() { var k = Object.keys(pp); return Math.hypot(pp[k[0]].x - pp[k[1]].x, pp[k[0]].y - pp[k[1]].y) || 1; }
+      dc.addEventListener("pointerdown", function (e) { if (e.pointerType !== "touch" || !isTxt(curDoc())) return; pp[e.pointerId] = { x: e.clientX, y: e.clientY }; if (Object.keys(pp).length === 2) p0 = { d: dist(), z: lfz }; });
+      dc.addEventListener("pointermove", function (e) { if (!pp[e.pointerId]) return; pp[e.pointerId] = { x: e.clientX, y: e.clientY }; if (p0 && Object.keys(pp).length === 2) shareZoom(p0.z * dist() / p0.d); });
+      ["pointerup", "pointercancel", "pointerleave"].forEach(function (ev) { dc.addEventListener(ev, function (e) { delete pp[e.pointerId]; if (Object.keys(pp).length < 2) p0 = null; }); });
+    })();
     $("#bd-doc").parentNode.addEventListener("click", function (e) {   /* v200: bài cuộn — lớp vẽ nhường chạm, chạm đi thẳng vào bài */
-      if (e.target.closest && e.target.closest("#bd-follow")) { setFollow(true); return; }
       if (isTxt(curDoc()) && e.target.closest && e.target.closest("#bd-doc")) docTap(e.clientX, e.clientY);
     });
     window.addEventListener("pointerup", upEv); window.addEventListener("pointercancel", upEv);
     window.addEventListener("resize", fit); window.addEventListener("orientationchange", function () { setTimeout(fit, 250); });
-    wrap.addEventListener("wheel", function (e) { if (!(e.ctrlKey || big) || (!e.ctrlKey && isTxt(curDoc()))) return;   /* bài cuộn: lăn chuột = cuộn bài (trình duyệt tự lo) */ e.preventDefault(); var c = stageRel(e.clientX, e.clientY); zoomAt(Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.002)), c.x, c.y); }, { passive: false });
+    wrap.addEventListener("wheel", function (e) {
+      if (isTxt(curDoc())) { if (e.ctrlKey) { e.preventDefault(); shareZoom(lfz * Math.exp(-Math.max(-30, Math.min(30, e.deltaY)) * 0.006));   /* mỗi nấc chuột ~×1.2, touchpad chụm nhỏ -> mượt */ } return; }   /* bài cuộn: lăn chuột = cuộn bài (trình duyệt tự lo); Ctrl+lăn / chụm touchpad = phóng chữ */
+      if (!(e.ctrlKey || big)) return; e.preventDefault(); var c = stageRel(e.clientX, e.clientY); zoomAt(Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.002)), c.x, c.y); }, { passive: false });
     paintTools();
     $("#bd-lkin").addEventListener("keydown", function (ev) { if (ev.key === "Enter") { var qv = this.value.trim(); if (qv) lookupShow(qv, "", true); } });
   }
@@ -286,7 +289,7 @@
     wrap.style.setProperty("--ar", AR.toFixed(4));
     var pin = sideOn && sidePinned() && big && window.innerWidth >= 900; $("#bd").classList.toggle("bd-sidepin", pin);
     if (!big) { wrap.style.width = ""; wrap.style.height = ""; return; }
-    var sw = $("#bd-sw"), aw = sw.clientWidth - 12 - 56, ah = sw.clientHeight - 12 - ((function () { var t = $("#bd-card"), f = $("#bd-feed"); var mb = $("#bd-mebar"), pp = $("#bd-people"), ibr = $("#bd-iconbar"); return (ibr && !ibr.hidden ? ibr.offsetHeight + 6 : 0) + (t && !t.hidden ? t.offsetHeight + 8 : 0) + (f && !f.hidden ? f.offsetHeight + 8 : 0) + (mb && !mb.hidden ? mb.offsetHeight + 6 : 0) + (pp && !pp.hidden ? pp.offsetHeight + 6 : 0); })());
+    var sw = $("#bd-sw"), aw = sw.clientWidth - 12, ah = sw.clientHeight - 12 - ((function () { var t = $("#bd-card"), f = $("#bd-feed"); var mb = $("#bd-mebar"), pp = $("#bd-people"), ibr = $("#bd-iconbar"); return (ibr && !ibr.hidden ? ibr.offsetHeight + 6 : 0) + (t && !t.hidden ? t.offsetHeight + 8 : 0) + (f && !f.hidden ? f.offsetHeight + 8 : 0) + (mb && !mb.hidden ? mb.offsetHeight + 6 : 0) + (pp && !pp.hidden ? pp.offsetHeight + 6 : 0); })());
     if (aw < 60 || ah < 60) return;
     /* TJ 2026-10-05: "đừng cố định nữa" — bảng to lấp KÍN chỗ trống (điện thoại dọc, cột Learning hẹp), không ép 4:3 nữa.
        Nét vẽ tính theo bề ngang (k = cv.width / W) nên đổi tỉ lệ không méo; trang bài đọc vẫn chia chung, chỉ cỡ chữ mỗi máy tự phóng cho đầy khung. */
@@ -528,7 +531,8 @@
     else if (m.t === "lk") { if (m.e && m.e.id && m.e.w) lkAdd(m.e); }
     else if (m.t === "lksave") { var le = lkFeed.find(function (x) { return x.id === m.id; }); if (le) { le.saved = !!m.on; paintFeed(); } }
     else if (m.t === "navreq") { if (api.isHost()) { if (m.k === "fs") fsStep(m.dir | 0); else if (m.k === "sw") swKind(m.dir > 0 ? "vt" : "wl"); else if (m.k === "page") flip(m.dir > 0 ? 1 : -1); else if (m.k === "hs") hlSentence(m.dir | 0); else navStep(m.k, m.dir > 0 ? 1 : -1); } }
-    else if (m.t === "sc") { hostA = m.a || null; if (!api.isHost() && follow) goAnchor(scBox(), hostA); }
+    else if (m.t === "sc") applyAnchor(m.a);
+    else if (m.t === "zf") { if (setZoom(m.v)) { persistZoom(); } if (m.a) applyAnchor(m.a); }
     else if (m.t === "l") { var L = lasers[m.pid] = lasers[m.pid] || { pts: [] }; L.name = m.n; L.pts.push({ x: m.x, y: m.y, t: Date.now() }); draw(); }
     /* xin bản đầy đủ: host trả lời ngay; HOST VẮNG (mất mạng) thì người được cấp quyền (moderator) có nét trên bảng trả lời thay
        (chờ ngẫu nhiên 0.3–1s, ai đã thấy người khác trả lời thì thôi) — TJ 2026-10-04: "host mất mạng mà có moderator thì bảng vẫn ổn" */
@@ -541,7 +545,7 @@
       answered[m.to] = 1;
       if (m.to !== cid) return;
       (m.items || []).forEach(function (it) { if (!items[it.id]) { items[it.id] = it; order.push(it.id); } });   /* GỘP (không xoá): host vừa tải lại vẫn giữ nét đang có */
-      (m.lk || []).forEach(function (e) { if (e && e.id && !lkFeed.some(function (x) { return x.id === e.id; })) lkFeed.push(e); }); if (m.lk && m.lk.length) paintFeed();
+      (m.lk || []).forEach(function (e) { if (!e || !e.id || !e.w) return; var ex = lkFeed.find(function (x) { return x.w.toLowerCase() === e.w.toLowerCase(); }); if (ex) ex.who = Object.assign({}, e.who || {}, ex.who || {}); else lkFeed.push(e); }); if (m.lk && m.lk.length) paintFeed();
       draw(); paintTexts();
     }
   }
@@ -654,6 +658,7 @@
   }
   function keyOf(d) { return d ? (d.k + ":" + (d.url || d.bid) + ":" + (d.p || 1) + (d.ph ? ":" + d.ph : "") + (d.fs != null ? ":f" + d.fs : "")) : ""; }
   function defAR(d) { return 4 / 3; }   /* TJ 2026-10-05: KHUNG CỐ ĐỊNH 4:3 cho mọi nội dung (bài đọc, bảng từ, PDF, ảnh…): đổi tài liệu khung không nhảy to nhỏ, trang PDF nằm lọt giữa khung */
+  function d0zf(d) { return d && d.zf ? d.zf : 1; }
   function syncDoc(d) {
     var k = keyOf(d), nav = $("#bd-docnav");
     if (nav) {
@@ -679,9 +684,9 @@
     paintFeed();   /* chừa chỗ khung "Từ vừa tra" TRƯỚC khi dựng bài -> lần dựng đầu đã đúng cỡ, không giật khi bấm nút */   /* (trong hàm này "isTxt" là biến boolean) */
     if (bdl) bdl.classList.toggle("bd-txt", txt0);   /* CSS: lớp vẽ nhường chạm/lăn chuột cho bài cuộn */
     if (pnb) pnb.hidden = txt0; if (txt0 && penMode) setPen(false);   /* bút vẽ tự do không dùng trên bài cuộn (nét sẽ lệch chữ) — chạm câu để tô sáng */
-    paintCard(d); paintMe(); paintPeople(); notifyParent(open && !mini);
+    paintCard(d); paintMe(); paintPeople(); paintHostAway(); notifyParent(open && !mini);
     if (k === docKey) { if (txt0) paintHL(d); return; }
-    hostA = null; follow = true;
+    lastA = null; lfz = Math.max(0.7, Math.min(2.6, +d0zf(d) || 1));
     stash[docKey] = { items: items, order: order };   /* cất nét của trang cũ */
     var sv = stash[k] || { items: {}, order: [] }; items = sv.items; order = sv.order; mine = []; redo = [];
     var wasDoc = docKey.split(":").slice(0, 2).join(":"), isDoc = k.split(":").slice(0, 2).join(":");
@@ -695,6 +700,10 @@
     var av = String(m.avatar || ""), pic = /^https?:/.test(av) ? '<img alt="" src="' + esc(av) + '">' : '<span class="bd-meav">' + esc(av || "👤") + "</span>";
     el.innerHTML = '<span class="bd-mering">' + pic + (api.isHost() ? '<i title="Host">👑</i>' : "") + "</span><b>" + esc(m.name) + (m.name_no > 1 ? " #" + m.name_no : "") + "</b>";   /* kiểu HelloTalk: vòng tròn avatar, tên ở dưới */
     el.hidden = false;
+  }
+  function paintHostAway() {   /* TJ 2026-10-06: host KHÔNG có trong phòng (đang ở trang khác / mất mạng) -> người chơi thấy "chờ host" thay vì 1 bảng đóng băng */
+    var el = $("#bd"); if (!el || !api || !api.hostHere) return;
+    var away = !api.isHost() && !api.hostHere(); if (el.classList.contains("bd-hostaway") !== away) el.classList.toggle("bd-hostaway", away);
   }
   var peopleKey = "", PFLAG = { vi: "🇻🇳", en: "🇺🇸", zh: "🇨🇳", es: "🇪🇸" };   /* cờ = tiếng mẹ đẻ người đó chọn (như chip phòng chờ) */
   function avHTML(a) { a = String(a || ""); return /^https?:/.test(a) ? '<img alt="" src="' + esc(a) + '">' : '<span class="bd-meav">' + esc(a || "👤") + "</span>"; }
@@ -720,18 +729,16 @@
   }
   function paintDoc(d) {
     var box = $("#bd-doc"); if (!box) return;
-    var vtb = $("#bd-vtbar"), wla = $("#bd-wlaud"), h0 = (vtb && vtb.hidden) + ":" + (wla && wla.hidden);
-    if (vtb) { vtb.hidden = !(d && d.k === "vt"); var va = $("#bd-vtadd"); if (va) va.hidden = !api.isHost(); }
-    if (wla) wla.hidden = !(d && d.k === "wl");
-    if (h0 !== (vtb && vtb.hidden) + ":" + (wla && wla.hidden)) relayout();   /* thanh trên đổi cao -> tính lại khung bảng */
+    var vtb = $("#bd-vtbar"), h0 = vtb && vtb.hidden;
+    if (vtb) { vtb.hidden = !isTxt(d); var va = $("#bd-vtadd"); if (va) va.hidden = !api.isHost(); }
+    if (h0 !== (vtb && vtb.hidden)) relayout();   /* thanh trên đổi cao -> tính lại khung bảng */
     stopReading();
     var job = ++docJob; box.innerHTML = "";
     if (!d && api && !api.isHost()) box.innerHTML = '<div class="bd-docmsg bd-wait">⏳ Chờ host chọn bài…</div>';   /* v201: host đang ở danh sách Block -> người chơi không thấy bảng trống trơn */ wrap.classList.toggle("bd-hasdoc", !!d); wrap.classList.toggle("bd-office", !!(d && d.k === "office"));
     if (!d) return;
     if (d.k === "img") { box.innerHTML = '<img alt="" src="' + esc(d.url) + '">'; return; }
     if (d.k === "pdf") return pdfPage(d, job);
-    if (d.k === "wl") return wlPage(d, job);
-    if (d.k === "vt") return vtPage(d, job);
+    if (isTxt(d)) return comboPage(d, job);   /* v207 (TJ 2026-10-06): bỏ 2 tab — BẢNG TỪ VỰNG rồi tới BÀI ĐỌC trong 1 trang cuộn, đúng thứ tự Learning */
     if (d.k === "office") { box.innerHTML = '<iframe class="bd-office-f" src="https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(d.url) + '" allowfullscreen></iframe><a class="bd-office-a" target="_blank" rel="noopener" href="' + esc(d.url) + '">⬇ ' + esc(d.name || "file") + "</a>"; return; }
   }
   function loadScript(src) { return new Promise(function (ok, no) { var sc = document.createElement("script"); sc.src = src; sc.onload = ok; sc.onerror = no; document.head.appendChild(sc); }); }
@@ -762,15 +769,14 @@
   function fsOf(d) { var f = d && d.fs; return f == null ? FS_DEF : Math.max(0, Math.min(FS.length - 1, +f || 0)); }
   /* v200 (TJ 2026-10-05: "1 trang duy nhất, hất lên hất xuống để đọc"): bài đọc + bảng từ là 1 TRANG CUỘN. Cỡ chữ = cỡ đọc dễ chịu theo bề rộng
      của từng máy (15–22px) × hệ số A−/A+ RIÊNG máy đó (localStorage) — không co giãn cho vừa khung nữa. */
-  var LFZ_K = "tjwl_bd_lfz_v1", lfz = 1; try { lfz = +localStorage.getItem(LFZ_K) || 1; } catch (e) {}
+  var lfz = 1;   /* hệ số cỡ chữ DÙNG CHUNG cả phòng (bdoc.zf) */
   function fitDocText() {
-    var doc = $("#bd-doc"), box = doc && doc.querySelector(".bd-wl, .bd-vt"); if (!box) return;
+    var doc = $("#bd-doc"); if (!doc || !doc.querySelector(".bd-scroll")) return;
     var w = doc.clientWidth; if (!w) return;
-    var b = scBox(), a = b && api.isHost() ? anchorOf(b) : null;
-    var fz = Math.max(15, Math.min(20, 9 + w * 0.022)) * lfz;   /* cỡ như khung đọc của Learning (~16–20px) */
-    if (box.classList.contains("bd-vt") && fz < 15) fz = 15;   /* sàn cỡ chữ bảng từ: không nhỏ hơn chip từ ở thẻ trên */
-    box.style.fontSize = fz.toFixed(2) + "px";
-    if (b) { if (a) goAnchor(b, a); else if (follow && hostA) goAnchor(b, hostA); }   /* đổi cỡ chữ / xoay máy: giữ đúng câu đang đọc */
+    var b = scBox(), a = b ? anchorOf(b) : null;
+    /* cỡ chữ gốc theo bề rộng máy (15–20px) × hệ số dùng chung lfz; đặt trên #bd-doc nên bảng từ + container query (đơn vị em) đổi theo -> phóng bằng cách ĐỔI CỠ CHỮ (nét rõ, tự xuống dòng vừa khung), không phóng ảnh */
+    doc.style.fontSize = (Math.max(15, Math.min(20, 9 + w * 0.022)) * lfz).toFixed(2) + "px";
+    if (b && a) goAnchor(b, a);   /* đổi cỡ chữ / xoay máy: giữ đúng chỗ đang đọc */
   }
   /* chia bài đọc thành trang theo CÂU (cùng kết quả trên mọi máy) */
   function splitPagesOld(raw, lvl) {
@@ -849,6 +855,29 @@
     while ((m = re.exec(pg))) { out += plain(pg.slice(last, m.index)) + '<b class="bd-term">' + esc(m[1]) + "</b>"; last = m.index + m[0].length; }
     return out + plain(pg.slice(last));
   }
+  function vtSection(rows, d) {
+    var VR = Math.max(1, rows.length);
+      var vtHead = '<div class="bd-vh"><span></span><span>Vocabulary</span><span>Level</span><span>Word form</span><span>Phonetic</span><span>English definition</span><span>' + (api.lang && api.lang() === "en" ? "Meaning" : api.lang && api.lang() === "zh" ? "中文意思" : api.lang && api.lang() === "es" ? "Significado" : "Vietnamese meaning") + "</span></div>";
+      var vtInner = function (pp) { var part = rows.slice((pp - 1) * VR, pp * VR); return '<h3>📘 1. Danh sách từ vựng cần học' + (d.name ? ' <small>· ' + esc(d.name) + "</small>" : "") + "</h3>" + '<div class="bd-vtph"></div>' + vtHead + (part.length ? part.map(function (w, i) {
+        var idx = (pp - 1) * VR + i;
+        return '<div class="bd-vr" data-i="' + idx + '"><span class="bd-vsay" data-say="' + esc(w.term) + '">🔊</span><span class="bd-vtm"><b class="bd-vterm">' + esc(w.term) + '</b><span class="bd-vstar" data-star="' + esc(w.id || "") + '">☆</span></span><span class="bd-vl">' + esc(w.level || "") + '</span><span class="bd-vf">' + (w.pos ? "<i>" + esc(w.pos) + "</i>" : "") + '</span><span class="bd-vph">' + (w.ipa ? esc(w.ipa) : "—") + '</span><span class="bd-ve">' + esc(w.def_en || "") + '</span><span class="bd-vd">' + esc(vtMeaning(w)) + "</span></div>";
+      }).join("") : '<div class="bd-docmsg">—</div>'); };
+    return '<div class="bd-vt">' + vtInner(1) + "</div>";
+  }
+  async function comboPage(d, job) {
+    var box = $("#bd-doc"); box.innerHTML = '<div class="bd-docmsg">⏳</div>';
+    try {
+      var b = wlCache[d.bid] || (wlCache[d.bid] = await api.block(d.bid)); if (job !== docJob) return;
+      var pk = wlPick(d, b);
+      if (d.ph && !pk.pick) { b = wlCache[d.bid] = await api.block(d.bid); pk = wlPick(d, b); if (job !== docJob) return; }   /* bài vừa tạo trên máy khác */
+      var mm = metaOf(pk.pick ? pk.pick.raw : pk.items[0] ? pk.items[0].raw : ""), raw = mm.text, meta = mm.meta;
+      var rows = vtCache[d.bid] || (vtCache[d.bid] = await api.words(d.bid)); if (job !== docJob) return;
+      if (api.isHost() && (d.n !== 1 || (d.p || 1) !== 1)) docSet(Object.assign({}, d, { n: 1, p: 1 }));
+      var ttl = meta.title || d.name;
+      box.innerHTML = '<div class="bd-both bd-scroll" lang="en">' + vtSection(rows, d) + '<div class="bd-wl">' + (ttl ? "<h3>" + esc(ttl) + "</h3>" : "") + (raw.trim() ? wlScrollHTML(raw) : "<p>(Block này chưa có bài đọc)</p>") + "</div></div>";
+      paintStars(rows); afterTxt(d);
+    } catch (e) { if (job === docJob) box.innerHTML = '<div class="bd-docmsg">⚠ ' + esc(e.message || e) + "</div>"; }
+  }
   async function wlPage(d, job) {
     var box = $("#bd-doc"); box.innerHTML = '<div class="bd-docmsg">⏳</div>';
     try {
@@ -876,17 +905,17 @@
     var on = await api.toggleStar(id, !starMap[id]); starMap[id] = !!on; el.textContent = on ? "★" : "☆"; el.classList.toggle("on", !!on);
   }
   function placeVtBar() {}   /* v206: thanh âm thanh nằm ở thanh trên cùng (ngoài bảng), không còn bám vào bảng từ */
-  function stopReading() { reading++; try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) {} document.querySelectorAll("#bd-doc .bd-vr.rd, #bd-doc .bd-s.bd-rd").forEach(function (r) { r.classList.remove("rd", "bd-rd"); }); var g = document.querySelector("#bd-wlaud [data-wlread]"); if (g) g.classList.remove("on"); }
+  function stopReading() { reading++; try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) {} document.querySelectorAll("#bd-doc .bd-vr.rd, #bd-doc .bd-s.bd-rd").forEach(function (r) { r.classList.remove("rd", "bd-rd"); }); var g = document.querySelector("#bd-vtbar [data-wlread]"); if (g) g.classList.remove("on"); }
   /* 🔊 đọc cả bài (riêng máy mình): từng câu, câu đang đọc sáng lên + tự cuộn tới (host cuộn -> người chơi đang "Theo host" cuộn theo) */
   async function readPassage() {
     if (!window.speechSynthesis) return;
-    stopReading(); var my = reading, b = scBox(), sel = $("#bd-wlrate"), rate = sel ? +sel.value || 0.85 : 0.85, g = document.querySelector("#bd-wlaud [data-wlread]");
+    stopReading(); var my = reading, b = scBox(), sel = $("#bd-vtrate"), rate = sel ? +sel.value || 0.85 : 0.85, g = document.querySelector("#bd-vtbar [data-wlread]");
     if (g) g.classList.add("on");
     var ss = b ? b.querySelectorAll(".bd-s") : [];
     for (var i = 0; i < ss.length && my === reading; i++) {
       ss[i].classList.add("bd-rd");
       var r = ss[i].getBoundingClientRect(), br = b.getBoundingClientRect();
-      if (r.top < br.top + 40 || r.bottom > br.bottom - 80) { progAt = Date.now(); b.scrollTop += Math.round(r.top - br.top - br.height * 0.3); if (api.isHost()) sendAnchor(); }
+      if (r.top < br.top + 40 || r.bottom > br.bottom - 80) { progAt = Date.now(); b.scrollTop += Math.round(r.top - br.top - br.height * 0.3); sendAnchor(); }   /* người đọc cuộn -> cả phòng cuộn theo */
       await speakOne(ss[i].textContent.trim(), "en-US", rate);
       ss[i].classList.remove("bd-rd");
     }
@@ -946,10 +975,11 @@
     document.querySelectorAll("#bd-doc .bd-vr").forEach(function (r) { r.classList.toggle("hl", !!(d && d.hl != null && +r.dataset.i === +d.hl)); });
     document.querySelectorAll("#bd-doc .bd-s").forEach(function (x) { x.classList.toggle("bd-shl", !!(d && d.hs != null && +x.dataset.s === +d.hs)); });
   }
-  /* ====== 📍 CUỘN + BÁM THEO HOST (v200) ======
-     Host cuộn tới đâu -> gửi "câu/dòng đầu tiên đang thấy" (không gửi pixel: mỗi máy xuống dòng khác nhau) -> người chơi đang "Theo host" tự cuộn tới đúng câu đó.
-     Người chơi tự vuốt = tạm rời host, hiện nút "📍 Theo host" để quay lại. */
-  var follow = true, hostA = null, progAt = 0, scSendT = 0, scTimer = 0;
+  /* ====== 🔗 MÀN HÌNH MỌI NGƯỜI GIỐNG NHAU (TJ 2026-10-06: "màn hình của các user đều giống nhau cho dù là ai kéo hay điều chỉnh") ======
+     AI cuộn -> gửi "phần tử đầu tiên đang thấy" (câu / dòng từ, KHÔNG gửi pixel vì mỗi máy xuống dòng khác nhau) -> mọi máy cuộn tới đúng chỗ đó.
+     AI phóng / thu chữ (A−/A+, 2 ngón, Ctrl+lăn) -> gửi hệ số cỡ chữ + vị trí -> mọi máy đổi theo; host lưu vào bdoc.zf cho máy vào sau.
+     Cùng lúc nhiều người thao tác: người thao tác SAU CÙNG thắng; máy đang tự cuộn thì bỏ qua tin đến trong 0.35s (khỏi giằng co). */
+  var lastA = null, progAt = 0, scSendT = 0, scTimer = 0, userScrollAt = 0, zfSendT = 0, zfTimer = 0, zfPersistT = 0, scrollingT = 0;
   function isTxt(d) { return !!(d && (d.k === "wl" || d.k === "vt")); }
   function scBox() { return document.querySelector("#bd-doc .bd-scroll"); }
   function anchorEls(b) { return b.querySelectorAll("h3, .bd-s, .bd-vh, .bd-vr"); }
@@ -964,22 +994,31 @@
     var r = el.getBoundingClientRect(), bt = b.getBoundingClientRect().top;
     progAt = Date.now(); b.scrollTop = a.i === 0 && !a.f ? 0 : Math.round(b.scrollTop + (r.top - bt) + (a.f || 0) * r.height);
   }
-  function paintFollow() { var f = $("#bd-follow"); if (f) f.hidden = follow || api.isHost() || !scBox(); }
-  function setFollow(on) { follow = !!on; paintFollow(); if (follow && hostA) goAnchor(scBox(), hostA); }
-  function sendAnchor() { var b = scBox(); if (b && api.isHost()) send({ t: "sc", a: anchorOf(b) }); }
+  function sendAnchor() { var b = scBox(); if (!b) return; lastA = anchorOf(b); send({ t: "sc", a: lastA }); }
+  function applyAnchor(a) { if (!a) return; lastA = a; if (Date.now() - userScrollAt < 350) return; goAnchor(scBox(), a); }
+  function setZoom(v) { v = Math.max(0.7, Math.min(2.6, +v || 1)); if (Math.abs(v - lfz) < 0.004) return false; lfz = v; fitDocText(); paintZ(); return true; }
+  function persistZoom() {   /* host ghi hệ số vào bdoc.zf để máy vào sau / tải lại thấy đúng cỡ (không vẽ lại: cùng keyOf) */
+    if (!api.isHost()) return; clearTimeout(zfPersistT);
+    zfPersistT = setTimeout(function () { var d = curDoc(); if (d && isTxt(d) && Math.abs((d.zf || 1) - lfz) > 0.004) docSet(Object.assign({}, d, { zf: +lfz.toFixed(3) })); }, 500);
+  }
+  function shareZoom(v) {   /* người thao tác: đổi cỡ chữ cho TẤT CẢ (giới hạn ~10 tin/giây khi 2 ngón kéo liên tục) */
+    var b = scBox(), a0 = b ? anchorOf(b) : null;
+    if (!setZoom(v)) return;
+    if (b && a0) goAnchor(b, a0);
+    clearTimeout(zfTimer);
+    var go = function () { zfSendT = Date.now(); var bb = scBox(); send({ t: "zf", v: +lfz.toFixed(3), a: bb ? anchorOf(bb) : null }); persistZoom(); };
+    if (Date.now() - zfSendT > 90) go(); else zfTimer = setTimeout(go, 100);
+  }
   function afterTxt(d) {
     requestAnimationFrame(function () {
-      var b = scBox(); paintFeed(); fitDocText(); paintHL(d); placeVtBar();   /* khung "Từ vừa tra" chừa chỗ ngay khi mở bài */
-      var doc = $("#bd-doc"), fb = $("#bd-follow");
-      if (doc && !fb) { fb = document.createElement("button"); fb.type = "button"; fb.id = "bd-follow"; fb.className = "bd-hb bd-follow"; fb.textContent = "📍 Theo host"; fb.hidden = true; doc.parentNode.appendChild(fb); }
-      paintFollow();
+      var b = scBox(); paintFeed(); fitDocText(); paintHL(d);   /* khung "Từ vừa tra" chừa chỗ ngay khi mở bài */
       if (!b) return;
-      if (!api.isHost() && follow && hostA) goAnchor(b, hostA);
+      if (lastA) goAnchor(b, lastA);   /* máy vào sau / tải lại: cuộn tới đúng chỗ cả phòng đang xem */
       b.addEventListener("scroll", function () {
-        placeVtBar();
-        if (Date.now() - progAt < 150) return;   /* cuộn do máy tự bám theo host, không phải người dùng */
-        if (api.isHost()) { var now = Date.now(); clearTimeout(scTimer); if (now - scSendT > 120) { scSendT = now; sendAnchor(); } else scTimer = setTimeout(function () { scSendT = Date.now(); sendAnchor(); }, 140); }
-        else if (follow) setFollow(false);
+        if (Date.now() - progAt < 150) return;   /* cuộn do máy tự theo người khác, không phải người dùng */
+        userScrollAt = Date.now(); b.classList.add("bd-scrolling"); clearTimeout(scrollingT); scrollingT = setTimeout(function () { b.classList.remove("bd-scrolling"); }, 900);   /* thanh trượt chỉ lộ lúc đang cuộn */
+        var now = Date.now(); clearTimeout(scTimer);
+        if (now - scSendT > 110) { scSendT = now; sendAnchor(); } else scTimer = setTimeout(function () { scSendT = Date.now(); sendAnchor(); }, 120);
       }, { passive: true });
     });
   }
@@ -1029,11 +1068,7 @@
   /* A−/A+ (host, bài đọc/bảng từ): đổi cỡ chữ CHUNG, giữ vị trí đang đọc */
   function fsStep(delta) {
     var d = curDoc(); if (!d) return;
-    if (isTxt(d)) {   /* v200: cỡ chữ riêng từng máy (mỗi người tự chỉnh, không đổi của người khác) */
-      lfz = delta === 0 ? 1 : Math.max(0.7, Math.min(1.8, Math.round(lfz * (delta > 0 ? 1.15 : 1 / 1.15) * 100) / 100));
-      try { localStorage.setItem(LFZ_K, String(lfz)); } catch (e) {}
-      fitDocText(); paintZ(); return;
-    }
+    if (isTxt(d)) { shareZoom(delta === 0 ? 1 : lfz * (delta > 0 ? 1.15 : 1 / 1.15)); return; }   /* TJ 2026-10-06: ai bấm cũng đổi cho cả phòng */
     if (!api.isHost()) { send({ t: "navreq", k: "fs", dir: delta }); return; }
     var cur = fsOf(d), nx = delta === 0 ? FS_DEF : Math.max(0, Math.min(FS.length - 1, cur + delta)); if (nx === cur) return;
     var np = 1;
@@ -1077,14 +1112,17 @@
       var on = row ? !!starMap[row.id] : !!(api.savedWord && api.savedWord(e.w));
       return '<div class="bd-fe2' + (i === 0 && e.t > Date.now() - 2500 ? " new" : "") + '"><button type="button" class="bd-hb bd-fsay" data-lksay="' + esc(e.w) + '" title="Nghe">🔊</button><div class="bd-fe2m">' +
         '<div class="bd-fe2h"><b>' + esc(e.w) + "</b>" + (v.ipa ? '<span class="bd-fe2ipa">' + esc(v.ipa) + "</span>" : "") + (v.pos ? "<i>" + esc(v.pos) + "</i>" : "") +
-        '<button type="button" class="bd-hb bd-fe2star' + (on ? " on" : "") + '" data-lkstar="' + esc(e.id) + '" title="' + (on ? "Đã lưu" : "Lưu") + '">' + (on ? "★" : "☆") + "</button>" + (e.by ? '<span class="by">' + esc(e.by) + "</span>" : "") + "</div>" +
+        '<button type="button" class="bd-hb bd-fe2star' + (on ? " on" : "") + '" data-lkstar="' + esc(e.id) + '" title="' + (on ? "Đã lưu" : "Lưu") + '">' + (on ? "★" : "☆") + "</button>" + whoHTML(e) + "</div>" +
         (v.en ? '<div class="bd-fe2en"><span>🇺🇸</span>' + esc(v.en) + "</div>" : "") + (own ? '<div class="bd-fe2vi"><span>' + (FL0[l0] || "") + "</span><b>" + esc(own) + "</b></div>" : "") + "</div></div>";
     }).join("") : '<div class="bd-fempty">Chạm vào một từ trong bài đọc để xem nghĩa — từ vừa tra hiện ở đây, kéo lên xuống để xem lại.</div>';
     if (was0 !== f.hidden) relayout();   /* chỉ tính lại khung bảng khi khung tra từ ẩn/hiện — nội dung đổi thì cao cố định, bảng không giật */
   }
-  function lkAdd(e) {
-    lkFeed = lkFeed.filter(function (x) { return x.id !== e.id && x.w.toLowerCase() !== e.w.toLowerCase(); });
-    lkFeed.unshift(e); if (lkFeed.length > 60) lkFeed.length = 60; paintFeed(); var f2 = $("#bd-feed"); if (f2) f2.scrollTop = 0;   /* từ mới nhất luôn ở trên cùng */
+  function whoMe() { var m = me(); return { n: m ? m.name : "", a: m ? m.avatar || "" : "" }; }
+  function lkAdd(e) {   /* cùng 1 từ ai tra cũng GỘP vào 1 dòng: danh sách người tra (who) + từ nhảy lên đầu */
+    var k = e.w.toLowerCase(), ex = lkFeed.find(function (x) { return x.w.toLowerCase() === k; });
+    if (ex) { ex.who = Object.assign({}, ex.who || {}, e.who || {}); ex.t = Math.max(ex.t || 0, e.t || 0); if (!ex.v && e.v) ex.v = e.v; lkFeed = [ex].concat(lkFeed.filter(function (x) { return x !== ex; })); }
+    else { e.who = e.who || {}; lkFeed.unshift(e); }
+    if (lkFeed.length > 60) lkFeed.length = 60; paintFeed(); var f2 = $("#bd-feed"); if (f2) f2.scrollTop = 0;   /* từ mới nhất luôn ở trên cùng; đầy thì cuộn xuống xem */
   }
   function setLook(on) {
     lookMode = !!on; var b = $("#bd-lkbtn"); if (b) b.classList.toggle("on", lookMode);
@@ -1096,7 +1134,7 @@
   async function lookupShow(phrase, ctx, typed) {
     var ph = String(phrase || "").trim(); if (!ph) return;
     var ex = lkFeed.find(function (e) { return e.w.toLowerCase() === ph.toLowerCase(); });
-    if (ex) { ex.t = Date.now(); lkFeed = [ex].concat(lkFeed.filter(function (x) { return x !== ex; })); paintFeed(); var f1 = $("#bd-feed"); if (f1) f1.scrollTop = 0; return; }
+    if (ex) { ex.t = Date.now(); ex.who = ex.who || {}; ex.who[myId()] = whoMe(); lkAdd({ id: ex.id, w: ex.w, v: ex.v, t: ex.t, who: ex.who }); send({ t: "lk", e: { id: ex.id, w: ex.w, v: ex.v, t: ex.t, who: ex.who } }); return; }
     if (!lkAllow()) { feedNote("Bạn đã tra nhiều lần trong giờ này, thử lại sau ít phút nhé."); return; }
     var d = curDoc(); if (d && d.bid && !vtCache[d.bid]) { try { vtCache[d.bid] = await api.words(d.bid); } catch (e) {} }
     var row = d && d.bid && vtCache[d.bid] ? vtCache[d.bid].find(function (w) { return w.term.toLowerCase() === ph.toLowerCase(); }) : null, v = null;
@@ -1104,8 +1142,14 @@
     else { feedNote("⏳ Đang tra “" + ph + "”…"); try { v = await api.lookup(ph, ctx || ""); } catch (e) {} }
     var okv = v && (v.en || v.vi || v.zh || v.es);
     if (!okv) { feedNote("Chưa tra được “" + ph + "” (mạng/AI bận). Thử lại nhé."); return; }
-    var e2 = { id: uid(), w: ph, v: v, by: me() ? me().name : "", saved: false, t: Date.now() };
+    var e2 = { id: uid(), w: ph, v: v, by: me() ? me().name : "", saved: false, t: Date.now(), who: {} };
+    e2.who[myId()] = whoMe();
     lkAdd(e2); send({ t: "lk", e: e2 });
+  }
+  function whoHTML(e) {   /* avatar + tên người tra (tối đa 3) + "👥 N" khi từ này nhiều người tra */
+    var ids = Object.keys(e.who || {}), n = ids.length; if (!n) return e.by ? '<span class="bd-whol"><span class="bd-wn">' + esc(e.by) + "</span></span>" : "";
+    var chips = ids.slice(0, 3).map(function (id) { var w = e.who[id] || {}, av = String(w.a || ""); return '<span class="bd-wc" title="' + esc(w.n || "") + '">' + (/^https?:/.test(av) ? '<img alt="" src="' + esc(av) + '">' : '<i>' + esc(av || "👤") + "</i>") + '<span class="bd-wn">' + esc(w.n || "?") + "</span></span>"; }).join("");
+    return '<span class="bd-whol">' + chips + (n > 3 ? '<span class="bd-wmore">+' + (n - 3) + "</span>" : "") + (n > 1 ? '<span class="bd-wcnt" title="' + n + ' người đã tra từ này">👥 ' + n + "</span>" : "") + "</span>";
   }
   async function lkStar(id) {   /* ☆ Lưu ở khung Từ vừa tra: từ của Block = ⭐ (TJ -> ⭐ Ôn riêng); từ khác = sổ riêng vocab_saves */
     var e = lkFeed.find(function (x) { return x.id === id; }); if (!e) return;
@@ -1133,7 +1177,8 @@
     var d = curDoc(); if (!d) return;
     var sr = wrap.getBoundingClientRect(), rx = (x - sr.left) / Math.max(1, sr.width), edge = api.isHost() && Z.s <= 1.05 && (rx < 0.18 || rx > 0.82), dir = rx < 0.5 ? -1 : 1;
     if (d.k === "pdf" || d.k === "img") { if (edge && d.k === "pdf") flip(dir); return; }
-    if (d.k === "wl") {
+    var el0 = document.elementFromPoint(x, y), inVt = !!(el0 && el0.closest && el0.closest("#bd-doc .bd-vt"));
+    if (isTxt(d) && !inVt) {
       var ws = document.querySelectorAll("#bd-doc .bd-w, #bd-doc .bd-term"), hit = null;
       for (var j = 0; j < ws.length && !hit; j++) { var wr = ws[j].getBoundingClientRect(); if (x >= wr.left - 3 && x <= wr.right + 3 && y >= wr.top - 3 && y <= wr.bottom + 3) hit = ws[j]; }
       if (hit && lookMode) { selWord(hit); var para = hit.closest("p"); lookupShow(hit.textContent.trim(), para ? para.textContent : "", false); return; }
@@ -1145,7 +1190,7 @@
       selWord(null);
       return;
     }
-    if (d.k !== "vt") return;
+    if (!isTxt(d)) return;
     var rows = document.querySelectorAll("#bd-doc .bd-vr");
     for (var i = 0; i < rows.length; i++) {
       var r = rows[i].getBoundingClientRect();

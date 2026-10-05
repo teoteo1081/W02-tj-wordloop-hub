@@ -1010,7 +1010,7 @@ body.embed .bd-drawer .bd-pane{display:none !important}
 .bd-vt .bd-ve{color:#d6d2ca}
 .bd-vt .bd-vd{color:#f3efe6;font-weight:700}
 /* khung hẹp (điện thoại): bỏ bớt cột Word form + Phonetic cho dễ đọc */
-@container (max-width: 640px){
+@container (max-width: 38em){
   .bd-vt .bd-vh,.bd-vt .bd-vr{grid-template-columns:1.6em minmax(0,1.4fr) 2.1em minmax(0,1.7fr) minmax(0,1.3fr)}
   .bd-vt .bd-vh > :nth-child(4),.bd-vt .bd-vh > :nth-child(5),.bd-vt .bd-vr > :nth-child(4),.bd-vt .bd-vr > :nth-child(5){display:none}
 }
@@ -1143,9 +1143,9 @@ body.embed .bd.bd-big .bd-feed{flex:none;width:auto;min-width:0;align-self:stret
 .bd-txt .bd-doc{pointer-events:auto}
 .bd-txt canvas,.bd-txt .bd-texts{pointer-events:none}
 .bd-txt .bd-stage,.bd-txt .bd-zoom{touch-action:auto}
-.bd-wl.bd-scroll,.bd-vt.bd-scroll{overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;scrollbar-width:thin;scrollbar-color:rgba(255,210,122,.35) transparent}
-.bd-wl.bd-scroll::after,.bd-vt.bd-scroll::after{content:"";display:block;height:3em}   /* dòng cuối cuộn lên được khỏi hàng nút dưới */
-.bd-wl.bd-scroll h3{font-size:1.25em}
+.bd-both-old-scroll{overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;scrollbar-width:thin;scrollbar-color:rgba(255,210,122,.35) transparent}
+.bd-both .bd-wl::after,.bd-both .bd-vt::after{content:"";display:block;height:3em}   /* dòng cuối cuộn lên được khỏi hàng nút dưới */
+.bd-both .bd-wl h3{font-size:1.25em}
 .bd-s{cursor:pointer;border-radius:4px;transition:background .2s}
 .bd-s.bd-shl{background:rgba(255,210,122,.22);box-shadow:0 0 0 3px rgba(255,210,122,.22)}
 .bd-follow{position:absolute;left:50%;bottom:64px;transform:translateX(-50%);z-index:6;background:#ffd27a !important;color:#2a1a14 !important;font-weight:700;border-radius:999px;padding:8px 16px;box-shadow:0 4px 14px rgba(0,0,0,.4)}
@@ -1154,21 +1154,21 @@ body.embed .bd.bd-big .bd-feed{flex:none;width:auto;min-width:0;align-self:stret
    trùng với cột Notebooks của Learning (body.bd-on .g-side từng có z-index 70 nổi TRÊN bảng) -> ẩn hẳn; chọn Block bằng cột Notebooks / danh sách Block của Learning. */
 body.embed.bd-on #g-side,body.embed.bd-on #h-sidetab,body.embed.bd-on #h-sidebd,body.embed.bd-on #g-room-badge{display:none !important}
 /* v200: bài đọc trên màn rộng — giới hạn bề rộng dòng ~46em (dễ đọc như trang sách), căn giữa khung */
-.bd-wl.bd-scroll > h3,.bd-wl.bd-scroll > p{max-width:46em;margin-left:auto;margin-right:auto}
+.bd-both .bd-wl > h3,.bd-both .bd-wl > p{max-width:46em;margin-left:auto;margin-right:auto}
 /* v200: bảng từ trong khung HẸP (điện thoại, cột Learning hẹp) — 7 cột chen nhau làm chữ đè lên nhau -> mỗi từ 1 THẺ:
    🔊 từ ☆ ……… cấp độ / loại từ · phiên âm / định nghĩa tiếng Anh / nghĩa tiếng mẹ đẻ (đầy đủ, không cắt) */
-@container (max-width: 760px){
-  .bd-vt.bd-scroll .bd-vh{display:none}
-  .bd-vt.bd-scroll .bd-vr,.bd-vt.bd-scroll.compact .bd-vr{grid-template-columns:1.6em auto minmax(0,1fr) auto;grid-template-areas:"say tm tm lv" ". vf ph ph" ". ve ve ve" ". vd vd vd";gap:.15em .5em;align-items:baseline;padding:.65em .35em}
-  .bd-vt.bd-scroll .bd-vr > *{display:block !important}
-  .bd-vt.bd-scroll .bd-vsay{grid-area:say}
-  .bd-vt.bd-scroll .bd-vtm{grid-area:tm;display:flex !important}
-  .bd-vt.bd-scroll .bd-vl{grid-area:lv;justify-self:end;font-size:.85em;border:1px solid rgba(255,255,255,.25);border-radius:6px;padding:0 .4em}
-  .bd-vt.bd-scroll .bd-vf{grid-area:vf}
-  .bd-vt.bd-scroll .bd-vph{grid-area:ph}
-  .bd-vt.bd-scroll .bd-ve{grid-area:ve;font-size:.92em}
-  .bd-vt.bd-scroll .bd-vd{grid-area:vd;-webkit-line-clamp:unset;display:block !important;overflow:visible}
-  .bd-vt.bd-scroll.compact .bd-ve{display:none !important}
+@container (max-width: 27em){
+  .bd-both .bd-vt .bd-vh{display:none}
+  .bd-both .bd-vt .bd-vr,.bd-both .bd-vt.compact .bd-vr{grid-template-columns:1.6em auto minmax(0,1fr) auto;grid-template-areas:"say tm tm lv" ". vf ph ph" ". ve ve ve" ". vd vd vd";gap:.15em .5em;align-items:baseline;padding:.65em .35em}
+  .bd-both .bd-vt .bd-vr > *{display:block !important}
+  .bd-both .bd-vt .bd-vsay{grid-area:say}
+  .bd-both .bd-vt .bd-vtm{grid-area:tm;display:flex !important}
+  .bd-both .bd-vt .bd-vl{grid-area:lv;justify-self:end;font-size:.85em;border:1px solid rgba(255,255,255,.25);border-radius:6px;padding:0 .4em}
+  .bd-both .bd-vt .bd-vf{grid-area:vf}
+  .bd-both .bd-vt .bd-vph{grid-area:ph}
+  .bd-both .bd-vt .bd-ve{grid-area:ve;font-size:.92em}
+  .bd-both .bd-vt .bd-vd{grid-area:vd;-webkit-line-clamp:unset;display:block !important;overflow:visible}
+  .bd-both .bd-vt.compact .bd-ve{display:none !important}
 }
 
 /* v201 (TJ 2026-10-05): người chơi chỉ có khung bảng full màn hình; "📖 Bài đọc | 📋 Bảng từ" nằm trên thẻ Block cạnh 🎮 (Admin); trong bảng chỉ còn nội dung */
@@ -1179,7 +1179,7 @@ body.embed.bd-on #g-side,body.embed.bd-on #h-sidetab,body.embed.bd-on #h-sidebd,
 .bd-act .bd-segcard[hidden]{display:none}
 .bd-act .bd-segcard[hidden] + .bd-cplay{margin-left:auto}
 .bd.bd-txt .bd-stage .bd-doc{inset:6px 0 0 0}   /* không còn dải thẻ trong bảng: nội dung lên sát mép */
-.bd-wl.bd-scroll::after,.bd-vt.bd-scroll::after{height:4.5em}   /* dòng cuối cuộn lên khỏi hàng nút A−/A+ */
+.bd-both .bd-wl::after,.bd-both .bd-vt::after{height:4.5em}   /* dòng cuối cuộn lên khỏi hàng nút A−/A+ */
 .bd-wait{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#cfe8d6;font-size:18px;opacity:.85}
 @media (max-width:759px){
   .bd-act .bd-segcard button{padding:6px 11px;font-size:16px}
@@ -1226,12 +1226,12 @@ body.embed.bd-on #g-side,body.embed.bd-on #h-sidetab,body.embed.bd-on #h-sidebd,
 }
 /* TJ 2026-10-06: "bảng xanh full màn hình viền vàng, cách trình bày giống bên Learning cho cuộn để kéo xuống" — bài đọc trên bảng theo kiểu khung đọc của Learning:
    giãn dòng ~1.85, cột chữ ~40em, tiêu đề vàng, từ vựng TÔ NỀN vàng (không gạch chân) */
-.bd-wl.bd-scroll{line-height:1.85;letter-spacing:.005em}
-.bd-wl.bd-scroll > h3,.bd-wl.bd-scroll > p{max-width:40em}
-.bd-wl.bd-scroll h3{font-size:1.3em;line-height:1.35;margin-bottom:.7em;color:#ffd27a}
-.bd-wl.bd-scroll p{margin:0 auto 1.1em}
-.bd-wl.bd-scroll .bd-term{background:#e0b84a;color:#1d2a24;text-decoration:none;border-radius:4px;padding:.05em .25em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone}
-.bd-wl.bd-scroll .bd-s.bd-shl .bd-term{background:#ffd27a}
+.bd-both .bd-wl{line-height:1.85;letter-spacing:.005em}
+.bd-both .bd-wl > h3,.bd-both .bd-wl > p{max-width:40em}
+.bd-both .bd-wl h3{font-size:1.3em;line-height:1.35;margin-bottom:.7em;color:#ffd27a}
+.bd-both .bd-wl p{margin:0 auto 1.1em}
+.bd-both .bd-wl .bd-term{background:#e0b84a;color:#1d2a24;text-decoration:none;border-radius:4px;padding:.05em .25em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.bd-both .bd-wl .bd-s.bd-shl .bd-term{background:#ffd27a}
 /* TJ 2026-10-06: khung "Từ vừa tra" dưới bảng — luôn chừa chỗ khi đang đọc, từ mới nhất ở trên, kéo lên xuống xem lại;
    mỗi dòng như bảng từ vựng: 🔊 · từ · phiên âm · loại từ · ☆ Lưu · 🇺🇸 nghĩa Anh · 🇻🇳 nghĩa Việt */
 .bd .bd-feed,.bd.bd-big .bd-feed,body.embed .bd.bd-big .bd-feed{flex:none !important;height:clamp(140px,26vh,260px);max-height:none;width:auto;min-width:0;align-self:stretch;overflow-y:auto;overscroll-behavior:contain;margin-top:6px;padding:6px 12px 8px}
@@ -1259,7 +1259,7 @@ body.embed.bd-on #g-side,body.embed.bd-on #h-sidetab,body.embed.bd-on #h-sidebd,
 .bd-docnav{max-width:calc(100% - 12px);overflow-x:auto;scrollbar-width:none}
 .bd-docnav::-webkit-scrollbar{display:none}
 /* TJ 2026-10-06: "chữ phải canh đều giống Word, không canh trái nhìn lộn xộn" */
-.bd-wl.bd-scroll p{text-align:justify;text-justify:inter-word;-webkit-hyphens:auto;hyphens:auto}
+.bd-both .bd-wl p{text-align:justify;text-justify:inter-word;-webkit-hyphens:auto;hyphens:auto}
 .bd-s.bd-rd{background:rgba(124,170,255,.22);box-shadow:0 0 0 3px rgba(124,170,255,.22);border-radius:4px}
 /* TJ 2026-10-06: "icon phải nằm dưới cái bảng" — 1 hàng icon cố định NGAY DƯỚI bảng (không nổi đè lên bảng, không tự ẩn):
    ☰ ← → · 🔍 A− Aa A+ · 📁 🖥 ✏️ ⋯ · 🎮 · ✕ (người chơi chỉ thấy phần đọc: 🔍 A− Aa A+). Hàng quá dài thì vuốt ngang. */
@@ -1285,3 +1285,34 @@ body.embed.bd-on #g-side,body.embed.bd-on #h-sidetab,body.embed.bd-on #h-sidebd,
 .bd-mebar .bd-audio span{display:inline !important}
 .bd-vt .bd-vtph{display:none}
 @media (max-width:759px){.bd-mebar .bd-audio{flex:1 1 100%;order:3}}
+
+/* ================= v207 (TJ 2026-10-06): 1 TRANG CUỘN = BẢNG TỪ VỰNG -> BÀI ĐỌC (đúng thứ tự Learning), không còn 2 tab ================= */
+#bd-seg,.bd-segcard{display:none !important}
+.bd-both{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;box-sizing:border-box;color:#f3efe6;line-height:1.5;scrollbar-width:thin;scrollbar-color:transparent transparent}
+.bd-both.bd-scrolling{scrollbar-color:rgba(255,210,122,.55) transparent}   /* thanh trượt sát mép phải, chỉ lộ lúc đang cuộn */
+.bd-both::-webkit-scrollbar{width:6px}
+.bd-both::-webkit-scrollbar-thumb{background:transparent;border-radius:3px}
+.bd-both.bd-scrolling::-webkit-scrollbar-thumb{background:rgba(255,210,122,.55)}
+.bd-both > .bd-vt,.bd-both > .bd-wl{position:static;inset:auto;overflow:visible;font-size:1em;padding:0}
+.bd-both > .bd-vt{padding:1.2em 4% .6em}
+.bd-both > .bd-wl{padding:1.4em 5% 6em;border-top:1px dashed rgba(255,255,255,.18);margin-top:.8em}
+.bd .bd-stage .bd-doc,.bd.bd-txt .bd-stage .bd-doc{inset:0}
+.bd-both .bd-vt .bd-vr{font-size:.82em}
+.bd-both .bd-vt .bd-vh{font-size:.82em;white-space:nowrap}   /* cùng cỡ em với dòng -> cột thẳng hàng; chữ tiêu đề nhỏ hơn bên trong */
+.bd-both .bd-vt .bd-vh > span{font-size:.7em;letter-spacing:.02em;overflow:visible}
+@container (min-width: 38em){
+  .bd-both .bd-vt .bd-vh,.bd-both .bd-vt .bd-vr{grid-template-columns:1.6em minmax(0,2.1fr) 3.2em minmax(0,.9fr) minmax(0,.95fr) minmax(0,1.9fr) minmax(0,1.5fr)}
+}
+.bd-both .bd-vt .bd-vtm{flex-wrap:wrap;row-gap:0}
+.bd-both .bd-vt .bd-vterm{overflow-wrap:anywhere}
+/* ai tra từ + bao nhiêu người tra */
+.bd-whol{margin-left:auto;display:inline-flex;align-items:center;gap:5px;flex-wrap:wrap;justify-content:flex-end;min-width:0}
+.bd-wc{display:inline-flex;align-items:center;gap:3px;background:rgba(255,255,255,.09);border-radius:999px;padding:1px 7px 1px 2px;font-size:11px;color:#d6d2ca;max-width:96px}
+.bd-wc img,.bd-wc i{width:16px;height:16px;border-radius:50%;object-fit:cover;font-style:normal;font-size:12px;line-height:16px;text-align:center;background:#2c3a33;flex:none}
+.bd-wn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bd-wmore{font-size:11px;color:#a8a296}
+.bd-wcnt{font-size:11px;color:#ffd27a;border:1px solid rgba(255,210,122,.45);border-radius:999px;padding:0 6px}
+
+/* host không có trong phòng: bảng mờ + dòng báo, người chơi vẫn cuộn / tra từ được */
+.bd.bd-hostaway:not(.bd-isHost) .bd-stage::after{content:"⏳ Host chưa vào bảng — đang chờ host…";position:absolute;left:50%;top:10px;transform:translateX(-50%);z-index:9;background:rgba(0,0,0,.72);color:#ffd27a;font-size:13px;font-weight:700;padding:6px 14px;border-radius:999px;pointer-events:none;white-space:nowrap}
+.bd.bd-hostaway:not(.bd-isHost) .bd-doc{opacity:.55}

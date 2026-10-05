@@ -1729,7 +1729,8 @@
     ch: function () { return G.ch; }, me: function () { return G.me; }, st: function () { return G.st; },
     lang: function () { return uiLang(); },
     isHost: function () { return !!G.isHost; }, players: function () { return players(); },
-    online: function () { return G.online || []; },   /* v201: dải avatar mọi người trong phòng dưới bảng (kể cả host làm MC) */
+    online: function () { return G.online || []; },
+    hostHere: function () { return !!G.isHost || (G.online || []).some(isRoomHost); },   /* host (kể cả máy host khác) đang có mặt trong phòng */   /* v201: dải avatar mọi người trong phòng dưới bảng (kể cả host làm MC) */
     isHostId: function (id) { return !!(G.me && G.isHost && id === G.me.id) || !!(G.st && G.st.hid === id); },
     setBoard: function (v) { if (!G.isHost || !G.st) return; G.st.board = !!v; push(); },
     /* 📁 tài liệu trên bảng (board.js Lib): file ở bucket toeic/lib/…, bài đọc WordLoop từ bảng blocks */
