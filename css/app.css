@@ -2440,3 +2440,6 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
 .btn-board-block{margin-left:auto;background:#3a3936;color:#fff;border:1px solid #5a4632;padding:.42rem .95rem;border-radius:7px;font-weight:700;font-size:.78rem;cursor:pointer;white-space:nowrap}
 .btn-board-block:hover{background:#4a4743}
 .btn-board-block + .btn-game-block{margin-left:.4rem}
+
+/* 🖤 chế độ bảng: lớp game chỉ phủ vùng giữa (#workspace), các cột + thanh trên của Learning hiện nguyên */
+.game-layer.board-fit{z-index:20;box-shadow:0 0 0 1px var(--border,#3d3b37)}

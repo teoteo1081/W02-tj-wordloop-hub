@@ -848,3 +848,7 @@ body.bd-on .g-sidetab{display:none}
 .bd-crumb,.bd-ctitle{min-width:0}
 .bd-docnav{flex-wrap:nowrap;overflow-x:auto}
 .bd-docnav .bd-hb{flex:none}
+
+/* trong thẻ Game của Learning: Learning đã có cột Notebooks/Pages nên bảng không cần cây riêng (TJ 2026-10-05) */
+body.embed .bd-pane,body.embed .bd-side{display:none !important}
+body.embed .bd.bd-big.bd-sidepin{padding-left:6px}

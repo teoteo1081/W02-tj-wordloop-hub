@@ -23,6 +23,30 @@
   function kill() { while (layer.firstChild) layer.removeChild(layer.firstChild); }   /* không phải TJ -> bỏ hẳn iframe: trước chỉ ẩn, game vẫn chạy & ngồi trong phòng TJ như "người chơi ma" */
   function isOpen() { return !layer.hidden; }
 
+  /* 🖤 CHẾ ĐỘ BẢNG (TJ 2026-10-05): bảng mở -> lớp game chỉ phủ VÙNG GIỮA (#workspace) — thanh trên, cột Notebooks / Pages (có ghim)
+     giữ y nguyên như Learning; ghim cột thì vùng hẹp lại, bỏ ghim thì rộng ra (theo kích thước #workspace). */
+  var fitOn = false, fitRO = null;
+  function fitRect() {
+    var ws = w.$("#workspace"); if (!ws || !fitOn) return;
+    var r = ws.getBoundingClientRect(); if (r.width < 50 || r.height < 50) return;
+    layer.style.top = Math.round(r.top) + "px"; layer.style.left = Math.round(r.left) + "px";
+    layer.style.width = Math.round(r.width) + "px"; layer.style.right = "auto";
+  }
+  function setFit(on) {
+    on = !!on && isOpen();
+    if (on === fitOn) { if (on) fitRect(); return; }
+    fitOn = on; layer.classList.toggle("board-fit", on);
+    if (!on) { layer.style.top = layer.style.left = layer.style.width = layer.style.right = ""; if (fitRO) { fitRO.disconnect(); fitRO = null; } return; }
+    fitRect();
+    var ws = w.$("#workspace");
+    if (w.ResizeObserver && ws) { fitRO = new w.ResizeObserver(fitRect); fitRO.observe(ws); }
+  }
+  w.addEventListener("resize", function () { if (fitOn) fitRect(); });
+  w.addEventListener("message", function (e) {
+    if (e.origin !== location.origin || !e.data || e.data.type !== "tjwl-board-on") return;
+    setFit(!!e.data.on);
+  });
+
   function open() {
     if (!layer.firstChild) {
       var f = document.createElement("iframe");
@@ -41,6 +65,7 @@
     document.body.classList.add("game-on");
   }
   function close() {
+    setFit(false);
     layer.hidden = true;
     try { sessionStorage.removeItem("tjwl_game_open"); localStorage.removeItem("tjwl_game_open_at"); w.name = String(w.name || "").replace(/\s*tjwl_game/g, ""); } catch (e) {}
     learn.hidden = learnWasHidden;

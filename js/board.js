@@ -185,6 +185,7 @@
     el.hidden = !open || mini; $("#bd-dock").hidden = !open || !mini;
     $("#bd-open").hidden = open || !api || !api.isHost() || !api.ch();
     var show = open && !mini;
+    if (window.parent && window.parent !== window && paintOpen._last !== !!show) { paintOpen._last = !!show; try { window.parent.postMessage({ type: "tjwl-board-on", on: !!show }, location.origin); } catch (e) {} }   /* TJ 2026-10-05: bảng chỉ lấp VÙNG GIỮA của Learning (giữ nguyên khung ngoài) */
     document.body.classList.toggle("bd-on", show); document.body.classList.toggle("bd-bigon", show && big);
     el.classList.toggle("bd-big", big);
     if (show) { fit(); paintTools(); paintPerm(); }
