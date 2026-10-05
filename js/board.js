@@ -174,6 +174,7 @@
   }
   function paintOpen() {
     var el = $("#bd"); if (!el) return;
+    var hd = el.querySelector(".bd-head"); if (hd) hd.style.display = api && api.isHost() ? "" : "none";   /* thanh trên (Bảng / Tài liệu / Quyền / ✕…) CHỈ host thấy (TJ 2026-10-05: "người chơi sẽ hong thấy thanh trên") */
     big = bigPref != null ? bigPref : !!curDoc();
     el.hidden = !open || mini; $("#bd-dock").hidden = !open || !mini;
     $("#bd-open").hidden = open || !api || !api.isHost() || !api.ch();
