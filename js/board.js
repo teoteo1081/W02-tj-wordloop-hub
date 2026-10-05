@@ -221,7 +221,8 @@
       hosts.map(function (x) { return '<span class="bd-pp on bd-phost">👑 ' + esc(x.name || "Host") + " · host</span>"; }).join("") + (list.length ? list.map(function (x) {
       return '<button type="button" class="bd-pp' + (p[x.id] ? " on" : "") + '" data-perm="' + esc(x.id) + '">' + (p[x.id] ? "🛡 " : "👤 ") + esc(x.name || "?") + "</button>"; }).join("") : '<span class="bd-ph">' + esc(t("none")) + "</span>");
   }
-  function wantBig(d) { return document.body.classList.contains("embed") ? true : (bigPref != null ? bigPref : !!d); }   /* embed = trong thẻ của Learning: luôn là bảng to (TJ 2026-10-05: "vào chế độ bảng thì bỏ giao diện chính") */
+  function phoneScreen() { return window.innerWidth < 760; }
+  function wantBig(d) { return document.body.classList.contains("embed") || phoneScreen() ? true : (bigPref != null ? bigPref : !!d); }   /* điện thoại: bảng luôn FULL MÀN HÌNH (TJ 2026-10-05) */   /* embed = trong thẻ của Learning: luôn là bảng to (TJ 2026-10-05: "vào chế độ bảng thì bỏ giao diện chính") */
   function notifyParent(show) {
     if (!(window.parent && window.parent !== window)) return;
     var has = !!curDoc(), key = (show ? 1 : 0) + ":" + (has ? 1 : 0); if (notifyParent._k === key) return; notifyParent._k = key;
@@ -231,7 +232,7 @@
     var el = $("#bd"); if (!el) return;
     el.classList.toggle("bd-isHost", !!(api && api.isHost()));
     var hd = el.querySelector(".bd-head"); if (hd) hd.style.display = api && api.isHost() ? "" : "none";   /* thanh trên (Bảng / Tài liệu / Quyền / ✕…) CHỈ host thấy (TJ 2026-10-05: "người chơi sẽ hong thấy thanh trên") */
-    if (document.body.classList.contains("embed")) mini = false;   /* trong Learning (chế độ bảng): bảng luôn chiếm trọn vùng giữa, không thu nhỏ */
+    if (document.body.classList.contains("embed") || phoneScreen()) mini = false;   /* trong Learning (chế độ bảng): bảng luôn chiếm trọn vùng giữa, không thu nhỏ */
     big = wantBig(curDoc());
     el.hidden = !open || mini; $("#bd-dock").hidden = !open || !mini;
     $("#bd-open").hidden = open || !api || !api.isHost() || !api.ch();

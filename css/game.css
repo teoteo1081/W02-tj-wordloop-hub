@@ -1096,3 +1096,9 @@ body.embed .bd.bd-big .bd-feed{flex:none;width:auto;min-width:0;align-self:stret
 /* v193: chữ bảng từ to hơn (dòng 0.9em); màu giữ nguyên */
 .bd-vt .bd-vr{font-size:.9em}
 .bd-vt .bd-vh{font-size:.66em}
+
+/* v194: điện thoại — bảng full màn hình, không có thu to/nhỏ */
+@media (max-width:759px){
+  #bd-big,#bd-min,.bd-dock,#bd-open{display:none !important}
+  .bd.bd-big{padding:0;height:100vh;height:100dvh}
+}
