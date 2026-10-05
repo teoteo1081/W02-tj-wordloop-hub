@@ -54,9 +54,21 @@
     document.body.classList.toggle("board-skin", idle);
     if (bb) bb.classList.toggle("active", !!on);
   }
+  /* CHẾ ĐỘ BẢNG = một chế độ của Learning (TJ 2026-10-05: "bảng là chế độ khác lấy giao diện của Learning, Learning đâu mất rồi"):
+     vào chế độ bảng thì Learning LUÔN hiện (nền bảng); lớp game chỉ lộ ra đúng vùng giữa khi bảng đã có Block, không bao giờ phủ kín Learning. */
+  var boardMode = false, seenOn = false;
+  function enterBoard() {
+    boardMode = true; seenOn = false;
+    layer.hidden = false; layer.classList.add("board-idle");   /* lớp game có mặt nhưng ẨN (visibility) cho tới khi có Block */
+    document.body.classList.add("board-skin");
+    boardOnState = true; if (bb) bb.classList.add("active");
+  }
   w.addEventListener("message", function (e) {
     if (e.origin !== location.origin || !e.data || e.data.type !== "tjwl-board-on") return;
-    setBoardState(!!e.data.on, !!e.data.doc);
+    var on = !!e.data.on, doc = !!e.data.doc;
+    if (on) seenOn = true;
+    if (!on && boardMode) { if (seenOn) close(); return; }   /* khung game báo bảng đã đóng -> thoát chế độ bảng (trước khi bảng từng mở thì bỏ qua) */
+    setBoardState(on, doc);
   });
 
   function open() {
@@ -78,7 +90,7 @@
   }
   function close() {
     setFit(false);
-    boardOnState = false; layer.classList.remove("board-idle"); document.body.classList.remove("board-skin"); if (bb) bb.classList.remove("active");
+    boardOnState = false; boardMode = false; seenOn = false; layer.classList.remove("board-idle"); document.body.classList.remove("board-skin"); if (bb) bb.classList.remove("active");
     layer.hidden = true;
     try { sessionStorage.removeItem("tjwl_game_open"); localStorage.removeItem("tjwl_game_open_at"); w.name = String(w.name || "").replace(/\s*tjwl_game/g, ""); } catch (e) {}
     learn.hidden = learnWasHidden;
@@ -101,7 +113,7 @@
       f.title = "WordLoop Game"; f.allow = "clipboard-write; autoplay";
       layer.appendChild(f);
     } else { try { layer.firstChild.contentWindow.postMessage({ type: "tjwl-game-boardopen" }, location.origin); } catch (e) {} }
-    if (!isOpen()) open();
+    enterBoard();   /* không gọi open(): lớp game không được phủ Learning */
   }
   function closeBoardMode() { try { layer.firstChild.contentWindow.postMessage({ type: "tjwl-game-boardclose" }, location.origin); } catch (e) {} }
 
@@ -132,7 +144,7 @@
     } else {
       try { layer.firstChild.contentWindow.postMessage({ type: "tjwl-game-board", scope: sc }, location.origin); } catch (e) {}
     }
-    if (!isOpen()) open();
+    enterBoard();   /* Learning luôn hiện; lớp game chỉ lộ ra đúng vùng giữa khi bảng có Block */
   }
 
   /* "📖 Learning": đang mở game thì chỉ đóng game (màn bên dưới vẫn y như lúc rời đi) */
