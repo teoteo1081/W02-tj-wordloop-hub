@@ -2967,16 +2967,17 @@
   /* 🔍 tra nghĩa ngay trên bảng (chạm từ trong bài đọc / gõ vào ô tra): Gemini qua gemini-proxy, nghĩa theo tiếng giao diện + định nghĩa tiếng Anh, nhớ theo từ+câu */
   var blCache = {};
   async function boardLookup(t, ctx) {
-    var L = uiLang(), k = t.toLowerCase() + "|" + L + "|" + String(ctx || "").slice(0, 60); if (blCache[k]) return blCache[k];
-    var langs = L !== "en" ? [L] : [];
+    var k = t.toLowerCase() + "|" + String(ctx || "").slice(0, 60); if (blCache[k]) return blCache[k];
+    var langs = ["vi", "zh", "es"];   /* tra 1 lần đủ 3 tiếng + tiếng Anh: kết quả gửi cho cả phòng, mỗi người xem theo tiếng của mình */
+    var ac = typeof AbortController !== "undefined" ? new AbortController() : null, tm = ac ? setTimeout(function () { ac.abort(); }, 12000) : null;   /* quá 12 giây thì bỏ (hết treo ⏳ trên điện thoại) */
     try {
       var res = await fetch(cfg.SUPABASE_URL.replace(/\/$/, "") + "/functions/v1/gemini-proxy", {
-        method: "POST", headers: { "Content-Type": "application/json", "Authorization": "Bearer " + cfg.SUPABASE_ANON_KEY, "apikey": cfg.SUPABASE_ANON_KEY },
+        signal: ac ? ac.signal : undefined, method: "POST", headers: { "Content-Type": "application/json", "Authorization": "Bearer " + cfg.SUPABASE_ANON_KEY, "apikey": cfg.SUPABASE_ANON_KEY },
         body: JSON.stringify({ model: cfg.GEMINI_MODEL || "gemini-3.5-flash-lite", user_id: null, block_id: null, sys: "You are a concise bilingual dictionary for English learners. Reply JSON only.",
           user: "Word/phrase: " + JSON.stringify(t) + (ctx ? ". Paragraph: " + JSON.stringify(String(ctx).slice(0, 700)) : "") + ". Give its meaning" + (ctx ? " IN THIS PARAGRAPH" : "") + ". Return JSON {\"pos\":\"n|v|adj|adv|phr|…\",\"en\":\"short English definition\"" + langs.map(function (l) { return ",\"" + l + "\":\"short meaning in " + LANG_NAME[l] + "\""; }).join("") + "}" }) });
       var d = await res.json(), raw = d.candidates && d.candidates[0] && d.candidates[0].content.parts[0].text;
       var v = JSON.parse(String(raw || "").replace(/^```(json)?|```$/g, "").trim()); blCache[k] = v; return v;
-    } catch (e) { return null; }
+    } catch (e) { return null; } finally { if (tm) clearTimeout(tm); }
   }
   async function tvEnsureTree(test, part) {
     var sec = "toe_ex_t" + test, pg = sec + "_p" + part, bt = pg + "_b";
