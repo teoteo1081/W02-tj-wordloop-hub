@@ -156,7 +156,7 @@
         var cl0 = $("#bd-close"); if (cl0) { cl0.classList.add("bd-ibtn"); dn0.appendChild(cl0); }
       }
     }
-    if (ppl0 && mb0) mb0.insertBefore(ppl0, $("#bd-vtbar"));   /* TJ 2026-10-06: avatar mọi người lên thanh trên cho tiết kiệm chỗ, khung Từ vừa tra cao hơn */   /* thứ tự: bảng -> Từ vừa tra -> mọi người trong phòng */   /* ai vào / ra phòng -> dải avatar tự cập nhật */
+    if (ppl0) { var ibx = $("#bd-iconbar"); if (ibx) ibx.insertBefore(ppl0, ibx.firstChild); }   /* TJ 2026-10-06: avatar CHUNG HÀNG với dải icon dưới bảng (nửa trái avatar, nửa phải icon, mỗi bên vuốt ngang) */   /* TJ 2026-10-06: avatar mọi người lên thanh trên cho tiết kiệm chỗ, khung Từ vừa tra cao hơn */   /* thứ tự: bảng -> Từ vừa tra -> mọi người trong phòng */   /* ai vào / ra phòng -> dải avatar tự cập nhật */
     try { document.body.classList.toggle("bd-dev-phone", Math.min(screen.width, screen.height) < 600); } catch (e) {}   /* máy THẬT là điện thoại (iframe trong Learning hẹp không tính) */
     el.addEventListener("click", onClick);
     ["pointerdown", "pointermove", "keydown", "touchstart"].forEach(function (ev) { el.addEventListener(ev, poke, { passive: true }); });

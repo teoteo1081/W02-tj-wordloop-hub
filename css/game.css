@@ -1417,3 +1417,18 @@ body.embed.bd-on .g-top{display:none !important}
 .bd-mebar > .bd-people,.bd-mebar > .bd-audio{scrollbar-width:none}
 .bd-mebar > .bd-people::-webkit-scrollbar,.bd-mebar > .bd-audio::-webkit-scrollbar{display:none}
 .bd-mebar > .bd-audio[hidden]{display:none !important}
+
+/* ===== v220: avatar chung hàng với icon dưới bảng; thanh trên chỉ còn âm thanh ===== */
+.bd-mebar .bd-me{display:none !important}
+.bd-mebar > .bd-audio{flex:1 1 100% !important;max-width:100% !important;width:auto !important;justify-content:flex-start !important;overflow-x:auto}
+.bd-iconbar{display:flex !important;flex-wrap:nowrap;align-items:center;justify-content:flex-start !important;gap:8px;padding:6px 8px 0;min-width:0}
+.bd-iconbar > .bd-people{flex:0 0 calc(50% - 4px);max-width:calc(50% - 4px);width:calc(50% - 4px);min-width:0;display:flex;gap:7px;padding:0 2px;align-items:flex-start;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x}
+.bd-iconbar > .bd-people[hidden]{display:none}
+.bd-iconbar > .bd-people::-webkit-scrollbar{display:none}
+.bd-iconbar > .bd-people .bd-pp1{width:34px;gap:0;flex:none}
+.bd-iconbar > .bd-people .bd-mering{width:28px;height:28px;padding:1.5px}
+.bd-iconbar > .bd-people .bd-mering img,.bd-iconbar > .bd-people .bd-mering .bd-meav{font-size:15px;border-width:1px}
+.bd-iconbar > .bd-people .bd-mering i,.bd-iconbar > .bd-people .bd-mering u{width:12px;height:12px;font-size:8px}
+.bd-iconbar > .bd-people .bd-pp1 b{max-width:34px;font-size:9px;line-height:1.1}
+.bd-iconbar > .bd-docnav{flex:1 1 0;min-width:0;width:auto;max-width:none;margin:0 0 0 auto;justify-content:safe flex-end !important;overflow-x:auto;touch-action:pan-x}
+.bd-iconbar:has(> .bd-people[hidden]) > .bd-docnav{flex:1 1 100%}
