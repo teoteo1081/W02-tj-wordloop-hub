@@ -945,3 +945,30 @@ body.embed .bd-drawer .bd-pane{display:none !important}
 .bd .bd-bottom{bottom:12px;height:38px}
 .bd .bd-bottom .bd-docnav,.bd .bd-bottom .bd-tools{height:38px}
 .bd .bd-bottom .bd-docnav .bd-hb,.bd .bd-bottom .bd-tools button{min-height:30px;min-width:32px}
+
+/* ===== v173: THẺ TÓM TẮT Y CHANG LEARNING nằm TRÊN khung xanh (lấp chỗ trống); 2 thẻ Bài đọc | Bảng từ ở dải trên khung xanh ===== */
+.bd-fx{display:block;padding-right:0;width:auto;max-width:100%}
+.bd:not(.bd-big) .bd-fx{width:100%}
+.bd-sfx{position:relative;display:flex;padding-right:56px;box-sizing:border-box}
+.bd:not(.bd-big) .bd-top{display:none}
+.bd-top{width:0;min-width:100%;box-sizing:border-box;margin:0 0 8px;padding:10px 14px 12px;background:var(--card);border:1px solid var(--line);border-left:4px solid #c06b8f;border-radius:10px;display:grid;gap:7px;text-align:left}
+.bd-top .bd-crow{display:flex;min-width:0}
+.bd-top .bd-crumb{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-2);font-size:12px}
+.bd:not(.bd-isHost) .bd-top .bd-crow{display:none}
+.bd-top .bd-ctitle{display:flex;align-items:center;flex-wrap:wrap;gap:7px;margin:0}
+.bd-top .bd-ctitle b{font-size:17px}
+.bd-top .bd-clv{display:inline-flex;gap:6px}
+.bd-top .bd-lvb{font-size:11px;background:var(--raise);border:1px solid var(--line);border-radius:999px;padding:1px 9px;margin:0}
+.bd-pill{font-size:12px;border-radius:999px;padding:2px 11px;background:rgba(79,174,130,.18);color:var(--green);border:1px solid #2f6b50}
+.bd-ctag{background:var(--raise);color:var(--text);border-color:var(--line)}
+.bd-top .bd-cst{margin-left:auto;font-size:13px;font-weight:700;color:var(--green);white-space:nowrap}
+.bd-top .bd-chips{display:flex;flex-wrap:wrap;gap:6px;max-height:68px;overflow:auto;min-height:0}
+.bd-top .bd-chips span{font-size:13px}
+.bd-top .bd-cprog{margin:0}
+.bd-top .bd-act{max-width:none;margin:2px 0 0;padding:0;display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+.bd-top .bd-acttog{display:none !important}
+.bd-top .bd-act.col .bd-acttools{display:flex}
+.bd-top .bd-act .bd-hb{min-width:36px;min-height:32px}
+.bd-segtop{position:absolute;top:calc(4.5% - 13px);left:50%;transform:translateX(-50%);margin:0}
+.bd-segtop{top:max(6px, calc(4.5% - 13px))}
+@media (max-width:480px){.bd-top .bd-chips{max-height:52px}}

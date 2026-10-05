@@ -57,12 +57,20 @@
     el.id = "bd"; el.className = "bd"; el.hidden = true;
     el.innerHTML =
       '<aside class="bd-side" id="bd-side" hidden><div class="bd-sidehd"><b>Notebooks</b><span><button type="button" class="bd-hb" id="bd-sidepin" title="Ghim cột (luôn mở bên trái)">📌</button><button type="button" class="bd-hb" id="bd-sideexp" title="Mở hết">⊞</button><button type="button" class="bd-hb" id="bd-sidecol" title="Thu hết">⊟</button><button type="button" class="bd-hb" id="bd-sidex" title="Đóng">✕</button></span></div><input type="search" id="bd-sideq" placeholder="Tìm Block…"><div class="bd-tree bd-sidelist" id="bd-sidelist">⏳</div><div id="bd-sidebar"></div></aside>' +
-      '<div class="bd-sw" id="bd-sw"><div class="bd-fx" id="bd-fx"><div class="bd-stage" id="bd-stage">' +
+      '<div class="bd-sw" id="bd-sw"><div class="bd-fx" id="bd-fx">' + '<div class="bd-top" id="bd-card" hidden>' +
+          '<div class="bd-crow"><span class="bd-crumb" id="bd-crumb"></span></div>' +
+          '<div class="bd-ctitle"><b id="bd-cname"></b><span class="bd-clv" id="bd-clv"></span><span class="bd-pill" id="bd-cdue" hidden></span><span class="bd-pill bd-ctag" id="bd-ctag" hidden></span><span class="bd-cst" id="bd-cst" hidden></span></div>' +
+          '<div class="bd-chips" id="bd-chips"></div><div class="bd-cprog" id="bd-cprog" hidden><i></i></div>' +
+          '<div class="bd-act" id="bd-act" hidden><button type="button" class="bd-hb bd-acttog" id="bd-acttog" title="Bật/tắt khay công cụ (như nút ghim của Notebooks)">📚 Công cụ <span>📌</span></button><span class="bd-acttools" id="bd-acttools">' +
+        '<button type="button" class="bd-hb" data-at="study" title="Bài học & Đọc">📘</button><button type="button" class="bd-hb" data-at="meaning" title="Nghĩa">🔀</button><button type="button" class="bd-hb" data-at="quiz" title="Active Recall Quiz">📝</button><button type="button" class="bd-hb" data-at="dictation" title="Dictation">🎧</button><button type="button" class="bd-hb" data-at="sheet" title="Phiếu đầy đủ">📋</button><button type="button" class="bd-hb" data-at="single" title="Từng câu">🔤</button><button type="button" class="bd-hb" data-at="progress" title="Tiến trình trí nhớ">📊</button></span>' +
+        '<button type="button" class="bd-hb bd-cplay" id="bd-cplay">🎮 Chơi game →</button></div>' +
+        '</div>' +
+        '<div class="bd-sfx" id="bd-sfx">' +'<div class="bd-stage" id="bd-stage">' +
         '<div class="bd-zoom" id="bd-zoom"><video id="bd-video" class="bd-video" autoplay playsinline muted hidden></video><div class="bd-doc" id="bd-doc"></div><canvas id="bd-cv"></canvas><div class="bd-texts" id="bd-texts"></div></div>' +
         '<button type="button" class="bd-aud" id="bd-aud" hidden data-bt="unmute"></button>' +
         '</div>' +
         '<div class="bd-hudl" id="bd-hudl">' +
-          '<div class="bd-card bd-hud" id="bd-card" hidden><div class="bd-crow"><span class="bd-crumb" id="bd-crumb"></span><span class="bd-cst" id="bd-cst" hidden></span></div><div class="bd-ctitle"><b id="bd-cname"></b><span class="bd-clv" id="bd-clv"></span><span class="bd-seg" id="bd-seg" hidden><button type="button" data-sw="wl" aria-pressed="true">📖 Bài đọc</button><button type="button" data-sw="vt" aria-pressed="false">📋 Bảng từ</button></span></div></div>' +
+          '<span class="bd-seg bd-segtop bd-hud" id="bd-seg" hidden><button type="button" data-sw="wl" aria-pressed="true">📖 Bài đọc</button><button type="button" data-sw="vt" aria-pressed="false">📋 Bảng từ</button></span>' +
           '<button type="button" class="bd-hb bd-fab bd-hud bd-tl" id="bd-close" hidden data-btt="close">✕</button>' +
           '<button type="button" class="bd-hb bd-fab bd-hud bd-tr" id="bd-big" data-btt="big">⛶</button>' +
           '<div class="bd-rail bd-hud">' +
@@ -73,10 +81,6 @@
           '</div>' +
           '<div class="bd-drawer bd-hud" id="bd-drawer" hidden>' +
             '<span class="bd-pane" id="bd-pane" hidden><button type="button" class="bd-pname" id="bd-pname" title="Mở / đóng cây Notebooks">Notebooks</button><button type="button" class="bd-ppin" id="bd-ppin" title="Ghim / bỏ ghim cột Notebooks" aria-label="Ghim / bỏ ghim cột Notebooks">📌</button></span>' +
-            '<div class="bd-chips" id="bd-chips"></div><div class="bd-cprog" id="bd-cprog" hidden><i></i></div>' +
-            '<div class="bd-act" id="bd-act" hidden><button type="button" class="bd-hb bd-acttog" id="bd-acttog" title="Bật/tắt khay công cụ (như nút ghim của Notebooks)">📚 Công cụ <span>📌</span></button><span class="bd-acttools" id="bd-acttools">' +
-        '<button type="button" class="bd-hb" data-at="study" title="Bài học & Đọc">📘</button><button type="button" class="bd-hb" data-at="meaning" title="Nghĩa">🔀</button><button type="button" class="bd-hb" data-at="quiz" title="Active Recall Quiz">📝</button><button type="button" class="bd-hb" data-at="dictation" title="Dictation">🎧</button><button type="button" class="bd-hb" data-at="sheet" title="Phiếu đầy đủ">📋</button><button type="button" class="bd-hb" data-at="single" title="Từng câu">🔤</button><button type="button" class="bd-hb" data-at="progress" title="Tiến trình trí nhớ">📊</button></span>' +
-        '<button type="button" class="bd-hb bd-cplay" id="bd-cplay">🎮 Chơi game →</button></div>' +
             '<div class="bd-drow"><button type="button" class="bd-hb" id="bd-dswap" title="Đổi bài đọc / tạo bài mới" hidden>🔀 Đổi bài đọc</button><button type="button" class="bd-hb" id="bd-min" data-btt="min">▁ Thu nhỏ bảng</button></div>' +
             '<span hidden><b data-bt="board"></b><span class="bd-who" id="bd-who"></span><span class="bd-scr" id="bd-scr"></span><button type="button" id="bd-perm" hidden data-btt="permt" data-bt="perm"></button></span>' +
           '</div>' +
@@ -106,7 +110,7 @@
             '</div>' +
           '</div>' +
         '</div>' +
-      '</div></div>' +
+      '</div></div></div>' +
       '<div class="bd-permbox" id="bd-permbox" hidden></div><div class="bd-view" id="bd-view" data-bt="viewmsg"></div>';
     document.body.appendChild(el);
     var dock = document.createElement("button");
@@ -218,7 +222,7 @@
     wrap.style.setProperty("--ar", AR.toFixed(4));
     var pin = sideOn && sidePinned() && big && window.innerWidth >= 900; $("#bd").classList.toggle("bd-sidepin", pin);
     if (!big) { wrap.style.width = ""; wrap.style.height = ""; return; }
-    var sw = $("#bd-sw"), aw = sw.clientWidth - 12 - 56, ah = sw.clientHeight - 12;
+    var sw = $("#bd-sw"), aw = sw.clientWidth - 12 - 56, ah = sw.clientHeight - 12 - ((function () { var t = $("#bd-card"); return t && !t.hidden ? t.offsetHeight + 8 : 0; })());
     if (aw < 60 || ah < 60) return;
     var w = Math.min(aw, ah * AR); wrap.style.width = Math.floor(w) + "px"; wrap.style.height = Math.floor(w / AR) + "px";
   }
@@ -544,6 +548,8 @@
   }
   var cardInfo = {}, actCol; try { actCol = localStorage.getItem("tjwl_bd_actcol_v1"); } catch (e) {} actCol = actCol == null ? window.innerWidth < 700 : actCol === "1";
   function paintAct() { var a = $("#bd-act"); if (!a) return; a.classList.toggle("col", !!actCol); var t = $("#bd-acttog"); if (t) t.classList.toggle("on", !actCol); extraH(); }
+  var relayoutN = 0;
+  function relayout() { if (relayoutN > 2) return; relayoutN++; setTimeout(function () { try { fit(); } catch (e) {} setTimeout(function () { relayoutN = 0; }, 400); }, 0); }   /* thẻ tóm tắt đổi cao -> tính lại cỡ khung (tối đa 3 lần liền) */
   function extraH() {
     var bd = $("#bd"); if (!bd) return;
     if (!big && !bd.hidden) document.body.style.paddingTop = bd.offsetHeight + "px";   /* bảng nhỏ ở đầu trang: đẩy game xuống đúng chiều cao */
@@ -565,8 +571,11 @@
       $("#bd-chips").innerHTML = (inf.terms || []).map(function (x) { return "<span>" + esc(x) + "</span>"; }).join("");
       var st = $("#bd-cst"), pg = $("#bd-cprog"), a = host && inf.adm;
       st.hidden = !a; pg.hidden = !a;
-      if (a) { st.textContent = (inf.adm.passed ? "✓ Done · " : "") + inf.adm.pct + "%" + (inf.adm.due ? " · " + inf.adm.due : ""); pg.firstChild.style.width = inf.adm.pct + "%"; }
-      extraH();
+      if (a) { st.textContent = (inf.adm.passed ? "✓ Done · " : "") + inf.adm.pct + "%"; pg.firstChild.style.width = inf.adm.pct + "%"; }
+      var du = $("#bd-cdue"), tg = $("#bd-ctag"), dd = curDoc();
+      if (du) { du.hidden = !(a && inf.adm.due); du.textContent = a && inf.adm.due ? "● " + inf.adm.due : ""; }
+      if (tg) { tg.hidden = !(a && dd && dd.lb); tg.textContent = dd && dd.lb ? dd.lb : ""; }
+      extraH(); relayout();
     };
     if (cardInfo[bid] && (!host || cardInfo[bid].adm !== undefined)) { show(cardInfo[bid]); return; }
     if (!api.blockInfo) return;
