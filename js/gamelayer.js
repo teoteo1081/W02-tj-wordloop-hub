@@ -67,9 +67,11 @@
     document.body.classList.add("board-skin", "board-mode");
     boardLearnWas = learn.hidden; learn.hidden = false;   /* nút "📖 Learning" hiện để quay về Learning, như khi đang ở màn khác */
     boardOnState = true; if (bb) bb.classList.add("active");
+    try { sessionStorage.setItem("tjwl_board_mode", "1"); } catch (e) {}   /* F5 -> ở yên trong bảng (TJ 2026-10-05) */
     refreshLb();
   }
   function leaveBoard() {
+    try { sessionStorage.removeItem("tjwl_board_mode"); } catch (e) {}
     setFit(false);
     boardOnState = false; boardMode = false; seenOn = false;
     layer.style.visibility = ""; layer.style.pointerEvents = ""; layer.classList.remove("board-idle");
@@ -105,6 +107,7 @@
     gameOpened = true;
   }
   function close() {
+    try { sessionStorage.removeItem("tjwl_board_mode"); } catch (e) {}
     if (boardMode && !gameOpened) { leaveBoard(); return; }   /* chỉ đang ở chế độ bảng: thoát bảng, giữ nguyên nút Learning / Game */
     gameOpened = false;
     setFit(false);
@@ -193,6 +196,16 @@
      mọi tab mới cùng trình duyệt đều tự mở game trong 15 phút (QA 2026-10-04) */
   try { wasOpen = sessionStorage.getItem("tjwl_game_open") === "1" || (/tjwl_game/.test(w.name || "") && Date.now() - (+localStorage.getItem("tjwl_game_open_at") || 0) < 15 * 60000); } catch (e) {}
   if (wasOpen) open();
+  else {   /* F5 đang ở chế độ bảng: dựng lại khung game (nó tự khôi phục bảng + Block đang mở) và vào lại chế độ bảng */
+    var wasBoard = false; try { wasBoard = sessionStorage.getItem("tjwl_board_mode") === "1"; } catch (e) {}
+    if (wasBoard) {
+      var fb = document.createElement("iframe");
+      fb.src = "game.html?embed=1&t=" + Date.now(); fb.title = "WordLoop Game"; fb.allow = "clipboard-write; autoplay";
+      layer.appendChild(fb);
+      enterBoard();
+      setTimeout(function () { if (boardMode && !seenOn) { try { fb.contentWindow.postMessage({ type: "tjwl-game-boardopen" }, location.origin); } catch (e) {} } }, 9000);
+    }
+  }
   var tries = 0, t = setInterval(function () {   /* Auth.init chạy bất đồng bộ */
     syncBtn();
     if (++tries > 120) { settled = true; syncBtn(); }
