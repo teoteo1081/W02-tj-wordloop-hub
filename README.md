@@ -233,6 +233,7 @@ Mỗi Block card trong danh sách Block (chưa mở) có **preview nhanh** (`app
 | 5. Theo phản hồi | Lớp học / giao bài; FSRS theo từng từ | |
 
 ## Việc còn dang dở
+- **🔔 NHẮC TJ khi có nhiều token hơn (2026-10-05)**: giải quyết **1.301 bẫy từ vựng `pending`** (bảng `word_traps`, `status='pending'`, `risk='check'`; 947 syn · 250 false · 79 look · 25 family). TJ chọn để dành. Hai cách: (1) trang duyệt ✅/❌ như lần trước (~20–30 phút) hoặc (2) nhờ AI chấm lần 2 loại bẫy trùng nghĩa (~1 USD) rồi TJ chỉ xem phần còn nghi. Phiên mới đọc README: NHẮC TJ việc này ngay đầu phiên.
 > **Đây là nơi ghi backlog nhiều-phiên, LÂU DÀI** (khác `HANDOFF.md` — file đó chỉ ghi checkpoint TẠM của 1 phiên sắp hết token, xem luật dùng ngay đầu file đó, và `CLAUDE.md` mục "Nguyên tắc chung"). Việc nào kéo dài nhiều phiên/nhiều người thì cập nhật thẳng vào đây; đừng lập thêm file `.md` mới ngoài 3 file đã có (README/CLAUDE/HANDOFF).
 
 - **▶ ĐANG LÀM (TJ 2026-10-04: "làm trước cái gì nhanh, xử lý văn bản để sau")**: BƯỚC 1 = nền bảng vẽ trong phòng game (`js/board.js`): 🖤 bảng đen 16:9 tỉ lệ cố định (mọi máy khớp nét) · 🔴 laser · ✏️ bút vẽ (phấn trắng/vàng/hồng/xanh/xanh lá/đỏ, 3 cỡ) · T ô chữ (nhiều ô, chạm lại sửa/gõ tiếp) · ↶↷ (nét của mình) · 🗑 (host) · 👥 host cấp quyền từng người; người chưa có quyền chỉ xem. ĐỂ SAU: 🔍 bút tra từ + Lịch sử tra từ, Cùng xem bài WordLoop, PDF->chữ, chỉnh cỡ/kiểu chữ, lưu phiên bản.
