@@ -982,3 +982,10 @@ body.embed .bd-drawer .bd-pane{display:none !important}
 .bd .bd-sfx{border:6px solid var(--frame,#5a4632);border-radius:12px;background:#14181a;box-sizing:content-box;padding-right:56px}
 .bd .bd-sfx .bd-stage{border:0;border-radius:6px 0 0 6px}
 .bd .bd-top{min-width:100%}
+
+/* v177: cột nút bên phải CÙNG KIỂU thanh nút bên dưới (khối bo tròn + nút vuông bo góc) */
+.bd .bd-rail,.bd .bd-pager{display:flex;flex-direction:column;gap:5px;padding:6px 5px;background:rgba(36,35,33,.9);border:1px solid var(--line);border-radius:14px;right:8px}
+.bd .bd-tr{width:44px;height:42px;border-radius:14px;background:rgba(36,35,33,.9);border:1px solid var(--line);box-shadow:none;right:6px;top:8px}
+.bd .bd-rail .bd-hb,.bd .bd-pager .bd-hb{width:34px;height:30px;border-radius:9px;border:1px solid var(--line);background:var(--card);box-shadow:none;font-size:14px}
+.bd .bd-rail .bd-hb.on,.bd .bd-rail .bd-fab.on{background:#7c4dff;border-color:#7c4dff;color:#fff}
+.bd .bd-rail{top:58px}
