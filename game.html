@@ -8,7 +8,7 @@
 <!-- Google tag (gtag.js) — cùng property GA4 với WordLoop -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM');</script>
-<link rel="stylesheet" href="css/game.css?v=97">
+<link rel="stylesheet" href="css/game.css?v=98">
 </head>
 <body>
 <!-- 🎮 Phòng game chơi chung — xem README.md "Việc còn dang dở" > PHÒNG GAME, bảng: tools/game_schema.sql.
@@ -100,8 +100,9 @@
     <div class="g-players" id="l-players"></div>
     <div class="g-card" id="l-host" hidden>
       <!-- 2 HUB của phòng game (TJ 2026-10-03): 🎮 game từ vựng (đang chơi) · 🎯 làm bài TEST (đang chuẩn bị) -->
-      <div class="g-hubs" id="l-hubs" role="tablist"><button type="button" role="tab" data-hub="vocab">🎮 Game từ vựng</button><button type="button" role="tab" data-hub="test">🎯 TOEIC</button></div>
+      <div class="g-hubs" id="l-hubs" role="tablist"><button type="button" role="tab" data-hub="vocab">🎮 Game từ vựng</button><button type="button" role="tab" data-hub="test">🎯 TOEIC</button><button type="button" role="tab" data-hub="dm">🕵️ Marketing</button></div>
       <div id="l-hub-test" hidden></div>
+      <div id="l-hub-dm" hidden></div>   <!-- 🧩 môn ngoài TOEIC: js/exams.js vẽ form vào đây -->
       <h2>📚 Chủ đề ván này <span class="g-sub">(đổi thoải mái — mã phòng/link giữ nguyên)</span></h2>
       <div class="g-scope-picked" id="h-picked"></div>
       <button class="g-btn g-btn-soft g-btn-sm" id="h-sideopen">📚 Chọn chủ đề…</button>
@@ -228,6 +229,7 @@
 <script src="js/config.js?v=4"></script>
 <script src="js/toeic_tips.js?v=1"></script>
 <script src="js/board.js?v=17"></script>
-<script src="js/game.js?v=153"></script>
+<script src="js/exams.js?v=1"></script>
+<script src="js/game.js?v=154"></script>
 </body>
 </html>

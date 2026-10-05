@@ -467,7 +467,13 @@ body.embed .g-brand{display:none}
 .g-hubs button{flex:1 1 140px;min-height:42px;border-radius:10px;border:1px solid var(--line);background:var(--deep);font-weight:600;cursor:pointer}
 .g-hubs button.on{background:var(--accent);border-color:var(--accent);color:#fff}
 .g-hubs small{font-weight:500;opacity:.8}
-.g-hubtest > :not(.g-hubs):not(#l-hub-test){display:none!important}
+.g-hubtest > :not(.g-hubs):not(#l-hub-test):not(#l-hub-dm){display:none!important}
+/* 🕵️ Thám tử Marketing: nhãn mức chính/xám/tà đạo (đủ tương phản trên nền tối) */
+.g-lvlrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.g-lvl{display:inline-block;font-size:13px;font-weight:700;padding:2px 10px;border-radius:999px;border:1px solid;background:var(--deep);white-space:nowrap}
+.g-lvl-chinh{color:#7fd9ab;border-color:var(--green)}.g-lvl-xam{color:#f0cd7a;border-color:var(--amber)}.g-lvl-ta{color:#f59a91;border-color:var(--red)}
+.g-lvlguide{display:grid;gap:6px;margin:8px 0;font-size:14px;line-height:1.45;text-align:left}
+.g-lvlref{margin-top:6px}
 .g-tsk{margin:12px 0}
 .g-tskh{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;margin-bottom:6px}
 .g-ttab{width:100%;border-collapse:collapse;font-size:13px}

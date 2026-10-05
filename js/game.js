@@ -68,7 +68,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 153;
+  var GAME_VER = 154;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -731,11 +731,24 @@
   });
   function levelsOf() { return (G.st && G.st.levels) || []; }
   /* 🎯 đề thi: câu hỏi ở bảng test_items (Supabase), theo đề + Part */
+  /* 🧩 môn ngoài TOEIC (js/exams.js, vd "dm" = Thám tử Marketing): xmOf() = cấu hình môn của VÁN đang chơi (st.test.xm), null = TOEIC.
+     G.xmHub = môn đang mở ở hub của host. Thiếu exams.js -> luôn null, TOEIC chạy y như cũ. ĐỪNG nhầm với st.exam (cờ "Thi thật"). */
+  var XM = window.Exams || null;
+  function xmOf() { var t = G.st && G.st.qtype === "toeic" && G.st.test; return (t && t.xm && XM && XM[t.xm]) || null; }
+  function xmHub() { return (G.xmHub && XM && XM[G.xmHub]) || null; }
+  function tPre() { return (G.st && G.st.test && G.st.test.xm) || "toeic"; }   /* tiền tố game_answers.term / khoá cache: "toeic" giữ nguyên, môn khác dùng tên môn */
+  async function ensureXm(X, t, k) {   /* đề đọc từ FILE TĨNH của môn (không đụng bảng test_items) */
+    var all = await X.load(); if (G.poolKey !== k) return;
+    G.tItems = X.select(all, { mode: t.mode, parts: t.parts, seed: t.seed });
+    G.pool = G.tItems.map(function (x) { return { wid: x.id, term: String(x.num), m: { vi: "-", en: "-", es: "-", zh: "-" } }; });
+    G.gaps = []; G.sheets = []; G.dicts = [];
+  }
   async function ensureTest(t) {
     t = t || {}; var parts = t.parts && t.parts.length ? t.parts : [+t.part];
-    var k = "toeic:" + t.test + ":" + parts.join(",") + ":" + (t.from || "") + "-" + (t.to || "") + ":" + (t.tag || "") + ":" + (t.only ? t.only.join(",") : "");
+    var k = (t.xm || "toeic") + ":" + t.test + ":" + parts.join(",") + ":" + (t.from || "") + "-" + (t.to || "") + ":" + (t.tag || "") + ":" + (t.only ? t.only.join(",") : "") + (t.xm ? ":" + (t.mode || "") + ":" + (t.seed || "") : "");
     if (G.poolKey === k && (G.tItems || []).length) return;
     G.poolKey = k; decks = {};
+    if (t.xm) { if (XM && XM[t.xm]) return ensureXm(XM[t.xm], t, k); G.tItems = []; G.pool = []; return; }   /* môn lạ/thiếu exams.js: KHÔNG rơi sang đề TOEIC */
     var cols = "id,num,part,stem,stem_vi,opts,answer,tag,explain,passage,answer_src,vocab", q0 = function (c) { return sb.from("test_items").select(c).eq("exam", "toeic").eq("test", String(t.test)).in("part", parts).order("num"); };
     var r = await q0(cols + ",i18n");
     if (r.error) r = await q0(cols);   /* bảng chưa có cột i18n (chưa chạy ALTER) -> vẫn chơi được, chỉ có lời giải tiếng Việt */
@@ -1490,7 +1503,7 @@
     }
     var pv = (sn && sn.st && sn.st.phase === "lobby" ? sn.st : null) || G.st || {};   /* phòng chờ: lấy lại cài đặt + bảng vẽ đã lưu */   /* trạng thái nhận từ host cũ -> lấy lại CÀI ĐẶT, còn ván đang dở thì bỏ (về phòng chờ) */
     G.st = { phase: "lobby", sound: pv.sound !== false, auto: pv.auto !== false, levels: pv.levels || [], gapsrc: pv.gapsrc || "lib", scoring: pv.scoring || G.room.scoring || "q", scope: pv.scope || G.room.scope || [], title: pv.title || G.room.title || "", mode: pv.mode || G.room.mode, qtype: pv.qtype || G.room.qtype || "meaning", lang: pv.lang || G.room.meaning_lang || "vi", force: !!pv.force, minutes: pv.minutes || +G.room.minutes, qs: pv.qs || G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
-    ["race", "target", "teams", "teamOf", "hostplay", "hub", "bdoc", "tq"].forEach(function (k) { if (pv[k] !== undefined) G.st[k] = pv[k]; });   /* tải lại ở phòng chờ: giữ ⚡ Đua, tiếng đang học, đội, host chơi/MC (QA) */
+    ["race", "target", "teams", "teamOf", "hostplay", "hub", "xm", "bdoc", "tq"].forEach(function (k) { if (pv[k] !== undefined) G.st[k] = pv[k]; });   /* tải lại ở phòng chờ: giữ ⚡ Đua, tiếng đang học, đội, host chơi/MC (QA) */
     if (pv.board) { G.st.board = true; G.st.bperm = pv.bperm || {}; }   /* đổi máy giữ phòng (mạng chập chờn) -> bảng vẽ KHÔNG tự đóng (TJ 2026-10-04: "bảng tự trả về màn hình chính") */
     G.endAt = 0; G.qUntil = 0; clearInterval(G.hostTimer);
     G.online.forEach(function (p) { G.st.roster[p.id] = { name: p.name, no: p.no, avatar: p.avatar }; });
@@ -1661,7 +1674,7 @@
     }
     return s;
   }
-  function push() { if (G.isHost && G.st && G.hub && G.st.phase === "lobby") G.st.hub = G.hub; G.lastPush = Date.now(); if (G.ch) G.ch.send({ type: "broadcast", event: "state", payload: pub() }); saveHost(); if (window.Board) Board.onState(G.st); }
+  function push() { if (G.isHost && G.st && G.hub && G.st.phase === "lobby") { G.st.hub = G.hub; if (G.xmHub) G.st.xm = G.xmHub; else delete G.st.xm; } G.lastPush = Date.now(); if (G.ch) G.ch.send({ type: "broadcast", event: "state", payload: pub() }); saveHost(); if (window.Board) Board.onState(G.st); }
   /* 🖤 bảng vẽ chung (js/board.js) — host mở/đóng cho cả phòng + cấp quyền từng người (st.board / st.bperm) */
   if (window.Board) Board.attach({
     ch: function () { return G.ch; }, me: function () { return G.me; }, st: function () { return G.st; },
@@ -1769,7 +1782,7 @@
     var q = makeQ(G.st.qtype, G.st.lang, roomLangs());
     G.st.q = Object.assign(q, { qn: (G.st.q ? G.st.q.qn : 0) + 1, revealed: false, got: {}, fast: null, res: {} });
     G.st.q.limit = qLimit(G.st.q, G.st.qs);   /* vẫn dùng làm mốc điểm "theo tốc độ" */
-    if (G.st.qtype === "toeic" && G.st.test && (G.st.test.parts || []).length > 1 && T_SEC[G.st.q.part]) G.st.q.limit = T_SEC[G.st.q.part];   /* nhiều Part: nhịp theo từng Part */
+    if (G.st.qtype === "toeic" && G.st.test && (G.st.test.parts || []).length > 1 && T_SEC[G.st.q.part] && !xmOf()) G.st.q.limit = T_SEC[G.st.q.part];   /* nhiều Part: nhịp theo từng Part */
     if (G.st.q.subs && !(G.st.tplay && tCue(G.st.q))) G.st.q.limit = (T_SEC[G.st.q.part] || 30) * G.st.q.subs.length + 45;   /* nhóm không có audio: đủ giờ đọc 3 câu + hội thoại */
     var ac = G.st.qtype === "toeic" && G.st.tplay ? tCue(G.st.q) : null;
     if (ac) {   /* 🎧 audio DẪN NHỊP (TJ 2026-10-04: "phần nghe phải tự canh chạy"): giờ của câu = đoạn audio (câu đầu nhóm có cả hội thoại) + khoảng chờ như đề thật */
@@ -1852,7 +1865,7 @@
         else { score(pid, false, limMs, limMs); G.answers.push({ pid: pid, wid: q.wid, term: q.type === "toeic" ? tKey(q) : q.term || q.ans, ok: false, ms: null }); }
       });
     }
-    q.revealed = true; G.revealUntil = Date.now() + (q.type === "toeic" ? 900 : q.type === "write" || q.type === "sheet" ? REVEAL_MS * 3 : q.type === "dict" ? REVEAL_MS * 2 : REVEAL_MS); G.qUntil = 0;
+    q.revealed = true; G.revealUntil = Date.now() + (q.type === "toeic" ? (xmOf() ? xmOf().revealMs : 900) : q.type === "write" || q.type === "sheet" ? REVEAL_MS * 3 : q.type === "dict" ? REVEAL_MS * 2 : REVEAL_MS); G.qUntil = 0;
     var best = null; Object.keys(q.got).forEach(function (pid) { var g = q.got[pid]; if (g.ok && (!best || g.ms < q.got[best].ms)) best = pid; });
     q.fast = best;   /* chỉ để khoe, không cộng điểm */
     Object.keys(G.st.scores).forEach(function (pid) { if (!q.got[pid]) G.st.scores[pid].st = 0; });   /* bỏ câu = mất chuỗi */
@@ -2739,7 +2752,7 @@
       G.log.push({ hint: $("#p-hint").textContent, vi: vi.innerHTML, opts: opts.innerHTML, msg: q.subs ? "✓ " + q.subs.filter(function (sq, i) { return (mine || [])[i] != null && norm(mine[i]) === norm(sq.ans); }).length + "/" + q.subs.length : q.type === "toeic" ? (mine == null ? T("t_skip") : q.pend ? "📝 " + T("t_pend", { a: mine }) : ok ? "✓ " + T("t_right") : "✗ " + T("t_wrong")) : $("#p-msg").textContent.split("  ·  " + T("wait_nextq")).join(""), res: q.type === "toeic" ? (q.pend ? '<div class="g-sub">⏳ ' + esc(T("t_nokey")) + "</div>" : toeicExpl(q)) : $("#p-res").innerHTML,
                    mine: typed ? (mine == null ? "" : String(mine)) : null, ans: typeof q.ans === "string" ? q.ans : "", ok: !!ok, typed: typed, played: iPlay(),
                    wid: q.type === "sheet" ? null : q.wid, tg: tgt() !== "en" ? tgt() : null, sl: q.type === "dict" ? "en" : tgt(),
-                   tq: q.type === "toeic" ? { test: q.test || (G.st && G.st.test && G.st.test.test), part: q.part || (G.st && G.st.test && G.st.test.part), num: q.num, vocab: q.vocab || [], full: toeicFull(q), gEnd: q.gEnd || null, last: q.subs ? q.subs[q.subs.length - 1].num : q.num, nums: q.subs ? q.subs.map(function (x) { return x.num; }) : null } : null,
+                   tq: q.type === "toeic" ? { xm: tPre() === "toeic" ? "" : tPre(), test: q.test || (G.st && G.st.test && G.st.test.test), part: q.part || (G.st && G.st.test && G.st.test.part), num: q.num, vocab: q.vocab || [], full: toeicFull(q), gEnd: q.gEnd || null, last: q.subs ? q.subs[q.subs.length - 1].num : q.num, nums: q.subs ? q.subs.map(function (x) { return x.num; }) : null } : null,
                    say: q.type === "toeic" ? toeicFull(q) : q.type === "dict" ? q.say || q.ans : q.type === "en2m" ? baseTerm(q.word) : q.type === "write" ? baseTerm(q.term) : typeof q.ans === "string" ? baseTerm(q.ans) : "" });
       saveLog();
     } catch (e) { console.warn("logQ", e); }
@@ -2763,7 +2776,7 @@
     try { var r = await sb.from("vocab_saves").select("word_id").eq("player_id", G.me.id); (r.data || []).forEach(function (x) { tvSavedSet()[x.word_id] = 1; }); } catch (e) {}
   }
   function paintTVocab(L) {
-    var q = L.tq, box = $("#rv-res"); if (!box) return;
+    var q = L.tq, box = $("#rv-res"); if (!box || q.xm) return;   /* 🧩 môn học: câu tiếng Việt, không có hộp từ vựng TOEIC */
     if (!(q.vocab || []).length && !$("#rv-vi .g-tstem")) return;   /* Listening nhóm/Part 1–2: không có từ vựng lẫn câu để chạm -> khỏi hộp trống (QA) */
     var list = (q.vocab || []).map(function (v, i) {
       var on = tvSavedSet()["toe_w_" + tvSlug(v.t)];
@@ -2904,7 +2917,7 @@
     $("#rv-back").textContent = G.rvFrom === "hist" ? T("back_hist") : T("back_res");
     $("#rv-hint").textContent = L.hint; $("#rv-vi").innerHTML = L.vi; $("#rv-opts").innerHTML = L.opts; $("#rv-opts").classList.toggle("g-tbook", !!L.tq); if (L.tq) tqPickAvatars(L); $("#rv-hint").hidden = !!L.tq; $$("#rv-vi .g-taud").forEach(function (x) { var r = x.closest(".g-row") || x; r.hidden = true; }); $("#rv-res").innerHTML = L.res; $("#rv-msg").textContent = L.msg;
     /* 🔊 nghe lại (TJ 2026-10-02): nút cạnh ◀ ▶ + loa nhỏ ngay sau từ đúng; đang bật tiếng thì sang câu tự đọc */
-    $("#rv-say").hidden = !L.say || !!(L.tq && /\[aud\]/.test(L.tq.full || "")); $("#rv-say").dataset.say = L.say || ""; $("#rv-say").dataset.sl = L.sl || "en";
+    $("#rv-say").hidden = !L.say || !!(L.tq && (L.tq.xm || /\[aud\]/.test(L.tq.full || ""))); $("#rv-say").dataset.say = L.say || ""; $("#rv-say").dataset.sl = L.sl || "en";
     $$("#rv-vi .g-fill").forEach(function (f) { if (L.say && !L.tq) f.insertAdjacentHTML("afterend", spk(L.say, L.sl)); });   /* đề thi: nghe cả câu bằng nút #rv-say, không chen loa giữa câu */
     $("#rv-say").textContent = T("rv_listen");
     if (L.tg === "zh") { loadPinyin(); decoratePy($("#s-review"), true); }
@@ -2927,6 +2940,7 @@
   G.stars = {};
   async function paintStar(L) {
     var b = $("#rv-star"), uid = progUid();
+    if (L && L.tq && L.tq.xm) { b.hidden = true; delete b.dataset.tqk; return; }   /* 🧩 môn học: chưa có 🔖 (khoá tq: chưa mang tên môn) */
     if (L && L.tq) {   /* 🔖 đề thi: để dành CÂU này để làm lại (TJ 2026-10-04: "khó thì làm lại cho nhớ") */
       b.hidden = false; b.dataset.wid = ""; b.dataset.tqk = tqKey(L.tq);
       var on0 = (await tqMarks())[b.dataset.tqk];
@@ -3200,7 +3214,8 @@
     var box = $("#l-tintro"); if (!box) return;
     var on = !!(G.st && G.st.hub === "test" && G.st.phase === "lobby" && !G.isHost);
     box.hidden = !on; if (!on) { box.dataset.k = ""; return; }
-    var L = uiLang(), k = L + "|" + (G.st.title || ""); if (box.dataset.k === k) return; box.dataset.k = k;
+    var L = uiLang(), k = L + "|" + (G.st.title || "") + "|" + (G.st.xm || ""); if (box.dataset.k === k) return; box.dataset.k = k;
+    var xs = G.st.xm && XM && XM[G.st.xm]; if (xs) { box.innerHTML = xs.introHTML(L, G.st.qtype === "toeic" ? G.st.title : ""); return; }   /* 🧩 phòng chờ của môn ngoài TOEIC */
     var X = TINTRO[L] || TINTRO.en, tips = (window.TOEIC_TIPS || {})[L] || (window.TOEIC_TIPS || {}).en || [];
     box.innerHTML = '<h3 class="g-tih">' + esc(X.h) + "</h3>" + (G.st.qtype === "toeic" && G.st.title ? '<div class="g-tit">' + esc(G.st.title) + "</div>" : "") +
       '<p class="g-tiw">' + esc(X.what) + '</p><ul class="g-til"><li>' + esc(X.lc) + "</li><li>" + esc(X.rc) + "</li></ul>" +
@@ -3329,7 +3344,7 @@
         $("#t-tag").innerHTML = '<option value="">Tất cả</option>' + Object.keys(m.tags).sort().map(function (t) { return '<option value="' + esc(t) + '">' + esc(t) + " (" + m.tags[t] + " câu)</option>"; }).join(""); }
     }
     /* đồng bộ sang ô chung của phòng (điểm / đội / host chơi) để danh sách đội ở phòng chờ hiện ngay như Hub từ vựng */
-    var map = { "t-scoring": "#l-scoring", "t-teams": "#l-teamn", "t-hostplay": "#l-hostplay" }, tgt0 = e.target && map[e.target.id];
+    var map = { "t-scoring": "#l-scoring", "t-teams": "#l-teamn", "t-hostplay": "#l-hostplay", "dm-scoring": "#l-scoring", "dm-teams": "#l-teamn", "dm-hostplay": "#l-hostplay" }, tgt0 = e.target && map[e.target.id];
     if (tgt0 && G.isHost) { var o = $(tgt0); if (e.target.type === "checkbox") o.checked = e.target.checked; else o.value = e.target.value; o.dispatchEvent(new Event("change")); }
   });
   document.addEventListener("click", async function (e) {
@@ -3367,6 +3382,21 @@
     }
     G.tStarting = true; $("#l-start").click();
   });
+  /* 🧩 ▶ Bắt đầu của môn ngoài TOEIC (form do js/exams.js vẽ): không có Bộ đề/Đề/Part để chọn — câu đọc từ FILE TĨNH, trộn theo seed
+     (seed nằm trong st.test nên mọi máy dựng cùng danh sách). Không audio, không "Thi thật". */
+  document.addEventListener("click", async function (e) {
+    if (!e.target.closest || !e.target.closest("#dm-start") || !G.isHost || !G.st) return;
+    var X = xmHub(), el = X && $("#l-hub-" + X.id), info = $("#dm-info"); if (!X || !el) return;
+    var f = X.readForm(el), L = uiLang(), st = G.st, parts = X.parts(f.mode);
+    st.qtype = "toeic"; st.test = { xm: X.id, test: "1", part: parts[0], parts: parts, from: 0, to: 0, tag: "", mode: f.mode, seed: 1 + Math.floor(Math.random() * 2147483646) };
+    st.exam = false; st.race = f.play === "race"; st.hostpace = false; st.taud = "off"; st.tplay = false; G.tLastG = ""; st.mode = st.race ? "free" : "kahoot"; st.qs = f.qs; st.auto = false;
+    st.title = X.title.vi + " · " + X.modeLabel(f.mode, "vi");
+    info.textContent = "⏳"; await ensureTest(st.test);
+    if (!(G.tItems || []).length) { info.textContent = X.msg("nodata", L); return; }
+    var n = G.tItems.length; info.textContent = n + X.msg("ready", L);
+    st.minutes = Math.max(1, Math.ceil(n * (f.qs + (st.race ? 0 : X.revealMs / 1000)) / 60) + 1); $("#l-min").value = st.minutes;   /* đủ giờ cho cả bộ; hết câu thì tự kết thúc */
+    G.tStarting = true; $("#l-start").click();
+  });
   var LS_HUB = "tjwl_game_hub_v1";
   /* cài đặt Hub từ vựng chụp lại LÚC SANG Hub TEST, trả lại khi quay về (QA v100 L3: ô điểm/đội/host chơi của Hub TEST làm hỏng Hub 🎮) */
   function vocabSnap() {
@@ -3382,16 +3412,23 @@
     /* chạy đúng đường xử lý của 2 ô này (QA v103: st.hostplay + track() không được cập nhật -> host vẫn là MC) */
     $("#l-hostplay").dispatchEvent(new Event("change")); $("#l-teamn").dispatchEvent(new Event("change"));
   }
+  function xmPaintHub() {   /* 🧩 vẽ form của môn đang mở (exams.js) vào #l-hub-<môn> */
+    var X = xmHub(), el = X && $("#l-hub-" + X.id); if (!el) return;
+    X.paintHub(el, { lang: uiLang(), scoring: G.st && G.st.scoring, teams: G.st && G.st.teams, hostplay: hostPlays() });
+  }
   function setHub(h) {
-    h = h === "test" ? "test" : "vocab";
+    var tab = h === "dm" && XM && XM.dm ? "dm" : h === "test" ? "test" : "vocab", xk = tab === "dm" ? "dm" : "";   /* nút hub: vocab | test (TOEIC) | môn ngoài TOEIC (G.hub vẫn là "test") */
+    h = xk ? "test" : tab;
     if (h === "test" && G.hub !== "test") vocabSnap();
-    G.hub = h;
-    if (G.isHost && G.st && G.st.hub !== h) { G.st.hub = h; push(); }   /* người chơi thấy giới thiệu + chiến thuật TOEIC trong phòng chờ */
+    G.hub = h; G.xmHub = xk;
+    if (G.isHost && G.st && (G.st.hub !== h || (G.st.xm || "") !== xk)) { G.st.hub = h; if (xk) G.st.xm = xk; else delete G.st.xm; push(); }   /* người chơi thấy giới thiệu + chiến thuật TOEIC trong phòng chờ */
     var box = $("#l-host"); if (!box) return;
     box.classList.toggle("g-hubtest", h === "test");
-    $$("#l-hubs [data-hub]").forEach(function (b) { var on = b.dataset.hub === h; b.classList.toggle("on", on); b.setAttribute("aria-selected", on ? "true" : "false"); });
-    $("#l-hub-test").hidden = h !== "test";
-    if (h === "test") {
+    $$("#l-hubs [data-hub]").forEach(function (b) { var on = b.dataset.hub === tab; b.classList.toggle("on", on); b.setAttribute("aria-selected", on ? "true" : "false"); });
+    $("#l-hub-test").hidden = h !== "test" || !!xk;
+    if ($("#l-hub-dm")) $("#l-hub-dm").hidden = !xk;
+    if (xk) xmPaintHub();
+    else if (h === "test") {
       paintTestHub(); loadTestList();
       if ($("#t-scoring")) { $("#t-scoring").value = (G.st && G.st.scoring) || "q"; $("#t-teams").value = String((G.st && G.st.teams) || 0); $("#t-hostplay").checked = hostPlays(); }
     }
@@ -3400,7 +3437,7 @@
       paintQtypes(); paintAutoTime();
       G.poolKey = null; ensurePool(G.st.scope).then(function () { if (G.st.phase === "lobby") paintPoolInfo(); }); push();
     }
-    try { localStorage.setItem(LS_HUB, h); } catch (e) {}
+    try { localStorage.setItem(LS_HUB, tab); } catch (e) {}
   }
   $("#l-hubs").addEventListener("click", function (e) { var b = e.target.closest("[data-hub]"); if (b) setHub(b.dataset.hub); });
   setHub(readLSraw(LS_HUB) || "vocab");
@@ -3495,6 +3532,7 @@
     lockAll();
     if (q.type === "toeic") {   /* 🎯 làm đề: hết giờ câu chỉ ghi nhận, không lộ đáp án — xem lại sau khi làm xong */
       if (G.revealedN === q.qn) return; G.revealedN = q.qn;
+      if (xmOf() && !q.subs) return xmReveal(q, s);   /* 🧩 môn học (DM): hiện đúng/sai + lời giải ngay sau mỗi câu */
       $("#p-msg").textContent = (q.subs ? !(G.myPicks || []).some(function (x) { return x != null; }) : G.myChoice == null) ? T("t_skip") : T("t_saved");
       var okT = q.subs ? (G.myPicks || []) : G.myChoice != null && norm(G.myChoice) === norm(q.ans);
       if (q.subs) { logQ(q, G.myPicks || [], okT); return; }
@@ -3583,26 +3621,35 @@
     if (en && en.explain) out.push({ l: "en", x: en });
     if (!out.length) out.push({ l: "vi", x: vi });
     if (!out[0].x.explain) return "";
-    return '<div class="g-texpl"><b>' + esc(q.ans) + "</b>" + (out[0].x.tag ? ' <span class="g-ttag">' + esc(out[0].x.tag) + "</span>" : "") +
+    var xb = xmOf(), xm0 = xb && q.i18n && q.i18n.meta;   /* 🧩 môn học: nhãn mức 🟢🟡🔴 + căn cứ */
+    return '<div class="g-texpl">' + (xm0 ? xb.levelBadge(xm0, L) : "") + "<b>" + esc(q.ans) + "</b>" + (out[0].x.tag ? ' <span class="g-ttag">' + esc(out[0].x.tag) + "</span>" : "") +
       (out[1] && out[1].x.tag && out[1].x.tag !== out[0].x.tag ? ' <span class="g-ttag">' + esc(out[1].x.tag) + "</span>" : "") +
       out.map(function (o) {
         return (o.x.stem ? '<div class="g-tvi">' + (FLAG[o.l] || "") + " " + esc(o.x.stem) + "</div>" : "") +
           '<div class="g-tex">💡 ' + (out.length > 1 ? (FLAG[o.l] || "") + " " : "") + esc(o.x.explain) + "</div>";
       }).join("") + toeicTraps(q, out) +
       (out[0].l !== "en" && out[0].x.passage ? '<details class="g-tpdet"><summary>' + esc(T("t_ptr")) + "</summary>" + '<div class="g-tpass">' + esc(out[0].x.passage) + "</div></details>" : "") +
-      (q.asrc === "claude" ? '<div class="g-sub">⚠️ ' + esc(T("t_claude")) + "</div>" : "") + "</div>";
+      (xm0 ? xb.refsHTML(xm0, L) : "") + (q.asrc === "claude" && !xb ? '<div class="g-sub">⚠️ ' + esc(T("t_claude")) + "</div>" : "") + "</div>";
+  }
+  /* 🧩 Kahoot của môn học (DM): sau mỗi câu cho xem đúng/sai, đáp án, lời giải + nhãn mức (TOEIC thì chỉ ghi nhận, xem ở 📖 Xem lại) */
+  function xmReveal(q, s) {
+    var ok = G.myChoice != null && norm(G.myChoice) === norm(q.ans), mine = (s.scores || {})[G.me.id] || {};
+    $$("#p-opts .g-opt").forEach(function (x) { if (norm(x.dataset.opt) === norm(q.ans)) x.classList.add("ok"); else if (G.myChoice != null && norm(x.dataset.opt) === norm(G.myChoice)) x.classList.add("bad"); });
+    $("#p-msg").textContent = !iPlay() ? T("answer", { a: q.ans }) : G.myChoice == null ? T("timeout", { a: q.ans }) : ok ? T("right") + gainTail(mine.g) : T("wrong", { a: q.ans });
+    $("#p-res").innerHTML = toeicExpl(q);
+    logQ(q, G.myChoice, ok);
   }
   /* 👥 XEM LẠI đề thi: avatar những người đã chọn từng đáp án (TJ 2026-10-04). Lấy từ game_answers của ván (host ghi lúc kết thúc,
      nên thử lại vài lần); avatar nằm DƯỚI chữ đáp án, không đè lên. */
-  function tqPickMap(mid) {
-    G.pickMaps = G.pickMaps || {};
-    if (G.pickMaps[mid]) return G.pickMaps[mid];
-    return (G.pickMaps[mid] = (async function () {
+  function tqPickMap(mid, pre) {
+    G.pickMaps = G.pickMaps || {}; pre = pre || "toeic"; var ck = pre === "toeic" ? mid : mid + "|" + pre;
+    if (G.pickMaps[ck]) return G.pickMaps[ck];
+    return (G.pickMaps[ck] = (async function () {
       var M = {}, rows = 0;
       for (var tries = 0; tries < 4; tries++) {
         M = {}; rows = 0;
         for (var from = 0; ; from += 1000) {
-          var r = await sb.from("game_answers").select("player_id,term,choice").eq("match_id", mid).like("term", "toeic:%").range(from, from + 999);
+          var r = await sb.from("game_answers").select("player_id,term,choice").eq("match_id", mid).like("term", pre + ":%").range(from, from + 999);
           if (r.error) break;
           (r.data || []).forEach(function (x) { if (x.choice == null) return; rows++; var m0 = M[x.term] = M[x.term] || {}, c = norm(String(x.choice)); (m0[c] = m0[c] || []).push(x.player_id); });
           if (!r.data || r.data.length < 1000) break;
@@ -3610,16 +3657,16 @@
         if (rows) break;
         await new Promise(function (ok) { setTimeout(ok, 1500); });
       }
-      if (!rows) delete G.pickMaps[mid];
+      if (!rows) delete G.pickMaps[ck];
       return M;
     })());
   }
   async function tqPickAvatars(L) {
     var mid = G.logMatch; if (!mid || !/^[0-9a-f-]{20,}$/i.test(String(mid))) return;
-    var M = await tqPickMap(mid), tq = L.tq, ros = (G.st && G.st.roster) || {};
+    var M = await tqPickMap(mid, L.tq.xm), tq = L.tq, ros = (G.st && G.st.roster) || {};
     if (rvCur() !== L) return;   /* đã sang câu khác */
     $$("#rv-opts .g-opt").forEach(function (b) {
-      var num = b.dataset.sub != null && tq.nums ? tq.nums[+b.dataset.sub] : tq.num, m0 = M["toeic:" + tq.test + ":" + tq.part + ":" + num] || {}, who = m0[norm(b.dataset.opt)] || [];
+      var num = b.dataset.sub != null && tq.nums ? tq.nums[+b.dataset.sub] : tq.num, m0 = M[(tq.xm || "toeic") + ":" + tq.test + ":" + tq.part + ":" + num] || {}, who = m0[norm(b.dataset.opt)] || [];
       var box = b.querySelector(".g-pickers"); if (!box) { box = document.createElement("span"); box.className = "g-pickers"; b.appendChild(box); }
       box.innerHTML = who.map(function (pid) { var p = ros[pid] || {}; return '<span title="' + esc(p.name || "") + '">' + avatar(p.avatar, "g-av-sm") + "</span>"; }).join("") + (who.length ? '<span class="g-cnt">' + who.length + "</span>" : "");
     });
@@ -4025,7 +4072,7 @@
     return { num: it.num, part: it.part, test: G.st && G.st.test ? G.st.test.test : null, sent: tStemOf(it), opts: (it.opts || []).slice(), ans: ai >= 0 ? it.opts[ai] : "" };
   }
   function tGraphic(q) { return /look at the graphic/i.test(q.sent || "") || (q.subs || []).some(function (x) { return /look at the graphic/i.test(x.sent); }); }
-  function tKey(q) { return "toeic:" + (q.test || (G.st && G.st.test && G.st.test.test)) + ":" + (q.part || (G.st && G.st.test && G.st.test.part)) + ":" + q.num; }   /* game_answers.term của câu đề thi -> 📊 điểm từng Part / câu hay sai */
+  function tKey(q) { return tPre() + ":" + (q.test || (G.st && G.st.test && G.st.test.test)) + ":" + (q.part || (G.st && G.st.test && G.st.test.part)) + ":" + q.num; }   /* game_answers.term của câu đề thi -> 📊 điểm từng Part / câu hay sai */
   function toeicCommit(q, noSend) {
     if (!q || q.done) return;
     if (G.st && G.st.qtype === "toeic" && G.tMatch === G.st.matchId) tPosSave();   /* đã nộp câu này -> F5 thì sang câu sau (lưu NGAY, trước khi câu kế ghi vị trí của nó) */
@@ -4049,7 +4096,7 @@
     $("#p-next").hidden = true;
     if (G.st.qtype === "toeic" && G.tMatch !== G.st.matchId) tPosLoad();   /* ván mới (hoặc tải lại giữa ván -> làm tiếp đúng câu) */
     var nx = G.st.qtype === "toeic" ? (G.tItems || [])[G.tIdx || 0] : null, multi = G.st.test && (G.st.test.parts || []).length > 1;
-    G.tQEnd = G.st.qtype === "toeic" && !G.st.race ? Date.now() + ((multi && nx && T_SEC[nx.part]) || +G.st.qs || 20) * 1000 : 0;   /* đề thi: mỗi câu có giờ riêng (nhiều Part: theo từng Part) */
+    G.tQEnd = G.st.qtype === "toeic" && !G.st.race ? Date.now() + ((multi && nx && T_SEC[nx.part] && !xmOf()) || +G.st.qs || 20) * 1000 : 0;   /* đề thi: mỗi câu có giờ riêng (nhiều Part: theo từng Part) */
     if (G.st.exam && G.tMatch === G.st.matchId && nx && nx.part >= 5) { G.tQEnd = 0; return exStart(); }   /* 📝 Thi thật: tới Reading -> làm tự do cả phần, nộp bài */
     if (G.ex) return;
     if (G.st.qtype === "toeic" && G.tMatch === G.st.matchId && (G.tIdx || 0) >= (G.tItems || []).length) {   /* làm hết đề -> chờ ván kết thúc */
