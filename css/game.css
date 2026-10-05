@@ -694,8 +694,39 @@ body.bd-bigon{overflow:hidden}
 .bd-vm b{color:#fff;font-size:1.12em}.bd-vi{display:block;opacity:.65;font-size:.85em}.bd-vp{opacity:.7;font-size:.82em}
 .bd-vd{color:#cfe8d6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .bd-vsay{text-align:center;opacity:.85;pointer-events:none}
-.bd-docnav{display:inline-flex;align-items:center;gap:4px;margin-left:6px}
-.bd-docnav .bd-hb{min-width:38px;min-height:34px}
+.bd-docnav{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px;max-width:960px;margin:6px auto 0}   /* lật trang nằm DƯỚI bảng, gần ngón cái */
+.bd-docnav[hidden],.bd-lk[hidden],.bd-side[hidden]{display:none}
+.bd-docnav .bd-hb{min-width:40px;min-height:40px;padding:0 6px;font-size:16px}
+#bd-dpg{min-width:84px;font-size:14px}
+.bd-big .bd-docnav,.bd-big .bd-lk{flex:none}
+.bd-lk{display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap;max-width:960px;max-height:30vh;overflow:auto;margin:6px auto 0;padding:8px 10px;background:var(--raise);border:1px solid var(--line);border-radius:10px;font-size:15px;line-height:1.45;text-align:left;position:relative;box-sizing:border-box;width:100%}
+.bd-lkq{display:flex;gap:6px;flex:1 1 100%}
+.bd-lkq input{flex:1;min-width:0;min-height:40px;padding:6px 10px;border-radius:9px;border:1px solid var(--line);background:var(--deep);color:var(--text);font-size:16px}
+.bd-lkr{flex:1;min-width:0}.bd-lkr small{color:var(--text-2)}.bd-lkr .bd-hb{padding:0 8px;min-height:28px}
+.bd-lkx{margin-left:auto;min-width:36px}
+.bd-wsel{background:rgba(255,210,122,.35);border-radius:.2em}
+/* 🌳 cột cây trên bảng: thụt ra thụt vào như WordLoop, tick chọn nguyên nhánh */
+.bd-sw{position:relative}
+.bd-side{position:absolute;left:0;top:0;bottom:0;width:min(300px,88%);z-index:5;display:flex;flex-direction:column;gap:6px;background:var(--deep);border:1px solid var(--line);border-radius:10px;padding:8px;box-sizing:border-box;text-align:left}
+.bd:not(.bd-big) .bd-side{position:fixed;left:8px;top:calc(env(safe-area-inset-top,0px) + 56px);bottom:8px;width:min(340px,94vw);z-index:70;box-shadow:0 8px 28px rgba(0,0,0,.55)}
+.bd-sidehd{display:flex;align-items:center;justify-content:space-between;gap:6px}.bd-sidehd > span{display:flex;gap:4px}
+.bd-side .bd-hb{min-height:32px;min-width:32px;padding:2px 6px}.bd-side .bd-hb.on{border-color:var(--accent);background:var(--raise)}
+#bd-sideq{width:100%;box-sizing:border-box;min-height:38px;padding:6px 10px;border-radius:9px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:16px}
+.bd-sidelist{flex:1;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;font-size:13px}
+.bd-sidepin .bd-sw{padding-left:300px;box-sizing:border-box}
+.bd-sidepin .bd-side{width:292px;border-radius:10px}
+.bd-tree summary{list-style:none;display:flex;align-items:center;gap:4px;padding:5px 2px}
+.bd-tree summary::-webkit-details-marker{display:none}
+.bd-tree summary::before{content:"▸";width:14px;flex:none;color:var(--text-2);font-size:11px;text-align:center}
+.bd-tree details[open] > summary::before{content:"▾"}
+.bd-tsn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bd-tck{width:18px;height:18px;flex:none;accent-color:var(--accent)}
+.bd-tleaf{gap:6px}.bd-tleaf button{min-width:36px;padding:2px 6px}
+.bd-side button{min-height:34px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--text);cursor:pointer;font:inherit;font-size:13px}
+.bd-selbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:8px 0 2px;border-top:1px solid var(--line);font-size:13px}
+.bd-selbar label{display:inline-flex;align-items:center;gap:4px}.bd-selbar .bd-selc{color:var(--text-2);flex:1 1 100%}
+.bd-selbar button{padding:6px 12px}.bd-selbar .bd-go{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}.bd-selbar button:disabled{opacity:.45}
+body.side-pinned .bd.bd-big{left:var(--sidew,280px)}   /* cột chủ đề của game (ghim) không bị bảng to che mất */
 .bd-office .bd-doc{pointer-events:auto}.bd-office canvas,.bd-office .bd-texts{pointer-events:none}
 .bd-office-f{width:100%;height:100%;border:0;background:#fff}
 .bd-office-a{position:absolute;left:8px;bottom:8px;background:rgba(0,0,0,.7);color:#fff;border-radius:999px;padding:4px 12px;font-size:13px;text-decoration:none}
@@ -737,3 +768,8 @@ body.bd-bigon{overflow:hidden}
 .bd-pass{white-space:normal!important;line-height:1.35;padding:8px 12px!important}
 .bd-pass small{display:block;opacity:.7;font-size:12px;margin:2px 0 0}
 .bd-pass em{opacity:.7;font-size:12px}
+
+/* 🪤 đáp án bẫy ở màn xem lại */
+.g-trapk{margin-left:8px;font-size:11px;font-weight:700;padding:1px 7px;border-radius:999px;border:1px solid currentColor;opacity:.85;white-space:nowrap}
+.g-trapped{outline:2px solid #f5a524;outline-offset:-2px;background:rgba(245,165,36,.16)!important}
+.g-trapwhy{margin:2px 0 6px;padding:6px 10px;border-radius:8px;background:rgba(245,165,36,.14);border-left:3px solid #f5a524;font-size:13px;line-height:1.45;text-align:left}

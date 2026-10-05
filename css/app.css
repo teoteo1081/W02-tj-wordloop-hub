@@ -2407,16 +2407,23 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
    trôi ra ngoài màn. Nay: hàng 1 = ☰ 🔁 + tab Hub; hàng 2 = dải nút VUỐT NGANG (Trang chủ … Learning, Game, user).
    Dropdown ngôn ngữ / menu user chuyển position:fixed để không bị cắt bởi overflow của dải vuốt.
    KHÔNG dùng mask-image làm mờ mép (cắt luôn cả menu fixed). */
-@media (max-width:860px){
+@media (max-width:1499px){   /* 2026-10-05: máy tính cũng 2 hàng (hàng 1 = logo + tab Hub, hàng 2 = dải nút chia đều) — 1 hàng làm tab Hub bị ép mất ở ~940–1400px */
   :root{--topbar-h:92px;}
   .topbar{flex-wrap:wrap;align-content:center;row-gap:4px;height:calc(var(--topbar-h) + env(safe-area-inset-top));}
   .hub-tabs{min-width:0;}
-  .topbar-right{order:9;flex:1 0 100%;min-width:0;overflow-x:auto;overflow-y:hidden;
+  .topbar-right{order:9;flex:1 0 100%;min-width:0;overflow-x:auto;overflow-y:hidden;gap:.4rem;
     -webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;scrollbar-width:none;padding-bottom:2px;}
   .topbar-right::-webkit-scrollbar{display:none;}
-  .topbar-right>*{flex-shrink:0;}
+  /* chia ĐỀU bề ngang: mỗi nút giãn bằng nhau khi còn chỗ; hết chỗ thì không co, vuốt ngang */
+  .topbar-right>*{flex:1 0 auto;justify-content:center;}
+  .topbar-right>.lang-picker,.topbar-right>.user-menu{flex:0 0 auto;}
+  .topbar-right>.lang-picker .theme-btn{width:100%;}
+  .user-chip{justify-content:center;}
   .user-menu,.lang-dropdown{position:fixed;top:calc(var(--topbar-h) + env(safe-area-inset-top) + 6px);
     right:8px;left:auto;z-index:950;max-height:calc(100dvh - var(--topbar-h) - 90px);overflow-y:auto;}
+}
+@media (min-width:861px) and (max-width:1499px){ .topbar-right>.theme-btn:not(.btn-journey-label){flex:0 0 auto;} }
+@media (max-width:860px){
   .game-layer{right:0;width:auto;}   /* hết tràn ngang -> bỏ mẹo 100vw */
   .jrow .jrow-game{font-size:0;padding:.3rem .5rem;}   /* Journey: chỉ hiện 🎮 để còn chỗ cho tên Block */
   .jrow .jrow-game::before{content:"🎮";font-size:.9rem;}

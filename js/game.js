@@ -68,7 +68,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 150;
+  var GAME_VER = 153;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -938,6 +938,7 @@
       });
       pool = tp; gaps = []; sheets = []; dicts = [];
     }
+    await Promise.race([loadTraps(pool), new Promise(function (r) { setTimeout(r, 4000); })]);   /* 🪤 bẫy của các từ trong pool (tối đa chờ 4s) */
     if (G.poolKey !== scopeKey(scope)) return G.pool;   /* đã đổi chủ đề/ngôn ngữ trong lúc tải -> bỏ kết quả cũ */
     G.pool = pool; G.gaps = gaps; G.gapsSrc = gaps; G.gapLib = []; G.sheets = sheets; G.dicts = dicts;
     applyGap();
@@ -1100,7 +1101,36 @@
     if (!d || d.n !== list.length || !d.list.length) d = decks[key] = { n: list.length, list: shuffle(list.slice()) };
     return d.list.pop();
   }
-  function distractors(w, p) {
+  /* 🪤 ĐÁP ÁN BẪY (TJ duyệt 2026-10-05): bảng word_traps (status=approved) — mỗi từ có vài đáp án sai "dễ nhầm" do AI soạn + TJ duyệt:
+     look 🔤 giống mặt chữ · family 👪 cùng họ từ · syn 🔀 gần nghĩa · false ⚠️ bạn giả. Dùng tối đa 2 bẫy / câu, còn lại lấy như cũ;
+     điền chỗ trống chỉ dùng look/family (syn/false có thể vừa câu). Chưa có bảng / chưa duyệt = giữ cách cũ. q.traps = {norm(đáp án): {k, why}} chỉ lộ lúc xem lại. */
+  var TRAPS = null, TRAP_KINDS = { meaning: ["look", "family", "syn", "false"], en2m: ["look", "family", "syn", "false"], gap: ["look", "family"] }, lastTraps = null;
+  var TRAP_LAB = {
+    vi: { look: "🔤 Giống mặt chữ", family: "👪 Cùng họ từ", syn: "🔀 Gần nghĩa", false: "⚠️ Bạn giả" },
+    en: { look: "🔤 Looks alike", family: "👪 Same word family", syn: "🔀 Close meaning", false: "⚠️ False friend" },
+    zh: { look: "🔤 字形相似", family: "👪 同词族", syn: "🔀 意思相近", false: "⚠️ 假朋友" },
+    es: { look: "🔤 Se parece", family: "👪 Misma familia", syn: "🔀 Significado cercano", false: "⚠️ Falso amigo" } };
+  var TRAP_HIT = { vi: "Bạn dính bẫy", en: "You fell for a trap", zh: "你中了陷阱", es: "Caíste en la trampa" };
+  var trapDone = {};
+  /* tải bẫy CHỈ cho các từ trong pool (đã có ~15.000 bẫy duyệt -> không tải hết): 80 từ/lượt, 5 lượt song song */
+  async function loadTraps(pool) {
+    try {
+      if (!TRAPS) TRAPS = {};
+      var terms = []; (pool || []).forEach(function (w) { var k = norm(w.term); if (k && !trapDone[k] && k.length < 60) { trapDone[k] = 1; terms.push(k); } });
+      var chunks = []; for (var i = 0; i < terms.length; i += 80) chunks.push(terms.slice(i, i + 80));
+      var next = 0;
+      var work = async function () {
+        while (next < chunks.length) {
+          var c = chunks[next++];
+          var r = await sb.from("word_traps").select("word_term,kind,trap_term,trap_en,trap_vi,trap_zh,trap_es,why").eq("status", "approved").in("word_term", c);
+          if (r.error) { next = chunks.length; return; }   /* chưa có bảng: dùng đáp án nhiễu cũ */
+          (r.data || []).forEach(function (x) { (TRAPS[x.word_term] = TRAPS[x.word_term] || []).push(x); });
+        }
+      };
+      await Promise.all([work(), work(), work(), work(), work()]);
+    } catch (e) { /* bỏ qua */ }
+  }
+  function distractors(w, p, mode) {
     /* không lấy đáp án nhiễu TRÙNG NGHĨA với đáp án đúng ở bất kỳ tiếng nào (lucky/fortunate cùng "may mắn",
        court/course cùng "球场") — câu sẽ có 2 đáp án đúng (chuyên gia ngôn ngữ 2026-10-03) */
     var sameMean = function (x) { return ["vi", "en", "es", "zh"].some(function (l) { return x.m && w.m && x.m[l] && w.m[l] && norm(quizForm(x.m[l])) === norm(quizForm(w.m[l])); }); };
@@ -1110,6 +1140,15 @@
     var rest = shuffle(p.filter(function (x) { return ok(x) && x.block !== w.block && !(w.pos && x.pos === w.pos); }));
     var picks = [], used = {};
     var usedM = {};
+    lastTraps = null;
+    var tl = TRAPS && mode && TRAP_KINDS[mode] ? (TRAPS[norm(w.term)] || []).filter(function (x) { return TRAP_KINDS[mode].indexOf(x.kind) >= 0 && norm(x.trap_term) !== norm(w.term); }) : [];
+    if (tl.length) {
+      lastTraps = {};
+      shuffle(tl).slice(0, 2).forEach(function (x) {
+        var k = norm(x.trap_term); if (used[k]) return;
+        used[k] = 1; picks.push(x.trap_term); lastTraps[k] = { k: x.kind, why: x.why || "", m: { en: x.trap_en, vi: x.trap_vi, zh: x.trap_zh, es: x.trap_es } };
+      });
+    }
     sameBlock.concat(samePos, rest).forEach(function (x) {
       if (picks.length >= 3 || used[norm(x.term)]) return;
       var mk = ["vi", "en", "es", "zh"].map(function (l) { return x.m && x.m[l] ? l + ":" + norm(quizForm(x.m[l])) : ""; }).filter(Boolean);
@@ -1218,17 +1257,18 @@
     if (t === "mix") t = shuffle(["meaning", "en2m", "recall"].concat(G.gaps.length >= 4 ? ["gap"] : []))[0];
     if (t === "gap" && G.gaps.length >= 4) {
       var g = draw("gap", G.gaps), gw = G.pool.find(function (x) { return x.wid === g.wid; }) || { term: g.term, block: g.block };
-      return { type: "gap", wid: g.wid, ans: g.term, lv: gw.lv, sent: g.text, len: baseTerm(g.term).length, texts: gw.m || {}, opts: distractors(gw, G.pool) };
+      var gopts = distractors(gw, G.pool, "gap");
+      return { type: "gap", wid: g.wid, ans: g.term, lv: gw.lv, sent: g.text, len: baseTerm(g.term).length, texts: gw.m || {}, opts: gopts, traps: lastTraps };
     }
     var p = langs && langs.length ? poolForAll(langs) : poolFor(lang);
     if (p.length < 4) p = poolFor(lang);   /* thiếu từ có nghĩa ở MỌI tiếng -> theo tiếng phòng, ai thiếu thì hiện nghĩa tiếng Anh */
     if (p.length < 4) p = G.pool;
     var w = draw(t + lang + (langs || []).join(""), p);
     var q = { type: t === "recall" ? "recall" : t === "en2m" ? "en2m" : "meaning", wid: w.wid, ans: w.term, lv: w.lv, texts: w.m };
-    if (q.type === "meaning") q.opts = distractors(w, p);
+    if (q.type === "meaning") { q.opts = distractors(w, p, "meaning"); q.traps = lastTraps; }
     if (q.type === "en2m") {   /* hiện TỪ tiếng Anh, 4 lựa chọn = NGHĨA (mỗi người thấy theo tiếng mẹ đẻ của mình) */
-      q.word = w.term; q.opts = distractors(w, p); q.optTexts = {};
-      q.opts.forEach(function (o) { var x = p.find(function (y) { return norm(y.term) === norm(o); }) || G.pool.find(function (y) { return norm(y.term) === norm(o); }); q.optTexts[o] = x ? x.m : {}; });
+      q.word = w.term; q.opts = distractors(w, p, "en2m"); q.traps = lastTraps; q.optTexts = {};
+      q.opts.forEach(function (o) { var tr = q.traps && q.traps[norm(o)]; var x = tr ? { m: tr.m } : (p.find(function (y) { return norm(y.term) === norm(o); }) || G.pool.find(function (y) { return norm(y.term) === norm(o); })); q.optTexts[o] = x ? x.m : {}; });
     }
     else q.len = w.term.length;
     return q;
@@ -1615,7 +1655,7 @@
       var q = s.q, rev = !!q.revealed;
       s.q = { qn: q.qn, n: q.n, wids: q.wids, word: q.word, lv: q.lv, aud: q.aud, tiles: q.tiles, sep: q.sep, reg: q.reg, ctx: q.ctx, full: q.full, optTexts: q.optTexts, type: q.type, texts: q.texts, sent: q.sent, opts: q.opts, len: q.len, wid: q.wid, term: q.term, text: q.text, bank: q.bank, say: q.say, limit: q.limit, grading: !!q.grading, num: q.num, passage: q.passage, tag: rev ? q.tag : null, expl: rev ? q.expl : null, vi: rev ? q.vi : null, i18n: rev ? q.i18n : null, vocab: rev ? q.vocab : null, test: q.test, part: q.part, asrc: q.asrc, pend: q.pend, gEnd: q.gEnd, nxt: q.nxt,
               subs: q.subs ? q.subs.map(function (x) { return { num: x.num, part: x.part, test: x.test, sent: x.sent, opts: x.opts, ans: rev ? x.ans : null }; }) : null,
-              res: rev ? q.res : null, revealed: rev, ans: rev ? q.ans : null, cnt: Object.keys(q.got).length,
+              res: rev ? q.res : null, traps: rev ? q.traps : null, revealed: rev, ans: rev ? q.ans : null, cnt: Object.keys(q.got).length,
               picks: rev ? Object.keys(q.got).reduce(function (o, pid) { o[pid] = q.got[pid].c; return o; }, {}) : null,
               oks: rev ? Object.keys(q.got).filter(function (pid) { return q.got[pid].ok; }) : null, fast: rev ? q.fast : null };
     }
@@ -1656,6 +1696,7 @@
       url: function (path) { return cfg.SUPABASE_URL + "/storage/v1/object/public/toeic/lib/" + path.split("/").map(encodeURIComponent).join("/"); }
     },
     tree: async function () { if (!TREE) await loadTree(true); return TREE; },   /* cây Hub › Notebook › … › Block của game, dùng chung cho hộp chọn bài ở bảng */
+    lookup: function (t, ctx) { return boardLookup(t, ctx); },
     say: function (text) { try { if (!soundOn()) return; sayIt._lang = "en"; sayIt(String(text || ""), true); } catch (e) {} },
     words: function (bid) { return boardWords(bid); },
     block: async function (id) { var r = await sb.from("blocks").select("id,name,context_passage,context_passage_candidates").eq("id", id).maybeSingle(); return r.data; },
@@ -2683,6 +2724,17 @@
         else if (typeof q.ans === "string" && norm(b.dataset.opt) === norm(q.ans)) b.classList.add("ok");
         else if (mine != null && norm(b.dataset.opt) === norm(mine)) b.classList.add("bad");
       });
+      if (q.traps) opts.querySelectorAll(".g-opt").forEach(function (b) {   /* 🪤 đáp án bẫy: gắn nhãn loại; bẫy NGƯỜI CHƠI đã chọn thì tô đậm + nói rõ dính bẫy gì */
+        var tr = q.traps[norm(b.dataset.opt)]; if (!tr) return;
+        var L0 = uiLang(), lab = (TRAP_LAB[L0] || TRAP_LAB.vi)[tr.k] || tr.k, tg = document.createElement("span");
+        tg.className = "g-trapk"; tg.textContent = lab; b.appendChild(tg); b.classList.add("g-trapo");
+        if (mine != null && norm(b.dataset.opt) === norm(mine)) {
+          b.classList.add("g-trapped");
+          var wy = document.createElement("div"); wy.className = "g-trapwhy";
+          wy.textContent = "🪤 " + (TRAP_HIT[L0] || TRAP_HIT.vi) + ": " + lab + (tr.why && L0 === "vi" ? " — " + tr.why : "");
+          b.insertAdjacentElement("afterend", wy);
+        }
+      });
       var typed = q.type === "recall" || q.type === "dict" || q.type === "write";
       G.log.push({ hint: $("#p-hint").textContent, vi: vi.innerHTML, opts: opts.innerHTML, msg: q.subs ? "✓ " + q.subs.filter(function (sq, i) { return (mine || [])[i] != null && norm(mine[i]) === norm(sq.ans); }).length + "/" + q.subs.length : q.type === "toeic" ? (mine == null ? T("t_skip") : q.pend ? "📝 " + T("t_pend", { a: mine }) : ok ? "✓ " + T("t_right") : "✗ " + T("t_wrong")) : $("#p-msg").textContent.split("  ·  " + T("wait_nextq")).join(""), res: q.type === "toeic" ? (q.pend ? '<div class="g-sub">⏳ ' + esc(T("t_nokey")) + "</div>" : toeicExpl(q)) : $("#p-res").innerHTML,
                    mine: typed ? (mine == null ? "" : String(mine)) : null, ans: typeof q.ans === "string" ? q.ans : "", ok: !!ok, typed: typed, played: iPlay(),
@@ -2770,6 +2822,20 @@
           user: "Word/phrase: " + JSON.stringify(t) + ". Sentence: " + JSON.stringify(ctx) + ". Give its meaning IN THIS SENTENCE. Return JSON {\"pos\":\"n|v|adj|adv|phr|…\",\"en\":\"short English definition\"" + langs.filter(function (l) { return l !== "en"; }).map(function (l) { return ",\"" + l + "\":\"short meaning in " + LANG_NAME[l] + "\""; }).join("") + "}" }) });
       var d = await res.json(), raw = d.candidates && d.candidates[0] && d.candidates[0].content.parts[0].text;
       var v = JSON.parse(String(raw || "").replace(/^```(json)?|```$/g, "").trim()); v.t = t; tvCache[k] = v; return v;
+    } catch (e) { return null; }
+  }
+  /* 🔍 tra nghĩa ngay trên bảng (chạm từ trong bài đọc / gõ vào ô tra): Gemini qua gemini-proxy, nghĩa theo tiếng giao diện + định nghĩa tiếng Anh, nhớ theo từ+câu */
+  var blCache = {};
+  async function boardLookup(t, ctx) {
+    var L = uiLang(), k = t.toLowerCase() + "|" + L + "|" + String(ctx || "").slice(0, 60); if (blCache[k]) return blCache[k];
+    var langs = L !== "en" ? [L] : [];
+    try {
+      var res = await fetch(cfg.SUPABASE_URL.replace(/\/$/, "") + "/functions/v1/gemini-proxy", {
+        method: "POST", headers: { "Content-Type": "application/json", "Authorization": "Bearer " + cfg.SUPABASE_ANON_KEY, "apikey": cfg.SUPABASE_ANON_KEY },
+        body: JSON.stringify({ model: cfg.GEMINI_MODEL || "gemini-3.5-flash-lite", user_id: null, block_id: null, sys: "You are a concise bilingual dictionary for English learners. Reply JSON only.",
+          user: "Word/phrase: " + JSON.stringify(t) + (ctx ? ". Paragraph: " + JSON.stringify(String(ctx).slice(0, 700)) : "") + ". Give its meaning" + (ctx ? " IN THIS PARAGRAPH" : "") + ". Return JSON {\"pos\":\"n|v|adj|adv|phr|…\",\"en\":\"short English definition\"" + langs.map(function (l) { return ",\"" + l + "\":\"short meaning in " + LANG_NAME[l] + "\""; }).join("") + "}" }) });
+      var d = await res.json(), raw = d.candidates && d.candidates[0] && d.candidates[0].content.parts[0].text;
+      var v = JSON.parse(String(raw || "").replace(/^```(json)?|```$/g, "").trim()); blCache[k] = v; return v;
     } catch (e) { return null; }
   }
   async function tvEnsureTree(test, part) {
