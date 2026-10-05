@@ -233,6 +233,7 @@ Mỗi Block card trong danh sách Block (chưa mở) có **preview nhanh** (`app
 | 5. Theo phản hồi | Lớp học / giao bài; FSRS theo từng từ | |
 
 ## Việc còn dang dở
+- **🔔 NHẮC TJ khi có nhiều token hơn (2026-10-05)**: giải quyết **1.301 bẫy từ vựng `pending`** (bảng `word_traps`, `status='pending'`, `risk='check'`; 947 syn · 250 false · 79 look · 25 family). TJ chọn để dành. Hai cách: (1) trang duyệt ✅/❌ như lần trước (~20–30 phút) hoặc (2) nhờ AI chấm lần 2 loại bẫy trùng nghĩa (~1 USD) rồi TJ chỉ xem phần còn nghi. Phiên mới đọc README: NHẮC TJ việc này ngay đầu phiên.
 > **Đây là nơi ghi backlog nhiều-phiên, LÂU DÀI** (khác `HANDOFF.md` — file đó chỉ ghi checkpoint TẠM của 1 phiên sắp hết token, xem luật dùng ngay đầu file đó, và `CLAUDE.md` mục "Nguyên tắc chung"). Việc nào kéo dài nhiều phiên/nhiều người thì cập nhật thẳng vào đây; đừng lập thêm file `.md` mới ngoài 3 file đã có (README/CLAUDE/HANDOFF).
 
 - **🎯 THÊM HUB ĐỀ THI EA / IELTS / DIGITAL MARKETING VÀO GAME (TJ chốt 2026-10-04; ĐANG LÀM)**: toàn bộ thiết kế, trạng thái, việc chờ TJ ở `docs/EXAMS_PLAN.md`; đội AI + cổng kiểm tra ở `docs/TEAM.md`. Đã xong: 87 PDF EA lên `toeic/lib/EA2025/`, hub `hub_ielts_claude` (trống), bộ cổng `tools/gate*`. Chưa xong: móc `js/exams.js` vào game, soạn nội dung DM/IELTS, đề IELTS chính thức (mạng cloud chặn nguồn).
