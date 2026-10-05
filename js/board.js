@@ -29,7 +29,7 @@
   };
   function t(k) { var l = api && api.lang ? api.lang() : "vi"; return (TX[l] || TX.vi)[k] || TX.vi[k] || k; }
   function relabel() {
-    document.querySelectorAll("[data-bt]").forEach(function (e) { e.textContent = t(e.dataset.bt); });
+    document.querySelectorAll("[data-bt]").forEach(function (e) { var tx = t(e.dataset.bt); if (e.dataset.ico) { e.title = tx; tx = String(tx).split(" ")[0]; } e.textContent = tx; });
     document.querySelectorAll("[data-btt]").forEach(function (e) { e.title = t(e.dataset.btt); });
   }
   function $(s) { return document.querySelector(s); }
@@ -58,10 +58,11 @@
     el.innerHTML =
       '<aside class="bd-side" id="bd-side" hidden><div class="bd-sidehd"><b>Notebooks</b><span><button type="button" class="bd-hb" id="bd-sidepin" title="Ghim cột (luôn mở bên trái)">📌</button><button type="button" class="bd-hb" id="bd-sideexp" title="Mở hết">⊞</button><button type="button" class="bd-hb" id="bd-sidecol" title="Thu hết">⊟</button><button type="button" class="bd-hb" id="bd-sidex" title="Đóng">✕</button></span></div><input type="search" id="bd-sideq" placeholder="Tìm Block…"><div class="bd-tree bd-sidelist" id="bd-sidelist">⏳</div><div id="bd-sidebar"></div></aside>' +
       '<div class="bd-frame" id="bd-frame"><div class="bd-head"><span class="bd-pane" id="bd-pane" hidden><button type="button" class="bd-pname" id="bd-pname" title="Mở / đóng cây Notebooks">Notebooks</button><button type="button" class="bd-ppin" id="bd-ppin" title="Ghim / bỏ ghim cột Notebooks" aria-label="Ghim / bỏ ghim cột Notebooks">📌</button></span><b data-bt="board"></b><span class="bd-who" id="bd-who"></span><span class="bd-scr" id="bd-scr"></span>' +
-      '<button type="button" class="bd-hb" id="bd-lib" hidden data-bt="lib"></button>' +
+      '<button type="button" class="bd-hb" id="bd-lib" hidden data-ico="1" data-bt="lib"></button>' +
       '<button type="button" class="bd-hb" id="bd-big" data-btt="big">⛶</button>' +   /* 📁 tài liệu: PDF / ảnh / bài đọc WordLoop lên bảng (chỉ host) */
-      '<button type="button" class="bd-hb" id="bd-share" hidden data-btt="sharet" data-bt="share"></button>' +   /* 🖥 chia sẻ màn hình (chỉ host, máy tính) */
+      '<button type="button" class="bd-hb" id="bd-share" hidden data-ico="1" data-btt="sharet" data-bt="share"></button>' +   /* 🖥 chia sẻ màn hình (chỉ host, máy tính) */
       '<button type="button" class="bd-hb" id="bd-perm" hidden data-btt="permt" data-bt="perm"></button>' +
+      '<button type="button" class="bd-hb" id="bd-dswap" title="Đổi bài đọc / tạo bài mới" hidden>🔀</button>' +
       '<button type="button" class="bd-hb" id="bd-min" data-btt="min">▁</button>' +
       '<button type="button" class="bd-hb" id="bd-close" hidden data-btt="close">✕</button></div>' +
       '<div class="bd-card" id="bd-card" hidden><div class="bd-crumb" id="bd-crumb"></div><div class="bd-ctitle"><b id="bd-cname"></b><span class="bd-clv" id="bd-clv"></span><span class="bd-cst" id="bd-cst" hidden></span></div><div class="bd-chips" id="bd-chips"></div><div class="bd-cprog" id="bd-cprog" hidden><i></i></div>' +
@@ -71,11 +72,11 @@
       '</div></div>' +
       '<div class="bd-sw" id="bd-sw"><div class="bd-stage" id="bd-stage"><div class="bd-zoom" id="bd-zoom"><video id="bd-video" class="bd-video" autoplay playsinline muted hidden></video><div class="bd-doc" id="bd-doc"></div><canvas id="bd-cv"></canvas><div class="bd-texts" id="bd-texts"></div></div><button type="button" class="bd-aud" id="bd-aud" hidden data-bt="unmute"></button></div></div>' +
       '<div class="bd-docnav" id="bd-docnav" hidden>' +
-        '<button type="button" class="bd-hb" data-nv="batch:-1" title="Batch trước">⏮</button><button type="button" class="bd-hb" data-nv="block:-1" title="Block trước">⏪</button>' +
+        '<button type="button" class="bd-hb" id="bd-kprev" data-nv="block:-1" title="Block trước">⏪</button>' +
         '<button type="button" class="bd-hb" id="bd-dprev" title="Trang trước">◀</button><button type="button" class="bd-hb" id="bd-dpg" title="Nhảy tới trang…"></button><button type="button" class="bd-hb" id="bd-dnext" title="Trang sau">▶</button>' +
-        '<button type="button" class="bd-hb" data-nv="block:1" title="Block sau">⏩</button><button type="button" class="bd-hb" data-nv="batch:1" title="Batch sau">⏭</button>' +
+        '<button type="button" class="bd-hb" id="bd-knext" data-nv="block:1" title="Block sau">⏩</button>' +
         '<button type="button" class="bd-hb" id="bd-dsrch" title="Gõ từ để tra nghĩa" hidden>🔍</button>' +
-        '<button type="button" class="bd-hb" id="bd-dtree" title="Chọn bài khác (cây Notebooks)">🌳</button><button type="button" class="bd-hb" id="bd-dswap" title="Đổi bài đọc / tạo bài mới" hidden>🔀</button><button type="button" class="bd-hb" id="bd-dclose" title="Đóng tài liệu">✕</button></div>' +
+        '<button type="button" class="bd-hb" id="bd-dtree" hidden style="display:none">🌳</button><button type="button" class="bd-hb" id="bd-dclose" hidden style="display:none">✕</button></div>' +
       '<div class="bd-lk" id="bd-lk" hidden><div class="bd-lkq" id="bd-lkq" hidden><input type="search" id="bd-lkin" placeholder="Gõ từ / cụm từ cần tra…" autocomplete="off" autocapitalize="off"><button type="button" class="bd-hb" id="bd-lkgo">Tra</button></div><div class="bd-lkr" id="bd-lkr"></div><button type="button" class="bd-hb bd-lkx" id="bd-lkx">✕</button></div>' +
       '<div class="bd-tools" id="bd-tools">' +
         '<button type="button" data-tool="hand" data-btt="hand">✋</button>' +
@@ -241,7 +242,7 @@
     curQ = qOf();
     var w = Math.round(cw * dpr * q), h = Math.round(ch * dpr * q);
     if (w !== cv.width || h !== cv.height) { cv.width = w; cv.height = h; bgDirty = true; render(); }   /* chỉ dựng lại khi ĐỔI cỡ (iPhone chớp/mất nét đang vẽ) */
-    paintTexts(); applyZ(); fitDocText();
+    paintTexts(); applyZ(); fitDocText(); extraH();
   }
   function sx() { return cv.width / W; }
   function toLogic(e) { var r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width * W, y: (e.clientY - r.top) / r.height * H }; }   /* getBoundingClientRect đã tính cả phóng to */
@@ -504,7 +505,13 @@
   /* 🪪 THẺ BLOCK trên bảng (TJ 2026-10-05): đường dẫn + tên + cấp độ + chip từ cho MỌI người; thanh tiến độ/trạng thái + khay 7 tab học + 🎮 Chơi game CHỈ ADMIN (host). Điện thoại: khay công cụ thu/mở như nút ghim Notebooks. */
   var cardInfo = {}, actCol; try { actCol = localStorage.getItem("tjwl_bd_actcol_v1"); } catch (e) {} actCol = actCol == null ? window.innerWidth < 700 : actCol === "1";
   function paintAct() { var a = $("#bd-act"); if (!a) return; a.classList.toggle("col", !!actCol); var t = $("#bd-acttog"); if (t) t.classList.toggle("on", !actCol); extraH(); }
-  function extraH() { var h = 0; ["#bd-card"].forEach(function (x) { var e = $(x); if (e && !e.hidden) h += e.offsetHeight + 6; }); var bd = $("#bd"); if (bd) bd.style.setProperty("--bd-extra", h + "px"); }
+  function extraH() {
+    var h = 0; ["#bd-card"].forEach(function (x) { var e = $(x); if (e && !e.hidden) h += e.offsetHeight + 6; });
+    var bd = $("#bd"); if (!bd) return; bd.style.setProperty("--bd-extra", h + "px");
+    if (!big && !bd.hidden) document.body.style.paddingTop = bd.offsetHeight + "px";   /* thẻ Block đổi cao -> đẩy game xuống ngay, khỏi bị chồng rồi mới tụt */
+    var wp = $("#bd-stage") || wrap, w2 = wp && wp.getBoundingClientRect().width;
+    if (w2 && Math.abs((+bd.dataset.bw || 0) - w2) > 4) { bd.dataset.bw = w2; bd.style.setProperty("--bd-w", Math.round(w2 + 12) + "px"); }   /* thanh trên/hàng nút rộng ĐÚNG bằng bảng */
+  }
   function paintCard(d) {
     var card = $("#bd-card"), act = $("#bd-act"); if (!card) return;
     var bid = d && (d.k === "wl" || d.k === "vt") ? d.bid : null, host = api.isHost();
@@ -512,6 +519,8 @@
     var fr = $("#bd-frame"); if (fr) fr.style.display = (bid || host) ? "" : "none";
     if (!bid) { extraH(); return; }
     paintAct();
+    if (!$("#bd-cname").textContent) $("#bd-cname").textContent = d.name || "";   /* hiện tên ngay, dữ liệu còn lại về sau */
+    extraH();
     var show = function (inf) {
       if (!inf || !curDoc() || curDoc().bid !== bid) return;
       $("#bd-crumb").textContent = inf.path || ""; $("#bd-cname").textContent = inf.name || d.name || "";
@@ -536,7 +545,13 @@
       var U0 = isTxt ? unitsOf(d) : null;
       $("#bd-dpg").textContent = !isPg ? "" : (d.k === "vt" ? "📋 " : d.k === "wl" ? "📖 " : "") + (d.p || 1) + (d.n ? " / " + d.n : "") + (U0 && U0.length > 1 ? " · " + (unitIdx(d, U0) + 1) + "/" + U0.length : "");
       ["#bd-dprev", "#bd-dnext"].forEach(function (x) { var e = $(x); if (e) e.hidden = !isPg; });
-      document.querySelectorAll("#bd-docnav [data-nv]").forEach(function (e) { e.hidden = !(d && d.bid && (d.k === "wl" || d.k === "vt")); });
+      var isBlk = !!(d && d.bid && (d.k === "wl" || d.k === "vt"));
+      document.querySelectorAll("#bd-docnav [data-nv]").forEach(function (e) { e.hidden = !isBlk; });
+      if (isBlk) {
+        var eg = api.edge ? api.edge(d.bid) : null, kp = $("#bd-kprev"), kn = $("#bd-knext");
+        if (kp) { kp.textContent = eg && eg.first ? "⏮" : "⏪"; kp.title = eg && eg.first ? "Batch trước" : "Block trước"; }
+        if (kn) { kn.textContent = eg && eg.last ? "⏭" : "⏩"; kn.title = eg && eg.last ? "Batch sau" : "Block sau"; }
+      }
       $("#bd-dtree").hidden = !host; $("#bd-dclose").hidden = !host || !d; $("#bd-dpg").hidden = !d;
       $("#bd-dsrch").hidden = !isTxt;
       var sw0 = $("#bd-dswap"); if (sw0) sw0.hidden = !(host && d && d.k === "wl");

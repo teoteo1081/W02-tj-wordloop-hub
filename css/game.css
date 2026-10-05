@@ -837,3 +837,14 @@ body.bd-on .g-sidetab{display:none}
 .bd.bd-big.bd-sidepin .bd-side{left:6px;top:6px;bottom:6px;width:292px}
 .bd-sidepin .bd-pane{display:none}
 .bd > .bd-side{z-index:8}
+
+/* v164: thanh trên chỉ icon + rộng đúng bằng bảng; không tràn điện thoại (TJ 2026-10-05) */
+.bd-frame,.bd-docnav,.bd-tools{width:min(100%,max(var(--bd-w,0px),380px));max-width:960px;margin-left:auto;margin-right:auto;box-sizing:border-box}
+.bd-frame .bd-head{flex-wrap:nowrap;gap:4px;min-width:0}
+.bd-frame .bd-head > *{flex:none}
+.bd-frame .bd-head [data-bt="board"],.bd-frame .bd-head .bd-who,.bd-frame .bd-head .bd-scr{display:none}
+.bd-frame .bd-head .bd-hb{min-width:36px;padding:4px 8px}
+.bd-chips{min-height:26px}
+.bd-crumb,.bd-ctitle{min-width:0}
+.bd-docnav{flex-wrap:nowrap;overflow-x:auto}
+.bd-docnav .bd-hb{flex:none}

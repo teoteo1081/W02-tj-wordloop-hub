@@ -1704,6 +1704,15 @@
       }
       return out;
     },
+    /* Block đang đứng đầu/cuối Batch? (để mũi tên ⏪ ⏩ đổi thành ⏮ ⏭) */
+    edge: function (bid) {
+      if (!TREE) return null;
+      var by = function (l, i) { return TREE[l].find(function (r) { return r.id === i; }); };
+      var bl = by("blocks", bid), ba = bl && by("batches", bl.batch_id), pg = ba && by("pages", ba.page_id), sc = pg && by("sections", pg.section_id); if (!sc) return null;
+      var L = TREE.blocks.filter(function (b) { var a = by("batches", b.batch_id), p = a && by("pages", a.page_id), s2 = p && by("sections", p.section_id); return !!(s2 && s2.notebook_id === sc.notebook_id); });
+      var i = L.findIndex(function (b) { return b.id === bid; }); if (i < 0) return null;
+      return { first: !L[i - 1] || L[i - 1].batch_id !== bl.batch_id, last: !L[i + 1] || L[i + 1].batch_id !== bl.batch_id };
+    },
     /* ⏪ ⏩ Block kế · ⏮ ⏭ Batch kế (cùng Notebook, theo thứ tự cây) */
     neighbor: async function (bid, kind, dir) {
       if (!TREE) await loadTree(true);
