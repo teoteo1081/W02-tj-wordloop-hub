@@ -989,3 +989,6 @@ body.embed .bd-drawer .bd-pane{display:none !important}
 .bd .bd-rail .bd-hb,.bd .bd-pager .bd-hb{width:34px;height:30px;border-radius:9px;border:1px solid var(--line);background:var(--card);box-shadow:none;font-size:14px}
 .bd .bd-rail .bd-hb.on,.bd .bd-rail .bd-fab.on{background:#7c4dff;border-color:#7c4dff;color:#fff}
 .bd .bd-rail{top:58px}
+
+/* khung đo chia trang: giống hệt .bd-wl nhưng nằm ngoài màn hình */
+.bd-wl.bd-measure{overflow:hidden}

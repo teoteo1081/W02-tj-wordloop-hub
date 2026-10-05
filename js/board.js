@@ -657,7 +657,7 @@
     for (var n = 0; n < 14 && fz > lim && box.scrollHeight > box.clientHeight + 2; n++) { fz *= 0.94; box.style.fontSize = fz.toFixed(2) + "px"; }   /* không bao giờ cắt chữ ở đáy (TJ 2026-10-05) */
   }
   /* chia bài đọc thành trang theo CÂU (cùng kết quả trên mọi máy) */
-  function splitPages(raw, lvl) {
+  function splitPagesOld(raw, lvl) {
     var cjk = (raw.match(/[\u3000-\u9fff\uac00-\ud7af]/g) || []).length / Math.max(1, raw.length) > 0.3, f = FS[lvl == null ? FS_DEF : lvl], budget = Math.round((cjk ? 1.1 : 2.2) / (f * f));   /* v172: khung 4:3, vùng chữ ~80% chiều cao -> ít chữ hơn mỗi trang (trước: khung dọc 3:4) */
     var paras = raw.split(/\n\s*\n/).map(function (x) { return x.trim(); }).filter(Boolean), pages = [], curP = "";
     paras.forEach(function (p) {
@@ -674,6 +674,33 @@
     });
     if (curP.trim()) pages.push(curP.trim());
     return pages;
+  }
+  /* 📄 CHIA TRANG BẰNG ĐO THẬT (TJ 2026-10-05: "bố cục từng trang vừa vặn, không cuộn"): xếp thử từng câu vào 1 khung đo có CÙNG tỉ lệ + cỡ chữ như vùng bài đọc
+     (khung logic 900×540, chữ = FS × 0.45×900) cho tới khi tràn thì sang trang mới -> mỗi trang vừa khít, mọi máy chia giống nhau (cỡ chữ thật tỉ lệ theo khung). */
+  var spCache = {};
+  function splitPages(raw, lvl, title) {
+    var f = lvl == null ? FS_DEF : lvl, key = hashOf(raw) + ":" + f + ":" + (title ? 1 : 0);
+    if (spCache[key]) return spCache[key].slice();
+    var m = null, hold = null;
+    try {
+      var paras = raw.split(/\n\s*\n/).map(function (x) { return x.trim(); }).filter(Boolean); if (!paras.length) return [];
+      hold = document.createElement("div"); hold.style.cssText = "position:fixed;left:-9999px;top:0;width:900px;height:540px;visibility:hidden;pointer-events:none";   /* % padding của .bd-wl tính theo bề rộng hộp này (900px) như ngoài thật */
+      m = document.createElement("div"); m.className = "bd-wl bd-measure"; m.style.fontSize = (405 * FS[f]).toFixed(2) + "px";
+      hold.appendChild(m); document.body.appendChild(hold);
+      var head = "<h3>" + esc(title || "Title") + "</h3>";
+      var fits = function (txt) { m.innerHTML = head + "<p>" + wlHTML(txt) + "</p>"; return m.scrollHeight <= m.clientHeight + 1; };
+      var pages = [], cur = "";
+      paras.forEach(function (para) {
+        var units = para.match(/[^.!?。！？]+[.!?。！？]+["')\]]*\s*|[^.!?。！？]+$/g) || [para];
+        units.forEach(function (u, i) {
+          var cand = cur ? cur + (i === 0 ? "\n\n" : "") + u : u;
+          if (cur && !fits(cand)) { pages.push(cur.trim()); cur = u; } else cur = cand;
+        });
+      });
+      if (cur.trim()) pages.push(cur.trim());
+      document.body.removeChild(hold); hold = null;
+      spCache[key] = pages; return pages.slice();
+    } catch (e) { if (hold && hold.parentNode) hold.parentNode.removeChild(hold); return splitPagesOld(raw, lvl); }
   }
   function wlPick(d, b) { var items = passList(b), pick = d.ph ? items.find(function (x) { return x.ph === d.ph; }) : null; return { items: items, pick: pick }; }
   function wlHTML(pg) {   /* mỗi từ tiếng Anh bọc <span class="bd-w"> để chạm tra nghĩa; [term] của Block là <b class="bd-term"> (chạm = tra cả cụm) */
@@ -692,7 +719,7 @@
       var pk = wlPick(d, b);
       if (d.ph && !pk.pick) { b = wlCache[d.bid] = await api.block(d.bid); pk = wlPick(d, b); if (job !== docJob) return; }   /* bài vừa tạo trên máy khác */
       var mm = metaOf(pk.pick ? pk.pick.raw : pk.items[0] ? pk.items[0].raw : ""), raw = mm.text, meta = mm.meta;
-      var pages = splitPages(raw, fsOf(d)); if (!pages.length) pages = ["(Block này chưa có bài đọc)"];
+      var pages = splitPages(raw, fsOf(d), meta.title || d.name || "Title"); if (!pages.length) pages = ["(Block này chưa có bài đọc)"];
       var n = pages.length, p = Math.min(n, d.p || 1); if (api.isHost() && (d.n !== n || (d.p || 1) !== p)) docSet(Object.assign({}, d, { n: n, p: p }));
       box.innerHTML = '<div class="bd-wl">' + ((meta.title || d.name) ? "<h3" + (p > 1 ? ' class="bd-cont"' : "") + ">" + esc(meta.title || d.name) + (p > 1 ? " <small>· " + p + "/" + n + "</small>" : "") + "</h3>" : "") + "<p>" + wlHTML(pages[p - 1]) + "</p></div>";
       requestAnimationFrame(fitDocText);
