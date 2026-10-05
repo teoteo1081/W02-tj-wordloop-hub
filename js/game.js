@@ -68,7 +68,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 150;
+  var GAME_VER = 151;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -1656,6 +1656,7 @@
       url: function (path) { return cfg.SUPABASE_URL + "/storage/v1/object/public/toeic/lib/" + path.split("/").map(encodeURIComponent).join("/"); }
     },
     tree: async function () { if (!TREE) await loadTree(true); return TREE; },   /* cây Hub › Notebook › … › Block của game, dùng chung cho hộp chọn bài ở bảng */
+    lookup: function (t, ctx) { return boardLookup(t, ctx); },
     say: function (text) { try { if (!soundOn()) return; sayIt._lang = "en"; sayIt(String(text || ""), true); } catch (e) {} },
     words: function (bid) { return boardWords(bid); },
     block: async function (id) { var r = await sb.from("blocks").select("id,name,context_passage,context_passage_candidates").eq("id", id).maybeSingle(); return r.data; },
@@ -2770,6 +2771,20 @@
           user: "Word/phrase: " + JSON.stringify(t) + ". Sentence: " + JSON.stringify(ctx) + ". Give its meaning IN THIS SENTENCE. Return JSON {\"pos\":\"n|v|adj|adv|phr|…\",\"en\":\"short English definition\"" + langs.filter(function (l) { return l !== "en"; }).map(function (l) { return ",\"" + l + "\":\"short meaning in " + LANG_NAME[l] + "\""; }).join("") + "}" }) });
       var d = await res.json(), raw = d.candidates && d.candidates[0] && d.candidates[0].content.parts[0].text;
       var v = JSON.parse(String(raw || "").replace(/^```(json)?|```$/g, "").trim()); v.t = t; tvCache[k] = v; return v;
+    } catch (e) { return null; }
+  }
+  /* 🔍 tra nghĩa ngay trên bảng (chạm từ trong bài đọc / gõ vào ô tra): Gemini qua gemini-proxy, nghĩa theo tiếng giao diện + định nghĩa tiếng Anh, nhớ theo từ+câu */
+  var blCache = {};
+  async function boardLookup(t, ctx) {
+    var L = uiLang(), k = t.toLowerCase() + "|" + L + "|" + String(ctx || "").slice(0, 60); if (blCache[k]) return blCache[k];
+    var langs = L !== "en" ? [L] : [];
+    try {
+      var res = await fetch(cfg.SUPABASE_URL.replace(/\/$/, "") + "/functions/v1/gemini-proxy", {
+        method: "POST", headers: { "Content-Type": "application/json", "Authorization": "Bearer " + cfg.SUPABASE_ANON_KEY, "apikey": cfg.SUPABASE_ANON_KEY },
+        body: JSON.stringify({ model: cfg.GEMINI_MODEL || "gemini-3.5-flash-lite", user_id: null, block_id: null, sys: "You are a concise bilingual dictionary for English learners. Reply JSON only.",
+          user: "Word/phrase: " + JSON.stringify(t) + (ctx ? ". Paragraph: " + JSON.stringify(String(ctx).slice(0, 700)) : "") + ". Give its meaning" + (ctx ? " IN THIS PARAGRAPH" : "") + ". Return JSON {\"pos\":\"n|v|adj|adv|phr|…\",\"en\":\"short English definition\"" + langs.map(function (l) { return ",\"" + l + "\":\"short meaning in " + LANG_NAME[l] + "\""; }).join("") + "}" }) });
+      var d = await res.json(), raw = d.candidates && d.candidates[0] && d.candidates[0].content.parts[0].text;
+      var v = JSON.parse(String(raw || "").replace(/^```(json)?|```$/g, "").trim()); blCache[k] = v; return v;
     } catch (e) { return null; }
   }
   async function tvEnsureTree(test, part) {
