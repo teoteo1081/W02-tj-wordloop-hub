@@ -57,7 +57,7 @@
   }
   /* CHẾ ĐỘ BẢNG = một chế độ của Learning (TJ 2026-10-05: "bảng là chế độ khác lấy giao diện của Learning, Learning đâu mất rồi"):
      vào chế độ bảng thì Learning LUÔN hiện (nền bảng); lớp game chỉ lộ ra đúng vùng giữa khi bảng đã có Block, không bao giờ phủ kín Learning. */
-  var boardMode = false, seenOn = false;
+  var boardMode = false, seenOn = false, gameOpened = false;   /* gameOpened = thẻ 🎮 Game đã mở bằng open(); chế độ bảng KHÔNG gọi open() nên không đụng tới nút Learning / Game */
   function enterBoard() {
     boardMode = true; seenOn = false;
     try { if (w.App && w.App.showBlockList) w.App.showBlockList(); } catch (e) {}   /* Learning về màn danh sách Block */
@@ -65,6 +65,13 @@
     layer.style.visibility = "hidden"; layer.style.pointerEvents = "none";
     document.body.classList.add("board-skin");
     boardOnState = true; if (bb) bb.classList.add("active");
+  }
+  function leaveBoard() {
+    setFit(false);
+    boardOnState = false; boardMode = false; seenOn = false;
+    layer.style.visibility = ""; layer.style.pointerEvents = ""; layer.classList.remove("board-idle");
+    document.body.classList.remove("board-skin"); if (bb) bb.classList.remove("active");
+    layer.hidden = true;
   }
   w.addEventListener("message", function (e) {
     if (e.origin !== location.origin || !e.data || e.data.type !== "tjwl-board-on") return;
@@ -90,8 +97,11 @@
     btn.classList.add("active");
     if (mbtn) { w.$$(".mobile-nav button").forEach(function (x) { x.classList.toggle("active", x === mbtn); }); }
     document.body.classList.add("game-on");
+    gameOpened = true;
   }
   function close() {
+    if (boardMode && !gameOpened) { leaveBoard(); return; }   /* chỉ đang ở chế độ bảng: thoát bảng, giữ nguyên nút Learning / Game */
+    gameOpened = false;
     setFit(false);
     boardOnState = false; boardMode = false; seenOn = false; layer.style.visibility = ""; layer.style.pointerEvents = ""; layer.classList.remove("board-idle"); document.body.classList.remove("board-skin"); if (bb) bb.classList.remove("active");
     layer.hidden = true;
@@ -153,6 +163,7 @@
   /* "📖 Learning": đang mở game thì chỉ đóng game (màn bên dưới vẫn y như lúc rời đi) */
   learn.addEventListener("click", function (e) {
     if (!isOpen()) return;
+    if (boardMode && !gameOpened) { leaveBoard(); return; }   /* chế độ bảng: thoát bảng rồi để app tự xử lý nút Learning (không ẩn nút) */
     e.stopImmediatePropagation(); e.preventDefault();
     close();
   }, true);
