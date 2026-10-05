@@ -586,7 +586,7 @@
   function paintCard(d) {
     var card = $("#bd-card"); if (!card) return;
     var bid = d && (d.k === "wl" || d.k === "vt") ? d.bid : null, host = api.isHost();
-    card.hidden = !bid;   /* đường dẫn: ai cũng thấy; phần đầu (← Quay lại, thanh Block, 7 tab, thống kê) CHỈ Admin (các phần đó tự ẩn khi không phải Admin) */
+    card.hidden = !(bid && host);   /* phần đầu (← Quay lại, thanh Block, 7 tab, thống kê) CHỈ Admin */
     var sg0 = $("#bd-seg"); if (sg0 && !bid) sg0.hidden = true;
     var mo = $("#bd-more"); if (mo) mo.hidden = !(bid && host);
     var hn = $("#bd-hname"); if (hn && !bid) hn.innerHTML = "";

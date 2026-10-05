@@ -1087,7 +1087,3 @@ body.embed .bd-drawer .bd-pane{display:none !important}
 .bd.bd-isHost .bd-hname{display:none}
 @media (max-width:560px){.bd-hname .bd-lvb{display:none}}
 .bd-drawer .bd-cplay{background:#7c4dff;border-color:#7c4dff;color:#fff;font-weight:700;flex:1 1 100%}
-
-/* v187: người chơi cũng thấy ĐƯỜNG DẪN (1 dòng mỏng trên khung bảng) */
-.bd:not(.bd-isHost) .bd-top .bd-crow{display:flex}
-.bd:not(.bd-isHost) .bd-top{padding:6px 12px;gap:0}
