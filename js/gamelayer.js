@@ -91,7 +91,7 @@
   /* 🖤 nút "Bảng" cạnh "Game": bật bảng ở màn DANH SÁCH Block (màn hình Learning trên nền bảng) / tắt bảng (TJ 2026-10-05) */
   bb = document.createElement("button"); bb.id = "btn-board"; bb.type = "button";
   bb.className = String(btn.className || "").replace(/\bactive\b/g, "").trim(); bb.textContent = "🖤 Bảng"; bb.title = "Bật / tắt bảng chung";
-  bb.hidden = btn.hidden; btn.parentNode.insertBefore(bb, btn);   /* nút Bảng đứng TRƯỚC nút Game (TJ 2026-10-05) */
+  bb.hidden = btn.hidden; btn.parentNode.insertBefore(bb, btn.nextSibling);
   setInterval(function () { bb.hidden = btn.hidden; }, 1000);
   bb.addEventListener("click", function () { boardOnState ? closeBoardMode() : openBoardIdle(); });
   function openBoardIdle() {
