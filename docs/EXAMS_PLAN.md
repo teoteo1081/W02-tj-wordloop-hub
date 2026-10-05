@@ -9,7 +9,10 @@ Bộ nhớ quyết định cho dự án này. Điểm móc vào `game.js` (đã 
 | Hub IELTS | ✅ Đã tạo hàng `hubs`: id `hub_ielts_claude`, tên **"IELTS - Claude"**, sort 10 (trống). 2 notebook IELTS cũ vẫn ở hub NGÔN NGỮ, không đụng. Xóa: `DELETE hubs WHERE id='hub_ielts_claude'` |
 | Cổng kiểm tra + đội | ✅ `tools/gate*.{sh,py,js}`, `docs/TEAM.md`, `.claude/agents/` |
 | Kiến trúc móc vào game | ⏳ Điều tra `game.js` (hub TOEIC dựng trong `paintTestHub()`), đề xuất file riêng `js/exams.js` |
-| Soạn nội dung DM / IELTS W+S | ⏳ Giao cho Biên soạn |
+| Nội dung **Digital Marketing** | ✅ `data/exams/dm_items.json` — 102 câu (P1 36 · P2 36 · P3 12 · P4 8 · P5 10), qua `gate_items.py` + **2 vòng Tuân thủ độc lập** ("ĐƯỢC NẠP"). **Chưa nạp vào Supabase** (chờ code hub + TJ đồng ý). Tồn đọng: đáp án đúng hay có chữ số/"kiểm tra" hơn đáp án nhiễu (P3/P5); 27 đoạn P3/P4/P5 ngắn <60 từ; "Trượt dốc" chưa mang trạng thái giữa các bước; thiếu 1 tình huống bait-and-switch ở mức tà; nên tra thủ công tên hư cấu có thể trùng thương hiệu nhỏ (An Nhiên, Mộc An, Nhà Gọn, Bé Khỏe, Mầm Sáng, Nụ Cười, Hoa Lụa) |
+| Nội dung IELTS Writing + Speaking | 🟡 bản nháp `data/exams/drafts/ielts_ws_bank.draft.json` (chưa kiểm toán) |
+| Nội dung EA | ⏳ 378 câu đã chuyển khuôn; 195 câu thiếu lời giải → giao Biên soạn; **không commit lên repo công khai** (gần sách Gleim) |
+| Nội dung IELTS Reading + Listening | ⏳ chưa soạn |
 | Đề IELTS Listening/Reading chính thức | ⛔ Mạng cloud chặn `ielts.idp.com`, `takeielts.britishcouncil.org`, `ielts.org`. TJ tự tải rồi đưa vào 📁 Tài liệu thư mục `IELTS/`, HOẶC thêm 3 tên miền vào Allowed domains rồi mở phiên mới. Kho `toeic` công khai → bản quyền do TJ quyết |
 
 ## 1. Nguyên tắc chung
