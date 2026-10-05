@@ -11,6 +11,8 @@ import json, re, sys
 from collections import Counter
 
 PREFIX = {"ea": "ea_", "ielts": "ielts_", "dm": "dm_"}
+# chỉ các cột CÓ trong bảng test_items (thêm khoá lạ => PostgREST từ chối cả mảng)
+ALLOWED = {"id", "exam", "test", "part", "num", "stem", "stem_vi", "opts", "answer", "tag", "explain", "passage", "src", "answer_src", "i18n"}
 fails = 0
 
 
@@ -35,6 +37,9 @@ def check(path):
             bad(w, "không phải object"); continue
         if set(q.keys()) != keys0:
             bad(w, f"bộ khoá khác câu đầu (PostgREST bắt buộc mọi object cùng khoá): {sorted(set(q) ^ keys0)}")
+        extra = set(q) - ALLOWED
+        if extra:
+            bad(w, f"khoá không có trong bảng test_items: {sorted(extra)} (nhét thêm thông tin vào i18n.meta)")
         for k in ("id", "exam", "test", "part", "num", "stem", "opts", "answer", "tag", "explain"):
             if q.get(k) in (None, "", []):
                 bad(w, f"thiếu '{k}'")
@@ -61,7 +66,7 @@ def check(path):
         if re.search(r"(lorem|TODO|\?\?\?|xxx)", json.dumps(q, ensure_ascii=False), re.I):
             bad(w, "còn chữ giữ chỗ (lorem/TODO/???/xxx)")
         for tag in (q.get("i18n") or {}):
-            if tag not in ("vi", "en", "zh", "es"):
+            if tag not in ("vi", "en", "zh", "es", "meta"):
                 bad(w, f"i18n có ngôn ngữ lạ {tag!r}")
     print(f"   {path}: {len(data)} câu, {len({q.get('test') for q in data if isinstance(q, dict)})} đề, các part: {sorted({q.get('part') for q in data if isinstance(q, dict)})}")
 
