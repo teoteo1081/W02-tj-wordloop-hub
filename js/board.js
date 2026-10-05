@@ -679,7 +679,7 @@
      (nhị phân, từ 2.2% tới 5.8% bề rộng khung). Trang chia theo số ký tự giống nhau trên mọi máy; cỡ chữ thì mỗi máy tự đo theo khung của mình. */
   /* cỡ chữ CHUNG (TJ 2026-10-05: "chữ giữa các slide không đều"): mọi trang cùng 1 cỡ theo mức fs (0..4); chữ nhỏ -> mỗi trang nhiều chữ hơn,
      chữ to -> ít hơn. Số chữ mỗi trang tính từ mức fs (cùng kết quả trên mọi máy), KHÔNG co chữ theo từng trang nữa. */
-  var FS = [0.030, 0.036, 0.043, 0.052, 0.062], FS_DEF = 2, VT_ROWL = [12, 12, 12, 12, 12];
+  var FS = [0.030, 0.036, 0.043, 0.052, 0.062], FS_DEF = 2, VT_ROWL = [8, 6, 5, 4, 3];   /* ít dòng mỗi trang -> chữ to (≈ cỡ chip từ ở thẻ trên); A−/A+ đổi số dòng. TJ 2026-10-05: "100% mà chữ nhỏ xíu" */
   function fsOf(d) { var f = d && d.fs; return f == null ? FS_DEF : Math.max(0, Math.min(FS.length - 1, +f || 0)); }
   function fitDocText() {
     var doc = $("#bd-doc"), box = doc && doc.querySelector(".bd-wl, .bd-vt"); if (!box) return;
@@ -693,6 +693,7 @@
       for (var k = 0; k < 7; k++) { var mid = (lo2 + hi2) / 2; box.style.fontSize = mid.toFixed(2) + "px"; if (box.scrollHeight <= box.clientHeight + 2) lo2 = mid; else hi2 = mid; }
       box.style.fontSize = lo2.toFixed(2) + "px";
     }
+    if (box.classList.contains("bd-vt") && parseFloat(box.style.fontSize) < 15) box.style.fontSize = "15px";   /* sàn cỡ chữ bảng từ: không nhỏ hơn chip từ ở thẻ trên */
   }
   /* chia bài đọc thành trang theo CÂU (cùng kết quả trên mọi máy) */
   function splitPagesOld(raw, lvl) {
