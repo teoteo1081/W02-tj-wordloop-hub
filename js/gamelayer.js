@@ -51,6 +51,7 @@
     var idle = !!on && !doc;
     setFit(!!on && !!doc);
     layer.classList.toggle("board-idle", idle);
+    layer.style.visibility = idle ? "hidden" : ""; layer.style.pointerEvents = idle ? "none" : "";   /* ẩn ngay trong JS (không phụ thuộc CSS cũ trong bộ nhớ đệm) */
     document.body.classList.toggle("board-skin", idle);
     if (bb) bb.classList.toggle("active", !!on);
   }
@@ -60,6 +61,7 @@
   function enterBoard() {
     boardMode = true; seenOn = false;
     layer.hidden = false; layer.classList.add("board-idle");   /* lớp game có mặt nhưng ẨN (visibility) cho tới khi có Block */
+    layer.style.visibility = "hidden"; layer.style.pointerEvents = "none";
     document.body.classList.add("board-skin");
     boardOnState = true; if (bb) bb.classList.add("active");
   }
@@ -90,7 +92,7 @@
   }
   function close() {
     setFit(false);
-    boardOnState = false; boardMode = false; seenOn = false; layer.classList.remove("board-idle"); document.body.classList.remove("board-skin"); if (bb) bb.classList.remove("active");
+    boardOnState = false; boardMode = false; seenOn = false; layer.style.visibility = ""; layer.style.pointerEvents = ""; layer.classList.remove("board-idle"); document.body.classList.remove("board-skin"); if (bb) bb.classList.remove("active");
     layer.hidden = true;
     try { sessionStorage.removeItem("tjwl_game_open"); localStorage.removeItem("tjwl_game_open_at"); w.name = String(w.name || "").replace(/\s*tjwl_game/g, ""); } catch (e) {}
     learn.hidden = learnWasHidden;
