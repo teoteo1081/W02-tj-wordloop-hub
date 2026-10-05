@@ -655,6 +655,11 @@
     var fz = ref * FS[fsOf(curDoc())], lim = fz * 0.55;
     box.style.fontSize = fz.toFixed(2) + "px";
     for (var n = 0; n < 14 && fz > lim && box.scrollHeight > box.clientHeight + 2; n++) { fz *= 0.94; box.style.fontSize = fz.toFixed(2) + "px"; }   /* không bao giờ cắt chữ ở đáy (TJ 2026-10-05) */
+    if (box.classList.contains("bd-vt") && box.scrollHeight <= box.clientHeight + 2) {   /* trang ít dòng -> phóng chữ lên cho đầy khung (tối đa 1.7 lần) */
+      var lo2 = fz, hi2 = fz * 1.7;
+      for (var k = 0; k < 7; k++) { var mid = (lo2 + hi2) / 2; box.style.fontSize = mid.toFixed(2) + "px"; if (box.scrollHeight <= box.clientHeight + 2) lo2 = mid; else hi2 = mid; }
+      box.style.fontSize = lo2.toFixed(2) + "px";
+    }
   }
   /* chia bài đọc thành trang theo CÂU (cùng kết quả trên mọi máy) */
   function splitPagesOld(raw, lvl) {
@@ -735,7 +740,7 @@
     var box = $("#bd-doc"); box.innerHTML = '<div class="bd-docmsg">⏳</div>';
     try {
       var rows = vtCache[d.bid] || (vtCache[d.bid] = await api.words(d.bid)); if (job !== docJob) return;
-      var VR = VT_ROWL[fsOf(d)], n = Math.max(1, Math.ceil(rows.length / VR)), p = Math.min(n, d.p || 1);
+      var VR0 = VT_ROWL[fsOf(d)], n = Math.max(1, Math.ceil(rows.length / VR0)), VR = Math.max(1, Math.ceil(rows.length / n)), p = Math.min(n, d.p || 1);   /* chia đều các trang */
       if (api.isHost() && (d.n !== n || (d.p || 1) !== p)) docSet(Object.assign({}, d, { n: n, p: p }));
       var part = rows.slice((p - 1) * VR, p * VR);
       box.innerHTML = '<div class="bd-vt"><h3>📋 ' + esc(d.name || t("lib_vt")) + "</h3>" + (part.length ? part.map(function (w, i) {

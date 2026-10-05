@@ -992,3 +992,6 @@ body.embed .bd-drawer .bd-pane{display:none !important}
 
 /* khung đo chia trang: giống hệt .bd-wl nhưng nằm ngoài màn hình */
 .bd-wl.bd-measure{overflow:hidden}
+
+/* v179: màu xanh tràn tới hết viền nâu (cột nút nằm đè lên nền xanh, không còn dải tối) */
+.bd .bd-sfx{background:#1d2a24}
