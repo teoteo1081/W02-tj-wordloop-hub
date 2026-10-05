@@ -14,6 +14,7 @@ REF = {
  "pin": "Hướng dẫn nội dung Pinterest (kiểm tra lại bản mới nhất)",
  "gg": "Chính sách Google Ads/Tìm kiếm (kiểm tra lại bản mới nhất)",
  "zalo": "Quy định Zalo OA và tin nhắn quảng cáo (kiểm tra lại bản mới nhất)",
+ "email": "Quy định về email quảng cáo, dữ liệu cá nhân và cách đo tỉ lệ mở/bấm email (kiểm tra lại bản mới nhất)",
  "shopee": "Chính sách đánh giá của sàn thương mại điện tử (kiểm tra lại bản mới nhất)",
  "sp": "Nguyên tắc minh bạch giá, khuyến mãi, đánh giá (kiểm tra lại bản mới nhất)",
  "law": "Quy định VN về quảng cáo và bảo vệ người tiêu dùng (kiểm tra lại bản mới nhất)",
