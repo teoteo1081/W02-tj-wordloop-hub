@@ -194,6 +194,7 @@
   function readLS(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
   function writeLS(k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
   function param(k) { return new URLSearchParams(location.search).get(k); }
+  function embQ() { return G.embed ? "&embed=1" : ""; }   /* đổi địa chỉ trang KHÔNG được làm mất embed=1 (trang tự tải lại khi có bản mới -> bật nhầm giao diện độc lập: cột Chủ đề + tiêu đề lòi ra trong Learning) */
   function roomLink(code, screen) { return location.origin + location.pathname + "?room=" + code + (screen ? "&view=screen" : ""); }
   function teamName(t) { return TEAM_C[t] ? T(TEAM_C[t].k) : ""; }
   function teamDot(t) { return t && TEAM_C[t] ? '<span class="g-tdot" style="background:' + TEAM_C[t].c + '" title="' + esc(teamName(t)) + '"></span>' : ""; }
@@ -435,7 +436,7 @@
   /* ---------- 2. trang chính ---------- */
   var picked = [];   /* [{table, id, title}] */
   function renderHome() { show("s-home"); }
-  $("#h-go").addEventListener("click", function () { var c = $("#h-code").value.trim().toUpperCase(); if (c) { history.replaceState(null, "", "?room=" + c); joinRoom(c); } });
+  $("#h-go").addEventListener("click", function () { var c = $("#h-code").value.trim().toUpperCase(); if (c) { history.replaceState(null, "", "?room=" + c + embQ()); joinRoom(c); } });
   $("#h-code").addEventListener("keydown", function (e) { if (e.key === "Enter") $("#h-go").click(); });
   $("#h-hist").addEventListener("click", function () { renderHistory("me"); });
   $("#e-hist").addEventListener("click", function () { renderHistory("me"); });
@@ -709,7 +710,7 @@
     var own = await sb.from("game_rooms").select("code").eq("code", DEFAULT_ROOM).eq("host_id", G.profile.id).maybeSingle();   /* phòng "TJ" ưu tiên */
     var code = own.data ? own.data.code : r.data && r.data[0] ? r.data[0].code : await createRoom([], "", { mode: "kahoot", qtype: "meaning", minutes: 5, q_seconds: 15, lang: "vi" });
     var sc = param("scope");   /* giữ chủ đề chọn từ chuột phải cho initHostLobby */
-    history.replaceState(null, "", "?room=" + code + (sc ? "&scope=" + encodeURIComponent(sc) + "&title=" + encodeURIComponent(param("title") || "") : ""));
+    history.replaceState(null, "", "?room=" + code + (sc ? "&scope=" + encodeURIComponent(sc) + "&title=" + encodeURIComponent(param("title") || "") : "") + embQ());
     return joinRoom(code);
   }
   /* host đổi chủ đề trong phòng chờ -> lưu vào phòng + tải trước kho từ để báo số từ/câu */
@@ -1588,7 +1589,7 @@
     if (sc) {   /* mở từ chuột phải trong WordLoop: ?scope=<table>:<id>&title=… -> thành chủ đề ván tới */
       var i = sc.indexOf(":");
       picked = [{ table: sc.slice(0, i), id: sc.slice(i + 1), title: param("title") || G.pendingTitle || sc }];
-      history.replaceState(null, "", "?room=" + G.room.code);
+      history.replaceState(null, "", "?room=" + G.room.code + embQ());
       hostSetScope();
     } else {
       picked = (G.st.scope || []).map(function (p) { return { table: p.table, id: p.id, title: p.title || p.id }; });

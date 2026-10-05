@@ -65,6 +65,7 @@
         '<button type="button" class="bd-hb" data-at="study" title="Bài học & Đọc">📘</button><button type="button" class="bd-hb" data-at="meaning" title="Nghĩa">🔀</button><button type="button" class="bd-hb" data-at="quiz" title="Active Recall Quiz">📝</button><button type="button" class="bd-hb" data-at="dictation" title="Dictation">🎧</button><button type="button" class="bd-hb" data-at="sheet" title="Phiếu đầy đủ">📋</button><button type="button" class="bd-hb" data-at="single" title="Từng câu">🔤</button><button type="button" class="bd-hb" data-at="progress" title="Tiến trình trí nhớ">📊</button></span>' +
         '<button type="button" class="bd-hb bd-cplay" id="bd-cplay">🎮 Chơi game →</button></div>' +
         '</div>' +
+        '<div class="bd-path" id="bd-path" hidden></div>' +   /* TJ 2026-10-06: đường dẫn nhỏ đầy đủ Hub › Notebook › Section › Page › Batch › Block */
         '<div class="bd-mebar" id="bd-mebar"><div class="bd-me" id="bd-me" hidden></div></div>' +   /* v201: TRÊN bảng = người đang dùng máy này + 📖 Bài đọc | 📋 Từ vựng */
         '<div class="bd-sfx" id="bd-sfx">' +'<div class="bd-stage" id="bd-stage">' +
         '<div class="bd-zoom" id="bd-zoom"><video id="bd-video" class="bd-video" autoplay playsinline muted hidden></video><div class="bd-doc" id="bd-doc"></div><canvas id="bd-cv"></canvas><div class="bd-texts" id="bd-texts"></div></div>' +
@@ -289,7 +290,7 @@
     wrap.style.setProperty("--ar", AR.toFixed(4));
     var pin = sideOn && sidePinned() && big && window.innerWidth >= 900; $("#bd").classList.toggle("bd-sidepin", pin);
     if (!big) { wrap.style.width = ""; wrap.style.height = ""; return; }
-    var sw = $("#bd-sw"), aw = sw.clientWidth - 12, ah = sw.clientHeight - 12 - ((function () { var t = $("#bd-card"), f = $("#bd-feed"); var mb = $("#bd-mebar"), pp = $("#bd-people"), ibr = $("#bd-iconbar"); return (ibr && !ibr.hidden ? ibr.offsetHeight + 6 : 0) + (t && !t.hidden ? t.offsetHeight + 8 : 0) + (f && !f.hidden ? f.offsetHeight + 8 : 0) + (mb && !mb.hidden ? mb.offsetHeight + 6 : 0) + (pp && !pp.hidden ? pp.offsetHeight + 6 : 0); })());
+    var sw = $("#bd-sw"), aw = sw.clientWidth - 12, ah = sw.clientHeight - 12 - ((function () { var t = $("#bd-card"), f = $("#bd-feed"); var mb = $("#bd-mebar"), pp = $("#bd-people"), ibr = $("#bd-iconbar"), pth = $("#bd-path"); return (pth && !pth.hidden ? pth.offsetHeight : 0) + (ibr && !ibr.hidden ? ibr.offsetHeight + 6 : 0) + (t && !t.hidden ? t.offsetHeight + 8 : 0) + (f && !f.hidden ? f.offsetHeight + 8 : 0) + (mb && !mb.hidden ? mb.offsetHeight + 6 : 0) + (pp && !pp.hidden ? pp.offsetHeight + 6 : 0); })());
     if (aw < 60 || ah < 60) return;
     /* TJ 2026-10-05: "đừng cố định nữa" — bảng to lấp KÍN chỗ trống (điện thoại dọc, cột Learning hẹp), không ép 4:3 nữa.
        Nét vẽ tính theo bề ngang (k = cv.width / W) nên đổi tỉ lệ không méo; trang bài đọc vẫn chia chung, chỉ cỡ chữ mỗi máy tự phóng cho đầy khung. */
@@ -532,6 +533,7 @@
     else if (m.t === "lksave") { var le = lkFeed.find(function (x) { return x.id === m.id; }); if (le) { le.saved = !!m.on; paintFeed(); } }
     else if (m.t === "navreq") { if (api.isHost()) { if (m.k === "fs") fsStep(m.dir | 0); else if (m.k === "sw") swKind(m.dir > 0 ? "vt" : "wl"); else if (m.k === "page") flip(m.dir > 0 ? 1 : -1); else if (m.k === "hs") hlSentence(m.dir | 0); else navStep(m.k, m.dir > 0 ? 1 : -1); } }
     else if (m.t === "sc") applyAnchor(m.a);
+    else if (m.t === "sw") { var WL = wordEls(); selWord(m.i >= 0 && WL[m.i] ? WL[m.i] : null); }
     else if (m.t === "zf") { if (setZoom(m.v)) { persistZoom(); } if (m.a) applyAnchor(m.a); }
     else if (m.t === "l") { var L = lasers[m.pid] = lasers[m.pid] || { pts: [] }; L.name = m.n; L.pts.push({ x: m.x, y: m.y, t: Date.now() }); draw(); }
     /* xin bản đầy đủ: host trả lời ngay; HOST VẮNG (mất mạng) thì người được cấp quyền (moderator) có nét trên bảng trả lời thay
@@ -634,14 +636,15 @@
     var bid = d && (d.k === "wl" || d.k === "vt") ? d.bid : null, host = api.isHost();
     card.hidden = true; if (act) act.hidden = true;   /* TJ 2026-10-06: "khung Block bỏ hẳn luôn cho rộng" — ☰ ← → 🎮 của Admin nằm ở hàng nút dưới bảng */   /* v201: người chơi KHÔNG có thẻ Block — chỉ khung bảng full màn hình */ var sg0 = $("#bd-seg"); if (sg0 && !bid) sg0.hidden = true;
     var mo = $("#bd-more"); if (mo) mo.hidden = !(bid && host); var dt = $("#bd-dots"); if (dt) dt.hidden = !(bid && host);
-    if (!bid) { extraH(); return; }
+    if (!bid) { var pe0 = $("#bd-path"); if (pe0 && !pe0.hidden) { pe0.hidden = true; relayout(); } extraH(); return; }
     paintAct();
     var sg = $("#bd-seg"); if (sg) { sg.hidden = false; sg.querySelectorAll("[data-sw]").forEach(function (x) { x.setAttribute("aria-pressed", x.dataset.sw === d.k); }); }
     if (!$("#bd-cname").textContent) $("#bd-cname").textContent = d.name || "";   /* hiện tên ngay, dữ liệu còn lại về sau */
     extraH();
     var show = function (inf) {
       if (!inf || !curDoc() || curDoc().bid !== bid) return;
-      $("#bd-crumb").textContent = inf.path || ""; $("#bd-cname").textContent = inf.name || d.name || "";
+      $("#bd-crumb").textContent = inf.path || "";
+      var pe = $("#bd-path"); if (pe) { var was = pe.hidden + pe.textContent; pe.textContent = inf.path || ""; pe.title = inf.path || ""; pe.hidden = !inf.path; if (was !== pe.hidden + pe.textContent) relayout(); } $("#bd-cname").textContent = inf.name || d.name || "";
       $("#bd-clv").innerHTML = Object.keys(inf.lv || {}).sort().map(function (k) { return '<span class="bd-lvb">' + inf.lv[k] + " " + esc(k) + "</span>"; }).join("");
       $("#bd-chips").innerHTML = (inf.terms || []).map(function (x) { return "<span>" + esc(x) + "</span>"; }).join("");
       var st = $("#bd-cst"), pg = $("#bd-cprog"), a = host && inf.adm;
@@ -773,9 +776,16 @@
   function fitDocText() {
     var doc = $("#bd-doc"); if (!doc || !doc.querySelector(".bd-scroll")) return;
     var w = doc.clientWidth; if (!w) return;
-    var b = scBox(), a = b ? anchorOf(b) : null;
-    /* cỡ chữ gốc theo bề rộng máy (15–20px) × hệ số dùng chung lfz; đặt trên #bd-doc nên bảng từ + container query (đơn vị em) đổi theo -> phóng bằng cách ĐỔI CỠ CHỮ (nét rõ, tự xuống dòng vừa khung), không phóng ảnh */
-    doc.style.fontSize = (Math.max(15, Math.min(20, 9 + w * 0.022)) * lfz).toFixed(2) + "px";
+    var b = scBox(), a = b ? anchorOf(b) : null, vt = doc.querySelector(".bd-vt"), wl = doc.querySelector(".bd-wl");
+    /* TJ 2026-10-06: "bảng từ vựng mặc định phải vừa khung vàng, dù to hay nhỏ vẫn phải là BẢNG đủ cột, tự canh chỉnh" —
+       cỡ chữ bảng từ = vừa đúng bề ngang khung ở 100% (đủ 7 cột; khung quá hẹp thì bỏ 2 cột Word form + Phonetic còn 5 cột, vẫn là bảng); lfz (A−/A+/chụm) nhân thêm trên đó. */
+    if (vt) {
+      var usable = w * 0.92, f7 = usable / 40.5, c7 = f7 >= 11.5, fit = Math.max(9, Math.min(20, c7 ? f7 : usable / 31));   /* chừa lề cho từ dài */
+      vt.classList.toggle("c7", c7); vt.classList.toggle("c5", !c7);
+      vt.style.fontSize = (fit * lfz).toFixed(2) + "px";
+    }
+    if (wl) wl.style.fontSize = (Math.max(15, Math.min(20, 9 + w * 0.022)) * lfz).toFixed(2) + "px";   /* bài đọc: cỡ đọc dễ chịu theo bề rộng (15–20px) */
+    doc.style.fontSize = "";
     if (b && a) goAnchor(b, a);   /* đổi cỡ chữ / xoay máy: giữ đúng chỗ đang đọc */
   }
   /* chia bài đọc thành trang theo CÂU (cùng kết quả trên mọi máy) */
@@ -909,7 +919,9 @@
   /* 🔊 đọc cả bài (riêng máy mình): từng câu, câu đang đọc sáng lên + tự cuộn tới (host cuộn -> người chơi đang "Theo host" cuộn theo) */
   async function readPassage() {
     if (!window.speechSynthesis) return;
-    stopReading(); var my = reading, b = scBox(), sel = $("#bd-vtrate"), rate = sel ? +sel.value || 0.85 : 0.85, g = document.querySelector("#bd-vtbar [data-wlread]");
+    stopReading(); var my = reading;
+    await new Promise(function (r) { setTimeout(r, 90); }); if (my !== reading) return;
+    var b = scBox(), sel = $("#bd-vtrate"), rate = sel ? +sel.value || 0.85 : 0.85, g = document.querySelector("#bd-vtbar [data-wlread]");
     if (g) g.classList.add("on");
     var ss = b ? b.querySelectorAll(".bd-s") : [];
     for (var i = 0; i < ss.length && my === reading; i++) {
@@ -922,14 +934,27 @@
     if (my === reading && g) g.classList.remove("on");
   }
   var SPL = { vi: "vi-VN", zh: "zh-CN", es: "es-ES", en: "en-US" };
+  var uttKeep = [];
   function speakOne(text, lang, rate) {
     return new Promise(function (ok) {
-      try { var u = new SpeechSynthesisUtterance(text); u.lang = lang; u.rate = rate; u.onend = u.onerror = function () { ok(); }; window.speechSynthesis.speak(u); } catch (e) { ok(); }
+      var done = false, wd = 0, fin = function () { if (!done) { done = true; clearTimeout(wd); ok(); } };
+      try {
+        var ss = window.speechSynthesis; if (!ss) return ok();
+        var u = new SpeechSynthesisUtterance(text); u.lang = lang; u.rate = rate;
+        try { var vs = ss.getVoices() || [], v = vs.find(function (x) { return x.lang === lang; }) || vs.find(function (x) { return String(x.lang).slice(0, 2) === String(lang).slice(0, 2); }); if (v) u.voice = v; } catch (e) {}
+        uttKeep.push(u); if (uttKeep.length > 8) uttKeep.shift();   /* giữ tham chiếu: Chrome có lỗi dọn mất utterance -> onend không bao giờ tới -> đọc đứng giữa chừng */
+        u.onend = u.onerror = fin;
+        wd = setTimeout(function () { try { ss.cancel(); } catch (e) {} fin(); }, 4000 + String(text).length * 140 / Math.max(.5, rate));   /* không phát được (chưa có giọng / bị chặn) -> bỏ qua câu này, khỏi treo */
+        if (ss.paused) ss.resume();
+        ss.speak(u);
+      } catch (e) { fin(); }
     });
   }
   async function readAll(withDef) {
-    var d = curDoc(); if (!d || d.k !== "vt" || !window.speechSynthesis) return;
-    stopReading(); var my = reading, rate = parseFloat(($("#bd-vtrate") || {}).value) || 0.85, ws = vtCache[d.bid] || [], ml = api.lang ? api.lang() : "vi";
+    var d = curDoc(); if (!isTxt(d) || !window.speechSynthesis) return;
+    stopReading(); var my = reading;
+    await new Promise(function (r) { setTimeout(r, 90); }); if (my !== reading) return;   /* Chrome: speak() ngay sau cancel() hay bị nuốt */
+    var rate = parseFloat(($("#bd-vtrate") || {}).value) || 0.85, ws = vtCache[d.bid] || [], ml = api.lang ? api.lang() : "vi";
     for (var i = 0; i < ws.length && my === reading; i++) {
       var row = document.querySelector('#bd-doc .bd-vr[data-i="' + i + '"]'); document.querySelectorAll("#bd-doc .bd-vr.rd").forEach(function (r) { r.classList.remove("rd"); }); if (row) row.classList.add("rd");
       await speakOne(ws[i].term, "en-US", rate); if (my !== reading) break;
@@ -938,7 +963,7 @@
     if (my === reading) document.querySelectorAll("#bd-doc .bd-vr.rd").forEach(function (r) { r.classList.remove("rd"); });
   }
   function vtAction(a) {
-    var d = curDoc(); if (!d || d.k !== "vt") return;
+    var d = curDoc(); if (!isTxt(d)) return;   /* v207: tài liệu gộp (từ vựng + bài đọc) — mở ở loại nào cũng đọc được */
     if (a === "readall") return readAll(false);
     if (a === "readdef") return readAll(true);
     if (a === "stop") return stopReading();
@@ -982,7 +1007,7 @@
   var lastA = null, progAt = 0, scSendT = 0, scTimer = 0, userScrollAt = 0, zfSendT = 0, zfTimer = 0, zfPersistT = 0, scrollingT = 0;
   function isTxt(d) { return !!(d && (d.k === "wl" || d.k === "vt")); }
   function scBox() { return document.querySelector("#bd-doc .bd-scroll"); }
-  function anchorEls(b) { return b.querySelectorAll("h3, .bd-s, .bd-vh, .bd-vr"); }
+  function anchorEls(b) { return b.querySelectorAll("h3, .bd-vh, .bd-vr, .bd-w, .bd-term"); }   /* neo theo TỪNG TỪ (đầu dòng đang thấy) -> mọi máy khớp đúng dòng, không chỉ đúng câu */
   function anchorOf(b) {
     var top = b.getBoundingClientRect().top, els = anchorEls(b);
     if (b.scrollTop < 2) return { i: 0, f: 0 };
@@ -1081,6 +1106,10 @@
   }
   /* ---------- 🔍 tra nghĩa: chạm 1 từ trong bài đọc, hoặc gõ vào ô 🔍 (riêng từng máy, không đồng bộ) ---------- */
   var lkSeq = 0, lkEl = null;
+  function wordEls() { return document.querySelectorAll("#bd-doc .bd-w, #bd-doc .bd-term"); }
+  function shareSel(el) {   /* từ vừa chạm sáng GIỐNG NHAU trên mọi máy (TJ 2026-10-06: "cùng nội dung y chang, chỉ khác to nhỏ") */
+    var i = el ? Array.prototype.indexOf.call(wordEls(), el) : -1; selWord(el); send({ t: "sw", i: i });
+  }
   function selWord(el) { if (lkEl) lkEl.classList.remove("bd-wsel"); lkEl = el; if (el) el.classList.add("bd-wsel"); }
   function mnOf(v) {
     var l = api && api.lang ? api.lang() : "vi", own = v && v[l];
@@ -1181,13 +1210,13 @@
     if (isTxt(d) && !inVt) {
       var ws = document.querySelectorAll("#bd-doc .bd-w, #bd-doc .bd-term"), hit = null;
       for (var j = 0; j < ws.length && !hit; j++) { var wr = ws[j].getBoundingClientRect(); if (x >= wr.left - 3 && x <= wr.right + 3 && y >= wr.top - 3 && y <= wr.bottom + 3) hit = ws[j]; }
-      if (hit && lookMode) { selWord(hit); var para = hit.closest("p"); lookupShow(hit.textContent.trim(), para ? para.textContent : "", false); return; }
+      if (hit && lookMode) { shareSel(hit); var para = hit.closest("p"); lookupShow(hit.textContent.trim(), para ? para.textContent : "", false); return; }
       if (hit) {   /* TJ 2026-10-06: chạm từ = đọc to + từ đó lên ĐẦU khung "Từ vừa tra" dưới bảng (🔊 · phiên âm · nghĩa Anh · nghĩa Việt · ☆ Lưu) */
-        selWord(hit); var ph0 = hit.textContent.trim().replace(/^[^A-Za-z]+|[^A-Za-z]+$/g, ""), pa0 = hit.closest("p");
+        shareSel(hit); var ph0 = hit.textContent.trim().replace(/^[^A-Za-z]+|[^A-Za-z]+$/g, ""), pa0 = hit.closest("p");
         if (ph0) { api.say(ph0); lookupShow(ph0, pa0 ? pa0.textContent : "", false); }
         return;
       }
-      selWord(null);
+      if (lkEl) shareSel(null);
       return;
     }
     if (!isTxt(d)) return;
