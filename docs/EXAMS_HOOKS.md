@@ -16,7 +16,7 @@ Kết quả nhân viên Điều tra, **số dòng theo `main` lúc đó (v150) v
 | `tNum`/`tBook`/`tName` (~3191–3211) | ép mã đề thành số: `R1`/`L1` → NaN, sắp sai | đưa vào cấu hình môn; `test` luôn là chuỗi |
 | `setHub` (~3320) | ép `h = h==="test" ? "test" : "vocab"` | nhận thêm `ea/ielts/dm` → `G.hub="test"` + `G.exam=h`; TOEIC giữ đường cũ |
 | `exSubmit` (~3908–3925), 📊 | cứng "Listening/Reading", "/990", điểm TOEIC | gọi `xm().score(...)` nếu có (EA %, IELTS band, DM điểm vòng) |
-| `#t-start` (~3271) | bắt buộc `test` khác rỗng | DM không có đề → dùng giá trị cố định (vd `"1"`) |
+| `#t-start` (~3271) | bắt buộc `test` khác rỗng | DM không có đề → dùng giá trị cố định (DM: `"dm1"` — KHÔNG dùng `"1"`, trùng mã đề TOEIC) |
 | `paintTestHub` (~3003) | HTML cứng TOEIC (Bộ đề ETS, 200 câu, P1–P7, Audio…); `el.dataset.done` chặn dựng lại | **giữ nguyên cho TOEIC**; `exams.js` vẽ form riêng vào hộp `#l-hub-<môn>` |
 | `TINTRO`/`paintTIntro` (~3128–3135), `TOEIC_TIPS` | phòng chờ chỉ có nội dung TOEIC (4 ngôn ngữ) | `TINTRO` theo môn |
 | `css/game.css:470` | `.g-hubtest > :not(.g-hubs):not(#l-hub-test){display:none!important}` | thêm `#l-hub-ea,#l-hub-ielts,#l-hub-dm` vào `:not(...)`, nếu không nội dung phòng chờ hiện lẫn |

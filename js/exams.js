@@ -70,6 +70,7 @@
 
   var dm = Exams.dm = {
     id: "dm", prefix: "dm", icon: "🕵️",
+    test: "dm1",             /* mã đề: KHÔNG được trùng mã đề TOEIC ("1"…) — game_answers.term = "dm:dm1:<part>:<num>" */
     file: "data/exams/dm_items.json",
     label: { vi: "🕵️ Marketing", en: "🕵️ Marketing" },
     title: { vi: "🕵️ Thám tử Marketing", en: "🕵️ Marketing Detective" },
@@ -97,6 +98,7 @@
         if (!x || !x.id) return errs.push(w + ": thiếu id");
         if (seen[x.id]) errs.push(w + ": trùng id"); seen[x.id] = 1;
         if (x.exam !== "dm") errs.push(w + ": exam ≠ dm");
+        if (x.test !== dm.test) errs.push(w + ": test ≠ " + dm.test);
         if (!(x.part >= 1 && x.part <= 5)) errs.push(w + ": part ngoài 1–5");
         if (!Array.isArray(x.opts) || x.opts.length < 3 || x.opts.length > 4) errs.push(w + ": số đáp án ≠ 3–4");
         else if (!/^[A-D]$/.test(String(x.answer)) || "ABCD".indexOf(x.answer) >= x.opts.length) errs.push(w + ": đáp án không hợp lệ");

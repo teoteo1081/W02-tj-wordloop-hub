@@ -42,6 +42,12 @@ t("mọi câu có level chinh|xam|ta (32 · 31 · 39) và lời giải vi + en",
   items.forEach((x) => { const l = x.i18n.meta.level; assert.ok(l in c, x.id + " level " + l); c[l]++; assert.ok(x.i18n.vi.explain && x.i18n.en.explain, x.id); });
   assert.deepStrictEqual(c, { chinh: 32, xam: 31, ta: 39 });
 });
+t('mã đề DM = "dm1" (không trùng mã TOEIC); tKey kiểu game: "dm:dm1:<part>:<num>"', () => {
+  assert.strictEqual(dm.test, "dm1"); items.forEach((x) => assert.strictEqual(x.test, "dm1", x.id));
+  const key = (x) => dm.prefix + ":" + x.test + ":" + x.part + ":" + x.num;
+  items.forEach((x) => assert.ok(key(x).indexOf("dm:dm1:") === 0));
+  assert.strictEqual(new Set(items.map(key)).size, 102);
+});
 t("câu không thiếu: stem, passage, tag, explain đều khác rỗng", () => { items.forEach((x) => ["stem", "passage", "tag", "explain"].forEach((k) => assert.ok(String(x[k] || "").trim(), x.id + "." + k))); });
 
 t("select(mode p1..p5) chỉ trả đúng part, theo thứ tự câu khi không có seed", () => {

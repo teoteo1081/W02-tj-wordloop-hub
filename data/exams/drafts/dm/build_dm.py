@@ -29,7 +29,7 @@ rng.shuffle(cases)
 out = []
 def refs(c): return [REF.get(r, r) for r in c["refs"]]
 def mk(part, num, stem, opts, ans, tag, explain, passage, tag_en, en_expl, en_stem, lvl, rf):
-    return dict(id=f"dm_p{part}_{num:03d}", exam="dm", test="1", part=part, num=num, stem=stem,
+    return dict(id=f"dm_p{part}_{num:03d}", exam="dm", test="dm1", part=part, num=num, stem=stem,
         opts=[f"({'ABCD'[i]}) {o}" for i, o in enumerate(opts)], answer="ABCD"[ans], tag=tag,
         explain=explain, passage=passage, answer_src="claude",
         i18n={"vi": {"tag": tag, "explain": explain, "stem": stem},

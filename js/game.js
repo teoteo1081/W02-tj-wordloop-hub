@@ -68,7 +68,7 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 154;
+  var GAME_VER = 155;
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -3388,7 +3388,7 @@
     if (!e.target.closest || !e.target.closest("#dm-start") || !G.isHost || !G.st) return;
     var X = xmHub(), el = X && $("#l-hub-" + X.id), info = $("#dm-info"); if (!X || !el) return;
     var f = X.readForm(el), L = uiLang(), st = G.st, parts = X.parts(f.mode);
-    st.qtype = "toeic"; st.test = { xm: X.id, test: "1", part: parts[0], parts: parts, from: 0, to: 0, tag: "", mode: f.mode, seed: 1 + Math.floor(Math.random() * 2147483646) };
+    st.qtype = "toeic"; st.test = { xm: X.id, test: X.test, part: parts[0], parts: parts, from: 0, to: 0, tag: "", mode: f.mode, seed: 1 + Math.floor(Math.random() * 2147483646) };
     st.exam = false; st.race = f.play === "race"; st.hostpace = false; st.taud = "off"; st.tplay = false; G.tLastG = ""; st.mode = st.race ? "free" : "kahoot"; st.qs = f.qs; st.auto = false;
     st.title = X.title.vi + " · " + X.modeLabel(f.mode, "vi");
     info.textContent = "⏳"; await ensureTest(st.test);
@@ -3417,6 +3417,7 @@
     X.paintHub(el, { lang: uiLang(), scoring: G.st && G.st.scoring, teams: G.st && G.st.teams, hostplay: hostPlays() });
   }
   function setHub(h) {
+    $$('#l-hubs [data-hub="dm"]').forEach(function (b) { b.hidden = !(XM && XM.dm); });   /* exams.js lỗi tải -> ẩn nút Marketing (khỏi bấm mà rơi về hub từ vựng) */
     var tab = h === "dm" && XM && XM.dm ? "dm" : h === "test" ? "test" : "vocab", xk = tab === "dm" ? "dm" : "";   /* nút hub: vocab | test (TOEIC) | môn ngoài TOEIC (G.hub vẫn là "test") */
     h = xk ? "test" : tab;
     if (h === "test" && G.hub !== "test") vocabSnap();
