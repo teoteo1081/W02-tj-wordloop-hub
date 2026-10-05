@@ -1687,6 +1687,44 @@
     setBoard: function (v) { if (!G.isHost || !G.st) return; G.st.board = !!v; push(); },
     /* 📁 tài liệu trên bảng (board.js Lib): file ở bucket toeic/lib/…, bài đọc WordLoop từ bảng blocks */
     setDoc: function (d) { if (!G.isHost || !G.st) return; G.st.bdoc = d || null; push(); },
+    /* 🪪 thẻ Block trên bảng: đường dẫn, cấp độ, từ; riêng host-TJ thêm tiến độ + hạn ôn (word_progress / block_progress của TJ) */
+    blockInfo: async function (bid) {
+      var out = { bid: bid, path: "", name: "", lv: {}, terms: [], adm: G.isHost && isTJ() ? null : undefined };
+      if (!TREE) await loadTree(true);
+      var b = TREE && TREE.blocks.find(function (r) { return r.id === bid; });
+      if (b) { out.name = b.name; out.path = pathOf({ table: "blocks", id: bid, title: b.name }); }
+      var r = await sb.from("words").select("id,term,level").eq("block_id", bid).limit(300), ids = [];
+      (r.data || []).forEach(function (w) { out.terms.push(w.term); ids.push(w.id); var k = lvKey(w.level); out.lv[k] = (out.lv[k] || 0) + 1; });
+      if (G.isHost && isTJ() && ids.length) {
+        var p = await sb.from("word_progress").select("word_id,mastered").eq("user_id", HOST_PROFILE_ID).in("word_id", ids);
+        var m = (p.data || []).filter(function (x) { return x.mastered; }).length;
+        var bp = await sb.from("block_progress").select("passed,next_review_at").eq("user_id", HOST_PROFILE_ID).eq("block_id", bid).maybeSingle();
+        var due = ""; if (bp.data && bp.data.next_review_at) { var dd = Math.round((bp.data.next_review_at - Date.now()) / DAY_MS); due = dd > 0 ? "Ôn sau " + dd + " ngày" : "Đến hạn ôn"; }
+        out.adm = { pct: Math.round(m * 100 / ids.length), passed: !!(bp.data && bp.data.passed), due: due };
+      }
+      return out;
+    },
+    /* mở Block + tab học trong WordLoop (tab mới) — app tự khôi phục đúng Notebook/Block từ localStorage */
+    openInApp: function (bid, tab) {
+      if (!TREE) return;
+      var by = function (l, i) { return TREE[l].find(function (r) { return r.id === i; }); };
+      var bl = by("blocks", bid), ba = bl && by("batches", bl.batch_id), pg = ba && by("pages", ba.page_id), sc = pg && by("sections", pg.section_id), nb = sc && by("notebooks", sc.notebook_id);
+      if (!nb) { alert("Không tìm thấy Block trong cây."); return; }
+      try {
+        localStorage.setItem("tjwl_selection_v1", JSON.stringify({ hubId: nb.hub_id, notebookId: nb.id, sectionId: sc.id, pageId: pg.id, batchId: ba.id }));
+        localStorage.setItem("tjwl_last_block_v1", JSON.stringify({ blockId: bid, tab: tab || "study" }));
+      } catch (e) {}
+      window.open("index.html", "_blank");
+    },
+    /* 🎮 chơi game đúng Block đang xem (chỉ khi đang ở phòng chờ) */
+    playBlock: function (bid, name) {
+      if (!G.isHost || !G.st) return false;
+      if (G.st.phase !== "lobby") { alert("Đang giữa ván — về phòng chờ trước rồi bấm lại."); return false; }
+      picked = [{ table: "blocks", id: bid, title: name || "Block" }]; hostSetScope();
+      G.st.board = false; push();
+      setTimeout(function () { var b = $("#l-start"); if (b) b.click(); }, 400);
+      return true;
+    },
     lib: {
       list: async function (folder) {
         var r = await sb.storage.from("toeic").list("lib" + (folder ? "/" + folder : ""), { limit: 500, sortBy: { column: "name", order: "asc" } });

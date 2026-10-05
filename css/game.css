@@ -516,7 +516,7 @@ body.embed .g-brand{display:none}
 .bd-ph{font-size:12px;color:var(--text-2);width:100%}
 .bd-pp{background:var(--raise);border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:13px;cursor:pointer}
 .bd-pp.on{background:var(--accent);border-color:var(--accent);color:#fff}
-.bd-stage{position:relative;width:min(100% - 12px, 948px, calc(min(100vh - 170px, 40vh) * var(--ar,1.7778)));aspect-ratio:var(--ar,1.7778);margin:0 auto;background:#1d2a24;border-radius:10px;border:6px solid #5a4632;overflow:hidden;box-sizing:content-box}   /* content-box: PHẦN TRONG viền đúng 16:9 -> nét/ô chữ khớp mọi máy */
+.bd-stage{position:relative;width:min(100% - 12px, 948px, calc(min(100vh - 170px - var(--bd-extra,0px), 40vh) * var(--ar,1.7778)));aspect-ratio:var(--ar,1.7778);margin:0 auto;background:#1d2a24;border-radius:10px;border:6px solid #5a4632;overflow:hidden;box-sizing:content-box}   /* content-box: PHẦN TRONG viền đúng 16:9 -> nét/ô chữ khớp mọi máy */
 .bd-stage canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
 .bd-texts{position:absolute;inset:0;pointer-events:none}
 .bd-tx{position:absolute;pointer-events:auto;font-family:"Segoe Print","Comic Sans MS",system-ui,sans-serif;line-height:1.2;white-space:pre-wrap;max-width:60%;outline:none;padding:0 2px;border-radius:4px;cursor:text}
@@ -788,3 +788,18 @@ body.bd-on .g-dotmenu{z-index:80}
 .g-side-head #h-pin,.bd-sidehd #bd-sidepin{opacity:.4;transform:rotate(45deg)}
 .g-side-head #h-pin.on,.bd-sidehd #bd-sidepin.on{opacity:.9;transform:none;border:none;background:transparent}
 .bd-sidehd > b{font-size:.95rem;font-weight:700;color:var(--text)}
+
+/* 🪪 thẻ Block + khay Admin trên bảng */
+.bd-card{max-width:960px;margin:0 auto 6px;padding:8px 12px;border:1px solid var(--line);border-left:4px solid #c06b8f;border-radius:10px;background:var(--card);box-sizing:border-box}
+.bd-crumb{font-size:11px;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bd-ctitle{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:3px 0 5px}.bd-ctitle b{font-size:16px}
+.bd-lvb{font-size:11px;background:var(--raise);border:1px solid var(--line);border-radius:999px;padding:1px 8px;margin-right:4px}
+.bd-cst{margin-left:auto;font-size:13px;font-weight:700;color:var(--green)}
+.bd-chips{display:flex;flex-wrap:wrap;gap:5px;max-height:58px;overflow:auto}
+.bd-chips span{font-size:12px;color:var(--green);background:var(--green-sub);border:1px solid #2f6b50;border-radius:6px;padding:1px 8px}
+.bd-cprog{height:5px;border-radius:3px;background:var(--raise);margin-top:6px;overflow:hidden}.bd-cprog i{display:block;height:100%;background:var(--green);width:0}
+.bd-act{max-width:960px;margin:6px auto 0;display:flex;align-items:center;flex-wrap:wrap;gap:6px;box-sizing:border-box}
+.bd-acttools{display:flex;gap:5px;flex-wrap:wrap}.bd-act.col .bd-acttools{display:none}
+.bd-acttog{display:none;opacity:.5}.bd-acttog.on{opacity:1}.bd-acttog span{display:inline-block;transform:rotate(45deg)}.bd-acttog.on span{transform:none}
+.bd-cplay{margin-left:auto;background:#7c4dff;border-color:#7c4dff;color:#fff;font-weight:700}
+@media (max-width:700px){.bd-acttog{display:inline-flex;align-items:center;gap:4px}.bd-card{padding:6px 8px}.bd-chips{max-height:44px}}
