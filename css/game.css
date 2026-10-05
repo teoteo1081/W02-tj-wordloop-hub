@@ -1067,3 +1067,6 @@ body.embed .bd-drawer .bd-pane{display:none !important}
 .bd .bd-top .bd-tlg{position:static;display:flex;gap:6px;flex:none}
 .bd .bd-top .bd-tlg .bd-hb{height:30px}
 .bd .bd-top .bd-tlg[hidden]{display:none}
+
+/* v188: người chơi cũng thấy đường dẫn (sau khi quay về bản thẻ Block + 3 mũi tên) */
+.bd:not(.bd-isHost) .bd-top .bd-crow{display:flex}
