@@ -26,6 +26,7 @@
   /* 🖤 CHẾ ĐỘ BẢNG (TJ 2026-10-05): bảng mở -> lớp game chỉ phủ VÙNG GIỮA (#workspace) — thanh trên, cột Notebooks / Pages (có ghim)
      giữ y nguyên như Learning; ghim cột thì vùng hẹp lại, bỏ ghim thì rộng ra (theo kích thước #workspace). */
   var fitOn = false, fitRO = null;
+  var fitPoll = 0;
   function fitRect() {
     var ws = w.$("#workspace"); if (!ws || !fitOn) return;
     var r = ws.getBoundingClientRect(); if (r.width < 50 || r.height < 50) return;
@@ -36,6 +37,8 @@
     on = !!on && isOpen();
     if (on === fitOn) { if (on) fitRect(); return; }
     fitOn = on; layer.classList.toggle("board-fit", on);
+    clearInterval(fitPoll);
+    if (on) fitPoll = setInterval(fitRect, 200);   /* TJ 2026-10-06: ẩn Notebooks / Pages mà bảng không bung theo -> ResizeObserver chỉ báo khi BỀ RỘNG đổi; cột trái co + cột phải giãn cùng lúc (rộng giữ nguyên, vị trí đổi) thì lệch -> kiểm tra cả vị trí 5 lần/giây */
     if (!on) { layer.style.top = layer.style.left = layer.style.width = layer.style.right = ""; if (fitRO) { fitRO.disconnect(); fitRO = null; } return; }
     fitRect();
     var ws = w.$("#workspace");
