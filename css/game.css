@@ -977,3 +977,8 @@ body.embed .bd-drawer .bd-pane{display:none !important}
 .bd-top{width:0;min-width:calc(100% - 56px)}
 .bd-wl h3.bd-cont{font-size:.85em;opacity:.85}
 .bd-wl h3.bd-cont small{font-weight:400;opacity:.8}
+
+/* v176: VIỀN NÂU bao cả khung xanh lẫn cột nút bên phải (TJ 2026-10-05: "thanh bên phải màu nâu phải ra đây") */
+.bd .bd-sfx{border:6px solid var(--frame,#5a4632);border-radius:12px;background:#14181a;box-sizing:content-box;padding-right:56px}
+.bd .bd-sfx .bd-stage{border:0;border-radius:6px 0 0 6px}
+.bd .bd-top{min-width:100%}
