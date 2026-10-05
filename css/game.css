@@ -1260,10 +1260,28 @@ body.embed.bd-on #g-side,body.embed.bd-on #h-sidetab,body.embed.bd-on #h-sidebd,
 .bd-docnav::-webkit-scrollbar{display:none}
 /* TJ 2026-10-06: "chữ phải canh đều giống Word, không canh trái nhìn lộn xộn" */
 .bd-wl.bd-scroll p{text-align:justify;text-justify:inter-word;-webkit-hyphens:auto;hyphens:auto}
-/* thanh đọc bài (giống bảng từ vựng): tốc độ · 🔊 Đọc bài · ⏹ Dừng; câu đang đọc sáng lên */
-.bd-wlbar{max-width:40em;margin:0 auto 1em;display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:14px;line-height:1.2}
-.bd-wlbar select{background:#151a17;color:#f3efe6;border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 8px;font:inherit}
-.bd-wlbar .bd-hb{font-size:14px;padding:6px 12px;min-height:34px}
-.bd-wlbar .bd-wlgo{background:#e07a5f;border-color:#e07a5f;color:#fff;font-weight:700}
-.bd-wlbar .bd-wlgo.on{box-shadow:0 0 0 3px rgba(224,122,95,.35)}
 .bd-s.bd-rd{background:rgba(124,170,255,.22);box-shadow:0 0 0 3px rgba(124,170,255,.22);border-radius:4px}
+/* TJ 2026-10-06: "icon phải nằm dưới cái bảng" — 1 hàng icon cố định NGAY DƯỚI bảng (không nổi đè lên bảng, không tự ẩn):
+   ☰ ← → · 🔍 A− Aa A+ · 📁 🖥 ✏️ ⋯ · 🎮 · ✕ (người chơi chỉ thấy phần đọc: 🔍 A− Aa A+). Hàng quá dài thì vuốt ngang. */
+.bd-iconbar{flex:none;width:100%;box-sizing:border-box;padding:6px 6px 0;display:flex;justify-content:center;min-width:0}
+.bd-iconbar[hidden]{display:none}
+.bd-iconbar .bd-docnav{position:static;width:auto;max-width:100%;margin:0;padding:5px 7px;background:rgba(36,35,33,.92);border:1px solid var(--line);border-radius:14px;display:flex;flex-wrap:nowrap;align-items:center;justify-content:flex-start;gap:6px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;box-sizing:border-box}
+.bd-iconbar .bd-docnav::-webkit-scrollbar{display:none}
+.bd-iconbar .bd-docnav > *{flex:none}
+.bd-iconbar .bd-hb{min-width:40px;min-height:38px;padding:0 10px;font-size:16px;border-radius:10px}
+.bd-iconbar .bd-ibtn{width:auto;height:auto;border-radius:10px;border:1px solid var(--line);background:var(--card);box-shadow:none;display:inline-flex;align-items:center;justify-content:center}
+.bd-iconbar .bd-ibtn[hidden],.bd-iconbar .bd-hb[hidden]{display:none}
+.bd-iconbar .bd-ibtn.on,.bd-iconbar .bd-hb.on{background:#7c4dff;border-color:#7c4dff;color:#fff}
+.bd .bd-rail,.bd-hudl .bd-rail{display:none !important}
+#bd-lkbtn{display:none !important}
+.bd.bd-pen .bd-iconbar .bd-docnav{display:flex}
+/* TJ 2026-10-06: thanh trên cùng = [avatar + tên] [📖 Bài đọc | 📋 Từ vựng] [tốc độ · Đọc · Dừng …] — 3 phần cùng hàng, hẹp thì nhóm âm thanh xuống hàng 2 */
+.bd-mebar{flex-wrap:wrap;row-gap:6px;justify-content:flex-start}
+.bd-mebar .bd-segcard{margin-left:0}
+.bd-mebar .bd-audio{position:static;display:flex;gap:6px;align-items:center;flex-wrap:nowrap;min-width:0;max-width:100%;overflow-x:auto;scrollbar-width:none}
+.bd-mebar .bd-audio[hidden]{display:none}
+.bd-mebar .bd-audio::-webkit-scrollbar{display:none}
+.bd-mebar .bd-audio > *{flex:none;height:34px;border-radius:10px;font-size:13px;padding:0 12px}
+.bd-mebar .bd-audio span{display:inline !important}
+.bd-vt .bd-vtph{display:none}
+@media (max-width:759px){.bd-mebar .bd-audio{flex:1 1 100%;order:3}}
