@@ -1084,3 +1084,11 @@ body.embed .bd-drawer .bd-pane{display:none !important}
 
 /* v191: trong Learning (embed) không có thu to/nhỏ bảng; bảng luôn phủ trọn vùng giữa, không lộ trang phòng game */
 body.embed #bd-big,body.embed #bd-min,body.embed .bd-dock,body.embed #bd-open{display:none !important}
+
+/* v192: trong Learning (chế độ bảng) KHUNG PHỦ KÍN vùng giữa (hình chữ nhật full), nội dung giữ tỉ lệ 4:3 nằm giữa khung, phần còn lại là nền xanh (TJ 2026-10-05) */
+body.embed .bd.bd-big .bd-sw{align-items:stretch;justify-content:stretch}
+body.embed .bd.bd-big .bd-fx{display:flex;flex-direction:column;width:100%;height:100%;max-width:none}
+body.embed .bd.bd-big .bd-top{flex:none;width:auto;min-width:0;align-self:stretch}
+body.embed .bd.bd-big .bd-sfx{flex:1 1 auto;min-height:0;width:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:center}
+body.embed .bd.bd-big .bd-sfx .bd-stage{flex:none;margin:0}
+body.embed .bd.bd-big .bd-feed{flex:none;width:auto;min-width:0;align-self:stretch}
