@@ -1757,6 +1757,7 @@
     players().forEach(function (p) { G.st.scores[p.id] = { s: 0, c: 0, w: 0, st: 0, best: 0 }; });
     if (G.st.auto !== false && !G.st.race) { var at = autoSec(); G.st.totalSec = at.sec; G.st.minutes = Math.max(1, Math.ceil(at.sec / 60)); } else G.st.totalSec = G.st.minutes * 60;
     G.endAt = Date.now() + G.st.totalSec * 1000;
+    if (window.ga4) window.ga4("game_started", { mode: G.st.mode, qtype: G.st.qtype, players: players().length });
     await sb.from("game_rooms").update({ status: "playing", started_at: new Date().toISOString(), mode: G.st.mode, qtype: G.st.qtype, meaning_lang: G.st.lang, minutes: G.st.minutes, q_seconds: G.st.qs, team_mode: !!G.st.teams, teams: G.st.teams }).eq("id", G.room.id);
     /* mỗi lần bắt đầu = 1 VÁN riêng (lịch sử xem theo ván) */
     var mr = await sb.from("game_matches").insert({ target: tgt(), room_id: G.room.id, title: G.st.title, scope: G.st.scope, mode: G.st.mode, qtype: G.st.qtype, scoring: G.st.scoring || "q", meaning_lang: G.st.lang, minutes: G.st.minutes, q_seconds: G.st.qs, teams: G.st.teams || 0 }).select("id").single();
@@ -1988,6 +1989,7 @@
       if (!G.st.exSubmitAt) { G.st.exSubmitAt = Date.now(); if (G.ex && !G.ex.done && hostPlays()) exSubmit(); push(); setTimeout(hostEnd, 3500); return; }
       if (Date.now() - G.st.exSubmitAt < 3300) return;
     }
+    if (window.ga4) window.ga4("game_finished", { mode: G.st.mode, qtype: G.st.qtype, players: players().length });
     G.st.elapsed = elapsedMs(G.st);   /* chốt thời gian chơi thật trước khi đổi phase -> câu/phút ở màn kết quả đúng */
     clearInterval(G.hostTimer);
     G.st.phase = "end"; G.st.q = null; G.endAt = 0; G.qUntil = 0;
@@ -3692,6 +3694,7 @@
   });
   function sendAnswer(choice) {
     var s = G.st;
+    if (window.ga4) window.ga4("quiz_answered", { qtype: s.qtype });
     G.myChoice = choice;
     if (isChoice(s.q)) $("#p-msg").textContent = T("picked_change");   /* KHÔNG khoá: còn giờ thì bấm ô khác để đổi */
     else lockAll(T("picked"));
@@ -4087,6 +4090,7 @@
   function freeAnswer(choice, btn) {
     var q = G.myQ; if (!q) return;
     q.done = true;
+    if (window.ga4) window.ga4("quiz_answered", { qtype: G.st && G.st.qtype });
     var ms0 = Date.now() - G.myQStart;
     if (q.type === "dict") {
       var acc = wordAcc(choice, q.ans);

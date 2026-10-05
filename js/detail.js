@@ -211,6 +211,7 @@
   };
 
   D.showTab = function (name) {
+    if (w.ga4) w.ga4("tab_opened", { tab: name });
     w.$$(".dtab").forEach(function (t) { t.classList.toggle("active", t.dataset.tab === name); });
     w.$$(".tab-pane").forEach(function (p) { p.classList.remove("active"); });
     w.$("#pane-" + name).classList.add("active");
@@ -1332,6 +1333,7 @@
     w.$("#q-hint").disabled = true;
     w.Speech.speakWord(item.term);
 
+    if (w.ga4) w.ga4("quiz_answered", { correct: ok && !usedHint ? 1 : 0 });
     /* ghi nhận tiến trình của TỪ này */
     var prev = S().wp[item.id] || { attempts: 0, correct: 0 };
     var attempts = (prev.attempts || 0) + 1;
