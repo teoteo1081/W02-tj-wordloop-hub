@@ -1368,3 +1368,14 @@ body.embed .g-brand{display:none !important}
 body.embed.bd-on .g-top{display:none !important}
 /* nút "Có bản mới" của host phải nổi TRÊN bảng (trước bị bảng che nên host không thấy) */
 .g-upd{position:fixed !important;left:50%;bottom:14px;transform:translateX(-50%);z-index:400 !important;box-shadow:0 6px 20px rgba(0,0,0,.5)}
+
+/* nút bật/tắt tiếng riêng từng máy (chung công tắc với game) */
+.bd-vtbar .bd-snd{background:rgba(36,35,33,.9)}
+.bd-vtbar .bd-snd.off{background:#3a2626;border-color:#8a4a4a;color:#f2b3b3}
+
+.bd-vtbar .bd-vol{width:84px;height:28px;padding:0;border:0;background:transparent;accent-color:#e07a5f;cursor:pointer}
+.bd-vtbar .bd-vol:disabled{opacity:.35;cursor:default}
+@container (max-width: 640px){ .bd-mebar .bd-audio .bd-vol{width:62px} }
+@container (max-width: 400px){ .bd-mebar .bd-audio .bd-vol{width:48px} }
+/* người chơi KHÔNG có nút điều khiển đọc — chỉ nút 🔊/🔇 + âm lượng của máy mình (HOST điều khiển cho cả phòng, TJ 2026-10-06) */
+.bd:not(.bd-isHost) .bd-vtbar select,.bd:not(.bd-isHost) .bd-vtbar [data-vt],.bd:not(.bd-isHost) .bd-vtbar [data-wlread]{display:none !important}
