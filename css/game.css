@@ -1030,3 +1030,8 @@ body.embed .bd-drawer .bd-pane{display:none !important}
 /* Thu gọn: chỉ còn Từ · Level · Nghĩa */
 .bd-vt.compact .bd-vh,.bd-vt.compact .bd-vr{grid-template-columns:1.6em minmax(0,1.5fr) 2.3em minmax(0,1.5fr)}
 .bd-vt.compact .bd-vh > :nth-child(4),.bd-vt.compact .bd-vh > :nth-child(5),.bd-vt.compact .bd-vh > :nth-child(6),.bd-vt.compact .bd-vr > :nth-child(4),.bd-vt.compact .bd-vr > :nth-child(5),.bd-vt.compact .bd-vr > :nth-child(6){display:none}
+
+/* v182: nhóm nút trên-trái: Quay lại danh sách Block + ← → (như Learning) */
+.bd .bd-tlg{position:absolute;left:14px;top:12px;display:flex;gap:6px;z-index:6}
+.bd .bd-tlg .bd-hb{height:32px;min-width:34px;padding:0 10px;border-radius:8px;border:1px solid var(--line);background:rgba(36,35,33,.9);color:#f3f1ea;font-size:13px;cursor:pointer}
+@media (max-width:760px){.bd .bd-tlg #bd-back span{display:none}}

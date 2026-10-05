@@ -2443,3 +2443,9 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
 
 /* 🖤 chế độ bảng: lớp game chỉ phủ vùng giữa (#workspace), các cột + thanh trên của Learning hiện nguyên */
 .game-layer.board-fit{z-index:20;box-shadow:0 0 0 1px var(--border,#3d3b37)}
+
+/* v182: 🖤 bảng chưa chọn Block = màn hình Learning (danh sách Block) nằm trên NỀN BẢNG (xanh + viền nâu); lớp game ẩn đi */
+.game-layer.board-idle{visibility:hidden;pointer-events:none}
+body.board-skin #workspace{background:#1d2a24;box-shadow:inset 0 0 0 6px #5a4632;border-radius:12px}
+body.board-skin .block-card{cursor:pointer}
+#btn-board.active{background:#3a2c26;color:#ffd0bf}

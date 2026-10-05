@@ -42,9 +42,21 @@
     if (w.ResizeObserver && ws) { fitRO = new w.ResizeObserver(fitRect); fitRO.observe(ws); }
   }
   w.addEventListener("resize", function () { if (fitOn) fitRect(); });
+  /* Bảng mở + đã có Block -> lớp game phủ vùng giữa (bảng đang hiện bài).
+     Bảng mở nhưng CHƯA có Block -> ẩn lớp game, màn hình Learning (danh sách Block, ghim y chang) hiện trên NỀN BẢNG (xanh + viền nâu);
+     bấm 1 Block thì Block đó lên bảng (TJ 2026-10-05: "khi chưa vào block thì bảng thấy nguyên màn hình Learning"). */
+  var boardOnState = false, bb = null;
+  function setBoardState(on, doc) {
+    boardOnState = !!on;
+    var idle = !!on && !doc;
+    setFit(!!on && !!doc);
+    layer.classList.toggle("board-idle", idle);
+    document.body.classList.toggle("board-skin", idle);
+    if (bb) bb.classList.toggle("active", !!on);
+  }
   w.addEventListener("message", function (e) {
     if (e.origin !== location.origin || !e.data || e.data.type !== "tjwl-board-on") return;
-    setFit(!!e.data.on);
+    setBoardState(!!e.data.on, !!e.data.doc);
   });
 
   function open() {
@@ -66,6 +78,7 @@
   }
   function close() {
     setFit(false);
+    boardOnState = false; layer.classList.remove("board-idle"); document.body.classList.remove("board-skin"); if (bb) bb.classList.remove("active");
     layer.hidden = true;
     try { sessionStorage.removeItem("tjwl_game_open"); localStorage.removeItem("tjwl_game_open_at"); w.name = String(w.name || "").replace(/\s*tjwl_game/g, ""); } catch (e) {}
     learn.hidden = learnWasHidden;
@@ -74,6 +87,23 @@
     document.body.classList.remove("game-on");
   }
   btn.addEventListener("click", function () { isOpen() ? close() : open(); });
+
+  /* 🖤 nút "Bảng" cạnh "Game": bật bảng ở màn DANH SÁCH Block (màn hình Learning trên nền bảng) / tắt bảng (TJ 2026-10-05) */
+  bb = document.createElement("button"); bb.id = "btn-board"; bb.type = "button";
+  bb.className = String(btn.className || "").replace(/\bactive\b/g, "").trim(); bb.textContent = "🖤 Bảng"; bb.title = "Bật / tắt bảng chung";
+  bb.hidden = btn.hidden; btn.parentNode.insertBefore(bb, btn.nextSibling);
+  setInterval(function () { bb.hidden = btn.hidden; }, 1000);
+  bb.addEventListener("click", function () { boardOnState ? closeBoardMode() : openBoardIdle(); });
+  function openBoardIdle() {
+    if (!layer.firstChild) {
+      var f = document.createElement("iframe");
+      f.src = "game.html?embed=1&t=" + Date.now() + "&boardidle=1";
+      f.title = "WordLoop Game"; f.allow = "clipboard-write; autoplay";
+      layer.appendChild(f);
+    } else { try { layer.firstChild.contentWindow.postMessage({ type: "tjwl-game-boardopen" }, location.origin); } catch (e) {} }
+    if (!isOpen()) open();
+  }
+  function closeBoardMode() { try { layer.firstChild.contentWindow.postMessage({ type: "tjwl-game-boardclose" }, location.origin); } catch (e) {} }
 
   /* Mở game với chủ đề chọn sẵn (nút 🎮 trên Block card / chuột phải "🎮 Mở phòng game"). Game chưa mở -> tạo iframe
      với ?scope=; đã mở -> gửi postMessage để game đổi chủ đề tại chỗ (không tải lại, giữ phòng/người chơi). */

@@ -1572,7 +1572,16 @@
     if (!G.isHost || !G.st) { G.pendingScope = sc; G.pendingBoard = true; return; }
     openBoardScope(sc);
   });
+  /* 🖤 nút "Bảng" của Learning: mở / đóng bảng ở màn DANH SÁCH Block (chưa chọn Block) */
+  window.addEventListener("message", function (e) {
+    if (e.origin !== location.origin || !e.data || (e.data.type !== "tjwl-game-boardopen" && e.data.type !== "tjwl-game-boardclose")) return;
+    var on = e.data.type === "tjwl-game-boardopen";
+    if (!G.isHost || !G.st) { G.pendingIdle = on; return; }
+    if (on && window.Board && G.st.bdoc) { G.st.bdoc = null; }
+    G.st.board = on; push();
+  });
   async function initHostLobby() {
+    var wantIdle = param("boardidle") === "1" || !!G.pendingIdle; G.pendingIdle = false;
     var wantBoard = param("board") === "1" || !!G.pendingBoard; G.pendingBoard = false;
     var sc = param("scope");
     if (!sc && G.pendingScope) { var ps = G.pendingScope[0]; sc = ps.table + ":" + ps.id; G.pendingTitle = ps.title; G.pendingScope = null; }
@@ -1589,6 +1598,7 @@
     renderLobby();
     await loadTree();
     if (wantBoard && picked.length) openBoardScope(picked.map(function (p) { return { table: p.table, id: p.id, title: p.title }; }));
+    else if (wantIdle) { G.st.board = true; G.st.bdoc = null; push(); }
   }
   function renderLobby() {
     if (G.inHist) return;   /* đang xem lại / lịch sử: đổi host, ván mới… không kéo màn hình đi (bấm ← để về) */
@@ -1773,7 +1783,7 @@
       var bl = by("blocks", bid), ba = bl && by("batches", bl.batch_id), pg = ba && by("pages", ba.page_id), sc = pg && by("sections", pg.section_id); if (!sc) return null;
       var inNb = function (b) { var a = by("batches", b.batch_id), p = a && by("pages", a.page_id), s2 = p && by("sections", p.section_id); return !!(s2 && s2.notebook_id === sc.notebook_id); };
       var L = TREE.blocks.filter(inNb), i = L.findIndex(function (b) { return b.id === bid; }); if (i < 0) return null;
-      if (kind === "block") { var t = L[i + dir]; return t ? { bid: t.id, name: t.name } : null; }
+      if (kind === "block") { var t = L[i + dir]; return t ? { bid: t.id, name: t.name, sameBatch: t.batch_id === bl.batch_id } : null; }
       var bo = []; L.forEach(function (b) { if (bo.indexOf(b.batch_id) < 0) bo.push(b.batch_id); });
       var nb = bo[bo.indexOf(bl.batch_id) + dir]; if (!nb) return null;
       var first = L.find(function (b) { return b.batch_id === nb; }); return first ? { bid: first.id, name: first.name } : null;

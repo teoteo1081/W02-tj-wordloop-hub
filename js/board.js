@@ -77,9 +77,10 @@
             '<button type="button" class="pri" data-vt="readdef" title="Đọc từ + định nghĩa">🔊 <span>Đọc + định nghĩa</span></button>' +
           '</div>' +
           '<span class="bd-seg bd-segtop bd-hud" id="bd-seg" hidden><button type="button" data-sw="wl" aria-pressed="true">📖 Bài đọc</button><button type="button" data-sw="vt" aria-pressed="false">📋 Bảng từ</button></span>' +
-          '<button type="button" class="bd-hb bd-fab bd-hud bd-tl" id="bd-close" hidden data-btt="close">✕</button>' +
+          '<div class="bd-tlg bd-hud" id="bd-tlg" hidden><button type="button" class="bd-hb" id="bd-back" title="Quay lại danh sách Block">← <span>Quay lại danh sách Block</span></button><button type="button" class="bd-hb" id="bd-bprev" title="Block trước">←</button><button type="button" class="bd-hb" id="bd-bnext" title="Block sau">→</button></div>' +
           '<button type="button" class="bd-hb bd-fab bd-hud bd-tr" id="bd-big" data-btt="big">⛶</button>' +
           '<div class="bd-rail bd-hud">' +
+            '<button type="button" class="bd-hb bd-fab" id="bd-close" hidden data-btt="close">✕</button>' +
             '<button type="button" class="bd-hb bd-fab" id="bd-lib" hidden data-ico="1" data-bt="lib"></button>' +
             '<button type="button" class="bd-hb bd-fab" id="bd-share" hidden data-ico="1" data-btt="sharet" data-bt="share"></button>' +
             '<button type="button" class="bd-hb bd-fab" id="bd-penbtn" title="Vẽ / ghi chú">✏️</button>' +
@@ -94,9 +95,7 @@
           '<div class="bd-lk" id="bd-lk" hidden><div class="bd-lkq" id="bd-lkq" hidden><input type="search" id="bd-lkin" placeholder="Gõ từ / cụm từ cần tra…" autocomplete="off" autocapitalize="off"><button type="button" class="bd-hb" id="bd-lkgo">Tra</button></div><div class="bd-lkr" id="bd-lkr"></div><button type="button" class="bd-hb bd-lkx" id="bd-lkx">✕</button></div>' +
           '<div class="bd-bottom bd-hud">' +
             '<div class="bd-docnav" id="bd-docnav" hidden>' +
-              '<button type="button" class="bd-hb" id="bd-kprev" data-nv="block:-1" title="Block trước">⏪</button>' +
               '<button type="button" class="bd-hb" id="bd-dprev" title="Trang trước">◀</button><button type="button" class="bd-hb" id="bd-dpg" title="Nhảy tới trang…"></button><button type="button" class="bd-hb" id="bd-dnext" title="Trang sau">▶</button>' +
-              '<button type="button" class="bd-hb" id="bd-knext" data-nv="block:1" title="Block sau">⏩</button>' +
               '<button type="button" class="bd-hb" id="bd-dsrch" title="Gõ từ để tra nghĩa" hidden>🔍</button>' +
               '<span class="bd-sep"></span><button type="button" data-z="out" data-btt="zout" class="bd-hb bd-za">A−</button><button type="button" data-z="fit" data-btt="zfit" id="bd-zfit" class="bd-hb" title="Về cỡ mặc định 100%">⤢ 100%</button><button type="button" data-z="in" data-btt="zin" class="bd-hb bd-za">A+</button>' +
               '<button type="button" class="bd-hb" id="bd-dtree" hidden style="display:none">🌳</button><button type="button" class="bd-hb" id="bd-dclose" hidden style="display:none">✕</button>' +
@@ -168,6 +167,8 @@
     if (b.id === "bd-close") { api.setBoard(false); return; }
     if (b.id === "bd-lib") { Lib.open(); return; }
     if (b.dataset.vt) { vtAction(b.dataset.vt); return; }
+    if (b.id === "bd-back") { if (api.isHost()) docSet(null); return; }   /* ← Quay lại danh sách Block (bảng chưa có Block = hiện màn hình Learning) */
+    if (b.id === "bd-bprev" || b.id === "bd-bnext") { navStep("block", b.id === "bd-bnext" ? 1 : -1); return; }
     if (b.dataset.sw) { swKind(b.dataset.sw); return; }
     if (b.dataset.nv) { var pz = b.dataset.nv.split(":"); navStep(pz[0], +pz[1]); return; }
     if (b.dataset.at) { var dA = curDoc(); if (dA && dA.bid && api.isHost() && api.openInApp) api.openInApp(dA.bid, b.dataset.at); return; }
@@ -209,6 +210,11 @@
       hosts.map(function (x) { return '<span class="bd-pp on bd-phost">👑 ' + esc(x.name || "Host") + " · host</span>"; }).join("") + (list.length ? list.map(function (x) {
       return '<button type="button" class="bd-pp' + (p[x.id] ? " on" : "") + '" data-perm="' + esc(x.id) + '">' + (p[x.id] ? "🛡 " : "👤 ") + esc(x.name || "?") + "</button>"; }).join("") : '<span class="bd-ph">' + esc(t("none")) + "</span>");
   }
+  function notifyParent(show) {
+    if (!(window.parent && window.parent !== window)) return;
+    var has = !!curDoc(), key = (show ? 1 : 0) + ":" + (has ? 1 : 0); if (notifyParent._k === key) return; notifyParent._k = key;
+    try { window.parent.postMessage({ type: "tjwl-board-on", on: !!show, doc: has }, location.origin); } catch (e) {}
+  }
   function paintOpen() {
     var el = $("#bd"); if (!el) return;
     el.classList.toggle("bd-isHost", !!(api && api.isHost()));
@@ -217,7 +223,8 @@
     el.hidden = !open || mini; $("#bd-dock").hidden = !open || !mini;
     $("#bd-open").hidden = open || !api || !api.isHost() || !api.ch();
     var show = open && !mini;
-    if (window.parent && window.parent !== window && paintOpen._last !== !!show) { paintOpen._last = !!show; try { window.parent.postMessage({ type: "tjwl-board-on", on: !!show }, location.origin); } catch (e) {} }   /* TJ 2026-10-05: bảng chỉ lấp VÙNG GIỮA của Learning (giữ nguyên khung ngoài) */
+    notifyParent(!!show);   /* TJ 2026-10-05: báo cho Learning: bảng đang mở + đã có Block chưa (chưa có Block = hiện màn hình Learning trên nền bảng) */
+    var tg0 = $("#bd-tlg"); if (tg0) tg0.hidden = !(api && api.isHost());
     document.body.classList.toggle("bd-on", show); document.body.classList.toggle("bd-bigon", show && big);
     el.classList.toggle("bd-big", big);
     if (show) { fit(); paintTools(); paintPerm(); }
@@ -596,7 +603,7 @@
       var host = api.isHost(), isPg = !!(d && (d.k === "pdf" || d.k === "wl" || d.k === "vt")), isTxt = !!(d && (d.k === "wl" || d.k === "vt"));
       nav.hidden = host ? false : (!d || !isPg);   /* người chơi: hàng lật trang/Block/Batch + 🔍 hiện khi có bài */
       var U0 = isTxt ? unitsOf(d) : null;
-      $("#bd-dpg").textContent = !isPg ? "" : (d.k === "vt" ? "📋 " : d.k === "wl" ? "📖 " : "") + (d.p || 1) + (d.n ? " / " + d.n : "") + (U0 && U0.length > 1 ? " · " + (unitIdx(d, U0) + 1) + "/" + U0.length : "");
+      $("#bd-dpg").textContent = !isPg ? "" : (d.k === "vt" ? "📋 " : d.k === "wl" ? "📖 " : "") + (d.p || 1) + (d.n ? " / " + d.n : "");   /* chỉ số trang của bài đọc / của bảng từ (không còn số Block/đơn vị) */
       ["#bd-dprev", "#bd-dnext"].forEach(function (x) { var e = $(x); if (e) e.hidden = !isPg; });
       var isBlk = !!(d && d.bid && (d.k === "wl" || d.k === "vt"));
       document.querySelectorAll("#bd-docnav [data-nv]").forEach(function (e) { e.hidden = !isBlk; });
@@ -610,7 +617,7 @@
       var sw0 = $("#bd-dswap"); if (sw0) sw0.hidden = !(host && d && d.k === "wl");
       if (!isTxt) { $("#bd-lk").hidden = true; $("#bd-lkq").hidden = true; }
     }
-    paintCard(d);
+    paintCard(d); notifyParent(open && !mini);
     if (k === docKey) { if (d && d.k === "vt") paintHL(d); return; }
     stash[docKey] = { items: items, order: order };   /* cất nét của trang cũ */
     var sv = stash[k] || { items: {}, order: [] }; items = sv.items; order = sv.order; mine = []; redo = [];
@@ -832,18 +839,14 @@
     if (!api.isHost()) { send({ t: "navreq", k: "page", dir: dir }); return; }
     var n = d.n || 1, p = d.p || 1, np = p + dir;
     if (np >= 1 && np <= n) { docSet(Object.assign({}, d, { p: np })); return; }
-    if (d.k !== "vt" && d.k !== "wl") return;
-    var U = unitsOf(d), j = unitIdx(d, U) + dir; if (j < 0 || j >= U.length) return;
-    var u = U[j], nd = { k: u.k, bid: u.bid, name: u.name, p: dir > 0 ? 1 : 9999, fs: d.fs, q: d.q, qp: d.qp, qi: j };
-    if (u.k === "wl") { var ph = await defaultPh(u.bid); if (ph) { nd.ph = ph.ph; nd.lb = ph.label; } }
-    await openDoc(nd);
+    return;   /* TJ 2026-10-05: gói gọn trong 1 Block — hết trang thì dừng (không nhảy sang Block / Batch khác; muốn Block khác thì quay lại danh sách) */
   }
   /* ⏮ ⏪ ⏩ ⏭ sang Block / Batch kế (cùng loại tài liệu đang xem: bài đọc hoặc bảng từ) — ai bấm cũng được, host thực hiện */
   async function navStep(kind, dir) {
     var d = curDoc(); if (!d || !d.bid || (d.k !== "wl" && d.k !== "vt")) return;
     if (!api.isHost()) { send({ t: "navreq", k: kind, dir: dir }); return; }
     if (!api.neighbor) return;
-    var nb = await api.neighbor(d.bid, kind, dir); if (!nb) { if (window.toast) toast("Hết rồi"); return; }
+    var nb = await api.neighbor(d.bid, kind, dir); if (!nb || nb.sameBatch === false) { if (window.toast) toast("Hết Block trong Batch này"); return; }   /* chỉ trong cùng Batch — muốn Batch / Page khác thì chọn ở danh sách */
     var nd = { k: d.k, bid: nb.bid, name: nb.name, p: 1, fs: d.fs };
     if (d.k === "wl") { var ph = await defaultPh(nb.bid); if (ph) { nd.ph = ph.ph; nd.lb = ph.label; } }
     await openDoc(nd);
@@ -1351,6 +1354,11 @@
     resync: function () { if (open) setTimeout(function () { send({ t: "hello" }); }, 400); },
     isOpen: function () { return open; },
     /* 🖤 từ cây chủ đề của game (⋯ › Mở lên bảng): list = [[blockId, tên], …], parts = "vw" | "w" | "v" */
-    openBlocks: function (list, parts) { if (api && api.isHost()) openQueue(list, parts || "wv"); }
+    /* TJ 2026-10-05: bảng là TỪNG BLOCK — 1 Block thì mở thẳng (bài đọc trước); nhiều Block (Batch/Page/…) thì mở bảng ở màn DANH SÁCH để TJ chọn */
+    openBlocks: function (list, parts) {
+      if (!(api && api.isHost())) return;
+      if (list && list.length === 1) openQueue(list, "wv");
+      else { if (!open) api.setBoard(true); mini = false; if (curDoc()) docSet(null); else notifyParent(true); }
+    }
   };
 })();
