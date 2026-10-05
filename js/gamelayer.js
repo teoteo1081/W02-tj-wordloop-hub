@@ -57,21 +57,26 @@
   }
   /* CHẾ ĐỘ BẢNG = một chế độ của Learning (TJ 2026-10-05: "bảng là chế độ khác lấy giao diện của Learning, Learning đâu mất rồi"):
      vào chế độ bảng thì Learning LUÔN hiện (nền bảng); lớp game chỉ lộ ra đúng vùng giữa khi bảng đã có Block, không bao giờ phủ kín Learning. */
-  var boardMode = false, seenOn = false, gameOpened = false;   /* gameOpened = thẻ 🎮 Game đã mở bằng open(); chế độ bảng KHÔNG gọi open() nên không đụng tới nút Learning / Game */
+  var boardMode = false, seenOn = false, gameOpened = false, boardLearnWas = true;
+  function refreshLb() { try { if (w.App && w.App.renderSidebarLbMini) w.App.renderSidebarLbMini(true); } catch (e) {} }   /* ô Xếp hạng cột trái: chế độ bảng = người chơi game, mọi thời gian */   /* gameOpened = thẻ 🎮 Game đã mở bằng open(); chế độ bảng KHÔNG gọi open() nên không đụng tới nút Learning / Game */
   function enterBoard() {
     boardMode = true; seenOn = false;
     try { if (w.App && w.App.showBlockList) w.App.showBlockList(); } catch (e) {}   /* Learning về màn danh sách Block */
     layer.hidden = false; layer.classList.add("board-idle");   /* lớp game có mặt nhưng ẨN (visibility) cho tới khi có Block */
     layer.style.visibility = "hidden"; layer.style.pointerEvents = "none";
-    document.body.classList.add("board-skin");
+    document.body.classList.add("board-skin", "board-mode");
+    boardLearnWas = learn.hidden; learn.hidden = false;   /* nút "📖 Learning" hiện để quay về Learning, như khi đang ở màn khác */
     boardOnState = true; if (bb) bb.classList.add("active");
+    refreshLb();
   }
   function leaveBoard() {
     setFit(false);
     boardOnState = false; boardMode = false; seenOn = false;
     layer.style.visibility = ""; layer.style.pointerEvents = ""; layer.classList.remove("board-idle");
-    document.body.classList.remove("board-skin"); if (bb) bb.classList.remove("active");
+    document.body.classList.remove("board-skin", "board-mode"); if (bb) bb.classList.remove("active");
     layer.hidden = true;
+    if (!gameOpened) learn.hidden = boardLearnWas;
+    refreshLb();
   }
   w.addEventListener("message", function (e) {
     if (e.origin !== location.origin || !e.data || e.data.type !== "tjwl-board-on") return;
@@ -103,7 +108,7 @@
     if (boardMode && !gameOpened) { leaveBoard(); return; }   /* chỉ đang ở chế độ bảng: thoát bảng, giữ nguyên nút Learning / Game */
     gameOpened = false;
     setFit(false);
-    boardOnState = false; boardMode = false; seenOn = false; layer.style.visibility = ""; layer.style.pointerEvents = ""; layer.classList.remove("board-idle"); document.body.classList.remove("board-skin"); if (bb) bb.classList.remove("active");
+    boardOnState = false; boardMode = false; seenOn = false; layer.style.visibility = ""; layer.style.pointerEvents = ""; layer.classList.remove("board-idle"); document.body.classList.remove("board-skin", "board-mode"); if (bb) bb.classList.remove("active"); refreshLb();
     layer.hidden = true;
     try { sessionStorage.removeItem("tjwl_game_open"); localStorage.removeItem("tjwl_game_open_at"); w.name = String(w.name || "").replace(/\s*tjwl_game/g, ""); } catch (e) {}
     learn.hidden = learnWasHidden;

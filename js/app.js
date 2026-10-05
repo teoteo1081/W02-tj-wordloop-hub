@@ -1412,10 +1412,33 @@
      (SB_LB_CACHE), KHÔNG đụng LB_CACHE của modal/trang chính. */
   var SB_LB_CACHE = null;
   var SB_LB_NB_LOADED = null;   /* notebookId đã tải xong lần gần nhất, tránh gọi DB lại nếu chưa đổi Notebook */
+  /* 🖤 CHẾ ĐỘ BẢNG: ô Xếp hạng = người chơi game, TOÀN BỘ THỜI GIAN (cùng cách tính tab "Mọi thời gian" của game: đúng nhiều nhất, sai ít nhất) — TJ 2026-10-05 */
+  App.renderSidebarGameLb = async function () {
+    var box = w.$("#sidebar-lb-mini"), body = w.$("#sidebar-lb-mini-body");
+    if (!box || !body || !w.DB || !w.DB.sb) return;
+    box.hidden = false; box.onclick = null;
+    body.innerHTML = '<div class="sb-lb-empty">⏳ Đang tải…</div>';
+    try {
+      var r = await w.DB.sb.from("game_results").select("player_id,rank,correct,wrong,game_players(name,name_no)").limit(5000);
+      if (r.error) throw r.error;
+      var agg = {};
+      (r.data || []).forEach(function (x) {
+        var a = agg[x.player_id] || (agg[x.player_id] = { p: x.game_players || {}, c: 0, wr: 0, g: 0 });
+        a.c += x.correct || 0; a.wr += x.wrong || 0; a.g++;
+      });
+      var rows = Object.keys(agg).map(function (k) { return agg[k]; }).sort(function (a, b) { return b.c - a.c || a.wr - b.wr; }).slice(0, 8);
+      if (!rows.length) { body.innerHTML = '<div class="sb-lb-empty">Chưa có ván game nào.</div>'; return; }
+      var medal = ["🥇", "🥈", "🥉"];
+      body.innerHTML = '<div class="sb-lb-empty" style="padding:0 0 4px">Người chơi game · mọi thời gian</div>' + rows.map(function (a, i) {
+        return '<div class="sb-lb-row"><span class="sb-lb-rank">' + (i + 1) + (medal[i] ? " " + medal[i] : "") + '</span><span class="sb-lb-name">' + w.esc((a.p.name || "?") + (a.p.name_no ? " #" + a.p.name_no : "")) + '</span><span class="sb-lb-score" title="' + a.g + ' ván · sai ' + a.wr + '">' + a.c + "</span></div>";
+      }).join("");
+    } catch (e) { body.innerHTML = '<div class="sb-lb-empty">Không tải được xếp hạng game.</div>'; }
+  };
   App.renderSidebarLbMini = async function (force) {
     var box = w.$("#sidebar-lb-mini");
     var body = w.$("#sidebar-lb-mini-body");
     if (!box || !body) return;
+    if (document.body.classList.contains("board-mode")) return App.renderSidebarGameLb();
     if (w.DB.mode !== "cloud" || !S.notebookId) { box.hidden = true; return; }
     var nb = S.notebooks.find(function (n) { return n.id === S.notebookId; });
     if (!nb) { box.hidden = true; return; }
