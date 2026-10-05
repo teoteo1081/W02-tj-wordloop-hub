@@ -58,7 +58,7 @@
     el.innerHTML =
       '<aside class="bd-side" id="bd-side" hidden><div class="bd-sidehd"><b>Notebooks</b><span><button type="button" class="bd-hb" id="bd-sidepin" title="Ghim cột (luôn mở bên trái)">📌</button><button type="button" class="bd-hb" id="bd-sideexp" title="Mở hết">⊞</button><button type="button" class="bd-hb" id="bd-sidecol" title="Thu hết">⊟</button><button type="button" class="bd-hb" id="bd-sidex" title="Đóng">✕</button></span></div><input type="search" id="bd-sideq" placeholder="Tìm Block…"><div class="bd-tree bd-sidelist" id="bd-sidelist">⏳</div><div id="bd-sidebar"></div></aside>' +
       '<div class="bd-sw" id="bd-sw"><div class="bd-fx" id="bd-fx">' + '<div class="bd-top" id="bd-card" hidden>' +
-          '<div class="bd-crow"><span class="bd-crumb" id="bd-crumb"></span></div>' +
+          '<div class="bd-crow"><span class="bd-tlg" id="bd-tlg" hidden><button type="button" class="bd-hb" id="bd-back" title="Quay lại danh sách Block">← <span>Quay lại danh sách Block</span></button><button type="button" class="bd-hb" id="bd-bprev" title="Block trước">←</button><button type="button" class="bd-hb" id="bd-bnext" title="Block sau">→</button></span><span class="bd-crumb" id="bd-crumb"></span></div>' +
           '<div class="bd-ctitle"><b id="bd-cname"></b><span class="bd-clv" id="bd-clv"></span><span class="bd-pill" id="bd-cdue" hidden></span><span class="bd-pill bd-ctag" id="bd-ctag" hidden></span><span class="bd-cst" id="bd-cst" hidden></span></div>' +
           '<div class="bd-chips" id="bd-chips"></div><div class="bd-cprog" id="bd-cprog" hidden><i></i></div>' +
           '<div class="bd-act" id="bd-act" hidden><button type="button" class="bd-hb bd-acttog" id="bd-acttog" title="Bật/tắt khay công cụ (như nút ghim của Notebooks)">📚 Công cụ <span>📌</span></button><span class="bd-acttools" id="bd-acttools">' +
@@ -77,7 +77,6 @@
             '<button type="button" class="pri" data-vt="readdef" title="Đọc từ + định nghĩa">🔊 <span>Đọc + định nghĩa</span></button>' +
           '</div>' +
           '<span class="bd-seg bd-segtop bd-hud" id="bd-seg" hidden><button type="button" data-sw="wl" aria-pressed="true">📖 Bài đọc</button><button type="button" data-sw="vt" aria-pressed="false">📋 Bảng từ</button></span>' +
-          '<div class="bd-tlg bd-hud" id="bd-tlg" hidden><button type="button" class="bd-hb" id="bd-back" title="Quay lại danh sách Block">← <span>Quay lại danh sách Block</span></button><button type="button" class="bd-hb" id="bd-bprev" title="Block trước">←</button><button type="button" class="bd-hb" id="bd-bnext" title="Block sau">→</button></div>' +
           '<button type="button" class="bd-hb bd-fab bd-hud bd-tr" id="bd-big" data-btt="big">⛶</button>' +
           '<div class="bd-rail bd-hud">' +
             '<button type="button" class="bd-hb bd-fab" id="bd-close" hidden data-btt="close">✕</button>' +

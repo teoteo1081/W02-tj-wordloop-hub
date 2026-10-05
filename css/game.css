@@ -1061,3 +1061,9 @@ body.embed .bd-drawer .bd-pane{display:none !important}
   .bd.bd-big .bd-sfx{flex:none}
   .bd.bd-big .bd-feed{flex:1 1 auto;min-height:0;max-height:none;width:auto;min-width:0;align-self:stretch;margin-top:8px}
 }
+
+/* v185: "← Quay lại danh sách Block" + ← → nằm ĐẦU DÒNG đầu của thẻ, trước đường dẫn (TJ 2026-10-05) */
+.bd .bd-top .bd-crow{gap:8px;align-items:center}
+.bd .bd-top .bd-tlg{position:static;display:flex;gap:6px;flex:none}
+.bd .bd-top .bd-tlg .bd-hb{height:30px}
+.bd .bd-top .bd-tlg[hidden]{display:none}
