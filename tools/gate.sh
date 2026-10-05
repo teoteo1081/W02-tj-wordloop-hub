@@ -16,13 +16,15 @@ case "$mode" in
   unit)    run "Kiểm thử thuần · exams" node tools/test_exams.js ;;
   data)    run "Hồi quy dữ liệu" python3 tools/gate_data.py ;;
   browser) run "Cổng 2 · trình duyệt" node tools/gate_browser.js
-           run "Cổng 2 · trình duyệt · hub Marketing (offline, stub)" node tools/test_exams_browser.js ;;
+           run "Cổng 2 · trình duyệt · hub Marketing (offline, stub)" node tools/test_exams_browser.js
+           run "Cổng 2 · hồi quy chơi thật 1 ván TOEIC (offline, stub)" node tools/test_toeic_play_browser.js ;;
   post)    run "Cổng 3 · hậu kiểm" python3 tools/gate_post.py ;;
   all)     run "Cổng 0+1 · tĩnh" python3 tools/gate_static.py
            run "Kiểm thử thuần · exams" node tools/test_exams.js
            run "Hồi quy dữ liệu" python3 tools/gate_data.py
            run "Cổng 2 · trình duyệt" node tools/gate_browser.js
-           run "Cổng 2 · trình duyệt · hub Marketing (offline, stub)" node tools/test_exams_browser.js ;;
+           run "Cổng 2 · trình duyệt · hub Marketing (offline, stub)" node tools/test_exams_browser.js
+           run "Cổng 2 · hồi quy chơi thật 1 ván TOEIC (offline, stub)" node tools/test_toeic_play_browser.js ;;
   *) echo "Cách dùng: tools/gate.sh pre|unit|data|browser|post|all"; exit 2 ;;
 esac
 echo; if [ $rc -eq 0 ]; then echo "🟢 TỔNG KẾT: các cổng đã chạy đều ĐẠT"; else echo "🔴 TỔNG KẾT: CÓ CỔNG KHÔNG ĐẠT — dừng, sửa rồi chạy lại"; fi
