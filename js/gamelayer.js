@@ -65,6 +65,21 @@
     if (!isOpen()) open();
   }
 
+  /* 🖤 Mở bảng cho 1 mục (Block/Batch/Page/Section/Notebook/Hub): mở thẻ Game (giữ phòng đang mở), game tự mở bảng với MỌI Block trong mục. */
+  function openBoard(table, id, title) {
+    var sc = [{ table: table, id: id, title: title || id }];
+    if (!layer.firstChild) {
+      var f = document.createElement("iframe");
+      f.src = "game.html?embed=1&t=" + Date.now() + "&scope=" + encodeURIComponent(table + ":" + id) + "&title=" + encodeURIComponent(title || "") + "&board=1";
+      f.title = "WordLoop Game";
+      f.allow = "clipboard-write; autoplay";
+      layer.appendChild(f);
+    } else {
+      try { layer.firstChild.contentWindow.postMessage({ type: "tjwl-game-board", scope: sc }, location.origin); } catch (e) {}
+    }
+    if (!isOpen()) open();
+  }
+
   /* "📖 Learning": đang mở game thì chỉ đóng game (màn bên dưới vẫn y như lúc rời đi) */
   learn.addEventListener("click", function (e) {
     if (!isOpen()) return;
@@ -98,5 +113,5 @@
     if (settled) clearInterval(t);
   }, 1000);
   syncBtn();
-  w.GameLayer = { open: open, close: close, isOpen: isOpen, openScope: openScope };
+  w.GameLayer = { open: open, close: close, isOpen: isOpen, openScope: openScope, openBoard: openBoard };
 })(window);

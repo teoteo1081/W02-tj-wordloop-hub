@@ -1538,7 +1538,42 @@
     if (TREE) paintTree(); else paintPicked();
     hostSetScope();
   });
+  /* 🖤 các Block nằm dưới 1 mục của cây (Hub/Notebook/Section/Page/Batch/Block) — tối đa 60 (giới hạn của bảng) */
+  function blocksUnder(table, id) {
+    if (!TREE) return [];
+    var kids = function (list, key, v) { return TREE[list].filter(function (r) { return r[key] === v; }); }, out = [];
+    var addBatch = function (b) { kids("blocks", "batch_id", b.id).forEach(function (x) { out.push([x.id, x.name]); }); };
+    var addPage = function (p) { kids("batches", "page_id", p.id).forEach(addBatch); };
+    var addSec = function (s) { kids("pages", "section_id", s.id).forEach(addPage); };
+    var addNb = function (n) { kids("sections", "notebook_id", n.id).forEach(addSec); kids("notebooks", "parent_notebook_id", n.id).forEach(addNb); };
+    var one = function (list) { return TREE[list].find(function (r) { return r.id === id; }); }, r;
+    if (table === "blocks") { r = one("blocks"); if (r) out.push([r.id, r.name]); }
+    else if (table === "batches") { r = one("batches"); if (r) addBatch(r); }
+    else if (table === "pages") { r = one("pages"); if (r) addPage(r); }
+    else if (table === "sections") { r = one("sections"); if (r) addSec(r); }
+    else if (table === "notebooks") { r = one("notebooks"); if (r) addNb(r); }
+    else if (table === "hubs") { TREE.notebooks.filter(function (n) { return n.hub_id === id && !n.parent_notebook_id; }).forEach(addNb); }
+    return out.slice(0, 60);
+  }
+  /* 🖤 Mở bảng cho 1 mục: đặt chủ đề (nếu đang ở phòng chờ) + mở bảng cho cả phòng + đưa MỌI Block của mục lên bảng (TJ 2026-10-05) */
+  async function openBoardScope(sc) {
+    if (!G.isHost || !G.st || !sc || !sc.length) return;
+    if (!TREE) await loadTree(true);
+    var list = []; sc.forEach(function (p) { list = list.concat(blocksUnder(p.table, p.id)); });
+    if (!list.length) { alert("Mục này chưa có Block để mở lên bảng."); return; }
+    if (G.st.phase === "lobby") { picked = sc.map(function (p) { return { table: p.table, id: p.id, title: p.title || p.id }; }); hostSetScope(); }
+    if (!G.st.board) { G.st.board = true; push(); }
+    setTimeout(function () { if (window.Board) Board.openBlocks(list.slice(0, 60), "vw"); }, 350);
+  }
+  window.addEventListener("message", function (e) {
+    if (e.origin !== location.origin || !e.data || e.data.type !== "tjwl-game-board") return;
+    var sc = (e.data.scope || []).filter(function (p) { return p && p.table && p.id; });
+    if (!sc.length) return;
+    if (!G.isHost || !G.st) { G.pendingScope = sc; G.pendingBoard = true; return; }
+    openBoardScope(sc);
+  });
   async function initHostLobby() {
+    var wantBoard = param("board") === "1" || !!G.pendingBoard; G.pendingBoard = false;
     var sc = param("scope");
     if (!sc && G.pendingScope) { var ps = G.pendingScope[0]; sc = ps.table + ":" + ps.id; G.pendingTitle = ps.title; G.pendingScope = null; }
     if (sc) {   /* mở từ chuột phải trong WordLoop: ?scope=<table>:<id>&title=… -> thành chủ đề ván tới */
@@ -1553,6 +1588,7 @@
     }
     renderLobby();
     await loadTree();
+    if (wantBoard && picked.length) openBoardScope(picked.map(function (p) { return { table: p.table, id: p.id, title: p.title }; }));
   }
   function renderLobby() {
     if (G.inHist) return;   /* đang xem lại / lịch sử: đổi host, ván mới… không kéo màn hình đi (bấm ← để về) */

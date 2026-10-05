@@ -2435,3 +2435,8 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
 .hubpage-bar{display:flex;align-items:center;gap:.5rem;padding:.35rem .7rem;border-bottom:1px solid var(--border);background:var(--bg-card);font-size:.82rem;flex-wrap:wrap;}
 .hubpage-sp{flex:1;}
 .hubpage-layer iframe{flex:1;width:100%;border:0;display:block;min-height:0;}
+
+/* 🖤 nút "Mở bảng" cạnh "Chơi game" trên Block card (TJ 2026-10-05) */
+.btn-board-block{margin-left:auto;background:#3a3936;color:#fff;border:1px solid #5a4632;padding:.42rem .95rem;border-radius:7px;font-weight:700;font-size:.78rem;cursor:pointer;white-space:nowrap}
+.btn-board-block:hover{background:#4a4743}
+.btn-board-block + .btn-game-block{margin-left:.4rem}
