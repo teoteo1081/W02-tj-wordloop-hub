@@ -1338,8 +1338,10 @@ body.embed.bd-on #g-side,body.embed.bd-on #h-sidetab,body.embed.bd-on #h-sidebd,
 
 /* TJ 2026-10-06: bảng từ LUÔN là bảng (c7 = đủ 7 cột, c5 = bỏ Word form + Phonetic khi khung rất hẹp), cỡ chữ do JS tự co vừa khung */
 .bd-both .bd-vt.c7 .bd-vh,.bd-both .bd-vt.c7 .bd-vr{grid-template-columns:1.6em minmax(0,2.1fr) 3.2em minmax(0,.9fr) minmax(0,.95fr) minmax(0,1.9fr) minmax(0,1.5fr)}
-.bd-both .bd-vt.c5 .bd-vh,.bd-both .bd-vt.c5 .bd-vr{grid-template-columns:1.6em minmax(0,1.9fr) 3.2em minmax(0,2fr) minmax(0,1.6fr)}
-.bd-both .bd-vt.c5 .bd-vh > :nth-child(4),.bd-both .bd-vt.c5 .bd-vh > :nth-child(5),.bd-both .bd-vt.c5 .bd-vr > :nth-child(4),.bd-both .bd-vt.c5 .bd-vr > :nth-child(5){display:none}
+.bd-both .bd-vt.c6 .bd-vh,.bd-both .bd-vt.c6 .bd-vr{grid-template-columns:1.6em minmax(0,1.9fr) 3.2em minmax(0,1fr) minmax(0,1.9fr) minmax(0,1.5fr)}
+.bd-both .bd-vt.c5 .bd-vh,.bd-both .bd-vt.c5 .bd-vr{grid-template-columns:1.6em minmax(0,1.7fr) minmax(0,1fr) minmax(0,2fr) minmax(0,1.6fr)}
+.bd-both .bd-vt.c6 .bd-vh > :nth-child(4),.bd-both .bd-vt.c6 .bd-vr > :nth-child(4){display:none}
+.bd-both .bd-vt.c5 .bd-vh > :nth-child(3),.bd-both .bd-vt.c5 .bd-vh > :nth-child(4),.bd-both .bd-vt.c5 .bd-vr > :nth-child(3),.bd-both .bd-vt.c5 .bd-vr > :nth-child(4){display:none}
 .bd-both .bd-vt .bd-vh,.bd-both .bd-vt .bd-vr{display:grid;gap:0 .6em;align-items:center}
 .bd-both .bd-vt .bd-vtm{flex-wrap:nowrap}
 .bd-both .bd-vt .bd-vterm{min-width:0;overflow-wrap:break-word}
@@ -1355,3 +1357,12 @@ body.bd-on #g-side,body.bd-on #h-sidetab,body.bd-on #h-sidebd,body.bd-on #g-room
 .bd-both .bd-vt .bd-vr > *{min-width:0}
 .bd-both .bd-vt .bd-ve,.bd-both .bd-vt .bd-vd,.bd-both .bd-vt .bd-vph{overflow-wrap:anywhere;hyphens:auto}
 .bd-both .bd-vt{overflow-x:hidden}
+
+/* karaoke: từ đang đọc + câu đang đọc, giống nhau trên mọi máy */
+.bd-rw{background:rgba(124,170,255,.55) !important;color:#fff !important;border-radius:4px;box-shadow:0 0 0 2px rgba(124,170,255,.55)}
+.bd-s.bd-rd{background:rgba(124,170,255,.14);box-shadow:0 0 0 3px rgba(124,170,255,.14);border-radius:4px}
+.bd-vr.rd{background:rgba(124,170,255,.2);outline:1px solid rgba(124,170,255,.7);outline-offset:-1px}
+.bd-vtbar [data-vt="stop"][disabled]{opacity:.45;cursor:default}
+/* TJ 2026-10-06: bỏ hẳn tiêu đề "🎮 WordLoop Game" / thanh đầu game khi nhúng trong Learning và khi bảng mở */
+body.embed .g-brand{display:none !important}
+body.embed.bd-on .g-top{display:none !important}

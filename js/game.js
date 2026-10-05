@@ -194,6 +194,7 @@
   function readLS(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
   function writeLS(k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
   function param(k) { return new URLSearchParams(location.search).get(k); }
+  function inFrame() { try { return window.self !== window.top; } catch (e) { return true; } }   /* chạy trong iframe của Learning = chế độ nhúng, dù địa chỉ có mất ?embed=1 */
   function embQ() { return G.embed ? "&embed=1" : ""; }   /* đổi địa chỉ trang KHÔNG được làm mất embed=1 (trang tự tải lại khi có bản mới -> bật nhầm giao diện độc lập: cột Chủ đề + tiêu đề lòi ra trong Learning) */
   function roomLink(code, screen) { return location.origin + location.pathname + "?room=" + code + (screen ? "&view=screen" : ""); }
   function teamName(t) { return TEAM_C[t] ? T(TEAM_C[t].k) : ""; }
@@ -1846,7 +1847,8 @@
     },
     tree: async function () { if (!TREE) await loadTree(true); return TREE; },   /* cây Hub › Notebook › … › Block của game, dùng chung cho hộp chọn bài ở bảng */
     lookup: function (t, ctx) { return boardLookup(t, ctx); },
-    say: function (text) { try { if (!soundOn()) return; sayIt._lang = "en"; sayIt(String(text || ""), true); } catch (e) {} },
+    say: function (text, force) { try { if (!force && !soundOn()) return; sayIt._lang = "en"; sayIt(String(text || ""), true); } catch (e) {} },   /* force: bấm 🔊 chủ động thì đọc dù đang tắt tiếng */
+    speak: function (text, lang, rate, onB) { return speakP(text, lang, rate, onB); },   /* đọc xong mới trả (đọc bài / đọc từ trên bảng), onB(charIndex) = ranh giới từ cho karaoke */
     words: function (bid) { return boardWords(bid); },
     block: async function (id) { var r = await sb.from("blocks").select("id,name,context_passage,context_passage_candidates").eq("id", id).maybeSingle(); return r.data; },
     /* ✨ Tạo bài đọc mới cho Block ngay trên bảng (TJ 2026-10-04): dùng đúng Context.generateAI của WordLoop (Gemini qua gemini-proxy trước, lỗi thì OpenAI qua
@@ -3909,6 +3911,32 @@
     window.esc = window.esc || esc;
     return (ctxP = new Promise(function (ok, no) { var sc = document.createElement("script"); sc.src = "js/context.js?v=" + CTX_VER; sc.onload = ok; sc.onerror = function () { ctxP = null; no(new Error("Không tải được bộ tạo bài đọc")); }; document.head.appendChild(sc); }));
   }
+  function speakP(text, lang, rate, onB) {
+    return new Promise(function (ok) {
+      var done = false, wd = 0, fin = function () { if (!done) { done = true; clearTimeout(wd); ok(); } };
+      try {
+        var syn = window.speechSynthesis; if (!syn || !text) return ok();
+        var tl = TTS_LANG[lang] || lang || "en-US", u = new SpeechSynthesisUtterance(String(text));
+        u.lang = tl; u.rate = rate || 0.9; u.volume = volLevel() || 1;   /* bấm đọc là chủ động: âm lượng game = 0 / đang tắt tiếng thì vẫn đọc ở mức tối đa */
+        var all = syn.getVoices() || [], mine = readLSraw("tjwl_voice_v1"), v = tl === "en-US" && mine && all.find(function (x) { return x.name === mine; }) || null;
+        if (!v) {   /* ưu tiên giọng CÓ SẴN trong máy (giọng "Google…/Online" đọc qua mạng, có máy im lặng) */
+          var m = all.filter(function (x) { return x.lang.replace("_", "-").toLowerCase().indexOf(tl.toLowerCase()) === 0; });
+          if (!m.length) m = all.filter(function (x) { return x.lang.slice(0, 2).toLowerCase() === tl.slice(0, 2).toLowerCase(); });
+          v = m.filter(function (x) { return x.localService; })[0] || m[0] || null;
+        }
+        if (v) u.voice = v;
+        (G.sayKeep = G.sayKeep || []).push(u); if (G.sayKeep.length > 8) G.sayKeep.shift();   /* giữ tham chiếu: Chrome có lỗi dọn mất utterance -> onend không bao giờ tới */
+        var started = false; u.onstart = function () { started = true; };
+        u.onend = fin;
+        u.onerror = function (e) { if (e && e.error === "not-allowed") tapHint(true); fin(); };
+        setTimeout(function () { if (!started && !done && window.Board && Board.noSound) Board.noSound(); }, 2500);   /* 2.5s chưa phát được -> báo rõ thay vì im lặng */
+        if (onB) u.onboundary = function (e) { if (e && e.charIndex != null) onB(e.charIndex); };
+        wd = setTimeout(function () { try { syn.cancel(); } catch (e) {} fin(); }, 4000 + String(text).length * 140 / Math.max(.5, u.rate));
+        try { syn.resume(); } catch (e) {}
+        syn.speak(u);
+      } catch (e) { fin(); }
+    });
+  }
   function sayIt(text, now) {
     try {
       var fl = sayIt._lang || tgt(), url = sayIt._nofile === text || (G.fileFails || 0) >= 2 ? null : G.audioMap[fl + "|" + String(text || "").trim()];
@@ -4708,7 +4736,7 @@
   window.addEventListener("pagehide", function () { try { if (G.ch) { G.ch.untrack(); sb.removeChannel(G.ch); } } catch (e) {} });
   (async function boot() {
     G.view = param("view");
-    G.embed = param("embed") === "1";   /* mở trong thẻ 🎮 Game của WordLoop (iframe, js/gamelayer.js) */
+    G.embed = param("embed") === "1" || inFrame();   /* mở trong thẻ 🎮 Game của WordLoop (iframe, js/gamelayer.js) */
     document.body.classList.toggle("embed", G.embed);
     G.myLang = readLS(LS_LANG);
     G.langSet = !!(G.myLang && G.myLang !== "room");   /* đã TỰ chọn ngôn ngữ chưa (chưa -> theo tiếng chung của phòng) */

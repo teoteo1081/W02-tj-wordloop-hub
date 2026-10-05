@@ -2471,3 +2471,9 @@ body.board-skin .lbd-people::-webkit-scrollbar{display:none}
 .lbd-p b{max-width:58px;font-size:12px;font-weight:600;color:#cfcac0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lbd-p.me b{color:#f3efe6}
 @media (max-width:700px){.lbd-hint{display:none}body.board-skin .lbd-people{margin:auto -.8rem 0;padding:10px .8rem 12px}}
+
+/* màn danh sách Block trên nền bảng: avatar mình DÍNH ở trên, dải người trong phòng dính ở dưới, và chừa chỗ cuối trang để thẻ Block cuối không bị đè */
+body.board-skin .lbd-me{position:sticky;top:0;z-index:6;margin:0 -1.2rem;padding:8px 1.2rem 10px;background:linear-gradient(#1d2a24 78%,rgba(29,42,36,0))}
+body.board-skin #workspace{padding-bottom:0}
+body.board-skin .lbd-people{margin-top:1rem}
+@media (max-width:700px){body.board-skin .lbd-me{margin:0 -.8rem;padding:8px .8rem 10px}}
