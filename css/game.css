@@ -908,3 +908,22 @@ body.embed .bd-drawer .bd-pane{display:none !important}
 .bd:not(.bd-isHost) .bd-card .bd-crumb{display:none}
 .bd .bd-rail{top:calc(var(--bd-top) + 10px)}
 .bd .bd-card .bd-ctitle b{font-size:15px}
+
+/* ===== v170: LÀM Y CHANG BẢN MẪU — khung xanh + lề tối bên phải chứa cột nút; nút trong bảng là thẻ mỏng + khay dưới ===== */
+.bd-sw{display:flex;justify-content:center;align-items:center}
+.bd-fx{position:relative;flex:none;display:flex;padding-right:56px;box-sizing:border-box;max-width:100%}
+.bd:not(.bd-big) .bd-fx{width:100%}
+.bd:not(.bd-big) .bd-stage{width:min(100% - 12px, 948px, calc(min(100vh - 170px, 40vh) * var(--ar,1.3333)));margin:0 auto;flex:none}
+.bd-fx .bd-stage{flex:none;margin:0}
+.bd-hudl{position:absolute;inset:0;pointer-events:none;z-index:6}
+.bd-hudl > *{pointer-events:auto}
+.bd .bd-card{left:6px;right:62px;top:6px;width:auto;border-radius:6px 6px 0 0}
+.bd .bd-tl{left:14px;top:12px}
+.bd .bd-tr{right:8px;top:8px}
+.bd .bd-rail{right:8px;top:56px}
+.bd .bd-pager{right:8px;bottom:14px}
+.bd .bd-bottom{left:14px;right:70px;bottom:14px;height:44px}
+.bd .bd-lk{left:14px;right:70px;bottom:64px}
+.bd .bd-drawer{right:62px;top:60px}
+.bd .bd-stage .bd-doc,.bd .bd-stage .bd-video{inset:var(--bd-top) 0 52px 0;width:auto;height:auto}
+.bd .bd-card{padding:0 14px 0 54px}

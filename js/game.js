@@ -4645,6 +4645,10 @@
     var room = param("room"), match = param("match");
     if (match) return showMatch(match);                        /* xem lại 1 ván đã lưu (từ lịch sử) */
     if (G.view === "screen" && room) return joinRoom(room);   /* màn hình chung không cần tên */
+    if (!G.embed && isTJ() && !G.view && !room && param("standalone") !== "1") {   /* TJ 2026-10-05: "Notebook của mình đâu, 2 thanh ghim, dàn menu đâu" -> game.html mở riêng không có khung Learning; chuyển vào thẻ 🎮 Game của WordLoop (thêm ?standalone=1 để ở lại trang riêng) */
+      var gq = new URLSearchParams(); gq.set("game", "1"); ["scope", "title", "board"].forEach(function (k) { if (param(k)) gq.set(k, param(k)); });
+      location.replace("index.html?" + gq.toString()); return;
+    }
     if (!G.me) return renderNameScreen();
     if (room) return joinRoom(room);
     if (isTJ()) return openHostRoom();   /* host: vào thẳng PHÒNG CỐ ĐỊNH (kể cả mở từ chuột phải ?scope=) */

@@ -57,9 +57,10 @@
     el.id = "bd"; el.className = "bd"; el.hidden = true;
     el.innerHTML =
       '<aside class="bd-side" id="bd-side" hidden><div class="bd-sidehd"><b>Notebooks</b><span><button type="button" class="bd-hb" id="bd-sidepin" title="Ghim cột (luôn mở bên trái)">📌</button><button type="button" class="bd-hb" id="bd-sideexp" title="Mở hết">⊞</button><button type="button" class="bd-hb" id="bd-sidecol" title="Thu hết">⊟</button><button type="button" class="bd-hb" id="bd-sidex" title="Đóng">✕</button></span></div><input type="search" id="bd-sideq" placeholder="Tìm Block…"><div class="bd-tree bd-sidelist" id="bd-sidelist">⏳</div><div id="bd-sidebar"></div></aside>' +
-      '<div class="bd-sw" id="bd-sw"><div class="bd-stage" id="bd-stage">' +
+      '<div class="bd-sw" id="bd-sw"><div class="bd-fx" id="bd-fx"><div class="bd-stage" id="bd-stage">' +
         '<div class="bd-zoom" id="bd-zoom"><video id="bd-video" class="bd-video" autoplay playsinline muted hidden></video><div class="bd-doc" id="bd-doc"></div><canvas id="bd-cv"></canvas><div class="bd-texts" id="bd-texts"></div></div>' +
         '<button type="button" class="bd-aud" id="bd-aud" hidden data-bt="unmute"></button>' +
+        '</div>' +
         '<div class="bd-hudl" id="bd-hudl">' +
           '<div class="bd-card bd-hud" id="bd-card" hidden><div class="bd-crumb" id="bd-crumb"></div><div class="bd-ctitle"><b id="bd-cname"></b><span class="bd-clv" id="bd-clv"></span><span class="bd-cst" id="bd-cst" hidden></span></div></div>' +
           '<button type="button" class="bd-hb bd-fab bd-hud bd-tl" id="bd-close" hidden data-btt="close">✕</button>' +
@@ -87,7 +88,7 @@
               '<button type="button" class="bd-hb" id="bd-dprev" title="Trang trước">◀</button><button type="button" class="bd-hb" id="bd-dpg" title="Nhảy tới trang…"></button><button type="button" class="bd-hb" id="bd-dnext" title="Trang sau">▶</button>' +
               '<button type="button" class="bd-hb" id="bd-knext" data-nv="block:1" title="Block sau">⏩</button>' +
               '<button type="button" class="bd-hb" id="bd-dsrch" title="Gõ từ để tra nghĩa" hidden>🔍</button>' +
-              '<span class="bd-sep"></span><button type="button" data-z="out" data-btt="zout" class="bd-hb bd-za">A−</button><button type="button" data-z="fit" data-btt="zfit" id="bd-zfit" class="bd-hb">⤢ 100%</button><button type="button" data-z="in" data-btt="zin" class="bd-hb bd-za">A+</button>' +
+              '<span class="bd-sep"></span><button type="button" data-z="out" data-btt="zout" class="bd-hb bd-za">A−</button><button type="button" data-z="fit" data-btt="zfit" id="bd-zfit" class="bd-hb" title="Về cỡ mặc định 100%">⤢ 100%</button><button type="button" data-z="in" data-btt="zin" class="bd-hb bd-za">A+</button>' +
               '<button type="button" class="bd-hb" id="bd-dtree" hidden style="display:none">🌳</button><button type="button" class="bd-hb" id="bd-dclose" hidden style="display:none">✕</button>' +
             '</div>' +
             '<div class="bd-tools" id="bd-tools">' +
@@ -216,7 +217,7 @@
     wrap.style.setProperty("--ar", AR.toFixed(4));
     var pin = sideOn && sidePinned() && big && window.innerWidth >= 900; $("#bd").classList.toggle("bd-sidepin", pin);
     if (!big) { wrap.style.width = ""; wrap.style.height = ""; return; }
-    var sw = $("#bd-sw"), aw = sw.clientWidth - 12, ah = sw.clientHeight - 12;
+    var sw = $("#bd-sw"), aw = sw.clientWidth - 12 - 56, ah = sw.clientHeight - 12;
     if (aw < 60 || ah < 60) return;
     var w = Math.min(aw, ah * AR); wrap.style.width = Math.floor(w) + "px"; wrap.style.height = Math.floor(w / AR) + "px";
   }
@@ -243,7 +244,7 @@
   function zoomAt(f, cx, cy) { var s0 = Z.s, s1 = Math.max(ZMIN, Math.min(6, s0 * f)), k = s1 / s0; Z.x = cx - (cx - Z.x) * k; Z.y = cy - (cy - Z.y) * k; Z.s = s1; applyZ(); }
   function zoomReset() { Z.s = 1; Z.x = 0; Z.y = 0; applyZ(); }
   function fsMode() { var d = curDoc(); return !!(d && (d.k === "wl" || d.k === "vt") && api); }   /* ai cũng chỉnh được cỡ chữ chung (người chơi gửi yêu cầu cho host) */   /* host + bài đọc/bảng từ: A−/A+ đổi CỠ CHỮ CHUNG (mọi trang cùng cỡ, ít/nhiều chữ mỗi trang) */
-  function paintZ() { var b = $("#bd-zfit"); if (b) b.textContent = fsMode() ? "Aa " + (fsOf(curDoc()) + 1) + "/" + FS.length : "⤢ " + Math.round(Z.s * 100) + "%"; if (cv && (!canDraw() || tool === "hand")) cv.style.cursor = Z.s > 1 ? "grab" : "default"; }
+  function paintZ() { var b = $("#bd-zfit"); if (b) b.textContent = fsMode() ? "Aa " + Math.round(FS[fsOf(curDoc())] / FS[FS_DEF] * 100) + "%" : "⤢ " + Math.round(Z.s * 100) + "%"; if (cv && (!canDraw() || tool === "hand")) cv.style.cursor = Z.s > 1 ? "grab" : "default"; }
   function qOf() { return Math.min(3, Math.max(1, Math.ceil(Z.s - 0.05))); }
   function pinfo() { var ids = Object.keys(ptrs), a = ptrs[ids[0]], b = ptrs[ids[1]]; return { d: Math.hypot(a.x - b.x, a.y - b.y) || 1, cx: (a.x + b.x) / 2, cy: (a.y + b.y) / 2 }; }
   function beginPinch() { var p = pinfo(); gest = { m: "pinch", d0: p.d, s0: Z.s, x0: Z.x, y0: Z.y, c0: stageRel(p.cx, p.cy) }; }

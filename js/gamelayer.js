@@ -138,5 +138,14 @@
     if (settled) clearInterval(t);
   }, 1000);
   syncBtn();
+  /* ?game=1[&scope=<table>:<id>&title=…&board=1] (game.html mở riêng chuyển về đây): mở thẻ Game, có scope thì chọn sẵn / mở bảng */
+  try {
+    var qg = new URLSearchParams(location.search);
+    if (qg.get("game") === "1") {
+      var sc0 = qg.get("scope"), ix = sc0 ? sc0.indexOf(":") : -1;
+      if (ix > 0) (qg.get("board") === "1" ? openBoard : openScope)(sc0.slice(0, ix), sc0.slice(ix + 1), qg.get("title") || ""); else open();
+      history.replaceState(null, "", location.pathname);
+    }
+  } catch (e) {}
   w.GameLayer = { open: open, close: close, isOpen: isOpen, openScope: openScope, openBoard: openBoard };
 })(window);
