@@ -1759,11 +1759,16 @@
       var r = await sb.from("words").select("id,term,level,sort").eq("block_id", bid).limit(300), ids = [];
       (r.data || []).sort(function (a, b) { return (a.sort || 0) - (b.sort || 0); }).forEach(function (w) { out.terms.push(w.term); ids.push(w.id); var k = lvKey(w.level); out.lv[k] = (out.lv[k] || 0) + 1; });
       if (G.isHost && isTJ() && ids.length) {
-        var p = await sb.from("word_progress").select("word_id,mastered").eq("user_id", HOST_PROFILE_ID).in("word_id", ids);
-        var m = (p.data || []).filter(function (x) { return x.mastered; }).length;
-        var bp = await sb.from("block_progress").select("passed,next_review_at").eq("user_id", HOST_PROFILE_ID).eq("block_id", bid).maybeSingle();
-        var due = ""; if (bp.data && bp.data.next_review_at) { var dd = Math.round((bp.data.next_review_at - Date.now()) / DAY_MS); due = dd > 0 ? "Ôn sau " + dd + " ngày" : "Đến hạn ôn"; }
-        out.adm = { pct: Math.round(m * 100 / ids.length), passed: !!(bp.data && bp.data.passed), due: due };
+        var p = await sb.from("word_progress").select("word_id,mastered,attempts,correct,bookmarked").eq("user_id", HOST_PROFILE_ID).in("word_id", ids);
+        var maxAtt = 0, att = 0, ok = 0, ms = 0, bm = 0, wr = 0;
+        (p.data || []).forEach(function (x) {
+          maxAtt = Math.max(maxAtt, x.attempts || 0); att += x.attempts || 0; ok += x.correct || 0;
+          if (x.mastered) ms++; if (x.bookmarked) bm++; if (((x.attempts || 0) - (x.correct || 0)) > 0 && !x.mastered) wr++;
+        });
+        var bpr = await sb.from("block_progress").select("passed,cycle,best_score,meaning_best,last_reviewed_at,next_review_at").eq("user_id", HOST_PROFILE_ID).eq("block_id", bid).maybeSingle(), b0 = (bpr && bpr.data) || {};
+        var due = ""; if (b0.next_review_at) { var dd = Math.round((b0.next_review_at - Date.now()) / DAY_MS); due = dd > 0 ? "Ôn sau " + dd + " ngày" : "Đến hạn ôn"; }
+        out.adm = { pct: Math.round(ms * 100 / ids.length), passed: !!b0.passed, due: due, cycle: b0.cycle || 0, maxCycle: 6, lastDays: b0.last_reviewed_at ? Math.round((Date.now() - b0.last_reviewed_at) / DAY_MS) : null,
+          best: Math.max(b0.best_score || 0, b0.meaning_best || 0), att: att, ok: ok, maxAtt: maxAtt, mastered: ms, total: ids.length, bookmarked: bm, wrong: wr };
       }
       return out;
     },

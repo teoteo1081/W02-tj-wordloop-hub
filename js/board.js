@@ -59,17 +59,18 @@
       '<aside class="bd-side" id="bd-side" hidden><div class="bd-sidehd"><b>Notebooks</b><span><button type="button" class="bd-hb" id="bd-sidepin" title="Ghim cột (luôn mở bên trái)">📌</button><button type="button" class="bd-hb" id="bd-sideexp" title="Mở hết">⊞</button><button type="button" class="bd-hb" id="bd-sidecol" title="Thu hết">⊟</button><button type="button" class="bd-hb" id="bd-sidex" title="Đóng">✕</button></span></div><input type="search" id="bd-sideq" placeholder="Tìm Block…"><div class="bd-tree bd-sidelist" id="bd-sidelist">⏳</div><div id="bd-sidebar"></div></aside>' +
       '<div class="bd-sw" id="bd-sw"><div class="bd-fx" id="bd-fx">' + '<div class="bd-top" id="bd-card" hidden>' +
           '<div class="bd-crow"><span class="bd-tlg" id="bd-tlg" hidden><button type="button" class="bd-hb" id="bd-back" title="Quay lại danh sách Block">← <span>Quay lại danh sách Block</span></button><button type="button" class="bd-hb" id="bd-bprev" title="Block trước">←</button><button type="button" class="bd-hb" id="bd-bnext" title="Block sau">→</button></span><span class="bd-crumb" id="bd-crumb"></span></div>' +
-          '<div class="bd-ctitle"><b id="bd-cname"></b><span class="bd-clv" id="bd-clv"></span><span class="bd-pill" id="bd-cdue" hidden></span><span class="bd-pill bd-ctag" id="bd-ctag" hidden></span><span class="bd-cst" id="bd-cst" hidden></span></div>' +
-          '<div class="bd-chips" id="bd-chips"></div><div class="bd-cprog" id="bd-cprog" hidden><i></i></div>' +
-          '<div class="bd-act" id="bd-act" hidden><button type="button" class="bd-hb bd-acttog" id="bd-acttog" title="Bật/tắt khay công cụ (như nút ghim của Notebooks)">📚 Công cụ <span>📌</span></button><span class="bd-acttools" id="bd-acttools">' +
-        '<button type="button" class="bd-hb" data-at="study" title="Bài học & Đọc">📘</button><button type="button" class="bd-hb" data-at="meaning" title="Nghĩa">🔀</button><button type="button" class="bd-hb" data-at="quiz" title="Active Recall Quiz">📝</button><button type="button" class="bd-hb" data-at="dictation" title="Dictation">🎧</button><button type="button" class="bd-hb" data-at="sheet" title="Phiếu đầy đủ">📋</button><button type="button" class="bd-hb" data-at="single" title="Từng câu">🔤</button><button type="button" class="bd-hb" data-at="progress" title="Tiến trình trí nhớ">📊</button></span>' +
-        '<button type="button" class="bd-hb bd-cplay" id="bd-cplay">🎮 Chơi game →</button></div>' +
+          '<div class="bd-hpill" id="bd-hpill" hidden></div>' +
+          '<div class="bd-tabs" id="bd-tabs" hidden>' +
+            '<button type="button" class="bd-tab on">📘 Bài học &amp; Đọc</button><button type="button" class="bd-tab" data-at="meaning">🔀 Nghĩa</button><button type="button" class="bd-tab" data-at="quiz">📝 Active Recall Quiz</button><button type="button" class="bd-tab" data-at="dictation">🎧 Dictation</button><button type="button" class="bd-tab" data-at="sheet">📋 Phiếu đầy đủ</button><button type="button" class="bd-tab" data-at="single">🔤 Từng câu</button><button type="button" class="bd-tab" data-at="progress">📊 Tiến trình trí nhớ</button>' +
+          '</div>' +
+          '<div class="bd-stats" id="bd-stats" hidden></div>' +
         '</div>' +
         '<div class="bd-sfx" id="bd-sfx">' +'<div class="bd-stage" id="bd-stage">' +
         '<div class="bd-zoom" id="bd-zoom"><video id="bd-video" class="bd-video" autoplay playsinline muted hidden></video><div class="bd-doc" id="bd-doc"></div><canvas id="bd-cv"></canvas><div class="bd-texts" id="bd-texts"></div></div>' +
         '<button type="button" class="bd-aud" id="bd-aud" hidden data-bt="unmute"></button>' +
         '</div>' +
         '<div class="bd-hudl" id="bd-hudl">' +
+          '<div class="bd-hname" id="bd-hname"></div>' +
           '<div class="bd-vtbar bd-hud" id="bd-vtbar" hidden>' +
             '<select id="bd-vtrate" title="Tốc độ đọc"><option value="0.7">0.7x</option><option value="0.85" selected>0.85x</option><option value="1">1x</option><option value="1.15">1.15x</option></select>' +
             '<button type="button" data-vt="stop" title="Dừng đọc">■ <span>Dừng</span></button>' +
@@ -88,7 +89,7 @@
           '</div>' +
           '<div class="bd-drawer bd-hud" id="bd-drawer" hidden>' +
             '<span class="bd-pane" id="bd-pane" hidden><button type="button" class="bd-pname" id="bd-pname" title="Mở / đóng cây Notebooks">Notebooks</button><button type="button" class="bd-ppin" id="bd-ppin" title="Ghim / bỏ ghim cột Notebooks" aria-label="Ghim / bỏ ghim cột Notebooks">📌</button></span>' +
-            '<div class="bd-drow"><button type="button" class="bd-hb" id="bd-dswap" title="Đổi bài đọc / tạo bài mới" hidden>🔀 Đổi bài đọc</button><button type="button" class="bd-hb" id="bd-min" data-btt="min">▁ Thu nhỏ bảng</button></div>' +
+            '<div class="bd-drow"><button type="button" class="bd-hb" id="bd-dswap" title="Đổi bài đọc / tạo bài mới" hidden>🔀 Đổi bài đọc</button><button type="button" class="bd-hb" id="bd-min" data-btt="min">▁ Thu nhỏ bảng</button><button type="button" class="bd-hb bd-cplay" id="bd-cplay">🎮 Chơi game →</button></div>' +
             '<span hidden><b data-bt="board"></b><span class="bd-who" id="bd-who"></span><span class="bd-scr" id="bd-scr"></span><button type="button" id="bd-perm" hidden data-btt="permt" data-bt="perm"></button></span>' +
           '</div>' +
           '<div class="bd-pager bd-hud"><button type="button" class="bd-hb bd-fab" id="bd-pgup" title="Trang trước">▲</button><button type="button" class="bd-hb bd-fab" id="bd-pgdn" title="Trang sau">▼</button></div>' +
@@ -583,26 +584,34 @@
     if (!big && !bd.hidden) document.body.style.paddingTop = bd.offsetHeight + "px";   /* bảng nhỏ ở đầu trang: đẩy game xuống đúng chiều cao */
   }
   function paintCard(d) {
-    var card = $("#bd-card"), act = $("#bd-act"); if (!card) return;
+    var card = $("#bd-card"); if (!card) return;
     var bid = d && (d.k === "wl" || d.k === "vt") ? d.bid : null, host = api.isHost();
-    card.hidden = !bid; if (act) act.hidden = !(bid && host); var sg0 = $("#bd-seg"); if (sg0 && !bid) sg0.hidden = true;
+    card.hidden = !(bid && host);   /* phần đầu (← Quay lại, thanh Block, 7 tab, thống kê) CHỈ Admin */
+    var sg0 = $("#bd-seg"); if (sg0 && !bid) sg0.hidden = true;
     var mo = $("#bd-more"); if (mo) mo.hidden = !(bid && host);
+    var hn = $("#bd-hname"); if (hn && !bid) hn.innerHTML = "";
     if (!bid) { extraH(); return; }
-    paintAct();
     var sg = $("#bd-seg"); if (sg) { sg.hidden = false; sg.querySelectorAll("[data-sw]").forEach(function (x) { x.setAttribute("aria-pressed", x.dataset.sw === d.k); }); }
-    if (!$("#bd-cname").textContent) $("#bd-cname").textContent = d.name || "";   /* hiện tên ngay, dữ liệu còn lại về sau */
+    if (hn && !hn.textContent) hn.innerHTML = "<b>" + esc(d.name || "") + "</b>";   /* hiện tên ngay, cấp độ về sau */
     extraH();
     var show = function (inf) {
       if (!inf || !curDoc() || curDoc().bid !== bid) return;
-      $("#bd-crumb").textContent = inf.path || ""; $("#bd-cname").textContent = inf.name || d.name || "";
-      $("#bd-clv").innerHTML = Object.keys(inf.lv || {}).sort().map(function (k) { return '<span class="bd-lvb">' + inf.lv[k] + " " + esc(k) + "</span>"; }).join("");
-      $("#bd-chips").innerHTML = (inf.terms || []).map(function (x) { return "<span>" + esc(x) + "</span>"; }).join("");
-      var st = $("#bd-cst"), pg = $("#bd-cprog"), a = host && inf.adm;
-      st.hidden = !a; pg.hidden = !a;
-      if (a) { st.textContent = (inf.adm.passed ? "✓ Done · " : "") + inf.adm.pct + "%"; pg.firstChild.style.width = inf.adm.pct + "%"; }
-      var du = $("#bd-cdue"), tg = $("#bd-ctag"), dd = curDoc();
-      if (du) { du.hidden = !(a && inf.adm.due); du.textContent = a && inf.adm.due ? "● " + inf.adm.due : ""; }
-      if (tg) { tg.hidden = !(a && dd && dd.lb); tg.textContent = dd && dd.lb ? dd.lb : ""; }
+      var nm = inf.name || d.name || "";
+      $("#bd-crumb").textContent = inf.path || "";
+      var lvs = Object.keys(inf.lv || {}).sort().map(function (k) { return '<span class="bd-lvb">' + inf.lv[k] + " " + esc(k) + "</span>"; }).join("");
+      if (hn) hn.innerHTML = "<b>" + esc(nm) + "</b>" + lvs;
+      var A = host && inf.adm, hp = $("#bd-hpill"), tb = $("#bd-tabs"), st = $("#bd-stats");
+      if (hp) { hp.hidden = !A; if (A) hp.innerHTML = "📕 <b>" + esc(nm) + "</b> <span>Chu kỳ " + A.cycle + "/" + A.maxCycle + (A.due ? " · " + esc(A.due) : "") + (A.passed ? " ✓ Done" : "") + (A.best ? " · " + A.best + "%" : "") + " ···</span>"; }
+      if (tb) tb.hidden = !A;
+      if (st) {
+        st.hidden = !A;
+        if (A) st.innerHTML = [
+          ["⭐", "Từ đã lưu", A.bookmarked], ["❌", "Fix lỗi sai", A.wrong], ["📝", "Đã làm bài", A.maxAtt ? A.maxAtt + " lần" : "chưa lần nào"],
+          ["🔄", "Đã ôn chu kỳ", A.cycle + "/" + A.maxCycle + " lần" + (A.lastDays != null ? " · lần cuối " + (A.lastDays > 0 ? A.lastDays + " ngày trước" : "hôm nay") : "")],
+          ["⏰", "Lịch ôn", A.due || "—"], ["🏆", "Điểm cao nhất", A.best ? A.best + "%" : "—"],
+          ["🎯", "Độ nhớ", A.att ? Math.round(A.ok * 100 / A.att) + "% (" + A.ok + "/" + A.att + " câu đúng)" : "—"], ["✓", "Đã thuộc", A.mastered + "/" + A.total + " từ"]
+        ].map(function (r) { return "<span>" + r[0] + " " + r[1] + " <b>" + esc(String(r[2])) + "</b></span>"; }).join("");
+      }
       extraH(); relayout();
     };
     if (cardInfo[bid] && (!host || cardInfo[bid].adm !== undefined)) { show(cardInfo[bid]); return; }
