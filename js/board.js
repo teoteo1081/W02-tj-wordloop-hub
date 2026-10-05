@@ -84,6 +84,7 @@
             '<button type="button" class="bd-hb bd-fab" id="bd-lib" hidden data-ico="1" data-bt="lib"></button>' +
             '<button type="button" class="bd-hb bd-fab" id="bd-share" hidden data-ico="1" data-btt="sharet" data-bt="share"></button>' +
             '<button type="button" class="bd-hb bd-fab" id="bd-penbtn" title="Vẽ / ghi chú">✏️</button>' +
+            '<button type="button" class="bd-hb bd-fab" id="bd-lkbtn" title="Tra nghĩa: bấm rồi chạm vào từ">🔍</button>' +
             '<button type="button" class="bd-hb bd-fab" id="bd-more" hidden title="Công cụ Block (chỉ Admin)">⋯</button>' +
           '</div>' +
           '<div class="bd-drawer bd-hud" id="bd-drawer" hidden>' +
@@ -92,7 +93,7 @@
             '<span hidden><b data-bt="board"></b><span class="bd-who" id="bd-who"></span><span class="bd-scr" id="bd-scr"></span><button type="button" id="bd-perm" hidden data-btt="permt" data-bt="perm"></button></span>' +
           '</div>' +
           '<div class="bd-pager bd-hud"><button type="button" class="bd-hb bd-fab" id="bd-pgup" title="Trang trước">▲</button><button type="button" class="bd-hb bd-fab" id="bd-pgdn" title="Trang sau">▼</button></div>' +
-          '<div class="bd-lk" id="bd-lk" hidden><div class="bd-lkq" id="bd-lkq" hidden><input type="search" id="bd-lkin" placeholder="Gõ từ / cụm từ cần tra…" autocomplete="off" autocapitalize="off"><button type="button" class="bd-hb" id="bd-lkgo">Tra</button></div><div class="bd-lkr" id="bd-lkr"></div><button type="button" class="bd-hb bd-lkx" id="bd-lkx">✕</button></div>' +
+          '<div id="bd-lk" hidden><div id="bd-lkq" hidden></div><div id="bd-lkr"></div></div>' +
           '<div class="bd-bottom bd-hud">' +
             '<div class="bd-docnav" id="bd-docnav" hidden>' +
               '<button type="button" class="bd-hb" id="bd-dprev" title="Trang trước">◀</button><button type="button" class="bd-hb" id="bd-dpg" title="Nhảy tới trang…"></button><button type="button" class="bd-hb" id="bd-dnext" title="Trang sau">▶</button>' +
@@ -115,7 +116,13 @@
             '</div>' +
           '</div>' +
         '</div>' +
-      '</div></div></div>' +
+      '</div>' +
+      '<div class="bd-feed" id="bd-feed" hidden>' +
+        '<div class="bd-fh"><span class="bd-ftabs"><button type="button" data-ftab="all" aria-pressed="true">Tra nghĩa <i id="bd-fn">0</i></button><button type="button" data-ftab="saved" aria-pressed="false">Đã lưu của phiên <i id="bd-fs">0</i></button></span>' +
+        '<span class="bd-fq" id="bd-fq" hidden><input type="search" id="bd-lkin" placeholder="Gõ từ / cụm từ cần tra…" autocomplete="off" autocapitalize="off"><button type="button" class="bd-hb" id="bd-lkgo">Tra</button></span>' +
+        '<button type="button" class="bd-hb" id="bd-fread" title="Đọc các từ đã lưu" hidden>🔊 Đọc</button></div>' +
+        '<div class="bd-fl" id="bd-fl"></div></div>' +
+        '</div></div>' +
       '<div class="bd-permbox" id="bd-permbox" hidden></div><div class="bd-view" id="bd-view" data-bt="viewmsg"></div>';
     document.body.appendChild(el);
     var dock = document.createElement("button");
@@ -142,6 +149,10 @@
   function onClick(e) {
     var b = e.target.closest("button"); if (!b) return;
     if (b.id === "bd-penbtn") { setPen(!penMode); return; }
+    if (b.id === "bd-lkbtn") { setLook(!lookMode); return; }
+    if (b.dataset.fsave) { toggleSave(b.dataset.fsave); return; }
+    if (b.dataset.ftab) { lkTab = b.dataset.ftab; paintFeed(); return; }
+    if (b.id === "bd-fread") { readSaved(); return; }
     if (b.id === "bd-more") { var dw = $("#bd-drawer"); if (dw) { dw.hidden = !dw.hidden; b.classList.toggle("on", !dw.hidden); } poke(); return; }
     if (b.id === "bd-pgup" || b.id === "bd-pgdn") { flip(b.id === "bd-pgdn" ? 1 : -1); return; }
     if (b.dataset.tool) { tool = b.dataset.tool; if (tool === "hand") setPen(false); paintTools(); return; }
@@ -236,7 +247,7 @@
     wrap.style.setProperty("--ar", AR.toFixed(4));
     var pin = sideOn && sidePinned() && big && window.innerWidth >= 900; $("#bd").classList.toggle("bd-sidepin", pin);
     if (!big) { wrap.style.width = ""; wrap.style.height = ""; return; }
-    var sw = $("#bd-sw"), aw = sw.clientWidth - 12 - 56, ah = sw.clientHeight - 12 - ((function () { var t = $("#bd-card"); return t && !t.hidden ? t.offsetHeight + 8 : 0; })());
+    var sw = $("#bd-sw"), aw = sw.clientWidth - 12 - 56, ah = sw.clientHeight - 12 - ((function () { var t = $("#bd-card"), f = $("#bd-feed"); return (t && !t.hidden ? t.offsetHeight + 8 : 0) + (f && !f.hidden && !phoneP() ? f.offsetHeight + 8 : 0); })());
     if (aw < 60 || ah < 60) return;
     var w = Math.min(aw, ah * AR); wrap.style.width = Math.floor(w) + "px"; wrap.style.height = Math.floor(w / AR) + "px";
   }
@@ -473,12 +484,14 @@
       paintTexts();
     } else if (m.t === "del") { removeItem(m.id); draw(); paintTexts(); }
     else if (m.t === "clear") clearAll();
+    else if (m.t === "lk") { if (m.e && m.e.id && m.e.w) lkAdd(m.e); }
+    else if (m.t === "lksave") { var le = lkFeed.find(function (x) { return x.id === m.id; }); if (le) { le.saved = !!m.on; paintFeed(); } }
     else if (m.t === "navreq") { if (api.isHost()) { if (m.k === "fs") fsStep(m.dir | 0); else if (m.k === "sw") swKind(m.dir > 0 ? "vt" : "wl"); else if (m.k === "page") flip(m.dir > 0 ? 1 : -1); else navStep(m.k, m.dir > 0 ? 1 : -1); } }
     else if (m.t === "l") { var L = lasers[m.pid] = lasers[m.pid] || { pts: [] }; L.name = m.n; L.pts.push({ x: m.x, y: m.y, t: Date.now() }); draw(); }
     /* xin bản đầy đủ: host trả lời ngay; HOST VẮNG (mất mạng) thì người được cấp quyền (moderator) có nét trên bảng trả lời thay
        (chờ ngẫu nhiên 0.3–1s, ai đã thấy người khác trả lời thì thôi) — TJ 2026-10-04: "host mất mạng mà có moderator thì bảng vẫn ổn" */
     else if (m.t === "hello") {
-      var full = function () { send({ t: "full", to: m.cid, items: order.map(function (id) { return items[id]; }).filter(Boolean) }); };
+      var full = function () { send({ t: "full", to: m.cid, items: order.map(function (id) { return items[id]; }).filter(Boolean), lk: lkFeed.slice(0, 40) }); };
       if (api.isHost()) { full(); if (shStream) announce(); }   /* máy vừa mở bảng -> báo ngay đang chia sẻ màn hình (khỏi chờ 5 giây) */
       else if (order.length) { answered[m.cid] = 0; setTimeout(function () { if (!answered[m.cid]) full(); delete answered[m.cid]; }, (canDraw() ? 300 : 1200) + Math.random() * 700); }   /* moderator trả lời trước, người xem làm dự phòng */
     }
@@ -486,6 +499,7 @@
       answered[m.to] = 1;
       if (m.to !== cid) return;
       (m.items || []).forEach(function (it) { if (!items[it.id]) { items[it.id] = it; order.push(it.id); } });   /* GỘP (không xoá): host vừa tải lại vẫn giữ nét đang có */
+      (m.lk || []).forEach(function (e) { if (e && e.id && !lkFeed.some(function (x) { return x.id === e.id; })) lkFeed.push(e); }); if (m.lk && m.lk.length) paintFeed();
       draw(); paintTexts();
     }
   }
@@ -550,11 +564,12 @@
     var el = $("#bd"); if (!el) return;
     el.classList.remove("bd-idle"); clearTimeout(idleT);
     var lk = $("#bd-lk");
-    if (penMode || drawerOpen() || (lk && !lk.hidden)) return;
+    if (penMode || lookMode || drawerOpen() || (lk && !lk.hidden)) return;
     idleT = setTimeout(function () { el.classList.add("bd-idle"); }, 3000);
   }
   function setPen(on) {
     penMode = !!on; var el = $("#bd"); if (!el) return;
+    if (penMode && lookMode) { lookMode = false; var lb = $("#bd-lkbtn"); if (lb) lb.classList.remove("on"); selWord(null); paintFeed(); }
     el.classList.toggle("bd-pen", penMode);
     var pb = $("#bd-penbtn"); if (pb) pb.classList.toggle("on", penMode);
     if (penMode && tool === "hand") tool = "pen"; if (!penMode) tool = "hand";   /* nhả bút -> về ✋ (kéo + 2 ngón phóng to/thu nhỏ cho mọi người) */
@@ -879,17 +894,66 @@
     var l = api && api.lang ? api.lang() : "vi", own = v && v[l];
     return (v && v.pos ? "<i>" + esc(v.pos) + "</i> " : "") + (own ? "<b>" + esc(own) + "</b>" : "") + (v && v.en ? (own ? "<br><small>" : "") + esc(v.en) + (own ? "</small>" : "") : "");
   }
+  /* ====== TRA NGHĨA DÙNG CHUNG (TJ 2026-10-05) ======
+     · Bấm 🔍 (cạnh ✏️) rồi mới chạm từ để tra; không bấm thì tay kéo / 2 ngón phóng thu bình thường.
+     · Nghĩa hiện ở khung DƯỚI bảng (không đè bảng); ai tra gì cả phòng cùng thấy (mỗi người theo tiếng của mình). Người tra gọi AI 1 lần rồi gửi kết quả cho cả phòng.
+     · "☆ Lưu" = đưa vào "Đã lưu của phiên" (kho từ chung của buổi học để ôn); không lưu thì chỉ hiển thị. */
+  var lkFeed = [], lkTab = "all", lookMode = false;
+  function phoneP() { return window.innerWidth < 760 && window.innerHeight > window.innerWidth; }   /* điện thoại cầm dọc: bảng 4:3 thấp -> dành phần dưới cho khung nghĩa */
+  function lkAllow() {   /* mỗi người tối đa 20 lượt tra / giờ (mỗi lượt gọi AI); host không giới hạn */
+    if (api.isHost()) return true;
+    var now = Date.now(), a = []; try { a = JSON.parse(localStorage.getItem("tjwl_lk_t") || "[]"); } catch (e) {}
+    a = a.filter(function (t) { return now - t < 3600000; }); if (a.length >= 20) return false;
+    a.push(now); try { localStorage.setItem("tjwl_lk_t", JSON.stringify(a)); } catch (e) {} return true;
+  }
+  function paintFeed() {
+    var f = $("#bd-feed"); if (!f) return;
+    f.hidden = !(lookMode || lkFeed.length || phoneP());
+    var saved = lkFeed.filter(function (e) { return e.saved; }), list = lkTab === "saved" ? saved : lkFeed;
+    $("#bd-fn").textContent = lkFeed.length; $("#bd-fs").textContent = saved.length;
+    document.querySelectorAll("#bd-feed [data-ftab]").forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.ftab === lkTab); });
+    var rd = $("#bd-fread"); if (rd) rd.hidden = !(lkTab === "saved" && list.length);
+    var fq = $("#bd-fq"); if (fq) fq.hidden = !lookMode;
+    $("#bd-fl").innerHTML = list.length ? list.map(function (e) {
+      return '<div class="bd-fe"><div><b>' + esc(e.w) + '</b> <button type="button" class="bd-hb bd-fsay" data-lksay="' + esc(e.w) + '">🔊</button>' + (e.v && e.v.ipa ? " <small>" + esc(e.v.ipa) + "</small>" : "") + (e.by ? ' <span class="by">· ' + esc(e.by) + "</span>" : "") + '</div><div class="mn">' + mnOf(e.v) + '</div><button type="button" class="bd-hb bd-fsave' + (e.saved ? " on" : "") + '" data-fsave="' + esc(e.id) + '">' + (e.saved ? "★ Đã lưu" : "☆ Lưu") + "</button></div>";
+    }).join("") : '<div class="bd-fempty">' + (lkTab === "saved" ? "Chưa có từ nào được lưu trong phiên." : lookMode ? "Chạm vào một từ trong bài đọc để tra nghĩa. Cả phòng cùng thấy." : "") + "</div>";
+    relayout();
+  }
+  function lkAdd(e) {
+    lkFeed = lkFeed.filter(function (x) { return x.id !== e.id && x.w.toLowerCase() !== e.w.toLowerCase(); });
+    lkFeed.unshift(e); if (lkFeed.length > 60) lkFeed.length = 60; paintFeed();
+  }
+  function setLook(on) {
+    lookMode = !!on; var b = $("#bd-lkbtn"); if (b) b.classList.toggle("on", lookMode);
+    if (lookMode && penMode) setPen(false);
+    if (!lookMode) selWord(null);
+    paintFeed(); poke();
+  }
+  function feedNote(txt) { var l = $("#bd-fl"); if (l) { var n = document.createElement("div"); n.className = "bd-fempty"; n.textContent = txt; l.insertBefore(n, l.firstChild); setTimeout(function () { if (n.parentNode) n.parentNode.removeChild(n); }, 4000); } }
   async function lookupShow(phrase, ctx, typed) {
-    var lk = $("#bd-lk"), r = $("#bd-lkr"), q = ++lkSeq, d = curDoc();
-    lk.hidden = false; setTimeout(fit, 0);
-    var say = '<button type="button" class="bd-hb" data-lksay="' + esc(phrase) + '">🔊</button>';
-    r.innerHTML = "<b>" + esc(phrase) + "</b> " + say + " <span>⏳</span>";
-    var row = d && d.bid && vtCache[d.bid] ? vtCache[d.bid].find(function (w) { return w.term.toLowerCase() === phrase.toLowerCase(); }) : null;   /* từ của chính Block: có nghĩa sẵn */
-    if (row) { r.innerHTML = "<b>" + esc(phrase) + "</b> " + say + (row.ipa ? " <small>" + esc(row.ipa) + "</small>" : "") + "<br>" + (row.pos ? "<i>" + esc(row.pos) + "</i> " : "") + "<b>" + esc(vtMeaning(row)) + "</b>"; return; }
-    var v = null; try { v = await api.lookup(phrase, ctx || ""); } catch (e) {}
-    if (q !== lkSeq) return;
-    var okv = v && (v.en || v[api.lang ? api.lang() : "vi"]);
-    r.innerHTML = "<b>" + esc(phrase) + "</b> " + say + "<br>" + (okv ? mnOf(v) : "<small>Chưa tra được (mạng/AI bận). Thử lại nhé.</small>");
+    var ph = String(phrase || "").trim(); if (!ph) return;
+    var ex = lkFeed.find(function (e) { return e.w.toLowerCase() === ph.toLowerCase(); });
+    if (ex) { lkFeed = [ex].concat(lkFeed.filter(function (x) { return x !== ex; })); paintFeed(); return; }
+    if (!lkAllow()) { feedNote("Bạn đã tra nhiều lần trong giờ này, thử lại sau ít phút nhé."); return; }
+    var d = curDoc(), row = d && d.bid && vtCache[d.bid] ? vtCache[d.bid].find(function (w) { return w.term.toLowerCase() === ph.toLowerCase(); }) : null, v = null;
+    if (row) v = { pos: row.pos, en: row.def_en, vi: row.meaning_vi, zh: row.meaning_zh, es: row.meaning_es, ipa: row.ipa };   /* từ của chính Block: có nghĩa sẵn, khỏi gọi AI */
+    else { feedNote("⏳ Đang tra “" + ph + "”…"); try { v = await api.lookup(ph, ctx || ""); } catch (e) {} }
+    var okv = v && (v.en || v.vi || v.zh || v.es);
+    if (!okv) { feedNote("Chưa tra được “" + ph + "” (mạng/AI bận). Thử lại nhé."); return; }
+    var e2 = { id: uid(), w: ph, v: v, by: me() ? me().name : "", saved: false, t: Date.now() };
+    lkAdd(e2); send({ t: "lk", e: e2 });
+  }
+  function toggleSave(id) {
+    var e = lkFeed.find(function (x) { return x.id === id; }); if (!e) return;
+    e.saved = !e.saved; paintFeed(); send({ t: "lksave", id: id, on: e.saved });
+  }
+  async function readSaved() {
+    if (!window.speechSynthesis) return;
+    stopReading(); var my = reading, ml = api.lang ? api.lang() : "vi", list = lkFeed.filter(function (e) { return e.saved; }).slice().reverse();
+    for (var i = 0; i < list.length && my === reading; i++) {
+      await speakOne(list[i].w, "en-US", 0.85); if (my !== reading) break;
+      var mv = list[i].v && list[i].v[ml]; if (mv && ml !== "en") await speakOne(mv, SPL[ml] || "vi-VN", 0.85);
+    }
   }
   /* chạm 1 lần (bàn tay): bảng từ = 🔊 nghe / host tô dòng; bài đọc = chạm từ để tra; host chạm MÉP trái/phải = lật trang */
   function docTap(x, y) {
@@ -899,7 +963,7 @@
     if (d.k === "wl") {
       var ws = document.querySelectorAll("#bd-doc .bd-w, #bd-doc .bd-term"), hit = null;
       for (var j = 0; j < ws.length && !hit; j++) { var wr = ws[j].getBoundingClientRect(); if (x >= wr.left - 3 && x <= wr.right + 3 && y >= wr.top - 3 && y <= wr.bottom + 3) hit = ws[j]; }
-      if (hit) { selWord(hit); var para = hit.closest("p"); lookupShow(hit.textContent.trim(), para ? para.textContent : "", false); return; }
+      if (hit && lookMode) { selWord(hit); var para = hit.closest("p"); lookupShow(hit.textContent.trim(), para ? para.textContent : "", false); return; }
       if (edge) flip(dir); else selWord(null);
       return;
     }

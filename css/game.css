@@ -1035,3 +1035,29 @@ body.embed .bd-drawer .bd-pane{display:none !important}
 .bd .bd-tlg{position:absolute;left:14px;top:12px;display:flex;gap:6px;z-index:6}
 .bd .bd-tlg .bd-hb{height:32px;min-width:34px;padding:0 10px;border-radius:8px;border:1px solid var(--line);background:rgba(36,35,33,.9);color:#f3f1ea;font-size:13px;cursor:pointer}
 @media (max-width:760px){.bd .bd-tlg #bd-back span{display:none}}
+
+/* v183: khung NGHĨA TRA nằm dưới bảng, cả phòng cùng thấy */
+.bd-feed{width:0;min-width:100%;box-sizing:border-box;margin-top:8px;max-height:min(30vh,230px);overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px;text-align:left}
+.bd:not(.bd-big) .bd-feed{display:none}
+.bd-fh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.bd-ftabs{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.bd-ftabs button{background:var(--deep);border:0;color:var(--text);padding:4px 11px;font-size:12px;cursor:pointer}
+.bd-ftabs button[aria-pressed="true"]{background:var(--accent);color:#fff;font-weight:700}
+.bd-ftabs i{font-style:normal;opacity:.8;margin-left:4px}
+.bd-fq{display:flex;gap:6px;margin-left:auto}
+.bd-fq input{background:var(--deep);border:1px solid var(--line);border-radius:8px;padding:4px 10px;font-size:13px;color:var(--text);width:min(260px,50vw)}
+.bd-fe{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:7px 0;border-top:1px solid rgba(255,255,255,.08)}
+.bd-fe .mn{grid-column:1;color:#d6d2ca;font-size:.95em;line-height:1.35}
+.bd-fe .by{color:var(--text-2);font-size:11px}
+.bd-fe .bd-fsay{min-width:0;min-height:0;padding:0 6px;background:none;border:0}
+.bd-fsave{grid-row:1 / span 2;grid-column:2;align-self:center;height:30px;padding:0 10px;border-radius:8px;border:1px solid var(--line);background:var(--raise);font-size:12px;cursor:pointer;white-space:nowrap}
+.bd-fsave.on{background:#3a2c26;border-color:var(--accent);color:#ffd0bf}
+.bd-fempty{color:var(--text-2);font-size:13px;padding:4px 0}
+
+/* điện thoại dọc: bảng sát trên cùng, khung nghĩa chiếm hết phần còn lại bên dưới (hết dư trống trên/dưới) */
+@media (max-width:760px) and (orientation:portrait){
+  .bd.bd-big .bd-sw{align-items:flex-start}
+  .bd.bd-big .bd-fx{display:flex;flex-direction:column;height:100%;width:100%}
+  .bd.bd-big .bd-sfx{flex:none}
+  .bd.bd-big .bd-feed{flex:1 1 auto;min-height:0;max-height:none;width:auto;min-width:0;align-self:stretch;margin-top:8px}
+}
