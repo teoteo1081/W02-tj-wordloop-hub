@@ -1107,3 +1107,9 @@ body.embed .bd.bd-big .bd-feed{flex:none;width:auto;min-width:0;align-self:stret
 .bd-ftit{font-size:12px;color:var(--text-2);font-weight:700;letter-spacing:.03em}
 .bd-ftit i{font-style:normal;margin-left:4px;opacity:.8}
 .bd-fe{grid-template-columns:1fr}
+
+/* v196: chữ đầy khung — dải Bài đọc/Bảng từ lên sát mép trên, vùng chữ rộng ra (TJ 2026-10-05: "chữ phải fit toàn bộ cái khung") */
+.bd .bd-stage .bd-doc,.bd .bd-stage .bd-video{inset:5.5% 0 9% 0}
+.bd-wl{padding:2.5% 8% 2% 5%}
+.bd-vt{padding:2% 8% 2% 4%}
+.bd-segtop,.bd .bd-segtop{top:6px}

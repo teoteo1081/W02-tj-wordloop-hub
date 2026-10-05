@@ -689,8 +689,8 @@
     var fz = ref * FS[fsOf(curDoc())], lim = fz * 0.55;
     box.style.fontSize = fz.toFixed(2) + "px";
     for (var n = 0; n < 14 && fz > lim && box.scrollHeight > box.clientHeight + 2; n++) { fz *= 0.94; box.style.fontSize = fz.toFixed(2) + "px"; }   /* không bao giờ cắt chữ ở đáy (TJ 2026-10-05) */
-    if (box.classList.contains("bd-vt") && box.scrollHeight <= box.clientHeight + 2) {   /* trang ít dòng -> phóng chữ lên cho đầy khung (tối đa 1.7 lần) */
-      var lo2 = fz, hi2 = fz * 1.7;
+    if (box.scrollHeight <= box.clientHeight + 2) {   /* trang ít dòng -> phóng chữ lên cho đầy khung (vt tối đa 1.7 lần, bài đọc 1.35 lần) */
+      var lo2 = fz, hi2 = fz * (box.classList.contains("bd-vt") ? 1.7 : 1.35);
       for (var k = 0; k < 7; k++) { var mid = (lo2 + hi2) / 2; box.style.fontSize = mid.toFixed(2) + "px"; if (box.scrollHeight <= box.clientHeight + 2) lo2 = mid; else hi2 = mid; }
       box.style.fontSize = lo2.toFixed(2) + "px";
     }
