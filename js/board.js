@@ -707,6 +707,13 @@
     docSet(d);
   }
 
+  async function openQueue(list, parts) {   /* mở nối tiếp bảng từ vựng -> bài đọc của từng Block (tối đa 60 Block) */
+    var q = list.slice(0, 60); if (!q.length || !parts) return;
+    var k0 = parts.charAt(0) === "v" ? "vt" : "wl", nd = { k: k0, bid: q[0][0], name: q[0][1], p: 1, q: q, qp: parts, qi: 0 };
+    if (k0 === "wl") { var ph = await defaultPh(nd.bid); if (ph) { nd.ph = ph.ph; nd.lb = ph.label; } }
+    if (!open) api.setBoard(true);
+    mini = false; await openDoc(nd);
+  }
   /* ---------- 🌳 CỘT CÂY BÊN TRÁI trên bảng (TJ 2026-10-05): thụt ra thụt vào như WordLoop, ô tick chọn nguyên Batch/Page/…; 📌 ghim = luôn mở ---------- */
   var SPK = "tjwl_bd_sidepin_v1";
   function sidePinned() { try { return localStorage.getItem(SPK) === "1"; } catch (e) { return false; } }
@@ -913,10 +920,7 @@
     qGo: async function () {
       if (!api.isHost()) return;
       if (!Lib.sel.length || !Lib.parts) { Lib.msg("Chọn ít nhất 1 Block và 1 phần (từ vựng / bài đọc)"); return; }
-      var list = Lib.sel.slice(0, 60), q = list.map(function (x) { return [x.id, x.n]; }), k0 = Lib.parts.charAt(0) === "v" ? "vt" : "wl";
-      var nd = { k: k0, bid: q[0][0], name: q[0][1], p: 1, q: q, qp: Lib.parts, qi: 0 };
-      if (k0 === "wl") { var ph = await defaultPh(nd.bid); if (ph) { nd.ph = ph.ph; nd.lb = ph.label; } }
-      Lib.close(); sideAfter(); await openDoc(nd);
+      Lib.close(); sideAfter(); await openQueue(Lib.sel.map(function (x) { return [x.id, x.n]; }), Lib.parts);
     },
     drawTree: function (q, box) {
       var T = Lib.T; box = box || $("#bd-wllist"); if (!box || !T) return;
@@ -1125,6 +1129,8 @@
     attach: function (a) { api = a; build(); },
     onMsg: onMsg, onState: onState, onRtc: onRtc,
     resync: function () { if (open) setTimeout(function () { send({ t: "hello" }); }, 400); },
-    isOpen: function () { return open; }
+    isOpen: function () { return open; },
+    /* 🖤 từ cây chủ đề của game (⋯ › Mở lên bảng): list = [[blockId, tên], …], parts = "vw" | "w" | "v" */
+    openBlocks: function (list, parts) { if (api && api.isHost()) openQueue(list, parts || "vw"); }
   };
 })();

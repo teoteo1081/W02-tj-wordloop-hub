@@ -516,7 +516,7 @@ body.embed .g-brand{display:none}
 .bd-ph{font-size:12px;color:var(--text-2);width:100%}
 .bd-pp{background:var(--raise);border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:13px;cursor:pointer}
 .bd-pp.on{background:var(--accent);border-color:var(--accent);color:#fff}
-.bd-stage{position:relative;width:min(100% - 12px, 948px, calc((100vh - 170px) * var(--ar,1.7778)));aspect-ratio:var(--ar,1.7778);margin:0 auto;background:#1d2a24;border-radius:10px;border:6px solid #5a4632;overflow:hidden;box-sizing:content-box}   /* content-box: PHẦN TRONG viền đúng 16:9 -> nét/ô chữ khớp mọi máy */
+.bd-stage{position:relative;width:min(100% - 12px, 948px, calc(min(100vh - 170px, 40vh) * var(--ar,1.7778)));aspect-ratio:var(--ar,1.7778);margin:0 auto;background:#1d2a24;border-radius:10px;border:6px solid #5a4632;overflow:hidden;box-sizing:content-box}   /* content-box: PHẦN TRONG viền đúng 16:9 -> nét/ô chữ khớp mọi máy */
 .bd-stage canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
 .bd-texts{position:absolute;inset:0;pointer-events:none}
 .bd-tx{position:absolute;pointer-events:auto;font-family:"Segoe Print","Comic Sans MS",system-ui,sans-serif;line-height:1.2;white-space:pre-wrap;max-width:60%;outline:none;padding:0 2px;border-radius:4px;cursor:text}
@@ -773,3 +773,10 @@ body.side-pinned .bd.bd-big{left:var(--sidew,280px)}   /* cột chủ đề củ
 .g-trapk{margin-left:8px;font-size:11px;font-weight:700;padding:1px 7px;border-radius:999px;border:1px solid currentColor;opacity:.85;white-space:nowrap}
 .g-trapped{outline:2px solid #f5a524;outline-offset:-2px;background:rgba(245,165,36,.16)!important}
 .g-trapwhy{margin:2px 0 6px;padding:6px 10px;border-radius:8px;background:rgba(245,165,36,.14);border-left:3px solid #f5a524;font-size:13px;line-height:1.45;text-align:left}
+
+body.side-pinned .bd:not(.bd-big){left:var(--sidew,280px)}   /* bảng nhỏ không che cột chủ đề ghim; cao tối đa ~40% màn hình để còn chỗ cho phòng chờ */
+/* 📚 cây chủ đề của game dùng được cả khi bảng đang mở (ghim hoặc ẩn/hiện bằng 📚 ở mép trái) — nằm TRÊN bảng; ⋯ › "🖤 Mở lên bảng" */
+body.bd-on .g-side{z-index:70}
+body.bd-on .g-sidetab{z-index:71}
+body.bd-on .g-sidebd{z-index:69}
+body.bd-on .g-dotmenu{z-index:80}
