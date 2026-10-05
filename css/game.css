@@ -899,3 +899,12 @@ body.embed .bd-drawer .bd-pane{display:none !important}
 .bd-bottom .bd-docnav > *,.bd-bottom .bd-tools > *{flex:none}
 .bd-bottom .bd-docnav{margin:0 auto}
 .bd-bottom .bd-tools{margin:0 auto}
+
+/* v169: người chơi KHÔNG thấy đường dẫn (dải trên mỏng hơn); vùng nội dung bám theo chiều cao dải trên; cột nút theo dải trên */
+.bd{--bd-top:36px}
+.bd.bd-isHost{--bd-top:52px}
+.bd .bd-stage .bd-doc,.bd .bd-stage .bd-video{inset:var(--bd-top) 54px 54px 54px;width:auto;height:auto}
+.bd .bd-card{height:var(--bd-top);padding-top:0;padding-bottom:0;align-content:center}
+.bd:not(.bd-isHost) .bd-card .bd-crumb{display:none}
+.bd .bd-rail{top:calc(var(--bd-top) + 10px)}
+.bd .bd-card .bd-ctitle b{font-size:15px}

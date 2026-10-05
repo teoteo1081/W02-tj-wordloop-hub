@@ -198,6 +198,7 @@
   }
   function paintOpen() {
     var el = $("#bd"); if (!el) return;
+    el.classList.toggle("bd-isHost", !!(api && api.isHost()));
     var hd = el.querySelector(".bd-head"); if (hd) hd.style.display = api && api.isHost() ? "" : "none";   /* thanh trên (Bảng / Tài liệu / Quyền / ✕…) CHỈ host thấy (TJ 2026-10-05: "người chơi sẽ hong thấy thanh trên") */
     big = bigPref != null ? bigPref : !!curDoc();
     el.hidden = !open || mini; $("#bd-dock").hidden = !open || !mini;
@@ -1217,7 +1218,7 @@
   function paintShare() {
     var b = $("#bd-share"); if (!b || !api) return;
     b.hidden = !api.isHost() || !canShare;
-    b.dataset.bt = shStream ? "unshare" : "share"; b.textContent = t(b.dataset.bt); b.classList.toggle("on", !!shStream);
+    b.dataset.bt = shStream ? "unshare" : "share"; var shTx = t(b.dataset.bt); b.title = shTx; b.textContent = String(shTx).split(" ")[0]; b.classList.toggle("on", !!shStream);
     var line = "";
     if (shStream) {
       var nc = Object.keys(peers).filter(function (k) { return peers[k].pc.connectionState === "connected"; }).length, nf = Object.keys(shFull).length;
