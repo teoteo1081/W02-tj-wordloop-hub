@@ -972,3 +972,8 @@ body.embed .bd-drawer .bd-pane{display:none !important}
 .bd-segtop{position:absolute;top:calc(4.5% - 13px);left:50%;transform:translateX(-50%);margin:0}
 .bd-segtop{top:max(6px, calc(4.5% - 13px))}
 @media (max-width:480px){.bd-top .bd-chips{max-height:52px}}
+
+/* v175: thẻ tóm tắt rộng đúng bằng khung xanh (không tràn sang cột nút); trang sau của bài đọc cũng có tiêu đề */
+.bd-top{width:0;min-width:calc(100% - 56px)}
+.bd-wl h3.bd-cont{font-size:.85em;opacity:.85}
+.bd-wl h3.bd-cont small{font-weight:400;opacity:.8}

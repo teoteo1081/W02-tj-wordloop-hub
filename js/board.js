@@ -668,7 +668,7 @@
       });
       flat.forEach(function (u, i) {
         var sep = curP ? (i === 0 ? "\n\n" : "") : "";
-        if (curP && (curP + sep + u).length > budget - (pages.length ? 0 : (cjk ? 40 : 90))) { pages.push(curP.trim()); curP = ""; sep = ""; }   /* trang 1 còn tiêu đề */
+        if (curP && (curP + sep + u).length > budget - (cjk ? 40 : 90)) { pages.push(curP.trim()); curP = ""; sep = ""; }   /* trang 1 còn tiêu đề */
         curP += (curP && i === 0 ? "\n\n" : "") + u;
       });
     });
@@ -694,7 +694,7 @@
       var mm = metaOf(pk.pick ? pk.pick.raw : pk.items[0] ? pk.items[0].raw : ""), raw = mm.text, meta = mm.meta;
       var pages = splitPages(raw, fsOf(d)); if (!pages.length) pages = ["(Block này chưa có bài đọc)"];
       var n = pages.length, p = Math.min(n, d.p || 1); if (api.isHost() && (d.n !== n || (d.p || 1) !== p)) docSet(Object.assign({}, d, { n: n, p: p }));
-      box.innerHTML = '<div class="bd-wl">' + (p === 1 && (meta.title || d.name) ? "<h3>" + esc(meta.title || d.name) + "</h3>" : "") + "<p>" + wlHTML(pages[p - 1]) + "</p></div>";
+      box.innerHTML = '<div class="bd-wl">' + ((meta.title || d.name) ? "<h3" + (p > 1 ? ' class="bd-cont"' : "") + ">" + esc(meta.title || d.name) + (p > 1 ? " <small>· " + p + "/" + n + "</small>" : "") + "</h3>" : "") + "<p>" + wlHTML(pages[p - 1]) + "</p></div>";
       requestAnimationFrame(fitDocText);
     } catch (e) { if (job === docJob) box.innerHTML = '<div class="bd-docmsg">⚠ ' + esc(e.message || e) + "</div>"; }
   }
