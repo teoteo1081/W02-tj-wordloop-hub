@@ -62,7 +62,7 @@
         '<button type="button" class="bd-aud" id="bd-aud" hidden data-bt="unmute"></button>' +
         '</div>' +
         '<div class="bd-hudl" id="bd-hudl">' +
-          '<div class="bd-card bd-hud" id="bd-card" hidden><div class="bd-crumb" id="bd-crumb"></div><div class="bd-ctitle"><b id="bd-cname"></b><span class="bd-clv" id="bd-clv"></span><span class="bd-cst" id="bd-cst" hidden></span></div></div>' +
+          '<div class="bd-card bd-hud" id="bd-card" hidden><div class="bd-crow"><span class="bd-crumb" id="bd-crumb"></span><span class="bd-cst" id="bd-cst" hidden></span></div><div class="bd-ctitle"><b id="bd-cname"></b><span class="bd-clv" id="bd-clv"></span><span class="bd-seg" id="bd-seg" hidden><button type="button" data-sw="wl" aria-pressed="true">📖 Bài đọc</button><button type="button" data-sw="vt" aria-pressed="false">📋 Bảng từ</button></span></div></div>' +
           '<button type="button" class="bd-hb bd-fab bd-hud bd-tl" id="bd-close" hidden data-btt="close">✕</button>' +
           '<button type="button" class="bd-hb bd-fab bd-hud bd-tr" id="bd-big" data-btt="big">⛶</button>' +
           '<div class="bd-rail bd-hud">' +
@@ -157,6 +157,7 @@
     if (b.id === "bd-min") { mini = true; paintOpen(); return; }
     if (b.id === "bd-close") { api.setBoard(false); return; }
     if (b.id === "bd-lib") { Lib.open(); return; }
+    if (b.dataset.sw) { swKind(b.dataset.sw); return; }
     if (b.dataset.nv) { var pz = b.dataset.nv.split(":"); navStep(pz[0], +pz[1]); return; }
     if (b.dataset.at) { var dA = curDoc(); if (dA && dA.bid && api.isHost() && api.openInApp) api.openInApp(dA.bid, b.dataset.at); return; }
     if (b.id === "bd-cplay") { var dP = curDoc(); if (dP && dP.bid && api.isHost() && api.playBlock) api.playBlock(dP.bid, dP.name || ""); return; }
@@ -454,7 +455,7 @@
       paintTexts();
     } else if (m.t === "del") { removeItem(m.id); draw(); paintTexts(); }
     else if (m.t === "clear") clearAll();
-    else if (m.t === "navreq") { if (api.isHost()) { if (m.k === "fs") fsStep(m.dir | 0); else if (m.k === "page") flip(m.dir > 0 ? 1 : -1); else navStep(m.k, m.dir > 0 ? 1 : -1); } }
+    else if (m.t === "navreq") { if (api.isHost()) { if (m.k === "fs") fsStep(m.dir | 0); else if (m.k === "sw") swKind(m.dir > 0 ? "vt" : "wl"); else if (m.k === "page") flip(m.dir > 0 ? 1 : -1); else navStep(m.k, m.dir > 0 ? 1 : -1); } }
     else if (m.t === "l") { var L = lasers[m.pid] = lasers[m.pid] || { pts: [] }; L.name = m.n; L.pts.push({ x: m.x, y: m.y, t: Date.now() }); draw(); }
     /* xin bản đầy đủ: host trả lời ngay; HOST VẮNG (mất mạng) thì người được cấp quyền (moderator) có nét trên bảng trả lời thay
        (chờ ngẫu nhiên 0.3–1s, ai đã thấy người khác trả lời thì thôi) — TJ 2026-10-04: "host mất mạng mà có moderator thì bảng vẫn ổn" */
@@ -550,10 +551,11 @@
   function paintCard(d) {
     var card = $("#bd-card"), act = $("#bd-act"); if (!card) return;
     var bid = d && (d.k === "wl" || d.k === "vt") ? d.bid : null, host = api.isHost();
-    card.hidden = !bid; if (act) act.hidden = !(bid && host);
+    card.hidden = !bid; if (act) act.hidden = !(bid && host); var sg0 = $("#bd-seg"); if (sg0 && !bid) sg0.hidden = true;
     var mo = $("#bd-more"); if (mo) mo.hidden = !(bid && host);
     if (!bid) { extraH(); return; }
     paintAct();
+    var sg = $("#bd-seg"); if (sg) { sg.hidden = false; sg.querySelectorAll("[data-sw]").forEach(function (x) { x.setAttribute("aria-pressed", x.dataset.sw === d.k); }); }
     if (!$("#bd-cname").textContent) $("#bd-cname").textContent = d.name || "";   /* hiện tên ngay, dữ liệu còn lại về sau */
     extraH();
     var show = function (inf) {
@@ -707,8 +709,8 @@
   function paintHL(d) { document.querySelectorAll("#bd-doc .bd-vr").forEach(function (r) { r.classList.toggle("hl", d && d.hl != null && +r.dataset.i === +d.hl); }); }
   /* ---------- lật trang xuyên Block: bảng từ vựng -> bài đọc -> Block kế (TJ 2026-10-05) ---------- */
   function unitsOf(d) {
-    var q = d.q && d.q.length ? d.q : [[d.bid, d.name]], qp = d.qp || (d.k === "vt" ? "vw" : "w"), U = [];
-    q.forEach(function (x) { if (qp.indexOf("v") >= 0) U.push({ k: "vt", bid: x[0], name: x[1] }); if (qp.indexOf("w") >= 0) U.push({ k: "wl", bid: x[0], name: x[1] }); });
+    var q = d.q && d.q.length ? d.q : [[d.bid, d.name]], qp = d.qp || "wv", U = [];
+    q.forEach(function (x) { qp.split("").forEach(function (ch) { if (ch === "v") U.push({ k: "vt", bid: x[0], name: x[1] }); else if (ch === "w") U.push({ k: "wl", bid: x[0], name: x[1] }); }); });   /* TJ 2026-10-05: BÀI ĐỌC trước, BẢNG TỪ sau */
     return U;
   }
   function unitIdx(d, U) {
@@ -742,6 +744,14 @@
     var nb = await api.neighbor(d.bid, kind, dir); if (!nb) { if (window.toast) toast("Hết rồi"); return; }
     var nd = { k: d.k, bid: nb.bid, name: nb.name, p: 1, fs: d.fs };
     if (d.k === "wl") { var ph = await defaultPh(nb.bid); if (ph) { nd.ph = ph.ph; nd.lb = ph.label; } }
+    await openDoc(nd);
+  }
+  /* 📖 Bài đọc | 📋 Bảng từ: đổi qua lại cho cùng 1 Block (ai bấm cũng được, host thực hiện) */
+  async function swKind(kind) {
+    var d = curDoc(); if (!d || !d.bid || d.k === kind || (kind !== "wl" && kind !== "vt")) return;
+    if (!api.isHost()) { send({ t: "navreq", k: "sw", dir: kind === "vt" ? 1 : -1 }); return; }
+    var nd = { k: kind, bid: d.bid, name: d.name, p: 1, fs: d.fs, q: d.q, qp: d.qp };
+    if (kind === "wl") { var ph = await defaultPh(d.bid); if (ph) { nd.ph = ph.ph; nd.lb = ph.label; } }
     await openDoc(nd);
   }
   /* A−/A+ (host, bài đọc/bảng từ): đổi cỡ chữ CHUNG, giữ vị trí đang đọc */
@@ -998,7 +1008,7 @@
       $("#bd-wlq").addEventListener("input", function () { var v = this.value; clearTimeout(Lib.qt); Lib.qt = setTimeout(function () { Lib.drawTree(v); }, 250); });
     },
     /* ----- chọn nhiều Block (ô tick ở từng Block và từng thư mục) -> mở nối tiếp 📋 + 📖 trên bảng ----- */
-    sel: [], parts: "vw",
+    sel: [], parts: "wv",
     selHas: function (id) { return Lib.sel.some(function (x) { return x.id === id; }); },
     selSet: function (id, n, on) { var has = Lib.selHas(id); if (on && !has) Lib.sel.push({ id: id, n: n }); else if (!on && has) Lib.sel = Lib.sel.filter(function (x) { return x.id !== id; }); },
     selBar: function () {
@@ -1237,6 +1247,6 @@
     resync: function () { if (open) setTimeout(function () { send({ t: "hello" }); }, 400); },
     isOpen: function () { return open; },
     /* 🖤 từ cây chủ đề của game (⋯ › Mở lên bảng): list = [[blockId, tên], …], parts = "vw" | "w" | "v" */
-    openBlocks: function (list, parts) { if (api && api.isHost()) openQueue(list, parts || "vw"); }
+    openBlocks: function (list, parts) { if (api && api.isHost()) openQueue(list, parts || "wv"); }
   };
 })();

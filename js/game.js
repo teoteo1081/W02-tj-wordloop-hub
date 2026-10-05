@@ -603,7 +603,7 @@
       var bl = Array.prototype.filter.call(box.querySelectorAll('[data-pick="blocks"]'), function (x) { return x.dataset.pick === "blocks"; }).map(function (x) { return [x.dataset.id, x.dataset.title]; });
       $("#h-dotmenu").hidden = true;
       if (!bl.length) { alert("Mục này chưa có Block nào."); return; }
-      if (window.Board) Board.openBlocks(bl, b.dataset.act === "bd-w" ? "w" : "vw");
+      if (window.Board) Board.openBlocks(bl, b.dataset.act === "bd-w" ? "w" : "wv");
       return;
     }
     if (b.dataset.act === "only") picked = [me];
@@ -1563,7 +1563,7 @@
     if (!list.length) { alert("Mục này chưa có Block để mở lên bảng."); return; }
     if (G.st.phase === "lobby") { picked = sc.map(function (p) { return { table: p.table, id: p.id, title: p.title || p.id }; }); hostSetScope(); }
     if (!G.st.board) { G.st.board = true; push(); }
-    setTimeout(function () { if (window.Board) Board.openBlocks(list.slice(0, 60), "vw"); }, 350);
+    setTimeout(function () { if (window.Board) Board.openBlocks(list.slice(0, 60), "wv"); }, 350);
   }
   window.addEventListener("message", function (e) {
     if (e.origin !== location.origin || !e.data || e.data.type !== "tjwl-game-board") return;

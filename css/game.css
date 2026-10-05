@@ -927,3 +927,13 @@ body.embed .bd-drawer .bd-pane{display:none !important}
 .bd .bd-drawer{right:62px;top:60px}
 .bd .bd-stage .bd-doc,.bd .bd-stage .bd-video{inset:var(--bd-top) 0 52px 0;width:auto;height:auto}
 .bd .bd-card{padding:0 14px 0 54px}
+
+/* v171: hai thẻ "Bài đọc | Bảng từ" y chang bản mẫu (nút cam khi đang chọn) */
+.bd-card .bd-crow{display:flex;align-items:center;gap:8px;min-width:0}
+.bd-card .bd-crow .bd-crumb{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bd-card .bd-crow .bd-cst{margin-left:auto;white-space:nowrap}
+.bd:not(.bd-isHost) .bd-crow{display:none}
+.bd-seg{margin-left:auto;display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;flex:none}
+.bd-seg button{background:var(--card);color:var(--text);border:0;padding:4px 12px;font:inherit;font-size:12px;cursor:pointer;min-height:26px}
+.bd-seg button[aria-pressed="true"]{background:var(--accent);color:#fff;font-weight:700}
+@media (max-width:480px){.bd-card .bd-clv{display:none}.bd-seg button{padding:4px 9px}}
