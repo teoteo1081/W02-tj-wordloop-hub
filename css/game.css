@@ -823,3 +823,10 @@ body.bd-on .g-dotmenu{z-index:80}
 .bd-pname:hover{background:var(--raise)}
 .bd-ppin{background:transparent;border:none;cursor:pointer;font-size:.85rem;line-height:1;padding:.25rem;border-radius:5px;opacity:.4;transform:rotate(45deg)}
 .bd-ppin:hover{background:var(--raise);opacity:1}.bd-ppin.on{opacity:.9;transform:none}
+
+/* KHUNG CHUNG: thanh trên + thẻ Block cùng 1 khuôn; hàng điều hướng duy nhất (TJ 2026-10-05) */
+.bd-frame{max-width:960px;margin:0 auto 6px;padding:8px 12px;border:1px solid var(--line);border-left:4px solid #c06b8f;border-radius:10px;background:var(--card);box-sizing:border-box}
+.bd-frame .bd-head{max-width:none;margin:0 0 6px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.bd-frame .bd-card{max-width:none;margin:0;padding:0;border:none;border-left:none;background:transparent;border-radius:0}
+.bd-docnav .bd-hb{min-width:38px}
+body.bd-on .g-sidetab{display:none}

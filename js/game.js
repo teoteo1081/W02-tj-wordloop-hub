@@ -1704,6 +1704,18 @@
       }
       return out;
     },
+    /* ⏪ ⏩ Block kế · ⏮ ⏭ Batch kế (cùng Notebook, theo thứ tự cây) */
+    neighbor: async function (bid, kind, dir) {
+      if (!TREE) await loadTree(true);
+      var by = function (l, i) { return TREE[l].find(function (r) { return r.id === i; }); };
+      var bl = by("blocks", bid), ba = bl && by("batches", bl.batch_id), pg = ba && by("pages", ba.page_id), sc = pg && by("sections", pg.section_id); if (!sc) return null;
+      var inNb = function (b) { var a = by("batches", b.batch_id), p = a && by("pages", a.page_id), s2 = p && by("sections", p.section_id); return !!(s2 && s2.notebook_id === sc.notebook_id); };
+      var L = TREE.blocks.filter(inNb), i = L.findIndex(function (b) { return b.id === bid; }); if (i < 0) return null;
+      if (kind === "block") { var t = L[i + dir]; return t ? { bid: t.id, name: t.name } : null; }
+      var bo = []; L.forEach(function (b) { if (bo.indexOf(b.batch_id) < 0) bo.push(b.batch_id); });
+      var nb = bo[bo.indexOf(bl.batch_id) + dir]; if (!nb) return null;
+      var first = L.find(function (b) { return b.batch_id === nb; }); return first ? { bid: first.id, name: first.name } : null;
+    },
     /* mở Block + tab học trong WordLoop (tab mới) — app tự khôi phục đúng Notebook/Block từ localStorage */
     openInApp: function (bid, tab) {
       if (!TREE) return;
