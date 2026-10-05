@@ -1366,3 +1366,5 @@ body.bd-on #g-side,body.bd-on #h-sidetab,body.bd-on #h-sidebd,body.bd-on #g-room
 /* TJ 2026-10-06: bỏ hẳn tiêu đề "🎮 WordLoop Game" / thanh đầu game khi nhúng trong Learning và khi bảng mở */
 body.embed .g-brand{display:none !important}
 body.embed.bd-on .g-top{display:none !important}
+/* nút "Có bản mới" của host phải nổi TRÊN bảng (trước bị bảng che nên host không thấy) */
+.g-upd{position:fixed !important;left:50%;bottom:14px;transform:translateX(-50%);z-index:400 !important;box-shadow:0 6px 20px rgba(0,0,0,.5)}

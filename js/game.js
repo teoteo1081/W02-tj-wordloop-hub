@@ -84,7 +84,7 @@
       if (!(j && +j.v > GAME_VER) || (G.st && G.st.phase === "play") || busyReading()) return;
       var u = new URL(location.href); u.searchParams.set("gv", j.v);
       /* máy TJ (host): KHÔNG tự tải lại giữa buổi (TJ 2026-10-04: "tự refresh tự out") — hiện nút để TJ tự bấm lúc tiện */
-      if (isTJ() || G.isHost) {
+      if (G.isHost) {   /* v212: CHỈ máy đang làm host thật giữ nguyên trang; máy khác dù cùng hồ sơ TJ (Anti_TJ, Thảo…) vẫn tự cập nhật — trước đây kẹt bản cũ vì bảng che nút
         /* TJ 2026-10-05: "tự cập nhật cho website chứ" -> máy host tự tải lại khi RẢNH: tab đang ẩn (TJ không nhìn), không giữa ván, không mở bảng, không xem lại. Còn lại giữ nút để TJ tự bấm. */
         updPending = true;
         if (document.hidden && !boardOpen()) { location.replace(u.toString()); return; }
@@ -95,7 +95,7 @@
       location.replace(u.toString());
     }).catch(function () {});
   }
-  setTimeout(checkVersion, 3000); setInterval(checkVersion, 120000);
+  setTimeout(checkVersion, 3000); setInterval(checkVersion, 30000);
   document.addEventListener("visibilitychange", function () { if (document.hidden && updPending && !boardOpen() && !busyReading() && !(G.st && G.st.phase === "play")) checkVersion(); });
   var POINTS = 100, REVEAL_MS = 3500, HOST_LOST_MS = 7000, HEARTBEAT_MS = 3000;
   var NO_END = 1e11;   /* ván "∞ không tính giờ": hạn chót rất xa, host bấm Kết thúc */
@@ -1437,7 +1437,7 @@
       } else G.ch.send({ type: "broadcast", event: "hello", payload: {} });   /* xin host gửi lại trạng thái hiện tại */
     });
   }
-  function track() { return G.ch.track({ ts: Date.now(), id: G.me.id, tab: G.tab, cand: !!G.cand, since: G.since, pf: G.profile ? G.profile.id : null, name: G.me.name, no: G.me.name_no, avatar: G.me.avatar, host: G.isHost, play: G.isHost ? hostPlays() : true, lang: G.myLang }); }
+  function track() { return G.ch.track({ ver: GAME_VER, ts: Date.now(), id: G.me.id, tab: G.tab, cand: !!G.cand, since: G.since, pf: G.profile ? G.profile.id : null, name: G.me.name, no: G.me.name_no, avatar: G.me.avatar, host: G.isHost, play: G.isHost ? hostPlays() : true, lang: G.myLang }); }
   /* "Host" do PHÒNG quyết định (hồ sơ = host_id của phòng), không tin máy tự nhận — bản cũ đang mở ở máy khác
      (vd Anti_TJ lúc còn admin) có thể vẫn gửi host:true */
   function isRoomHost(p) { return !!(p && p.pf && G.room && p.pf === G.room.host_id && p.host); }
@@ -1469,6 +1469,7 @@
       if (best) list.push(best);
     });
     G.online = list;
+    if (list.some(function (p) { return +p.ver > GAME_VER; })) { clearTimeout(G.verT); G.verT = setTimeout(checkVersion, 800); }   /* TJ 2026-10-06: có máy trong phòng chạy bản MỚI HƠN -> không đợi 2 phút, kiểm tra + cập nhật ngay (tránh 3 máy 3 bản khác nhau) */
     if (G.cand) {   /* nhiều máy/tab TJ: tab vào sớm nhất làm host */
       var ctrl = cands.filter(function (p) { return p.pf === G.room.host_id; })
         .sort(function (a, b) { return (a.since || 0) - (b.since || 0) || ((a.tab || a.id) < (b.tab || b.id) ? -1 : 1); })[0];
