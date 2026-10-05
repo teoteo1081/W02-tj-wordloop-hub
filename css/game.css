@@ -852,3 +852,39 @@ body.bd-on .g-sidetab{display:none}
 /* trong thẻ Game của Learning: Learning đã có cột Notebooks/Pages nên bảng không cần cây riêng (TJ 2026-10-05) */
 body.embed .bd-pane,body.embed .bd-side{display:none !important}
 body.embed .bd.bd-big.bd-sidepin{padding-left:6px}
+
+/* ===== v167: NÚT NỔI TRONG BẢNG (HelloTalk) + KHUNG CỐ ĐỊNH 4:3 ===== */
+.bd-sw{display:flex;justify-content:center}
+.bd-stage{overflow:hidden}
+.bd-hudl{position:absolute;inset:0;pointer-events:none;z-index:6}
+.bd-hudl > *{pointer-events:auto}
+.bd-hud{transition:opacity .25s}
+.bd-idle .bd-hud{opacity:0;pointer-events:none}
+.bd-hudl .bd-fab,.bd-rail .bd-hb,.bd-pager .bd-hb{width:38px;height:38px;min-width:0;min-height:0;padding:0;border-radius:50%;border:0;background:rgba(36,35,33,.86);color:#f3f1ea;font-size:16px;line-height:1;display:grid;place-items:center;box-shadow:0 2px 8px #0006;cursor:pointer}
+.bd-hudl .bd-fab:hover{background:#3b3a37}
+.bd-hudl .bd-fab.on{background:#7c4dff;color:#fff}
+.bd-tl{position:absolute;top:8px;left:8px}
+.bd-tr{position:absolute;top:8px;right:8px}
+.bd-rail{position:absolute;right:8px;top:54px;display:grid;gap:8px}
+.bd-pager{position:absolute;right:8px;bottom:60px;display:grid;gap:6px}
+.bd-card{position:absolute;left:0;right:0;top:0;padding:6px 56px 6px 54px;background:rgba(36,35,33,.86);border-bottom:1px solid var(--line);font-size:12px;display:grid;gap:2px;max-width:none;margin:0;border-left:none;border-radius:0}
+.bd-card .bd-crumb{color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bd-card .bd-ctitle{margin:0}
+.bd-bottom{position:absolute;left:8px;right:56px;bottom:8px;display:flex;justify-content:center}
+.bd-bottom .bd-docnav,.bd-bottom .bd-tools{width:auto;max-width:100%;margin:0;background:rgba(36,35,33,.9);border:1px solid var(--line);border-radius:14px;padding:5px 7px;flex-wrap:wrap;justify-content:center;gap:5px;overflow:visible}
+.bd-bottom .bd-docnav .bd-hb,.bd-bottom .bd-tools button{min-width:34px;min-height:34px;padding:0 8px}
+.bd:not(.bd-pen) .bd-tools{display:none}
+.bd.bd-pen .bd-docnav{display:none}
+.bd-lk{position:absolute;left:8px;right:56px;bottom:62px;margin:0;max-width:none}
+.bd-drawer{position:absolute;right:54px;top:54px;width:min(300px,calc(100% - 70px));max-height:calc(100% - 120px);overflow:auto;background:rgba(36,35,33,.94);border:1px solid var(--line);border-radius:12px;padding:10px;display:grid;gap:8px}
+.bd-drawer .bd-card,.bd-drawer .bd-act{max-width:none;margin:0}
+.bd-drawer .bd-acttog{display:none !important}
+.bd-drawer .bd-act.col .bd-acttools{display:flex}
+.bd-drawer .bd-drow{display:flex;gap:6px;flex-wrap:wrap}
+.bd-drawer .bd-drow .bd-hb{flex:1}
+.bd-drawer .bd-pane{display:inline-flex}
+body.embed .bd-drawer .bd-pane{display:none !important}
+.bd-view,.bd-permbox{display:none !important}
+/* PDF / ảnh: lọt giữa khung cố định, hai bên chừa nền */
+.bd-doc img,.bd-pdfc{object-fit:contain;background:#fff}
+@media (max-width:520px){.bd-rail{top:50px}.bd-pager{bottom:56px}}

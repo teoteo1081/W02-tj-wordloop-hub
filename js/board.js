@@ -57,49 +57,64 @@
     el.id = "bd"; el.className = "bd"; el.hidden = true;
     el.innerHTML =
       '<aside class="bd-side" id="bd-side" hidden><div class="bd-sidehd"><b>Notebooks</b><span><button type="button" class="bd-hb" id="bd-sidepin" title="Ghim cột (luôn mở bên trái)">📌</button><button type="button" class="bd-hb" id="bd-sideexp" title="Mở hết">⊞</button><button type="button" class="bd-hb" id="bd-sidecol" title="Thu hết">⊟</button><button type="button" class="bd-hb" id="bd-sidex" title="Đóng">✕</button></span></div><input type="search" id="bd-sideq" placeholder="Tìm Block…"><div class="bd-tree bd-sidelist" id="bd-sidelist">⏳</div><div id="bd-sidebar"></div></aside>' +
-      '<div class="bd-frame" id="bd-frame"><div class="bd-head"><span class="bd-pane" id="bd-pane" hidden><button type="button" class="bd-pname" id="bd-pname" title="Mở / đóng cây Notebooks">Notebooks</button><button type="button" class="bd-ppin" id="bd-ppin" title="Ghim / bỏ ghim cột Notebooks" aria-label="Ghim / bỏ ghim cột Notebooks">📌</button></span><b data-bt="board"></b><span class="bd-who" id="bd-who"></span><span class="bd-scr" id="bd-scr"></span>' +
-      '<button type="button" class="bd-hb" id="bd-lib" hidden data-ico="1" data-bt="lib"></button>' +
-      '<button type="button" class="bd-hb" id="bd-big" data-btt="big">⛶</button>' +   /* 📁 tài liệu: PDF / ảnh / bài đọc WordLoop lên bảng (chỉ host) */
-      '<button type="button" class="bd-hb" id="bd-share" hidden data-ico="1" data-btt="sharet" data-bt="share"></button>' +   /* 🖥 chia sẻ màn hình (chỉ host, máy tính) */
-      '<button type="button" class="bd-hb" id="bd-perm" hidden data-btt="permt" data-bt="perm"></button>' +
-      '<button type="button" class="bd-hb" id="bd-dswap" title="Đổi bài đọc / tạo bài mới" hidden>🔀</button>' +
-      '<button type="button" class="bd-hb" id="bd-min" data-btt="min">▁</button>' +
-      '<button type="button" class="bd-hb" id="bd-close" hidden data-btt="close">✕</button></div>' +
-      '<div class="bd-card" id="bd-card" hidden><div class="bd-crumb" id="bd-crumb"></div><div class="bd-ctitle"><b id="bd-cname"></b><span class="bd-clv" id="bd-clv"></span><span class="bd-cst" id="bd-cst" hidden></span></div><div class="bd-chips" id="bd-chips"></div><div class="bd-cprog" id="bd-cprog" hidden><i></i></div>' +
-'<div class="bd-act" id="bd-act" hidden><button type="button" class="bd-hb bd-acttog" id="bd-acttog" title="Bật/tắt khay công cụ (như nút ghim của Notebooks)">📚 Công cụ <span>📌</span></button><span class="bd-acttools" id="bd-acttools">' +
+      '<div class="bd-sw" id="bd-sw"><div class="bd-stage" id="bd-stage">' +
+        '<div class="bd-zoom" id="bd-zoom"><video id="bd-video" class="bd-video" autoplay playsinline muted hidden></video><div class="bd-doc" id="bd-doc"></div><canvas id="bd-cv"></canvas><div class="bd-texts" id="bd-texts"></div></div>' +
+        '<button type="button" class="bd-aud" id="bd-aud" hidden data-bt="unmute"></button>' +
+        '<div class="bd-hudl" id="bd-hudl">' +
+          '<div class="bd-card bd-hud" id="bd-card" hidden><div class="bd-crumb" id="bd-crumb"></div><div class="bd-ctitle"><b id="bd-cname"></b><span class="bd-clv" id="bd-clv"></span><span class="bd-cst" id="bd-cst" hidden></span></div></div>' +
+          '<button type="button" class="bd-hb bd-fab bd-hud bd-tl" id="bd-close" hidden data-btt="close">✕</button>' +
+          '<button type="button" class="bd-hb bd-fab bd-hud bd-tr" id="bd-big" data-btt="big">⛶</button>' +
+          '<div class="bd-rail bd-hud">' +
+            '<button type="button" class="bd-hb bd-fab" id="bd-lib" hidden data-ico="1" data-bt="lib"></button>' +
+            '<button type="button" class="bd-hb bd-fab" id="bd-share" hidden data-ico="1" data-btt="sharet" data-bt="share"></button>' +
+            '<button type="button" class="bd-hb bd-fab" id="bd-penbtn" title="Vẽ / ghi chú">✏️</button>' +
+            '<button type="button" class="bd-hb bd-fab" id="bd-more" hidden title="Công cụ Block (chỉ Admin)">⋯</button>' +
+          '</div>' +
+          '<div class="bd-drawer bd-hud" id="bd-drawer" hidden>' +
+            '<span class="bd-pane" id="bd-pane" hidden><button type="button" class="bd-pname" id="bd-pname" title="Mở / đóng cây Notebooks">Notebooks</button><button type="button" class="bd-ppin" id="bd-ppin" title="Ghim / bỏ ghim cột Notebooks" aria-label="Ghim / bỏ ghim cột Notebooks">📌</button></span>' +
+            '<div class="bd-chips" id="bd-chips"></div><div class="bd-cprog" id="bd-cprog" hidden><i></i></div>' +
+            '<div class="bd-act" id="bd-act" hidden><button type="button" class="bd-hb bd-acttog" id="bd-acttog" title="Bật/tắt khay công cụ (như nút ghim của Notebooks)">📚 Công cụ <span>📌</span></button><span class="bd-acttools" id="bd-acttools">' +
         '<button type="button" class="bd-hb" data-at="study" title="Bài học & Đọc">📘</button><button type="button" class="bd-hb" data-at="meaning" title="Nghĩa">🔀</button><button type="button" class="bd-hb" data-at="quiz" title="Active Recall Quiz">📝</button><button type="button" class="bd-hb" data-at="dictation" title="Dictation">🎧</button><button type="button" class="bd-hb" data-at="sheet" title="Phiếu đầy đủ">📋</button><button type="button" class="bd-hb" data-at="single" title="Từng câu">🔤</button><button type="button" class="bd-hb" data-at="progress" title="Tiến trình trí nhớ">📊</button></span>' +
         '<button type="button" class="bd-hb bd-cplay" id="bd-cplay">🎮 Chơi game →</button></div>' +
+            '<div class="bd-drow"><button type="button" class="bd-hb" id="bd-dswap" title="Đổi bài đọc / tạo bài mới" hidden>🔀 Đổi bài đọc</button><button type="button" class="bd-hb" id="bd-min" data-btt="min">▁ Thu nhỏ bảng</button></div>' +
+            '<span hidden><b data-bt="board"></b><span class="bd-who" id="bd-who"></span><span class="bd-scr" id="bd-scr"></span><button type="button" id="bd-perm" hidden data-btt="permt" data-bt="perm"></button></span>' +
+          '</div>' +
+          '<div class="bd-pager bd-hud"><button type="button" class="bd-hb bd-fab" id="bd-pgup" title="Trang trước">▲</button><button type="button" class="bd-hb bd-fab" id="bd-pgdn" title="Trang sau">▼</button></div>' +
+          '<div class="bd-lk" id="bd-lk" hidden><div class="bd-lkq" id="bd-lkq" hidden><input type="search" id="bd-lkin" placeholder="Gõ từ / cụm từ cần tra…" autocomplete="off" autocapitalize="off"><button type="button" class="bd-hb" id="bd-lkgo">Tra</button></div><div class="bd-lkr" id="bd-lkr"></div><button type="button" class="bd-hb bd-lkx" id="bd-lkx">✕</button></div>' +
+          '<div class="bd-bottom bd-hud">' +
+            '<div class="bd-docnav" id="bd-docnav" hidden>' +
+              '<button type="button" class="bd-hb" id="bd-kprev" data-nv="block:-1" title="Block trước">⏪</button>' +
+              '<button type="button" class="bd-hb" id="bd-dprev" title="Trang trước">◀</button><button type="button" class="bd-hb" id="bd-dpg" title="Nhảy tới trang…"></button><button type="button" class="bd-hb" id="bd-dnext" title="Trang sau">▶</button>' +
+              '<button type="button" class="bd-hb" id="bd-knext" data-nv="block:1" title="Block sau">⏩</button>' +
+              '<button type="button" class="bd-hb" id="bd-dsrch" title="Gõ từ để tra nghĩa" hidden>🔍</button>' +
+              '<span class="bd-sep"></span><button type="button" data-z="out" data-btt="zout" class="bd-hb bd-za">A−</button><button type="button" data-z="fit" data-btt="zfit" id="bd-zfit" class="bd-hb">⤢ 100%</button><button type="button" data-z="in" data-btt="zin" class="bd-hb bd-za">A+</button>' +
+              '<button type="button" class="bd-hb" id="bd-dtree" hidden style="display:none">🌳</button><button type="button" class="bd-hb" id="bd-dclose" hidden style="display:none">✕</button>' +
+            '</div>' +
+            '<div class="bd-tools" id="bd-tools">' +
+              '<button type="button" data-tool="hand" data-btt="hand">✋</button>' +
+              '<button type="button" data-tool="laser" data-btt="laser">🔴</button>' +
+              '<button type="button" data-tool="pen" data-btt="pen">✏️</button>' +
+              '<button type="button" data-tool="text" data-btt="text">T</button>' +
+              '<span class="bd-extras" id="bd-extras"><span class="bd-sep"></span>' +
+              COLORS.map(function (c) { return '<button type="button" class="bd-col" data-col="' + c + '" style="--c:' + c + '" data-btt="color"></button>'; }).join("") +
+              '<span class="bd-sep"></span>' +
+              SIZES.map(function (z, i) { return '<button type="button" class="bd-sz" data-sz="' + z + '" data-btt="size"><i style="width:' + (6 + i * 5) + 'px;height:' + (6 + i * 5) + 'px"></i></button>'; }).join("") +
+              '<span class="bd-sep"></span>' +
+              '<button type="button" id="bd-undo" data-btt="undo">↶</button><button type="button" id="bd-redo" data-btt="redo">↷</button>' +
+              '<button type="button" id="bd-clear" hidden>🗑</button></span>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
       '</div></div>' +
-      '<div class="bd-sw" id="bd-sw"><div class="bd-stage" id="bd-stage"><div class="bd-zoom" id="bd-zoom"><video id="bd-video" class="bd-video" autoplay playsinline muted hidden></video><div class="bd-doc" id="bd-doc"></div><canvas id="bd-cv"></canvas><div class="bd-texts" id="bd-texts"></div></div><button type="button" class="bd-aud" id="bd-aud" hidden data-bt="unmute"></button></div></div>' +
-      '<div class="bd-docnav" id="bd-docnav" hidden>' +
-        '<button type="button" class="bd-hb" id="bd-kprev" data-nv="block:-1" title="Block trước">⏪</button>' +
-        '<button type="button" class="bd-hb" id="bd-dprev" title="Trang trước">◀</button><button type="button" class="bd-hb" id="bd-dpg" title="Nhảy tới trang…"></button><button type="button" class="bd-hb" id="bd-dnext" title="Trang sau">▶</button>' +
-        '<button type="button" class="bd-hb" id="bd-knext" data-nv="block:1" title="Block sau">⏩</button>' +
-        '<button type="button" class="bd-hb" id="bd-dsrch" title="Gõ từ để tra nghĩa" hidden>🔍</button>' +
-        '<button type="button" class="bd-hb" id="bd-dtree" hidden style="display:none">🌳</button><button type="button" class="bd-hb" id="bd-dclose" hidden style="display:none">✕</button></div>' +
-      '<div class="bd-lk" id="bd-lk" hidden><div class="bd-lkq" id="bd-lkq" hidden><input type="search" id="bd-lkin" placeholder="Gõ từ / cụm từ cần tra…" autocomplete="off" autocapitalize="off"><button type="button" class="bd-hb" id="bd-lkgo">Tra</button></div><div class="bd-lkr" id="bd-lkr"></div><button type="button" class="bd-hb bd-lkx" id="bd-lkx">✕</button></div>' +
-      '<div class="bd-tools" id="bd-tools">' +
-        '<button type="button" data-tool="hand" data-btt="hand">✋</button>' +
-        '<button type="button" data-tool="laser" data-btt="laser">🔴</button>' +
-        '<button type="button" data-tool="pen" data-btt="pen">✏️</button>' +
-        '<button type="button" data-tool="text" data-btt="text">T</button>' +
-        '<span class="bd-sep"></span>' +
-        '<button type="button" data-z="out" data-btt="zout" class="bd-za">A−</button><button type="button" data-z="fit" data-btt="zfit" id="bd-zfit">⤢ 100%</button><button type="button" data-z="in" data-btt="zin" class="bd-za">A+</button>' +
-        '<span class="bd-extras" id="bd-extras"><span class="bd-sep"></span>' +
-        COLORS.map(function (c) { return '<button type="button" class="bd-col" data-col="' + c + '" style="--c:' + c + '" data-btt="color"></button>'; }).join("") +
-        '<span class="bd-sep"></span>' +
-        SIZES.map(function (z, i) { return '<button type="button" class="bd-sz" data-sz="' + z + '" data-btt="size"><i style="width:' + (6 + i * 5) + 'px;height:' + (6 + i * 5) + 'px"></i></button>'; }).join("") +
-        '<span class="bd-sep"></span>' +
-        '<button type="button" id="bd-undo" data-btt="undo">↶</button><button type="button" id="bd-redo" data-btt="redo">↷</button>' +
-        '<button type="button" id="bd-clear" hidden>🗑</button></span>' +
-      '</div><div class="bd-permbox" id="bd-permbox" hidden></div>' +   /* danh sách người được cấp quyền nằm DƯỚI hàng nút như HelloTalk (TJ 2026-10-04) */
-      '<div class="bd-view" id="bd-view" data-bt="viewmsg"></div>';
+      '<div class="bd-permbox" id="bd-permbox" hidden></div><div class="bd-view" id="bd-view" data-bt="viewmsg"></div>';
     document.body.appendChild(el);
     var dock = document.createElement("button");
     dock.id = "bd-dock"; dock.type = "button"; dock.className = "bd-dock"; dock.hidden = true; dock.dataset.bt = "dock";
     document.body.appendChild(dock);
     cv = $("#bd-cv"); ctx = cv.getContext("2d"); wrap = $("#bd-stage");
     el.addEventListener("click", onClick);
+    ["pointerdown", "pointermove", "keydown", "touchstart"].forEach(function (ev) { el.addEventListener(ev, poke, { passive: true }); });
+    setTimeout(poke, 0);
     el.addEventListener("change", function (e) { Lib.treeChange(e); });
     $("#bd-sideq").addEventListener("input", function () { var v = this.value; clearTimeout(Lib.qt); Lib.qt = setTimeout(function () { Lib.drawTree(v, $("#bd-sidelist")); }, 250); });
     dock.addEventListener("click", function () { mini = false; paintOpen(); });
@@ -116,7 +131,10 @@
   }
   function onClick(e) {
     var b = e.target.closest("button"); if (!b) return;
-    if (b.dataset.tool) { tool = b.dataset.tool; paintTools(); return; }
+    if (b.id === "bd-penbtn") { setPen(!penMode); return; }
+    if (b.id === "bd-more") { var dw = $("#bd-drawer"); if (dw) { dw.hidden = !dw.hidden; b.classList.toggle("on", !dw.hidden); } poke(); return; }
+    if (b.id === "bd-pgup" || b.id === "bd-pgdn") { flip(b.id === "bd-pgdn" ? 1 : -1); return; }
+    if (b.dataset.tool) { tool = b.dataset.tool; if (tool === "hand") setPen(false); paintTools(); return; }
     if (b.dataset.z) {
       if (fsMode()) { if (b.dataset.z === "fit") { zoomReset(); fsStep(0); } else fsStep(b.dataset.z === "in" ? 1 : -1); return; }
       var zr = wrap.clientWidth / 2, zq = wrap.clientHeight / 2; if (b.dataset.z === "fit") zoomReset(); else zoomAt(b.dataset.z === "in" ? 1.3 : 1 / 1.3, zr, zq); return;
@@ -223,7 +241,7 @@
   }
   function zoomAt(f, cx, cy) { var s0 = Z.s, s1 = Math.max(ZMIN, Math.min(6, s0 * f)), k = s1 / s0; Z.x = cx - (cx - Z.x) * k; Z.y = cy - (cy - Z.y) * k; Z.s = s1; applyZ(); }
   function zoomReset() { Z.s = 1; Z.x = 0; Z.y = 0; applyZ(); }
-  function fsMode() { var d = curDoc(); return !!(d && (d.k === "wl" || d.k === "vt") && api && api.isHost()); }   /* host + bài đọc/bảng từ: A−/A+ đổi CỠ CHỮ CHUNG (mọi trang cùng cỡ, ít/nhiều chữ mỗi trang) */
+  function fsMode() { var d = curDoc(); return !!(d && (d.k === "wl" || d.k === "vt") && api); }   /* ai cũng chỉnh được cỡ chữ chung (người chơi gửi yêu cầu cho host) */   /* host + bài đọc/bảng từ: A−/A+ đổi CỠ CHỮ CHUNG (mọi trang cùng cỡ, ít/nhiều chữ mỗi trang) */
   function paintZ() { var b = $("#bd-zfit"); if (b) b.textContent = fsMode() ? "Aa " + (fsOf(curDoc()) + 1) + "/" + FS.length : "⤢ " + Math.round(Z.s * 100) + "%"; if (cv && (!canDraw() || tool === "hand")) cv.style.cursor = Z.s > 1 ? "grab" : "default"; }
   function qOf() { return Math.min(3, Math.max(1, Math.ceil(Z.s - 0.05))); }
   function pinfo() { var ids = Object.keys(ptrs), a = ptrs[ids[0]], b = ptrs[ids[1]]; return { d: Math.hypot(a.x - b.x, a.y - b.y) || 1, cx: (a.x + b.x) / 2, cy: (a.y + b.y) / 2 }; }
@@ -434,7 +452,7 @@
       paintTexts();
     } else if (m.t === "del") { removeItem(m.id); draw(); paintTexts(); }
     else if (m.t === "clear") clearAll();
-    else if (m.t === "navreq") { if (api.isHost()) { if (m.k === "page") flip(m.dir > 0 ? 1 : -1); else navStep(m.k, m.dir > 0 ? 1 : -1); } }
+    else if (m.t === "navreq") { if (api.isHost()) { if (m.k === "fs") fsStep(m.dir | 0); else if (m.k === "page") flip(m.dir > 0 ? 1 : -1); else navStep(m.k, m.dir > 0 ? 1 : -1); } }
     else if (m.t === "l") { var L = lasers[m.pid] = lasers[m.pid] || { pts: [] }; L.name = m.n; L.pts.push({ x: m.x, y: m.y, t: Date.now() }); draw(); }
     /* xin bản đầy đủ: host trả lời ngay; HOST VẮNG (mất mạng) thì người được cấp quyền (moderator) có nét trên bảng trả lời thay
        (chờ ngẫu nhiên 0.3–1s, ai đã thấy người khác trả lời thì thôi) — TJ 2026-10-04: "host mất mạng mà có moderator thì bảng vẫn ổn" */
@@ -504,20 +522,34 @@
     return { hubOrig: ORIG_HUBS.indexOf(hb.id) >= 0, hint: [nb.name, sc.name].filter(Boolean).join(" › ") };
   }
   /* 🪪 THẺ BLOCK trên bảng (TJ 2026-10-05): đường dẫn + tên + cấp độ + chip từ cho MỌI người; thanh tiến độ/trạng thái + khay 7 tab học + 🎮 Chơi game CHỈ ADMIN (host). Điện thoại: khay công cụ thu/mở như nút ghim Notebooks. */
+  /* ✏️ BẤM BÚT mới hiện công cụ vẽ ở dưới (thay hàng qua lại trang); nhả ra thì hàng qua lại trang quay lại. Nút nổi trong bảng TỰ ẨN sau 3 giây không chạm (kiểu HelloTalk, TJ 2026-10-05). */
+  var penMode = false, idleT = null;
+  function drawerOpen() { var d = $("#bd-drawer"); return !!(d && !d.hidden); }
+  function poke() {
+    var el = $("#bd"); if (!el) return;
+    el.classList.remove("bd-idle"); clearTimeout(idleT);
+    var lk = $("#bd-lk");
+    if (penMode || drawerOpen() || (lk && !lk.hidden)) return;
+    idleT = setTimeout(function () { el.classList.add("bd-idle"); }, 3000);
+  }
+  function setPen(on) {
+    penMode = !!on; var el = $("#bd"); if (!el) return;
+    el.classList.toggle("bd-pen", penMode);
+    var pb = $("#bd-penbtn"); if (pb) pb.classList.toggle("on", penMode);
+    if (penMode && tool === "hand") tool = "pen"; if (!penMode) tool = "hand";   /* nhả bút -> về ✋ (kéo + 2 ngón phóng to/thu nhỏ cho mọi người) */
+    paintTools(); poke(); setTimeout(fit, 0);
+  }
   var cardInfo = {}, actCol; try { actCol = localStorage.getItem("tjwl_bd_actcol_v1"); } catch (e) {} actCol = actCol == null ? window.innerWidth < 700 : actCol === "1";
   function paintAct() { var a = $("#bd-act"); if (!a) return; a.classList.toggle("col", !!actCol); var t = $("#bd-acttog"); if (t) t.classList.toggle("on", !actCol); extraH(); }
   function extraH() {
-    var h = 0; ["#bd-card"].forEach(function (x) { var e = $(x); if (e && !e.hidden) h += e.offsetHeight + 6; });
-    var bd = $("#bd"); if (!bd) return; bd.style.setProperty("--bd-extra", h + "px");
-    if (!big && !bd.hidden) document.body.style.paddingTop = bd.offsetHeight + "px";   /* thẻ Block đổi cao -> đẩy game xuống ngay, khỏi bị chồng rồi mới tụt */
-    var wp = $("#bd-stage") || wrap, w2 = wp && wp.getBoundingClientRect().width;
-    if (w2 && Math.abs((+bd.dataset.bw || 0) - w2) > 4) { bd.dataset.bw = w2; bd.style.setProperty("--bd-w", Math.round(w2 + 12) + "px"); }   /* thanh trên/hàng nút rộng ĐÚNG bằng bảng */
+    var bd = $("#bd"); if (!bd) return;
+    if (!big && !bd.hidden) document.body.style.paddingTop = bd.offsetHeight + "px";   /* bảng nhỏ ở đầu trang: đẩy game xuống đúng chiều cao */
   }
   function paintCard(d) {
     var card = $("#bd-card"), act = $("#bd-act"); if (!card) return;
     var bid = d && (d.k === "wl" || d.k === "vt") ? d.bid : null, host = api.isHost();
     card.hidden = !bid; if (act) act.hidden = !(bid && host);
-    var fr = $("#bd-frame"); if (fr) fr.style.display = (bid || host) ? "" : "none";
+    var mo = $("#bd-more"); if (mo) mo.hidden = !(bid && host);
     if (!bid) { extraH(); return; }
     paintAct();
     if (!$("#bd-cname").textContent) $("#bd-cname").textContent = d.name || "";   /* hiện tên ngay, dữ liệu còn lại về sau */
@@ -537,7 +569,7 @@
     api.blockInfo(bid).then(function (inf) { cardInfo[bid] = inf; show(inf); }).catch(function () {});
   }
   function keyOf(d) { return d ? (d.k + ":" + (d.url || d.bid) + ":" + (d.p || 1) + (d.ph ? ":" + d.ph : "") + (d.fs != null ? ":f" + d.fs : "")) : ""; }
-  function defAR(d) { return !d ? 16 / 9 : d.ar ? d.ar : (d.k === "wl" || d.k === "vt") ? 0.75 : d.k === "office" ? 0.75 : 0.7071; }
+  function defAR(d) { return 4 / 3; }   /* TJ 2026-10-05: KHUNG CỐ ĐỊNH 4:3 cho mọi nội dung (bài đọc, bảng từ, PDF, ảnh…): đổi tài liệu khung không nhảy to nhỏ, trang PDF nằm lọt giữa khung */
   function syncDoc(d) {
     var k = keyOf(d), nav = $("#bd-docnav");
     if (nav) {
@@ -712,7 +744,8 @@
   }
   /* A−/A+ (host, bài đọc/bảng từ): đổi cỡ chữ CHUNG, giữ vị trí đang đọc */
   function fsStep(delta) {
-    var d = curDoc(); if (!d || !api.isHost()) return;
+    var d = curDoc(); if (!d) return;
+    if (!api.isHost()) { send({ t: "navreq", k: "fs", dir: delta }); return; }
     var cur = fsOf(d), nx = delta === 0 ? FS_DEF : Math.max(0, Math.min(FS.length - 1, cur + delta)); if (nx === cur) return;
     var np = 1;
     if (d.k === "vt") { var first = ((d.p || 1) - 1) * VT_ROWL[cur]; np = Math.floor(first / VT_ROWL[nx]) + 1; }
