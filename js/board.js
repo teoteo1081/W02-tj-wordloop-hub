@@ -1233,10 +1233,10 @@
     var l0 = api && api.lang ? api.lang() : "vi", FL0 = { vi: "🇻🇳", zh: "🇨🇳", es: "🇪🇸" }, d0 = curDoc(), rows0 = d0 && d0.bid ? vtCache[d0.bid] : null;
     $("#bd-fl").innerHTML = list.length ? list.map(function (e, i) {
       var v = e.v || {}, own = l0 !== "en" ? v[l0] : "", row = rows0 ? rows0.find(function (w) { return String(w.term || "").toLowerCase() === e.w.toLowerCase(); }) : null;
-      var on = row ? !!starMap[row.id] : !!(api.savedWord && api.savedWord(e.w));
+      var on = !!e.bm, tj = !!(api.canBookmark && api.canBookmark());
       return '<div class="bd-fe2' + (i === 0 && e.t > Date.now() - 2500 ? " new" : "") + '"><button type="button" class="bd-hb bd-fsay" data-lksay="' + esc(e.w) + '" title="Nghe">🔊</button><div class="bd-fe2m">' +
         '<div class="bd-fe2h"><b>' + esc(e.w) + "</b>" + (v.ipa ? '<span class="bd-fe2ipa">' + esc(v.ipa) + "</span>" : "") + (v.pos ? "<i>" + esc(v.pos) + "</i>" : "") +
-        '<button type="button" class="bd-hb bd-fe2star' + (on ? " on" : "") + '" data-lkstar="' + esc(e.id) + '" title="' + (on ? "Đã lưu" : "Lưu") + '">' + (on ? "★" : "☆") + "</button>" + whoHTML(e) + "</div>" +
+        '<button type="button" class="bd-hb bd-fe2star' + (on ? " on" : "") + (tj ? "" : " ro") + '" data-lkstar="' + esc(e.id) + '" title="' + (on ? "Đã vào ⭐ Ôn riêng của TJ" + (tj ? " — bấm để bỏ" : "") : "Chưa vào Ôn riêng") + '">' + (on ? "★" : "☆") + "</button>" + whoHTML(e) + "</div>" +
         (v.en ? '<div class="bd-fe2en"><span>🇺🇸</span>' + esc(v.en) + "</div>" : "") + (own ? '<div class="bd-fe2vi"><span>' + (FL0[l0] || "") + "</span><b>" + esc(own) + "</b></div>" : "") + "</div></div>";
     }).join("") : '<div class="bd-fempty">Chạm vào một từ trong bài đọc để xem nghĩa — từ vừa tra hiện ở đây, kéo lên xuống để xem lại.</div>';
     if (was0 !== f.hidden) relayout();   /* chỉ tính lại khung bảng khi khung tra từ ẩn/hiện — nội dung đổi thì cao cố định, bảng không giật */
@@ -1244,7 +1244,7 @@
   function whoMe() { var m = me(); return { n: m ? m.name : "", a: m ? m.avatar || "" : "" }; }
   function lkAdd(e) {   /* cùng 1 từ ai tra cũng GỘP vào 1 dòng: danh sách người tra (who) + từ nhảy lên đầu */
     var k = e.w.toLowerCase(), ex = lkFeed.find(function (x) { return x.w.toLowerCase() === k; });
-    if (ex) { ex.who = Object.assign({}, ex.who || {}, e.who || {}); ex.t = Math.max(ex.t || 0, e.t || 0); if (!ex.v && e.v) ex.v = e.v; lkFeed = [ex].concat(lkFeed.filter(function (x) { return x !== ex; })); }
+    if (ex) { ex.who = Object.assign({}, ex.who || {}, e.who || {}); ex.t = Math.max(ex.t || 0, e.t || 0); if (!ex.v && e.v) ex.v = e.v; if (e.wid) { ex.wid = e.wid; ex.bm = true; } lkFeed = [ex].concat(lkFeed.filter(function (x) { return x !== ex; })); }
     else { e.who = e.who || {}; lkFeed.unshift(e); }
     if (lkFeed.length > 60) lkFeed.length = 60; paintFeed(); var f2 = $("#bd-feed"); if (f2) f2.scrollTop = 0;   /* từ mới nhất luôn ở trên cùng; đầy thì cuộn xuống xem */
   }
@@ -1259,6 +1259,7 @@
     var ph = String(phrase || "").trim(); if (!ph) return;
     if (typed) sayWord(ph);   /* gõ từ rồi Enter: đọc đúng từ vừa gõ ngay */
     var ex = lkFeed.find(function (e) { return e.w.toLowerCase() === ph.toLowerCase(); });
+    if (ex && !ex.bm && api.autoSave) { api.autoSave(ex.w, ex.v, null).then(function (wid) { if (wid) { ex.wid = wid; ex.bm = true; paintFeed(); send({ t: "lk", e: { id: ex.id, w: ex.w, v: ex.v, t: ex.t, who: ex.who, wid: wid, bm: true } }); } }); }
     if (ex) { ex.t = Date.now(); ex.who = ex.who || {}; ex.who[myId()] = whoMe(); lkAdd({ id: ex.id, w: ex.w, v: ex.v, t: ex.t, who: ex.who }); send({ t: "lk", e: { id: ex.id, w: ex.w, v: ex.v, t: ex.t, who: ex.who } }); return; }
     if (!lkAllow()) { feedNote("Bạn đã tra nhiều lần trong giờ này, thử lại sau ít phút nhé."); return; }
     var d = curDoc(); if (d && d.bid && !vtCache[d.bid]) { try { vtCache[d.bid] = await api.words(d.bid); } catch (e) {} }
@@ -1267,22 +1268,25 @@
     else { feedNote("⏳ Đang tra “" + ph + "”…"); try { v = await api.lookup(ph, ctx || ""); } catch (e) {} }
     var okv = v && (v.en || v.vi || v.zh || v.es);
     if (!okv) { feedNote("Chưa tra được “" + ph + "” (mạng/AI bận). Thử lại nhé."); return; }
-    var e2 = { id: uid(), w: ph, v: v, by: me() ? me().name : "", saved: false, t: Date.now(), who: {} };
+    var e2 = { id: uid(), w: ph, v: v, by: me() ? me().name : "", saved: false, t: Date.now(), who: {}, bm: false };
     e2.who[myId()] = whoMe();
     lkAdd(e2); send({ t: "lk", e: e2 });
+    if (api.autoSave && ph.split(/\s+/).length <= 8 && ph.length <= 60) {   /* TJ 2026-10-06: từ ai tra cũng vào ⭐ Ôn riêng của TJ */
+      api.autoSave(ph, v, row).then(function (wid) {
+        if (!wid) return; e2.wid = wid; e2.bm = true; var cur = lkFeed.find(function (x) { return x.w.toLowerCase() === ph.toLowerCase(); }); if (cur) { cur.wid = wid; cur.bm = true; }
+        paintFeed(); send({ t: "lk", e: { id: e2.id, w: ph, v: v, t: e2.t, who: e2.who, wid: wid, bm: true } });
+      });
+    }
   }
   function whoHTML(e) {   /* avatar + tên người tra (tối đa 3) + "👥 N" khi từ này nhiều người tra */
     var ids = Object.keys(e.who || {}), n = ids.length; if (!n) return e.by ? '<span class="bd-whol"><span class="bd-wn">' + esc(e.by) + "</span></span>" : "";
     var chips = ids.slice(0, 3).map(function (id) { var w = e.who[id] || {}, av = String(w.a || ""); return '<span class="bd-wc" title="' + esc(w.n || "") + '">' + (/^https?:/.test(av) ? '<img alt="" src="' + esc(av) + '">' : '<i>' + esc(av || "👤") + "</i>") + '<span class="bd-wn">' + esc(w.n || "?") + "</span></span>"; }).join("");
     return '<span class="bd-whol">' + chips + (n > 3 ? '<span class="bd-wmore">+' + (n - 3) + "</span>" : "") + (n > 1 ? '<span class="bd-wcnt" title="' + n + ' người đã tra từ này">👥 ' + n + "</span>" : "") + "</span>";
   }
-  async function lkStar(id) {   /* ☆ Lưu ở khung Từ vừa tra: từ của Block = ⭐ (TJ -> ⭐ Ôn riêng); từ khác = sổ riêng vocab_saves */
-    var e = lkFeed.find(function (x) { return x.id === id; }); if (!e) return;
-    var d = curDoc(), rows = d && d.bid ? vtCache[d.bid] : null, row = rows ? rows.find(function (w) { return String(w.term || "").toLowerCase() === e.w.toLowerCase(); }) : null;
-    try {
-      if (row) { var on = await api.toggleStar(row.id, !starMap[row.id]); starMap[row.id] = !!on; document.querySelectorAll('#bd-doc .bd-vstar[data-star="' + row.id + '"]').forEach(function (x) { x.textContent = on ? "★" : "☆"; x.classList.toggle("on", !!on); }); }
-      else if (api.saveWord) await api.saveWord(e.w, e.v, !api.savedWord(e.w));
-    } catch (er) {}
+  async function lkStar(id) {   /* ☆/★ chỉ TJ bấm được: bật / bỏ ⭐ Ôn riêng của TJ cho từ này */
+    var e = lkFeed.find(function (x) { return x.id === id; }); if (!e || !e.wid || !(api.canBookmark && api.canBookmark())) return;
+    var on = await api.setBookmark(e.wid, !e.bm); e.bm = !!on;
+    document.querySelectorAll('#bd-doc .bd-vstar[data-star="' + e.wid + '"]').forEach(function (x) { x.textContent = on ? "★" : "☆"; x.classList.toggle("on", !!on); }); starMap[e.wid] = !!on;
     paintFeed();
   }
   function toggleSave(id) {

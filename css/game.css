@@ -1432,3 +1432,6 @@ body.embed.bd-on .g-top{display:none !important}
 .bd-iconbar > .bd-people .bd-pp1 b{max-width:34px;font-size:9px;line-height:1.1}
 .bd-iconbar > .bd-docnav{flex:1 1 0;min-width:0;width:auto;max-width:none;margin:0 0 0 auto;justify-content:safe flex-end !important;overflow-x:auto;touch-action:pan-x}
 .bd-iconbar:has(> .bd-people[hidden]) > .bd-docnav{flex:1 1 100%}
+
+/* ★ = đã vào Ôn riêng của TJ; người chơi chỉ xem (không bấm) */
+.bd-fe2star.ro{cursor:default;pointer-events:none}

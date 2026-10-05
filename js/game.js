@@ -1755,13 +1755,32 @@
       }
       var m = readLS("tjwl_board_stars_v1") || {}; if (on) m[wid] = 1; else delete m[wid]; writeLS("tjwl_board_stars_v1", m); return !!on;
     },
-    /* 🔖 lưu từ chạm trong bài đọc trên bảng mà KHÔNG thuộc Block (TJ 2026-10-06): sổ riêng vocab_saves "lk:<từ>" + bản trên máy kèm nghĩa (tjwl_board_saved_v1) */
-    savedWord: function (term) { var m = readLS("tjwl_board_saved_v1") || {}; return !!m[String(term || "").toLowerCase().trim()]; },
-    saveWord: async function (term, v, on) {
-      var k = String(term || "").toLowerCase().trim(); if (!k) return false;
-      var m = readLS("tjwl_board_saved_v1") || {}; if (on) m[k] = { w: term, v: v || null, at: Date.now() }; else delete m[k]; writeLS("tjwl_board_saved_v1", m);
-      if (G.me) { try { if (on) await sb.from("vocab_saves").upsert({ player_id: G.me.id, word_id: "lk:" + k, test: "board", part: null, num: null }, { onConflict: "player_id,word_id" }); else await sb.from("vocab_saves").delete().eq("player_id", G.me.id).eq("word_id", "lk:" + k); } catch (e) {} }
-      return !!on;
+    /* ⭐ TỪ AI TRA TRÊN BẢNG -> ÔN RIÊNG CỦA TJ (TJ 2026-10-06: "những từ người chơi tra nghĩa thì cho vào Ôn riêng của TJ"; bỏ sổ riêng của người chơi).
+       Máy VỪA TRA tự ghi: từ của Block -> bookmark đúng dòng đó; từ khác -> tạo 1 dòng trong kho chung (Hub "TJ" › Notebook "🔎 Từ tra trên bảng", 10 từ/Block, không trùng chữ) rồi bookmark cho TJ.
+       Trả về id từ (để máy khác biết) hoặc null nếu lỗi. */
+    autoSave: async function (term, v, row) {
+      try {
+        var wid;
+        if (row && row.id) wid = row.id;
+        else {
+          var slug = tvSlug(term); if (!slug) return null; wid = "lk_w_" + slug;
+          var ex = await sb.from("words").select("id").eq("id", wid).maybeSingle();
+          if (!ex.data) {
+            var bt = await blEnsureTree(), blk = await blBlockFor(bt);
+            var w = await sb.from("words").insert({ id: wid, block_id: blk, term: term, pos: v && v.pos || null, ipa: v && v.ipa || null, meaning_vi: v && v.vi || null, def_en: v && v.en || null, meaning_zh: v && v.zh || null, meaning_es: v && v.es || null, sort: Date.now() % 100000 });
+            if (w.error && !/duplicate/i.test(w.error.message)) throw w.error;
+          }
+        }
+        var bp = await sb.from("word_progress").upsert({ user_id: HOST_PROFILE_ID, word_id: wid, bookmarked: true }, { onConflict: "user_id,word_id" });
+        if (bp.error) throw bp.error;
+        return wid;
+      } catch (e) { console.warn("autoSave", e && e.message || e); return null; }
+    },
+    canBookmark: function () { return isTJ(); },   /* chỉ TJ bỏ ⭐ được (Ôn riêng là của TJ) */
+    setBookmark: async function (wid, on) {
+      if (!isTJ() || !wid) return !on;
+      var r = await sb.from("word_progress").upsert({ user_id: HOST_PROFILE_ID, word_id: wid, bookmarked: !!on }, { onConflict: "user_id,word_id" });
+      return r.error ? !on : !!on;
     },
     /* 🪪 thẻ Block trên bảng: đường dẫn, cấp độ, từ; riêng host-TJ thêm tiến độ + hạn ôn (word_progress / block_progress của TJ) */
     blockInfo: async function (bid) {
@@ -3004,6 +3023,24 @@
       ["batches", { id: bt, page_id: pg, name: "Từ đã lưu", sort: 0, created_at: Date.now() }]];
     for (var i = 0; i < rows.length; i++) { var r = await sb.from(rows[i][0]).upsert(rows[i][1], { onConflict: "id", ignoreDuplicates: true }); if (r.error) throw r.error; }
     return bt;
+  }
+  /* 🔎 kho "Từ tra trên bảng": Hub "TJ" (hub_toeic_hub) › Notebook › Section › Page › Batch › Block (10 từ/Block) */
+  var BL = { hub: "hub_toeic_hub", nb: "nb_board_lookup", sec: "sec_board_lookup", pg: "pg_board_lookup", bt: "bt_board_lookup" };
+  async function blEnsureTree() {
+    var rows = [["notebooks", { id: BL.nb, hub_id: BL.hub, name: "🔎 Từ tra trên bảng", sort: 98, visibility: "everyone" }],
+      ["sections", { id: BL.sec, notebook_id: BL.nb, name: "Từ người chơi tra", sort: 0 }],
+      ["pages", { id: BL.pg, section_id: BL.sec, name: "Tất cả", sort: 0 }],
+      ["batches", { id: BL.bt, page_id: BL.pg, name: "Từ đã tra", sort: 0, created_at: Date.now() }]];
+    for (var i = 0; i < rows.length; i++) { var r = await sb.from(rows[i][0]).upsert(rows[i][1], { onConflict: "id", ignoreDuplicates: true }); if (r.error) throw r.error; }
+    return BL.bt;
+  }
+  async function blBlockFor(bt) {   /* Block cuối còn chỗ (<10 từ), hết chỗ thì mở Block mới */
+    var bl = await sb.from("blocks").select("id,sort").eq("batch_id", bt).order("sort");
+    var last = (bl.data || []).slice(-1)[0];
+    if (last) { var c = await sb.from("words").select("id", { count: "exact", head: true }).eq("block_id", last.id); if ((c.count || 0) < 10) return last.id; }
+    var n = (bl.data || []).length + 1, id = "bl_board_lookup_" + n;
+    var r = await sb.from("blocks").insert({ id: id, batch_id: bt, name: "Từ tra #" + n, global_index: n, sort: n });
+    if (r.error && !/duplicate/i.test(r.error.message)) throw r.error; return id;
   }
   async function tvBlockFor(bt) {   /* Block CUỐI của Part còn chỗ (<10 từ), hết chỗ thì mở Block mới */
     var bl = await sb.from("blocks").select("id,sort").eq("batch_id", bt).order("sort");
