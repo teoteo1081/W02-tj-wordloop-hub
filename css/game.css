@@ -1081,3 +1081,6 @@ body.embed .bd-drawer .bd-pane{display:none !important}
 
 .bd .bd-tlg #bd-back{white-space:nowrap}
 .bd .bd-tlg{flex-wrap:wrap}
+
+/* v191: trong Learning (embed) không có thu to/nhỏ bảng; bảng luôn phủ trọn vùng giữa, không lộ trang phòng game */
+body.embed #bd-big,body.embed #bd-min,body.embed .bd-dock,body.embed #bd-open{display:none !important}
