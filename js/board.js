@@ -75,7 +75,7 @@
           '<div class="bd-vtbar bd-hud" id="bd-vtbar" hidden>' +
             '<button type="button" class="bd-snd" data-snd title="Bật / tắt tiếng trên máy này">🔊 <span>Có tiếng</span></button>' +
             '<input type="range" class="g-vol js-vol bd-vol" min="0" max="100" step="5" value="100" title="Âm lượng (riêng máy này, chung với game)">' +
-            '<select id="bd-vtrate" title="Tốc độ đọc"><option value="0.3">0.3x</option><option value="0.4">0.4x</option><option value="0.5">0.5x</option><option value="0.6">0.6x</option><option value="0.7">0.7x</option><option value="0.85" selected>0.85x</option><option value="1">1x</option><option value="1.15">1.15x</option></select>' +
+            '<select id="bd-vtrate" title="Tốc độ đọc (host chọn, cả phòng theo)"><option value="0.3">0.3x</option><option value="0.4">0.4x</option><option value="0.5">0.5x</option><option value="0.6">0.6x</option><option value="0.7">0.7x</option><option value="0.85" selected>0.85x</option><option value="1">1x</option><option value="1.15">1.15x</option><option value="1.25">1.25x</option><option value="1.5">1.5x</option><option value="1.75">1.75x</option><option value="2">2x</option></select>' +
             '<button type="button" data-vt="stop" title="Dừng đọc">■ <span>Dừng</span></button>' +
             '<button type="button" class="pri" data-vt="readall" title="Đọc tất cả từ">🔊 <span>Đọc tất cả từ</span></button>' +
             '<button type="button" class="pri" data-vt="readdef" title="Đọc từ + định nghĩa">🔊 <span>Đọc + định nghĩa</span></button>' +
