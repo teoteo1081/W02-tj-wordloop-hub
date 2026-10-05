@@ -1116,3 +1116,22 @@ body.embed .bd.bd-big .bd-feed{flex:none;width:auto;min-width:0;align-self:stret
 
 /* v197: bỏ 2 nút ▲▼ — đã có ◀ ▶ sang trang */
 .bd .bd-pager,.bd-pager{display:none !important}
+
+/* v198 (2026-10-05, TJ: "bố trí trên điện thoại kỳ quá"): điện thoại, bảng trong Learning — phần Block phía trên chiếm tới 600px (chip từ + dòng cấp độ + 7 icon + nút Chơi game) làm khung 4:3 bị ép nhỏ, chữ tí hon.
+   Rút gọn còn: đường dẫn + tên Block (← →) + 1 hàng công cụ; chip từ / cấp độ / thanh tiến độ ẩn (đã có ở Learning). Khay công cụ mặc định đóng (📚 Công cụ mở ra). */
+@media (max-width:759px){
+  body.embed .bd-top{padding:6px 10px 8px;margin-bottom:4px}
+  body.embed .bd-top .bd-chips,body.embed .bd-top .bd-cprog,body.embed .bd-top #bd-clv,body.embed .bd-top #bd-ctag,body.embed .bd-top #bd-cst{display:none !important}
+  body.embed .bd-top .bd-crow .bd-crumb{font-size:12px}
+  body.embed .bd-top .bd-ctitle{gap:6px;flex-wrap:nowrap}
+  body.embed .bd-top .bd-ctitle b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:16px}
+  body.embed .bd-top .bd-tlg #bd-back{font-size:0;min-width:40px}   /* "← Quay lại danh sách Block" -> chỉ còn ☰ (khỏi lẫn với ← → Block trước/sau) */
+  body.embed .bd-top .bd-tlg #bd-back::before{content:"☰";font-size:17px}
+  body.embed .bd-top .bd-act{margin-top:4px;flex-wrap:nowrap;gap:6px}
+  body.embed .bd-top .bd-act .bd-acttools{flex:1 1 auto;min-width:0;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}   /* 7 icon: 1 hàng, vuốt ngang (không xuống 2 hàng) */
+  body.embed .bd-top .bd-act .bd-acttools::-webkit-scrollbar{display:none}
+  body.embed .bd-top .bd-act .bd-acttools .bd-hb{flex:0 0 auto}
+  body.embed .bd-top .bd-act .bd-cplay{flex:0 0 auto;margin-left:0;font-size:0;min-width:40px}   /* "🎮 Chơi game →" chỉ còn 🎮 (không tràn mép phải) */
+  body.embed .bd-top .bd-act .bd-cplay::before{content:"🎮";font-size:18px}
+  body.embed .bd.bd-big .bd-sfx{padding-left:0;padding-right:0;align-items:flex-start;padding-top:4px}   /* khung sát phía trên, chỗ trống dồn xuống dưới (nơi hiện nghĩa từ vừa chạm) thay vì nằm giữa */
+}
