@@ -1288,6 +1288,16 @@
     if (w.WordSet && w.WordSet.isOpen()) { w.WordSet.close(); return; }
   };
 
+  /* 🖤 vào chế độ bảng: đưa Learning về màn DANH SÁCH Block (đóng Trang chủ / Journey / Xếp hạng / Fix lỗi sai–Ôn riêng / chi tiết Block) — TJ 2026-10-05: "bấm Bảng lại nhảy qua thẻ Fix lỗi" */
+  App.showBlockList = function () {
+    try { if (w.Home && !w.$("#screen-home").hidden) w.Home.close(); } catch (e) {}
+    try { if (w.Journey && !w.$("#screen-journey").hidden) w.Journey.close(); } catch (e) {}
+    try { if (!w.$("#screen-leaderboard").hidden) App.closeLeaderboardPage(); } catch (e) {}
+    try { if (w.WordSet && w.WordSet.isOpen()) w.WordSet.close(); } catch (e) {}
+    try { leaveDetail(); } catch (e) {}
+    try { w.$("#screen-detail").hidden = true; w.$("#screen-blocks").hidden = false; } catch (e) {}
+  };
+
   /* ══════════════ BỘ ĐẾM TỔNG SỐ TỪ (góc phải thanh trên cùng) ══════════════
      Luôn hiện, mọi màn hình — không chỉ trong Journey. Chỉ SƠN lại DOM
      (setWordCounter), việc TRUY VẤN số liệu thật (refreshWordCounter) tách

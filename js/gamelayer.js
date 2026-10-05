@@ -60,6 +60,7 @@
   var boardMode = false, seenOn = false;
   function enterBoard() {
     boardMode = true; seenOn = false;
+    try { if (w.App && w.App.showBlockList) w.App.showBlockList(); } catch (e) {}   /* Learning về màn danh sách Block */
     layer.hidden = false; layer.classList.add("board-idle");   /* lớp game có mặt nhưng ẨN (visibility) cho tới khi có Block */
     layer.style.visibility = "hidden"; layer.style.pointerEvents = "none";
     document.body.classList.add("board-skin");
