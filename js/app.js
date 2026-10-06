@@ -1559,6 +1559,8 @@
     w.$("#mi-admin").style.display = isAdmin ? "" : "none";
     var shareOv = w.$("#mi-share-overview");
     if (shareOv) shareOv.style.display = (isAdmin && w.DB.mode === "cloud") ? "" : "none";
+    var plMi = w.$("#mi-players");   /* 👥 Quản lý người chơi: CHỈ hồ sơ TJ (khớp HOST_PROFILE_ID trong js/game.js), Cloud, không ở chế độ "Xem như User" */
+    if (plMi) plMi.style.display = (w.DB.mode === "cloud" && w.Auth.user && w.Auth.user.id === "f3fd95c9-06e8-4d39-b6f2-efc113d436cf" && !w.Auth.viewAsUserId) ? "" : "none";
     /* "✨ Dán bài, tự trích từ" — TỪNG chỉ Admin thấy ("AI chỉ Admin"),
        nay MỞ CHO MỌI USER (theo yêu cầu) — ai cũng dùng được AI (Gemini
        free) để trích từ vựng, không cần phân biệt vai trò nữa.
@@ -4542,6 +4544,10 @@
     w.$("#mi-share-overview").onclick = function () {
       menu.hidden = true;
       App.openShareOverview();
+    };
+    w.$("#mi-players").onclick = function () {
+      menu.hidden = true;
+      if (w.GameLayer && w.GameLayer.openUsers) w.GameLayer.openUsers();
     };
     /* Tab lọc Hub — "đổi view để chia sẻ" (TJ) */
     w.$("#share-hub-filter").addEventListener("click", function (e) {

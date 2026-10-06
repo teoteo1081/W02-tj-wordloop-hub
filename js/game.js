@@ -4580,7 +4580,9 @@
 
   /* ---------- 👥 quản lý người chơi (chỉ TJ) ---------- */
   $("#l-users").addEventListener("click", function () { renderUsers(); });
-  $("#us-back").addEventListener("click", function () { G.inHist = false; if (G.st && G.st.phase === "lobby") renderLobby(); else if (G.st) onState(G.st); });
+  window.addEventListener("message", function (e) { if (e.origin === location.origin && e.data && e.data.type === "tjwl-game-users") renderUsers(); });   /* menu TJ · Admin của WordLoop (gamelayer.openUsers) */
+  if (param("users") === "1") setTimeout(function () { renderUsers(); }, 1800);   /* iframe vừa tạo từ menu: đợi nhận ra hồ sơ TJ rồi mở */
+  $("#us-back").addEventListener("click", function () { G.inHist = false; if (G.st && G.st.phase === "lobby") renderLobby(); else if (G.st) onState(G.st); else show("s-home"); });
   /* Danh sách tự làm mới (TJ 2026-10-01: "vừa tạo tk mới mà quản lý tk không thấy") — trước chỉ tải 1 lần lúc mở màn.
      Nay: 🔄 Tải lại · 10 giây/lần khi đang mở màn · ngay khi có người vào/ra phòng (onPresence). */
   $("#us-reload").addEventListener("click", function () { renderUsers(true); });

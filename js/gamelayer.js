@@ -194,6 +194,17 @@
     if (!isOpen()) open();
   }
 
+  /* 👥 Quản lý người chơi (menu TJ · Admin): mở thẻ Game rồi mở thẳng màn quản lý (game.js renderUsers). Đang ở chế độ Bảng thì rời Bảng trước (như bấm nút 🎮). */
+  function openUsers() {
+    if (boardMode) { closeBoardMode(); leaveBoard(); }
+    if (!layer.firstChild) {
+      var f = document.createElement("iframe");
+      f.src = "game.html?embed=1&t=" + Date.now() + "&users=1"; f.title = "WordLoop Game"; f.allow = "clipboard-write; autoplay";
+      layer.appendChild(f);
+    } else { try { layer.firstChild.contentWindow.postMessage({ type: "tjwl-game-users" }, location.origin); } catch (e) {} }
+    if (!isOpen()) open();
+  }
+
   /* 🖤 Mở bảng cho 1 mục (Block/Batch/Page/Section/Notebook/Hub): mở thẻ Game (giữ phòng đang mở), game tự mở bảng với MỌI Block trong mục. */
   function openBoard(table, id, title) {
     var sc = [{ table: table, id: id, title: title || id }];
@@ -275,5 +286,5 @@
       history.replaceState(null, "", location.pathname);
     }
   } catch (e) {}
-  w.GameLayer = { open: open, close: close, isOpen: isOpen, openScope: openScope, openBoard: openBoard };
+  w.GameLayer = { open: open, close: close, isOpen: isOpen, openScope: openScope, openBoard: openBoard, openUsers: openUsers };
 })(window);
