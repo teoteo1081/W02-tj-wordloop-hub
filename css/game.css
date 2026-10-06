@@ -1534,3 +1534,7 @@ body.big .g-learnlayer{display:none}
 /* TJ 2026-10-06: nút Kết thúc ván — tím như nút Chơi game (trước đây mờ nhạt) */
 #p-stop,.g-clock #p-stop{background:#7c4dff;border-color:#7c4dff;color:#fff;font-weight:700}
 #p-stop:hover{background:#6a3de8;border-color:#6a3de8}
+
+/* TJ 2026-10-06: bài đọc trên Bảng — cụm từ vựng tô vàng KHÔNG bị gạch nối / cắt giữa dòng (trước: "Upfront plan-/ning"); chỉ gạch nối từ dài (>= 10 chữ, mỗi phía >= 4) */
+.bd-wl .bd-term{-webkit-hyphens:none;hyphens:none;white-space:nowrap}
+.bd-both .bd-wl p{hyphenate-limit-chars:10 4 4}

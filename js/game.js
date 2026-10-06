@@ -4034,7 +4034,7 @@
         u.onerror = function (e) { if (e && e.error === "not-allowed") tapHint(true); fin(); };
         setTimeout(function () { if (!started && !done && window.Board && Board.noSound) Board.noSound(); }, 2500);   /* 2.5s chưa phát được -> báo rõ thay vì im lặng */
         if (onB) u.onboundary = function (e) { if (e && e.charIndex != null) onB(e.charIndex); };
-        wd = setTimeout(function () { try { syn.cancel(); } catch (e) {} fin(); }, 4000 + String(text).length * 140 / Math.max(.25, u.rate));
+        wd = setTimeout(function () { try { if (started || !syn.speaking) syn.cancel(); } catch (e) {} fin(); }, 4000 + String(text).length * 140 / Math.max(.25, u.rate));   /* chưa bắt đầu mà hàng đợi đang đọc của cửa sổ KHÁC (cùng Chrome) -> đừng cancel làm cắt tiếng họ */
         try { syn.resume(); } catch (e) {}
         syn.speak(u);
       } catch (e) { fin(); }

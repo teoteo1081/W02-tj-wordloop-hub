@@ -1014,13 +1014,16 @@
   }
   /* máy KHÔNG bấm đọc nhưng đang BẬT tiếng: tự đọc theo đúng câu / từ máy đọc đang tới (nghe riêng bằng tai nghe); hết câu thì chờ tin của câu kế */
   var rsTok = 0;
-  function remoteStop() { rsTok++; try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) {} }
+  /* TJ 2026-10-06: Chrome dùng 1 hàng đợi đọc CHUNG cho mọi cửa sổ cùng trình duyệt (cả ẩn danh) — người chơi gọi cancel() lúc host đang đọc sẽ cắt tiếng của host (thử 2 cửa sổ trên 1 máy bị lộn xộn).
+     Nay chỉ cancel khi CHÍNH máy này đang đọc (mySpk > 0). */
+  var mySpk = 0;
+  function remoteStop() { rsTok++; try { if (mySpk > 0 && window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) {} }
   function remoteSpeak(m) {
     if (!m.k || m.paused) { remoteStop(); return; }
     if (!m.sp || !api.soundOn || !api.soundOn() || !window.speechSynthesis) return;
     if (Date.now() - lastSayAt < 5000) return;   /* đang nghe 1 từ mình vừa bấm -> không chen câu của host vào */
     var my = ++rsTok, d = curDoc(), rate = +m.r || 0.85;
-    try { window.speechSynthesis.cancel(); } catch (e) {}
+    try { if (mySpk > 0) window.speechSynthesis.cancel(); } catch (e) {}
     (async function () {
       await delay(60); if (my !== rsTok) return;
       if (m.k === "wl") { var sn = scBox() && scBox().querySelector('.bd-s[data-s="' + m.s + '"]'); if (sn) await speakOne(sn.textContent, "en-US", rate); }
@@ -1082,7 +1085,7 @@
     if (my === reading) { readOn = false; readPos = null; shareRead({ k: null }); }
   }
   function speakOne(text, lang, rate, onB) {
-    if (api && api.speak) return api.speak(text, lang, rate, onB, api.soundOn ? !api.soundOn() : false);
+    if (api && api.speak) { mySpk++; var pr = api.speak(text, lang, rate, onB, api.soundOn ? !api.soundOn() : false); var dn = function () { mySpk = Math.max(0, mySpk - 1); }; if (pr && pr.then) pr.then(dn, dn); else dn(); return pr; }
     return new Promise(function (ok) { try { var u = new SpeechSynthesisUtterance(text); u.lang = lang; u.rate = rate; uttKeep.push(u); if (uttKeep.length > 8) uttKeep.shift(); u.onend = u.onerror = function () { ok(); }; window.speechSynthesis.speak(u); } catch (e) { ok(); } });
   }
   function vtAction(a) {
