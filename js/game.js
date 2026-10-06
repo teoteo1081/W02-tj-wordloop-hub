@@ -2664,6 +2664,15 @@
   function apReview(L) {
     var q = L && L.tq; if (!q) return;
     if (!q.audl) { var it0 = (G.tItems || []).filter(function (x) { return x.num === q.num && String(x.test || q.test) === String(q.test); })[0]; if (it0) q.audl = (String(it0.passage || "").match(/^\[aud\][^\n]*/m) || [""])[0]; }   /* ván cũ chưa lưu mốc audio -> lấy từ đề */
+    if (!q.audl && !q.audTried && q.test != null && q.num != null) {   /* trang vừa tải (chưa có G.tItems): hỏi thẳng kho đề rồi vẽ lại thanh nghe — kể cả "Cả bài nói" của Part 3–4 */
+      q.audTried = true;
+      sb.from("test_items").select("passage").eq("exam", "toeic").eq("test", String(q.test)).eq("num", q.num).limit(1).then(function (r) {
+        var p = r && r.data && r.data[0] && r.data[0].passage; if (!p) return;
+        q.audl = (String(p).match(/^\[aud\][^\n]*/m) || [""])[0];
+        if (q.audl && rvCur() && rvCur().tq === q && !$("#rv-ap")) apReview(rvCur());
+      }, function () {});
+      return;
+    }
     if (!q.audl && !q.full) return;
     q.ansL = (String(L.ans || "").match(/^\(?([A-D])\)?(?:\s|$)/) || [])[1] || "";
     var m = String(q.audl || q.full).match(/^\[aud\] q=([\d.]+)-([\d.]+)(?: g=([\d.]+)-([\d.]+))?/m); if (!m) return;
