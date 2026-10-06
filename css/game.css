@@ -1560,3 +1560,7 @@ body.g-viewer .g-learn{display:none}
 
 /* TJ 2026-10-06: cột công cụ dọc bắt đầu BÊN DƯỚI nút ✕ (trước đây nút A− nằm ngay dưới ✕ và bị ✕ đè) */
 .bd .bd-sfx > .bd-docnav.bd-railtools{top:56px}
+
+/* TJ 2026-10-06: pop-up Quản lý người chơi (game.html?usersonly=1): chỉ danh sách, không thanh trên / thẻ / nút Về */
+body.usersonly .g-top,body.usersonly .g-learn,body.usersonly #us-back,body.usersonly #s-users > h1{display:none !important}
+body.usersonly #g-main{max-width:none;padding:8px 14px 24px}

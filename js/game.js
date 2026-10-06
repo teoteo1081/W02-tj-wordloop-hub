@@ -4882,6 +4882,7 @@
     if (G.fromLink && G.profile && G.linkProfile !== G.profile.id) G.profile = null;
     if (!G.langSet && isTJ()) { G.myLang = "vi"; $("#g-mylang").value = "vi"; applyUI(); }   /* máy TJ mặc định tiếng Việt */
     paintMe();
+    if (param("usersonly") === "1") { document.body.classList.add("usersonly"); renderUsers(); return; }   /* TJ 2026-10-06: pop-up Quản lý người chơi (menu Admin của WordLoop): CHỈ màn danh sách, KHÔNG vào phòng / không tranh vai host */
     route();
   })();
 })();

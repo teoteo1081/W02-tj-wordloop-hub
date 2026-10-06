@@ -2480,3 +2480,9 @@ body.board-skin .lbd-people{margin-top:1rem}
 
 /* TJ 2026-10-06: thẻ Game — mục vừa chọn làm chủ đề ván ở cột Notebooks / Pages */
 #sidebar-left .game-pick,#sidebar-right .game-pick{outline:2px solid #7c4dff;outline-offset:-2px;border-radius:8px}
+
+/* TJ 2026-10-06: pop-up Quản lý người chơi (menu TJ · Admin) */
+.modal-box.pop{padding:0;height:88vh;max-height:92vh;display:flex;flex-direction:column;overflow:hidden}
+.modal-box.pop .pop-head{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.7rem 1rem;border-bottom:1px solid var(--border);flex:none}
+.modal-box.pop .pop-head h3{margin:0}
+.modal-box.pop iframe{flex:1 1 auto;width:100%;border:0;background:var(--bg-main,#262624)}

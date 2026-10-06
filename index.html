@@ -25,7 +25,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon.svg">
-<link rel="stylesheet" href="css/app.css?v=62">
+<link rel="stylesheet" href="css/app.css?v=63">
 </head>
 <body>
 
@@ -1073,6 +1073,14 @@ mitigate | giảm nhẹ"></textarea>
   </div>
 </div>
 
+<!-- 👥 Quản lý người chơi (menu TJ · Admin): POP-UP đè lên trang hiện tại, bên trong là màn quản lý của game ở chế độ chỉ-danh-sách (game.html?usersonly=1, không vào phòng) — TJ 2026-10-06 -->
+<div class="modal-overlay" id="modal-players" hidden>
+  <div class="modal-box xwide pop">
+    <div class="pop-head"><h3>👥 Quản lý người chơi</h3><button type="button" class="btn-ghost" id="players-close">✕ Đóng</button></div>
+    <iframe id="players-frame" title="Quản lý người chơi" allow="clipboard-write"></iframe>
+  </div>
+</div>
+
 <!-- Đăng nhập cloud -->
 <div class="modal-overlay" id="modal-cloud" hidden>
   <div class="modal-box">
@@ -1229,7 +1237,7 @@ mitigate | giảm nhẹ"></textarea>
 <script src="js/home.js?v=3"></script>
 <script src="js/wordset.js?v=9"></script>
 <script src="js/app.js?v=61"></script>
-<script src="js/gamelayer.js?v=24"></script>
+<script src="js/gamelayer.js?v=25"></script>
 <script src="js/hubpage.js?v=2"></script>
 </body>
 </html>
