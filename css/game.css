@@ -1501,3 +1501,8 @@ body.big .g-learnlayer{display:none}
 /* TJ 2026-10-06: người chơi — bỏ thanh Phòng game/TOEIC/IELTS/EA/Digital Marketing; ô Language trên cùng trùng 4 nút "Nghĩa hiển thị bằng" (cùng 1 thiết lập) nên ẩn khi thẻ đó đang hiện, ra khỏi phòng chờ thì ô này hiện lại */
 body.g-player .g-learn{display:none}
 body:has(#s-lobby:not([hidden]) #l-mecard:not([hidden])) .g-langlbl{display:none}
+
+/* TJ 2026-10-06: người chơi ở phòng chờ — bỏ chip avatar/tên góc phải (trùng thẻ bên dưới); bấm thẻ avatar + tên để đổi (✏️) */
+body:has(#s-lobby:not([hidden]) #l-mecard:not([hidden])) #g-me{display:none}
+#l-mecard .g-mehead{cursor:pointer}
+#l-mename::after{content:" ✏️";font-size:12px;opacity:.6}

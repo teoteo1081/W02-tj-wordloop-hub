@@ -433,6 +433,8 @@
     if (G.me) b.innerHTML = avatar(G.me.avatar) + " " + label({ name: G.me.name, no: G.me.name_no });
   }
   $("#g-me").addEventListener("click", function () { if (!G.room || !G.st || G.st.phase === "lobby") renderNameScreen(); });
+  /* TJ 2026-10-06: người chơi ở phòng chờ: chip góc phải bị ẩn (trùng thẻ avatar + tên) -> bấm thẳng thẻ avatar + tên để đổi tên / ảnh */
+  var meHead = document.querySelector("#l-mecard .g-mehead"); if (meHead) meHead.addEventListener("click", function () { if (!G.room || !G.st || G.st.phase === "lobby") renderNameScreen(); });
 
   /* ---------- 2. trang chính ---------- */
   var picked = [];   /* [{table, id, title}] */
