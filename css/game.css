@@ -1564,3 +1564,13 @@ body.g-viewer .g-learn{display:none}
 /* TJ 2026-10-06: pop-up Quản lý người chơi (game.html?usersonly=1): chỉ danh sách, không thanh trên / thẻ / nút Về */
 body.usersonly .g-top,body.usersonly .g-learn,body.usersonly #us-back,body.usersonly #s-users > h1{display:none !important}
 body.usersonly #g-main{max-width:none;padding:8px 14px 24px}
+
+/* TJ 2026-10-06: đang chia sẻ màn hình -> máy NGƯỜI XEM ẩn lớp bài đọc / bảng từ vựng để hiện hình chia sẻ (lớp vẽ vẫn nằm trên) */
+.bd-stage.bd-screen-view .bd-doc{display:none !important}
+
+/* TJ 2026-10-06: nút chia sẻ màn hình = 🎥 màu gradient xanh ngọc → xanh dương; đang chia sẻ = đỏ cam nhấp nháy (LIVE) */
+#bd-share,.bd .bd-sfx > .bd-railtools #bd-share,.bd-iconbar #bd-share{background:linear-gradient(135deg,#14b8a6,#3b82f6);border:0;color:#fff;box-shadow:0 2px 8px rgba(20,184,166,.4);font-size:18px}
+#bd-share:hover{filter:brightness(1.1)}
+#bd-share.on,.bd .bd-sfx > .bd-railtools #bd-share.on,.bd-iconbar #bd-share.on{background:linear-gradient(135deg,#ef4444,#f97316);box-shadow:0 0 0 0 rgba(239,68,68,.6);animation:bdLive 1.6s ease-out infinite}
+@keyframes bdLive{0%{box-shadow:0 0 0 0 rgba(239,68,68,.6)}70%{box-shadow:0 0 0 10px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
+@media (prefers-reduced-motion:reduce){#bd-share.on{animation:none}}
