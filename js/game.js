@@ -2431,12 +2431,19 @@
     paintProg(s);
     var roster = s.roster || {}, list = live(s, rankList(s.scores)), teams = +s.teams;
     $("#p-teams").innerHTML = teams ? teamSummary(s, true) : "";
+    /* 🏆 top 3 gọn ngay trên câu hỏi (vòng tròn avatar + hạng); bảng đầy đủ nằm DƯỚI câu hỏi */
+    var t3 = $("#p-top3");
+    if (t3) t3.innerHTML = list.slice(0, 3).map(function (x, i) {
+      var p = roster[x.pid] || {}, sc = x.c != null ? x.c : "";
+      return '<span class="g-t3 g-t3-' + (i + 1) + (G.me && x.pid === G.me.id ? " me" : "") + '" title="' + esc(p.name || "") + '"><i class="g-t3m">' + ["🥇", "🥈", "🥉"][i] + "</i>" + avatar(p.avatar, "g-av-md") + (sc !== "" ? "<b>✓" + esc(sc) + "</b>" : "") + "</span>";
+    }).join("");
     $("#p-board").innerHTML = list.map(function (x) {
       var p = roster[x.pid] || {};
       return '<li class="' + (x.pid === G.me.id ? "me" : "") + '"><span class="g-rank">' + x.rank + "</span>" + avatar(p.avatar) +
         '<span class="g-pname">' + label(p) + "</span>" + (teams ? teamDot((s.teamOf || {})[x.pid]) : "") +
         '<span class="g-streak">' + (x.st >= 2 ? "🔥" + x.st : "") + "</span>" + statsHTML(x, s) + tally(x, s) + "</li>";
     }).join("");
+    requestAnimationFrame(fitTImg);   /* bố cục đổi (top 3 / thống kê) -> đo lại cho hình đề vừa màn hình */
   }
 
   /* vẽ 1 câu hỏi (dùng chung Kahoot / Tự do): gợi ý dạng câu + nội dung + 4 lựa chọn HOẶC ô gõ */

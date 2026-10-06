@@ -9,7 +9,7 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'wordloop'});</script>
 <script>window.ga4=function(n,p){try{if(window.gtag)gtag('event',n,p||{});}catch(e){}};</script>
-<link rel="stylesheet" href="css/game.css?v=193">
+<link rel="stylesheet" href="css/game.css?v=194">
 </head>
 <body>
 <!-- 🎮 Phòng game chơi chung — xem README.md "Việc còn dang dở" > PHÒNG GAME, bảng: tools/game_schema.sql.
@@ -150,7 +150,7 @@
     <!-- 📊 dải ô thống kê của MÌNH (TJ 2026-10-02: hàng trên "kỳ quá" -> tách 2 tầng, số to + nhãn nhỏ) -->
     <div class="g-statbar" id="p-prog"></div>
     <div class="g-teambar" id="p-teams"></div>
-    <ol class="g-board" id="p-board"></ol>
+    <div class="g-top3" id="p-top3"></div>
     <div class="g-q">
       <div class="g-qbar"><div id="p-qbar"></div></div>
       <div class="g-qhint g-sub" id="p-hint"></div>
@@ -162,6 +162,7 @@
       <div class="g-res" id="p-res"></div>
       <div class="g-row g-center"><button class="g-btn g-btn-soft" id="p-reveal" type="button" hidden data-t="reveal_btn">👁 Hiện đáp án</button><button class="g-btn" id="p-next" type="button" hidden data-t="next_q">Câu tiếp ▶</button></div>
     </div>
+    <ol class="g-board g-board-below" id="p-board"></ol>
   </section>
 
   <!-- 5. Kết quả -->
@@ -238,7 +239,7 @@
 <script src="js/config.js?v=4"></script>
 <script src="js/toeic_tips.js?v=1"></script>
 <script src="js/board.js?v=94"></script>
-<script src="js/game.js?v=249"></script>
+<script src="js/game.js?v=250"></script>
 <script src="js/learn.js?v=2"></script>
 </body>
 </html>

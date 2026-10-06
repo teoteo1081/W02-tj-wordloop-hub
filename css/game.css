@@ -1596,3 +1596,26 @@ body.usersonly #g-main{max-width:none;padding:8px 14px 24px}
 .bd-col{width:26px;min-width:26px!important;height:26px!important;box-shadow:inset 0 0 0 2px rgba(255,255,255,.22)}
 .bd-col[data-col="#1b1b1e"]{box-shadow:0 0 0 1.5px rgba(255,255,255,.6)}
 @media (max-width:520px){.bd-col{width:22px;min-width:22px!important;height:22px!important}.bd-bottom .bd-tools{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 26px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 26px),transparent)}}
+
+/* ===== v194 (TJ 2026-10-06): Listening — hình + câu hỏi + đáp án vừa 1 màn hình; top 3 gọn ở trên, bảng xếp hạng ở DƯỚI; avatar tròn dễ thương ===== */
+.g-top3{display:flex;justify-content:center;align-items:flex-end;gap:14px;margin:6px 0 4px}
+.g-top3:empty{display:none}
+.g-t3{position:relative;display:inline-flex;align-items:center;gap:5px;padding:2px 10px 2px 4px;border-radius:999px;background:var(--card);border:1px solid var(--line)}
+.g-t3.me{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.g-t3 .g-av-md{width:30px;height:30px;font-size:19px;border:2px solid var(--line);box-sizing:border-box}
+.g-t3-1 .g-av-md{border-color:#f5c542}.g-t3-2 .g-av-md{border-color:#c0c7d1}.g-t3-3 .g-av-md{border-color:#d08a52}
+.g-t3m{position:absolute;top:-9px;left:-3px;font-style:normal;font-size:13px;line-height:1}
+.g-t3 b{font-size:13px;color:var(--green);font-variant-numeric:tabular-nums}
+.g-board-below{margin:12px 0 0;max-height:none;flex:none}
+/* dải thống kê: 1 hàng nhỏ gọn, không ăn chỗ của hình đề */
+.g-play .g-statbar{display:flex;gap:4px;margin:4px 0;overflow-x:auto;scrollbar-width:none}
+.g-play .g-statbar::-webkit-scrollbar{display:none}
+.g-play .g-stat{flex:1 0 auto;min-width:46px;padding:2px 6px;border-radius:999px}
+.g-play .g-stat b{display:inline;font-size:14px}
+.g-play .g-stat span{display:inline;margin-left:3px;font-size:10px}
+/* đáp án: chỉ avatar tròn chồng nhẹ, không tên */
+.g-opt .g-pickers{gap:0}
+.g-opt .g-pickers .g-av{width:26px;height:26px;font-size:15px;border:2px solid var(--card);box-sizing:border-box;margin-left:-6px;box-shadow:0 1px 3px rgba(0,0,0,.35)}
+.g-opt .g-pickers .g-av:first-child{margin-left:0}
+.g-opt .g-pickers .g-cnt{margin-left:6px}
+.g-timg{transition:max-height .2s ease}
