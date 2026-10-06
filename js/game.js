@@ -1563,6 +1563,10 @@
     if (!G.isHost || !G.st || !sc || !sc.length) return;
     if (!TREE) await loadTree(true);
     var list = []; sc.forEach(function (p) { list = list.concat(blocksUnder(p.table, p.id)); });
+    if (!list.length) {   /* cây đã tải từ trước -> Block/Batch mới dán bên WordLoop chưa có trong đó: tải lại cây mới rồi thử lại 1 lần (TJ 2026-10-06) */
+      await loadTree(true);
+      sc.forEach(function (p) { list = list.concat(blocksUnder(p.table, p.id)); });
+    }
     if (!list.length) { alert("Mục này chưa có Block để mở lên bảng."); return; }
     if (G.st.phase === "lobby") { picked = sc.map(function (p) { return { table: p.table, id: p.id, title: p.title || p.id }; }); hostSetScope(); }
     if (!G.st.board) { G.st.board = true; push(); }
