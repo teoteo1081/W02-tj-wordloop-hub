@@ -206,6 +206,12 @@
     if (!isOpen()) open();
   }
 
+  /* game báo: hiện thẻ Game (nút Game → trên Bảng): rời chế độ Bảng rồi mở thẻ Game, KHÔNG quay về Learning */
+  w.addEventListener("message", function (e) {
+    if (e.origin !== location.origin || !e.data || e.data.type !== "tjwl-game-show") return;
+    if (boardMode) leaveBoard();
+    if (!isOpen()) open();
+  });
   /* 🖤 Mở bảng cho 1 mục (Block/Batch/Page/Section/Notebook/Hub): mở thẻ Game (giữ phòng đang mở), game tự mở bảng với MỌI Block trong mục. */
   function openBoard(table, id, title) {
     var sc = [{ table: table, id: id, title: title || id }];
