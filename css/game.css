@@ -1574,3 +1574,7 @@ body.usersonly #g-main{max-width:none;padding:8px 14px 24px}
 #bd-share.on,.bd .bd-sfx > .bd-railtools #bd-share.on,.bd-iconbar #bd-share.on{background:linear-gradient(135deg,#ef4444,#f97316);box-shadow:0 0 0 0 rgba(239,68,68,.6);animation:bdLive 1.6s ease-out infinite}
 @keyframes bdLive{0%{box-shadow:0 0 0 0 rgba(239,68,68,.6)}70%{box-shadow:0 0 0 10px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
 @media (prefers-reduced-motion:reduce){#bd-share.on{animation:none}}
+
+/* TJ 2026-10-06: nút Game khi bảng đang hiện sách / PDF / ảnh (không có Block liên quan): tím nhạt, không bấm được */
+#bd-cplay.bd-cdis,.bd-iconbar > .bd-cpin.bd-cdis{background:rgba(124,77,255,.26);border-color:transparent;color:rgba(255,255,255,.62);box-shadow:none;cursor:not-allowed;font-weight:600}
+#bd-cplay.bd-cdis:hover{background:rgba(124,77,255,.26)}

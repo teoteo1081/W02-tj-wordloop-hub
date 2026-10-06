@@ -709,6 +709,7 @@
       ["#bd-dprev", "#bd-dnext"].forEach(function (x) { var e = $(x); if (e) e.hidden = !isPg || isTxt; });   /* v200: bài đọc / bảng từ cuộn, không lật trang */
       var isBlk = !!(d && d.bid && (d.k === "wl" || d.k === "vt"));
       document.querySelectorAll("#bd-docnav [data-nv]").forEach(function (e) { e.hidden = !isBlk; });
+      var cp0 = $("#bd-cplay"); if (cp0) { cp0.disabled = !isBlk; cp0.classList.toggle("bd-cdis", !isBlk); cp0.title = isBlk ? "Chơi game với Block này" : "Sách / tài liệu này chưa có game — chỉ bài học (Block) mới chơi được"; }   /* TJ 2026-10-06: đọc sách / PDF thì Game mờ + không bấm được */
       if (isBlk) {
         var eg = api.edge ? api.edge(d.bid) : null, kp = $("#bd-kprev"), kn = $("#bd-knext");
         if (kp) { kp.textContent = eg && eg.first ? "⏮" : "⏪"; kp.title = eg && eg.first ? "Batch trước" : "Block trước"; }
