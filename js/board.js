@@ -1721,9 +1721,9 @@
   function showVideo(stream, local) {
     var v = $("#bd-video"); if (!v) return;
     if (v.srcObject !== (stream || null)) v.srcObject = stream || null;
-    v.hidden = !stream; if (local || !stream) v.muted = true;   /* tự phát cần muted; người xem bấm 🔊 Bật tiếng */
+    v.hidden = !stream || !!local; if (local || !stream) v.muted = true;   /* host KHÔNG xem lại hình đang chia sẻ: hình chồng lên bài của host nên rối + lặp vô tận (TJ 2026-10-06) */   /* tự phát cần muted; người xem bấm 🔊 Bật tiếng */
     if (stream) v.play().catch(function () {});
-    $("#bd-stage").classList.toggle("bd-screen", !!stream);
+    $("#bd-stage").classList.toggle("bd-screen", !!stream && !local);
     $("#bd-stage").classList.toggle("bd-screen-view", !!stream && !local);   /* TJ 2026-10-06: NGƯỜI XEM thấy màn hình chia sẻ thay cho bài (trước: lớp bài đè lên hình, chỉ nghe tiếng); host vẫn thấy bài của mình */
     paintShare();
   }
@@ -1731,7 +1731,7 @@
   /* host */
   function startShare() {
     if (!canShare || !api || !api.isHost() || shStream) return;
-    var gdm = function (a) { return navigator.mediaDevices.getDisplayMedia({ video: { frameRate: { ideal: 15, max: 24 } }, audio: a }); };
+    var gdm = function (a) { return navigator.mediaDevices.getDisplayMedia({ video: { frameRate: { ideal: 15, max: 24 } }, audio: a, selfBrowserSurface: "exclude", surfaceSwitching: "include" }); };
     gdm(true).catch(function (e) { if (e && (e.name === "NotAllowedError" || e.name === "AbortError")) throw e; return gdm(false); })   /* trình duyệt không cho kèm tiếng -> chỉ hình */
       .then(function (s) {
         shStream = s; shFull = {};
