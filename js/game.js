@@ -4741,6 +4741,9 @@
        (kể cả TJ = host), không phải tạo tài khoản mới. Người chơi dùng link trần, không cần ?u= */
     var qid = param("u"), id = qid;
     if (!id) { try { id = localStorage.getItem(LS_LINK); } catch (e) {} }
+    /* TJ 2026-10-06: "đang tài khoản Admin mà host gì nữa" — thẻ Game/Bảng chạy TRONG WordLoop (embed, cùng trang) thì lấy luôn hồ sơ WordLoop đang đăng nhập,
+       khỏi bắt mở lại link ?u= trên máy/địa chỉ mới (vd localhost) rồi mới được làm host. Không ghi LS_LINK (chỉ dùng cho phiên này). */
+    if (!id && G.embed) { try { var pu = window.parent && window.parent !== window && window.parent.Auth && window.parent.Auth.user; if (pu && pu.id && String(pu.id).length === 36) id = pu.id; } catch (e) {} }
     if (!id) return;
     var r = await sb.from("profiles").select("id,display_name,is_admin").eq("id", id).maybeSingle();
     if (!r.data) return;
