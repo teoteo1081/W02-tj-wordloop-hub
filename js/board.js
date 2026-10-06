@@ -75,7 +75,7 @@
           '<div class="bd-vtbar bd-hud" id="bd-vtbar" hidden>' +
             '<button type="button" class="bd-snd" data-snd title="Bật / tắt tiếng trên máy này">🔊 <span>Có tiếng</span></button>' +
             '<input type="range" class="g-vol js-vol bd-vol" min="0" max="100" step="5" value="100" title="Âm lượng (riêng máy này, chung với game)">' +
-            '<select id="bd-vtrate" title="Tốc độ đọc (host chọn, cả phòng theo)"><option value="0.3">0.3x</option><option value="0.4">0.4x</option><option value="0.5">0.5x</option><option value="0.6">0.6x</option><option value="0.7">0.7x</option><option value="0.85" selected>0.85x</option><option value="1">1x</option><option value="1.15">1.15x</option><option value="1.25">1.25x</option><option value="1.5">1.5x</option><option value="1.75">1.75x</option><option value="2">2x</option></select>' +
+            '<select id="bd-vtvoice" title="Giọng đọc (chọn riêng cho máy này)"><option value="">🗣 Giọng</option></select><select id="bd-vtrate" title="Tốc độ đọc (host chọn, cả phòng theo)"><option value="0.3">0.3x</option><option value="0.4">0.4x</option><option value="0.5">0.5x</option><option value="0.6">0.6x</option><option value="0.7">0.7x</option><option value="0.85" selected>0.85x</option><option value="1">1x</option><option value="1.15">1.15x</option><option value="1.25">1.25x</option><option value="1.5">1.5x</option><option value="1.75">1.75x</option><option value="2">2x</option></select>' +
             '<button type="button" data-vt="stop" title="Dừng đọc">■ <span>Dừng</span></button>' +
             '<button type="button" class="pri" data-vt="readall" title="Đọc tất cả từ">🔊 <span>Đọc tất cả từ</span></button>' +
             '<button type="button" class="pri" data-vt="readdef" title="Đọc từ + định nghĩa">🔊 <span>Đọc + định nghĩa</span></button>' +
@@ -142,13 +142,30 @@
       mb0.addEventListener("change", function (e) { if (e.target.id === "bd-vtrate" && api.isHost()) send({ t: "rt", r: parseFloat(e.target.value) }); });
       mb0.addEventListener("click", function (e) { var t = e.target; if (!t.closest) return; if (t.closest("[data-wlread]")) readPassage(); else if (t.closest("[data-snd]")) { if (api.toggleSound) { api.toggleSound(); rsTok++; paintSndBtn(); } } });
     }
+    /* TJ 2026-10-06: "cho chọn giọng đi chứ đừng theo Learning" — ô chọn giọng riêng của Bảng/Game (lưu tjwl_game_voice_v1, chỉ máy này) */
+    (function () {
+      var KEY = "tjwl_game_voice_v1", syn = window.speechSynthesis; if (!syn) return;
+      function shortName(n) { return String(n).replace(/^Microsofts+/, "").replace(/s*-s*English.*$/i, "").replace(/s*(Natural)/i, " ✨"); }
+      function paint() {
+        var s = $("#bd-vtvoice"); if (!s) return;
+        var cur = ""; try { cur = localStorage.getItem(KEY) || ""; } catch (e) {}
+        var vs = (syn.getVoices() || []).filter(function (v) { return /^en/i.test(v.lang); });
+        s.innerHTML = '<option value="">🗣 Giọng tự động</option>' + vs.map(function (v) { return '<option value="' + esc(v.name) + '"' + (v.name === cur ? " selected" : "") + ">" + esc(shortName(v.name)) + "</option>"; }).join("");
+      }
+      paint(); try { syn.addEventListener("voiceschanged", paint); } catch (e) {}
+      el.addEventListener("change", function (e) {
+        if (!e.target || e.target.id !== "bd-vtvoice") return;
+        try { if (e.target.value) localStorage.setItem(KEY, e.target.value); else localStorage.removeItem(KEY); } catch (er) {}
+        try { syn.cancel(); var u = new SpeechSynthesisUtterance("Hello, this is my voice."); u.lang = "en-US"; var v = (syn.getVoices() || []).find(function (x) { return x.name === e.target.value; }); if (v) u.voice = v; syn.speak(u); } catch (er) {}   /* nghe thử ngay */
+      });
+    })();
     setInterval(function () { if (open && !mini) { paintPeople(); paintHostAway(); paintSndBtn(); } }, 2000);
     var dn0 = $("#bd-docnav"), ppl0 = $("#bd-people"), fd0 = $("#bd-feed");
     if (dn0) {   /* ☰ ← → (trước) và 🎮 (sau) vào hàng nút dưới bảng — chỉ host thấy */
       /* TJ 2026-10-06: "← Quay lại danh sách Block" + ← → (Block trước/sau) nằm hàng RIÊNG phía TRÊN cái loa (y như thẻ Block), không xuống hàng dưới nữa */
       var tlg0 = $("#bd-tlg"), mbn0 = $("#bd-mebar");
       if (tlg0 && mbn0) { var nr0 = document.createElement("div"); nr0.id = "bd-navrow"; nr0.className = "bd-navrow bd-hostonly"; nr0.hidden = true; mbn0.parentNode.insertBefore(nr0, mbn0); nr0.appendChild(tlg0); }
-      var cp = $("#bd-cplay"); if (cp) { cp.classList.add("bd-hostonly"); cp.innerHTML = '🎮 <span class="bd-cplbl">Chơi game →</span>'; cp.title = "Chơi game với Block này"; dn0.appendChild(cp); }
+      var cp = $("#bd-cplay"); if (cp) { cp.classList.add("bd-hostonly"); cp.textContent = "Game →"; cp.title = "Chơi game với Block này"; dn0.appendChild(cp); }
       /* TJ 2026-10-06: "icon phải nằm dưới cái bảng" — gom MỌI icon (cột nút nổi bên phải + hàng lật trang/cỡ chữ) vào 1 hàng cố định dưới bảng */
       var sfx0 = $("#bd-sfx");
       if (sfx0) {

@@ -1465,3 +1465,12 @@ body.big .g-learnlayer{display:none}
 .bd-iconbar > .bd-cpin:hover{background:#8d63ff}
 @media (max-width:700px){.bd-iconbar > .bd-cpin .bd-cplbl{display:none}.bd-iconbar > .bd-cpin{padding:0 12px;min-width:44px}}
 .bd .bd-pager{display:none !important}
+
+/* TJ 2026-10-06: nút "Game →" nhỏ gọn; trên web dùng chuột (không vuốt ngang được) thì hàng công cụ CỐ ĐỊNH, xếp xuống dòng thay vì cuộn ngang ẩn nút */
+.bd-iconbar > .bd-cpin{min-height:34px;min-width:0;padding:0 14px;border-radius:10px;font-size:14px;font-weight:700}
+@media (hover:hover) and (pointer:fine){
+  .bd-iconbar > .bd-docnav{flex-wrap:wrap;overflow:visible;height:auto}
+  .bd-iconbar{align-items:flex-start}
+}
+.bd .bd-navrow .bd-tlg{overflow:visible}
+.bd .bd-vtvoice,.bd-mebar .bd-audio #bd-vtvoice{max-width:150px;text-overflow:ellipsis}
