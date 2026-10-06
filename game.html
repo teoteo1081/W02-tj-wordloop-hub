@@ -195,9 +195,10 @@
   <!-- 👥 Quản lý người chơi (chỉ TJ) — đổi tên, gộp tài khoản trùng (TJ#2…) về 1, xoá -->
   <section class="g-screen" id="s-users" hidden>
     <h1>👥 Quản lý người chơi</h1>
+    <!-- TJ 2026-10-06: dòng Về phòng chờ · Tải lại · số người nằm NGAY DƯỚI tiêu đề (không phải cuộn xuống cuối danh sách) -->
+    <div class="g-row"><button class="g-btn g-btn-soft" id="us-back">← Về phòng chờ</button><button class="g-btn g-btn-soft" id="us-reload">🔄 Tải lại</button><span class="g-sub" id="us-time"></span></div>
     <p class="g-sub">Gộp = chuyển hết lịch sử ván + câu trả lời sang tài khoản kia rồi xoá tài khoản này (ván nào cả hai cùng chơi thì giữ kết quả của tài khoản được gộp vào). Không hoàn tác được.</p>
     <div id="us-body"></div>
-    <div class="g-row"><button class="g-btn g-btn-soft" id="us-back">← Về phòng chờ</button><button class="g-btn g-btn-soft" id="us-reload">🔄 Tải lại</button><span class="g-sub" id="us-time"></span></div>
   </section>
 
   <section class="g-screen" id="s-hist" hidden>
