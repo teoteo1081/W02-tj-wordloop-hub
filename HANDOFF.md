@@ -10,6 +10,9 @@
 
 ## Trạng thái hiện tại
 
+## ▶ MỚI (2026-10-06): dựng repo `claude-setup` dùng chung — máy/phiên khác làm tiếp
+Đọc `tools/claude-setup-template/HUONG_DAN.md` (từng bước + việc treo). Xong thì xoá thư mục đó và dòng này.
+
 ## Đang làm: Đơn giản hoá tài khoản game — "1 hồ sơ = 1 người chơi" (CHỜ TJ chốt, CHƯA code)
 - **Mục tiêu**: hết cảnh TJ#2/TJ#3. Hiện có 2 hệ danh tính song song: hồ sơ WordLoop (`profiles`, nhận qua link `?u=`, localStorage `tjwl_link_user_id_v1`) và người chơi game (`game_players`, localStorage `tjwl_game_player_v1`, trùng tên tự đánh `name_no`). Xoá cache -> máy quên cả 2 -> game tạo người mới #N.
 - **Đề xuất đã gửi TJ (2026-10-01, máy 2)**:
