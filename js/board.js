@@ -160,6 +160,7 @@
       });
     })();
     setInterval(function () { if (open && !mini) { paintPeople(); paintHostAway(); paintSndBtn(); } }, 2000);
+    var fx0 = $("#bd-fx"); if (fx0) { var ub0 = document.createElement("div"); ub0.id = "bd-ubar"; ub0.className = "bd-ubar"; ub0.hidden = true; fx0.insertBefore(ub0, fx0.firstChild); }   /* TJ 2026-10-06: người chơi thấy avatar + tên của mình TRÊN bảng (như Admin), kể cả lúc chờ nội dung */
     var dn0 = $("#bd-docnav"), ppl0 = $("#bd-people"), fd0 = $("#bd-feed");
     if (dn0) {   /* ☰ ← → (trước) và 🎮 (sau) vào hàng nút dưới bảng — chỉ host thấy */
       /* TJ 2026-10-06: "← Quay lại danh sách Block" + ← → (Block trước/sau) nằm hàng RIÊNG phía TRÊN cái loa (y như thẻ Block), không xuống hàng dưới nữa */
@@ -286,7 +287,7 @@
       return '<button type="button" class="bd-pp' + (p[x.id] ? " on" : "") + '" data-perm="' + esc(x.id) + '">' + (p[x.id] ? "🛡 " : "👤 ") + esc(x.name || "?") + "</button>"; }).join("") : '<span class="bd-ph">' + esc(t("none")) + "</span>");
   }
   function phoneScreen() { return window.innerWidth < 760; }
-  function wantBig(d) { return document.body.classList.contains("embed") || phoneScreen() ? true : (bigPref != null ? bigPref : !!d); }   /* điện thoại: bảng luôn FULL MÀN HÌNH (TJ 2026-10-05) */   /* embed = trong thẻ của Learning: luôn là bảng to (TJ 2026-10-05: "vào chế độ bảng thì bỏ giao diện chính") */
+  function wantBig(d) { return document.body.classList.contains("embed") || phoneScreen() ? true : (bigPref != null ? bigPref : (!!d || !!(api && !api.isHost() && api.inLobby && api.inLobby()))); }   /* TJ 2026-10-06: người chơi ở phòng chờ + bảng mở (chưa có nội dung) = form riêng toàn màn hình, không lòi phòng chờ bên dưới */   /* điện thoại: bảng luôn FULL MÀN HÌNH (TJ 2026-10-05) */   /* embed = trong thẻ của Learning: luôn là bảng to (TJ 2026-10-05: "vào chế độ bảng thì bỏ giao diện chính") */
   function notifyParent(show) {
     if (!(window.parent && window.parent !== window)) return;
     var has = !!curDoc(), key = (show ? 1 : 0) + ":" + (has ? 1 : 0); if (notifyParent._k === key) return; notifyParent._k = key;
@@ -314,7 +315,7 @@
     wrap.style.setProperty("--ar", AR.toFixed(4));
     var pin = sideOn && sidePinned() && big && window.innerWidth >= 900; $("#bd").classList.toggle("bd-sidepin", pin);
     if (!big) { wrap.style.width = ""; wrap.style.height = ""; return; }
-    var sw = $("#bd-sw"), aw = sw.clientWidth - 12, ah = sw.clientHeight - 12 - ((function () { var t = $("#bd-card"), f = $("#bd-feed"); var mb = $("#bd-mebar"), pp = $("#bd-people"), ibr = $("#bd-iconbar"), pth = $("#bd-path"), nvr = $("#bd-navrow"); return (pth && !pth.hidden ? pth.offsetHeight : 0) + (nvr && !nvr.hidden ? nvr.offsetHeight + 4 : 0) + (ibr && !ibr.hidden ? ibr.offsetHeight + 6 : 0) + (t && !t.hidden ? t.offsetHeight + 8 : 0) + (f && !f.hidden ? f.offsetHeight + 8 : 0) + (mb && !mb.hidden ? mb.offsetHeight + 6 : 0) + 0; })());
+    var sw = $("#bd-sw"), aw = sw.clientWidth - 12, ah = sw.clientHeight - 12 - ((function () { var t = $("#bd-card"), f = $("#bd-feed"); var mb = $("#bd-mebar"), pp = $("#bd-people"), ibr = $("#bd-iconbar"), pth = $("#bd-path"), nvr = $("#bd-navrow"), ubr = $("#bd-ubar"); return (pth && !pth.hidden ? pth.offsetHeight : 0) + (ubr && !ubr.hidden ? ubr.offsetHeight + 4 : 0) + (nvr && !nvr.hidden ? nvr.offsetHeight + 4 : 0) + (ibr && !ibr.hidden ? ibr.offsetHeight + 6 : 0) + (t && !t.hidden ? t.offsetHeight + 8 : 0) + (f && !f.hidden ? f.offsetHeight + 8 : 0) + (mb && !mb.hidden ? mb.offsetHeight + 6 : 0) + 0; })());
     if (aw < 60 || ah < 60) return;
     /* TJ 2026-10-05: "đừng cố định nữa" — bảng to lấp KÍN chỗ trống (điện thoại dọc, cột Learning hẹp), không ép 4:3 nữa.
        Nét vẽ tính theo bề ngang (k = cv.width / W) nên đổi tỉ lệ không méo; trang bài đọc vẫn chia chung, chỉ cỡ chữ mỗi máy tự phóng cho đầy khung. */
@@ -731,6 +732,11 @@
     var av = String(m.avatar || ""), pic = /^https?:/.test(av) ? '<img alt="" src="' + esc(av) + '">' : '<span class="bd-meav">' + esc(av || "👤") + "</span>";
     el.innerHTML = '<span class="bd-mering">' + pic + (api.isHost() ? '<i title="Host">👑</i>' : "") + "</span><b>" + esc(m.name) + (m.name_no > 1 ? " #" + m.name_no : "") + "</b>";   /* kiểu HelloTalk: vòng tròn avatar, tên ở dưới */
     el.hidden = false;
+    var ub = $("#bd-ubar");
+    if (ub) {
+      var showU = !(api && api.isHost()) && !document.body.classList.contains("embed"); ub.hidden = !showU;
+      if (showU) ub.innerHTML = '<span class="bd-mering">' + pic + "</span><b>" + esc(m.name) + (m.name_no > 1 ? " #" + m.name_no : "") + "</b>" + (curDoc() ? "" : '<span class="bd-ubhint">⏳ Đang chờ host chọn nội dung lên bảng…</span>');
+    }
   }
   function paintHostAway() {   /* TJ 2026-10-06: host KHÔNG có trong phòng (đang ở trang khác / mất mạng) -> người chơi thấy "chờ host" thay vì 1 bảng đóng băng */
     var el = $("#bd"); if (!el || !api || !api.hostHere) return;

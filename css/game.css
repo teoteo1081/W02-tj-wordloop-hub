@@ -1478,3 +1478,10 @@ body.big .g-learnlayer{display:none}
 /* TJ 2026-10-06: 2 thẻ con "Game từ vựng | TOEIC" trong phòng chờ thay bằng thẻ TOEIC trên thanh trên (cho đỡ rối); IELTS mờ vì chưa có */
 #l-hubs{display:none}
 .g-learn button:disabled{opacity:.45;cursor:not-allowed}
+
+/* TJ 2026-10-06: thanh người dùng TRÊN bảng của người chơi (avatar + tên + dòng chờ host) */
+.bd-ubar{display:flex;align-items:center;gap:10px;padding:6px 10px;flex:none;min-width:0;box-sizing:border-box;color:var(--text,#f3efe6)}
+.bd-ubar[hidden]{display:none}
+.bd-ubar .bd-mering{width:40px;height:40px}
+.bd-ubar b{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bd-ubar .bd-ubhint{margin-left:auto;font-size:13px;color:var(--text-2,#b9b3a6);text-align:right}

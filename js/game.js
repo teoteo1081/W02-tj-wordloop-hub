@@ -1876,6 +1876,7 @@
     speak: function (text, lang, rate, onB, silent) { return speakP(text, lang, rate, onB, silent); },
     soundOn: function () { return soundOn(); },
     volume: function () { return volLevel(); },   /* công tắc 🔊/🔇 CHUNG với game (mỗi máy tự bật/tắt, lưu trên máy) */
+    inLobby: function () { return !G.st || G.st.phase !== "play"; },   /* phòng chờ / kết quả (chưa chơi): bảng người chơi = form riêng toàn màn hình */
     toggleSound: function () { var on = !soundOn(); try { localStorage.setItem(LS_SOUND, on ? "1" : "0"); } catch (er) {} if (!on && window.speechSynthesis) window.speechSynthesis.cancel(); paintSoundBtn(); return on; },   /* đọc xong mới trả (đọc bài / đọc từ trên bảng), onB(charIndex) = ranh giới từ cho karaoke */
     words: function (bid) { return boardWords(bid); },
     block: async function (id) { var r = await sb.from("blocks").select("id,name,context_passage,context_passage_candidates").eq("id", id).maybeSingle(); return r.data; },
