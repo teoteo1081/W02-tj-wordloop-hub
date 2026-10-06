@@ -4278,7 +4278,7 @@
     w.$("#blocks-list").onclick = async function (e) {
       if (e.target.closest("[data-menu]")) return;
       /* 🖤 chế độ bảng (chưa chọn Block): bấm 1 Block card = đưa Block đó lên bảng (TJ 2026-10-05) */
-      if (document.body.classList.contains("board-skin")) { var bsc = e.target.closest(".block-card[data-block]"); if (bsc && w.GameLayer) { w.GameLayer.openBoard("blocks", bsc.dataset.block, ""); return; } }
+      if (document.body.classList.contains("board-skin") && !e.target.closest("[data-gameblock],[data-boardblock]")) { var bsc = e.target.closest(".block-card[data-block]");   /* TJ 2026-10-06: nút 🎮 Chơi game / Mở bảng trong khung Block có xử lý RIÊNG — trước đây bị nuốt thành "mở Block lên bảng" if (bsc && w.GameLayer) { w.GameLayer.openBoard("blocks", bsc.dataset.block, ""); return; } }
       var gameBtn = e.target.closest("[data-gameblock]");
       if (gameBtn) { if (w.GameLayer) w.GameLayer.openScope("blocks", gameBtn.dataset.gameblock, gameBtn.dataset.title); return; }
       var boardBtn = e.target.closest("[data-boardblock]");
