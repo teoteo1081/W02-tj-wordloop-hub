@@ -2665,6 +2665,7 @@
     var q = L && L.tq; if (!q) return;
     if (!q.audl) { var it0 = (G.tItems || []).filter(function (x) { return x.num === q.num && String(x.test || q.test) === String(q.test); })[0]; if (it0) q.audl = (String(it0.passage || "").match(/^\[aud\][^\n]*/m) || [""])[0]; }   /* ván cũ chưa lưu mốc audio -> lấy từ đề */
     if (!q.audl && !q.full) return;
+    q.ansL = (String(L.ans || "").match(/^\(?([A-D])\)?(?:\s|$)/) || [])[1] || "";
     var m = String(q.audl || q.full).match(/^\[aud\] q=([\d.]+)-([\d.]+)(?: g=([\d.]+)-([\d.]+))?/m); if (!m) return;
     var qa = +m[1], qb = q.gEnd || +m[2], segs = [];
     if (m[3]) { segs.push({ label: apT("all"), a: +m[3], b: qb }); segs.push({ label: apT("q"), a: qa, b: qb }); }
@@ -2710,7 +2711,8 @@
       (Object.keys(evAt).length ? '<div class="g-aprow">' + Object.keys(evAt).sort(function (x, y) { return x - y; }).map(function (n) { var r = evR[n]; return '<button type="button" class="g-btn g-btn-soft g-btn-sm" data-scrp="' + Math.max(span[0], r[0] - 1).toFixed(1) + "-" + Math.min(span[1], r[1] + 1).toFixed(1) + '">🎯 ' + esc(apT("evq")) + " " + n + "</button>"; }).join("") + "</div>" : "") +
       scr.lines.map(function (l, i) {
         var r = T0[i];
-        return '<div class="g-scl' + (mark[i] ? " ev" : "") + '" data-scrp="' + Math.max(span[0], r[0] - 0.8).toFixed(1) + "-" + Math.min(span[1], r[1] + 0.5).toFixed(1) + '">' + (l.sp ? '<b class="g-scsp">' + esc(l.sp) + "</b> " : "") + esc(l.t) + (mark[i] ? ' <span class="g-scq">🎯 ' + mark[i].join(", ") + "</span>" : "") + "</div>";
+        var lm = String(l.t).match(/^\(?([A-D])\)\s/), okL = lm && q.ansL && lm[1] === q.ansL;
+        return '<div class="g-scl' + (mark[i] ? " ev" : "") + (okL ? " ok" : "") + '" data-scrp="' + Math.max(span[0], r[0] - 0.8).toFixed(1) + "-" + Math.min(span[1], r[1] + 0.5).toFixed(1) + '">' + (l.sp ? '<b class="g-scsp">' + esc(l.sp) + "</b> " : "") + esc(l.t) + (mark[i] ? ' <span class="g-scq">🎯 ' + mark[i].join(", ") + "</span>" : "") + "</div>";
       }).join("") + "</div>";
     box.insertAdjacentHTML("beforeend", html);
   }
@@ -3893,6 +3895,7 @@
     $$("#rv-opts .g-opt").forEach(function (b) {
       var num = b.dataset.sub != null && tq.nums ? tq.nums[+b.dataset.sub] : tq.num, m0 = M["toeic:" + tq.test + ":" + tq.part + ":" + num] || {}, who = m0[norm(b.dataset.opt)] || [];
       var box = b.querySelector(".g-pickers"); if (!box) { box = document.createElement("span"); box.className = "g-pickers"; b.appendChild(box); }
+      if (who.length && !b.classList.contains("ok")) b.classList.add("bad");   /* người chọn sai -> đáp án đó đỏ (TJ 2026-10-06) */
       box.innerHTML = who.map(function (pid) { var p = ros[pid] || {}; return '<span class="g-pk" title="' + esc(p.name || "") + '">' + avatar(p.avatar, "g-av-sm") + '<em>' + esc(p.name || "") + "</em></span>"; }).join("");
     });
   }
