@@ -1452,3 +1452,16 @@ body.big .g-learnlayer{display:none}
 .bd-hudl > .bd-closetop[hidden]{display:none}
 .bd .bd-tr{right:56px}
 .bd-iconbar > .bd-cpin{flex:none;margin:0;min-width:44px;min-height:38px;padding:0 12px;font-size:17px;order:99}
+
+/* TJ 2026-10-06: hàng "← Quay lại danh sách Block | ← | →" nằm TRÊN cái loa (như thẻ Block); nút 🎮 to, có chữ, màu tím; bỏ ▲▼ lật trang (đã có thanh cuộn) */
+.bd .bd-navrow{flex:none;display:flex;align-items:center;gap:6px;padding:3px 8px 0;min-width:0;max-width:100%;box-sizing:border-box;overflow-x:auto;scrollbar-width:none}
+.bd .bd-navrow::-webkit-scrollbar{display:none}
+.bd .bd-navrow[hidden]{display:none}
+.bd .bd-navrow .bd-tlg{position:static;display:flex;flex-wrap:nowrap;gap:6px;margin:0;flex:none}
+.bd .bd-navrow .bd-tlg[hidden]{display:none}
+.bd .bd-navrow .bd-tlg .bd-hb{height:36px;min-width:40px;padding:0 14px;border-radius:10px;font-size:14px;white-space:nowrap}
+.bd .bd-navrow .bd-tlg #bd-back span{display:inline}
+.bd-iconbar > .bd-cpin{min-height:40px;padding:0 18px;border-radius:12px;font-size:15px;font-weight:700;background:#7c4dff;border-color:#7c4dff;color:#fff;box-shadow:0 2px 8px rgba(124,77,255,.4);white-space:nowrap}
+.bd-iconbar > .bd-cpin:hover{background:#8d63ff}
+@media (max-width:700px){.bd-iconbar > .bd-cpin .bd-cplbl{display:none}.bd-iconbar > .bd-cpin{padding:0 12px;min-width:44px}}
+.bd .bd-pager{display:none !important}

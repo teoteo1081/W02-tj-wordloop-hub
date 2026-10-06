@@ -145,9 +145,10 @@
     setInterval(function () { if (open && !mini) { paintPeople(); paintHostAway(); paintSndBtn(); } }, 2000);
     var dn0 = $("#bd-docnav"), ppl0 = $("#bd-people"), fd0 = $("#bd-feed");
     if (dn0) {   /* ☰ ← → (trước) và 🎮 (sau) vào hàng nút dưới bảng — chỉ host thấy */
-      ["bd-bnext", "bd-bprev", "bd-back"].forEach(function (id) { var e = $("#" + id); if (e) { e.classList.add("bd-hostonly"); dn0.insertBefore(e, dn0.firstChild); } });
-      var bk = $("#bd-back"); if (bk) { bk.textContent = "☰"; bk.title = "Về danh sách Block"; }
-      var cp = $("#bd-cplay"); if (cp) { cp.classList.add("bd-hostonly"); cp.textContent = "🎮"; cp.title = "Chơi game với Block này"; dn0.appendChild(cp); }
+      /* TJ 2026-10-06: "← Quay lại danh sách Block" + ← → (Block trước/sau) nằm hàng RIÊNG phía TRÊN cái loa (y như thẻ Block), không xuống hàng dưới nữa */
+      var tlg0 = $("#bd-tlg"), mbn0 = $("#bd-mebar");
+      if (tlg0 && mbn0) { var nr0 = document.createElement("div"); nr0.id = "bd-navrow"; nr0.className = "bd-navrow bd-hostonly"; nr0.hidden = true; mbn0.parentNode.insertBefore(nr0, mbn0); nr0.appendChild(tlg0); }
+      var cp = $("#bd-cplay"); if (cp) { cp.classList.add("bd-hostonly"); cp.innerHTML = '🎮 <span class="bd-cplbl">Chơi game →</span>'; cp.title = "Chơi game với Block này"; dn0.appendChild(cp); }
       /* TJ 2026-10-06: "icon phải nằm dưới cái bảng" — gom MỌI icon (cột nút nổi bên phải + hàng lật trang/cỡ chữ) vào 1 hàng cố định dưới bảng */
       var sfx0 = $("#bd-sfx");
       if (sfx0) {
@@ -284,7 +285,7 @@
     $("#bd-open").hidden = open || !api || !api.isHost() || !api.ch();
     var show = open && !mini;
     notifyParent(!!show);   /* TJ 2026-10-05: báo cho Learning: bảng đang mở + đã có Block chưa (chưa có Block = hiện màn hình Learning trên nền bảng) */
-    var tg0 = $("#bd-tlg"); if (tg0) tg0.hidden = !(api && api.isHost());
+    var tg0 = $("#bd-tlg"); if (tg0) tg0.hidden = !(api && api.isHost()); var nv0 = $("#bd-navrow"); if (nv0) nv0.hidden = !(api && api.isHost());
     document.body.classList.toggle("bd-on", show); document.body.classList.toggle("bd-bigon", show && big);
     el.classList.toggle("bd-big", big);
     if (show) { fit(); paintTools(); paintPerm(); }
@@ -296,7 +297,7 @@
     wrap.style.setProperty("--ar", AR.toFixed(4));
     var pin = sideOn && sidePinned() && big && window.innerWidth >= 900; $("#bd").classList.toggle("bd-sidepin", pin);
     if (!big) { wrap.style.width = ""; wrap.style.height = ""; return; }
-    var sw = $("#bd-sw"), aw = sw.clientWidth - 12, ah = sw.clientHeight - 12 - ((function () { var t = $("#bd-card"), f = $("#bd-feed"); var mb = $("#bd-mebar"), pp = $("#bd-people"), ibr = $("#bd-iconbar"), pth = $("#bd-path"); return (pth && !pth.hidden ? pth.offsetHeight : 0) + (ibr && !ibr.hidden ? ibr.offsetHeight + 6 : 0) + (t && !t.hidden ? t.offsetHeight + 8 : 0) + (f && !f.hidden ? f.offsetHeight + 8 : 0) + (mb && !mb.hidden ? mb.offsetHeight + 6 : 0) + 0; })());
+    var sw = $("#bd-sw"), aw = sw.clientWidth - 12, ah = sw.clientHeight - 12 - ((function () { var t = $("#bd-card"), f = $("#bd-feed"); var mb = $("#bd-mebar"), pp = $("#bd-people"), ibr = $("#bd-iconbar"), pth = $("#bd-path"), nvr = $("#bd-navrow"); return (pth && !pth.hidden ? pth.offsetHeight : 0) + (nvr && !nvr.hidden ? nvr.offsetHeight + 4 : 0) + (ibr && !ibr.hidden ? ibr.offsetHeight + 6 : 0) + (t && !t.hidden ? t.offsetHeight + 8 : 0) + (f && !f.hidden ? f.offsetHeight + 8 : 0) + (mb && !mb.hidden ? mb.offsetHeight + 6 : 0) + 0; })());
     if (aw < 60 || ah < 60) return;
     /* TJ 2026-10-05: "đừng cố định nữa" — bảng to lấp KÍN chỗ trống (điện thoại dọc, cột Learning hẹp), không ép 4:3 nữa.
        Nét vẽ tính theo bề ngang (k = cv.width / W) nên đổi tỉ lệ không méo; trang bài đọc vẫn chia chung, chỉ cỡ chữ mỗi máy tự phóng cho đầy khung. */
