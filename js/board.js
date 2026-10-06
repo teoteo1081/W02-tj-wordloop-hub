@@ -106,6 +106,7 @@
             '<button type="button" class="bd-hb bd-fab" id="bd-close" hidden data-btt="close">✕</button>' +
             '<button type="button" class="bd-hb bd-fab" id="bd-lib" hidden data-ico="1" data-bt="lib"></button>' +
             '<button type="button" class="bd-hb bd-fab" id="bd-share" hidden data-ico="1" data-btt="sharet" data-bt="share"></button>' +
+            '<button type="button" class="bd-hb bd-fab" id="bd-free" hidden title="Tự cuộn / tự đọc riêng — bấm lại để theo màn hình chung của mọi người">🖐</button>' +
             '<button type="button" class="bd-hb bd-fab" id="bd-penbtn" title="Vẽ / ghi chú">✏️</button>' +
             '<button type="button" class="bd-hb bd-fab" id="bd-lkbtn" title="Tra nghĩa: bấm rồi chạm vào từ">🔍</button>' +
             '<button type="button" class="bd-hb bd-fab" id="bd-more" hidden title="Công cụ Block (chỉ Admin)">⋯</button>' +
@@ -191,7 +192,7 @@
       var sfx0 = $("#bd-sfx");
       if (sfx0) {
         var ib = document.createElement("div"); ib.id = "bd-iconbar"; ib.className = "bd-iconbar"; sfx0.parentNode.insertBefore(ib, sfx0.nextSibling); ib.appendChild(dn0);
-        ["bd-lib", "bd-share", "bd-penbtn", "bd-more"].forEach(function (id) { var e = $("#" + id); if (e) { e.classList.add("bd-ibtn"); dn0.insertBefore(e, cp); } });
+        ["bd-lib", "bd-share", "bd-free", "bd-penbtn", "bd-more"].forEach(function (id) { var e = $("#" + id); if (e) { e.classList.add("bd-ibtn"); dn0.insertBefore(e, cp); } });
         /* TJ 2026-10-06: cửa sổ hẹp thì 🎮 và ✕ nằm cuối dải cuộn ngang (ẩn thanh cuộn) -> bị cắt mất. ✕ = góc TRÊN-PHẢI của bảng (luôn thấy, đúng thói quen đóng cửa sổ);
            🎮 = ghim cuối hàng icon, NGOÀI dải cuộn */
         var cl0 = $("#bd-close"), hl0 = $("#bd-hudl"); if (cl0 && hl0) { cl0.classList.add("bd-closetop"); hl0.appendChild(cl0); }
@@ -255,6 +256,11 @@
       /* người được cấp quyền: sọt rác chỉ xoá nét + ô chữ CỦA MÌNH (TJ 2026-10-04) */
       var me0 = myId(), ids = order.filter(function (id) { return items[id] && items[id].by === me0; });
       if (ids.length && confirm(t("qMine"))) { ids.forEach(function (id) { removeItem(id); send({ t: "del", id: id }); }); mine = []; redo = []; draw(); paintTexts(); paintTools(); }
+      return;
+    }
+    if (b.id === "bd-free") {
+      freeView = !freeView; paintFree();
+      if (!freeView) { if (lastA) goAnchor(scBox(), lastA); ensureReadVisible(); }   /* nhả ra: về đúng chỗ màn hình chung */
       return;
     }
     if (b.id === "bd-share") { if (shStream) stopShare(); else startShare(); return; }
@@ -1013,7 +1019,7 @@
     var r = el.getBoundingClientRect(), br = b.getBoundingClientRect();
     if (r.top < br.top + 4 || r.bottom > br.bottom - 4) keepInView(b, el, true);
   }
-  function soonEnsure() { clearTimeout(ervT); ervT = setTimeout(ensureReadVisible, 160); }
+  function soonEnsure() { if (freeView) return; clearTimeout(ervT); ervT = setTimeout(ensureReadVisible, 160); }
   function applyReadHL(m, remote) {   /* m = {k:"wl", s: câu, w: từ} | {k:"vt", i: dòng} | {k:null} — chạy trên MỌI máy */
     clearReadHL(); var b = scBox();
     if (!m || !m.k || !b) { paintReadBtn(); return; }
@@ -1180,7 +1186,8 @@
     progTop = b.scrollTop;   /* vị trí THỰC TẾ máy vừa tự đặt (đã bị chặn bởi đầu/cuối trang) — cú cuộn này không phải của người dùng, không gửi ngược lại */
   }
   function sendAnchor() { var b = scBox(); if (!b) return; lastA = anchorOf(b); send({ t: "sc", a: lastA }); }
-  function applyAnchor(a) { if (!a) return; lastA = a; if (Date.now() - userScrollAt < 350 && Date.now() - userInputAt < 1600) return; goAnchor(scBox(), a); }   /* chỉ nhường khi CHÍNH máy này đang được người dùng kéo */
+  var freeView = false;   /* 🖐 Tự đọc: máy này tự cuộn riêng, KHÔNG bị kéo theo màn hình chung; nhả ra thì nhảy về chỗ mọi người đang đọc (TJ 2026-10-06) */
+  function applyAnchor(a) { if (!a) return; lastA = a; if (freeView) return; if (Date.now() - userScrollAt < 350 && Date.now() - userInputAt < 1600) return; goAnchor(scBox(), a); }   /* chỉ nhường khi CHÍNH máy này đang được người dùng kéo */
   function setZoom(v) { v = Math.max(0.7, Math.min(2.6, +v || 1)); if (Math.abs(v - lfz) < 0.004) return false; lfz = v; fitDocText(); paintZ(); return true; }
   function persistZoom() {   /* host ghi hệ số vào bdoc.zf để máy vào sau / tải lại thấy đúng cỡ (không vẽ lại: cùng keyOf) */
     if (!api.isHost()) return; clearTimeout(zfPersistT);
@@ -1863,8 +1870,15 @@
       else if (rv && rv.host === m.cid) { if (rv.pc) { var o = rv; chain(o, function () { return o.pc.addIceCandidate(m.c); }); } else rv.pend.push(m.c); }
     }
   }
+  function paintFree() {
+    var f = $("#bd-free"); if (!f || !api) return;
+    f.hidden = api.isHost() || !curDoc();   /* chỉ người chơi; host là người điều khiển màn hình chung */
+    f.classList.toggle("on", freeView); f.textContent = freeView ? "🖐 Theo mọi người" : "🖐 Tự đọc";
+    f.title = freeView ? "Đang tự đọc riêng — bấm để theo màn hình chung" : "Tự cuộn / tự đọc riêng, không bị kéo theo màn hình chung";
+  }
   function paintShare() {
     var b = $("#bd-share"); if (!b || !api) return;
+    paintFree();
     b.hidden = !api.isHost() || !canShare;
     b.dataset.bt = shStream ? "unshare" : "share"; var shTx = t(b.dataset.bt); b.title = shTx; b.textContent = "🎥"; b.classList.toggle("on", !!shStream);   /* TJ 2026-10-06: biểu tượng máy quay phim (trước là 🖥); đang chia sẻ = đỏ cam nhấp nháy như đèn LIVE */
     var line = "";
