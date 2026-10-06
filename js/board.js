@@ -293,6 +293,14 @@
     var has = !!curDoc(), key = (show ? 1 : 0) + ":" + (has ? 1 : 0); if (notifyParent._k === key) return; notifyParent._k = key;
     try { window.parent.postMessage({ type: "tjwl-board-on", on: !!show, doc: has }, location.origin); } catch (e) {}
   }
+  /* TJ 2026-10-06: chuột + cửa sổ rộng = các nút công cụ (A− Aa A+ 📁 📱 ⋯) thành MỘT CỘT DỌC bên phải bảng (dải 56px có sẵn của khung); điện thoại / cảm ứng / bảng nhỏ = hàng ngang dưới bảng như cũ */
+  function placeTools() {
+    var dn = $("#bd-docnav"), sfx = $("#bd-sfx"), ib = $("#bd-iconbar"); if (!dn || !sfx || !ib) return;
+    var rail = !!big && window.matchMedia("(hover:hover) and (pointer:fine) and (min-width:700px)").matches;
+    if (placeTools._r === rail) return; placeTools._r = rail;
+    if (rail) { sfx.appendChild(dn); sfx.classList.add("bd-hasrail"); dn.classList.add("bd-railtools"); }
+    else { var cp = $("#bd-cplay"); ib.insertBefore(dn, cp && cp.parentNode === ib ? cp : null); sfx.classList.remove("bd-hasrail"); dn.classList.remove("bd-railtools"); }
+  }
   function paintOpen() {
     var el = $("#bd"); if (!el) return;
     el.classList.toggle("bd-isHost", !!(api && api.isHost()));
@@ -306,6 +314,7 @@
     var tg0 = $("#bd-tlg"); if (tg0) tg0.hidden = !(api && api.isHost()); var nv0 = $("#bd-navrow"); if (nv0) nv0.hidden = !(api && api.isHost());
     document.body.classList.toggle("bd-on", show); document.body.classList.toggle("bd-bigon", show && big);
     el.classList.toggle("bd-big", big);
+    placeTools();
     if (show) { fit(); paintTools(); paintPerm(); }
     document.body.style.paddingTop = show && !big ? el.offsetHeight + "px" : "";   /* bảng nhỏ nằm trên cùng, game đẩy xuống dưới; bảng to phủ cả màn hình */
   }
@@ -315,7 +324,7 @@
     wrap.style.setProperty("--ar", AR.toFixed(4));
     var pin = sideOn && sidePinned() && big && window.innerWidth >= 900; $("#bd").classList.toggle("bd-sidepin", pin);
     if (!big) { wrap.style.width = ""; wrap.style.height = ""; return; }
-    var sw = $("#bd-sw"), aw = sw.clientWidth - 12, ah = sw.clientHeight - 12 - ((function () { var t = $("#bd-card"), f = $("#bd-feed"); var mb = $("#bd-mebar"), pp = $("#bd-people"), ibr = $("#bd-iconbar"), pth = $("#bd-path"), nvr = $("#bd-navrow"), ubr = $("#bd-ubar"); return (pth && !pth.hidden ? pth.offsetHeight : 0) + (ubr && !ubr.hidden ? ubr.offsetHeight + 4 : 0) + (nvr && !nvr.hidden ? nvr.offsetHeight + 4 : 0) + (ibr && !ibr.hidden ? ibr.offsetHeight + 6 : 0) + (t && !t.hidden ? t.offsetHeight + 8 : 0) + (f && !f.hidden ? f.offsetHeight + 8 : 0) + (mb && !mb.hidden ? mb.offsetHeight + 6 : 0) + 0; })());
+    var sw = $("#bd-sw"), aw = sw.clientWidth - 12 - ($("#bd-sfx") && $("#bd-sfx").classList.contains("bd-hasrail") ? 56 : 0), ah = sw.clientHeight - 12 - ((function () { var t = $("#bd-card"), f = $("#bd-feed"); var mb = $("#bd-mebar"), pp = $("#bd-people"), ibr = $("#bd-iconbar"), pth = $("#bd-path"), nvr = $("#bd-navrow"), ubr = $("#bd-ubar"); return (pth && !pth.hidden ? pth.offsetHeight : 0) + (ubr && !ubr.hidden ? ubr.offsetHeight + 4 : 0) + (nvr && !nvr.hidden ? nvr.offsetHeight + 4 : 0) + (ibr && !ibr.hidden ? ibr.offsetHeight + 6 : 0) + (t && !t.hidden ? t.offsetHeight + 8 : 0) + (f && !f.hidden ? f.offsetHeight + 8 : 0) + (mb && !mb.hidden ? mb.offsetHeight + 6 : 0) + 0; })());
     if (aw < 60 || ah < 60) return;
     /* TJ 2026-10-05: "đừng cố định nữa" — bảng to lấp KÍN chỗ trống (điện thoại dọc, cột Learning hẹp), không ép 4:3 nữa.
        Nét vẽ tính theo bề ngang (k = cv.width / W) nên đổi tỉ lệ không méo; trang bài đọc vẫn chia chung, chỉ cỡ chữ mỗi máy tự phóng cho đầy khung. */

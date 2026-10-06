@@ -3304,7 +3304,7 @@
             return "<tr><td>" + (typeof p.p === "number" ? "Part " : "Câu ") + p.p + "</td><td>" + esc(p.name) + '</td><td class="g-num">' + p.q + ' câu</td><td class="g-num">' +
               (p.sec ? p.sec : fmtMin(p.min) + (p.each ? "<br><small>" + p.each + " phút/câu</small>" : "")) + "</td></tr>"; }).join("") + "</tbody></table></div>";
       }).join("") +
-      tScoreGuide() +
+      tScoreGuide() + tIntroHTML() +
       '<p class="g-sub">Đã có: ETS 2024 Test 1–10, mỗi đề đủ 200 câu (đáp án chính thức, audio Listening, lời giải Reading 4 thứ tiếng). Sắp có: 📝 thi thử full 2 giờ · ✍️🎙 Viết/Nói dạng ghép câu + AI chấm theo đúng tiêu chí ở trên.</p>';
   }
   /* ---------- 📊 ĐIỂM TOEIC & CÂU HAY SAI (TJ 2026-10-04: "từng Part nhớ điểm, full bài xem đạt bao nhiêu, thống kê câu hay sai, cho luyện thêm") ----------
@@ -3408,11 +3408,17 @@
     zh: { h: "🎯 房间正在准备 TOEIC 考试", what: "TOEIC 是 ETS 的职场英语考试。听力 + 阅读总分 10–990，每部分最高 495 分。", lc: "🎧 听力 — 100 题，约 45 分钟：Part 1 看图 · Part 2 应答 · Part 3 对话 · Part 4 独白", rc: "📖 阅读 — 100 题，75 分钟：Part 5 句子填空 · Part 6 段落填空 · Part 7 阅读理解", tips: "🧠 应试策略", wait: "等待主持人选题并开始" },
     es: { h: "🎯 La sala se prepara para un examen TOEIC", what: "TOEIC es el examen de inglés laboral de ETS. Listening + Reading se puntúan de 10 a 990, hasta 495 cada parte.", lc: "🎧 Listening — 100 preguntas, ~45 min: Part 1 fotos · Part 2 pregunta–respuesta · Part 3 conversaciones · Part 4 charlas", rc: "📖 Reading — 100 preguntas, 75 min: Part 5 frases · Part 6 completar textos · Part 7 comprensión lectora", tips: "🧠 Estrategias del examen", wait: "Esperando a que el anfitrión elija el examen y empiece" }
   };
+  function tIntroHTML() {   /* bảng giới thiệu + chiến thuật TOEIC — bung hết (host) */
+    var L = uiLang(), X = TINTRO[L] || TINTRO.en, tips = (window.TOEIC_TIPS || {})[L] || (window.TOEIC_TIPS || {}).en || [];
+    return '<div class="g-card g-tintro g-tintro-host"><h3 class="g-tih">' + esc(X.h) + '</h3><p class="g-tiw">' + esc(X.what) + '</p><ul class="g-til"><li>' + esc(X.lc) + "</li><li>" + esc(X.rc) + "</li></ul>" +
+      '<div class="g-tih2">' + esc(X.tips) + "</div>" +
+      tips.map(function (sec) { return "<details open><summary><b>" + esc(sec.h) + "</b></summary><ul>" + sec.items.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></details>"; }).join("") + "</div>";
+  }
   function paintTIntro() {
-    var hh = (G.isHost ? G.hub : (G.st && G.st.hub)) || "vocab";   /* người chơi: thẻ trên tô sáng theo host */
+    var hh = (G.isHost ? G.hub : "vocab") || "vocab";   /* TJ 2026-10-06: người chơi chỉ giữ "WordLoop Game" như hiện tại cho cả phòng; TOEIC chỉ là việc của host */
     if (hh !== window.TJ_HUB) { window.TJ_HUB = hh; try { document.dispatchEvent(new CustomEvent("tjwl-hubchanged", { detail: hh })); } catch (e) {} }
     var box = $("#l-tintro"); if (!box) return;
-    var on = !!(G.st && G.st.hub === "test" && G.st.phase === "lobby" && !G.isHost);
+    var on = false;   /* TJ 2026-10-06: bảng giới thiệu + chiến thuật TOEIC chuyển sang giao diện host (dưới "Cách tính điểm"), người chơi không thấy */
     box.hidden = !on; if (!on) { box.dataset.k = ""; return; }
     var L = uiLang(), k = L + "|" + (G.st.title || ""); if (box.dataset.k === k) return; box.dataset.k = k;
     var X = TINTRO[L] || TINTRO.en, tips = (window.TOEIC_TIPS || {})[L] || (window.TOEIC_TIPS || {}).en || [];
