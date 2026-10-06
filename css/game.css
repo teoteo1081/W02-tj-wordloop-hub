@@ -1557,3 +1557,6 @@ body.g-viewer .g-learn{display:none}
 #l-players .g-player .g-sub{font-size:12px;line-height:1}
 #l-players .g-player .g-tag{position:absolute;top:0;right:6px;font-size:0;background:transparent;padding:0}
 #l-players .g-player .g-tag::before{content:"👑";font-size:17px}
+
+/* TJ 2026-10-06: cột công cụ dọc bắt đầu BÊN DƯỚI nút ✕ (trước đây nút A− nằm ngay dưới ✕ và bị ✕ đè) */
+.bd .bd-sfx > .bd-docnav.bd-railtools{top:56px}

@@ -1322,7 +1322,7 @@
     if (row) v = { pos: row.pos, en: row.def_en, vi: row.meaning_vi, zh: row.meaning_zh, es: row.meaning_es, ipa: row.ipa };   /* từ của chính Block: có nghĩa sẵn, khỏi gọi AI */
     else { feedNote("⏳ Đang tra “" + ph + "”…"); try { v = await api.lookup(ph, ctx || ""); } catch (e) {} }
     var okv = v && (v.en || v.vi || v.zh || v.es);
-    if (!okv) { feedNote("Chưa tra được “" + ph + "” (mạng/AI bận). Thử lại nhé."); return; }
+    if (!okv) { feedNote("Chưa tra được “" + ph + "” — " + ((api.lookupErr && api.lookupErr()) || "mạng/AI bận") + ". Thử lại nhé."); return; }
     var e2 = { id: uid(), w: ph, v: v, by: me() ? me().name : "", saved: false, t: Date.now(), who: {}, bm: false };
     e2.who[myId()] = whoMe();
     lkKeep(ph, v); lkAdd(e2); send({ t: "lk", e: e2 });

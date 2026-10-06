@@ -1886,6 +1886,7 @@
     },
     tree: async function () { if (!TREE) await loadTree(true); return TREE; },   /* cây Hub › Notebook › … › Block của game, dùng chung cho hộp chọn bài ở bảng */
     lookup: function (t, ctx) { return boardLookup(t, ctx); },
+    lookupErr: function () { return boardLookup.err || ""; },
     say: function (text, force) { try { if (!force && !soundOn()) return; sayIt._lang = "en"; sayIt(String(text || ""), true); } catch (e) {} },   /* force: bấm 🔊 chủ động thì đọc dù đang tắt tiếng */
     speak: function (text, lang, rate, onB, silent) { return speakP(text, lang, rate, onB, silent); },
     soundOn: function () { return soundOn(); },
@@ -3035,15 +3036,25 @@
   async function boardLookup(t, ctx) {
     var k = t.toLowerCase() + "|" + String(ctx || "").slice(0, 60); if (blCache[k]) return blCache[k];
     var langs = ["vi", "zh", "es"];   /* tra 1 lần đủ 3 tiếng + tiếng Anh: kết quả gửi cho cả phòng, mỗi người xem theo tiếng của mình */
-    var ac = typeof AbortController !== "undefined" ? new AbortController() : null, tm = ac ? setTimeout(function () { ac.abort(); }, 12000) : null;   /* quá 12 giây thì bỏ (hết treo ⏳ trên điện thoại) */
-    try {
-      var res = await fetch(cfg.SUPABASE_URL.replace(/\/$/, "") + "/functions/v1/gemini-proxy", {
-        signal: ac ? ac.signal : undefined, method: "POST", headers: { "Content-Type": "application/json", "Authorization": "Bearer " + cfg.SUPABASE_ANON_KEY, "apikey": cfg.SUPABASE_ANON_KEY },
-        body: JSON.stringify({ model: cfg.GEMINI_MODEL || "gemini-3.5-flash-lite", user_id: null, block_id: null, sys: "You are a concise bilingual dictionary for English learners. Reply JSON only.",
-          user: "Word/phrase: " + JSON.stringify(t) + (ctx ? ". Paragraph: " + JSON.stringify(String(ctx).slice(0, 700)) : "") + ". Give its meaning" + (ctx ? " IN THIS PARAGRAPH" : "") + ". Return JSON {\"pos\":\"n|v|adj|adv|phr|…\",\"ipa\":\"IPA pronunciation like /ˈwɛə.haʊs/\",\"en\":\"short English definition\"" + langs.map(function (l) { return ",\"" + l + "\":\"short meaning in " + LANG_NAME[l] + "\""; }).join("") + "}" }) });
-      var d = await res.json(), raw = d.candidates && d.candidates[0] && d.candidates[0].content.parts[0].text;
-      var v = JSON.parse(String(raw || "").replace(/^```(json)?|```$/g, "").trim()); blCache[k] = v; return v;
-    } catch (e) { return null; } finally { if (tm) clearTimeout(tm); }
+    var payload = JSON.stringify({ model: cfg.GEMINI_MODEL || "gemini-3.5-flash-lite", user_id: null, block_id: null, sys: "You are a concise bilingual dictionary for English learners. Reply JSON only.",
+      user: "Word/phrase: " + JSON.stringify(t) + (ctx ? ". Paragraph: " + JSON.stringify(String(ctx).slice(0, 700)) : "") + ". Give its meaning" + (ctx ? " IN THIS PARAGRAPH" : "") + ". Return JSON {\"pos\":\"n|v|adj|adv|phr|…\",\"ipa\":\"IPA pronunciation like /ˈwɛə.haʊs/\",\"en\":\"short English definition\"" + langs.map(function (l) { return ",\"" + l + "\":\"short meaning in " + LANG_NAME[l] + "\""; }).join("") + "}" });
+    boardLookup.err = "";
+    /* TJ 2026-10-06: có máy tra được, máy khác không -> lỗi chập chờn (mạng chậm quá 12s / AI từ chối tạm thời) chỉ báo chung "chưa tra được". Nay: thử lại 1 lần + ghi LÝ DO (HTTP / quá giờ / định dạng) để hiện cho người dùng. */
+    for (var attempt = 0; attempt < 2; attempt++) {
+      var ac = typeof AbortController !== "undefined" ? new AbortController() : null, tm = ac ? setTimeout(function () { ac.abort(); }, attempt ? 15000 : 12000) : null;   /* quá giờ thì bỏ (hết treo ⏳ trên điện thoại) */
+      try {
+        var res = await fetch(cfg.SUPABASE_URL.replace(/[/]$/, "") + "/functions/v1/gemini-proxy", {
+          signal: ac ? ac.signal : undefined, method: "POST", headers: { "Content-Type": "application/json", "Authorization": "Bearer " + cfg.SUPABASE_ANON_KEY, "apikey": cfg.SUPABASE_ANON_KEY }, body: payload });
+        if (!res.ok) { boardLookup.err = "AI báo lỗi " + res.status + (res.status === 429 ? " (quá nhiều lượt, đợi vài giây)" : ""); if (attempt === 0) { await new Promise(function (r) { setTimeout(r, 1200); }); continue; } return null; }
+        var d = await res.json(), raw = d.candidates && d.candidates[0] && d.candidates[0].content.parts[0].text;
+        var v = JSON.parse(String(raw || "").replace(/^```(json)?|```$/g, "").trim()); blCache[k] = v; boardLookup.err = ""; return v;
+      } catch (e) {
+        boardLookup.err = e && e.name === "AbortError" ? "AI trả lời quá chậm" : "AI trả lời sai định dạng hoặc mất mạng";
+        if (attempt === 0) { await new Promise(function (r) { setTimeout(r, 800); }); continue; }
+        return null;
+      } finally { if (tm) clearTimeout(tm); }
+    }
+    return null;
   }
   async function tvEnsureTree(test, part) {
     var sec = "toe_ex_t" + test, pg = sec + "_p" + part, bt = pg + "_b";
