@@ -2662,8 +2662,10 @@
   }
   /* 📖 Xem lại: gắn thanh nghe vào đầu phần lời giải câu Listening */
   function apReview(L) {
-    var q = L && L.tq; if (!q || !q.full) return;
-    var m = String(q.full).match(/^\[aud\] q=([\d.]+)-([\d.]+)(?: g=([\d.]+)-([\d.]+))?/m); if (!m) return;
+    var q = L && L.tq; if (!q) return;
+    if (!q.audl) { var it0 = (G.tItems || []).filter(function (x) { return x.num === q.num && String(x.test || q.test) === String(q.test); })[0]; if (it0) q.audl = (String(it0.passage || "").match(/^\[aud\][^\n]*/m) || [""])[0]; }   /* ván cũ chưa lưu mốc audio -> lấy từ đề */
+    if (!q.audl && !q.full) return;
+    var m = String(q.audl || q.full).match(/^\[aud\] q=([\d.]+)-([\d.]+)(?: g=([\d.]+)-([\d.]+))?/m); if (!m) return;
     var qa = +m[1], qb = q.gEnd || +m[2], segs = [];
     if (m[3]) { segs.push({ label: apT("all"), a: +m[3], b: qb }); segs.push({ label: apT("q"), a: qa, b: qb }); }
     else segs.push({ label: apT("q"), a: qa, b: qb });
@@ -2953,7 +2955,7 @@
       G.log.push({ hint: $("#p-hint").textContent, vi: vi.innerHTML, opts: opts.innerHTML, msg: q.subs ? "✓ " + q.subs.filter(function (sq, i) { return (mine || [])[i] != null && norm(mine[i]) === norm(sq.ans); }).length + "/" + q.subs.length : q.type === "toeic" ? (mine == null ? T("t_skip") : q.pend ? "📝 " + T("t_pend", { a: mine }) : ok ? "✓ " + T("t_right") : "✗ " + T("t_wrong")) : $("#p-msg").textContent.split("  ·  " + T("wait_nextq")).join(""), res: q.type === "toeic" ? (q.pend ? '<div class="g-sub">⏳ ' + esc(T("t_nokey")) + "</div>" : toeicExpl(q)) : $("#p-res").innerHTML,
                    mine: typed ? (mine == null ? "" : String(mine)) : null, ans: typeof q.ans === "string" ? q.ans : "", ok: !!ok, typed: typed, played: iPlay(),
                    wid: q.type === "sheet" ? null : q.wid, tg: tgt() !== "en" ? tgt() : null, sl: q.type === "dict" ? "en" : tgt(),
-                   tq: q.type === "toeic" ? { test: q.test || (G.st && G.st.test && G.st.test.test), part: q.part || (G.st && G.st.test && G.st.test.part), num: q.num, vocab: q.vocab || [], full: toeicFull(q), gEnd: q.gEnd || null, last: q.subs ? q.subs[q.subs.length - 1].num : q.num, nums: q.subs ? q.subs.map(function (x) { return x.num; }) : null } : null,
+                   tq: q.type === "toeic" ? { test: q.test || (G.st && G.st.test && G.st.test.test), part: q.part || (G.st && G.st.test && G.st.test.part), num: q.num, vocab: q.vocab || [], full: toeicFull(q), audl: (String(q.passage || "").match(/^\[aud\][^\n]*/m) || [""])[0], gEnd: q.gEnd || null, last: q.subs ? q.subs[q.subs.length - 1].num : q.num, nums: q.subs ? q.subs.map(function (x) { return x.num; }) : null } : null,
                    say: q.type === "toeic" ? toeicFull(q) : q.type === "dict" ? q.say || q.ans : q.type === "en2m" ? baseTerm(q.word) : q.type === "write" ? baseTerm(q.term) : typeof q.ans === "string" ? baseTerm(q.ans) : "" });
       saveLog();
     } catch (e) { console.warn("logQ", e); }
@@ -3147,7 +3149,7 @@
     $("#rv-back").textContent = G.rvFrom === "hist" ? T("back_hist") : T("back_res");
     $("#rv-hint").textContent = L.hint; $("#rv-vi").innerHTML = L.vi; $("#rv-opts").innerHTML = L.opts; $("#rv-opts").classList.toggle("g-tbook", !!L.tq); if (L.tq) tqPickAvatars(L); $("#rv-hint").hidden = !!L.tq; $$("#rv-vi .g-taud").forEach(function (x) { var r = x.closest(".g-row") || x; r.hidden = true; }); $("#rv-res").innerHTML = L.res; $("#rv-msg").textContent = L.msg;
     /* 🔊 nghe lại (TJ 2026-10-02): nút cạnh ◀ ▶ + loa nhỏ ngay sau từ đúng; đang bật tiếng thì sang câu tự đọc */
-    $("#rv-say").hidden = !L.say || !!(L.tq && /\[aud\]/.test(L.tq.full || "")); $("#rv-say").dataset.say = L.say || ""; $("#rv-say").dataset.sl = L.sl || "en";
+    $("#rv-say").hidden = !L.say || !!(L.tq && /\[aud\]/.test(L.tq.audl || L.tq.full || "")); $("#rv-say").dataset.say = L.say || ""; $("#rv-say").dataset.sl = L.sl || "en";
     $$("#rv-vi .g-fill").forEach(function (f) { if (L.say && !L.tq) f.insertAdjacentHTML("afterend", spk(L.say, L.sl)); });   /* đề thi: nghe cả câu bằng nút #rv-say, không chen loa giữa câu */
     $("#rv-say").textContent = T("rv_listen");
     if (L.tg === "zh") { loadPinyin(); decoratePy($("#s-review"), true); }
