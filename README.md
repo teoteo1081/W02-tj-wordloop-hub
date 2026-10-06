@@ -78,6 +78,9 @@ Mỗi file tự gắn 1 global lên `window` (`w.App`, `w.DB`, `w.Detail`, `w.Co
 | `journey.js` | Màn Journey — tổng quan + lịch học theo ngày |
 | `wordset.js` | Màn "⭐ Ôn riêng" — từ đã Bookmark + từ hay sai, đọc tất cả + kiểm tra nghĩa |
 | `app.js` | Bộ điều phối chính: nạp dữ liệu, render Hub/Notebook/Section/Page/Batch/Block, menu, paste-từ-mới, di chuyển Hub/Notebook/Section |
+| `learn.js` | (chỉ `game.html`) "Góc tự học": hàng thẻ 🎮 Phòng game / 🧾 EA / 📣 Marketing dưới thanh trên cùng của trang game. Phòng game = game từ vựng + TOEIC sẵn có; EA/Marketing mở `learn/ea/` / `learn/dm/` trong lớp phủ iframe (giữ sống, phòng game bên dưới vẫn chạy) |
+
+**`learn/` — 2 game tự học 1 người chơi** (TJ 2026-10-04), HTML/JS thuần, không Supabase, tiến độ lưu localStorage (`ea-quest-v1`, `dm-quest-v1`) + nút tải/khôi phục file sao lưu JSON. Chung 1 engine `learn/quest.js` + `learn/quest.css`; mỗi trang (`learn/ea/index.html`, `learn/dm/index.html`) đặt `window.QUEST_CONFIG` (tên cấp bậc, chữ, phần, ngưỡng mở khoá) rồi nạp `data/lessons-data.js` (từ vựng + trắc nghiệm), `data/cases.js` (tình huống tiếp khách), `data/research.js` (Sprint 90 giây). EA: dữ liệu sinh từ repo `L04-ea-2025` bằng `tools/build_game_data.py` ở repo đó (chép `game/data/*.js` sang `learn/ea/data/`; `game/app.js`, `game/style.css` bên đó = `learn/quest.js`, `learn/quest.css` ở đây, sửa 1 nơi nhớ chép sang nơi kia). Marketing: viết tay theo repo `L02-digital-marketing-beginner`. Sửa file trong `learn/` nhớ bump `?v=N` trong `learn/*/index.html` (và `learn.js?v=` trong `game.html` nếu đổi đường dẫn trang).
 
 ## Bài đọc ngữ cảnh — cách hoạt động
 Mỗi Block có **đúng 1 bài đọc đang dùng**: `block.context_passage` (chuỗi text `[term]` đánh dấu + 1 khối JSON ẩn phía sau, ngăn bởi `Context.META_SEP`, chứa `{ai, pasted, claude, vi, title, source}`).
