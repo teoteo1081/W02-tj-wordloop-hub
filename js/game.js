@@ -3408,6 +3408,8 @@
     es: { h: "🎯 La sala se prepara para un examen TOEIC", what: "TOEIC es el examen de inglés laboral de ETS. Listening + Reading se puntúan de 10 a 990, hasta 495 cada parte.", lc: "🎧 Listening — 100 preguntas, ~45 min: Part 1 fotos · Part 2 pregunta–respuesta · Part 3 conversaciones · Part 4 charlas", rc: "📖 Reading — 100 preguntas, 75 min: Part 5 frases · Part 6 completar textos · Part 7 comprensión lectora", tips: "🧠 Estrategias del examen", wait: "Esperando a que el anfitrión elija el examen y empiece" }
   };
   function paintTIntro() {
+    var hh = (G.isHost ? G.hub : (G.st && G.st.hub)) || "vocab";   /* người chơi: thẻ trên tô sáng theo host */
+    if (hh !== window.TJ_HUB) { window.TJ_HUB = hh; try { document.dispatchEvent(new CustomEvent("tjwl-hubchanged", { detail: hh })); } catch (e) {} }
     var box = $("#l-tintro"); if (!box) return;
     var on = !!(G.st && G.st.hub === "test" && G.st.phase === "lobby" && !G.isHost);
     box.hidden = !on; if (!on) { box.dataset.k = ""; return; }
@@ -3596,7 +3598,7 @@
   function setHub(h) {
     h = h === "test" ? "test" : "vocab";
     if (h === "test" && G.hub !== "test") vocabSnap();
-    G.hub = h;
+    G.hub = h; window.TJ_HUB = h; try { document.dispatchEvent(new CustomEvent("tjwl-hubchanged", { detail: h })); } catch (e) {}   /* thanh thẻ trên (learn.js) tô sáng đúng thẻ */
     if (G.isHost && G.st && G.st.hub !== h) { G.st.hub = h; push(); }   /* người chơi thấy giới thiệu + chiến thuật TOEIC trong phòng chờ */
     var box = $("#l-host"); if (!box) return;
     box.classList.toggle("g-hubtest", h === "test");
@@ -3614,6 +3616,8 @@
     try { localStorage.setItem(LS_HUB, h); } catch (e) {}
   }
   $("#l-hubs").addEventListener("click", function (e) { var b = e.target.closest("[data-hub]"); if (b) setHub(b.dataset.hub); });
+  /* TJ 2026-10-06: thanh thẻ TRÊN "Phòng game · TOEIC · IELTS · EA · Digital Marketing" (learn.js): bấm TOEIC / Phòng game = host đổi hub (người chơi chỉ thấy bảng giới thiệu TOEIC khi host đang ở thẻ TOEIC) */
+  document.addEventListener("tjwl-sethub", function (e) { if (G.isHost) setHub(e.detail); });
   setHub(readLSraw(LS_HUB) || "vocab");
 
   /* 🔀 GHÉP CÂU: bấm mảnh -> lên hàng câu; bấm mảnh trên hàng -> trả về; đủ mảnh -> tự nộp */

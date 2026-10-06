@@ -1474,3 +1474,7 @@ body.big .g-learnlayer{display:none}
 }
 .bd .bd-navrow .bd-tlg{overflow:visible}
 .bd .bd-vtvoice,.bd-mebar .bd-audio #bd-vtvoice{max-width:150px;text-overflow:ellipsis}
+
+/* TJ 2026-10-06: 2 thẻ con "Game từ vựng | TOEIC" trong phòng chờ thay bằng thẻ TOEIC trên thanh trên (cho đỡ rối); IELTS mờ vì chưa có */
+#l-hubs{display:none}
+.g-learn button:disabled{opacity:.45;cursor:not-allowed}

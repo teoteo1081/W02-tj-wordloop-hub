@@ -12,6 +12,13 @@
   document.body.appendChild(layer);
   var frames = {};
 
+  /* thẻ 🎮 Phòng game / 🎯 TOEIC = 2 hub của phòng game (game.js lắng nghe "tjwl-sethub"); IELTS chưa có (nút mờ); EA / Digital Marketing = lớp phủ iframe */
+  var hub = window.TJ_HUB || "vocab";
+  function paintHub() {
+    if (!layer.hidden) return;   /* đang ở EA / Marketing: giữ tô sáng của chúng */
+    nav.querySelectorAll("[data-learn]").forEach(function (b) { var k = b.dataset.learn; b.classList.toggle("on", (k === "" && hub !== "test") || (k === "toeic" && hub === "test")); });
+  }
+  document.addEventListener("tjwl-hubchanged", function (e) { hub = e.detail === "test" ? "test" : "vocab"; paintHub(); });
   function place() { layer.style.top = Math.round(top.getBoundingClientRect().bottom) + "px"; }
   function show(key) {
     if (!PAGES[key]) key = "";
@@ -26,8 +33,15 @@
     document.body.classList.toggle("learn-on", !!key);
     if (key) place();
     try { sessionStorage.setItem("tjwl_learn_tab", key); } catch (e) {}
+    if (!key) paintHub();
   }
-  nav.addEventListener("click", function (e) { var b = e.target.closest("[data-learn]"); if (b) show(b.dataset.learn); });
+  nav.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-learn]"); if (!b || b.disabled) return;
+    var k = b.dataset.learn;
+    if (k === "" || k === "toeic") { show(""); document.dispatchEvent(new CustomEvent("tjwl-sethub", { detail: k === "toeic" ? "test" : "vocab" })); }
+    else show(k);
+  });
   window.addEventListener("resize", function () { if (!layer.hidden) place(); });
   try { var last = sessionStorage.getItem("tjwl_learn_tab"); if (last) show(last); } catch (e) {}
+  paintHub();
 })();
