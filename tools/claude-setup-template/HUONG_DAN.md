@@ -23,7 +23,7 @@
 6. **Xong thì dọn**: xoá thư mục `tools/claude-setup-template/` khỏi W02 (hoặc giữ `wordloop-commands/` nếu TJ muốn), và xoá dòng trỏ tới đây trong `HANDOFF.md`.
 
 ## Việc còn treo — HỎI TJ trước, đừng tự làm
-- **7 lệnh riêng WordLoop** (`/start /sync /task /verify /bump /qa /ship`) đang nằm trong `.claude/commands/` của W02 nhưng `.gitignore` dòng `.claude/` bỏ qua nó -> mất khi máy cloud bị xoá. Cách giữ: đổi `.gitignore` thành `.claude/*` + `!.claude/commands/` rồi commit. TJ CHƯA đồng ý (mới hỏi tác động); 4 lệnh riêng đã sao lưu ở `wordloop-commands/`.
+- ~~7 lệnh riêng WordLoop mất vì `.gitignore`~~ **XONG 2026-10-06 (TJ duyệt)**: `.gitignore` nay là `.claude/*` + `!.claude/commands/`, 7 lệnh đã nằm trong repo W02 (`.claude/commands/`). Bản lưu 4 lệnh riêng ở `wordloop-commands/` chỉ còn để tham khảo.
 - Bản chung của `/task` vẫn nhắc `TEAM_PROCESS.md`/`HANDOFF.md`; dự án không có 2 file đó thì bỏ qua.
 
 ## Luật nhớ khi làm
