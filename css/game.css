@@ -1641,3 +1641,6 @@ body.usersonly #g-main{max-width:none;padding:8px 14px 24px}
 .g-qvi .g-taud.on{background:linear-gradient(135deg,#ef4444,#f97316);box-shadow:0 0 0 0 rgba(239,68,68,.5);animation:bdLive 1.6s ease-out infinite}
 .g-qvi:has(.g-taud) .g-tstem{text-align:center}
 #rv-wrong.on{background:var(--red-sub);border-color:var(--red);color:#fff}
+.g-tsub[hidden]{display:none !important}
+.g-rvtag{display:inline-block;padding:3px 12px;border-radius:999px;background:var(--raise);border:1px solid var(--line);color:var(--text);font-size:13px;font-weight:700}
+#rv-hint{text-align:center;margin-bottom:8px}

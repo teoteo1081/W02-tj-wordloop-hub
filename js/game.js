@@ -3167,7 +3167,8 @@
     var rw = $("#rv-wrong"); if (rw) { rw.hidden = !R.some(function (x) { return x.tq; }); rw.classList.toggle("on", !!G.rvOnlyWrong); rw.classList.toggle("g-btn-soft", !G.rvOnlyWrong); rw.textContent = "❌ Câu sai" + (wl ? " (" + wl.length + ")" : ""); }
     paintStar(L);
     $("#rv-back").textContent = G.rvFrom === "hist" ? T("back_hist") : T("back_res");
-    $("#rv-hint").textContent = L.hint; $("#rv-vi").innerHTML = L.vi; $("#rv-opts").innerHTML = L.opts; $("#rv-opts").classList.toggle("g-tbook", !!L.tq); if (L.tq) tqPickAvatars(L); $("#rv-hint").hidden = !!L.tq; $$("#rv-vi .g-taud").forEach(function (x) { var r = x.closest(".g-row") || x; r.hidden = true; }); $("#rv-res").innerHTML = L.res; $("#rv-msg").textContent = L.msg;
+    $("#rv-hint").textContent = L.hint; $("#rv-vi").innerHTML = L.vi; $("#rv-opts").innerHTML = L.opts; $("#rv-opts").classList.toggle("g-tbook", !!L.tq); if (L.tq) tqPickAvatars(L); if (L.tq) { var tqn = L.tq.nums && L.tq.nums.length > 1 ? L.tq.nums[0] + "–" + L.tq.nums[L.tq.nums.length - 1] : L.tq.num; $("#rv-hint").innerHTML = '<span class="g-rvtag">📝 ' + esc(tName(L.tq.test)) + " · Part " + esc(L.tq.part) + " · " + (L.tq.nums && L.tq.nums.length > 1 ? "Câu " : "Câu ") + esc(tqn) + "</span>"; }
+    $("#rv-hint").hidden = !L.tq; $$("#rv-vi .g-taud").forEach(function (x) { var r = x.closest(".g-row") || x; r.hidden = true; }); $("#rv-res").innerHTML = L.res; $("#rv-msg").textContent = L.msg;
     /* 🔊 nghe lại (TJ 2026-10-02): nút cạnh ◀ ▶ + loa nhỏ ngay sau từ đúng; đang bật tiếng thì sang câu tự đọc */
     $("#rv-say").hidden = !L.say || !!(L.tq && /\[aud\]/.test(L.tq.audl || L.tq.full || "")); $("#rv-say").dataset.say = L.say || ""; $("#rv-say").dataset.sl = L.sl || "en";
     $$("#rv-vi .g-fill").forEach(function (f) { if (L.say && !L.tq) f.insertAdjacentHTML("afterend", spk(L.say, L.sl)); });   /* đề thi: nghe cả câu bằng nút #rv-say, không chen loa giữa câu */
@@ -3943,6 +3944,8 @@
       if (who.length && !b.classList.contains("ok")) b.classList.add("bad");   /* người chọn sai -> đáp án đó đỏ (TJ 2026-10-06) */
       box.innerHTML = who.map(function (pid) { var p = ros[pid] || {}; return '<span class="g-pk" title="' + esc(p.name || "") + '">' + avatar(p.avatar, "g-av-sm") + '<em>' + esc(p.name || "") + "</em></span>"; }).join("");
     });
+    /* ❌ chỉ xem câu sai: trong nhóm Part 3–4, ẩn câu con mà ai chọn cũng đúng */
+    if (G.rvOnlyWrong && tq.nums && tq.nums.length > 1) $$("#rv-opts .g-tsub").forEach(function (s) { s.hidden = !s.querySelector(".g-opt.bad"); });
   }
   function paintPickers(q, roster, sel) {
     if (q.type === "toeic") return;   /* 🎯 làm đề: không tô đáp án lúc đang làm (màn hình chung cũng vậy) */
