@@ -44,6 +44,24 @@ Hầu hết thay đổi trên được kiểm bằng: `node --check`, tải file
 ### Quy tắc kỹ thuật vừa học (đã ghi thêm ở CLAUDE.md mục cuối)
 Xem mục "Bài học kỹ thuật 2026-10-06" cuối `CLAUDE.md`.
 
+### BỔ SUNG CUỐI PHIÊN 2026-10-06 (TJ về nhà, dừng giữa chừng) — ĐỌC KỸ
+**Phiên bản live sau đợt đẩy cuối:** board.js v94 · game.css v193 · game.js v249 · app.js v61 · gamelayer.js v25 (game-version.json = 249).
+
+**Vừa xong và ĐÃ ĐẨY:** (1) bảng màu bút 10 màu trong `COLORS` (board.js ~dòng 13: kem, đen, đỏ, cam, vàng, lục, lam nhạt, xanh dương, tím, hồng; muốn thêm màu chỉ thêm vào mảng, thanh công cụ tự vẽ thêm nút; màu chữ mặc định khi bút trắng cố định #ffd84d). (2) Hộp thoại xác nhận thân thiện `askConfirm("all"|"mine"|"lib")` (4 ngôn ngữ, mặc định focus nút "Giữ lại", Esc = giữ lại) thay confirm() mặc định của trình duyệt. Đã kiểm bằng trang thử Chrome headless: 10 nút màu, hộp thoại hiện và đóng đúng, không lỗi console, cả bản local lẫn file đang chạy ở web thật.
+
+**CHƯA LÀM — Công cụ Text (TJ yêu cầu, quan trọng, làm đầu tiên lần sau):** hiện chạm là tạo chữ trần bằng `newText(p)` (board.js ~dòng 506), không có ô, không biết ai gõ. Yêu cầu của TJ:
+1. KÉO để vẽ ô chữ: hiện khung nét đứt chạy theo tay (rubber-band) rồi tạo ô đúng cỡ đó; chạm không kéo = ô mặc định (~38% x 12% bề ngang bảng).
+2. Ô có KHUNG (viền theo màu chữ) + AVATAR tròn của người gõ ở góc ô (lấy từ `api.online()` hoặc `me().avatar`; item đã có trường `by`).
+3. Chữ TỰ CO GIÃN vừa ô: ít chữ thì to, nhiều chữ thì nhỏ, canh giữa. Gợi ý: tìm cỡ chữ LỚN NHẤT vừa ô bằng tìm nhị phân (~9 lần đo `scrollHeight/scrollWidth`), chạy lại mỗi lần gõ và mỗi lần nhận tin.
+4. KÉO avatar để DI CHUYỂN ô; KÉO góc dưới-phải để ĐỔI CỠ ô. Tin phát đi `{t:"t",id,x,y,w,h,c,text}` (thêm w,h; item cũ không có w,h thì giữ kiểu tự giãn cũ).
+Cần nhớ: `.bd-tx` là phần tử contentEditable đang dùng `innerText`/`textContent` nên avatar và tay nắm phải là phần tử ANH EM đặt trong `#bd-texts`, KHÔNG nằm trong `.bd-tx`; toạ độ kéo dùng `toLogic(e)` (đã tính zoom); `focusout` xoá ô rỗng; `tmsg()`, nhánh nhận `m.t === "t"` và lệnh redo phải mang w,h. Mình đã soạn thử một bản vá nhưng KHÔNG áp dụng vào repo (script lỗi dấu), nên cần viết lại từ spec này.
+
+**Câu TJ hỏi, chưa trả lời với TJ:** "đang đọc sách / chơi game mà host bị out thì tiếp tục được không?" Theo code (CHƯA thử thực tế bằng cách rút mạng host): host mất kết nối hoặc tải lại NGẮN: game vẫn sống (host lưu trạng thái `saveHost`, khi quay lại `restoreHost`), người chơi giữ đáp án trong `G.outbox` rồi gửi bù (`flushOutbox`); Bảng đóng băng ở trang cuối và báo "⏳ Host chưa vào bảng — đang chờ host" (`hostHere`, `bd-hostaway`), người chơi vẫn cuộn bài và tra từ được, giọng đọc cùng host thì dừng. Host mất HẲN: chế độ Tự do / Thi thật người chơi vẫn làm tiếp được tại máy nhưng KHÔNG ai lưu kết quả và xếp hạng (chỉ host ghi `game_results` ở `hostEnd`); Kahoot (cùng 1 câu) đứng chờ; KHÔNG có cơ chế người chơi tự lên làm host thay (mục "Còn treo (game) a" ở dưới). Cần hỏi TJ: có muốn làm "tự lên host thay" (người vào sớm nhất hoặc moderator, dùng bản `G.st` mới nhất mà người chơi đang giữ) không.
+
+**Lỗi do mình gây trong phiên (đừng lặp lại):** 2 lần chú thích `/*` không đóng nuốt mã. Lần 1 làm hỏng `app.js` trên web thật vài phút. Lần 2 nuốt khai báo `SIZES` và `api` trong board.js, bắt được nhờ trang thử TRƯỚC khi đẩy. `node --check` KHÔNG bắt được loại lỗi này (chú thích nuốt tới một dấu kết thúc ở dòng sau vẫn là cú pháp hợp lệ). Luôn chạy bài kiểm tra khói trước khi đẩy: dựng bảng bằng Chrome headless với `api` giả và xem có dựng được nút và hộp thoại không. Khi chèn chú thích vào GIỮA dòng mã, dùng `//` hoặc đóng chú thích đầy đủ.
+
+**Những việc treo khác (đã nêu ở trên):** nút "Game →" chơi một mình trên dòng Lịch sử; làm đẹp thanh công cụ dọc; chữ trên bảng (căn trái, tiêu đề không vàng, font); lỗi UI 390px do QA tìm; PDF mờ; viền vàng bên trái bảng; dọn tools/claude-setup-template/.
+
 ## Đang làm: Đơn giản hoá tài khoản game — "1 hồ sơ = 1 người chơi" (CHỜ TJ chốt, CHƯA code)
 - **Mục tiêu**: hết cảnh TJ#2/TJ#3. Hiện có 2 hệ danh tính song song: hồ sơ WordLoop (`profiles`, nhận qua link `?u=`, localStorage `tjwl_link_user_id_v1`) và người chơi game (`game_players`, localStorage `tjwl_game_player_v1`, trùng tên tự đánh `name_no`). Xoá cache -> máy quên cả 2 -> game tạo người mới #N.
 - **Đề xuất đã gửi TJ (2026-10-01, máy 2)**:
