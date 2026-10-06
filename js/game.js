@@ -2730,6 +2730,11 @@
         return '<div class="g-scl' + (okL ? " ok" : "") + '" data-scrp="' + Math.max(span[0], r[0] - 0.8).toFixed(1) + "-" + Math.min(span[1], r[1] + 0.5).toFixed(1) + '">' + (l.sp ? '<b class="g-scsp">' + esc(l.sp) + "</b> " : "") + esc(l.vi || "") + "</div>";
       }).join("") : '<div class="g-sub">Câu này chưa có bản dịch tiếng Việt.</div>') + "</div>";
     box.insertAdjacentHTML("beforeend", html);
+    /* 🔊 loa ngay cạnh từng câu con (Part 3–4): nghe đúng chỗ có đáp án, khỏi kéo xuống lời thoại (TJ 2026-10-06) */
+    $$("#rv-opts .g-tsub").forEach(function (s) {
+      var tn = s.querySelector(".g-tnum"), n = tn ? parseInt(tn.textContent, 10) : NaN, r = evR[n]; if (!r || s.querySelector(".g-subev")) return;
+      tn.insertAdjacentHTML("afterend", ' <button type="button" class="g-subev" data-scrp="' + Math.max(span[0], r[0] - 1).toFixed(1) + "-" + Math.min(span[1], r[1] + 1).toFixed(1) + '" title="' + esc(apT("evq")) + " " + n + '">🔊</button>');
+    });
   }
   document.addEventListener("click", function (e) {
     var b = e.target.closest && e.target.closest("[data-scrp]"); if (!b || !AP) return;

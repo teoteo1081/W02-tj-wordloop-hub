@@ -1644,3 +1644,5 @@ body.usersonly #g-main{max-width:none;padding:8px 14px 24px}
 .g-tsub[hidden]{display:none !important}
 .g-rvtag{display:inline-block;padding:3px 12px;border-radius:999px;background:var(--raise);border:1px solid var(--line);color:var(--text);font-size:13px;font-weight:700}
 #rv-hint{text-align:center;margin-bottom:8px}
+.g-subev{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;margin:0 4px;padding:0;border-radius:50%;border:0;background:linear-gradient(135deg,#14b8a6,#3b82f6);color:#fff;font-size:15px;cursor:pointer;vertical-align:middle;text-indent:0;box-shadow:0 1px 6px rgba(20,184,166,.4)}
+.g-subev:active{transform:scale(.92)}
