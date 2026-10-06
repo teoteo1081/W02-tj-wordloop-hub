@@ -536,7 +536,7 @@
   function paintSide() {
     var side = $("#g-side"); if (!side || !SIDE) return;
     document.documentElement.style.setProperty("--gtop", $(".g-top").offsetHeight + "px");
-    var on = !!(G.isHost && G.view !== "screen" && !$("#s-lobby").hidden), pinned = SIDE.pinned && !narrow();
+    var on = !!(G.isHost && G.view !== "screen" && !$("#s-lobby").hidden && !G.embed), pinned = SIDE.pinned && !narrow();   /* trong WordLoop (embed): chủ đề chọn ở cột Notebooks/Pages của WordLoop, không dùng cây riêng của game */
     if (!on) SIDE.open = false;
     side.hidden = !on || (!pinned && !SIDE.open);
     side.classList.toggle("fly", !pinned);
@@ -544,7 +544,7 @@
     $("#h-sidetab").hidden = !on || pinned || SIDE.open;
     $("#h-sidebd").hidden = !on || pinned || !SIDE.open;
     $("#h-pin").classList.toggle("on", SIDE.pinned);
-    $("#h-sideopen").hidden = pinned;
+    $("#h-sideopen").hidden = pinned || !!G.embed;
     if (side.hidden) $("#h-dotmenu").hidden = true;
   }
   function sideOpen(on) { SIDE.open = on; paintSide(); }

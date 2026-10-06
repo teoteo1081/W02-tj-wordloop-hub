@@ -34,7 +34,7 @@
     layer.style.width = Math.round(r.width) + "px"; layer.style.right = "auto";
   }
   function setFit(on) {
-    on = !!on && isOpen();
+    on = (!!on || gameOpened) && isOpen();   /* thẻ 🎮 Game đang mở: LUÔN giữ 2 cột Notebooks / Pages như Bảng (TJ 2026-10-06) */
     if (on === fitOn) { if (on) fitRect(); return; }
     fitOn = on; layer.classList.toggle("board-fit", on);
     clearInterval(fitPoll);
@@ -129,6 +129,7 @@
     if (mbtn) { w.$$(".mobile-nav button").forEach(function (x) { x.classList.toggle("active", x === mbtn); }); }
     document.body.classList.add("game-on");
     gameOpened = true;
+    setFit(true);
   }
   function close() {
     try { sessionStorage.removeItem("tjwl_board_mode"); } catch (e) {}
@@ -207,6 +208,19 @@
     }
     enterBoard();   /* Learning luôn hiện; lớp game chỉ lộ ra đúng vùng giữa khi bảng có Block */
   }
+
+  /* TJ 2026-10-06: thẻ Game có 2 cột Notebooks (trái) + Pages (phải) y như Bảng, thay cho "Mở cây chủ đề"/📚 trong game.
+     Đang ở thẻ Game: bấm 1 Notebook / Section / Page = chọn làm chủ đề ván (không chuyển trang Learning bên dưới). */
+  function pickScope(e) {
+    if (!(gameOpened && fitOn) || e.target.closest("[data-menu], .dots")) return;
+    var el = e.target.closest("[data-nb],[data-sec],[data-page]"); if (!el) return;
+    var t = el.dataset.nb ? "notebooks" : el.dataset.sec ? "sections" : "pages", id = el.dataset.nb || el.dataset.sec || el.dataset.page;
+    var nm = String(el.getAttribute("title") || el.textContent || "").replace(/[⋯s]+$/g, "").replace(/s+/g, " ").trim().slice(0, 60);
+    e.stopImmediatePropagation(); e.preventDefault();
+    openScope(t, id, nm);
+    w.$$("#sidebar-left .game-pick, #sidebar-right .game-pick").forEach(function (x) { x.classList.remove("game-pick"); }); el.classList.add("game-pick");
+  }
+  ["#sidebar-left", "#sidebar-right"].forEach(function (s) { var a = w.$(s); if (a) a.addEventListener("click", pickScope, true); });
 
   /* "📖 Learning": đang mở game thì chỉ đóng game (màn bên dưới vẫn y như lúc rời đi) */
   learn.addEventListener("click", function (e) {

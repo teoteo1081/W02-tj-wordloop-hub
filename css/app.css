@@ -2477,3 +2477,6 @@ body.board-skin .lbd-me{position:sticky;top:0;z-index:6;margin:0 -1.2rem;padding
 body.board-skin #workspace{padding-bottom:0}
 body.board-skin .lbd-people{margin-top:1rem}
 @media (max-width:700px){body.board-skin .lbd-me{margin:0 -.8rem;padding:8px .8rem 10px}}
+
+/* TJ 2026-10-06: thẻ Game — mục vừa chọn làm chủ đề ván ở cột Notebooks / Pages */
+#sidebar-left .game-pick,#sidebar-right .game-pick{outline:2px solid #7c4dff;outline-offset:-2px;border-radius:8px}
