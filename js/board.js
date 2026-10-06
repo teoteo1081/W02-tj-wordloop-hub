@@ -1724,7 +1724,13 @@
     v.hidden = !stream || !!local; if (local || !stream) v.muted = true;   /* host KHÔNG xem lại hình đang chia sẻ: hình chồng lên bài của host nên rối + lặp vô tận (TJ 2026-10-06) */   /* tự phát cần muted; người xem bấm 🔊 Bật tiếng */
     if (stream) v.play().catch(function () {});
     $("#bd-stage").classList.toggle("bd-screen", !!stream && !local);
-    $("#bd-stage").classList.toggle("bd-screen-view", !!stream && !local);   /* TJ 2026-10-06: NGƯỜI XEM thấy màn hình chia sẻ thay cho bài (trước: lớp bài đè lên hình, chỉ nghe tiếng); host vẫn thấy bài của mình */
+    $("#bd-stage").classList.toggle("bd-screen-view", !!stream && !local);
+    /* iPhone/Safari đôi khi KHÔNG phát được hình chia sẻ -> lớp bài bị ẩn mà video đen = bảng trống. Sau 5s chưa có khung hình thì trả lại bài (TJ 2026-10-06: bạn dùng iPhone 15 không thấy nội dung bảng) */
+    clearTimeout(showVideo.t);
+    if (stream && !local) showVideo.t = setTimeout(function () {
+      var vv = $("#bd-video"), st = $("#bd-stage"); if (!vv || !st || vv.hidden) return;
+      if (!(vv.videoWidth > 0 && vv.readyState >= 2 && !vv.paused)) st.classList.remove("bd-screen-view", "bd-screen");
+    }, 5000);   /* TJ 2026-10-06: NGƯỜI XEM thấy màn hình chia sẻ thay cho bài (trước: lớp bài đè lên hình, chỉ nghe tiếng); host vẫn thấy bài của mình */
     paintShare();
   }
 
