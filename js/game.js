@@ -1531,12 +1531,21 @@
 
   /* ---------- phòng chờ ---------- */
   /* WordLoop (thẻ 🎮 Game, nút 🎮 trên Block card) gửi chủ đề mới khi game đã mở sẵn — đổi tại chỗ, không tải lại */
-  window.addEventListener("message", function (e) {
+  window.addEventListener("message", async function (e) {
     if (e.origin !== location.origin || !e.data || e.data.type !== "tjwl-game-scope") return;
     var sc = (e.data.scope || []).filter(function (p) { return p && p.table && p.id; });
     if (!sc.length) return;
     if (!G.isHost || !G.st) { G.pendingScope = sc; return; }   /* chưa vào phòng xong -> initHostLobby áp sau */
-    if (G.st.phase !== "lobby") { alert("Đang chơi dở — bấm Kết thúc / Ván mới rồi chọn lại chủ đề nhé."); return; }
+    if (G.st.phase !== "lobby") {   /* TJ 2026-10-06: bấm 🎮 Chơi game ở 1 Block khi phòng đang chơi dở / đang xem kết quả -> kết thúc ván (hỏi 1 câu), cả phòng về phòng chờ, chủ đề đặt sẵn, chờ host bấm Bắt đầu */
+      if (G.st.phase === "play") {
+        if (!confirm("Đang có ván chơi dở. Kết thúc ván hiện tại để chuẩn bị ván mới cho chủ đề này?")) return;
+        await hostEnd();
+        if (!G.st || G.st.phase === "play") { alert("Ván đang thi — đợi nộp bài xong rồi bấm lại nhé."); return; }
+      }
+      G.st.phase = "lobby"; G.st.scores = {}; G.st.q = null; G.st.matchId = null;
+      G.answers = []; G.endAt = 0; G.qUntil = 0; G.lastN = -1; G.srsHtml = ""; G.inHist = false;
+      push(); renderLobby();
+    }
     picked = sc.map(function (p) { return { table: p.table, id: p.id, title: p.title || p.id }; });
     if (TREE) paintTree(); else paintPicked();
     hostSetScope();

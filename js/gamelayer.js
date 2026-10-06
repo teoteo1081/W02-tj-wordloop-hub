@@ -182,6 +182,7 @@
   /* Mở game với chủ đề chọn sẵn (nút 🎮 trên Block card / chuột phải "🎮 Mở phòng game"). Game chưa mở -> tạo iframe
      với ?scope=; đã mở -> gửi postMessage để game đổi chủ đề tại chỗ (không tải lại, giữ phòng/người chơi). */
   function openScope(table, id, title) {
+    if (boardMode) { closeBoardMode(); leaveBoard(); }   /* đang ở chế độ Bảng: rời Bảng để thấy trang game (lớp game đang bị ẩn) */
     if (!layer.firstChild) {
       var f = document.createElement("iframe");
       f.src = "game.html?embed=1&t=" + Date.now() + "&scope=" + encodeURIComponent(table + ":" + id) + "&title=" + encodeURIComponent(title || "");
