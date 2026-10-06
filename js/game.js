@@ -3931,6 +3931,13 @@
      - Lỗi âm thanh tạm (audio-busy / synthesis-failed) -> thử lại 1 lần. */
   /* 🔊 FILE GHI ÂM có sẵn (words.audio) -> phát file; lỗi file thì đọc bằng giọng máy. Dùng 1 thẻ <audio> cho cả trang
      (điện thoại cho phát sau lần chạm đầu). Tự đọc khi file đang phát -> xếp hàng như giọng máy. */
+  /* TJ 2026-10-06: "cùng một bài mà Learning một giọng, Bảng một giọng" — Learning dùng giọng đã chọn (tjwl_voice_v1) HOẶC giọng mặc định của js/speech.js (PREFERRED);
+     game trước đây chỉ dùng giọng đã chọn, chưa chọn thì tự lấy giọng khác -> lệch. Nay: đã chọn -> dùng; chưa chọn + game chạy trong WordLoop -> lấy đúng Speech.voice của Learning. */
+  function learnVoice(all) {
+    var nm = readLSraw("tjwl_voice_v1");
+    if (!nm) { try { var sp = window.parent !== window && window.parent.Speech; nm = sp && sp.voice && sp.voice.name; } catch (e) {} }
+    return nm && all.find(function (x) { return x.name === nm; }) || null;
+  }
   var AUD = null;
   function playFile(url, text, now) {
     if (!AUD) { AUD = new Audio(); AUD.preload = "auto"; }
@@ -3975,7 +3982,7 @@
         if (silent) { wd = setTimeout(fin, 300 + String(text).length * 66 / Math.max(.25, rate || .9)); return; }   /* máy này TẮT TIẾNG: không phát, chỉ giữ nhịp theo thời lượng ước tính để karaoke vẫn chạy */
         var tl = TTS_LANG[lang] || lang || "en-US", u = new SpeechSynthesisUtterance(String(text));
         u.lang = tl; u.rate = rate || 0.9; u.volume = volLevel();   /* thanh âm lượng CHUNG với game (0 = im lặng) */
-        var all = syn.getVoices() || [], mine = readLSraw("tjwl_voice_v1"), v = tl === "en-US" && mine && all.find(function (x) { return x.name === mine; }) || null;
+        var all = syn.getVoices() || [], v = tl === "en-US" && learnVoice(all) || null;
         if (!v) {   /* ưu tiên giọng CÓ SẴN trong máy (giọng "Google…/Online" đọc qua mạng, có máy im lặng) */
           var m = all.filter(function (x) { return x.lang.replace("_", "-").toLowerCase().indexOf(tl.toLowerCase()) === 0; });
           if (!m.length) m = all.filter(function (x) { return x.lang.slice(0, 2).toLowerCase() === tl.slice(0, 2).toLowerCase(); });
@@ -4008,7 +4015,7 @@
       var tl = TTS_LANG[sayIt._lang || tgt()] || "en-US"; sayIt._lang = null;
       var u = new SpeechSynthesisUtterance(text); u.lang = tl; u.rate = 0.9; u.volume = volLevel();
       var all = syn.getVoices(), mine = readLSraw("tjwl_voice_v1");   /* giọng đã chọn bên WordLoop (js/speech.js LS_VOICE) */
-      var v = tl === "en-US" && mine && all.find(function (x) { return x.name === mine; }) || null;   /* giọng chọn bên WordLoop là giọng tiếng Anh */
+      var v = tl === "en-US" && learnVoice(all) || null;   /* đúng giọng Learning đang dùng (đã chọn, hoặc giọng mặc định của Learning) */
       if (!v) { var pre = tl.slice(0, 2), en = all.filter(function (x) { return x.lang.replace("_", "-").toLowerCase().indexOf(tl.toLowerCase()) === 0; });
         if (!en.length) en = all.filter(function (x) { return x.lang.slice(0, 2).toLowerCase() === pre; });
         /* giọng "Google …"/"… Online" đọc qua máy chủ Google/Microsoft — ở Trung Quốc không vào được Google nên im lặng.
