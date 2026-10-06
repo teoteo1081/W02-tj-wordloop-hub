@@ -3922,7 +3922,11 @@
   }
   async function tqPickAvatars(L) {
     var mid = G.logMatch; if (!mid || !/^[0-9a-f-]{20,}$/i.test(String(mid))) return;
-    var M = await tqPickMap(mid), tq = L.tq, ros = (G.st && G.st.roster) || {};
+    var M = await tqPickMap(mid), tq = L.tq, ros = Object.assign({}, G.plCache || {}, (G.st && G.st.roster) || {});
+    /* roster của phòng hiện tại có thể không còn người đó (ván cũ / đã về phòng chờ) -> lấy tên + avatar từ bảng người chơi để KHÔNG mất avatar/tên */
+    var miss = {}; Object.keys(M).forEach(function (k) { Object.keys(M[k]).forEach(function (o) { M[k][o].forEach(function (pid) { if (!ros[pid]) miss[pid] = 1; }); }); });
+    var mk = Object.keys(miss);
+    if (mk.length) { try { var pr = await sb.from("game_players").select("id,name,avatar").in("id", mk); G.plCache = G.plCache || {}; (pr.data || []).forEach(function (x) { G.plCache[x.id] = { name: x.name, avatar: x.avatar }; ros[x.id] = G.plCache[x.id]; }); } catch (e) {} }
     if (rvCur() !== L) return;   /* đã sang câu khác */
     $$("#rv-opts .g-opt").forEach(function (b) {
       var num = b.dataset.sub != null && tq.nums ? tq.nums[+b.dataset.sub] : tq.num, m0 = M["toeic:" + tq.test + ":" + tq.part + ":" + num] || {}, who = m0[norm(b.dataset.opt)] || [];
