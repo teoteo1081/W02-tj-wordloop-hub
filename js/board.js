@@ -714,7 +714,7 @@
         if (kp) { kp.textContent = eg && eg.first ? "⏮" : "⏪"; kp.title = eg && eg.first ? "Batch trước" : "Block trước"; }
         if (kn) { kn.textContent = eg && eg.last ? "⏭" : "⏩"; kn.title = eg && eg.last ? "Batch sau" : "Block sau"; }
       }
-      var ib0 = $("#bd-iconbar"); if (ib0) ib0.hidden = nav.hidden;
+      var ib0 = $("#bd-iconbar"); if (ib0) { var pp0 = $("#bd-people"); ib0.hidden = nav.hidden && (!pp0 || pp0.hidden); }   /* chưa có nội dung: dải công cụ ẩn nhưng hàng avatar mọi người dưới bảng PHẢI còn (TJ 2026-10-06) */
       $("#bd-dtree").hidden = !host; $("#bd-dclose").hidden = !host || !d; $("#bd-dpg").hidden = !d || isTxt;
       $("#bd-dsrch").hidden = !isTxt;
       var sw0 = $("#bd-dswap"); if (sw0) sw0.hidden = !(host && d && d.k === "wl");
@@ -743,8 +743,9 @@
     el.hidden = false;
     var ub = $("#bd-ubar");
     if (ub) {
-      var showU = !(api && api.isHost()) && !document.body.classList.contains("embed"); ub.hidden = !showU;
-      if (showU) ub.innerHTML = '<span class="bd-mering">' + pic + "</span><b>" + esc(m.name) + (m.name_no > 1 ? " #" + m.name_no : "") + "</b>" + (curDoc() ? "" : '<span class="bd-ubhint">⏳ Đang chờ host chọn nội dung lên bảng…</span>');
+      var showU = !(api && api.isHost()) && !document.body.classList.contains("embed"), wasH = ub.hidden; ub.hidden = !showU;
+      var uh = showU ? '<span class="bd-mering">' + pic + "</span><b>" + esc(m.name) + (m.name_no > 1 ? " #" + m.name_no : "") + "</b>" + (curDoc() ? "" : '<span class="bd-ubhint">⏳ Đang chờ host chọn nội dung lên bảng…</span>') : "";
+      if (ub._h !== uh) { ub._h = uh; ub.innerHTML = uh; relayout(); } else if (wasH !== ub.hidden) relayout();   /* thanh tên đổi cao -> tính lại khung (trước đây bảng quá cao, đẩy hàng avatar dưới ra khỏi màn) */
     }
   }
   function paintHostAway() {   /* TJ 2026-10-06: host KHÔNG có trong phòng (đang ở trang khác / mất mạng) -> người chơi thấy "chờ host" thay vì 1 bảng đóng băng */
@@ -768,6 +769,7 @@
     var k = L.map(function (p) { return p.id + ":" + p.name + ":" + p.avatar + ":" + (p.host ? 1 : 0) + ":" + (p.lang || ""); }).join("|") + "#" + mine;
     if (k === peopleKey) return; peopleKey = k;
     el.hidden = !L.length;
+    var ibp = $("#bd-iconbar"), nvp = $("#bd-docnav"); if (ibp && nvp) ibp.hidden = nvp.hidden && el.hidden;   /* hàng avatar chung khối với dải công cụ: có người thì khối phải hiện */
     el.innerHTML = L.map(function (p) {
       return '<div class="bd-pp1' + (p.id === mine ? " me" : "") + '" title="' + esc(p.name || "") + '"><span class="bd-mering">' + avHTML(p.avatar) + (p.host ? '<i title="Host">👑</i>' : "") + (PFLAG[p.lang] ? '<u>' + PFLAG[p.lang] + "</u>" : "") + "</span><b>" + esc(p.name || "?") + (p.no > 1 ? " #" + p.no : "") + "</b></div>";
     }).join("");

@@ -1507,3 +1507,6 @@ body.big .g-learnlayer{display:none}
   #s-hist .g-h1row #hi-back{order:0}
   #s-hist .g-h1row h1{order:1;text-align:left}
 }
+
+/* TJ 2026-10-06: chờ nội dung (dải công cụ ẩn): hàng avatar mọi người dưới bảng chiếm cả hàng, không bị ép nửa trái */
+.bd-iconbar:has(> .bd-docnav[hidden]) > .bd-people{flex:1 1 100%;max-width:100%;width:100%}
