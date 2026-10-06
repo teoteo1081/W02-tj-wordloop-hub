@@ -1619,3 +1619,10 @@ body.usersonly #g-main{max-width:none;padding:8px 14px 24px}
 .g-opt .g-pickers .g-av:first-child{margin-left:0}
 .g-opt .g-pickers .g-cnt{margin-left:6px}
 .g-timg{transition:max-height .2s ease}
+
+/* v195: avatar tròn + TÊN (TJ 2026-10-06 "đáp án vẫn chưa có tên") */
+.g-opt .g-pickers{gap:4px;justify-content:center}
+.g-pk{display:inline-flex;align-items:center;gap:5px;padding:2px 9px 2px 2px;border-radius:999px;background:rgba(255,255,255,.08);max-width:48%}
+.g-pk em{font-style:normal;font-size:12px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.g-opt .g-pickers .g-pk .g-av{margin-left:0;width:24px;height:24px;font-size:14px}
+.g-t3n{font-style:normal;font-size:12px;max-width:64px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}

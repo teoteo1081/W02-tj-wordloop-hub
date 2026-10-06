@@ -2435,7 +2435,7 @@
     var t3 = $("#p-top3");
     if (t3) t3.innerHTML = list.slice(0, 3).map(function (x, i) {
       var p = roster[x.pid] || {}, sc = x.c != null ? x.c : "";
-      return '<span class="g-t3 g-t3-' + (i + 1) + (G.me && x.pid === G.me.id ? " me" : "") + '" title="' + esc(p.name || "") + '"><i class="g-t3m">' + ["🥇", "🥈", "🥉"][i] + "</i>" + avatar(p.avatar, "g-av-md") + (sc !== "" ? "<b>✓" + esc(sc) + "</b>" : "") + "</span>";
+      return '<span class="g-t3 g-t3-' + (i + 1) + (G.me && x.pid === G.me.id ? " me" : "") + '" title="' + esc(p.name || "") + '"><i class="g-t3m">' + ["🥇", "🥈", "🥉"][i] + "</i>" + avatar(p.avatar, "g-av-md") + '<em class="g-t3n">' + esc(p.name || "") + "</em>" + (sc !== "" ? "<b>✓" + esc(sc) + "</b>" : "") + "</span>";
     }).join("");
     $("#p-board").innerHTML = list.map(function (x) {
       var p = roster[x.pid] || {};
@@ -3891,7 +3891,7 @@
     $$("#rv-opts .g-opt").forEach(function (b) {
       var num = b.dataset.sub != null && tq.nums ? tq.nums[+b.dataset.sub] : tq.num, m0 = M["toeic:" + tq.test + ":" + tq.part + ":" + num] || {}, who = m0[norm(b.dataset.opt)] || [];
       var box = b.querySelector(".g-pickers"); if (!box) { box = document.createElement("span"); box.className = "g-pickers"; b.appendChild(box); }
-      box.innerHTML = who.map(function (pid) { var p = ros[pid] || {}; return '<span title="' + esc(p.name || "") + '">' + avatar(p.avatar, "g-av-sm") + "</span>"; }).join("") + (who.length ? '<span class="g-cnt">' + who.length + "</span>" : "");
+      box.innerHTML = who.map(function (pid) { var p = ros[pid] || {}; return '<span class="g-pk" title="' + esc(p.name || "") + '">' + avatar(p.avatar, "g-av-sm") + '<em>' + esc(p.name || "") + "</em></span>"; }).join("");
     });
   }
   function paintPickers(q, roster, sel) {
@@ -3903,7 +3903,7 @@
       if (o === norm(q.ans)) b.classList.add("ok");
       else if (G.myChoice && o === norm(G.myChoice)) b.classList.add("bad");
       var box = b.querySelector(".g-pickers");
-      if (box) box.innerHTML = who.map(function (pid) { var p = roster[pid] || {}; return avatar(p.avatar, "g-av-sm" + (pid === q.fast ? " g-fast" : "")); }).join("") + (who.length ? '<span class="g-cnt">' + who.length + "</span>" : "");
+      if (box) box.innerHTML = who.map(function (pid) { var p = roster[pid] || {}; return '<span class="g-pk" title="' + esc(p.name || "") + '">' + avatar(p.avatar, "g-av-sm" + (pid === q.fast ? " g-fast" : "")) + '<em>' + esc(p.name || "") + "</em></span>"; }).join("");
     });
   }
   /* host CHẤM LUÔN câu của chính mình (không đi vòng qua mạng): trước đây host gửi rồi tự nhận lại qua kênh —
