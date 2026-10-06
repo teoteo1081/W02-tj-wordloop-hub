@@ -3,6 +3,7 @@
 Đọc `README.md` trước để hiểu tổng thể app. File này chỉ ghi thêm những điều **không hiển nhiên từ code**, các quyết định thiết kế đã tranh luận qua lại nhiều lần, và các lỗi đã sửa để tránh lặp lại. Nếu có `HANDOFF.md` khác rỗng, đọc thêm nó SAU CÙNG — đó là checkpoint tạm của phiên trước lúc sắp hết token, xem luật dùng ngay đầu file đó trước khi tin bất cứ gì trong đó.
 
 ## Nguyên tắc chung khi sửa app này
+- **Làm việc theo đội (2026-10-05)**: đọc `TEAM_PROCESS.md` — 3 cổng tiền kiểm / làm / hậu kiểm (có Agent QA độc lập, chi phí nói trước, trình mẫu cho TJ duyệt trước khi làm hàng loạt), trích đúng lời TJ dặn.
 - **3 file tài liệu, 3 vai trò rõ ràng — đừng lẫn lộn:**
   - `README.md` — kiến trúc + **"Việc còn dang dở"** = backlog SỐNG, nhiều phiên/nhiều AI cùng đọc/cùng cập nhật, luôn phải khớp thực tế (verify qua Supabase/code khi có thể).
   - `CLAUDE.md` (file này) — quyết định đã chốt + lỗi đã sửa, ít đổi, mang tính lâu dài.
@@ -34,6 +35,9 @@
 - **Push lên `main` phải là 1 lệnh RIÊNG** (`git push origin main`), đừng gộp nhiều nhánh trong 1 lệnh (`git push origin main main:<nhánh khác>`) — 2026-10-03 GitHub Pages bỏ qua cả 5 lần push gộp như vậy (web đứng ở v88 trong khi main đã v91); push riêng `main` thì Pages build lại ngay. Kiểm tra bằng danh sách workflow run "pages build and deployment".
 
 - **File đề thi TOEIC (TJ 2026-10-03, "sau này xài tiếp không cần nói lại")**: TJ gửi PDF/audio đề -> **nén** rồi tải lên **Supabase Storage bucket `toeic`** (tạo bằng `tools/toeic_storage.sql`), đúng thư mục: `reading/TEST_<n>_RC.pdf`, `listening/TEST_<n>_LC.pdf`, audio `listening/TEST_<n>_LC.mp3`; đáp án/lời giải để cạnh (vd `reading/TEST_<n>_RC_key.pdf`). **KHÔNG BAO GIỜ commit file đề vào repo** (sách đề ETS có bản quyền, repo + web PUBLIC). Nén PDF scan: `pdftoppm -r 150 -jpeg -jpegopt quality=72 in.pdf p && img2pdf p-*.jpg -o out.pdf` (`pip install img2pdf`) — 20 MB -> ~4.4 MB, chữ Part 7 vẫn rõ. Giới hạn: gói Free Supabase ~1 GB tổng Storage, 50 MB/file (bucket đặt 50 MB). Upload: `POST {SUPABASE_URL}/storage/v1/object/toeic/<path>` với anon key, header `x-upsert: true` để ghi đè.
+
+- **GA4 DÙNG CHUNG (TJ chốt 2026-10-05)**: mọi web của TJ dùng CÙNG mã `G-6X5S109XKM` + tham số `site` (xem README "GA4 + dashboard"). Đừng tạo property/mã mới cho từng web; đừng gửi thông tin cá nhân (tên, email) lên GA4. Đừng công khai các repo `W01`/`W03`–`W07` (bot trading, khách hàng thuế).
+- **Nhiều repo, nhiều AI cùng làm (2026-10-05)**: L02 (Digital Marketing) và L04 (EA Quest) có agent khác làm trên nhánh riêng (`claude/keen-lamport-58cont`, `claude/stoic-bell-6hna0k`) — sửa chung phải báo qua `send_message`, không ghi đè nhánh của họ.
 
 ## Kiến trúc tóm tắt (chi tiết xem README.md)
 - `js/db.js` là lớp duy nhất biết dữ liệu nằm ở local hay Supabase (`DB.mode`). Code khác **không bao giờ** đọc `localStorage` trực tiếp hay gọi Supabase trực tiếp — luôn qua `DB.xxx()`.

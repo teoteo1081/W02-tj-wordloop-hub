@@ -869,7 +869,8 @@
      với chủ đề = đúng Block này (js/gamelayer.js GameLayer.openScope). */
   function gameBtnHtml(b) {
     if (!(w.DB.mode === "cloud" && w.Auth.user && w.Auth.user.id === "f3fd95c9-06e8-4d39-b6f2-efc113d436cf" && !w.Auth.viewAsUserId)) return "";
-    return '<button class="btn-game-block" data-gameblock="' + b.id + '" data-title="' + w.esc(b.name || "") + '" title="Chơi game với Block này (đạt ≥ 80% là pass, vào chu kỳ Tony Buzan)">🎮 Chơi game →</button>';
+    return '<button class="btn-board-block" data-boardblock="' + b.id + '" data-title="' + w.esc(b.name || "") + '" title="Mở bảng chung với Block này (bài đọc + bảng từ), người chơi cùng xem và vẽ">🖤 Mở bảng</button>' +
+      '<button class="btn-game-block" data-gameblock="' + b.id + '" data-title="' + w.esc(b.name || "") + '" title="Chơi game với Block này (đạt ≥ 80% là pass, vào chu kỳ Tony Buzan)">🎮 Chơi game →</button>';
   }
   function quickTabsHtml(blockId) {
     return '<div class="block-quick-tabs">' + QUICK_TABS.map(function (t) {
@@ -1287,6 +1288,16 @@
     if (w.WordSet && w.WordSet.isOpen()) { w.WordSet.close(); return; }
   };
 
+  /* 🖤 vào chế độ bảng: đưa Learning về màn DANH SÁCH Block (đóng Trang chủ / Journey / Xếp hạng / Fix lỗi sai–Ôn riêng / chi tiết Block) — TJ 2026-10-05: "bấm Bảng lại nhảy qua thẻ Fix lỗi" */
+  App.showBlockList = function () {
+    try { if (w.Home && !w.$("#screen-home").hidden) w.Home.close(); } catch (e) {}
+    try { if (w.Journey && !w.$("#screen-journey").hidden) w.Journey.close(); } catch (e) {}
+    try { if (!w.$("#screen-leaderboard").hidden) App.closeLeaderboardPage(); } catch (e) {}
+    try { if (w.WordSet && w.WordSet.isOpen()) w.WordSet.close(); } catch (e) {}
+    try { leaveDetail(); } catch (e) {}
+    try { w.$("#screen-detail").hidden = true; w.$("#screen-blocks").hidden = false; } catch (e) {}
+  };
+
   /* ══════════════ BỘ ĐẾM TỔNG SỐ TỪ (góc phải thanh trên cùng) ══════════════
      Luôn hiện, mọi màn hình — không chỉ trong Journey. Chỉ SƠN lại DOM
      (setWordCounter), việc TRUY VẤN số liệu thật (refreshWordCounter) tách
@@ -1401,10 +1412,33 @@
      (SB_LB_CACHE), KHÔNG đụng LB_CACHE của modal/trang chính. */
   var SB_LB_CACHE = null;
   var SB_LB_NB_LOADED = null;   /* notebookId đã tải xong lần gần nhất, tránh gọi DB lại nếu chưa đổi Notebook */
+  /* 🖤 CHẾ ĐỘ BẢNG: ô Xếp hạng = người chơi game, TOÀN BỘ THỜI GIAN (cùng cách tính tab "Mọi thời gian" của game: đúng nhiều nhất, sai ít nhất) — TJ 2026-10-05 */
+  App.renderSidebarGameLb = async function () {
+    var box = w.$("#sidebar-lb-mini"), body = w.$("#sidebar-lb-mini-body");
+    if (!box || !body || !w.DB || !w.DB.sb) return;
+    box.hidden = false; box.onclick = null;
+    body.innerHTML = '<div class="sb-lb-empty">⏳ Đang tải…</div>';
+    try {
+      var r = await w.DB.sb.from("game_results").select("player_id,rank,correct,wrong,game_players(name,name_no)").limit(5000);
+      if (r.error) throw r.error;
+      var agg = {};
+      (r.data || []).forEach(function (x) {
+        var a = agg[x.player_id] || (agg[x.player_id] = { p: x.game_players || {}, c: 0, wr: 0, g: 0 });
+        a.c += x.correct || 0; a.wr += x.wrong || 0; a.g++;
+      });
+      var rows = Object.keys(agg).map(function (k) { return agg[k]; }).sort(function (a, b) { return b.c - a.c || a.wr - b.wr; }).slice(0, 8);
+      if (!rows.length) { body.innerHTML = '<div class="sb-lb-empty">Chưa có ván game nào.</div>'; return; }
+      var medal = ["🥇", "🥈", "🥉"];
+      body.innerHTML = '<div class="sb-lb-empty" style="padding:0 0 4px">Người chơi game · mọi thời gian</div>' + rows.map(function (a, i) {
+        return '<div class="sb-lb-row"><span class="sb-lb-rank">' + (i + 1) + (medal[i] ? " " + medal[i] : "") + '</span><span class="sb-lb-name">' + w.esc((a.p.name || "?") + (a.p.name_no ? " #" + a.p.name_no : "")) + '</span><span class="sb-lb-score" title="' + a.g + ' ván · sai ' + a.wr + '">' + a.c + "</span></div>";
+      }).join("");
+    } catch (e) { body.innerHTML = '<div class="sb-lb-empty">Không tải được xếp hạng game.</div>'; }
+  };
   App.renderSidebarLbMini = async function (force) {
     var box = w.$("#sidebar-lb-mini");
     var body = w.$("#sidebar-lb-mini-body");
     if (!box || !body) return;
+    if (document.body.classList.contains("board-mode")) return App.renderSidebarGameLb();
     if (w.DB.mode !== "cloud" || !S.notebookId) { box.hidden = true; return; }
     var nb = S.notebooks.find(function (n) { return n.id === S.notebookId; });
     if (!nb) { box.hidden = true; return; }
@@ -2486,6 +2520,7 @@
     /* 🎮 Phòng game chơi chung (2026-09-30) — tạm thời CHỈ admin mở phòng (TJ chốt),
        mở game.html ở tab mới với phạm vi = đúng mục đang bấm. Xem js/game.js. */
     if (w.DB.mode === "cloud" && w.Auth.user && w.Auth.user.id === "f3fd95c9-06e8-4d39-b6f2-efc113d436cf" && !w.Auth.viewAsUserId) items.push({ act: "game", icon: "🎮", text: "Mở phòng game" });   /* CHỈ hồ sơ TJ (không phải mọi admin) — khớp HOST_PROFILE_ID trong js/game.js */
+    if (w.DB.mode === "cloud" && w.Auth.user && w.Auth.user.id === "f3fd95c9-06e8-4d39-b6f2-efc113d436cf" && !w.Auth.viewAsUserId) items.push({ act: "board", icon: "🖤", text: "Mở bảng" });   /* TJ 2026-10-05: mở bảng chung (bài đọc + bảng từ) cho mọi Block trong mục này */
     /* "🧪 Kiểm tra tất cả" (2026-09-27, TJ yêu cầu) — ôn liên tiếp MỌI Block
        trong phạm vi này (kể cả Notebook con lồng bên trong, xuyên nhiều
        Notebook/Hub với "notebooks"/"hubs"), đủ cả 5 hình thức (Nghĩa/Active
@@ -2818,6 +2853,10 @@
         w.toast('Đã tạo "' + newNb.name + '" — bản sao Section/Page/Batch/Block/Từ vựng' + (progressScope ? ", kèm tiến trình học" : ""), "ok");
       }
 
+      else if (act === "board") {
+        if (w.GameLayer) w.GameLayer.openBoard(table, id, row.name || "");
+        return;
+      }
       else if (act === "game") {   /* mở trong thẻ 🎮 Game (giữ phòng đang mở), không mở tab mới nữa */
         if (w.GameLayer) w.GameLayer.openScope(table, id, row.name || "");
         else w.open("game.html?scope=" + encodeURIComponent(table + ":" + id) + "&title=" + encodeURIComponent(row.name || ""), "_blank");
@@ -4236,8 +4275,12 @@
     /* --- mở block --- */
     w.$("#blocks-list").onclick = async function (e) {
       if (e.target.closest("[data-menu]")) return;
+      /* 🖤 chế độ bảng (chưa chọn Block): bấm 1 Block card = đưa Block đó lên bảng (TJ 2026-10-05) */
+      if (document.body.classList.contains("board-skin")) { var bsc = e.target.closest(".block-card[data-block]"); if (bsc && w.GameLayer) { w.GameLayer.openBoard("blocks", bsc.dataset.block, ""); return; } }
       var gameBtn = e.target.closest("[data-gameblock]");
       if (gameBtn) { if (w.GameLayer) w.GameLayer.openScope("blocks", gameBtn.dataset.gameblock, gameBtn.dataset.title); return; }
+      var boardBtn = e.target.closest("[data-boardblock]");
+      if (boardBtn) { if (w.GameLayer) w.GameLayer.openBoard("blocks", boardBtn.dataset.boardblock, boardBtn.dataset.title); return; }
 
       /* Nút "×" xoá thẳng 1 từ ngay trên chip - PHẢI xét TRƯỚC (return sớm),
          không thì click lọt xuống card bên dưới sẽ mở luôn Block ra. */

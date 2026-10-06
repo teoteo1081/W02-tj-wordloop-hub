@@ -2407,16 +2407,23 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
    trôi ra ngoài màn. Nay: hàng 1 = ☰ 🔁 + tab Hub; hàng 2 = dải nút VUỐT NGANG (Trang chủ … Learning, Game, user).
    Dropdown ngôn ngữ / menu user chuyển position:fixed để không bị cắt bởi overflow của dải vuốt.
    KHÔNG dùng mask-image làm mờ mép (cắt luôn cả menu fixed). */
-@media (max-width:860px){
+@media (max-width:1499px){   /* 2026-10-05: máy tính cũng 2 hàng (hàng 1 = logo + tab Hub, hàng 2 = dải nút chia đều) — 1 hàng làm tab Hub bị ép mất ở ~940–1400px */
   :root{--topbar-h:92px;}
   .topbar{flex-wrap:wrap;align-content:center;row-gap:4px;height:calc(var(--topbar-h) + env(safe-area-inset-top));}
   .hub-tabs{min-width:0;}
-  .topbar-right{order:9;flex:1 0 100%;min-width:0;overflow-x:auto;overflow-y:hidden;
+  .topbar-right{order:9;flex:1 0 100%;min-width:0;overflow-x:auto;overflow-y:hidden;gap:.4rem;
     -webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;scrollbar-width:none;padding-bottom:2px;}
   .topbar-right::-webkit-scrollbar{display:none;}
-  .topbar-right>*{flex-shrink:0;}
+  /* chia ĐỀU bề ngang: mỗi nút giãn bằng nhau khi còn chỗ; hết chỗ thì không co, vuốt ngang */
+  .topbar-right>*{flex:1 0 auto;justify-content:center;}
+  .topbar-right>.lang-picker,.topbar-right>.user-menu{flex:0 0 auto;}
+  .topbar-right>.lang-picker .theme-btn{width:100%;}
+  .user-chip{justify-content:center;}
   .user-menu,.lang-dropdown{position:fixed;top:calc(var(--topbar-h) + env(safe-area-inset-top) + 6px);
     right:8px;left:auto;z-index:950;max-height:calc(100dvh - var(--topbar-h) - 90px);overflow-y:auto;}
+}
+@media (min-width:861px) and (max-width:1499px){ .topbar-right>.theme-btn:not(.btn-journey-label){flex:0 0 auto;} }
+@media (max-width:860px){
   .game-layer{right:0;width:auto;}   /* hết tràn ngang -> bỏ mẹo 100vw */
   .jrow .jrow-game{font-size:0;padding:.3rem .5rem;}   /* Journey: chỉ hiện 🎮 để còn chỗ cho tên Block */
   .jrow .jrow-game::before{content:"🎮";font-size:.9rem;}
@@ -2428,3 +2435,45 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
 .hubpage-bar{display:flex;align-items:center;gap:.5rem;padding:.35rem .7rem;border-bottom:1px solid var(--border);background:var(--bg-card);font-size:.82rem;flex-wrap:wrap;}
 .hubpage-sp{flex:1;}
 .hubpage-layer iframe{flex:1;width:100%;border:0;display:block;min-height:0;}
+
+/* 🖤 nút "Mở bảng" cạnh "Chơi game" trên Block card (TJ 2026-10-05) */
+.btn-board-block{margin-left:auto;background:#3a3936;color:#fff;border:1px solid #5a4632;padding:.42rem .95rem;border-radius:7px;font-weight:700;font-size:.78rem;cursor:pointer;white-space:nowrap}
+.btn-board-block:hover{background:#4a4743}
+.btn-board-block + .btn-game-block{margin-left:.4rem}
+
+/* 🖤 chế độ bảng: lớp game chỉ phủ vùng giữa (#workspace), các cột + thanh trên của Learning hiện nguyên */
+.game-layer.board-fit{z-index:20;box-shadow:0 0 0 1px var(--border,#3d3b37)}
+
+/* v182: 🖤 bảng chưa chọn Block = màn hình Learning (danh sách Block) nằm trên NỀN BẢNG (xanh + viền nâu); lớp game ẩn đi */
+.game-layer.board-idle{visibility:hidden;pointer-events:none}
+body.board-skin #workspace{background:#1d2a24;box-shadow:inset 0 0 0 6px #5a4632;border-radius:12px}
+body.board-skin .block-card{cursor:pointer}
+#btn-board.active{background:#3a2c26;color:#ffd0bf}
+/* TJ 2026-10-05: "đang mở Bảng mà sao hiển thị đang ở tab 187 từ sai?" — viền đỏ .has-wrong (báo có từ sai) nổi hơn nút Bảng đang bật nên trông như tab đang chọn.
+   Chế độ bảng: nút 🖤 Bảng sáng hẳn như tab đang mở; nút Fix lỗi sai bỏ viền đỏ (số từ sai vẫn đỏ). */
+body.board-mode #btn-board.active{background:#ffd0bf;color:#2a1a14;border-color:#ffd0bf;font-weight:700}
+body.board-mode #btn-fixwrong.has-wrong{border-color:var(--border)}
+
+/* TJ 2026-10-06: màn danh sách Block trên nền bảng (Admin vừa bấm 🖤 Bảng): avatar mình ở trên, người trong phòng game ở dưới (kiểu HelloTalk) */
+.lbd-me,.lbd-people{display:none}
+body.board-skin .lbd-me{display:flex;align-items:center;gap:10px;padding:10px 4px 6px;flex:none}
+body.board-skin .lbd-people{display:flex;gap:14px;overflow-x:auto;position:sticky;bottom:0;z-index:5;margin:auto -1.2rem 0;padding:10px 1.2rem 12px;background:linear-gradient(to top,#1d2a24 75%,rgba(29,42,36,0));flex:none;scrollbar-width:none}
+body.board-skin .lbd-people::-webkit-scrollbar{display:none}
+.lbd-ring{position:relative;flex:none;width:44px;height:44px;border-radius:50%;padding:2px;background:linear-gradient(135deg,#ffd27a,#e07a5f);box-sizing:border-box}
+.lbd-ring img,.lbd-ring .lbd-av{width:100%;height:100%;border-radius:50%;object-fit:cover;background:#2c3a33;display:flex;align-items:center;justify-content:center;font-size:23px;line-height:1;border:2px solid #1d2a24;box-sizing:border-box}
+.lbd-ring i,.lbd-ring u{position:absolute;bottom:-3px;font-style:normal;text-decoration:none;font-size:12px;width:19px;height:19px;border-radius:50%;background:#1d2a24;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,210,122,.5)}
+.lbd-ring i{right:-4px}.lbd-ring u{left:-4px;border-color:rgba(255,255,255,.25)}
+.lbd-me b{font-size:15px;color:#f3efe6}
+.lbd-hint{margin-left:auto;font-size:13px;color:#a8c4b4}
+.lbd-p{flex:none;width:58px;display:flex;flex-direction:column;align-items:center;gap:3px}
+.lbd-p .lbd-ring{width:48px;height:48px;background:rgba(255,255,255,.18)}
+.lbd-p.me .lbd-ring{background:linear-gradient(135deg,#ffd27a,#e07a5f)}
+.lbd-p b{max-width:58px;font-size:12px;font-weight:600;color:#cfcac0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lbd-p.me b{color:#f3efe6}
+@media (max-width:700px){.lbd-hint{display:none}body.board-skin .lbd-people{margin:auto -.8rem 0;padding:10px .8rem 12px}}
+
+/* màn danh sách Block trên nền bảng: avatar mình DÍNH ở trên, dải người trong phòng dính ở dưới, và chừa chỗ cuối trang để thẻ Block cuối không bị đè */
+body.board-skin .lbd-me{position:sticky;top:0;z-index:6;margin:0 -1.2rem;padding:8px 1.2rem 10px;background:linear-gradient(#1d2a24 78%,rgba(29,42,36,0))}
+body.board-skin #workspace{padding-bottom:0}
+body.board-skin .lbd-people{margin-top:1rem}
+@media (max-width:700px){body.board-skin .lbd-me{margin:0 -.8rem;padding:8px .8rem 10px}}
