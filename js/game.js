@@ -1605,6 +1605,7 @@
   }
   function renderLobby() {
     if (G.inHist) return;   /* đang xem lại / lịch sử: đổi host, ván mới… không kéo màn hình đi (bấm ← để về) */
+    stopAllSound();
     $("#l-review").hidden = !G.log.length;
     show("s-lobby");
     $("#l-code").textContent = G.room.code;
@@ -2460,6 +2461,16 @@
     b.onclick = function () { b.hidden = true; fn(); };
   }
   function tStop() { tSeqTok++; if (TAUD) TAUD.pause(); }
+  /* hết ván / về phòng chờ: dừng MỌI âm thanh còn đang đọc (đề thi Listening, đọc từ, giọng máy) — trước đây bấm Kết thúc vẫn nghe đọc tiếp */
+  function stopAllSound() {
+    tStop(); if (AP) { AP.live = false; try { apSync(); } catch (e) {} }
+    if (TAUD) TAUD.ontimeupdate = null;
+    if (AUD) { try { AUD.pause(); } catch (e) {} } G.nextSay = null;
+    playFile._tok = (playFile._tok || 0) + 1;
+    try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) {}
+    G.utt = null; G.saying = false; clearTimeout(G.sayDog);
+    document.body.classList.remove("g-exam");
+  }
   function tPlaySeq(url, seq, onEnd) {   /* phát lần lượt các đoạn [từ, tới] của 1 file */
     var a = tAudio(), tok = ++tSeqTok, i = 0;
     a.playbackRate = 1; if (AP) AP.live = false;
@@ -4501,6 +4512,7 @@
     paintTSheet(G.st);
   }
   function renderEnd(s) {
+    stopAllSound();
     var mq = G.myQ;   /* 🎯 đề thi (Tự do): câu đang làm dở lúc hết ván vẫn vào Xem lại, ghi "Bỏ qua" như Kahoot (QA v95 T4) */
     if (G.ex) { if (!G.ex.done && iPlay()) exSubmit(); }   /* 📝 Thi thật: host bấm Kết thúc khi chưa nộp -> chấm phần đã làm (vào 📖 Xem lại) */
     else if (mq && mq.type === "toeic" && !mq.done && s.mode === "free" && iPlay()) toeicCommit(mq, true);   /* ván đã chấm xong -> chỉ ghi vào Xem lại */
