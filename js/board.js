@@ -10,7 +10,7 @@
 (function () {
   "use strict";
   var W = 1600, H = 900, AR = 16 / 9;   /* H đổi theo tỉ lệ tài liệu đang mở (PDF dọc, bài đọc 3:4…) — mọi máy cùng tỉ lệ nên nét vẽ khớp */
-  var COLORS = ["#f5f4ef", "#ffd84d", "#ff8fb1", "#7cc4ff", "#7be0a1", "#ff6b5e"];
+  var COLORS = ["#f5f4ef", "#1b1b1e", "#e63946", "#ff8c42", "#ffd84d", "#52b788", "#7cc4ff", "#3a86ff", "#9d4edd", "#ff8fb1"];   /* TJ 2026-10-06: 10 màu bút (kem · đen · đỏ · cam · vàng · lục · lam nhạt · xanh dương · tím · hồng); muốn thêm màu chỉ việc thêm vào mảng này, thanh công cụ tự vẽ thêm nút */
   var SIZES = [4, 8, 16];
   var api = null, open = false, mini = false, tool = "hand", color = COLORS[0], size = SIZES[1];
   var items = {}, order = [];          /* id -> {k:"s"|"t", ...}; order = thứ tự vẽ */
@@ -28,6 +28,26 @@
     es: { lib_root: "raíz", hand: "Mover / hacer zoom con los dedos (sin dibujar)", zout: "Texto más pequeño", zin: "Texto más grande", zfit: "Ajustar", big: "Pizarra grande / pequeña", lib_vt: "Tabla de vocabulario", lib_pick: "Elige una lección en el árbol de carpetas", lib_find: "Buscar Block…", lib_dest: "Guardar en la carpeta", lib_cur: "Carpeta actual", lib_mk: "➕ Nueva carpeta…", lib_mkn: "Nombre de la carpeta nueva", lib_go: "Subir", lib_no: "Cancelar", lib_mv: "Mover", lib_mvt: "Mover este archivo a una carpeta", lib_trash: "Movido a la papelera (_Trash)", lib_rd: "Lectura", lib_vc: "Vocab", lib_office: "Abrir archivo Word/Excel", lib: "📁 Materiales", lib_img: "Imágenes", lib_wl: "Lecturas WordLoop", lib_wlq: "Buscar lecturas (nombre del Block / texto)…", lib_up: "Subir", lib_newf: "Nueva carpeta", lib_empty: "Carpeta vacía — pulsa ⬆️ Subir para añadir PDF/imágenes", lib_newhint: "En la carpeta nueva — sube un archivo para crearla", board: "🖤 Pizarra", can: "✍️ puedes usar la pizarra", view: "👀 solo ver", viewmsg: "👀 Estás mirando — el anfitrión debe darte permiso para dibujar", perm: "👥 Permisos", permt: "Dar acceso a la pizarra", min: "Minimizar en mi pantalla", close: "Cerrar la pizarra para todos", laser: "Láser", pen: "Lápiz", text: "Cuadro de texto", color: "Color", size: "Grosor", undo: "Deshacer", redo: "Rehacer", clearAll: "Borrar toda la pizarra", clearMine: "Borrar mis trazos", dock: "🖤 Abrir pizarra", open: "🖤 Pizarra", qAll: "¿Borrar todos los trazos y textos de la pizarra (para todos)?", qMine: "¿Borrar todos tus trazos y textos?", who: "Quién puede usar la pizarra (lápiz, láser, texto):", none: "Aún no hay jugadores.", share: "🎥 Compartir pantalla", unshare: "⏹ Dejar de compartir", sharet: "Comparte tu pantalla con toda la sala (como Google Meet) — quien tenga permiso puede seguir dibujando/usando el láser encima", sharing: "🎥 Estás compartiendo tu pantalla", nview: "👁 {n} mirando", watching: "🖥 {n} está compartiendo su pantalla", conn: "🖥 conectando…", fail: "⚠️ No se pudo conectar — la red puede estar bloqueándolo (hace falta TURN)", full: "⚠️ Ya hay 10 espectadores — esperando un hueco", hostfull: "⚠️ Máximo 10 espectadores — {n} personas no pueden ver", unmute: "🔊 Activar sonido", mute: "🔇 Silenciar", shErr: "No se pudo compartir la pantalla: " }
   };
   function t(k) { var l = api && api.lang ? api.lang() : "vi"; return (TX[l] || TX.vi)[k] || TX.vi[k] || k; }
+  /* TJ 2026-10-06: hộp thoại xác nhận THÂN THIỆN thay cho confirm() mặc định của trình duyệt (xấu, hiện "teoteo1081.github.io says"). Mặc định focus nút "Giữ lại" (an toàn); Esc = giữ lại. */
+  var CF = {
+    vi: { all: ["🧹", "Xoá hết nét vẽ?", "Tất cả nét vẽ và ô chữ trên trang này sẽ bị xoá cho cả phòng.", "🗑 Xoá hết"], mine: ["✏️", "Xoá nét của bạn?", "Chỉ xoá những nét và ô chữ do bạn vẽ, của người khác vẫn giữ nguyên.", "Xoá của tôi"], lib: ["🗂️", "Xoá tài liệu này?", "Nếu kho chưa cho xoá thì tài liệu được chuyển vào Thùng rác.", "🗑 Xoá"], no: "Giữ lại" },
+    en: { all: ["🧹", "Clear all drawings?", "Every stroke and text box on this page will be removed for the whole room.", "🗑 Clear all"], mine: ["✏️", "Delete your marks?", "Only the strokes and text boxes you made will be removed; others stay.", "Delete mine"], lib: ["🗂️", "Delete this file?", "If the library does not allow deleting, the file is moved to the Trash.", "🗑 Delete"], no: "Keep" },
+    zh: { all: ["🧹", "清除所有笔迹？", "此页上的所有笔迹和文字框将为整个房间清除。", "🗑 全部清除"], mine: ["✏️", "删除你的笔迹？", "只会删除你画的笔迹和文字框，其他人的保留。", "删除我的"], lib: ["🗂️", "删除此文件？", "如果资料库不允许删除，文件会移入回收站。", "🗑 删除"], no: "保留" },
+    es: { all: ["🧹", "¿Borrar todos los trazos?", "Todos los trazos y cuadros de texto de esta página se borrarán para toda la sala.", "🗑 Borrar todo"], mine: ["✏️", "¿Borrar tus trazos?", "Solo se borran los trazos y cuadros que hiciste tú; los de otros se quedan.", "Borrar los míos"], lib: ["🗂️", "¿Eliminar este archivo?", "Si la biblioteca no permite eliminar, el archivo pasa a la Papelera.", "🗑 Eliminar"], no: "Conservar" }
+  };
+  function askConfirm(kind, name) {
+    var l = api && api.lang ? api.lang() : "vi", D = CF[l] || CF.vi, c = D[kind] || CF.vi[kind];
+    return new Promise(function (resolve) {
+      var ov = document.createElement("div"); ov.className = "bd-cf-ov";
+      ov.innerHTML = '<div class="bd-cf" role="alertdialog" aria-modal="true"><div class="bd-cf-ic">' + c[0] + '</div><div class="bd-cf-t">' + esc(c[1]) + '</div><div class="bd-cf-m">' + (name ? "<b>" + esc(name) + "</b><br>" : "") + esc(c[2]) + '</div><div class="bd-cf-b"><button type="button" class="bd-cf-no">' + esc(D.no || CF.vi.no) + '</button><button type="button" class="bd-cf-yes">' + esc(c[3]) + "</button></div></div>";
+      document.body.appendChild(ov);
+      var noBtn = ov.querySelector(".bd-cf-no"); if (noBtn) noBtn.focus();
+      function done(v) { document.removeEventListener("keydown", kd, true); ov.remove(); resolve(v); }
+      function kd(e) { if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); done(false); } }
+      document.addEventListener("keydown", kd, true);
+      ov.addEventListener("click", function (e) { if (e.target === ov || e.target.closest(".bd-cf-no")) done(false); else if (e.target.closest(".bd-cf-yes")) done(true); });
+    });
+  }
   function relabel() {
     document.querySelectorAll("[data-bt]").forEach(function (e) { var tx = t(e.dataset.bt); if (e.dataset.ico) { e.title = tx; tx = String(tx).split(" ")[0]; } e.textContent = tx; });
     document.querySelectorAll("[data-btt]").forEach(function (e) { e.title = t(e.dataset.btt); });
@@ -231,7 +251,7 @@
     if (b.id === "bd-undo") return undo();
     if (b.id === "bd-redo") return redoOne();
     if (b.id === "bd-clear") {
-      if (confirm(t("qAll"))) { clearAll(); send({ t: "clear" }); } return;   /* TJ 2026-10-05: người chơi cũng xoá hết được (undo vẫn dùng được) */
+      askConfirm("all").then(function (yes) { if (yes) { clearAll(); send({ t: "clear" }); } }); return;   /* TJ 2026-10-05: người chơi cũng xoá hết được (undo vẫn dùng được) */
       /* người được cấp quyền: sọt rác chỉ xoá nét + ô chữ CỦA MÌNH (TJ 2026-10-04) */
       var me0 = myId(), ids = order.filter(function (id) { return items[id] && items[id].by === me0; });
       if (ids.length && confirm(t("qMine"))) { ids.forEach(function (id) { removeItem(id); send({ t: "del", id: id }); }); mine = []; redo = []; draw(); paintTexts(); paintTools(); }
@@ -484,7 +504,7 @@
 
   /* ---------- ô chữ ---------- */
   function newText(p) {
-    var t = { k: "t", id: uid(), x: Math.round(p.x), y: Math.round(p.y), c: color === COLORS[0] ? COLORS[1] : color, z: size >= 16 ? 44 : size >= 8 ? 34 : 26, text: "", by: myId() };
+    var t = { k: "t", id: uid(), x: Math.round(p.x), y: Math.round(p.y), c: color === COLORS[0] ? "#ffd84d" : color, z: size >= 16 ? 44 : size >= 8 ? 34 : 26, text: "", by: myId() };
     items[t.id] = t; order.push(t.id); mine.push(t.id); redo = [];
     paintTexts(); editText(t.id); paintTools();
   }
@@ -1554,7 +1574,7 @@
       if (b.dataset.ldno) { Lib.mode = "list"; Lib.pending = null; Lib.mvFile = null; return Lib.paint(); }
       if (b.dataset.ldok) return Lib.doDest();
       if (b.dataset.ldel) {
-        if (!confirm("Xoá \"" + b.dataset.ldel + "\"? (nếu kho chưa cho xoá thì file được chuyển vào Thùng rác)")) return;
+        if (!(await askConfirm("lib", b.dataset.ldel))) return;
         var rd = await api.lib.remove(Lib.path(b.dataset.ldel));
         if (rd.error) { var rm = await api.lib.move(Lib.path(b.dataset.ldel), "_Trash/" + Date.now().toString(36) + "_" + b.dataset.ldel); if (rm.error) return Lib.msg("⚠ " + rm.error); Lib.msg(t("lib_trash")); }
         return Lib.paint();

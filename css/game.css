@@ -1578,3 +1578,21 @@ body.usersonly #g-main{max-width:none;padding:8px 14px 24px}
 /* TJ 2026-10-06: nút Game khi bảng đang hiện sách / PDF / ảnh (không có Block liên quan): tím nhạt, không bấm được */
 #bd-cplay.bd-cdis,.bd-iconbar > .bd-cpin.bd-cdis{background:rgba(124,77,255,.26);border-color:transparent;color:rgba(255,255,255,.62);box-shadow:none;cursor:not-allowed;font-weight:600}
 #bd-cplay.bd-cdis:hover{background:rgba(124,77,255,.26)}
+
+/* TJ 2026-10-06: hộp thoại xác nhận thân thiện (Bảng) + bảng màu bút 10 màu */
+.bd-cf-ov{position:fixed;inset:0;z-index:300;background:rgba(10,12,14,.62);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);display:grid;place-items:center;padding:16px}
+.bd-cf{width:min(360px,100%);background:var(--card,#30302e);color:var(--text,#f5f4ef);border:1px solid var(--line,#3d3b37);border-radius:20px;padding:22px 20px 16px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.55);animation:bdCfIn .16s ease-out}
+@keyframes bdCfIn{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
+.bd-cf-ic{width:54px;height:54px;margin:0 auto 10px;border-radius:50%;display:grid;place-items:center;font-size:27px;background:rgba(229,72,77,.16)}
+.bd-cf-t{font-size:18px;font-weight:700;margin-bottom:6px}
+.bd-cf-m{font-size:14px;line-height:1.55;color:var(--text-2,#a8a296);margin-bottom:18px}
+.bd-cf-m b{color:var(--text,#f5f4ef)}
+.bd-cf-b{display:flex;gap:10px}
+.bd-cf-b button{flex:1;min-height:44px;border-radius:12px;border:1px solid var(--line,#3d3b37);background:var(--raise,#3a3936);color:inherit;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.bd-cf-b button:focus-visible{outline:2px solid #7c4dff;outline-offset:2px}
+.bd-cf-b .bd-cf-yes{background:#e5484d;border-color:#e5484d;color:#fff}
+.bd-cf-b .bd-cf-yes:hover{background:#d13a40}
+@media (prefers-reduced-motion:reduce){.bd-cf{animation:none}}
+.bd-col{width:26px;min-width:26px!important;height:26px!important;box-shadow:inset 0 0 0 2px rgba(255,255,255,.22)}
+.bd-col[data-col="#1b1b1e"]{box-shadow:0 0 0 1.5px rgba(255,255,255,.6)}
+@media (max-width:520px){.bd-col{width:22px;min-width:22px!important;height:22px!important}.bd-bottom .bd-tools{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 26px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 26px),transparent)}}
