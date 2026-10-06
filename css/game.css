@@ -1530,3 +1530,7 @@ body.big .g-learnlayer{display:none}
 
 /* TJ 2026-10-06: người chơi chỉ có nút tiếng 🔊 (+ âm lượng) và nghe; KHÔNG chỉnh giọng, tốc độ (host chọn) */
 .bd:not(.bd-isHost) #bd-vtvoice,.bd:not(.bd-isHost) #bd-vtrate{display:none !important}
+
+/* TJ 2026-10-06: nút Kết thúc ván — tím như nút Chơi game (trước đây mờ nhạt) */
+#p-stop,.g-clock #p-stop{background:#7c4dff;border-color:#7c4dff;color:#fff;font-weight:700}
+#p-stop:hover{background:#6a3de8;border-color:#6a3de8}
