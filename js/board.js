@@ -972,8 +972,12 @@
   function clearReadHL() { document.querySelectorAll("#bd-doc .bd-rd, #bd-doc .bd-rw, #bd-doc .bd-vr.rd").forEach(function (x) { x.classList.remove("bd-rd", "bd-rw", "rd"); }); }
   function endRead() { remoteStop(); stopReading(); readPos = null; clearReadHL(); paintReadBtn(); }   /* đổi tài liệu / kết thúc: xoá sạch, không phát tin */
   var lastSayAt = 0;
-  function sayWord(w) {   /* bấm loa / chạm từ / gõ tra từ: đọc ĐÚNG từ đó. Đang đọc cả bài thì tạm dừng (kẻo câu kế tiếp đọc đè lên) */
-    lastSayAt = Date.now(); if (readOn) pauseRead(); remoteStop(); api.say(w, true);
+  /* TJ 2026-10-06: đang có đoạn đọc (host đang đọc bài / máy này đang nghe host đọc) -> chạm / gõ tra từ vẫn tra nhưng IM LẶNG, không cắt đoạn đang đọc; không đọc gì thì mới đọc to từ đó */
+  var remoteLastAt = 0;
+  function readingBusy() { return !!readOn || (remoteLastAt > 0 && Date.now() - remoteLastAt < 2500); }
+  function sayWord(w) {   /* bấm loa / chạm từ / gõ tra từ: đọc ĐÚNG từ đó khi KHÔNG có đoạn nào đang đọc */
+    if (readingBusy()) return;
+    lastSayAt = Date.now(); remoteStop(); api.say(w, true);
   }
   var READ_TOP = 70;   /* px từ mép trên khung tới chỗ đang đọc — CÙNG trên mọi máy */
   function keepInView(b, el, force) {   /* trả true nếu đã cuộn */
@@ -1019,7 +1023,8 @@
   var mySpk = 0;
   function remoteStop() { rsTok++; try { if (mySpk > 0 && window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) {} }
   function remoteSpeak(m) {
-    if (!m.k || m.paused) { remoteStop(); return; }
+    if (!m.k || m.paused) { remoteLastAt = 0; remoteStop(); return; }
+    if (m.sp) remoteLastAt = Date.now();   /* host đang đọc: người chơi tra từ thì im lặng (xem sayWord) */
     if (!m.sp || !api.soundOn || !api.soundOn() || !window.speechSynthesis) return;
     if (Date.now() - lastSayAt < 5000) return;   /* đang nghe 1 từ mình vừa bấm -> không chen câu của host vào */
     var my = ++rsTok, d = curDoc(), rate = +m.r || 0.85;
