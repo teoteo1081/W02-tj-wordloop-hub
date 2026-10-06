@@ -1531,14 +1531,14 @@
 
   /* ---------- phòng chờ ---------- */
   /* WordLoop (thẻ 🎮 Game, nút 🎮 trên Block card) gửi chủ đề mới khi game đã mở sẵn — đổi tại chỗ, không tải lại */
-  /* TJ 2026-10-06: đưa phòng về PHÒNG CHỜ để chuẩn bị ván mới (đổi chủ đề từ Block / nút Game → trên Bảng): đang chơi dở -> hỏi 1 câu rồi kết thúc ván; đang xem kết quả -> ván mới. Trả false nếu host huỷ. */
+  /* TJ 2026-10-06: đưa phòng về PHÒNG CHỜ để chuẩn bị ván mới (đổi chủ đề từ Block / nút Game → trên Bảng): đang chơi dở -> tự kết thúc ván; đang xem kết quả -> ván mới. Trả false nếu không về được phòng chờ (vd ván thi chưa nộp xong). */
   async function hostPrepLobby() {
     if (!G.st) return false;
     if (G.st.phase === "lobby") return true;
-    if (G.st.phase === "play") {
-      if (!confirm("Đang có ván chơi dở. Kết thúc ván hiện tại để chuẩn bị ván mới cho chủ đề này?")) return false;
+    if (G.st.phase === "play") {   /* TJ 2026-10-06: "tại sao phải bắt như vậy" — bấm Chơi game ở đâu cũng TỰ kết thúc ván dở (kết quả vẫn được lưu) rồi sang phòng chờ, không hỏi */
       await hostEnd();
-      if (!G.st || G.st.phase === "play") { alert("Ván đang thi — đợi nộp bài xong rồi bấm lại nhé."); return false; }
+      for (var k = 0; k < 14 && G.st && G.st.phase === "play"; k++) await new Promise(function (r) { setTimeout(r, 500); });   /* ván thi: hostEnd đợi ~3.5s cho cả phòng nộp bài */
+      if (!G.st || G.st.phase === "play") return false;
     }
     G.st.phase = "lobby"; G.st.scores = {}; G.st.q = null; G.st.matchId = null;
     G.answers = []; G.endAt = 0; G.qUntil = 0; G.lastN = -1; G.srsHtml = ""; G.inHist = false;
