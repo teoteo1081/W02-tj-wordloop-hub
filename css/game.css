@@ -1510,3 +1510,20 @@ body.big .g-learnlayer{display:none}
 
 /* TJ 2026-10-06: chờ nội dung (dải công cụ ẩn): hàng avatar mọi người dưới bảng chiếm cả hàng, không bị ép nửa trái */
 .bd-iconbar:has(> .bd-docnav[hidden]) > .bd-people{flex:1 1 100%;max-width:100%;width:100%}
+
+/* TJ 2026-10-06: Lịch sử — "Ôn ngay →" vàng (như Learning), "Chơi game →" tím; nút Về ở trên-trái, tiêu đề giữa (Lịch sử / Xem lại đáp án / Từ đã tra); thẻ Từ đã tra */
+.g-btn-rv{background:#d9a03c;color:#2a1d05;font-weight:700}.g-btn-rv:hover{background:#c2872a}
+.g-btn-play{background:#7c4dff;color:#fff;font-weight:700}
+#s-review .g-h1row,#s-looked .g-h1row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
+#s-review .g-h1row #rv-back,#s-looked .g-h1row #lk-back{grid-column:1;grid-row:1;justify-self:start}
+#s-review .g-h1row h1,#s-looked .g-h1row h1{grid-column:2;grid-row:1;margin:0;text-align:center}
+@media (max-width:560px){
+  #s-review .g-h1row,#s-looked .g-h1row{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+  #s-review .g-h1row h1,#s-looked .g-h1row h1{text-align:left}
+}
+.g-lkrow{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0}
+.g-lkh{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.g-lkw{font-size:17px;color:#8fb8e8}
+.g-lkpos{font-size:12px;padding:1px 8px;border-radius:999px;background:var(--raise);color:var(--text-2)}
+.g-lkd{margin-left:auto}
+.g-lkm{margin-top:4px;font-weight:600}

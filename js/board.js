@@ -1293,12 +1293,21 @@
     paintFeed(); poke();
   }
   function feedNote(txt) { var l = $("#bd-fl"); if (l) { var n = document.createElement("div"); n.className = "bd-fempty"; n.textContent = txt; l.insertBefore(n, l.firstChild); setTimeout(function () { if (n.parentNode) n.parentNode.removeChild(n); }, 4000); } }
+  /* 🔎 Từ đã tra: lưu từ MÌNH tra vào máy này (xem lại ở 📜 Lịch sử › Từ đã tra) */
+  function lkKeep(w, v) {
+    try {
+      var KEY = "tjwl_looked_v1", a = JSON.parse(localStorage.getItem(KEY) || "[]"), lw = String(w).toLowerCase();
+      a = a.filter(function (x) { return String(x.w).toLowerCase() !== lw; });
+      a.unshift({ w: w, v: { pos: v && v.pos || "", ipa: v && v.ipa || "", en: v && v.en || "", vi: v && v.vi || "", zh: v && v.zh || "", es: v && v.es || "" }, t: Date.now() });
+      localStorage.setItem(KEY, JSON.stringify(a.slice(0, 400)));
+    } catch (e) {}
+  }
   async function lookupShow(phrase, ctx, typed) {
     var ph = String(phrase || "").trim(); if (!ph) return;
     if (typed) sayWord(ph);   /* gõ từ rồi Enter: đọc đúng từ vừa gõ ngay */
     var ex = lkFeed.find(function (e) { return e.w.toLowerCase() === ph.toLowerCase(); });
     if (ex && !ex.bm && api.autoSave) { api.autoSave(ex.w, ex.v, null).then(function (wid) { if (wid) { ex.wid = wid; ex.bm = true; paintFeed(); send({ t: "lk", e: { id: ex.id, w: ex.w, v: ex.v, t: ex.t, who: ex.who, wid: wid, bm: true } }); } }); }
-    if (ex) { ex.t = Date.now(); ex.who = ex.who || {}; ex.who[myId()] = whoMe(); lkAdd({ id: ex.id, w: ex.w, v: ex.v, t: ex.t, who: ex.who }); send({ t: "lk", e: { id: ex.id, w: ex.w, v: ex.v, t: ex.t, who: ex.who } }); return; }
+    if (ex) { lkKeep(ex.w, ex.v); ex.t = Date.now(); ex.who = ex.who || {}; ex.who[myId()] = whoMe(); lkAdd({ id: ex.id, w: ex.w, v: ex.v, t: ex.t, who: ex.who }); send({ t: "lk", e: { id: ex.id, w: ex.w, v: ex.v, t: ex.t, who: ex.who } }); return; }
     if (!lkAllow()) { feedNote("Bạn đã tra nhiều lần trong giờ này, thử lại sau ít phút nhé."); return; }
     var d = curDoc(); if (d && d.bid && !vtCache[d.bid]) { try { vtCache[d.bid] = await api.words(d.bid); } catch (e) {} }
     var row = d && d.bid && vtCache[d.bid] ? vtCache[d.bid].find(function (w) { return w.term.toLowerCase() === ph.toLowerCase(); }) : null, v = null;
@@ -1308,7 +1317,7 @@
     if (!okv) { feedNote("Chưa tra được “" + ph + "” (mạng/AI bận). Thử lại nhé."); return; }
     var e2 = { id: uid(), w: ph, v: v, by: me() ? me().name : "", saved: false, t: Date.now(), who: {}, bm: false };
     e2.who[myId()] = whoMe();
-    lkAdd(e2); send({ t: "lk", e: e2 });
+    lkKeep(ph, v); lkAdd(e2); send({ t: "lk", e: e2 });
     if (api.autoSave && ph.split(/\s+/).length <= 8 && ph.length <= 60) {   /* TJ 2026-10-06: từ ai tra cũng vào ⭐ Ôn riêng của TJ */
       api.autoSave(ph, v, row).then(function (wid) {
         if (!wid) return; e2.wid = wid; e2.bm = true; var cur = lkFeed.find(function (x) { return x.w.toLowerCase() === ph.toLowerCase(); }); if (cur) { cur.wid = wid; cur.bm = true; }
