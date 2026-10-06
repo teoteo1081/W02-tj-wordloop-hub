@@ -1631,3 +1631,5 @@ body.usersonly #g-main{max-width:none;padding:8px 14px 24px}
 .g-scl.ok{color:var(--green);font-weight:700;background:var(--green-sub);border-radius:8px}
 .g-opt.ok .g-pk{background:rgba(80,200,120,.22)}
 .g-opt.bad .g-pk{background:rgba(255,90,90,.24)}
+.g-scvi{margin-top:10px;border-top:1px dashed var(--line);padding-top:8px}
+.g-scvi .g-tvh{display:flex;align-items:center;gap:8px;flex-wrap:wrap}

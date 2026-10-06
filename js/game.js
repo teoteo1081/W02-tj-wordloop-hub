@@ -2713,7 +2713,13 @@
         var r = T0[i];
         var lm = String(l.t).match(/^\(?([A-D])\)\s/), okL = lm && q.ansL && lm[1] === q.ansL;
         return '<div class="g-scl' + (mark[i] ? " ev" : "") + (okL ? " ok" : "") + '" data-scrp="' + Math.max(span[0], r[0] - 0.8).toFixed(1) + "-" + Math.min(span[1], r[1] + 0.5).toFixed(1) + '">' + (l.sp ? '<b class="g-scsp">' + esc(l.sp) + "</b> " : "") + esc(l.t) + (mark[i] ? ' <span class="g-scq">🎯 ' + mark[i].join(", ") + "</span>" : "") + "</div>";
-      }).join("") + "</div>";
+      }).join("") + "</div>" +
+      /* 🇻🇳 BẢN DỊCH tiếng Việt dưới lời thoại (TJ 2026-10-06): chạm 1 dòng = nghe đúng câu đó; nút trên đầu = nghe lại cả đoạn */
+      '<div class="g-scr g-scvi"><div class="g-tvh">🇻🇳 Bản dịch tiếng Việt <button type="button" class="g-btn g-btn-soft g-btn-sm" data-scrp="' + span[0].toFixed(1) + "-" + span[1].toFixed(1) + '">🔊 ' + esc(apT("h")) + "</button></div>" +
+      (scr.lines.some(function (l) { return l.vi; }) ? scr.lines.map(function (l, i) {
+        var r = T0[i], lm = String(l.t).match(/^\(?([A-D])\)\s/), okL = lm && q.ansL && lm[1] === q.ansL;
+        return '<div class="g-scl' + (okL ? " ok" : "") + '" data-scrp="' + Math.max(span[0], r[0] - 0.8).toFixed(1) + "-" + Math.min(span[1], r[1] + 0.5).toFixed(1) + '">' + (l.sp ? '<b class="g-scsp">' + esc(l.sp) + "</b> " : "") + esc(l.vi || "") + "</div>";
+      }).join("") : '<div class="g-sub">Câu này chưa có bản dịch tiếng Việt.</div>') + "</div>";
     box.insertAdjacentHTML("beforeend", html);
   }
   document.addEventListener("click", function (e) {
