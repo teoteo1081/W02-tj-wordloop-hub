@@ -34,5 +34,5 @@
 - Nguồn thật = **file văn bản trong git** (`README.md` "Việc còn dang dở" hiện tại; có thể thêm `PROGRESS.md`), KHÔNG dùng Excel/Supabase làm nguồn chung (ghi đè nhau / tốn Storage). Excel chỉ là bản xem tự sinh.
 - Phiên sắp hết token: ghi checkpoint vào `HANDOFF.md` rồi dọn khi xong (luật trong file đó).
 
-## 4. Việc TJ đang chờ (lấy từ README, 2026-10-05)
-Duyệt 1.301 bẫy pending; bật GitHub Pages/public cho L02, L05–L08 (xem cảnh báo bản quyền L08/L04); đăng ký custom dimension `site` trong GA4; revoke token Supabase (nếu còn); chọn 3–5 KPI cho dashboard.
+## 4. Việc TJ đang chờ (lấy từ README, cập nhật 2026-10-06; ưu tiên hiện tại: EA + Digital Marketing)
+~~Duyệt 1.301 bẫy pending~~ (XONG 2026-10-06: AI chấm lần 2 -> 72 duyệt / 1.042 loại / 187 chờ, xem README); bật GitHub Pages/public cho L02, L05–L08 (xem cảnh báo bản quyền L08/L04); đăng ký custom dimension `site` trong GA4; revoke token Supabase (nếu còn); chọn 3–5 KPI cho dashboard.
