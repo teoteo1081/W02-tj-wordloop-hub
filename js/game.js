@@ -4731,8 +4731,7 @@
     if (m.q_seconds) G.st.qs = m.q_seconds;
     G.inHist = false;
     hostSetScope();
-    renderLobby();
-    setTimeout(function () { var b = $("#l-start"); if (b) b.click(); }, 600);
+    renderLobby();   /* TJ 2026-10-06: KHÔNG tự bắt đầu nữa — vào phòng chờ với chủ đề + cài đặt của ván đó, host tự bấm Bắt đầu (trước đây bấm là chạy ván 120 phút ngay) */
   }
   async function histMine() {
     if (!G.me) { $("#hi-body").innerHTML = '<p class="g-sub">' + T("no_name") + "</p>"; return; }
