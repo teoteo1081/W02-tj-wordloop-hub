@@ -3417,6 +3417,7 @@
   function paintTIntro() {
     var hh = (G.isHost ? G.hub : "vocab") || "vocab";   /* TJ 2026-10-06: người chơi chỉ giữ "WordLoop Game" như hiện tại cho cả phòng; TOEIC chỉ là việc của host */
     if (hh !== window.TJ_HUB) { window.TJ_HUB = hh; try { document.dispatchEvent(new CustomEvent("tjwl-hubchanged", { detail: hh })); } catch (e) {} }
+    document.body.classList.toggle("g-player", !!(G.room && !G.isHost));   /* TJ 2026-10-06: người chơi trong phòng không thấy thanh Phòng game · TOEIC · IELTS · EA · Digital Marketing (chỉ host) */
     var box = $("#l-tintro"); if (!box) return;
     var on = false;   /* TJ 2026-10-06: bảng giới thiệu + chiến thuật TOEIC chuyển sang giao diện host (dưới "Cách tính điểm"), người chơi không thấy */
     box.hidden = !on; if (!on) { box.dataset.k = ""; return; }
