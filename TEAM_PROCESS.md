@@ -31,7 +31,7 @@
 | Chuyên gia (thiết kế / sư phạm / bảo mật) | Đánh giá theo vai | Không đẩy lên `main` |
 
 ## 3. Chỗ ghi tiến độ chung
-- Nguồn thật = **file văn bản trong git** (`README.md` "Việc còn dang dở" hiện tại; có thể thêm `PROGRESS.md`), KHÔNG dùng Excel/Supabase làm nguồn chung (ghi đè nhau / tốn Storage). Excel chỉ là bản xem tự sinh.
+- Nguồn thật = **file văn bản trong git** (`README.md` "Việc còn dang dở" hiện tại; có thể thêm `PROGRESS.md`), KHÔNG dùng Excel/Supabase làm nguồn chung (ghi đè nhau / tốn Storage). Excel chỉ là bản xem tự sinh: `python3 tools/readme_to_xlsx.py` (cần `pip install openpyxl`) -> `TJ_CongViec.xlsx` gồm sheet Tóm tắt / Việc còn dang dở / Đã xong gần đây (không commit file .xlsx; Ưu tiên/Trạng thái là script ĐOÁN từ README).
 - Phiên sắp hết token: ghi checkpoint vào `HANDOFF.md` rồi dọn khi xong (luật trong file đó).
 
 ## 4. Việc TJ đang chờ (lấy từ README, cập nhật 2026-10-06; ưu tiên hiện tại: EA + Digital Marketing)

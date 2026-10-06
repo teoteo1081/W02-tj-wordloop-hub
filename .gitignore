@@ -20,3 +20,6 @@ tools/tu_vung.xlsx
 tools/__pycache__/
 supabase/.temp/
 .claude/
+
+# Excel xem việc tự sinh (tools/readme_to_xlsx.py) — không commit, nguồn thật là README.md
+TJ_CongViec.xlsx
