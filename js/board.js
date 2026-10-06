@@ -153,7 +153,10 @@
       if (sfx0) {
         var ib = document.createElement("div"); ib.id = "bd-iconbar"; ib.className = "bd-iconbar"; sfx0.parentNode.insertBefore(ib, sfx0.nextSibling); ib.appendChild(dn0);
         ["bd-lib", "bd-share", "bd-penbtn", "bd-more"].forEach(function (id) { var e = $("#" + id); if (e) { e.classList.add("bd-ibtn"); dn0.insertBefore(e, cp); } });
-        var cl0 = $("#bd-close"); if (cl0) { cl0.classList.add("bd-ibtn"); dn0.appendChild(cl0); }
+        /* TJ 2026-10-06: cửa sổ hẹp thì 🎮 và ✕ nằm cuối dải cuộn ngang (ẩn thanh cuộn) -> bị cắt mất. ✕ = góc TRÊN-PHẢI của bảng (luôn thấy, đúng thói quen đóng cửa sổ);
+           🎮 = ghim cuối hàng icon, NGOÀI dải cuộn */
+        var cl0 = $("#bd-close"), hl0 = $("#bd-hudl"); if (cl0 && hl0) { cl0.classList.add("bd-closetop"); hl0.appendChild(cl0); }
+        if (cp) { cp.classList.add("bd-cpin"); ib.appendChild(cp); }
       }
     }
     if (ppl0) { var ibx = $("#bd-iconbar"); if (ibx) ibx.insertBefore(ppl0, ibx.firstChild); }   /* TJ 2026-10-06: avatar CHUNG HÀNG với dải icon dưới bảng (nửa trái avatar, nửa phải icon, mỗi bên vuốt ngang) */   /* TJ 2026-10-06: avatar mọi người lên thanh trên cho tiết kiệm chỗ, khung Từ vừa tra cao hơn */   /* thứ tự: bảng -> Từ vừa tra -> mọi người trong phòng */   /* ai vào / ra phòng -> dải avatar tự cập nhật */
