@@ -1276,7 +1276,7 @@
         '<div class="bd-fe2h"><b>' + esc(e.w) + "</b>" + (v.ipa ? '<span class="bd-fe2ipa">' + esc(v.ipa) + "</span>" : "") + (v.pos ? "<i>" + esc(v.pos) + "</i>" : "") +
         '<button type="button" class="bd-hb bd-fe2star' + (on ? " on" : "") + (tj ? "" : " ro") + '" data-lkstar="' + esc(e.id) + '" title="' + (on ? "Đã vào ⭐ Ôn riêng của TJ" + (tj ? " — bấm để bỏ" : "") : "Chưa vào Ôn riêng") + '">' + (on ? "★" : "☆") + "</button>" + whoHTML(e) + "</div>" +
         (v.en ? '<div class="bd-fe2en"><span>🇺🇸</span>' + esc(v.en) + "</div>" : "") + (own ? '<div class="bd-fe2vi"><span>' + (FL0[l0] || "") + "</span><b>" + esc(own) + "</b></div>" : "") + "</div></div>";
-    }).join("") : '<div class="bd-fempty">Chạm vào một từ trong bài đọc để xem nghĩa — từ vừa tra hiện ở đây, kéo lên xuống để xem lại.</div>';
+    }).join("") : '<div class="bd-fempty">Chạm vào một từ trong bài đọc để xem nghĩa — từ vừa tra hiện ở đây, kéo lên xuống để xem lại.<br>💾 Từ bạn tra được tự lưu lại (Bookmark) — xem lại ở 📜 Lịch sử › 🔎 Từ đã tra.</div>';
     if (was0 !== f.hidden) relayout();   /* chỉ tính lại khung bảng khi khung tra từ ẩn/hiện — nội dung đổi thì cao cố định, bảng không giật */
   }
   function whoMe() { var m = me(); return { n: m ? m.name : "", a: m ? m.avatar || "" : "" }; }

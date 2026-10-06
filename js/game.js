@@ -1953,7 +1953,7 @@
     clearInterval(G.hostTimer);
     G.hostTimer = setInterval(hostTick, 250);
   });
-  $("#p-stop").addEventListener("click", function () { if (G.isHost && confirm("Kết thúc trận ngay?")) hostEnd(); });
+  $("#p-stop").addEventListener("click", function () { if (G.isHost) hostEnd(); });   /* TJ 2026-10-06: bấm Kết thúc là đóng ván luôn, không hỏi */
   function roomLangs() {
     var set = {}; players().forEach(function (p) { set[effLang(p.lang, G.st, "recall")] = 1; if (G.st.force) set[roomLang(G.st)] = 1; });
     return Object.keys(set);
@@ -4725,7 +4725,7 @@
   /* 🎮 CHƠI GAME LẠI 1 ván cũ (TJ 2026-10-05): lấy lại chủ đề + kiểu chơi của ván đó, về phòng chờ rồi bắt đầu ván mới. Hiện chỉ host (người chơi tự chơi lại một mình: làm sau). */
   async function replayMatch(mid) {
     if (!G.isHost || !G.st) { alert("Chỉ host mới bắt đầu được ván mới."); return; }
-    if (G.st.phase !== "lobby") { alert("Đang giữa ván — về phòng chờ trước rồi bấm lại."); return; }
+    if (!(await hostPrepLobby())) return;   /* TJ 2026-10-06: đang chơi dở -> tự kết thúc ván rồi sang phòng chờ, không bắt bấm lại */
     var r = await sb.from("game_matches").select("scope,title,mode,qtype,meaning_lang,q_seconds").eq("id", mid).maybeSingle();
     var m = r.data;
     if (!m || !m.scope || !m.scope.length) { alert("Ván này không còn thông tin chủ đề để chơi lại."); return; }
