@@ -998,7 +998,7 @@
   function readingBusy() { return !!readOn || (remoteLastAt > 0 && Date.now() - remoteLastAt < 2500); }
   function sayWord(w) {   /* bấm loa / chạm từ / gõ tra từ: đọc ĐÚNG từ đó khi KHÔNG có đoạn nào đang đọc */
     if (readingBusy()) return;
-    lastSayAt = Date.now(); remoteStop(); api.say(w, true);
+    lastSayAt = Date.now(); pingHostSpeak(); remoteStop(); api.say(w, true);
   }
   var READ_TOP = 70;   /* px từ mép trên khung tới chỗ đang đọc — CÙNG trên mọi máy */
   function keepInView(b, el, force) {   /* trả true nếu đã cuộn */
@@ -1047,7 +1047,8 @@
     if (!m.k || m.paused) { remoteLastAt = 0; remoteStop(); return; }
     if (m.sp) remoteLastAt = Date.now();   /* host đang đọc: người chơi tra từ thì im lặng (xem sayWord) */
     if (!m.sp || !api.soundOn || !api.soundOn() || !window.speechSynthesis) return;
-    if (Date.now() - lastSayAt < 5000) return;   /* đang nghe 1 từ mình vừa bấm -> không chen câu của host vào */
+    if (Date.now() - lastSayAt < 5000) return;
+    if (Date.now() - hostLocalAt < 8000) return;   /* host đang đọc ở cửa sổ khác CÙNG trình duyệt -> không tranh hàng đợi đọc chung (đang nghe 1 từ mình vừa bấm -> không chen câu của host vào */
     var my = ++rsTok, d = curDoc(), rate = +m.r || 0.85;
     try { if (mySpk > 0) window.speechSynthesis.cancel(); } catch (e) {}
     (async function () {
@@ -1110,7 +1111,13 @@
     }
     if (my === reading) { readOn = false; readPos = null; shareRead({ k: null }); }
   }
+  /* Chrome dùng 1 hàng đợi đọc CHUNG cho mọi cửa sổ cùng trình duyệt: TJ thử 2 cửa sổ (Admin + ẩn danh) thì cửa sổ người chơi đọc theo host làm tiếng của host bị im / giựt (TJ 2026-10-06).
+     Cửa sổ host báo qua BroadcastChannel; cửa sổ khác CÙNG trình duyệt thì không đọc theo host nữa (máy khác vẫn đọc bình thường). */
+  var hostBC = null, hostLocalAt = 0;
+  try { if (window.BroadcastChannel) { hostBC = new BroadcastChannel("tjwl-host-speak"); hostBC.onmessage = function (e) { if (e && e.data === "host") hostLocalAt = Date.now(); }; } } catch (e) {}
+  function pingHostSpeak() { try { if (hostBC && api && api.isHost && api.isHost()) hostBC.postMessage("host"); } catch (e) {} }
   function speakOne(text, lang, rate, onB) {
+    pingHostSpeak();
     if (api && api.speak) { mySpk++; var pr = api.speak(text, lang, rate, onB, api.soundOn ? !api.soundOn() : false); var dn = function () { mySpk = Math.max(0, mySpk - 1); }; if (pr && pr.then) pr.then(dn, dn); else dn(); return pr; }
     return new Promise(function (ok) { try { var u = new SpeechSynthesisUtterance(text); u.lang = lang; u.rate = rate; uttKeep.push(u); if (uttKeep.length > 8) uttKeep.shift(); u.onend = u.onerror = function () { ok(); }; window.speechSynthesis.speak(u); } catch (e) { ok(); } });
   }
