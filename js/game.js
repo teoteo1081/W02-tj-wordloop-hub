@@ -150,7 +150,7 @@
   };
 
   /* ---------- tiện ích ---------- */
-  function show(id) { $$(".g-screen").forEach(function (s) { s.hidden = s.id !== id; }); document.body.classList.toggle("big", id === "s-screen"); paintSide(); }
+  function show(id) { if (id === "s-play") G.soundPh = "play"; $$(".g-screen").forEach(function (s) { s.hidden = s.id !== id; }); document.body.classList.toggle("big", id === "s-screen"); paintSide(); }
   function norm(t) { return String(t || "").toLowerCase().replace(/\s+/g, " ").trim(); }
   /* chấm câu GÕ TAY giống WordLoop (w.normalizeAnswer): bỏ dấu câu/ngoặc, thường hoá, gộp khoảng trắng */
   function normAns(s) { return String(s || "").normalize("NFC").toLowerCase().trim().replace(/[.,!?;:"'`()\[\]。，！？；：、¿¡“”‘’（）「」]/g, "").replace(/\s*\/\s*/g, " / ").replace(/\s+/g, " ").trim(); }
@@ -1609,7 +1609,7 @@
   }
   function renderLobby() {
     if (G.inHist) return;   /* đang xem lại / lịch sử: đổi host, ván mới… không kéo màn hình đi (bấm ← để về) */
-    stopAllSound();
+    if (G.soundPh !== "lobby") { G.soundPh = "lobby"; stopAllSound(); }   /* CHỈ lúc đổi màn (renderLobby còn chạy lại mỗi lần phòng gửi trạng thái — tắt hoài sẽ cắt tiếng đọc của Bảng) */
     $("#l-review").hidden = !G.log.length;
     show("s-lobby");
     $("#l-code").textContent = G.room.code;
@@ -4533,7 +4533,7 @@
     paintTSheet(G.st);
   }
   function renderEnd(s) {
-    stopAllSound();
+    if (G.soundPh !== "end") { G.soundPh = "end"; stopAllSound(); }   /* chỉ lúc đổi màn, không tắt tiếng mỗi lần làm tươi */
     var mq = G.myQ;   /* 🎯 đề thi (Tự do): câu đang làm dở lúc hết ván vẫn vào Xem lại, ghi "Bỏ qua" như Kahoot (QA v95 T4) */
     if (G.ex) { if (!G.ex.done && iPlay()) exSubmit(); }   /* 📝 Thi thật: host bấm Kết thúc khi chưa nộp -> chấm phần đã làm (vào 📖 Xem lại) */
     else if (mq && mq.type === "toeic" && !mq.done && s.mode === "free" && iPlay()) toeicCommit(mq, true);   /* ván đã chấm xong -> chỉ ghi vào Xem lại */
