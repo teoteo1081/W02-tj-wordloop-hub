@@ -1538,3 +1538,22 @@ body.big .g-learnlayer{display:none}
 /* TJ 2026-10-06: bài đọc trên Bảng — cụm từ vựng tô vàng KHÔNG bị gạch nối / cắt giữa dòng (trước: "Upfront plan-/ning"); chỉ gạch nối từ dài (>= 10 chữ, mỗi phía >= 4) */
 .bd-wl .bd-term{-webkit-hyphens:none;hyphens:none;white-space:nowrap}
 .bd-both .bd-wl p{hyphenate-limit-chars:10 4 4}
+
+/* TJ 2026-10-06: giao diện người chơi (điện thoại) — bỏ thanh 5 thẻ (chỉ host); âm thanh + âm lượng chung 1 hàng; người chơi = vòng tròn avatar dễ thương (như dải avatar dưới Bảng) */
+body.g-viewer .g-learn{display:none}
+@media (max-width:560px){
+  .g-sndrow{flex-wrap:nowrap;gap:6px}
+  .g-sndrow > .g-sub:first-child{display:none}
+  .g-sndrow .g-volbox{flex:1 1 auto;min-width:0}
+  .g-sndrow .g-vol{flex:1 1 auto;width:auto;min-width:48px}
+  .g-sndrow .g-volval{min-width:0;font-size:11px}
+}
+#l-players{display:flex;flex-wrap:wrap;gap:12px 10px}
+#l-players .g-player{flex-direction:column;align-items:center;justify-content:flex-start;gap:3px;width:74px;padding:6px 2px;background:transparent;border:2px solid transparent;border-radius:16px;position:relative;text-align:center}
+#l-players .g-player.g-click:hover{background:var(--raise)}
+#l-players .g-player .g-av{width:54px;height:54px;font-size:30px;box-shadow:0 0 0 2px rgba(255,255,255,.16);background:var(--raise)}
+#l-players .g-player.me .g-av{box-shadow:0 0 0 3px #e07a5f,0 0 0 5px rgba(224,122,95,.25)}
+#l-players .g-player .g-pname{max-width:70px;font-size:12px;font-weight:600}
+#l-players .g-player .g-sub{font-size:12px;line-height:1}
+#l-players .g-player .g-tag{position:absolute;top:0;right:6px;font-size:0;background:transparent;padding:0}
+#l-players .g-player .g-tag::before{content:"👑";font-size:17px}
