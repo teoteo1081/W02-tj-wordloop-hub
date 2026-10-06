@@ -3144,15 +3144,18 @@
   /* G.rv = danh sách đang xem: ván vừa chơi (G.log) hoặc 1 ván cũ trong 📜 Lịch sử (pastReview) */
   function renderReview(i, list) {
     var rp = $("#rv-replay"); if (rp) rp.hidden = !(G.isHost && G.room && G.st && G.st.phase !== "play" && (G.rvFrom === "end" || (G.rvMatch && G.rvMatch.qtype !== "toeic")));   /* 🔁 ván cũ đề thi: chưa lưu đề/Part nên không chơi lại được */
-    if (list) G.rv = list;
+    if (list) { G.rv = list; G.rvOnlyWrong = false; G.rvWrongIdx = null; }
     var R = G.rv || G.log;
     if (!R.length) return;
     G.inHist = true;   /* phòng gửi trạng thái cũng không kéo khỏi màn này (xem onState) */
     rvI = Math.max(0, Math.min(R.length - 1, i));
     var L = R[rvI];
     show("s-review");
-    $("#rv-pos").textContent = (rvI + 1) + " / " + R.length;
-    $("#rv-prev").disabled = rvI === 0; $("#rv-next").disabled = rvI === R.length - 1;
+    var wl = G.rvOnlyWrong && G.rvWrongIdx, wp = wl ? wl.indexOf(rvI) : -1;
+    $("#rv-pos").textContent = wl ? (wp >= 0 ? wp + 1 : "–") + " / " + wl.length + " ❌" : (rvI + 1) + " / " + R.length;
+    $("#rv-prev").disabled = wl ? !wl.some(function (x) { return x < rvI; }) : rvI === 0;
+    $("#rv-next").disabled = wl ? !wl.some(function (x) { return x > rvI; }) : rvI === R.length - 1;
+    var rw = $("#rv-wrong"); if (rw) { rw.hidden = !R.some(function (x) { return x.tq; }); rw.classList.toggle("on", !!G.rvOnlyWrong); rw.classList.toggle("g-btn-soft", !G.rvOnlyWrong); rw.textContent = "❌ Câu sai" + (wl ? " (" + wl.length + ")" : ""); }
     paintStar(L);
     $("#rv-back").textContent = G.rvFrom === "hist" ? T("back_hist") : T("back_res");
     $("#rv-hint").textContent = L.hint; $("#rv-vi").innerHTML = L.vi; $("#rv-opts").innerHTML = L.opts; $("#rv-opts").classList.toggle("g-tbook", !!L.tq); if (L.tq) tqPickAvatars(L); $("#rv-hint").hidden = !!L.tq; $$("#rv-vi .g-taud").forEach(function (x) { var r = x.closest(".g-row") || x; r.hidden = true; }); $("#rv-res").innerHTML = L.res; $("#rv-msg").textContent = L.msg;
@@ -3296,8 +3299,31 @@
   });
   function spk(text, lang) { return '<button type="button" class="g-spk" data-say="' + esc(text) + '" data-sl="' + esc(lang || "") + '" title="Nghe lại">🔊</button>'; }
   document.addEventListener("click", function (e) { var b = e.target.closest("[data-say]"); if (b && b.dataset.say) { sayIt._lang = b.dataset.sl || null; sayIt(b.dataset.say, true); } });
-  $("#rv-prev").addEventListener("click", function () { renderReview(rvI - 1); });
-  $("#rv-next").addEventListener("click", function () { renderReview(rvI + 1); });
+  function rvStep(d) {
+    var wl = G.rvOnlyWrong && G.rvWrongIdx; if (!wl) return renderReview(rvI + d);
+    var c = wl.filter(function (x) { return d < 0 ? x < rvI : x > rvI; }); if (c.length) renderReview(d < 0 ? c[c.length - 1] : c[0]);
+  }
+  $("#rv-prev").addEventListener("click", function () { rvStep(-1); });
+  $("#rv-next").addEventListener("click", function () { rvStep(1); });
+  /* ❌ CHỈ XEM CÂU SAI (TJ 2026-10-06): câu mà có người CHỌN đáp án sai; người ở trong phòng nhưng không chọn gì thì không tính (pick map chỉ có dòng choice != null) */
+  $("#rv-wrong").addEventListener("click", async function () {
+    var R = G.rv || G.log;
+    if (G.rvOnlyWrong) { G.rvOnlyWrong = false; return renderReview(rvI); }
+    var mid = G.logMatch; if (!mid || !/^[0-9a-f-]{20,}$/i.test(String(mid))) return;
+    this.textContent = "⏳"; var M = await tqPickMap(mid), idx = [];
+    R.forEach(function (L, i) {
+      if (!L.tq) return;
+      var d = document.createElement("div"); d.innerHTML = L.opts; var bad = false;
+      d.querySelectorAll(".g-opt").forEach(function (b) {
+        var num = b.dataset.sub != null && L.tq.nums ? L.tq.nums[+b.dataset.sub] : L.tq.num, m0 = M["toeic:" + L.tq.test + ":" + L.tq.part + ":" + num] || {}, who = m0[norm(b.dataset.opt)] || [];
+        if (who.length && !b.classList.contains("ok")) bad = true;
+      });
+      if (bad) idx.push(i);
+    });
+    G.rvWrongIdx = idx; G.rvOnlyWrong = true;
+    var first = idx.filter(function (x) { return x >= rvI; })[0]; if (first == null) first = idx[0];
+    renderReview(first != null ? first : rvI);
+  });
   $("#rv-back").addEventListener("click", function () { apStop();   /* về đúng màn hiện tại của phòng (ván mới đã mở thì về phòng chờ) */
     if (G.rvFrom === "hist") { G.rvFrom = null; return renderHistory("me"); }   /* xem ván cũ -> về 📜 Lịch sử */
     G.inHist = false;

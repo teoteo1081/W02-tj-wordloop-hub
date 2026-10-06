@@ -1640,3 +1640,4 @@ body.usersonly #g-main{max-width:none;padding:8px 14px 24px}
 .g-qvi .g-taud{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:8px 22px;border-radius:999px;font-size:16px;font-weight:700;margin:0;background:linear-gradient(135deg,#14b8a6,#3b82f6);color:#fff;border:0;box-shadow:0 2px 10px rgba(20,184,166,.35)}
 .g-qvi .g-taud.on{background:linear-gradient(135deg,#ef4444,#f97316);box-shadow:0 0 0 0 rgba(239,68,68,.5);animation:bdLive 1.6s ease-out infinite}
 .g-qvi:has(.g-taud) .g-tstem{text-align:center}
+#rv-wrong.on{background:var(--red-sub);border-color:var(--red);color:#fff}
