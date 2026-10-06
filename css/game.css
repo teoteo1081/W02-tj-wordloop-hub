@@ -1497,3 +1497,13 @@ body.big .g-learnlayer{display:none}
 .bd .bd-sfx > .bd-railtools .bd-sep{width:24px;height:1px;margin:2px 0}
 .bd-iconbar > .bd-cpin{margin-left:auto}
 .g-tintro-host{margin-top:14px}
+
+/* TJ 2026-10-06: màn Lịch sử & Xếp hạng — nút "← Về trang game" nằm BÊN TRÁI (giống "← Về phòng chờ" của Quản lý người chơi), tiêu đề ra GIỮA; điện thoại hẹp: nút lên trên, tiêu đề ngay dưới */
+#s-hist .g-h1row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
+#s-hist .g-h1row #hi-back{grid-column:1;grid-row:1;justify-self:start}
+#s-hist .g-h1row h1{grid-column:2;grid-row:1;margin:0;text-align:center}
+@media (max-width:560px){
+  #s-hist .g-h1row{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+  #s-hist .g-h1row #hi-back{order:0}
+  #s-hist .g-h1row h1{order:1;text-align:left}
+}
