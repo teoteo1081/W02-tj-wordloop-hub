@@ -1527,3 +1527,6 @@ body.big .g-learnlayer{display:none}
 .g-lkpos{font-size:12px;padding:1px 8px;border-radius:999px;background:var(--raise);color:var(--text-2)}
 .g-lkd{margin-left:auto}
 .g-lkm{margin-top:4px;font-weight:600}
+
+/* TJ 2026-10-06: người chơi chỉ có nút tiếng 🔊 (+ âm lượng) và nghe; KHÔNG chỉnh giọng, tốc độ (host chọn) */
+.bd:not(.bd-isHost) #bd-vtvoice,.bd:not(.bd-isHost) #bd-vtrate{display:none !important}
