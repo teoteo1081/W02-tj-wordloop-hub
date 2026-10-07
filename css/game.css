@@ -1006,7 +1006,7 @@ body.embed .bd-drawer .bd-pane{display:none !important}
 .bd-vt .bd-vterm{color:#ef8f73;font-weight:700;font-size:1.02em}
 .bd-vt .bd-vl{font-weight:700;color:#f3efe6}
 .bd-vt .bd-vf i{font-style:normal;font-size:.8em;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.07);border-radius:6px;padding:.1em .5em;white-space:nowrap;color:#d6d2ca}
-.bd-vt .bd-vph{color:#a8a296;font-size:.85em;overflow-wrap:anywhere}
+.bd-vt .bd-vph{color:#a8a296;font-size:.85em;overflow-wrap:break-word}
 .bd-vt .bd-ve{color:#d6d2ca}
 .bd-vt .bd-vd{color:#f3efe6;font-weight:700}
 /* khung hẹp (điện thoại): bỏ bớt cột Word form + Phonetic cho dễ đọc */
@@ -1244,7 +1244,7 @@ body.embed.bd-on #g-side,body.embed.bd-on #h-sidetab,body.embed.bd-on #h-sidebd,
 .bd-docnav{max-width:calc(100% - 12px);overflow-x:auto;scrollbar-width:none}
 .bd-docnav::-webkit-scrollbar{display:none}
 /* TJ 2026-10-06: "chữ phải canh đều giống Word, không canh trái nhìn lộn xộn" */
-.bd-both .bd-wl p{text-align:justify;text-justify:inter-word;-webkit-hyphens:auto;hyphens:auto}
+.bd-both .bd-wl p{text-align:justify;text-justify:inter-word;-webkit-hyphens:none;hyphens:none;overflow-wrap:normal;word-break:normal}   /* TJ 2026-10-07: chữ phải TRỌN VẸN — không gạch nối, không cắt giữa từ */
 .bd-s.bd-rd{background:rgba(124,170,255,.22);box-shadow:0 0 0 3px rgba(124,170,255,.22);border-radius:4px}
 /* TJ 2026-10-06: "icon phải nằm dưới cái bảng" — 1 hàng icon cố định NGAY DƯỚI bảng (không nổi đè lên bảng, không tự ẩn):
    ☰ ← → · 🔍 A− Aa A+ · 📁 🖥 ✏️ ⋯ · 🎮 · ✕ (người chơi chỉ thấy phần đọc: 🔍 A− Aa A+). Hàng quá dài thì vuốt ngang. */
@@ -1287,7 +1287,7 @@ body.embed.bd-on #g-side,body.embed.bd-on #h-sidetab,body.embed.bd-on #h-sidebd,
 .bd-both .bd-vt .bd-vh > span{font-size:.7em;letter-spacing:.02em;overflow:visible}
 
 .bd-both .bd-vt .bd-vtm{flex-wrap:wrap;row-gap:0}
-.bd-both .bd-vt .bd-vterm{overflow-wrap:anywhere}
+.bd-both .bd-vt .bd-vterm{overflow-wrap:break-word}
 /* ai tra từ + bao nhiêu người tra */
 .bd-whol{margin-left:auto;display:inline-flex;align-items:center;gap:5px;flex-wrap:wrap;justify-content:flex-end;min-width:0}
 .bd-wc{display:inline-flex;align-items:center;gap:3px;background:rgba(255,255,255,.09);border-radius:999px;padding:1px 7px 1px 2px;font-size:11px;color:#d6d2ca;max-width:96px}
@@ -1355,7 +1355,7 @@ body.embed.bd-on #g-side,body.embed.bd-on #h-sidetab,body.embed.bd-on #h-sidebd,
 /* TJ 2026-10-06: "trong Bảng có Notebook rồi thì sao còn Chủ đề, dư, bỏ đi" — bảng đang mở thì KHÔNG hiện cây "📚 Chủ đề" / tiêu đề phòng của game (mọi chế độ, không riêng embed); chọn Block bằng cột Notebooks của bảng */
 body.bd-on #g-side,body.bd-on #h-sidetab,body.bd-on #h-sidebd,body.bd-on #g-room-badge{display:none !important}
 .bd-both .bd-vt .bd-vr > *{min-width:0}
-.bd-both .bd-vt .bd-ve,.bd-both .bd-vt .bd-vd,.bd-both .bd-vt .bd-vph{overflow-wrap:anywhere;hyphens:auto}
+.bd-both .bd-vt .bd-ve,.bd-both .bd-vt .bd-vd,.bd-both .bd-vt .bd-vph{overflow-wrap:break-word;hyphens:none}
 .bd-both .bd-vt{overflow-x:hidden}
 
 /* karaoke: từ đang đọc + câu đang đọc, giống nhau trên mọi máy */
@@ -1537,7 +1537,6 @@ body.big .g-learnlayer{display:none}
 
 /* TJ 2026-10-06: bài đọc trên Bảng — cụm từ vựng tô vàng KHÔNG bị gạch nối / cắt giữa dòng (trước: "Upfront plan-/ning"); chỉ gạch nối từ dài (>= 10 chữ, mỗi phía >= 4) */
 .bd-wl .bd-term{-webkit-hyphens:none;hyphens:none;white-space:nowrap}
-.bd-both .bd-wl p{hyphenate-limit-chars:10 4 4}
 
 /* TJ 2026-10-06: giao diện người chơi (điện thoại) — bỏ thanh 5 thẻ (chỉ host); âm thanh + âm lượng chung 1 hàng; người chơi = vòng tròn avatar dễ thương (như dải avatar dưới Bảng) */
 body.g-viewer .g-learn{display:none}
