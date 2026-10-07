@@ -1,0 +1,61 @@
+# Xây web = bản chính thức (main) + bản xem thử của các nhánh fix/ feat/ preview/
+#   main               -> https://teoteo1081.github.io/W02-tj-wordloop-hub/
+#   nhánh fix/abc      -> https://teoteo1081.github.io/W02-tj-wordloop-hub/preview/fix-abc/
+#   danh sách xem thử  -> .../preview/
+# Mỗi lần push (bất kỳ nhánh nào) hoặc xoá nhánh: dựng lại TOÀN BỘ site rồi đăng lên Pages.
+# Nhánh khác (vd claude/...) KHÔNG được đăng xem thử.
+name: Pages (main + xem thử nhánh)
+
+on:
+  push:
+    branches: ['**']
+  delete:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Dựng site (main + xem thử nhánh)
+        run: |
+          set -euo pipefail
+          git fetch --prune origin '+refs/heads/*:refs/remotes/origin/*'
+          mkdir -p _site/preview
+          git archive origin/main | tar -x -C _site
+          items=""
+          for ref in $(git for-each-ref --format='%(refname:short)' refs/remotes/origin); do
+            name="${ref#origin/}"
+            case "$name" in fix/*|feat/*|preview/*) ;; *) continue ;; esac
+            safe="$(printf '%s' "$name" | tr '/' '-' | tr -c 'A-Za-z0-9._\n-' '-')"
+            mkdir -p "_site/preview/$safe"
+            git archive "$ref" | tar -x -C "_site/preview/$safe"
+            rm -rf "_site/preview/$safe/.github"
+            sha="$(git rev-parse --short "$ref")"
+            items="$items<li><a href=\"$safe/\">$name</a> <small>($sha)</small></li>"
+          done
+          rm -rf _site/.github
+          printf '<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex"><title>Xem thử nhánh</title><body style="font-family:system-ui;max-width:640px;margin:2rem auto;padding:0 1rem"><h1>Xem thử nhánh</h1><p>Bản nháp, chưa lên web chính. Dùng chung dữ liệu thật: KHÔNG vào phòng TJ.</p><ul>%s</ul></body>\n' "${items:-<li>(chưa có nhánh nào)</li>}" > _site/preview/index.html
+          find _site -maxdepth 3 -name index.html | sort
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
