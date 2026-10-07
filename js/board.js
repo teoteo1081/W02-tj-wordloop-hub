@@ -1400,7 +1400,8 @@
     var el0 = document.elementFromPoint(x, y), inVt = !!(el0 && el0.closest && el0.closest("#bd-doc .bd-vt"));
     if (isTxt(d) && !inVt) {
       var ws = document.querySelectorAll("#bd-doc .bd-w, #bd-doc .bd-term"), hit = null;
-      for (var j = 0; j < ws.length && !hit; j++) { var wr = ws[j].getBoundingClientRect(); if (x >= wr.left - 3 && x <= wr.right + 3 && y >= wr.top - 3 && y <= wr.bottom + 3) hit = ws[j]; }
+      var bestD = 1e9;   // TJ 2026-10-07: dùng hộp RIÊNG từng dòng (từ vắt 2 dòng có hộp bao phình to -> chạm nhầm từ khác) và chọn từ GẦN điểm chạm nhất
+      for (var j = 0; j < ws.length; j++) { var rcs = ws[j].getClientRects(); for (var q = 0; q < rcs.length; q++) { var wr = rcs[q]; if (x >= wr.left - 3 && x <= wr.right + 3 && y >= wr.top - 3 && y <= wr.bottom + 3) { var dd = Math.abs(x - (wr.left + wr.right) / 2) + 4 * Math.abs(y - (wr.top + wr.bottom) / 2); if (dd < bestD) { bestD = dd; hit = ws[j]; } } } }
       if (hit && lookMode) { shareSel(hit); var para = hit.closest("p"); lookupShow(hit.textContent.trim(), para ? para.textContent : "", false); return; }
       if (hit) {   /* TJ 2026-10-06: chạm từ = đọc to + từ đó lên ĐẦU khung "Từ vừa tra" dưới bảng (🔊 · phiên âm · nghĩa Anh · nghĩa Việt · ☆ Lưu) */
         shareSel(hit); var ph0 = hit.textContent.trim().replace(/^[^A-Za-z]+|[^A-Za-z]+$/g, ""), pa0 = hit.closest("p");
