@@ -434,7 +434,7 @@
   }
   $("#g-boardbtn").addEventListener("click", function () {   /* 🖍 Bảng: host bật / tắt bảng cho cả phòng; người chơi tự vào / ra Bảng (riêng máy mình) */
     if (!window.Board) return;
-    if (G.isHost && G.st) { G.st.board = !G.st.board; push(); }
+    if (G.isHost && G.st) setBoardMeta({ board: !G.st.board });
     else if (Board.isLocalOpen()) Board.closeLocal(); else Board.openLocal();
     setTimeout(function () { var b = $("#g-boardbtn"); if (b) b.classList.toggle("on", !!(Board.isOpen && Board.isOpen())); }, 100);
   });
@@ -1403,11 +1403,11 @@
       var other = d.htab ? d.htab !== G.tab : !!(d.hid && G.me && d.hid !== G.me.id);
       if (G.isHost && other && (d.hsince || 0) < G.since) { setHost(false); }   /* có host vào trước -> nhường */
       if (G.isHost && other) return;   /* host không nhận trạng thái của host khác */
-      if (!G.isHost && G.st && (G.st.bts || 0) > (d.bts || 0)) { d.board = G.st.board; d.bdoc = G.st.bdoc; d.bts = G.st.bts; bmetaSoon(); }   /* TJ 2026-10-08: bảng/bài do NGƯỜI CHƠI đặt (mới hơn bản host) không bị host đè lại */
+      var S0 = G.st || G.bst; if (!G.isHost && S0 && (S0.bts || 0) > (d.bts || 0)) { d.board = S0.board; d.bdoc = S0.bdoc; d.bts = S0.bts; bmetaSoon(); }   /* TJ 2026-10-08: bảng/bài do NGƯỜI CHƠI đặt (mới hơn bản host) không bị host đè lại */
       onState(d);
     });
     G.ch.on("broadcast", { event: "ans" }, function (m) { if (G.isHost) hostOnAnswer(m.payload); });
-    G.ch.on("broadcast", { event: "bmeta" }, function (m) { var d = m.payload || {}; if (!G.st || (d.bts || 0) <= (G.st.bts || 0)) return; if ("board" in d) G.st.board = d.board; if ("bdoc" in d) G.st.bdoc = d.bdoc; G.st.bts = d.bts; if (G.isHost) push(); else if (window.Board) Board.onState(G.st); });   /* bảng mở/đóng + bài trên bảng: AI cũng đặt được, bản mới nhất thắng (bts) */
+    G.ch.on("broadcast", { event: "bmeta" }, function (m) { var d = m.payload || {}, S = G.st || (G.bst = G.bst || { phase: "lobby" }); if ((d.bts || 0) <= (S.bts || 0)) return; if ("board" in d) S.board = d.board; if ("bdoc" in d) S.bdoc = d.bdoc; S.bts = d.bts; if (G.isHost && G.st) push(); else if (window.Board) Board.onState(S); });   /* bảng mở/đóng + bài trên bảng: AI cũng đặt được, bản mới nhất thắng (bts) */
     G.ch.on("broadcast", { event: "chat" }, function (m) { if (window.Chat) Chat.onMsg(m.payload); });
     G.ch.on("broadcast", { event: "voice" }, function (m) { if (window.Voice) Voice.onMsg(m.payload); });
     G.ch.on("broadcast", { event: "cc" }, function (m) { if (window.CC) CC.onMsg(m.payload); });   /* CC phụ đề (js/cc.js) */   /* 🎤 nói chuyện bằng giọng (js/voice.js) */   /* 💬 chat phòng (js/chat.js) */
@@ -1775,15 +1775,16 @@
   }
   /* bảng / bài trên bảng do BẤT KỲ ai đặt (TJ 2026-10-08: "mọi quyền user có, host mất mạng vẫn chơi được") — bản mới nhất thắng nhờ st.bts */
   function setBoardMeta(patch) {
-    if (!G.st) return; var now = Date.now(); if (now <= (G.st.bts || 0)) now = (G.st.bts || 0) + 1;
-    Object.keys(patch).forEach(function (k) { G.st[k] = patch[k]; }); G.st.bts = now;
-    if (G.isHost) { push(); return; }
+    var S = G.st || (G.bst = G.bst || { phase: "lobby" });   /* chưa có trạng thái phòng (host chưa vào): giữ bản bảng tạm trong G.bst để vẫn dùng bảng được */
+    var now = Date.now(); if (now <= (S.bts || 0)) now = (S.bts || 0) + 1;
+    Object.keys(patch).forEach(function (k) { S[k] = patch[k]; }); S.bts = now;
+    if (G.isHost && G.st) { push(); return; }
     if (G.ch) G.ch.send({ type: "broadcast", event: "bmeta", payload: Object.assign({ bts: now }, patch) });
-    if (window.Board) Board.onState(G.st);
+    if (window.Board) Board.onState(S);
   }
   function bmetaSoon() {   /* mình giữ bản bảng mới hơn host -> nhắc lại 1 lần để host (vừa quay lại) nhận */
-    if (!G.ch || !G.st || Date.now() - (G._bmAt || 0) < 5000) return; G._bmAt = Date.now();
-    G.ch.send({ type: "broadcast", event: "bmeta", payload: { bts: G.st.bts, board: G.st.board, bdoc: G.st.bdoc } });
+    var S = G.st || G.bst; if (!G.ch || !S || Date.now() - (G._bmAt || 0) < 5000) return; G._bmAt = Date.now();
+    G.ch.send({ type: "broadcast", event: "bmeta", payload: { bts: S.bts, board: S.board, bdoc: S.bdoc } });
   }
   function push() { if (G.isHost && G.st && G.hub && G.st.phase === "lobby") G.st.hub = G.hub; G.lastPush = Date.now(); if (G.ch) G.ch.send({ type: "broadcast", event: "state", payload: pub() }); saveHost(); if (window.Board) Board.onState(G.st); }
   /* 🖤 bảng vẽ chung (js/board.js) — host mở/đóng cho cả phòng + cấp quyền từng người (st.board / st.bperm) */
@@ -1800,7 +1801,8 @@
     }
   });
   if (window.Board) Board.attach({
-    ch: function () { return G.ch; }, me: function () { return G.me; }, st: function () { return G.st; },
+    room: function () { return G.room && G.room.code; },   /* thư mục file tạm _tmp/<mã phòng> + dọn kho */
+    ch: function () { return G.ch; }, me: function () { return G.me; }, st: function () { return G.st || G.bst || null; },
     lang: function () { return uiLang(); },
     isHost: function () { return !!G.isHost; }, players: function () { return players(); },
     online: function () { return G.online || []; },

@@ -281,7 +281,7 @@
     if (b.id === "bd-share") { if (shStream) stopShare(); else startShare(); return; }
     if (b.id === "bd-aud") { var v = $("#bd-video"); v.muted = !v.muted; if (!v.muted) v.play().catch(function () {}); paintShare(); return; }
     if (b.id === "bd-min") { mini = true; paintOpen(); return; }
-    if (b.id === "bd-close") { api.setBoard(false); return; }
+    if (b.id === "bd-close") { var s1 = st(), dc = curDoc(); if (localOpen && !(s1 && s1.board)) { closeLocal(); return; } if (dc && dc.tmp) docSet(null); api.setBoard(false); return; }   /* ✕: đóng bảng; file tạm của người chơi thì xoá luôn; bảng chỉ mở riêng máy mình thì thoát riêng */
     if (b.id === "bd-lib") { Lib.open(); return; }
     if (b.dataset.vt) { vtAction(b.dataset.vt); return; }
     if (b.id === "bd-back") { if (api.isHost()) docSet(null); return; }   /* ← Quay lại danh sách Block (bảng chưa có Block = hiện màn hình Learning) */
@@ -646,7 +646,7 @@
   function openLocal() {
     if (!api) return; localOpen = true; lclose().hidden = false;
     if (!open) { open = true; mini = false; build(); paintOpen(); send({ t: "hello" }); }
-    paintOpen(); if (open) { paintTools(); paintShare(); var s0 = st(); syncDoc(s0 && s0.bdoc || null); }
+    paintOpen(); if (open) { var lb0 = $("#bd-lib"); if (lb0) lb0.hidden = !ctl(); paintTools(); paintShare(); var s0 = st(); syncDoc(s0 && s0.bdoc || null); }
   }
   function closeLocal() {
     localOpen = false; var u = $("#bd-lclose"); if (u) u.hidden = true;

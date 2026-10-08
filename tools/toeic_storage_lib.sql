@@ -15,3 +15,9 @@ set allowed_mime_types = array[
 -- Lưu ý: anon key nằm công khai trong web, nên ai biết cũng xoá được file trong lib/ (KHÔNG đụng reading/, listening/).
 create policy "toeic_lib_delete" on storage.objects for delete to anon, authenticated
   using (bucket_id = 'toeic' and name like 'lib/%');
+
+-- (3) KHUYÊN DÙNG (TJ 2026-10-09): người chơi chia sẻ file từ máy -> file nằm TẠM ở lib/_tmp/<mã phòng>/ và bị xoá ngay khi hết chia sẻ.
+-- Cần cho phép XOÁ, nhưng CHỈ trong lib/_tmp/ (an toàn hơn mục (2): người lạ có anon key cũng không xoá được sách của bạn ở chỗ khác).
+-- Có (3) thì KHÔNG cần (2). Cần thêm (1) nếu muốn người chơi chia sẻ Word / Excel / PowerPoint.
+create policy "toeic_tmp_delete" on storage.objects for delete to anon, authenticated
+  using (bucket_id = 'toeic' and name like 'lib/_tmp/%');
