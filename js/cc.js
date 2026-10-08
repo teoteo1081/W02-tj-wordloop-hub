@@ -56,6 +56,9 @@
     paint();
     var l = $("#cc-list"); if (l) { l.scrollTop = l.scrollHeight; setTimeout(function () { l.scrollTop = l.scrollHeight; }, 60); }   /* mở / đổi cỡ: luôn thấy dòng mới nhất ở cuối */
   }
+  /* mỗi người 1 màu cố định theo TÊN (máy nào cũng thấy cùng màu); 10 tông pastel cùng độ sáng/độ đậm nên hài hoà trên nền tối */
+  var NAME_COLORS = ["#ff9e8f", "#ffc46b", "#d3e472", "#7be3a8", "#62dcd0", "#6fcbf2", "#8fb4ff", "#b6a2ff", "#e29bff", "#ff9bc6"];
+  function nameColor(n) { var h = 0, t = String(n || "?"); for (var i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) >>> 0; return NAME_COLORS[h % NAME_COLORS.length]; }
   function paintLang() { var b = $("#cc-lang"); if (b) b.textContent = "🎙 " + langTag(lang()); }
   /* ---- bấm 1 dòng phụ đề: hiện NGHĨA + nút 🔊 nghe lại ---- */
   function speak(text, l) {
@@ -91,9 +94,9 @@
     var items = lines.slice(-MAXL).map(function (m, ix) { return { n: m.n, x: m.x, f: 1, mine: mm && m.id === mm.id, id: m.id, l: m.l, k: m.id + "#" + m.ts }; });
     Object.keys(interim).forEach(function (k) { var it = interim[k]; items.push({ n: it.n, x: it.x, f: 0, mine: mm && k === mm.id, id: k }); });
     l.innerHTML = items.length ? items.map(function (m) {
-      if (!m.f) return '<div class="cc-l cc-i' + (m.mine ? " me" : "") + '"><b class="cc-n">' + esc(m.n || "?") + "</b> " + esc(m.x) + "</div>";
+      if (!m.f) return '<div class="cc-l cc-i' + (m.mine ? " me" : "") + '"><b class="cc-n" style="color:' + nameColor(m.n) + '">' + esc(m.n || "?") + "</b> " + esc(m.x) + "</div>";
       var lg = guessLang(m.x, m.l), open = openKey === m.k, tr = trans[(lg) + "|" + m.x], bad = trans["!" + lg + "|" + m.x];
-      return '<div class="cc-l cc-f' + (m.mine ? " me" : "") + (open ? " open" : "") + '" data-k="' + esc(m.k) + '" data-l="' + esc(lg) + '" data-x="' + esc(m.x) + '"><b class="cc-n">' + esc(m.n || "?") + "</b> " + esc(m.x) +
+      return '<div class="cc-l cc-f' + (m.mine ? " me" : "") + (open ? " open" : "") + '" data-k="' + esc(m.k) + '" data-l="' + esc(lg) + '" data-x="' + esc(m.x) + '"><b class="cc-n" style="color:' + nameColor(m.n) + '">' + esc(m.n || "?") + "</b> " + esc(m.x) +
         (open ? '<div class="cc-d"><button type="button" class="cc-say" data-say="1" title="Nghe lại">🔊</button><span class="cc-tr">' + (tr ? esc(tr) : bad ? "Chưa dịch được lúc này" : "Đang dịch…") + "</span></div>" : "") + "</div>";
     }).join("") : '<div class="cc-empty">Chưa có ai nói. Khi có người bật 🎤 và nói, phụ đề sẽ hiện ở đây. Bấm vào 1 dòng để xem nghĩa và nghe lại.</div>';
     var note = $("#cc-me"); if (note) note.textContent = noSupport && window.Voice && Voice.isOn() ? "⚠ Máy bạn không tạo được phụ đề từ giọng của bạn" : "";
