@@ -53,6 +53,8 @@
   function setSize(n) {
     size = n; var p = $("#cc-panel"), b = $("#cc-btn"); if (!p) return;
     p.hidden = size === 0; p.setAttribute("data-size", String(size)); if (b) { b.classList.toggle("on", size > 0); b.setAttribute("data-size", String(size)); }
+    document.body.setAttribute("data-cc-size", String(size));   /* TJ 2026-10-09: panel CC đè lên Bảng (fixed) -> chừa chỗ cho #bd-big khi cỡ 1/2, xem game.css body[data-cc-size] */
+    document.documentElement.style.setProperty("--bd-extra", size === 1 ? "104px" : size === 2 ? "min(38vh,340px)" : "0px");   /* bảng nhỏ (không bd-big): co #bd-stage lại để chữ/nút cuối bảng không chui xuống dưới panel CC */
     paint();
     var l = $("#cc-list"); if (l) { l.scrollTop = l.scrollHeight; setTimeout(function () { l.scrollTop = l.scrollHeight; }, 60); }   /* mở / đổi cỡ: luôn thấy dòng mới nhất ở cuối */
   }
