@@ -2002,3 +2002,7 @@ body[data-cc-size="2"] .bd.bd-big{bottom:calc(58px + min(38vh,340px) + 8px + env
 .bd-fe2star{min-width:0;min-height:0;padding:0 4px;background:none !important;border:0 !important;font-size:18px;color:#cfcac0;line-height:1;align-self:center;margin-left:auto}
 .bd-fe2star.on{color:#ffd84d}
 .bd-fe2star.ro{cursor:default;pointer-events:none}
+/* bấm từ trong phụ đề: từ được bấm sáng, câu chứa nó gạch chân nhẹ */
+.cc-w{cursor:pointer;border-radius:4px}
+.cc-w.seg{text-decoration:underline;text-decoration-color:rgba(255,255,255,.35);text-underline-offset:3px}
+.cc-w.hit{background:rgba(255,216,77,.28);color:#fff;text-decoration:none}

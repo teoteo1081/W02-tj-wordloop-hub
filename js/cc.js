@@ -69,26 +69,42 @@
       var u = new SpeechSynthesisUtterance(text); u.lang = l || "en-US"; u.rate = 0.9; s.speak(u);
     } catch (e) {}
   }
-  async function translate(text, from) {
-    var k = from + "|" + text; if (trans[k]) return trans[k];
+  /* TJ 2026-10-08: bấm 1 TỪ trong dòng phụ đề -> dịch TỪ đó (theo ngữ cảnh) + CÂU chứa nó. KHÔNG dịch cả đoạn (dài quá). */
+  async function translate(word, seg, from) {
+    var k = from + "|" + word + "|" + seg; if (trans[k]) return trans[k];
     var cfg = window.APP_CONFIG || {}; if (!cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) throw new Error("no cloud");
     var to = from === "vi-VN" ? "English" : "tiếng Việt";
     var sys = "Bạn là phiên dịch cho người Việt học tiếng Anh. Chỉ trả đúng 1 object JSON, không markdown, không chữ thừa.";
-    var user = "Dịch câu sau sang " + to + " (tự nhiên, sát nghĩa lời nói):\n\"" + text + "\"\n\nSchema: {\"t\":\"bản dịch\"}";
+    var user = "Trong câu nói sau: \"" + seg + "\"\nHãy cho nghĩa của TỪ \"" + word + "\" (đúng theo ngữ cảnh câu này) và dịch cả CÂU sang " + to + " (tự nhiên, sát nghĩa lời nói).\n\nSchema: {\"w\":\"nghĩa ngắn của từ\",\"t\":\"bản dịch cả câu\"}";
     var res = await fetch(cfg.SUPABASE_URL.replace(/\/$/, "") + "/functions/v1/gemini-proxy", { method: "POST", headers: { "Content-Type": "application/json", "Authorization": "Bearer " + cfg.SUPABASE_ANON_KEY, "apikey": cfg.SUPABASE_ANON_KEY }, body: JSON.stringify({ model: cfg.GEMINI_MODEL || "gemini-3.5-flash-lite", sys: sys, user: user, user_id: null, block_id: null }) });
     if (!res.ok) throw new Error("http " + res.status);
     var d = await res.json(), raw = d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts && d.candidates[0].content.parts[0] && d.candidates[0].content.parts[0].text;
     var m = raw && raw.match(/\{[\s\S]*\}/); var j = m ? JSON.parse(m[0]) : null;
     if (!j || !j.t) throw new Error("empty");
     if (Object.keys(trans).length > TRANS_MAX) trans = {};
-    return (trans[k] = String(j.t).slice(0, 400));
+    return (trans[k] = { w: String(j.w || "").slice(0, 80), t: String(j.t).slice(0, 300) });
   }
+  /* "câu chứa từ": cắt theo dấu .!? ; lời nói thường KHÔNG có dấu câu -> lấy cửa sổ ~8 từ mỗi bên quanh từ được bấm */
+  function segOf(words, i) {
+    var a = i, b = i;
+    while (a > 0 && !/[.!?]["')\]]*$/.test(words[a - 1])) a--;
+    while (b < words.length - 1 && !/[.!?]["')\]]*$/.test(words[b])) b++;
+    if (b - a + 1 > 16) { a = Math.max(a, i - 8); b = Math.min(b, i + 8); }
+    return { a: a, b: b };
+  }
+  function cleanW(w) { return String(w || "").replace(/^[^\wÀ-ỹ']+|[^\wÀ-ỹ']+$/g, ""); }
   function onLineClick(e) {
     var sp = e.target.closest && e.target.closest("[data-say]");
-    if (sp) { var ln = sp.closest(".cc-l"); speak(ln.dataset.x, ln.dataset.l); return; }
+    if (sp) { var ln = sp.closest(".cc-l"); speak(openSeg ? ln.dataset.x.split(/\s+/).slice(openSel.a, openSel.b + 1).join(" ") : ln.dataset.x, ln.dataset.l); return; }
     var ln2 = e.target.closest && e.target.closest(".cc-l[data-k]"); if (!ln2) return;
-    openKey = openKey === ln2.dataset.k ? "" : ln2.dataset.k; paint();
-    if (openKey) { var l = ln2.dataset.l, x = ln2.dataset.x; translate(x, l).then(function () { paint(); }, function () { trans["!" + l + "|" + x] = "err"; paint(); }); }
+    var wEl = e.target.closest && e.target.closest(".cc-w"), words = ln2.dataset.x.split(/\s+/);
+    if (!wEl) { openKey = ""; openSel = null; openSeg = ""; paint(); return; }   /* bấm tên / chỗ trống -> đóng */
+    var i = +wEl.dataset.i, same = openKey === ln2.dataset.k && openSel && openSel.i === i;
+    if (same) { openKey = ""; openSel = null; openSeg = ""; paint(); return; }
+    var sg = segOf(words, i); openKey = ln2.dataset.k; openSel = { i: i, a: sg.a, b: sg.b }; openSeg = words.slice(sg.a, sg.b + 1).join(" "); paint();
+    var l = ln2.dataset.l, wd = cleanW(words[i]) || words[i], seg = openSeg;
+    speak(wd, l);   /* chạm từ = đọc từ đó (giống bài đọc) */
+    translate(wd, seg, l).then(function () { paint(); }, function () { trans["!" + l + "|" + wd + "|" + seg] = "err"; paint(); });
   }
   function paint() {
     var l = $("#cc-list"); if (!l || size === 0) return;
@@ -97,17 +113,18 @@
     Object.keys(interim).forEach(function (k) { var it = interim[k]; items.push({ n: it.n, x: it.x, f: 0, mine: mm && k === mm.id, id: k }); });
     l.innerHTML = items.length ? items.map(function (m) {
       if (!m.f) return '<div class="cc-l cc-i' + (m.mine ? " me" : "") + '"><b class="cc-n" style="color:' + nameColor(m.n) + '">' + esc(m.n || "?") + "</b> " + esc(m.x) + "</div>";
-      var lg = guessLang(m.x, m.l), open = openKey === m.k, tr = trans[(lg) + "|" + m.x], bad = trans["!" + lg + "|" + m.x];
-      return '<div class="cc-l cc-f' + (m.mine ? " me" : "") + (open ? " open" : "") + '" data-k="' + esc(m.k) + '" data-l="' + esc(lg) + '" data-x="' + esc(m.x) + '"><b class="cc-n" style="color:' + nameColor(m.n) + '">' + esc(m.n || "?") + "</b> " + esc(m.x) +
-        (open ? '<div class="cc-d"><button type="button" class="cc-say" data-say="1" title="Nghe lại">🔊</button><span class="cc-tr">' + (tr ? esc(tr) : bad ? "Chưa dịch được lúc này" : "Đang dịch…") + "</span></div>" : "") + "</div>";
-    }).join("") : '<div class="cc-empty">Chưa có ai nói. Khi có người bật 🎤 và nói, phụ đề sẽ hiện ở đây. Bấm vào 1 dòng để xem nghĩa và nghe lại.</div>';
+      var lg = guessLang(m.x, m.l), open = openKey === m.k && openSel, ws = m.x.split(/\s+/), wd = open ? (cleanW(ws[openSel.i]) || ws[openSel.i]) : "", tr = open ? trans[lg + "|" + wd + "|" + openSeg] : null, bad = open ? trans["!" + lg + "|" + wd + "|" + openSeg] : null;
+      var body = ws.map(function (w, wi) { var c = "cc-w" + (open && wi >= openSel.a && wi <= openSel.b ? " seg" : "") + (open && wi === openSel.i ? " hit" : ""); return '<span class="' + c + '" data-i="' + wi + '">' + esc(w) + "</span>"; }).join(" ");
+      return '<div class="cc-l cc-f' + (m.mine ? " me" : "") + (open ? " open" : "") + '" data-k="' + esc(m.k) + '" data-l="' + esc(lg) + '" data-x="' + esc(m.x) + '"><b class="cc-n" style="color:' + nameColor(m.n) + '">' + esc(m.n || "?") + "</b> " + body +
+        (open ? '<div class="cc-d"><button type="button" class="cc-say" data-say="1" title="Nghe lại cả câu">🔊</button><span class="cc-tr">' + (tr && typeof tr === "object" ? "<b>" + esc(wd) + "</b>" + (tr.w ? " = " + esc(tr.w) : "") + "<br>" + esc(tr.t) : bad ? "Chưa dịch được lúc này" : "<b>" + esc(wd) + "</b> — đang dịch…") + "</span></div>" : "") + "</div>";
+    }).join("") : '<div class="cc-empty">Chưa có ai nói. Khi có người bật 🎤 và nói, phụ đề sẽ hiện ở đây. Bấm vào 1 TỪ để xem nghĩa của từ và của câu đó, nghe phát âm.</div>';
     var note = $("#cc-me"); if (note) note.textContent = noSupport && window.Voice && Voice.isOn() ? "⚠ Máy bạn không tạo được phụ đề từ giọng của bạn" : "";
     if (atEnd) l.scrollTop = l.scrollHeight;
   }
 
   /* ---------- người NÓI: nhận giọng -> chữ ---------- */
   function wantRec() { return !!(!hold && SR && window.Voice && Voice.isOn() && !(Voice.isLocked && Voice.isLocked())); }
-  var interTimer = 0;
+  var interTimer = 0, openSel = null, openSeg = "";
   function chunks(t, max) { var out = []; while (t.length > max) { var k = t.lastIndexOf(" ", max); if (k < max / 2) k = max; out.push(t.slice(0, k).trim()); t = t.slice(k).trim(); } if (t) out.push(t); return out; }
   function startRec() {
     if (rec || !SR) return;
