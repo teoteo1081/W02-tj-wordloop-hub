@@ -58,7 +58,7 @@
   function myId() { var m = me(); return m ? m.id : cid; }
   function st() { return api && api.st ? api.st() : null; }
   function iPresent() { var s = st(); return !!(s && s.presenter && s.presenter === myId()); }   /* host đã cấp cho máy này quyền chia sẻ màn hình (TJ 2026-10-08: người chơi cũng chia sẻ được, mỗi lúc 1 người) */
-  function canPresent() { return !!api && (api.isHost() || iPresent()); }
+  function canPresent() { return !!api; }   /* TJ 2026-10-08: "ai cũng được chia sẻ, không cần host cấp" — người chia sẻ SAU đè người trước (share-take) */
   function canDraw() {
     return !!api;   /* TJ 2026-10-05: bỏ phân moderator — ai trong phòng cũng vẽ + lật trang được */
   }
@@ -1876,10 +1876,11 @@
     var gdm = function (a) { return navigator.mediaDevices.getDisplayMedia({ video: { frameRate: { ideal: 15, max: 24 } }, audio: a, selfBrowserSurface: "exclude", surfaceSwitching: "include" }); };
     gdm(true).catch(function (e) { if (e && (e.name === "NotAllowedError" || e.name === "AbortError")) throw e; return gdm(false); })   /* trình duyệt không cho kèm tiếng -> chỉ hình */
       .then(function (s) {
-        shStream = s; shFull = {};
+        shStream = s; shFull = {}; rtc({ t: "share-take", n: me() ? me().name : "" });   /* báo: ai đang chia sẻ thì dừng, mình thay */
         s.getVideoTracks().forEach(function (tr) { try { tr.contentHint = "detail"; } catch (e) {} tr.onended = stopShare; });   /* chữ trang web rõ hơn; bấm "Dừng chia sẻ" của trình duyệt */
         if (!open) api.setBoard(true);   /* bảng chưa mở cho phòng -> mở luôn (màn hình chia sẻ nằm trong bảng) */
         mini = false; paintOpen();
+        if (rv) { rvClose(); } rvHost = null; rvErr = "";   /* đang xem người khác mà mình chia sẻ -> thôi xem, mình thay */
         showVideo(s, true); announce();
         clearInterval(shAnn); shAnn = setInterval(announce, 5000);   /* máy vào sau / lỡ tin -> 5 giây sau tự xin nối */
       }, function (e) { if (e && e.name !== "NotAllowedError" && e.name !== "AbortError") alert(t("shErr") + (e.message || e.name)); });
@@ -2023,6 +2024,8 @@
       rvHost = m.cid;
       if (!rv && open && Date.now() >= rvRetryAt) rvWant();
       paintShare();
+    } else if (m.t === "share-take") {
+      if (shStream) { stopShare(); try { feedNote("🖥 " + (m.n || "Một người") + " vừa chia sẻ màn hình — màn hình của bạn đã dừng nhường chỗ."); } catch (e) {} }
     } else if (m.t === "share-off") {
       if (m.cid !== rvHost) return;
       rvClose(); rvHost = null; rvErr = ""; rvRetryAt = 0; paintShare();
@@ -2050,7 +2053,7 @@
   function paintShare() {
     var b = $("#bd-share"); if (!b || !api) return;
     paintFree();
-    b.hidden = !canPresent() || !canShare; var pb0 = $("#bd-pres"); if (pb0) pb0.hidden = !api.isHost() || !canShare; var ps0 = $("#bd-pshare"); if (ps0) ps0.hidden = !(iPresent() && !api.isHost() && canShare && !shStream);   /* người chơi được cấp quyền: nút riêng ngay trên bảng (dải công cụ có thể đang ẩn tuỳ loại tài liệu) */
+    b.hidden = !canPresent() || !canShare; var pb0 = $("#bd-pres"); if (pb0) pb0.hidden = true;   /* không còn cấp quyền: ai cũng chia sẻ được */ var ps0 = $("#bd-pshare"); if (ps0) ps0.hidden = !(iPresent() && !api.isHost() && canShare && !shStream);   /* người chơi được cấp quyền: nút riêng ngay trên bảng (dải công cụ có thể đang ẩn tuỳ loại tài liệu) */
     b.dataset.bt = shStream ? "unshare" : "share"; var shTx = t(b.dataset.bt); b.title = shTx; b.textContent = "🎥"; b.classList.toggle("on", !!shStream);   /* TJ 2026-10-06: biểu tượng máy quay phim (trước là 🖥); đang chia sẻ = đỏ cam nhấp nháy như đèn LIVE */
     var line = "";
     if (shStream) {
