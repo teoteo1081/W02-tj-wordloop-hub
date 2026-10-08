@@ -849,6 +849,7 @@
   /* v200 (TJ 2026-10-05: "1 trang duy nhất, hất lên hất xuống để đọc"): bài đọc + bảng từ là 1 TRANG CUỘN. Cỡ chữ = cỡ đọc dễ chịu theo bề rộng
      của từng máy (15–22px) × hệ số A−/A+ RIÊNG máy đó (localStorage) — không co giãn cho vừa khung nữa. */
   var lfz = 1;   /* hệ số cỡ chữ DÙNG CHUNG cả phòng (bdoc.zf) */
+  function refitSoon() { setTimeout(function () { try { fitDocText(); } catch (e) {} }, 60); setTimeout(function () { try { fitDocText(); } catch (e) {} }, 400); }   /* bài đọc/bảng từ vừa HIỆN lại sau khi bị ẩn (xem màn hình chia sẻ) -> tính lại cỡ chữ (lúc ẩn bề rộng = 0 nên chưa tính được; không tính lại thì bảng bị bóp, chữ gãy giữa từ) */
   function fitDocText() {
     var doc = $("#bd-doc"); if (!doc || !doc.querySelector(".bd-scroll")) return;
     var w = doc.clientWidth; if (!w) return;
@@ -1832,8 +1833,9 @@
     clearTimeout(showVideo.t);
     if (stream && !local) showVideo.t = setTimeout(function () {
       var vv = $("#bd-video"), st = $("#bd-stage"); if (!vv || !st || vv.hidden) return;
-      if (!(vv.videoWidth > 0 && vv.readyState >= 2 && !vv.paused)) { st.classList.remove("bd-screen-view", "bd-screen"); paintShare(); }
+      if (!(vv.videoWidth > 0 && vv.readyState >= 2 && !vv.paused)) { st.classList.remove("bd-screen-view", "bd-screen"); refitSoon(); paintShare(); }
     }, 5000);   /* TJ 2026-10-06: NGƯỜI XEM thấy màn hình chia sẻ thay cho bài (trước: lớp bài đè lên hình, chỉ nghe tiếng); host vẫn thấy bài của mình */
+    refitSoon();
     paintShare();
   }
 
@@ -1855,7 +1857,7 @@
     var id = e.target && e.target.id;
     if (id === "bd-shstop") stopShare();
     else if (id === "bd-prev") { var sb = $("#bd-sharebar"); if (sb) sb.classList.toggle("bd-bigp"); }   /* host: phóng to hình đang chia sẻ để xem (nếu chia sẻ cả màn hình chứa bảng này thì hình lồng nhau là bình thường) */
-    else if (id === "bd-scrmin") { var st = $("#bd-stage"); if (st) st.classList.add("bd-screen-min"); }
+    else if (id === "bd-scrmin") { var st = $("#bd-stage"); if (st) st.classList.add("bd-screen-min"); refitSoon(); }
     else if (id === "bd-scrstat") {   /* thử nối lại / bật phát hình (iPhone cần 1 cú chạm mới chịu phát) */
       if (rvErr || !rv) { rvErr = ""; rvRetryAt = 0; if (rvHost) rvWant(); }
       else if (rv.stream) { showVideo(rv.stream); var vv = $("#bd-video"); if (vv) vv.play().catch(function () {}); }
@@ -1863,8 +1865,13 @@
     }
     else if (id === "bd-scrfull") fsVideo($("#bd-video"));
     else if (id === "bd-prevfull") fsVideo($("#bd-prev"));
+    else if (rv && rv.stream && $("#bd-video") && !$("#bd-video").hidden && $("#bd-video").paused && e.target.closest && e.target.closest("#bd-stage")) { $("#bd-video").play().catch(function () {}); }   /* iPhone: hình chưa tự phát -> chạm vào khung là phát */
     else { var st2 = $("#bd-stage"), v2 = $("#bd-video"); if (st2 && v2 && st2.classList.contains("bd-screen-min")) { var r2 = v2.getBoundingClientRect(); if (e.clientX >= r2.left && e.clientX <= r2.right && e.clientY >= r2.top && e.clientY <= r2.bottom) st2.classList.remove("bd-screen-min"); } }   /* bấm vào ô nhỏ = phóng lại */
   });
+  document.addEventListener("playing", function (e) {   /* hình bắt đầu phát (kể cả sau khi chạm trên iPhone) -> hiện lại lớp màn hình chia sẻ nếu 5 giây đầu đã trả bài về */
+    if (!e.target || e.target.id !== "bd-video" || !rv || !rv.stream) return;
+    var st = $("#bd-stage"); if (st && !st.classList.contains("bd-screen-min")) { st.classList.add("bd-screen-view", "bd-screen"); paintShare(); }
+  }, true);
   function fsVideo(v) {   /* bung video toàn màn hình (Esc thoát); iPhone/Safari dùng cách riêng */
     if (!v) return;
     try { if (v.requestFullscreen) v.requestFullscreen().catch(function () {}); else if (v.webkitRequestFullscreen) v.webkitRequestFullscreen(); else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen(); } catch (e) {}
