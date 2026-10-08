@@ -143,7 +143,7 @@
       else if (t === "muteall") { if (stream) { micOff(); } }
     },
     muteAll: function () { if (api && api.isHost && api.isHost()) { send({ t: "muteall" }); if (stream) micOff(); } },   /* chỉ host */
-    on: micOn, off: micOff, isOn: function () { return !!stream; },
+    on: micOn, off: micOff, isOn: function () { return !!stream; }, isLocked: function () { return !!locked; },
     reset: function () { helloSent = false; locked = false; micOff(); Object.keys(inc).forEach(closeIn); talkers = {}; var b = $("#vc-btn"); if (b) b.hidden = true; paint(); }
   };
 })();

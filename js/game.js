@@ -1301,7 +1301,7 @@
   function leaveRoom() {
     clearInterval(G.hostTimer); clearInterval(G.aliveTimer); clearInterval(G.tick);
     try { if (G.ch) { G.ch.untrack(); sb.removeChannel(G.ch); } } catch (e) {}
-    G.ch = null; G.isHost = false; G.cand = false; G.st = null; G.room = null; G.online = []; if (window.Chat) Chat.reset(); if (window.Voice) Voice.reset();
+    G.ch = null; G.isHost = false; G.cand = false; G.st = null; G.room = null; G.online = []; if (window.Chat) Chat.reset(); if (window.Voice) Voice.reset(); if (window.CC) CC.reset();
   }
   function pauseTab(msg) { G.asleep = true; leaveRoom(); $("#g-room-badge").hidden = true; $("#t-msg").textContent = msg; show("s-tab"); }
   if (BC) BC.onmessage = function (e) {
@@ -1395,7 +1395,8 @@
     });
     G.ch.on("broadcast", { event: "ans" }, function (m) { if (G.isHost) hostOnAnswer(m.payload); });
     G.ch.on("broadcast", { event: "chat" }, function (m) { if (window.Chat) Chat.onMsg(m.payload); });
-    G.ch.on("broadcast", { event: "voice" }, function (m) { if (window.Voice) Voice.onMsg(m.payload); });   /* 🎤 nói chuyện bằng giọng (js/voice.js) */   /* 💬 chat phòng (js/chat.js) */
+    G.ch.on("broadcast", { event: "voice" }, function (m) { if (window.Voice) Voice.onMsg(m.payload); });
+    G.ch.on("broadcast", { event: "cc" }, function (m) { if (window.CC) CC.onMsg(m.payload); });   /* CC phụ đề (js/cc.js) */   /* 🎤 nói chuyện bằng giọng (js/voice.js) */   /* 💬 chat phòng (js/chat.js) */
     G.ch.on("broadcast", { event: "board" }, function (m) { if (window.Board) Board.onMsg(m.payload); });   /* 🖤 bảng vẽ chung (js/board.js) */
     G.ch.on("broadcast", { event: "rtc" }, function (m) { if (window.Board && Board.onRtc) Board.onRtc(m.payload); });   /* 🖥 chia sẻ màn hình: báo hiệu WebRTC (js/board.js, TJ 2026-10-04) */
     G.ch.on("broadcast", { event: "gaps" }, function (m) {   /* câu điền chỗ trống ngắn từ host (kiểu Tự do) */
@@ -1757,6 +1758,7 @@
   }
   function push() { if (G.isHost && G.st && G.hub && G.st.phase === "lobby") G.st.hub = G.hub; G.lastPush = Date.now(); if (G.ch) G.ch.send({ type: "broadcast", event: "state", payload: pub() }); saveHost(); if (window.Board) Board.onState(G.st); }
   /* 🖤 bảng vẽ chung (js/board.js) — host mở/đóng cho cả phòng + cấp quyền từng người (st.board / st.bperm) */
+  if (window.CC) CC.attach({ ch: function () { return G.ch; }, me: function () { return G.me; } });
   if (window.Voice) Voice.attach({ ch: function () { return G.ch; }, me: function () { return G.me; }, isHost: function () { return !!G.isHost; } });
   if (window.Chat) Chat.attach({
     ch: function () { return G.ch; }, me: function () { return G.me; }, st: function () { return G.st; }, isHost: function () { return !!G.isHost; },
@@ -2367,6 +2369,7 @@
     if (window.Board) Board.onState(G.isHost ? G.st : s);
     if (window.Chat) Chat.onState(G.isHost ? G.st : s);
     if (window.Voice) Voice.onState(G.isHost ? G.st : s);
+    if (window.CC) CC.onState(G.isHost ? G.st : s);
     if (s.left != null) G.endAt = Date.now() + s.left;
     if (G.myLang === "room" && langWas !== s.lang) applyUI();   /* "theo phòng" -> host đổi tiếng thì giao diện đổi theo */
     if (G.view === "screen") return paintScreen(s);
