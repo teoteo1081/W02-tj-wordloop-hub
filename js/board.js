@@ -57,6 +57,8 @@
   function me() { return api && api.me ? api.me() : null; }
   function myId() { var m = me(); return m ? m.id : cid; }
   function st() { return api && api.st ? api.st() : null; }
+  function iPresent() { var s = st(); return !!(s && s.presenter && s.presenter === myId()); }   /* host đã cấp cho máy này quyền chia sẻ màn hình (TJ 2026-10-08: người chơi cũng chia sẻ được, mỗi lúc 1 người) */
+  function canPresent() { return !!api && (api.isHost() || iPresent()); }
   function canDraw() {
     return !!api;   /* TJ 2026-10-05: bỏ phân moderator — ai trong phòng cũng vẽ + lật trang được */
   }
@@ -90,7 +92,7 @@
         '<div class="bd-sfx" id="bd-sfx">' +'<div class="bd-stage" id="bd-stage">' +
         '<div class="bd-zoom" id="bd-zoom"><video id="bd-video" class="bd-video" autoplay playsinline muted hidden></video><div class="bd-doc" id="bd-doc"></div><canvas id="bd-cv"></canvas><div class="bd-texts" id="bd-texts"></div></div>' +
         '<button type="button" class="bd-aud" id="bd-aud" hidden data-bt="unmute"></button>' +
-        '<div id="bd-scrstat" hidden></div>' +
+        '<div id="bd-scrstat" hidden></div><div id="bd-prespop" hidden></div><button type="button" id="bd-pshare" hidden>🎥 Chia sẻ màn hình của bạn</button>' +
         '<button type="button" id="bd-scrfull" hidden title="Xem hình chia sẻ toàn màn hình (Esc để thoát)">⛶ Toàn màn hình</button>' +
         '<button type="button" id="bd-scrmin" hidden title="Thu hình chia sẻ thành ô nhỏ để xem tiếp bài / bảng">▁ Thu nhỏ để xem bài</button>' +
         '<div id="bd-sharebar" hidden><video id="bd-prev" muted autoplay playsinline title="Bấm để phóng to / thu nhỏ hình bạn đang chia sẻ"></video><div class="bd-shtx"><b>🔴 Đang chia sẻ màn hình</b><span>Mọi người trong phòng đang xem</span></div><button type="button" id="bd-sbaud" hidden>🔈 Bật tiếng</button><button type="button" id="bd-prevfull" title="Xem hình đang chia sẻ toàn màn hình (Esc để thoát)">⛶</button><button type="button" id="bd-shstop">Dừng chia sẻ</button></div>' +
@@ -110,6 +112,7 @@
             '<button type="button" class="bd-hb bd-fab" id="bd-close" hidden data-btt="close">✕</button>' +
             '<button type="button" class="bd-hb bd-fab" id="bd-lib" hidden data-ico="1" data-bt="lib"></button>' +
             '<button type="button" class="bd-hb bd-fab" id="bd-share" hidden data-ico="1" data-btt="sharet" data-bt="share"></button>' +
+            '<button type="button" class="bd-hb bd-fab" id="bd-pres" hidden title="Cho người chơi chia sẻ màn hình (mỗi lúc 1 người)">🙋</button>' +
             '<button type="button" class="bd-hb bd-fab" id="bd-penbtn" title="Vẽ / ghi chú">✏️</button>' +
             '<button type="button" class="bd-hb bd-fab" id="bd-lkbtn" title="Tra nghĩa: bấm rồi chạm vào từ">🔍</button>' +
             '<button type="button" class="bd-hb bd-fab" id="bd-more" hidden title="Công cụ Block (chỉ Admin)">⋯</button>' +
@@ -195,7 +198,7 @@
       var sfx0 = $("#bd-sfx");
       if (sfx0) {
         var ib = document.createElement("div"); ib.id = "bd-iconbar"; ib.className = "bd-iconbar"; sfx0.parentNode.insertBefore(ib, sfx0.nextSibling); ib.appendChild(dn0);
-        ["bd-lib", "bd-share", "bd-free", "bd-penbtn", "bd-more"].forEach(function (id) { var e = $("#" + id); if (e) { e.classList.add("bd-ibtn"); dn0.insertBefore(e, cp); } });
+        ["bd-lib", "bd-share", "bd-pres", "bd-free", "bd-penbtn", "bd-more"].forEach(function (id) { var e = $("#" + id); if (e) { e.classList.add("bd-ibtn"); dn0.insertBefore(e, cp); } });
         /* TJ 2026-10-06: cửa sổ hẹp thì 🎮 và ✕ nằm cuối dải cuộn ngang (ẩn thanh cuộn) -> bị cắt mất. ✕ = góc TRÊN-PHẢI của bảng (luôn thấy, đúng thói quen đóng cửa sổ);
            🎮 = ghim cuối hàng icon, NGOÀI dải cuộn */
         var cl0 = $("#bd-close"), hl0 = $("#bd-hudl"); if (cl0 && hl0) { cl0.classList.add("bd-closetop"); hl0.appendChild(cl0); }
@@ -622,6 +625,8 @@
     if (want && !open) { open = true; mini = false; build(); paintOpen(); if (!api.isHost() || !order.length) send({ t: "hello" }); }   /* host tải lại trang (bảng trống) cũng xin lại nét từ moderator/người chơi */
     else if (!want && open) { open = false; paintOpen(); if (shStream) stopShare(); }   /* host đóng bảng = dừng chia sẻ màn hình */
     paintOpen();
+    if (shStream && !canPresent()) stopShare();   /* host thu quyền trình bày -> máy người chơi tự dừng chia sẻ */
+    if (open) paintShare();
     if (open) { paintTools(); paintPerm(); var who = $("#bd-who"); if (who) who.textContent = t(canDraw() ? "can" : "view"); }
     if (open) { var lb = $("#bd-lib"); if (lb) lb.hidden = !api.isHost(); syncDoc(s.bdoc || null); }
   }
@@ -1842,7 +1847,8 @@
 
   /* host */
   function startShare() {
-    if (!canShare || !api || !api.isHost() || shStream) return;
+    if (!canShare || !canPresent() || shStream) return;
+    if (api.isHost() && st() && st().presenter && api.setPresenter) api.setPresenter(null);   /* host tự chia sẻ -> thu quyền người chơi (mỗi lúc chỉ 1 nguồn) */
     var gdm = function (a) { return navigator.mediaDevices.getDisplayMedia({ video: { frameRate: { ideal: 15, max: 24 } }, audio: a, selfBrowserSurface: "exclude", surfaceSwitching: "include" }); };
     gdm(true).catch(function (e) { if (e && (e.name === "NotAllowedError" || e.name === "AbortError")) throw e; return gdm(false); })   /* trình duyệt không cho kèm tiếng -> chỉ hình */
       .then(function (s) {
@@ -1857,6 +1863,12 @@
   document.addEventListener("click", function (e) {
     var id = e.target && e.target.id;
     if (id === "bd-shstop") stopShare();
+    else if (id === "bd-pshare") startShare();
+    else if (id === "bd-pres") { var pp = $("#bd-prespop"); if (pp) { if (!pp.hidden) { pp.hidden = true; return; } paintPresPop(); pp.hidden = false; } }
+    else if (e.target.closest && e.target.closest("[data-presid]")) {   /* host chọn người được chia sẻ ("" = chỉ host) */
+      var pid = e.target.closest("[data-presid]").dataset.presid; if (shStream) stopShare();
+      if (api && api.setPresenter) api.setPresenter(pid || null); var pp2 = $("#bd-prespop"); if (pp2) pp2.hidden = true; setTimeout(paintShare, 300);
+    }
     else if (id === "bd-sbaud") { var va = $("#bd-video"); if (va) { va.muted = !va.muted; if (!va.muted) va.play().catch(function () {}); } paintShare(); }
     else if (id === "bd-prev") {
       var sb = $("#bd-sharebar"), pvx = $("#bd-prev");
@@ -1883,6 +1895,13 @@
     sp.textContent = "Chưa có hình · kết nối: " + ((rv && rv.pc && rv.pc.connectionState) || "…") + " · chạm vào hình để thử lại";
     if (pv.paused && rv && rv.stream) pv.play().catch(function () {});
   }, 1500);
+  function paintPresPop() {
+    var pp = $("#bd-prespop"); if (!pp || !api) return;
+    var cur = (st() && st().presenter) || "", on = (api.online ? api.online() : []).filter(function (p) { return p && p.id && !(api.isHostId && api.isHostId(p.id)); });
+    pp.innerHTML = '<div class="bd-ppt">🙋 Ai được chia sẻ màn hình?</div><button type="button" data-presid="" class="' + (cur ? "" : "on") + '">Chỉ host</button>' +
+      on.map(function (p) { return '<button type="button" data-presid="' + esc(p.id) + '" class="' + (cur === p.id ? "on" : "") + '">' + esc(p.name || "?") + "</button>"; }).join("") +
+      (on.length ? "" : '<div class="bd-ppn">Chưa có người chơi nào trong phòng</div>') + '<div class="bd-ppn">Chỉ máy tính chia sẻ được (iPhone không hỗ trợ)</div>';
+  }
   function fsVideo(v) {   /* bung video toàn màn hình (Esc thoát); iPhone/Safari dùng cách riêng */
     if (!v) return;
     try { if (v.requestFullscreen) v.requestFullscreen().catch(function () {}); else if (v.webkitRequestFullscreen) v.webkitRequestFullscreen(); else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen(); } catch (e) {}
@@ -2007,7 +2026,7 @@
   function paintShare() {
     var b = $("#bd-share"); if (!b || !api) return;
     paintFree();
-    b.hidden = !api.isHost() || !canShare;
+    b.hidden = !canPresent() || !canShare; var pb0 = $("#bd-pres"); if (pb0) pb0.hidden = !api.isHost() || !canShare; var ps0 = $("#bd-pshare"); if (ps0) ps0.hidden = !(iPresent() && !api.isHost() && canShare && !shStream);   /* người chơi được cấp quyền: nút riêng ngay trên bảng (dải công cụ có thể đang ẩn tuỳ loại tài liệu) */
     b.dataset.bt = shStream ? "unshare" : "share"; var shTx = t(b.dataset.bt); b.title = shTx; b.textContent = "🎥"; b.classList.toggle("on", !!shStream);   /* TJ 2026-10-06: biểu tượng máy quay phim (trước là 🖥); đang chia sẻ = đỏ cam nhấp nháy như đèn LIVE */
     var line = "";
     if (shStream) {

@@ -1765,6 +1765,7 @@
     setBoard: function (v) { if (!G.isHost || !G.st) return; G.st.board = !!v; push(); },
     /* 📁 tài liệu trên bảng (board.js Lib): file ở bucket toeic/lib/…, bài đọc WordLoop từ bảng blocks */
     setDoc: function (d) { if (!G.isHost || !G.st) return; G.st.bdoc = d || null; push(); },
+    setPresenter: function (pid) { if (!G.isHost || !G.st) return; G.st.presenter = pid || null; push(); },   /* người chơi được host cấp quyền chia sẻ màn hình trên bảng (board.js iPresent) */
     /* ⭐ lưu từ trên bảng từ: TJ -> word_progress.bookmarked (vào ⭐ Ôn riêng); người chơi -> danh sách riêng lưu trên máy */
     starState: async function (ids) {
       var out = {};

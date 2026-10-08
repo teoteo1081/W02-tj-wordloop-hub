@@ -1759,3 +1759,13 @@ body.g-viewer #l-roomcard #l-toprow{display:none}
 @media (max-width:560px){#bd-sharebar .bd-shtx span{display:block;font-size:11px}#bd-sharebar .bd-shtx b{font-size:13px}}
 /* dấu | thừa ở đầu cột công cụ khi chưa có nút lật trang */
 .bd-docnav:has(#bd-dprev[hidden]):has(#bd-dnext[hidden]) > .bd-sep:first-of-type{display:none}
+
+/* TJ 2026-10-08: host chọn người chơi được chia sẻ màn hình */
+#bd-prespop{position:absolute;z-index:40;left:8px;top:8px;display:flex;flex-direction:column;gap:6px;max-width:calc(100% - 16px);max-height:calc(100% - 16px);overflow:auto;padding:10px;background:rgba(24,22,20,.97);border:1px solid rgba(255,255,255,.25);border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.5)}
+#bd-prespop[hidden]{display:none}
+#bd-prespop .bd-ppt{font-weight:700;font-size:14px;color:#fff}
+#bd-prespop .bd-ppn{font-size:12px;color:#b9b3a6}
+#bd-prespop button{text-align:left;border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:8px 12px;background:rgba(255,255,255,.06);color:#fff;font:inherit;font-size:14px;cursor:pointer}
+#bd-prespop button.on{background:#14b8a6;border-color:#14b8a6;color:#04201c;font-weight:700}
+#bd-pshare{position:absolute;z-index:6;left:8px;top:8px;padding:10px 14px;border:0;border-radius:12px;background:linear-gradient(135deg,#14b8a6,#3b82f6);color:#fff;font:inherit;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(20,184,166,.45)}
+#bd-pshare[hidden]{display:none}
