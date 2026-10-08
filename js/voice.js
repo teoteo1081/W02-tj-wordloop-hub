@@ -62,15 +62,26 @@
     b.title = locked ? "Mic tạm khoá trong lúc chơi — hết giờ bạn tự bật" : stream ? "Đang BẬT mic — bấm để tắt" : "Bật mic của bạn (mặc định đang tắt)";
     var names = Object.keys(talkers).map(function (k) {
       var n = esc(talkers[k].n), i = inc[k], st = i && i.pc ? i.pc.connectionState : "", age = i ? Date.now() - i.at : 0;
-      if (st === "connected") return (i.blocked ? "🔈 " + n + " — <b>chạm vào màn hình để nghe</b>" : "🎙 " + n);
+      if (st === "connected") return (i.blocked ? "🔈 " + n + " — <b>chạm vào màn hình để nghe</b>" : "🎙 " + n) + dbgText(i);
       if (st === "failed" || st === "disconnected" || (st !== "connected" && age > 8000)) return "⚠ " + n + " (chưa nghe được — mạng có thể chặn)";
       return "⏳ " + n + " (đang nối…)";
     });
     if (stream) names.unshift("🎙 " + esc(myName()) + " (bạn" + (rawMode() ? " · âm thanh gốc" : "") + ")");
     var wh = $("#vc-who"); if (wh) { wh.hidden = !names.length; wh.innerHTML = names.join("<br>"); }
   }
+  /* chẩn đoán tiếng (hiện cạnh tên người nói): KB đã nhận, mức âm, loa đang phát/dừng -> biết tiếng KHÔNG TỚI máy hay TỚI mà loa im */
+  function dbgText(i) {
+    if (!i || !i.dbg) return ""; var d = i.dbg, el = i.el;
+    return '<br><span style="opacity:.85;font-size:11px">' + (d.kb >= 0 ? "nhận " + d.kb + "KB" : "") + (d.lv != null ? " · mức " + d.lv : "") + " · loa " + (!el ? "chưa có" : el.paused ? "DỪNG" : "phát") + (el && el.muted ? " (tắt tiếng)" : "") + "</span>";
+  }
+  function probe() {
+    Object.keys(inc).forEach(function (k) {
+      var i = inc[k]; if (!i || !i.pc || !i.pc.getStats || i.pc.connectionState !== "connected") return;
+      i.pc.getStats().then(function (r) { r.forEach(function (x) { if (x.type === "inbound-rtp" && (x.kind === "audio" || x.mediaType === "audio")) { i.dbg = { kb: Math.round((x.bytesReceived || 0) / 1024), lv: x.audioLevel != null ? Math.round(x.audioLevel * 100) / 100 : null }; } }); }).catch(function () {});
+    });
+  }
   function tick() {
-    place();
+    place(); probe();
     Object.keys(inc).forEach(function (k) { var i = inc[k]; if (i && i.el && i.pc && i.pc.connectionState === "connected" && i.el.paused) tryPlay(i); });   /* tiếng đã nối mà <audio> đang dừng -> thử phát lại */
     if (Object.keys(talkers).length) paint();   /* cập nhật trạng thái nối (đang nối / nghe được / bị chặn) */
     var now = Date.now(), ch = false;
