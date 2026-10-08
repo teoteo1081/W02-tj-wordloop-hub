@@ -1754,3 +1754,8 @@ body.g-viewer #l-roomcard #l-toprow{display:none}
 .bd .bd-stage.bd-viewshare .bd-video{inset:auto !important;left:0 !important;top:0 !important;width:2px !important;height:2px !important;opacity:.01;pointer-events:none}
 #bd-sharebar.bd-sbview{border-color:#14b8a6}
 #bd-sharebar.bd-sbview #bd-shstop{display:none}
+#bd-sbaud{flex:none;border:1px solid rgba(255,255,255,.3);border-radius:10px;padding:8px 10px;background:rgba(255,255,255,.08);color:#fff;font:inherit;font-size:13px;cursor:pointer;white-space:nowrap}
+#bd-sbaud[hidden]{display:none}
+@media (max-width:560px){#bd-sharebar .bd-shtx span{display:block;font-size:11px}#bd-sharebar .bd-shtx b{font-size:13px}}
+/* dấu | thừa ở đầu cột công cụ khi chưa có nút lật trang */
+.bd-docnav:has(#bd-dprev[hidden]):has(#bd-dnext[hidden]) > .bd-sep:first-of-type{display:none}
