@@ -1686,16 +1686,16 @@ body.usersonly #g-main{max-width:none;padding:8px 14px 24px}
 
 /* TJ 2026-10-08: gọn khung phòng chờ — (1) avatar người chơi thành vòng tròn nhỏ ngay hàng "Phòng TJ" (tên = chú thích; chơi theo đội thì hiện tên),
    (2) "▶ Bắt đầu" dính đáy màn hình, luôn thấy ngay khi mở, (3) "Tiếng chung" + "🔒 Ép" chung 1 hàng */
-.g-top #l-players{display:none;flex-wrap:wrap;align-items:center;gap:4px}
-body:has(#s-lobby:not([hidden])) .g-top #l-players{display:flex}
-.g-top #l-players .g-player{flex-direction:row;align-items:center;gap:4px;width:auto;padding:0;background:transparent;border:2px solid transparent;border-radius:999px}
-.g-top #l-players .g-player .g-av{width:28px;height:28px;font-size:16px;box-shadow:0 0 0 1px rgba(255,255,255,.2)}
-.g-top #l-players .g-player.me .g-av{box-shadow:0 0 0 2px #e07a5f}
-.g-top #l-players .g-player .g-pname,.g-top #l-players .g-player .g-sub{display:none}
-.g-top #l-players.g-pl-names .g-player{padding:0 8px 0 0}
-.g-top #l-players.g-pl-names .g-player .g-pname{display:inline;max-width:72px;font-size:12px;font-weight:600}
-.g-top #l-players .g-player .g-tag{right:-4px;top:-6px}
-.g-top #l-players .g-player .g-tag::before{font-size:11px}
+#l-roomcard #l-players{flex-wrap:wrap;align-items:center;gap:4px}
+#l-roomcard #l-players{display:flex;margin-top:8px}
+#l-roomcard #l-players .g-player{flex-direction:row;align-items:center;gap:4px;width:auto;padding:0;background:transparent;border:2px solid transparent;border-radius:999px}
+#l-roomcard #l-players .g-player .g-av{width:28px;height:28px;font-size:16px;box-shadow:0 0 0 1px rgba(255,255,255,.2)}
+#l-roomcard #l-players .g-player.me .g-av{box-shadow:0 0 0 2px #e07a5f}
+#l-roomcard #l-players .g-player .g-pname,#l-roomcard #l-players .g-player .g-sub{display:none}
+#l-roomcard #l-players.g-pl-names .g-player{padding:0 8px 0 0}
+#l-roomcard #l-players.g-pl-names .g-player .g-pname{display:inline;max-width:72px;font-size:12px;font-weight:600}
+#l-roomcard #l-players .g-player .g-tag{right:-4px;top:-6px}
+#l-roomcard #l-players .g-player .g-tag::before{font-size:11px}
 .g-startrow{position:sticky;bottom:0;z-index:3;margin:10px -14px -14px;padding:10px 14px;background:var(--card);border-top:1px solid var(--line);border-radius:0 0 12px 12px}
 .g-lang2{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;align-self:end}.g-lang2 select{flex:1 1 9.5em;min-width:0}
 .g-lang2 .g-check{white-space:nowrap}
@@ -1710,3 +1710,6 @@ body.g-host .g-learn{display:flex}
 .g-xclose{position:absolute;top:0;right:0;z-index:2}
 .g-xclose:hover,#ts-close:hover{background:var(--red);border-color:var(--red);color:#fff}
 body.usersonly #s-users .g-xclose{display:none}
+
+body.g-viewer #l-roomcard .g-lobby-head,body.g-viewer #l-roomcard #l-info{display:none}
+body.g-viewer #l-roomcard #l-players{margin-top:0}

@@ -1629,7 +1629,7 @@
     $("#l-code").textContent = G.room.code;
     applyUI();
     $("#l-host").hidden = !G.isHost; $("#l-wait").hidden = G.isHost; $("#l-hostbtns").hidden = !G.isHost;   /* "Copy link mời" nằm trong thẻ Mã phòng cùng "Quản lý người chơi" (#l-hostbtns); đã bỏ nút Màn hình chung — cũ: không còn trong thẻ mã phòng */
-    $("#l-roomcard").hidden = !G.isHost;   /* người chơi chỉ chơi: không mã phòng, link mời, 📺, chủ đề */
+    $("#l-roomcard").hidden = false;   /* thẻ giờ chứa cả hàng avatar -> người chơi cũng thấy, nhưng CSS (body.g-viewer) ẩn mã phòng/nút host của họ */
     $("#l-users").hidden = !(G.isHost && isTJ());
     paintSoundBtn();
     paintSide();
