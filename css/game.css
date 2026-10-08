@@ -1437,7 +1437,7 @@ body.embed.bd-on .g-top{display:none !important}
 .bd-fe2star.ro{cursor:default;pointer-events:none}
 /* 📚 Góc tự học (js/learn.js): hàng thẻ Phòng game / EA / Marketing ở dòng riêng dưới thanh trên cùng + lớp phủ iframe */
 .g-top{flex-wrap:wrap}
-.g-learn{order:10;flex-basis:100%;display:flex;gap:6px;overflow-x:auto}
+.g-learn{order:10;flex-basis:100%;display:none;gap:6px;overflow-x:auto}   /* TJ 2026-10-08: mặc định ẨN — người chơi refresh từng thấy thanh này vài giây trước khi game biết họ không phải host; chỉ hiện khi body.g-host */
 .g-learn button{flex:1;min-width:0;white-space:nowrap;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 10px;font-size:13px;cursor:pointer;color:var(--text-2)}
 .g-learn button.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
 .g-learnlayer{position:fixed;left:0;right:0;bottom:0;z-index:4;background:var(--bg)}
@@ -1685,3 +1685,23 @@ body.usersonly #g-main{max-width:none;padding:8px 14px 24px}
 body:has(#s-lobby:not([hidden])) #g-hostbar:has(> button:not([hidden])){display:flex}
 /* TJ 2026-10-08: thẻ "Từ vựng · TOEIC · IELTS · EA · Digital Marketing" bị ép co hẹp hơn chữ -> chữ đè lên thẻ bên cạnh ("Phòng ga|me"). Giữ chiều rộng tối thiểu = chiều rộng chữ; thừa chỗ thì giãn đều, thiếu chỗ thì thanh cuộn ngang */
 .g-learn button{flex:1 0 auto}
+
+/* TJ 2026-10-08: gọn khung phòng chờ — (1) avatar người chơi thành vòng tròn nhỏ ngay hàng "Phòng TJ" (tên = chú thích; chơi theo đội thì hiện tên),
+   (2) "▶ Bắt đầu" dính đáy màn hình, luôn thấy ngay khi mở, (3) "Tiếng chung" + "🔒 Ép" chung 1 hàng */
+.g-top #l-players{display:none;flex-wrap:wrap;align-items:center;gap:4px}
+body:has(#s-lobby:not([hidden])) .g-top #l-players{display:flex}
+.g-top #l-players .g-player{flex-direction:row;align-items:center;gap:4px;width:auto;padding:0;background:transparent;border:2px solid transparent;border-radius:999px}
+.g-top #l-players .g-player .g-av{width:28px;height:28px;font-size:16px;box-shadow:0 0 0 1px rgba(255,255,255,.2)}
+.g-top #l-players .g-player.me .g-av{box-shadow:0 0 0 2px #e07a5f}
+.g-top #l-players .g-player .g-pname,.g-top #l-players .g-player .g-sub{display:none}
+.g-top #l-players.g-pl-names .g-player{padding:0 8px 0 0}
+.g-top #l-players.g-pl-names .g-player .g-pname{display:inline;max-width:72px;font-size:12px;font-weight:600}
+.g-top #l-players .g-player .g-tag{right:-4px;top:-6px}
+.g-top #l-players .g-player .g-tag::before{font-size:11px}
+.g-startrow{position:sticky;bottom:0;z-index:3;margin:10px -14px -14px;padding:10px 14px;background:var(--card);border-top:1px solid var(--line);border-radius:0 0 12px 12px}
+.g-lang2{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;align-self:end}.g-lang2 select{flex:1 1 9.5em;min-width:0}
+.g-lang2 .g-check{white-space:nowrap}
+.g-lang2-t{display:none;font-size:13px;color:var(--text-2);white-space:nowrap}
+#l-force-wrap[hidden] ~ .g-lang2-t{display:inline}   /* ô tick bị ẩn (học khác English / dạng câu không phải Nghĩa) -> vẫn có nhãn "Tiếng chung" cho ô chọn ngôn ngữ */
+body.g-host .g-learn{display:flex}
+#l-roomcard{padding:8px 12px}#l-roomcard .g-bigcode{font-size:26px;letter-spacing:4px;line-height:1.1}#l-roomcard .g-lobby-head{flex-wrap:nowrap}#l-roomcard #l-screen{padding:6px 12px;font-size:13px}

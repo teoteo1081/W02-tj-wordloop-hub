@@ -739,7 +739,7 @@
       b.classList.toggle("on", on.indexOf(k) >= 0);
       b.innerHTML = (k === "-" ? "Chưa gắn" : k) + (G.lvCount ? "<small>" + (n[k] || 0) + "</small>" : "");
     });
-    $("#l-lvhint").textContent = on.length ? "" : "(không chọn = tất cả)";
+    $("#l-lvhint").textContent = "";   /* (cũ: "(không chọn = tất cả)" chiếm 1 dòng -> chuyển thành chú thích rê chuột ở thanh Cấp độ) */
   }
   $("#l-levels").addEventListener("click", function (e) {
     var b = e.target.closest("[data-lv]"); if (!b || !G.isHost || !G.st) return;
@@ -1658,9 +1658,10 @@
     $("#l-count").textContent = players().length;
     $("#l-teamhint").textContent = teams ? T("click_team") : "";
     $("#l-teams").innerHTML = teams ? teamSummary(st, false) : "";
+    $("#l-players").classList.toggle("g-pl-names", !!teams);   /* chơi theo đội: hiện tên để host bấm đổi đội; còn lại chỉ vòng tròn avatar nhỏ (tên = chú thích khi rê chuột) */
     $("#l-players").innerHTML = G.online.map(function (p) {
       var t = teamOf[p.id];
-      return '<button class="g-player' + (teams && G.isHost && p.play !== false ? " g-click" : "") + (G.me && p.id === G.me.id ? " me" : "") + '" data-pid="' + esc(p.id) + '"' + (t && TEAM_C[t] ? ' style="border-color:' + TEAM_C[t].c + '"' : "") + ">" +
+      return '<button class="g-player' + (teams && G.isHost && p.play !== false ? " g-click" : "") + (G.me && p.id === G.me.id ? " me" : "") + '" data-pid="' + esc(p.id) + '" title="' + esc(plain(p)) + '"' + (t && TEAM_C[t] ? ' style="border-color:' + TEAM_C[t].c + '"' : "") + ">" +
         avatar(p.avatar) + '<span class="g-pname">' + label(p) + "</span>" + (p.lang && p.lang !== "room" ? '<span class="g-sub">' + FLAG[p.lang] + "</span>" : "") + (teams && t ? teamDot(t) : "") +
         (isRoomHost(p) ? '<span class="g-tag">Host' + (p.play === false ? " · MC" : "") + "</span>" : "") + "</button>";
     }).join("");
@@ -3569,7 +3570,7 @@
       tips.map(function (sec) { return "<details open><summary><b>" + esc(sec.h) + "</b></summary><ul>" + sec.items.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></details>"; }).join("") + "</div>";
   }
   function paintTIntro() {
-    document.body.classList.toggle("g-viewer", !!(G.room && !G.isHost));   /* người chơi trong phòng: không thấy thanh Phòng game · TOEIC · IELTS · EA · Digital Marketing (chỉ host cần) */
+    document.body.classList.toggle("g-viewer", !!(G.room && !G.isHost)); document.body.classList.toggle("g-host", !!G.isHost);   /* g-host: thanh thẻ chỉ hiện khi ĐÃ biết là host (mặc định ẩn -> người chơi refresh không còn thấy nó nhấp nháy vài giây) */   /* người chơi trong phòng: không thấy thanh Phòng game · TOEIC · IELTS · EA · Digital Marketing (chỉ host cần) */
     var hh = (G.isHost ? G.hub : "vocab") || "vocab";   /* TJ 2026-10-06: người chơi chỉ giữ "WordLoop Game" như hiện tại cho cả phòng; TOEIC chỉ là việc của host */
     if (hh !== window.TJ_HUB) { window.TJ_HUB = hh; try { document.dispatchEvent(new CustomEvent("tjwl-hubchanged", { detail: hh })); } catch (e) {} }
     var box = $("#l-tintro"); if (!box) return;
