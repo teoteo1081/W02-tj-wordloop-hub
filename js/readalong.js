@@ -1,5 +1,5 @@
 /* readalong.js — 🎤 ĐỌC THEO: người học đọc TO bài đọc trên Bảng, app nghe, tô sáng chỗ đã đọc, báo từ ĐÚNG / SAI / BỎ SÓT và chấm điểm (TJ 2026-10-08).
-   · Riêng từng máy (không gửi cho ai): kết quả chỉ hiện ở máy người đọc, không lưu lên Supabase.
+   · Kết quả CUỐI được gửi cho CẢ PHÒNG (event board {t:"ra"}, TJ 2026-10-08: đang xài màn hình chung); không lưu lên Supabase. Chữ tô màu thì riêng máy người đọc.
    · Nhận giọng bằng Web Speech API (miễn phí; Chrome / Edge ổn, iPhone Safari không ổn định, Firefox không có), ngôn ngữ en-US.
    · Cách chấm: so từng từ người đọc với từng từ trong bài, theo thứ tự, có xét: đọc nhảy cóc (bỏ sót từ), nhận nhầm (sai), thêm từ thừa (bỏ qua). Giống từ ≈ khớp (sai 1–2 chữ cái vẫn đúng, vì trình duyệt hay nhận lệch).
    · Bắt đầu từ từ đầu tiên đang thấy trên màn hình; đọc tới đâu tô tới đó và tự cuộn theo.
@@ -132,7 +132,26 @@
   /* ---- bắt đầu / kết thúc ---- */
   function stopHard(msg) { running = false; clearTimeout(stopTimer); if (rec) { try { rec.onend = null; rec.stop(); } catch (e) {} rec = null; } if (hud) { hud.remove(); hud = null; } btnPaint(); if (window.CC && CC.hold) CC.hold(false); if (msg) alert(msg); }
   function stop() {
-    if (!running) return; stopHard(); showCard();
+    if (!running) return; stopHard(); showCard(); shareResult();
+  }
+  /* ---- gửi kết quả cho CẢ PHÒNG (TJ: đang xài màn hình chung) ---- */
+  function shareResult() {
+    var c = counts(); if (!c.done || !window.Board || !Board.broadcast) return;
+    var seen = {}, w = []; T.forEach(function (t) { if ((t.st === "bad" || t.st === "miss") && !seen[t.n]) { seen[t.n] = 1; w.push(t.w.replace(/[^A-Za-z’'-]/g, "")); } });
+    Board.broadcast({ t: "ra", n: (Board.myName && Board.myName()) || "", pct: Math.round(100 * c.ok / c.done), ok: c.ok, bad: c.bad, miss: c.miss, done: c.done, total: T.length, w: w.slice(0, 10) });
+  }
+  var toasts = [];
+  function onPeerResult(m) {   /* nhận kết quả của người khác: hiện thẻ nhỏ ở góc, tự tắt sau 25 giây */
+    if (!m || typeof m.pct !== "number") return;
+    var el = document.createElement("div"); el.className = "ra-toast";
+    var pct = Math.max(0, Math.min(100, m.pct | 0)), nm = String(m.n || "Ai đó").slice(0, 30), w = Array.isArray(m.w) ? m.w.slice(0, 10).map(function (x) { return String(x).slice(0, 24); }) : [];
+    el.innerHTML = '<div class="ra-top"><b>🎤 ' + esc(nm) + ' vừa đọc</b><button type="button" data-raclose aria-label="Đóng">✕</button></div><div class="ra-row"><span class="ra-n">' + pct + '</span><span class="ra-u">/100</span><span class="ra-sum">Đọc ' + (m.done | 0) + "/" + (m.total | 0) + ' từ<br><i class="ok">✓ ' + (m.ok | 0) + '</i> · <i class="bad">✗ ' + (m.bad | 0) + '</i> · <i class="miss">… ' + (m.miss | 0) + "</i></span></div>" +
+      (w.length ? '<div class="ra-chips">' + w.map(function (x) { return '<button type="button" class="ra-chip bad" data-raw="' + esc(x) + '">🔊 ' + esc(x) + "</button>"; }).join("") + "</div>" : "");
+    el.addEventListener("click", function (e) { var x = e.target.closest("[data-raw]"); if (x) { say(x.dataset.raw); return; } if (e.target.closest("[data-raclose]")) kill(); });
+    function kill() { el.remove(); toasts = toasts.filter(function (t) { return t !== el; }); }
+    var host = $("#bd-stage") || document.body; host.appendChild(el); toasts.push(el);
+    while (toasts.length > 3) { var o = toasts.shift(); if (o && o.remove) o.remove(); }
+    setTimeout(kill, 25000);
   }
   function start() {
     if (!SR) { alert("Trình duyệt này chưa hỗ trợ nhận giọng đọc. Dùng Chrome hoặc Edge (iPhone Safari có thể không chạy)."); return; }
@@ -143,6 +162,6 @@
     if (window.CC && CC.hold) CC.hold(true);   /* phụ đề CC cũng dùng nhận giọng: tạm dừng để khỏi tranh nhau */
     running = true; startedAt = Date.now(); btnPaint(); showHud(); cursor(); startRec();
   }
-  window.ReadAlong = { toggle: function () { if (running) stop(); else start(); }, isRunning: function () { return running; }, _align: function (words, texts) { T = texts.map(function (w) { return { w: w, n: norm(w), el: document.createElement("span"), st: "" }; }); p = 0; align(words); return { p: p, st: T.map(function (t) { return t.st; }) }; } };
+  window.ReadAlong = { onResult: onPeerResult, toggle: function () { if (running) stop(); else start(); }, isRunning: function () { return running; }, _align: function (words, texts) { T = texts.map(function (w) { return { w: w, n: norm(w), el: document.createElement("span"), st: "" }; }); p = 0; align(words); return { p: p, st: T.map(function (t) { return t.st; }) }; } };
   document.addEventListener("click", function (e) { var b = e.target.closest && e.target.closest("[data-ra]"); if (b) window.ReadAlong.toggle(); });
 })();

@@ -600,6 +600,7 @@
     else if (m.t === "lksave") { var le = lkFeed.find(function (x) { return x.id === m.id; }); if (le) { le.saved = !!m.on; paintFeed(); } }
     else if (m.t === "navreq") { if (api.isHost()) { if (m.k === "fs") fsStep(m.dir | 0); else if (m.k === "sw") swKind(m.dir > 0 ? "vt" : "wl"); else if (m.k === "page") flip(m.dir > 0 ? 1 : -1); else if (m.k === "hs") hlSentence(m.dir | 0); else navStep(m.k, m.dir > 0 ? 1 : -1); } }
     else if (m.t === "sc") { applyAnchor(m.a); if (readRemote) soonEnsure(); }
+    else if (m.t === "ra") { if (window.ReadAlong && ReadAlong.onResult) ReadAlong.onResult(m); }   /* kết quả 🎤 Đọc theo của 1 người, gửi cho cả phòng */
     else if (m.t === "rt") setRateUI(m.r);   /* host đổi tốc độ -> mọi máy hiện cùng mức */
     else if (m.t === "rd") { if (m.r) setRateUI(m.r); readRemote = m.k ? m : null; if (!readOn) { applyReadHL(m, true); remoteSpeak(m); } }   /* người khác đang đọc: tô sáng + cuộn theo (máy này không phát tiếng) */
     else if (m.t === "sw") { if (m.i >= 0) selRange(m.i, m.j == null ? m.i : m.j); else selWord(null); }
@@ -2060,7 +2061,7 @@
 
   window.Board = {
     attach: function (a) { api = a; build(); },
-    onMsg: onMsg, onState: onState, onRtc: onRtc, _showVideo: showVideo,   /* _showVideo: chỉ để kiểm thử giao diện chia sẻ bằng hình giả */
+    broadcast: function (m) { send(m); }, myName: function () { var x = me(); return x && x.name ? x.name : ""; }, onMsg: onMsg, onState: onState, onRtc: onRtc, _showVideo: showVideo,   /* _showVideo: chỉ để kiểm thử giao diện chia sẻ bằng hình giả */
     resync: function () { if (open) setTimeout(function () { send({ t: "hello" }); }, 400); },
     isOpen: function () { return open; },
     noSound: function () { if (!noSoundAt || Date.now() - noSoundAt > 20000) { noSoundAt = Date.now(); feedNote("🔇 Máy này chưa phát được tiếng đọc — kiểm tra loa / âm lượng máy và quyền âm thanh của trình duyệt, rồi bấm đọc lại."); } },

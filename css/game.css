@@ -1996,3 +1996,12 @@ body.has-cbar .bd.bd-big{bottom:calc(58px + env(safe-area-inset-bottom,0px));hei
 .ra-chip{border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:6px 12px;background:rgba(255,255,255,.07);color:inherit;font:inherit;font-size:14px;cursor:pointer}
 .ra-chip.bad{border-color:#ff8a7a}.ra-chip.miss{border-color:#fbbf24}
 .ra-act{margin-top:10px}.ra-act button{border:0;border-radius:12px;padding:10px 18px;background:#7c4dff;color:#fff;font:inherit;font-weight:700;cursor:pointer}
+
+/* kết quả đọc theo của người khác (gửi cả phòng) */
+.ra-toast{position:absolute;z-index:24;right:8px;bottom:8px;width:min(300px,calc(100% - 16px));padding:10px 12px;border-radius:14px;background:rgba(26,25,23,.97);border:1px solid #7c4dff;color:#f5f4ef;box-shadow:0 6px 22px rgba(0,0,0,.5)}
+.ra-toast + .ra-toast{bottom:auto;top:8px}
+.ra-toast .ra-top b{font-size:13px;color:#e8e2ff}
+.ra-row{display:flex;align-items:baseline;gap:4px;margin:2px 0 6px}
+.ra-toast .ra-n{font-size:34px;font-weight:900;color:#ffd27a;line-height:1}
+.ra-toast .ra-sum{margin-left:auto;font-size:12px;text-align:right;line-height:1.35;color:#d6d0c4}
+.ra-toast .ra-chip{padding:4px 9px;font-size:13px}
