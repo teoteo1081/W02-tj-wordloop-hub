@@ -1404,9 +1404,10 @@
     var fq = $("#bd-fq"); if (fq) fq.hidden = false;   /* TJ 2026-10-06: bỏ kính lúp — ô gõ tra từ luôn nằm sẵn ở đầu khung "Từ vừa tra" */
     var l0 = api && api.lang ? api.lang() : "vi", FL0 = { vi: "🇻🇳", zh: "🇨🇳", es: "🇪🇸" }, d0 = curDoc(), rows0 = d0 && d0.bid ? vtCache[d0.bid] : null;
     $("#bd-fl").innerHTML = list.length ? list.map(function (e, i) {
-      var v = e.v || {}, own = l0 !== "en" ? v[l0] : "", meaning = own || v.en || "";   /* TJ 2026-10-09: "nó xấu quá" -> gọn lại: chỉ 🔊 + "từ: nghĩa" + ai đã tra; bỏ IPA/loại từ/★ khỏi khung này (autoSave vẫn tự vào ⭐ Ôn riêng ngầm, chỉ không còn nút bật/tắt ở đây) */
+      var v = e.v || {}, own = l0 !== "en" ? v[l0] : "", meaning = own || v.en || "", on = !!e.bm, tj = !!(api.canBookmark && api.canBookmark());   /* TJ 2026-10-09: "nó xấu quá" -> gọn lại: chỉ 🔊 + "từ: nghĩa" + ai đã tra; bỏ IPA/loại từ/★ khỏi khung này (autoSave vẫn tự vào ⭐ Ôn riêng ngầm, chỉ không còn nút bật/tắt ở đây) */
       return '<div class="bd-fe2' + (i === 0 && e.t > Date.now() - 2500 ? " new" : "") + '"><button type="button" class="bd-hb bd-fsay" data-lksay="' + esc(e.w) + '" title="Nghe">🔊</button><div class="bd-fe2m">' +
-        '<div class="bd-fe2h"><b>' + esc(e.w) + "</b>" + (meaning ? ': <span class="bd-fe2vi">' + esc(meaning) + "</span>" : "") + whoHTML(e) + "</div></div></div>";
+        '<div class="bd-fe2h"><b>' + esc(e.w) + "</b>" + (meaning ? ': <span class="bd-fe2vi">' + esc(meaning) + "</span>" : "") +
+        '<button type="button" class="bd-hb bd-fe2star' + (on ? " on" : "") + (tj ? "" : " ro") + '" data-lkstar="' + esc(e.id) + '" title="' + (on ? "Đã vào ⭐ Ôn riêng của TJ" + (tj ? " — bấm để bỏ" : "") : "Chưa vào Ôn riêng") + '">' + (on ? "★" : "☆") + "</button>" + whoHTML(e) + "</div></div></div>";
     }).join("") : '<div class="bd-fempty">Chạm vào một từ trong bài đọc để xem nghĩa — từ vừa tra hiện ở đây, kéo lên xuống để xem lại.<br>💾 Từ bạn tra được tự lưu lại (Bookmark) — xem lại ở 📜 Lịch sử › 🔎 Từ đã tra.</div>';
     if (was0 !== f.hidden) relayout();   /* chỉ tính lại khung bảng khi khung tra từ ẩn/hiện — nội dung đổi thì cao cố định, bảng không giật */
   }

@@ -1998,3 +1998,7 @@ body[data-cc-size="2"] .bd.bd-big{bottom:calc(58px + min(38vh,340px) + 8px + env
 .ra-toast .ra-n{font-size:34px;font-weight:900;color:#ffd27a;line-height:1}
 .ra-toast .ra-sum{margin-left:auto;font-size:12px;text-align:right;line-height:1.35;color:#d6d0c4}
 .ra-toast .ra-chip{padding:4px 9px;font-size:13px}
+/* ☆/★ lưu từ ở khung "Từ vừa tra" (TJ 2026-10-09: trả lại nút lưu) — ★ = đã vào Ôn riêng của TJ; người chơi chỉ xem */
+.bd-fe2star{min-width:0;min-height:0;padding:0 4px;background:none !important;border:0 !important;font-size:18px;color:#cfcac0;line-height:1;align-self:center;margin-left:auto}
+.bd-fe2star.on{color:#ffd84d}
+.bd-fe2star.ro{cursor:default;pointer-events:none}
