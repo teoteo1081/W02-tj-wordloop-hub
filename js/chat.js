@@ -127,7 +127,7 @@
     var atEnd = l.scrollHeight - l.scrollTop - l.clientHeight < 60;   /* đang xem tin cũ thì đừng giật xuống cuối */
     var prev = null;
     l.innerHTML = log.length ? log.map(function (m) {
-      var mine = mm && m.id === mm.id, same = prev && prev.id === m.id && (m.ts - prev.ts) < 60000, crown = s && s.hid === m.id;
+      var mine = mm && m.id === mm.id, same = prev && prev.id === m.id && (m.ts - prev.ts) < 60000, crown = (s && s.hid === m.id) || (h && mine);   /* host thấy tin của chính mình cũng có 👑 (state của host không có trường hid) */
       prev = m;
       return '<div class="ch-m' + (mine ? " me" : "") + (same ? " same" : "") + '"><span class="ch-av">' + (same ? "" : avatarHtml(m.a)) + '</span><div class="ch-b">' +
         (same ? "" : '<span class="ch-n' + (h && !mine ? " ch-clk" : "") + (muted(m.id) ? " ch-muted" : "") + '" data-chid="' + esc(m.id) + '">' + (crown ? "👑 " : "") + esc(m.n || "?") + "</span>") +
