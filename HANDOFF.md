@@ -10,6 +10,58 @@
 
 ## Trạng thái hiện tại
 
+## ▶ CHECKPOINT 2026-10-06 (máy local TJ, Claude Sonnet 5.5) — ĐỌC TRƯỚC KHI LÀM TIẾP
+> Phiên dài sửa giao diện Game/Bảng. Mọi thứ dưới đây ĐÃ LÊN WEB THẬT (main) trừ khi ghi khác. **Verify bằng lệnh thật trước khi tin** (luật đầu file).
+
+**Phiên bản đang chạy (index.html / game.html):** game.js v249 (+ `game-version.json` = 249, PHẢI khớp) · board.js v93 · game.css v192 · gamelayer.js v25 · app.js v61 · learn.js v2 · app.css v63.
+
+### Cách TJ muốn làm việc (quan trọng)
+- Chế độ NHANH: sửa → đẩy lên GitHub → TỰ kiểm web thật (`curl` bản mới + `node --check` mọi file JS live) → báo bằng tiếng Việt dễ hiểu, nói rõ cái gì ĐÃ thử thật / CHƯA thử. TJ nói thẳng: "đẩy lên GitHub mình xem là được luôn". Chỉ HỎI TRƯỚC khi tốn tiền hoặc việc lớn chưa chốt.
+- TJ dùng 2 cửa sổ Chrome cạnh nhau (Admin + người chơi ẩn danh) trên 1 máy để thử. Sau mỗi bản nhắc TJ Ctrl+Shift+R (cửa sổ cũ hay vẫn chạy bản cũ).
+- Giao diện: nút quan trọng luôn thấy (đừng giấu sau thanh cuộn ẩn), ✕ góc trên-phải, Game = nút tím, "Ôn ngay →" = vàng (#d9a03c).
+
+### Đã làm phiên này (tóm tắt, chi tiết trong `git log`)
+- **Âm thanh**: bấm Kết thúc/về phòng chờ thì tắt hết tiếng — CHỈ khi ĐỔI màn (cờ `G.soundPh`, `stopAllSound()`); trước đó gắn vào renderLobby/renderEnd chạy lặp mỗi lần phòng làm tươi → cắt tiếng Bảng (đã sửa v238). Chrome dùng 1 hàng đợi đọc CHUNG cho mọi cửa sổ cùng trình duyệt → 2 cửa sổ thử trên 1 máy bị lộn xộn (đã giảm: `mySpk` trong board.js, watchdog speakP không cancel tiếng cửa sổ khác). Người dùng thật mỗi máy riêng không bị.
+- **Bảng (board.js/css)**: ✕ đóng góc trên-phải (`.bd-closetop` trong `#bd-hudl`); nút `Game →` ghim cuối hàng icon (`.bd-cpin`), mờ tím nhạt + disabled khi bảng không hiện Block (sách/PDF); cột công cụ DỌC bên phải khi chuột + rộng ≥700px (`placeTools()`, `.bd-railtools`, `top:56px` để không đè ✕); hàng "← Quay lại danh sách Block | ← | →" phía trên loa (`#bd-navrow`); ô 🗣 chọn giọng (khoá `tjwl_game_voice_v1`, KHÔNG theo Learning, người chơi không thấy ô giọng/tốc độ); người chơi chờ nội dung: thanh avatar+tên trên (`#bd-ubar`), hàng avatar dưới luôn hiện, phòng chờ không lòi ra dưới (`wantBig`+`api.inLobby`); cụm từ vựng không bị gạch nối (`.bd-term`); chia sẻ màn hình: NGƯỜI XEM ẩn lớp bài (`.bd-screen-view`), nút chia sẻ = 🎥 gradient xanh ngọc→xanh dương, đang chia sẻ = đỏ cam nhấp nháy.
+- **Tra từ trên Bảng**: đang có đoạn đọc (host đọc / máy nghe host đọc) thì tra IM LẶNG, không cắt (`readingBusy()`); `boardLookup` (game.js) thử lại 1 lần + hiện lý do lỗi (`api.lookupErr`); từ mình tra lưu local `tjwl_looked_v1` → màn "🔎 Từ đã tra" trong Lịch sử.
+- **Game tab / phòng chờ**: thẻ Game giữ 2 cột Notebooks/Pages (`gamelayer.setFit(true)` khi mở Game); bấm Notebook/Section/Page = chọn chủ đề (`pickScope`); thanh thẻ Phòng game · TOEIC · IELTS(mờ) · EA · Digital Marketing (learn.js, host); bảng giới thiệu TOEIC chuyển sang giao diện host (dưới "Cách tính điểm", bung hết), người chơi không thấy; "Chơi game"/"Game →" ở Block, Bảng, dòng lịch sử = TỰ kết thúc ván dở (`hostPrepLobby()`) → phòng chờ với đúng đường dẫn Block, KHÔNG tự bắt đầu; nút ⏹ Kết thúc tím, không hỏi; Admin TJ nhúng trong WordLoop tự làm host (lấy hồ sơ từ `window.parent.Auth.user`, không cần link ?u=).
+- **Người chơi (điện thoại)**: thanh 5 thẻ ẩn (`body.g-viewer .g-learn`), âm thanh+âm lượng 1 hàng, danh sách người chơi hình tròn + 👑 host, nút "📖 Xem lại ván vừa chơi" (chỉ có sau khi vừa chơi 1 ván trên máy), Lịch sử: "Ôn ngay →" vàng, "Từ đã chơi →", "🔎 Từ đã tra", nút Về trên-trái giống nhau.
+- **Menu TJ · Admin**: 👥 Quản lý người chơi = POP-UP (`#modal-players` + iframe `game.html?embed=1&usersonly=1`, KHÔNG vào phòng, không tranh vai host).
+- **Repo `claude-setup`** (Private, teoteo1081) đã tạo + đẩy: AGENTS.md (4 vai + cổng đạt/không đạt + kế vị khi hết token), CHECKLIST.template.md, BOARD.template.md, .claude/agents/{tho-lam,qa}.md, .claude/commands/{start,sync,task,check,handoff}.md, examples/CHECKLIST.wordloop.md.
+
+### VIỆC CÒN TREO (theo thứ tự nên làm)
+1. **Nút "Game →" chơi MỘT MÌNH cho người chơi trên từng dòng Lịch sử** — TJ đã xác nhận ý ("để họ chơi lại game của Block đó, một mình họ", nút tím đặt sau "Ôn ngay →"). CHƯA làm: game hiện do host điều khiển (`G.st` + kênh Supabase); cần thiết kế chế độ solo cục bộ (tự sinh câu Nghĩa từ các từ của ván đó, chấm tại máy, không ghi vào phòng). Host đã có sẵn `data-replay` (nút tím "Chơi game →") ở dòng lịch sử.
+2. **Sửa lỗi UI sub-agent QA tìm được (CSS, chưa sửa)**: 390px: cột công cụ host nổi lơ lửng + ✕ đè tiêu đề/cột nghĩa + thanh nút đọc bị cắt; nút <36px (Game 34, hàng đọc 28, ô tra 27); avatar hàng dưới ~28px, tên chồng hình; "Aa 100%" chữ ~9px; ⛶ chỉ thấy ở người chơi. Đề xuất CSS có trong báo cáo ở `git log` v248–v249 (nhờ agent QA chạy lại sau khi sửa).
+3. **Thanh công cụ dọc chưa thật đẹp** (TJ hỏi "đã đẹp chưa?"): đang lẫn nút tối / nút màu (🎥 xanh, ✏️ cam, 📁 vàng), icon lẫn kiểu (chữ A−, emoji, ◀▶), "26 / 754" trôi không khung, chưa chia nhóm. Đề xuất: chia nhóm bằng vạch mảnh (điều hướng trang | cỡ chữ | công cụ), số trang vào viên thuốc, ◀▶ thành ‹ ›, công cụ trung tính (màu chỉ khi bật), cân nhắc bộ icon SVG đồng nhất.
+4. **Chữ trên bảng (đã đánh giá, chờ TJ gật)**: (a) căn TRÁI thay vì justify, (b) tiêu đề KHÔNG cùng vàng với từ vựng (đổi kem đậm), (c) font: hỏi TJ có muốn Atkinson Hyperlegible/Source Serif (tải web font) — tương phản đã đạt AAA (13:1).
+5. **PDF mờ** (TJ hỏi có công nghệ tự làm nét không): Bảng đã vẽ PDF gấp ~2.5× DPR (board.js ~dòng 806), nên mờ do FILE NGUỒN (đề ETS nén 150 dpi + JPEG q72 theo CLAUDE.md). Hướng: nén lại từ bản gốc 200–220 dpi JPEG 82–85 (file ~1.5–2×, nhớ giới hạn Supabase free 1 GB/50 MB mỗi file), làm nét nhẹ khi hiển thị, hoặc OCR dựng lại chữ thật (đã có `tools/toeic_ocr_struct.js`); AI phóng ảnh (Real-ESRGAN) chỉ tăng nét "ảo", có thể méo chữ nhỏ. Cần 1 file PDF mờ cụ thể để thử; KHÔNG đưa đề ETS lên dịch vụ ngoài/commit.
+6. **Viền vàng bên trái bảng** — TJ báo mất nhưng chưa rõ chỗ nào (cần ảnh khoanh đỏ). Chưa sửa.
+7. **Dọn `tools/claude-setup-template/`**: nội dung đã có trong repo `claude-setup`; còn 6 file thừa (`.claude/commands/{start,sync,task}.md`, `CLAUDE.md.template`, `README.md`, `HUONG_DAN.md`) — GIỮ `wordloop-commands/` (TJ muốn giữ). Lệnh xoá bị chặn lúc trước; chờ TJ nhắn "cho phép xoá".
+
+### CHƯA KIỂM BẰNG MẮT THẬT (cần TJ thử khi có thể)
+Hầu hết thay đổi trên được kiểm bằng: `node --check`, tải file JS live, dựng bảng/ trang bằng Chrome headless với dữ liệu GIẢ — chưa chạy cả luồng trong phòng game thật (host + người chơi). Cụ thể cần thử: Game → trên Bảng khi đang chơi dở; tab Game 2 cột + chọn chủ đề; pop-up Quản lý người chơi; chia sẻ màn hình (người xem thấy hình); tra từ khi đang đọc; thanh TOEIC của host.
+
+### Quy tắc kỹ thuật vừa học (đã ghi thêm ở CLAUDE.md mục cuối)
+Xem mục "Bài học kỹ thuật 2026-10-06" cuối `CLAUDE.md`.
+
+### BỔ SUNG CUỐI PHIÊN 2026-10-06 (TJ về nhà, dừng giữa chừng) — ĐỌC KỸ
+**Phiên bản live sau đợt đẩy cuối:** board.js v94 · game.css v193 · game.js v249 · app.js v61 · gamelayer.js v25 (game-version.json = 249).
+
+**Vừa xong và ĐÃ ĐẨY:** (1) bảng màu bút 10 màu trong `COLORS` (board.js ~dòng 13: kem, đen, đỏ, cam, vàng, lục, lam nhạt, xanh dương, tím, hồng; muốn thêm màu chỉ thêm vào mảng, thanh công cụ tự vẽ thêm nút; màu chữ mặc định khi bút trắng cố định #ffd84d). (2) Hộp thoại xác nhận thân thiện `askConfirm("all"|"mine"|"lib")` (4 ngôn ngữ, mặc định focus nút "Giữ lại", Esc = giữ lại) thay confirm() mặc định của trình duyệt. Đã kiểm bằng trang thử Chrome headless: 10 nút màu, hộp thoại hiện và đóng đúng, không lỗi console, cả bản local lẫn file đang chạy ở web thật.
+
+**CHƯA LÀM — Công cụ Text (TJ yêu cầu, quan trọng, làm đầu tiên lần sau):** hiện chạm là tạo chữ trần bằng `newText(p)` (board.js ~dòng 506), không có ô, không biết ai gõ. Yêu cầu của TJ:
+1. KÉO để vẽ ô chữ: hiện khung nét đứt chạy theo tay (rubber-band) rồi tạo ô đúng cỡ đó; chạm không kéo = ô mặc định (~38% x 12% bề ngang bảng).
+2. Ô có KHUNG (viền theo màu chữ) + AVATAR tròn của người gõ ở góc ô (lấy từ `api.online()` hoặc `me().avatar`; item đã có trường `by`).
+3. Chữ TỰ CO GIÃN vừa ô: ít chữ thì to, nhiều chữ thì nhỏ, canh giữa. Gợi ý: tìm cỡ chữ LỚN NHẤT vừa ô bằng tìm nhị phân (~9 lần đo `scrollHeight/scrollWidth`), chạy lại mỗi lần gõ và mỗi lần nhận tin.
+4. KÉO avatar để DI CHUYỂN ô; KÉO góc dưới-phải để ĐỔI CỠ ô. Tin phát đi `{t:"t",id,x,y,w,h,c,text}` (thêm w,h; item cũ không có w,h thì giữ kiểu tự giãn cũ).
+Cần nhớ: `.bd-tx` là phần tử contentEditable đang dùng `innerText`/`textContent` nên avatar và tay nắm phải là phần tử ANH EM đặt trong `#bd-texts`, KHÔNG nằm trong `.bd-tx`; toạ độ kéo dùng `toLogic(e)` (đã tính zoom); `focusout` xoá ô rỗng; `tmsg()`, nhánh nhận `m.t === "t"` và lệnh redo phải mang w,h. Mình đã soạn thử một bản vá nhưng KHÔNG áp dụng vào repo (script lỗi dấu), nên cần viết lại từ spec này.
+
+**Câu TJ hỏi, chưa trả lời với TJ:** "đang đọc sách / chơi game mà host bị out thì tiếp tục được không?" Theo code (CHƯA thử thực tế bằng cách rút mạng host): host mất kết nối hoặc tải lại NGẮN: game vẫn sống (host lưu trạng thái `saveHost`, khi quay lại `restoreHost`), người chơi giữ đáp án trong `G.outbox` rồi gửi bù (`flushOutbox`); Bảng đóng băng ở trang cuối và báo "⏳ Host chưa vào bảng — đang chờ host" (`hostHere`, `bd-hostaway`), người chơi vẫn cuộn bài và tra từ được, giọng đọc cùng host thì dừng. Host mất HẲN: chế độ Tự do / Thi thật người chơi vẫn làm tiếp được tại máy nhưng KHÔNG ai lưu kết quả và xếp hạng (chỉ host ghi `game_results` ở `hostEnd`); Kahoot (cùng 1 câu) đứng chờ; KHÔNG có cơ chế người chơi tự lên làm host thay (mục "Còn treo (game) a" ở dưới). Cần hỏi TJ: có muốn làm "tự lên host thay" (người vào sớm nhất hoặc moderator, dùng bản `G.st` mới nhất mà người chơi đang giữ) không.
+
+**Lỗi do mình gây trong phiên (đừng lặp lại):** 2 lần chú thích `/*` không đóng nuốt mã. Lần 1 làm hỏng `app.js` trên web thật vài phút. Lần 2 nuốt khai báo `SIZES` và `api` trong board.js, bắt được nhờ trang thử TRƯỚC khi đẩy. `node --check` KHÔNG bắt được loại lỗi này (chú thích nuốt tới một dấu kết thúc ở dòng sau vẫn là cú pháp hợp lệ). Luôn chạy bài kiểm tra khói trước khi đẩy: dựng bảng bằng Chrome headless với `api` giả và xem có dựng được nút và hộp thoại không. Khi chèn chú thích vào GIỮA dòng mã, dùng `//` hoặc đóng chú thích đầy đủ.
+
+**Những việc treo khác (đã nêu ở trên):** nút "Game →" chơi một mình trên dòng Lịch sử; làm đẹp thanh công cụ dọc; chữ trên bảng (căn trái, tiêu đề không vàng, font); lỗi UI 390px do QA tìm; PDF mờ; viền vàng bên trái bảng; dọn tools/claude-setup-template/.
+
 ## Đang làm: Đơn giản hoá tài khoản game — "1 hồ sơ = 1 người chơi" (CHỜ TJ chốt, CHƯA code)
 - **Mục tiêu**: hết cảnh TJ#2/TJ#3. Hiện có 2 hệ danh tính song song: hồ sơ WordLoop (`profiles`, nhận qua link `?u=`, localStorage `tjwl_link_user_id_v1`) và người chơi game (`game_players`, localStorage `tjwl_game_player_v1`, trùng tên tự đánh `name_no`). Xoá cache -> máy quên cả 2 -> game tạo người mới #N.
 - **Đề xuất đã gửi TJ (2026-10-01, máy 2)**:

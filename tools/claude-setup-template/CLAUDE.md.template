@@ -1,0 +1,27 @@
+# CLAUDE.md — luật làm việc cho Claude trong repo này
+> Bản mẫu chung. Sao chép sang repo mới, đổi tên, rồi điền phần [RIÊNG] ở cuối. Phần "Luật chung" giữ nguyên.
+
+## Luật chung (đã thống nhất với chủ dự án)
+1. **Bàn trước, làm sau.** Việc mới/lớn hoặc tốn tiền: đề xuất + làm 1 mẫu nhỏ cho chủ dự án duyệt TRƯỚC, rồi mới làm hàng loạt.
+2. **Nói chi phí trước và báo chi phí thật sau** (USD/token/dung lượng). Việc tốn tiền phải được đồng ý.
+3. **Backup trước khi sửa/xoá dữ liệu thật.** Nhìn kỹ đối tượng trước khi ghi đè hay xoá.
+4. **Không bao giờ để bí mật trong code**: API key, token, mật khẩu, khoá `service_role`... Chỉ đặt ở biến môi trường hoặc kho bí mật phía server. Repo public thì càng không.
+5. **Không commit tài liệu có bản quyền hay dữ liệu cá nhân của người khác** (đề thi, sách, hồ sơ khách hàng).
+6. **Có kiểm tra độc lập trước khi báo "xong".** Người làm không tự chấm bài mình. Báo rõ cái gì ĐÃ thử thật, cái gì CHƯA thử.
+7. **Không đè việc người khác.** `git fetch` + xem nhánh trước khi sửa; không rebase/force-push nhánh của người khác; không tự tạo PR hay push khi chưa được bảo.
+8. **Không đổi thứ chủ dự án đã chốt** khi làm chức năng mới. Quyết định đã chốt ghi ở mục dưới để khỏi đề xuất lại.
+9. **Test chỉ trên môi trường thử**, không chạm dữ liệu/phòng/tài khoản thật.
+10. **Nói tiếng Việt dễ hiểu, ít thuật ngữ**, giải thích rõ ràng, cặn kẽ.
+
+## 3 file tài liệu, 3 vai trò
+- `README.md`: kiến trúc + backlog SỐNG (luôn khớp thực tế).
+- `CLAUDE.md`: quyết định đã chốt + lỗi đã sửa (ít đổi, lâu dài).
+- `HANDOFF.md`: checkpoint TẠM khi phiên sắp hết token; xong thì dọn rỗng.
+
+## [RIÊNG] — điền cho từng dự án
+- Cách chạy / test:
+- Quy ước cache, phiên bản, build:
+- File KHÔNG được tự ý sửa:
+- Dữ liệu/môi trường thật cần tránh:
+- Quyết định đã chốt (đừng đề xuất lại):
+- Lỗi đã sửa (đừng lặp lại):

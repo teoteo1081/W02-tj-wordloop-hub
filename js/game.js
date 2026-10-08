@@ -68,7 +68,12 @@
   /* 🔄 TỰ CẬP NHẬT (TJ 2026-10-02: 2 máy thấy 2 giao diện khác nhau — máy mở link game.html giữ trang cũ ~10 phút).
      GAME_VER phải KHỚP game-version.json; mỗi lần đổi game.js/css nhớ tăng CẢ HAI (+ ?v= trong game.html).
      Có bản mới -> tự tải lại, nhưng KHÔNG khi đang giữa ván. */
-  var GAME_VER = 155;
+  var GAME_VER = (function () {   /* lấy từ ?v= của chính game.js trong game.html -> chỉ còn 2 nơi phải khớp (game.html + game-version.json), không thể quên GAME_VER nữa (lỗi 2026-10-05: nút "Có bản mới" hiện mãi) */
+    try { var sc = document.currentScript && document.currentScript.src; var v = sc && +new URL(sc).searchParams.get("v"); if (v > 0) return v; } catch (e) {}
+    return 265;
+  })();
+  var updPending = false;
+  function boardOpen() { try { return !!(window.Board && window.Board.isOpen && window.Board.isOpen()); } catch (e) { return false; } }
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
@@ -79,7 +84,10 @@
       if (!(j && +j.v > GAME_VER) || (G.st && G.st.phase === "play") || busyReading()) return;
       var u = new URL(location.href); u.searchParams.set("gv", j.v);
       /* máy TJ (host): KHÔNG tự tải lại giữa buổi (TJ 2026-10-04: "tự refresh tự out") — hiện nút để TJ tự bấm lúc tiện */
-      if (isTJ() || G.isHost) {
+      if (G.isHost) {   /* v212: CHỈ máy đang làm host thật giữ nguyên trang; máy khác dù cùng hồ sơ TJ (Anti_TJ, Thảo…) vẫn tự cập nhật — trước đây kẹt bản cũ vì bảng che nút
+        /* TJ 2026-10-05: "tự cập nhật cho website chứ" -> máy host tự tải lại khi RẢNH: tab đang ẩn (TJ không nhìn), không giữa ván, không mở bảng, không xem lại. Còn lại giữ nút để TJ tự bấm. */
+        updPending = true;
+        if (document.hidden && !boardOpen()) { location.replace(u.toString()); return; }
         if (document.getElementById("g-upd")) return;
         var b = document.createElement("button"); b.id = "g-upd"; b.type = "button"; b.className = "g-btn g-upd"; b.textContent = "🔄 Có bản mới — bấm để cập nhật";
         b.onclick = function () { location.replace(u.toString()); }; document.body.appendChild(b); return;
@@ -87,35 +95,36 @@
       location.replace(u.toString());
     }).catch(function () {});
   }
-  setTimeout(checkVersion, 3000); setInterval(checkVersion, 120000);
+  setTimeout(checkVersion, 3000); setInterval(checkVersion, 30000);
+  document.addEventListener("visibilitychange", function () { if (document.hidden && updPending && !boardOpen() && !busyReading() && !(G.st && G.st.phase === "play")) checkVersion(); });
   var POINTS = 100, REVEAL_MS = 3500, HOST_LOST_MS = 7000, HEARTBEAT_MS = 3000;
   var NO_END = 1e11;   /* ván "∞ không tính giờ": hạn chót rất xa, host bấm Kết thúc */
   function untimed(s) { return !!(s && s.hostpace); }   /* luôn tính giờ (TJ 2026-10-01) — TRỪ 🎧 đề Listening "Theo audio": host bấm sang câu theo nhịp audio (TJ 2026-10-04) */
 
   /* ---------- chữ giao diện 4 tiếng (người chơi); phần cài đặt của host để tiếng Việt ---------- */
   var UI = {
-    vi: { snd_on: "🔊 Có tiếng", snd_off: "🔇 Đã tắt tiếng", snd_on_t: "Bấm để tắt tiếng trên máy này (chơi kèm HelloTalk)", snd_off_t: "Bấm để bật lại tiếng", vol: "Âm lượng", taphint: "🔈 Chạm vào màn hình 1 lần để bật tiếng đọc", tap_listen: "Chạm để nghe", snd_you: "Âm thanh của bạn:", tstats_btn: "📊 Điểm TOEIC", tmarks_btn: "🔖 Đoạn nghe", t_doneg: "Xong nhóm này", t_skipg: "Qua nhóm sau", t_backg: "Quay lại nhóm đang nghe", t_next: "Xem trước nhóm câu sau", tips_btn: "🧠 Chiến thuật", tips_h: "Chiến thuật đạt điểm TOEIC cao", replay_q: "Chơi lại ván này ngay với những người đang trong phòng?", replay_btn: "🔁 Chơi lại ván này", ex_left: "Còn {t} · đã làm {n}/{m} câu — chọn số câu để chuyển, đổi đáp án thoải mái", ex_submit: "Nộp bài", ex_confirm: "Còn {n} câu chưa làm. Vẫn nộp bài?", ex_done: "Đã nộp bài", ex_total: "Tổng ước lượng", ex_note: "Điểm quy đổi theo bảng tham khảo (ETS mỗi đề 1 bảng riêng). Xem đáp án + lời giải ở 📖 Xem lại.", t_listen: "Nghe", t_pend: "Bạn chọn {a} — chờ đáp án", t_nokey: "Câu này chưa có đáp án — xem phiếu trả lời cả phòng ở màn kết quả, host sẽ nhập đáp án để chấm.", tsh_who: "Người chơi", tsh_h: "Phiếu trả lời · Test {t} · Part {p}", tsh_graded: "Đã có đáp án — xanh đúng, đỏ sai. Hàng Σ: mỗi đáp án bao nhiêu người chọn.", tsh_nokey: "Chưa có đáp án — đây là lựa chọn cuối của mỗi người. Hàng Σ: mỗi đáp án bao nhiêu người chọn.", tsh_key: "Nhập đáp án để chấm", tsh_keytip: "Gõ kiểu \"{a}C {a}A …\" hoặc chỉ dãy chữ (CABD…) tính lần lượt từ câu {a} tới {b}. Lưu luôn vào đề cho các ván sau.", tsh_save: "Lưu & chấm", tsh_bad: "Chưa đọc được đáp án nào — gõ vd: 7C 8A 9B", tsh_fail: "Đã chấm, nhưng {n} câu chưa lưu được vào đề.", tsh_ok: "✓ Đã chấm và lưu {n} đáp án vào đề.", t_ptr: "📖 Dịch cả bài đọc", t_traps: "Bẫy", t_pick: "Đã chọn — còn giờ thì đổi được, hết giờ tự sang câu sau", t_alldone: "🏁 Bạn đã làm hết — chờ hết giờ hoặc host bấm Kết thúc để xem kết quả", rv_listen: "🔊 Nghe lại", tv_h: "Từ vựng cần học", tv_tip: "Chạm từ trong câu để chọn — chạm từ kế bên để nối thành cụm, rồi bấm ⭐ Lưu", tv_save: "Lưu để học", tv_saved: "Đã lưu", tv_nomean: "Chưa tra được nghĩa — vẫn lưu được", tv_err: "Chưa lưu được, thử lại nhé.", t_claude: "Đáp án do Claude tự giải — chờ đối chiếu đáp án chính thức.", t_saved: "Đã ghi nhận — đáp án và lời giải xem ở 📖 Xem lại sau khi làm xong", t_skip: "Bỏ qua câu này", t_right: "Bạn chọn đúng", t_wrong: "Bạn chọn sai", q_toeic: "Chọn đáp án đúng (A, B, C, D)", lang_room: "🌐 Theo phòng", q_order: "Ghép các mảnh thành câu tiếng Anh đúng nghĩa", q_chunk: "Chọn chunk còn thiếu trong câu", q_listen: "Nghe câu rồi chọn nghĩa đúng", q_polite: "Chọn câu đúng mức lịch sự", redo: "Làm lại", reg_casual: "Nói với bạn thân", reg_neutral: "Nói với đồng nghiệp", reg_formal: "Nói với khách hàng / sếp lớn", no_voice: "🔇 Máy này chưa có giọng đọc {l} nên game không đọc to. Cài thêm: Windows › Cài đặt › Thời gian & ngôn ngữ › Giọng nói · Mac/iPhone › Trợ năng › Nội dung được đọc › Giọng nói.", type_ph_zh: "Gõ chữ Hán hoặc pinyin (vd: pangxie)…", learning_now: "đang học", pair_note: "🎯 Học: {t} · Nghĩa: {m}", pair_tt: "Phòng đang học {t}. Nghĩa hiện bằng {m} (tiếng mẹ đẻ của bạn — đổi ở ô Language; không chọn được tiếng đang học).", force_note: "🔒 Nghĩa: {l}", force_tt: "Host đã chọn tiếng nghĩa cho cả phòng: {l}. Ô Language chỉ đổi chữ giao diện.", back_hist: "← Về Lịch sử", rv_all: "📖 Xem lại tất cả các ván", rv_wrong: "❌ Chỉ từ hay sai", rv_word: "từ {n}/{m}", rv_tally: "Tất cả các ván: ✓ đúng {c} lần · ✗ sai {w} lần", rv_none_wrong: "Bạn chưa sai từ nào 🎉", past_ok: "✓ Bạn trả lời đúng từ này", past_bad: "✗ Bạn trả lời sai từ này — nên để dành học lại", no_answers: "Ván này chưa có câu trả lời nào của bạn được lưu.", next_q: "Câu tiếp ▶", reveal_btn: "👁 Hiện đáp án", wait_nextq: "Chờ host sang câu tiếp…", no_time: "∞ không tính giờ", review_btn: "📖 Xem lại đáp án", review_h: "📖 Xem lại đáp án", prev: "◀ Trước", next: "Sau ▶", back_res: "← Về kết quả", you_typed: "Bạn trả lời: {a}", you_none: "Bạn chưa trả lời câu này", right_ans: "Đáp án đúng: {a}", same_name: "Tên \"{n}\" đã có người dùng: {list}.\nNếu là BẠN (chơi ở máy/trình duyệt khác) -> gõ số của bạn (vd 1) để giữ lịch sử.\nNếu là người khác -> để trống và bấm OK.", tab_other: "Game đã được mở ở tab khác — tab này tạm dừng.", tab_busy: "Ván đang chơi ở tab khác — tab này không vào phòng để khỏi làm hỏng ván.", tab_use: "Dùng game ở tab này", q_en2m: "Chọn nghĩa đúng của từ tiếng Anh này", pts_speed: "điểm tốc độ", h_right: "✓ Đúng", h_wrong: "✗ Sai", s_bestc: "nhiều câu đúng nhất / 1 ván", q_sheet: "Chọn từ cho TẤT CẢ chỗ trống rồi bấm Nộp", q_write: "Đặt 1 câu tiếng Anh có dùng từ này", q_dict: "Bấm 🔊 nghe rồi gõ lại CẢ CÂU", listen: "🔊 Nghe", headphones: "🎧 Dùng tai nghe để không lọt tiếng vào voice", submit_sheet: "📄 Nộp bài", grading: "✍️ Đang chấm câu của mọi người…", write_ph: "Viết 1 câu tiếng Anh…", dict_ph: "Gõ lại câu vừa nghe…", r_sheet: "✓ {k}/{n} chỗ đúng", r_dict: "✓ {k}/{n} từ đúng", r_write: "Điểm câu {p}/100 (ngữ pháp {g}/50 · dùng từ {u}/50)", fix: "Sửa:", your_ans: "Bạn gõ:", sent_ok: "Đã nộp — chờ mọi người…", mother_h: "Nghĩa hiển thị bằng (tiếng mẹ đẻ)", mother_tt: "Tiếng mẹ đẻ của bạn (chữ giao diện + nghĩa)", name_h: "Bạn tên gì?", name_sub: "Máy này sẽ nhớ tên cho lần sau — không cần email.", name_ph: "Nhập tên…", avatar_h: "Chọn ảnh đại diện", upload: "📷 Tải ảnh của bạn", save: "Lưu & tiếp tục →", need_name: "Nhập tên trước nhé.", saving: "Đang lưu…", uploading: "Đang tải ảnh…", not_image: "File này không phải ảnh.",
+    vi: { snd_on: "🔊 Có tiếng", snd_off: "🔇 Đã tắt tiếng", snd_on_t: "Bấm để tắt tiếng trên máy này (chơi kèm HelloTalk)", snd_off_t: "Bấm để bật lại tiếng", vol: "Âm lượng", taphint: "🔈 Chạm vào màn hình 1 lần để bật tiếng đọc", tap_listen: "Chạm để nghe", snd_you: "Âm thanh của bạn:", tstats_btn: "📊 Điểm TOEIC", tmarks_btn: "🔖 Đoạn nghe", t_doneg: "Xong nhóm này", t_skipg: "Qua nhóm sau", t_backg: "Quay lại nhóm đang nghe", t_next: "Xem trước nhóm câu sau", tips_btn: "🧠 Chiến thuật", tips_h: "Chiến thuật đạt điểm TOEIC cao", replay_q: "Chơi lại ván này ngay với những người đang trong phòng?", replay_btn: "🔁 Chơi lại ván này", ex_left: "Còn {t} · đã làm {n}/{m} câu — chọn số câu để chuyển, đổi đáp án thoải mái", ex_submit: "Nộp bài", ex_confirm: "Còn {n} câu chưa làm. Vẫn nộp bài?", ex_done: "Đã nộp bài", ex_total: "Tổng ước lượng", ex_note: "Điểm quy đổi theo bảng tham khảo (ETS mỗi đề 1 bảng riêng). Xem đáp án + lời giải ở 📖 Xem lại.", t_listen: "Nghe", t_pend: "Bạn chọn {a} — chờ đáp án", t_nokey: "Câu này chưa có đáp án — xem phiếu trả lời cả phòng ở màn kết quả, host sẽ nhập đáp án để chấm.", tsh_who: "Người chơi", tsh_h: "Phiếu trả lời · Test {t} · Part {p}", tsh_graded: "Đã có đáp án — xanh đúng, đỏ sai. Hàng Σ: mỗi đáp án bao nhiêu người chọn.", tsh_nokey: "Chưa có đáp án — đây là lựa chọn cuối của mỗi người. Hàng Σ: mỗi đáp án bao nhiêu người chọn.", tsh_key: "Nhập đáp án để chấm", tsh_keytip: "Gõ kiểu \"{a}C {a}A …\" hoặc chỉ dãy chữ (CABD…) tính lần lượt từ câu {a} tới {b}. Lưu luôn vào đề cho các ván sau.", tsh_save: "Lưu & chấm", tsh_bad: "Chưa đọc được đáp án nào — gõ vd: 7C 8A 9B", tsh_fail: "Đã chấm, nhưng {n} câu chưa lưu được vào đề.", tsh_ok: "✓ Đã chấm và lưu {n} đáp án vào đề.", t_ptr: "📖 Dịch cả bài đọc", t_traps: "Bẫy", t_pick: "Đã chọn — còn giờ thì đổi được, hết giờ tự sang câu sau", t_alldone: "🏁 Bạn đã làm hết — chờ hết giờ hoặc host bấm Kết thúc để xem kết quả", rv_listen: "🔊 Nghe lại", tv_h: "Từ vựng cần học", tv_tip: "Chạm từ trong câu để chọn — chạm từ kế bên để nối thành cụm, rồi bấm ⭐ Lưu", tv_save: "Lưu để học", tv_saved: "Đã lưu", tv_nomean: "Chưa tra được nghĩa — vẫn lưu được", tv_err: "Chưa lưu được, thử lại nhé.", t_claude: "Đáp án do Claude tự giải — chờ đối chiếu đáp án chính thức.", t_saved: "Đã ghi nhận — đáp án và lời giải xem ở 📖 Xem lại sau khi làm xong", t_skip: "Bỏ qua câu này", t_right: "Bạn chọn đúng", t_wrong: "Bạn chọn sai", q_toeic: "Chọn đáp án đúng (A, B, C, D)", lang_room: "🌐 Theo phòng", q_order: "Ghép các mảnh thành câu tiếng Anh đúng nghĩa", q_chunk: "Chọn chunk còn thiếu trong câu", q_listen: "Nghe câu rồi chọn nghĩa đúng", q_polite: "Chọn câu đúng mức lịch sự", redo: "Làm lại", reg_casual: "Nói với bạn thân", reg_neutral: "Nói với đồng nghiệp", reg_formal: "Nói với khách hàng / sếp lớn", no_voice: "🔇 Máy này chưa có giọng đọc {l} nên game không đọc to. Cài thêm: Windows › Cài đặt › Thời gian & ngôn ngữ › Giọng nói · Mac/iPhone › Trợ năng › Nội dung được đọc › Giọng nói.", type_ph_zh: "Gõ chữ Hán hoặc pinyin (vd: pangxie)…", learning_now: "đang học", pair_note: "🎯 Học: {t} · Nghĩa: {m}", pair_tt: "Phòng đang học {t}. Nghĩa hiện bằng {m} (tiếng mẹ đẻ của bạn — đổi ở ô Language; không chọn được tiếng đang học).", force_note: "🔒 Nghĩa: {l}", force_tt: "Host đã chọn tiếng nghĩa cho cả phòng: {l}. Ô Language chỉ đổi chữ giao diện.", back_hist: "← Về Lịch sử", rv_all: "📖 Từ đã chơi →", rv_wrong: "❌ Chỉ từ hay sai", rv_word: "từ {n}/{m}", rv_tally: "Tất cả các ván: ✓ đúng {c} lần · ✗ sai {w} lần", rv_none_wrong: "Bạn chưa sai từ nào 🎉", past_ok: "✓ Bạn trả lời đúng từ này", past_bad: "✗ Bạn trả lời sai từ này — nên để dành học lại", no_answers: "Ván này chưa có câu trả lời nào của bạn được lưu.", next_q: "Câu tiếp ▶", reveal_btn: "👁 Hiện đáp án", wait_nextq: "Chờ host sang câu tiếp…", no_time: "∞ không tính giờ", review_btn: "📖 Xem lại đáp án", review_last: "📖 Xem lại ván vừa chơi", review_h: "📖 Xem lại đáp án", prev: "◀ Trước", next: "Sau ▶", back_res: "← Về kết quả", you_typed: "Bạn trả lời: {a}", you_none: "Bạn chưa trả lời câu này", right_ans: "Đáp án đúng: {a}", same_name: "Tên \"{n}\" đã có người dùng: {list}.\nNếu là BẠN (chơi ở máy/trình duyệt khác) -> gõ số của bạn (vd 1) để giữ lịch sử.\nNếu là người khác -> để trống và bấm OK.", tab_other: "Game đã được mở ở tab khác — tab này tạm dừng.", tab_busy: "Ván đang chơi ở tab khác — tab này không vào phòng để khỏi làm hỏng ván.", tab_use: "Dùng game ở tab này", q_en2m: "Chọn nghĩa đúng của từ tiếng Anh này", pts_speed: "điểm tốc độ", h_right: "✓ Đúng", h_wrong: "✗ Sai", s_bestc: "nhiều câu đúng nhất / 1 ván", q_sheet: "Chọn từ cho TẤT CẢ chỗ trống rồi bấm Nộp", q_write: "Đặt 1 câu tiếng Anh có dùng từ này", q_dict: "Bấm 🔊 nghe rồi gõ lại CẢ CÂU", listen: "🔊 Nghe", headphones: "🎧 Dùng tai nghe để không lọt tiếng vào voice", submit_sheet: "📄 Nộp bài", grading: "✍️ Đang chấm câu của mọi người…", write_ph: "Viết 1 câu tiếng Anh…", dict_ph: "Gõ lại câu vừa nghe…", r_sheet: "✓ {k}/{n} chỗ đúng", r_dict: "✓ {k}/{n} từ đúng", r_write: "Điểm câu {p}/100 (ngữ pháp {g}/50 · dùng từ {u}/50)", fix: "Sửa:", your_ans: "Bạn gõ:", sent_ok: "Đã nộp — chờ mọi người…", mother_h: "Nghĩa hiển thị bằng (tiếng mẹ đẻ)", mother_tt: "Tiếng mẹ đẻ của bạn (chữ giao diện + nghĩa)", name_h: "Bạn tên gì?", name_sub: "Máy này sẽ nhớ tên cho lần sau — không cần email.", name_ph: "Nhập tên…", avatar_h: "Chọn ảnh đại diện", upload: "📷 Tải ảnh của bạn", save: "Lưu & tiếp tục →", need_name: "Nhập tên trước nhé.", saving: "Đang lưu…", uploading: "Đang tải ảnh…", not_image: "File này không phải ảnh.",
       join_h: "Vào phòng", code_ph: "MÃ PHÒNG", go: "Vào", hist_btn: "📜 Lịch sử & Xếp hạng", no_room: "Không tìm thấy phòng {c}.", room: "Phòng", room_code: "Mã phòng", copy_link: "🔗 Copy link mời", copied: "✓ Đã copy", screen_btn: "📺 Màn hình chung", players: "Người chơi", vocab: "Từ vựng", wait_host: "Chờ host bắt đầu", host_away: "Host chưa vào phòng — xem trước, chờ host tới nhé.", wait_next: "Chờ host mở ván mới…", host_lost: "⚠ Host mất kết nối — chờ host quay lại…", host_lost_free: "⚠ Host mất kết nối — bạn cứ làm tiếp, đáp án sẽ tự gửi khi host quay lại",
       m_kahoot: "Cùng 1 câu", m_free: "Tự do", left_q: "còn {n} câu", per_min: "{n} câu/ph", missed: "bỏ {n}", st_right: "Đúng", st_wrong: "Sai", st_done: "Đã làm", st_left: "Còn lại", st_acc: "Chính xác", st_pace: "Câu/phút", st_avg: "TB/câu", st_q: "Câu", t_acc: "Tỉ lệ đúng trên các câu đã trả lời", t_pace: "Số câu làm được mỗi phút", t_avg: "Thời gian trung bình để chọn đáp án mỗi câu", t_miss: "Số câu hết giờ mà chưa chọn", t_left: "Số câu còn lại của ván", avg_s: "TB {n}s", react_s: "⚡TB {n}s", q_of: "Câu {i} / {n}", done_of: "đã làm {a}/{n}", m_race: "⚡ Đua tốc độ", sec_q: "giây/câu", q_meaning: "Chọn từ tiếng Anh đúng nghĩa", q_gap: "Chọn từ điền vào chỗ trống", q_recall: "Gõ từ tiếng Anh của nghĩa này", type_ph: "Gõ từ tiếng Anh…", submit: "Gửi",
       picked: "Đã trả lời — chờ mọi người…", picked_change: "Đã chọn — còn giờ thì bấm đáp án khác để đổi", answered: "{n} người đã trả lời", right: "✓ Đúng!", wrong: "✗ Sai — đáp án: {a}", timeout: "⏱ Hết giờ — đáp án: {a}", answer: "Đáp án: {a}", fastest: "⚡ Nhanh nhất: {n}", n_right: "{n} người đúng", time_up: "⏱ Hết giờ — chờ tổng kết…", loading: "Đang tải từ vựng…", mc: "Bạn đang làm MC — mở 📺 Màn hình chung để cả nhóm cùng xem.",
       results: "🏁 Kết quả", back: "← Về trang game", nobody: "Chưa ai trả lời câu nào.", ppl: "người", avg: "TB", team_red: "Đội Đỏ", team_blue: "Đội Xanh", team_green: "Đội Lá", team_yellow: "Đội Vàng", click_team: "· host bấm tên để đổi đội",
       tab_me: "Của tôi", tab_week: "Tuần này", tab_all: "Mọi thời gian", h_player: "Người chơi", h_total: "Tổng điểm", h_games: "Trận", h_best: "Cao nhất", h_acc: "Đúng", h_date: "Ngày", h_topic: "Chủ đề", h_score: "Điểm", h_rank: "Hạng", h_rw: "Đúng/Sai",
       s_games: "trận", s_wins: "lần 🥇", s_best: "kỷ lục điểm", s_streak: "chuỗi dài nhất", no_name: "Bạn chưa đặt tên trên máy này.", no_games: "Bạn chưa chơi trận nào.", no_week: "Chưa có trận nào trong 7 ngày qua.", no_all: "Chưa có trận nào.", loading2: "Đang tải…", join_at: "Vào phòng tại", race: "🏁 Đua tự do!", ended: "🏁 Kết thúc!", q_no: "Câu {n}", err: "Lỗi" },
-    en: { snd_on: "🔊 Sound on", snd_off: "🔇 Muted", snd_on_t: "Tap to mute this device (e.g. when on a HelloTalk call)", snd_off_t: "Tap to turn the sound back on", vol: "Volume", taphint: "🔈 Tap the screen once to enable audio", tap_listen: "Tap to listen", snd_you: "Your sound:", tstats_btn: "📊 TOEIC scores", tmarks_btn: "🔖 Saved audio", t_doneg: "Done with these", t_skipg: "Go to next questions", t_backg: "Back to current questions", t_next: "Preview the next questions", tips_btn: "🧠 Strategies", tips_h: "TOEIC high-score strategies", replay_q: "Replay this game now with everyone in the room?", replay_btn: "🔁 Replay this game", ex_left: "{t} left · answered {n}/{m} — tap a number to jump, change answers freely", ex_submit: "Submit", ex_confirm: "{n} questions unanswered. Submit anyway?", ex_done: "Submitted", ex_total: "Estimated total", ex_note: "Scaled with a reference table (ETS uses a table per test). See answers and explanations in 📖 Review.", t_listen: "Listen", t_pend: "You chose {a} — waiting for the answer key", t_nokey: "No answer key yet — see the room's answer sheet on the results screen; the host will enter the key.", tsh_who: "Player", tsh_h: "Answer sheet · Test {t} · Part {p}", tsh_graded: "Key entered — green right, red wrong. Row Σ: how many chose each letter.", tsh_nokey: "No key yet — these are everyone's final choices. Row Σ: how many chose each letter.", tsh_key: "Enter the answer key", tsh_keytip: "Type like \"{a}C {a}A …\" or just letters (CABD…) counted from question {a} to {b}. Saved to the test for later games.", tsh_save: "Save & grade", tsh_bad: "No answers recognised — type e.g. 7C 8A 9B", tsh_fail: "Graded, but {n} answers could not be saved to the test.", tsh_ok: "✓ Graded and saved {n} answers to the test.", t_ptr: "📖 Passage translation", t_traps: "Traps", t_pick: "Picked — you can change it until time runs out, then the next question starts", t_alldone: "🏁 You have finished — wait for time to run out or the host to end the game", rv_listen: "🔊 Listen again", tv_h: "Words to learn", tv_tip: "Tap words in the sentence — tap the next word to make a phrase, then press ⭐ Save", tv_save: "Save to learn", tv_saved: "Saved", tv_nomean: "No meaning found — you can still save it", tv_err: "Could not save, please try again.", t_claude: "Answer solved by Claude — not yet checked against the official key.", t_saved: "Saved — see answers and explanations in 📖 Review after the test", t_skip: "Skipped", t_right: "You chose correctly", t_wrong: "You chose wrong", q_toeic: "Choose the correct answer (A, B, C, D)", lang_room: "🌐 Room language", q_order: "Put the pieces in order to build the English sentence", q_chunk: "Choose the missing chunk", q_listen: "Listen, then choose the meaning", q_polite: "Choose the sentence with the right politeness", redo: "Reset", reg_casual: "Talking to a close friend", reg_neutral: "Talking to a colleague", reg_formal: "Talking to a client / senior boss", no_voice: "🔇 This device has no {l} voice, so the game will not read aloud. Add one: Windows › Settings › Time & language › Speech · Mac/iPhone › Accessibility › Spoken Content › Voices.", type_ph_zh: "Type hanzi or pinyin (e.g. pangxie)…", learning_now: "learning", pair_note: "🎯 Learning: {t} · Meanings: {m}", pair_tt: "The room is learning {t}. Meanings are shown in {m} (your native language — change it in Language; the language being learned cannot be chosen).", force_note: "🔒 Meanings: {l}", force_tt: "The host set the meaning language for the whole room: {l}. Language only changes the interface text.", back_hist: "← Back to history", rv_all: "📖 Review all games", rv_wrong: "❌ Only words I missed", rv_word: "word {n}/{m}", rv_tally: "All games: ✓ right {c}× · ✗ wrong {w}×", rv_none_wrong: "You have not missed any word 🎉", past_ok: "✓ You got this word right", past_bad: "✗ You got this word wrong — worth saving to study again", no_answers: "No saved answers of yours in this match.", next_q: "Next ▶", reveal_btn: "👁 Show answer", wait_nextq: "Waiting for the host to go on…", no_time: "∞ untimed", review_btn: "📖 Review answers", review_h: "📖 Review answers", prev: "◀ Previous", next: "Next ▶", back_res: "← Back to results", you_typed: "Your answer: {a}", you_none: "You did not answer this one", right_ans: "Correct answer: {a}", same_name: "The name \"{n}\" is already used: {list}.\nIf that is YOU (on another device/browser) -> type your number (e.g. 1) to keep your history.\nIf it is someone else -> leave empty and press OK.", tab_other: "The game was opened in another tab — this tab is paused.", tab_busy: "A round is being played in another tab — this tab stays out so it won't break the round.", tab_use: "Use the game in this tab", q_en2m: "Choose the correct meaning of this English word", pts_speed: "speed pts", h_right: "✓ Correct", h_wrong: "✗ Wrong", s_bestc: "most correct in one game", q_sheet: "Fill in ALL the blanks, then press Submit", q_write: "Write one English sentence using this word", q_dict: "Press 🔊 to listen, then type the WHOLE sentence", listen: "🔊 Listen", headphones: "🎧 Use headphones so the sound stays out of the voice call", submit_sheet: "📄 Submit", grading: "✍️ Grading everyone's sentences…", write_ph: "Write one English sentence…", dict_ph: "Type the sentence you heard…", r_sheet: "✓ {k}/{n} blanks correct", r_dict: "✓ {k}/{n} words correct", r_write: "Sentence score {p}/100 (grammar {g}/50 · word use {u}/50)", fix: "Fix:", your_ans: "You typed:", sent_ok: "Submitted — waiting for others…", mother_h: "Show meanings in (your native language)", mother_tt: "Your native language (interface + meanings)", name_h: "What's your name?", name_sub: "This device will remember you next time — no email needed.", name_ph: "Enter your name…", avatar_h: "Choose an avatar", upload: "📷 Upload your photo", save: "Save & continue →", need_name: "Please enter a name.", saving: "Saving…", uploading: "Uploading…", not_image: "That file is not an image.",
+    en: { snd_on: "🔊 Sound on", snd_off: "🔇 Muted", snd_on_t: "Tap to mute this device (e.g. when on a HelloTalk call)", snd_off_t: "Tap to turn the sound back on", vol: "Volume", taphint: "🔈 Tap the screen once to enable audio", tap_listen: "Tap to listen", snd_you: "Your sound:", tstats_btn: "📊 TOEIC scores", tmarks_btn: "🔖 Saved audio", t_doneg: "Done with these", t_skipg: "Go to next questions", t_backg: "Back to current questions", t_next: "Preview the next questions", tips_btn: "🧠 Strategies", tips_h: "TOEIC high-score strategies", replay_q: "Replay this game now with everyone in the room?", replay_btn: "🔁 Replay this game", ex_left: "{t} left · answered {n}/{m} — tap a number to jump, change answers freely", ex_submit: "Submit", ex_confirm: "{n} questions unanswered. Submit anyway?", ex_done: "Submitted", ex_total: "Estimated total", ex_note: "Scaled with a reference table (ETS uses a table per test). See answers and explanations in 📖 Review.", t_listen: "Listen", t_pend: "You chose {a} — waiting for the answer key", t_nokey: "No answer key yet — see the room's answer sheet on the results screen; the host will enter the key.", tsh_who: "Player", tsh_h: "Answer sheet · Test {t} · Part {p}", tsh_graded: "Key entered — green right, red wrong. Row Σ: how many chose each letter.", tsh_nokey: "No key yet — these are everyone's final choices. Row Σ: how many chose each letter.", tsh_key: "Enter the answer key", tsh_keytip: "Type like \"{a}C {a}A …\" or just letters (CABD…) counted from question {a} to {b}. Saved to the test for later games.", tsh_save: "Save & grade", tsh_bad: "No answers recognised — type e.g. 7C 8A 9B", tsh_fail: "Graded, but {n} answers could not be saved to the test.", tsh_ok: "✓ Graded and saved {n} answers to the test.", t_ptr: "📖 Passage translation", t_traps: "Traps", t_pick: "Picked — you can change it until time runs out, then the next question starts", t_alldone: "🏁 You have finished — wait for time to run out or the host to end the game", rv_listen: "🔊 Listen again", tv_h: "Words to learn", tv_tip: "Tap words in the sentence — tap the next word to make a phrase, then press ⭐ Save", tv_save: "Save to learn", tv_saved: "Saved", tv_nomean: "No meaning found — you can still save it", tv_err: "Could not save, please try again.", t_claude: "Answer solved by Claude — not yet checked against the official key.", t_saved: "Saved — see answers and explanations in 📖 Review after the test", t_skip: "Skipped", t_right: "You chose correctly", t_wrong: "You chose wrong", q_toeic: "Choose the correct answer (A, B, C, D)", lang_room: "🌐 Room language", q_order: "Put the pieces in order to build the English sentence", q_chunk: "Choose the missing chunk", q_listen: "Listen, then choose the meaning", q_polite: "Choose the sentence with the right politeness", redo: "Reset", reg_casual: "Talking to a close friend", reg_neutral: "Talking to a colleague", reg_formal: "Talking to a client / senior boss", no_voice: "🔇 This device has no {l} voice, so the game will not read aloud. Add one: Windows › Settings › Time & language › Speech · Mac/iPhone › Accessibility › Spoken Content › Voices.", type_ph_zh: "Type hanzi or pinyin (e.g. pangxie)…", learning_now: "learning", pair_note: "🎯 Learning: {t} · Meanings: {m}", pair_tt: "The room is learning {t}. Meanings are shown in {m} (your native language — change it in Language; the language being learned cannot be chosen).", force_note: "🔒 Meanings: {l}", force_tt: "The host set the meaning language for the whole room: {l}. Language only changes the interface text.", back_hist: "← Back to history", rv_all: "📖 Words played →", rv_wrong: "❌ Only words I missed", rv_word: "word {n}/{m}", rv_tally: "All games: ✓ right {c}× · ✗ wrong {w}×", rv_none_wrong: "You have not missed any word 🎉", past_ok: "✓ You got this word right", past_bad: "✗ You got this word wrong — worth saving to study again", no_answers: "No saved answers of yours in this match.", next_q: "Next ▶", reveal_btn: "👁 Show answer", wait_nextq: "Waiting for the host to go on…", no_time: "∞ untimed", review_btn: "📖 Review answers", review_last: "📖 Review last game", review_h: "📖 Review answers", prev: "◀ Previous", next: "Next ▶", back_res: "← Back to results", you_typed: "Your answer: {a}", you_none: "You did not answer this one", right_ans: "Correct answer: {a}", same_name: "The name \"{n}\" is already used: {list}.\nIf that is YOU (on another device/browser) -> type your number (e.g. 1) to keep your history.\nIf it is someone else -> leave empty and press OK.", tab_other: "The game was opened in another tab — this tab is paused.", tab_busy: "A round is being played in another tab — this tab stays out so it won't break the round.", tab_use: "Use the game in this tab", q_en2m: "Choose the correct meaning of this English word", pts_speed: "speed pts", h_right: "✓ Correct", h_wrong: "✗ Wrong", s_bestc: "most correct in one game", q_sheet: "Fill in ALL the blanks, then press Submit", q_write: "Write one English sentence using this word", q_dict: "Press 🔊 to listen, then type the WHOLE sentence", listen: "🔊 Listen", headphones: "🎧 Use headphones so the sound stays out of the voice call", submit_sheet: "📄 Submit", grading: "✍️ Grading everyone's sentences…", write_ph: "Write one English sentence…", dict_ph: "Type the sentence you heard…", r_sheet: "✓ {k}/{n} blanks correct", r_dict: "✓ {k}/{n} words correct", r_write: "Sentence score {p}/100 (grammar {g}/50 · word use {u}/50)", fix: "Fix:", your_ans: "You typed:", sent_ok: "Submitted — waiting for others…", mother_h: "Show meanings in (your native language)", mother_tt: "Your native language (interface + meanings)", name_h: "What's your name?", name_sub: "This device will remember you next time — no email needed.", name_ph: "Enter your name…", avatar_h: "Choose an avatar", upload: "📷 Upload your photo", save: "Save & continue →", need_name: "Please enter a name.", saving: "Saving…", uploading: "Uploading…", not_image: "That file is not an image.",
       join_h: "Join a room", code_ph: "ROOM CODE", go: "Join", hist_btn: "📜 History & Rankings", no_room: "Room {c} not found.", room: "Room", room_code: "Room code", copy_link: "🔗 Copy invite link", copied: "✓ Copied", screen_btn: "📺 Shared screen", players: "Players", vocab: "Vocabulary", wait_host: "Waiting for the host to start", host_away: "The host is not here yet — feel free to look around.", wait_next: "Waiting for the host to start a new round…", host_lost: "⚠ Host disconnected — waiting for the host to return…", host_lost_free: "⚠ Host disconnected — keep playing, your answers will be sent when the host is back",
       m_kahoot: "Same question", m_free: "Free play", left_q: "{n} left", per_min: "{n}/min", missed: "{n} missed", st_right: "Right", st_wrong: "Wrong", st_done: "Done", st_left: "Left", st_acc: "Accuracy", st_pace: "Per min", st_avg: "Avg/Q", st_q: "Question", t_acc: "Accuracy on answered questions", t_pace: "Questions answered per minute", t_avg: "Average time to pick an answer", t_miss: "Questions that timed out unanswered (not counted as wrong)", t_left: "Questions left in this round", avg_s: "avg {n}s", react_s: "⚡avg {n}s", q_of: "Question {i} / {n}", done_of: "done {a}/{n}", m_race: "⚡ Speed race", sec_q: "s/question", q_meaning: "Choose the English word for this meaning", q_gap: "Choose the word that fills the blank", q_recall: "Type the English word for this meaning", type_ph: "Type the English word…", submit: "Submit",
       picked: "Answered — waiting for others…", picked_change: "Picked — tap another answer to change while time is left", answered: "{n} answered", right: "✓ Correct!", wrong: "✗ Wrong — answer: {a}", timeout: "⏱ Time's up — answer: {a}", answer: "Answer: {a}", fastest: "⚡ Fastest: {n}", n_right: "{n} correct", time_up: "⏱ Time's up — waiting for results…", loading: "Loading vocabulary…", mc: "You are the MC — open 📺 Shared screen so everyone can watch.",
       results: "🏁 Results", back: "← Back to game home", nobody: "Nobody answered yet.", ppl: "players", avg: "avg", team_red: "Red Team", team_blue: "Blue Team", team_green: "Green Team", team_yellow: "Yellow Team", click_team: "· host taps a name to switch team",
       tab_me: "Mine", tab_week: "This week", tab_all: "All time", h_player: "Player", h_total: "Total", h_games: "Games", h_best: "Best", h_acc: "Correct", h_date: "Date", h_topic: "Topic", h_score: "Score", h_rank: "Rank", h_rw: "Right/Wrong",
       s_games: "games", s_wins: "🥇 wins", s_best: "best score", s_streak: "longest streak", no_name: "You haven't set a name on this device.", no_games: "You haven't played yet.", no_week: "No games in the last 7 days.", no_all: "No games yet.", loading2: "Loading…", join_at: "Join at", race: "🏁 Free race!", ended: "🏁 Finished!", q_no: "Question {n}", err: "Error" },
-    es: { snd_on: "🔊 Con sonido", snd_off: "🔇 Silenciado", snd_on_t: "Toca para silenciar este dispositivo (p. ej. en una llamada de HelloTalk)", snd_off_t: "Toca para volver a activar el sonido", vol: "Volumen", taphint: "🔈 Toca la pantalla una vez para activar el audio", tap_listen: "Toca para escuchar", snd_you: "Tu sonido:", tstats_btn: "📊 Notas TOEIC", tmarks_btn: "🔖 Audios guardados", t_doneg: "Terminé este grupo", t_skipg: "Ir a las siguientes", t_backg: "Volver a las actuales", t_next: "Vista previa de las siguientes preguntas", tips_btn: "🧠 Estrategias", tips_h: "Estrategias para una nota alta en TOEIC", replay_q: "¿Volver a jugar esta partida ahora con todos en la sala?", replay_btn: "🔁 Repetir esta partida", ex_left: "Quedan {t} · respondidas {n}/{m} — toca un número para saltar, cambia respuestas libremente", ex_submit: "Entregar", ex_confirm: "Quedan {n} preguntas sin responder. ¿Entregar igualmente?", ex_done: "Entregado", ex_total: "Total estimado", ex_note: "Puntuación según una tabla de referencia (ETS usa una por examen). Respuestas y explicaciones en 📖 Revisar.", t_listen: "Escuchar", t_pend: "Elegiste {a} — esperando la clave", t_nokey: "Aún no hay clave — mira la hoja de respuestas de la sala al final; el anfitrión la introducirá.", tsh_who: "Jugador", tsh_h: "Hoja de respuestas · Test {t} · Part {p}", tsh_graded: "Clave introducida — verde bien, rojo mal. Fila Σ: cuántos eligieron cada letra.", tsh_nokey: "Aún sin clave — son las elecciones finales de cada uno. Fila Σ: cuántos eligieron cada letra.", tsh_key: "Introducir la clave", tsh_keytip: "Escribe \"{a}C {a}A …\" o solo letras (CABD…) desde la pregunta {a} hasta la {b}.", tsh_save: "Guardar y corregir", tsh_bad: "No se reconoció ninguna respuesta — p. ej. 7C 8A 9B", tsh_fail: "Corregido, pero {n} respuestas no se guardaron.", tsh_ok: "✓ Corregido y guardadas {n} respuestas.", t_ptr: "📖 Traducción del texto", t_traps: "Trampas", t_pick: "Elegida — puedes cambiarla hasta que se acabe el tiempo; luego pasa sola a la siguiente", t_alldone: "🏁 Has terminado — espera a que acabe el tiempo o el anfitrión termine la partida", rv_listen: "🔊 Escuchar de nuevo", tv_h: "Vocabulario para aprender", tv_tip: "Toca palabras de la frase — toca la siguiente para formar una expresión y pulsa ⭐ Guardar", tv_save: "Guardar", tv_saved: "Guardado", tv_nomean: "Sin significado — puedes guardarla igual", tv_err: "No se pudo guardar, inténtalo de nuevo.", t_claude: "Respuesta resuelta por Claude — pendiente de verificar con la clave oficial.", t_saved: "Guardado — respuestas y explicaciones en 📖 Revisar al terminar", t_skip: "Omitida", t_right: "Elegiste bien", t_wrong: "Elegiste mal", q_toeic: "Elige la respuesta correcta (A, B, C, D)", lang_room: "🌐 Idioma de la sala", q_order: "Ordena las piezas para formar la frase en inglés", q_chunk: "Elige el fragmento que falta", q_listen: "Escucha y elige el significado", q_polite: "Elige la frase con el nivel de cortesía correcto", redo: "Reiniciar", reg_casual: "Hablando con un amigo", reg_neutral: "Hablando con un colega", reg_formal: "Hablando con un cliente / jefe", no_voice: "🔇 Este dispositivo no tiene voz {l}, así que el juego no leerá en voz alta. Añádela en los ajustes de idioma/voz del sistema.", type_ph_zh: "Escribe hanzi o pinyin (ej.: pangxie)…", learning_now: "aprendiendo", pair_note: "🎯 Aprendes: {t} · Significados: {m}", pair_tt: "La sala aprende {t}. Los significados se muestran en {m} (tu lengua materna — cámbiala en Language; no puedes elegir el idioma que aprendes).", force_note: "🔒 Significados: {l}", force_tt: "El anfitrión fijó el idioma de los significados para toda la sala: {l}. Language solo cambia el texto de la interfaz.", back_hist: "← Volver al historial", rv_all: "📖 Revisar todas las partidas", rv_wrong: "❌ Solo palabras falladas", rv_word: "palabra {n}/{m}", rv_tally: "Todas las partidas: ✓ {c} aciertos · ✗ {w} fallos", rv_none_wrong: "No has fallado ninguna palabra 🎉", past_ok: "✓ Acertaste esta palabra", past_bad: "✗ Fallaste esta palabra — guárdala para repasar", no_answers: "No hay respuestas tuyas guardadas en esta partida.", next_q: "Siguiente ▶", reveal_btn: "👁 Mostrar respuesta", wait_nextq: "Esperando a que el anfitrión continúe…", no_time: "∞ sin tiempo", review_btn: "📖 Revisar respuestas", review_h: "📖 Revisar respuestas", prev: "◀ Anterior", next: "Siguiente ▶", back_res: "← Volver a resultados", you_typed: "Tu respuesta: {a}", you_none: "No respondiste esta", right_ans: "Respuesta correcta: {a}", same_name: "El nombre \"{n}\" ya existe: {list}.\nSi eres TÚ (en otro dispositivo/navegador) -> escribe tu número (p. ej. 1) para conservar tu historial.\nSi es otra persona -> déjalo vacío y pulsa OK.", tab_other: "El juego se abrió en otra pestaña — esta pestaña está en pausa.", tab_busy: "Hay una partida en otra pestaña — esta pestaña no entra para no romperla.", tab_use: "Usar el juego en esta pestaña", q_en2m: "Elige el significado correcto de esta palabra en inglés", pts_speed: "pts de velocidad", h_right: "✓ Aciertos", h_wrong: "✗ Fallos", s_bestc: "más aciertos en una partida", q_sheet: "Completa TODOS los espacios y pulsa Enviar", q_write: "Escribe una oración en inglés con esta palabra", q_dict: "Pulsa 🔊 para escuchar y escribe la oración COMPLETA", listen: "🔊 Escuchar", headphones: "🎧 Usa auriculares para que el sonido no pase a la llamada", submit_sheet: "📄 Enviar", grading: "✍️ Corrigiendo las oraciones…", write_ph: "Escribe una oración en inglés…", dict_ph: "Escribe la oración que escuchaste…", r_sheet: "✓ {k}/{n} espacios correctos", r_dict: "✓ {k}/{n} palabras correctas", r_write: "Nota de la oración {p}/100 (gramática {g}/50 · uso {u}/50)", fix: "Corrección:", your_ans: "Escribiste:", sent_ok: "Enviado — esperando a los demás…", mother_h: "Mostrar significados en (tu idioma materno)", mother_tt: "Tu idioma materno (interfaz + significados)", name_h: "¿Cómo te llamas?", name_sub: "Este dispositivo recordará tu nombre — sin correo.", name_ph: "Escribe tu nombre…", avatar_h: "Elige un avatar", upload: "📷 Sube tu foto", save: "Guardar y continuar →", need_name: "Escribe un nombre primero.", saving: "Guardando…", uploading: "Subiendo…", not_image: "Ese archivo no es una imagen.",
+    es: { snd_on: "🔊 Con sonido", snd_off: "🔇 Silenciado", snd_on_t: "Toca para silenciar este dispositivo (p. ej. en una llamada de HelloTalk)", snd_off_t: "Toca para volver a activar el sonido", vol: "Volumen", taphint: "🔈 Toca la pantalla una vez para activar el audio", tap_listen: "Toca para escuchar", snd_you: "Tu sonido:", tstats_btn: "📊 Notas TOEIC", tmarks_btn: "🔖 Audios guardados", t_doneg: "Terminé este grupo", t_skipg: "Ir a las siguientes", t_backg: "Volver a las actuales", t_next: "Vista previa de las siguientes preguntas", tips_btn: "🧠 Estrategias", tips_h: "Estrategias para una nota alta en TOEIC", replay_q: "¿Volver a jugar esta partida ahora con todos en la sala?", replay_btn: "🔁 Repetir esta partida", ex_left: "Quedan {t} · respondidas {n}/{m} — toca un número para saltar, cambia respuestas libremente", ex_submit: "Entregar", ex_confirm: "Quedan {n} preguntas sin responder. ¿Entregar igualmente?", ex_done: "Entregado", ex_total: "Total estimado", ex_note: "Puntuación según una tabla de referencia (ETS usa una por examen). Respuestas y explicaciones en 📖 Revisar.", t_listen: "Escuchar", t_pend: "Elegiste {a} — esperando la clave", t_nokey: "Aún no hay clave — mira la hoja de respuestas de la sala al final; el anfitrión la introducirá.", tsh_who: "Jugador", tsh_h: "Hoja de respuestas · Test {t} · Part {p}", tsh_graded: "Clave introducida — verde bien, rojo mal. Fila Σ: cuántos eligieron cada letra.", tsh_nokey: "Aún sin clave — son las elecciones finales de cada uno. Fila Σ: cuántos eligieron cada letra.", tsh_key: "Introducir la clave", tsh_keytip: "Escribe \"{a}C {a}A …\" o solo letras (CABD…) desde la pregunta {a} hasta la {b}.", tsh_save: "Guardar y corregir", tsh_bad: "No se reconoció ninguna respuesta — p. ej. 7C 8A 9B", tsh_fail: "Corregido, pero {n} respuestas no se guardaron.", tsh_ok: "✓ Corregido y guardadas {n} respuestas.", t_ptr: "📖 Traducción del texto", t_traps: "Trampas", t_pick: "Elegida — puedes cambiarla hasta que se acabe el tiempo; luego pasa sola a la siguiente", t_alldone: "🏁 Has terminado — espera a que acabe el tiempo o el anfitrión termine la partida", rv_listen: "🔊 Escuchar de nuevo", tv_h: "Vocabulario para aprender", tv_tip: "Toca palabras de la frase — toca la siguiente para formar una expresión y pulsa ⭐ Guardar", tv_save: "Guardar", tv_saved: "Guardado", tv_nomean: "Sin significado — puedes guardarla igual", tv_err: "No se pudo guardar, inténtalo de nuevo.", t_claude: "Respuesta resuelta por Claude — pendiente de verificar con la clave oficial.", t_saved: "Guardado — respuestas y explicaciones en 📖 Revisar al terminar", t_skip: "Omitida", t_right: "Elegiste bien", t_wrong: "Elegiste mal", q_toeic: "Elige la respuesta correcta (A, B, C, D)", lang_room: "🌐 Idioma de la sala", q_order: "Ordena las piezas para formar la frase en inglés", q_chunk: "Elige el fragmento que falta", q_listen: "Escucha y elige el significado", q_polite: "Elige la frase con el nivel de cortesía correcto", redo: "Reiniciar", reg_casual: "Hablando con un amigo", reg_neutral: "Hablando con un colega", reg_formal: "Hablando con un cliente / jefe", no_voice: "🔇 Este dispositivo no tiene voz {l}, así que el juego no leerá en voz alta. Añádela en los ajustes de idioma/voz del sistema.", type_ph_zh: "Escribe hanzi o pinyin (ej.: pangxie)…", learning_now: "aprendiendo", pair_note: "🎯 Aprendes: {t} · Significados: {m}", pair_tt: "La sala aprende {t}. Los significados se muestran en {m} (tu lengua materna — cámbiala en Language; no puedes elegir el idioma que aprendes).", force_note: "🔒 Significados: {l}", force_tt: "El anfitrión fijó el idioma de los significados para toda la sala: {l}. Language solo cambia el texto de la interfaz.", back_hist: "← Volver al historial", rv_all: "📖 Palabras jugadas →", rv_wrong: "❌ Solo palabras falladas", rv_word: "palabra {n}/{m}", rv_tally: "Todas las partidas: ✓ {c} aciertos · ✗ {w} fallos", rv_none_wrong: "No has fallado ninguna palabra 🎉", past_ok: "✓ Acertaste esta palabra", past_bad: "✗ Fallaste esta palabra — guárdala para repasar", no_answers: "No hay respuestas tuyas guardadas en esta partida.", next_q: "Siguiente ▶", reveal_btn: "👁 Mostrar respuesta", wait_nextq: "Esperando a que el anfitrión continúe…", no_time: "∞ sin tiempo", review_btn: "📖 Revisar respuestas", review_last: "📖 Revisar la última partida", review_h: "📖 Revisar respuestas", prev: "◀ Anterior", next: "Siguiente ▶", back_res: "← Volver a resultados", you_typed: "Tu respuesta: {a}", you_none: "No respondiste esta", right_ans: "Respuesta correcta: {a}", same_name: "El nombre \"{n}\" ya existe: {list}.\nSi eres TÚ (en otro dispositivo/navegador) -> escribe tu número (p. ej. 1) para conservar tu historial.\nSi es otra persona -> déjalo vacío y pulsa OK.", tab_other: "El juego se abrió en otra pestaña — esta pestaña está en pausa.", tab_busy: "Hay una partida en otra pestaña — esta pestaña no entra para no romperla.", tab_use: "Usar el juego en esta pestaña", q_en2m: "Elige el significado correcto de esta palabra en inglés", pts_speed: "pts de velocidad", h_right: "✓ Aciertos", h_wrong: "✗ Fallos", s_bestc: "más aciertos en una partida", q_sheet: "Completa TODOS los espacios y pulsa Enviar", q_write: "Escribe una oración en inglés con esta palabra", q_dict: "Pulsa 🔊 para escuchar y escribe la oración COMPLETA", listen: "🔊 Escuchar", headphones: "🎧 Usa auriculares para que el sonido no pase a la llamada", submit_sheet: "📄 Enviar", grading: "✍️ Corrigiendo las oraciones…", write_ph: "Escribe una oración en inglés…", dict_ph: "Escribe la oración que escuchaste…", r_sheet: "✓ {k}/{n} espacios correctos", r_dict: "✓ {k}/{n} palabras correctas", r_write: "Nota de la oración {p}/100 (gramática {g}/50 · uso {u}/50)", fix: "Corrección:", your_ans: "Escribiste:", sent_ok: "Enviado — esperando a los demás…", mother_h: "Mostrar significados en (tu idioma materno)", mother_tt: "Tu idioma materno (interfaz + significados)", name_h: "¿Cómo te llamas?", name_sub: "Este dispositivo recordará tu nombre — sin correo.", name_ph: "Escribe tu nombre…", avatar_h: "Elige un avatar", upload: "📷 Sube tu foto", save: "Guardar y continuar →", need_name: "Escribe un nombre primero.", saving: "Guardando…", uploading: "Subiendo…", not_image: "Ese archivo no es una imagen.",
       join_h: "Entrar a una sala", code_ph: "CÓDIGO", go: "Entrar", hist_btn: "📜 Historial y ranking", no_room: "No se encontró la sala {c}.", room: "Sala", room_code: "Código de sala", copy_link: "🔗 Copiar enlace", copied: "✓ Copiado", screen_btn: "📺 Pantalla compartida", players: "Jugadores", vocab: "Vocabulario", wait_host: "Esperando a que el anfitrión empiece", host_away: "El anfitrión aún no ha llegado — puedes mirar mientras tanto.", wait_next: "Esperando a que el anfitrión abra otra ronda…", host_lost: "⚠ El anfitrión se desconectó — esperando a que vuelva…", host_lost_free: "⚠ El anfitrión se desconectó — sigue jugando, tus respuestas se enviarán cuando vuelva",
       m_kahoot: "Misma pregunta", m_free: "Libre", left_q: "quedan {n}", per_min: "{n}/min", missed: "{n} sin responder", st_right: "Bien", st_wrong: "Mal", st_done: "Hechas", st_left: "Quedan", st_acc: "Precisión", st_pace: "Por min", st_avg: "Prom", st_q: "Pregunta", t_acc: "Precisión en las respondidas", t_pace: "Preguntas por minuto", t_avg: "Tiempo medio por respuesta", t_miss: "Preguntas sin responder a tiempo (no cuentan como error)", t_left: "Preguntas restantes", avg_s: "prom {n}s", react_s: "⚡prom {n}s", q_of: "Pregunta {i} / {n}", done_of: "hechas {a}/{n}", m_race: "⚡ Carrera", sec_q: "s/pregunta", q_meaning: "Elige la palabra en inglés de este significado", q_gap: "Elige la palabra que completa el espacio", q_recall: "Escribe la palabra en inglés de este significado", type_ph: "Escribe la palabra en inglés…", submit: "Enviar",
       picked: "Respondido — esperando a los demás…", picked_change: "Elegido — toca otra respuesta para cambiarla mientras quede tiempo", answered: "{n} respondieron", right: "✓ ¡Correcto!", wrong: "✗ Incorrecto — respuesta: {a}", timeout: "⏱ Se acabó el tiempo — respuesta: {a}", answer: "Respuesta: {a}", fastest: "⚡ Más rápido: {n}", n_right: "{n} acertaron", time_up: "⏱ Se acabó el tiempo — esperando resultados…", loading: "Cargando vocabulario…", mc: "Eres el presentador — abre 📺 Pantalla compartida para que todos vean.",
       results: "🏁 Resultados", back: "← Volver", nobody: "Nadie ha respondido todavía.", ppl: "jugadores", avg: "prom.", team_red: "Equipo Rojo", team_blue: "Equipo Azul", team_green: "Equipo Verde", team_yellow: "Equipo Amarillo", click_team: "· el anfitrión toca un nombre para cambiar de equipo",
       tab_me: "Mío", tab_week: "Esta semana", tab_all: "Siempre", h_player: "Jugador", h_total: "Total", h_games: "Partidas", h_best: "Mejor", h_acc: "Aciertos", h_date: "Fecha", h_topic: "Tema", h_score: "Puntos", h_rank: "Puesto", h_rw: "Bien/Mal",
       s_games: "partidas", s_wins: "veces 🥇", s_best: "récord", s_streak: "racha más larga", no_name: "Aún no tienes nombre en este dispositivo.", no_games: "Aún no has jugado.", no_week: "No hubo partidas en los últimos 7 días.", no_all: "Aún no hay partidas.", loading2: "Cargando…", join_at: "Entra en", race: "🏁 ¡Carrera libre!", ended: "🏁 ¡Terminado!", q_no: "Pregunta {n}", err: "Error" },
-    zh: { snd_on: "🔊 有声音", snd_off: "🔇 已静音", snd_on_t: "点击让本设备静音（例如在 HelloTalk 通话时）", snd_off_t: "点击重新打开声音", vol: "音量", taphint: "🔈 点一下屏幕以开启声音", tap_listen: "点击收听", snd_you: "你的声音：", tstats_btn: "📊 TOEIC 成绩", tmarks_btn: "🔖 收藏的听力", t_doneg: "完成本组", t_skipg: "前往下一组", t_backg: "返回当前题组", t_next: "预览下一组题目", tips_btn: "🧠 应试策略", tips_h: "TOEIC 高分策略", replay_q: "现在和房间里的所有人重玩这一局？", replay_btn: "🔁 重玩这一局", ex_left: "剩余 {t} · 已答 {n}/{m} — 点题号跳转，可随时改答案", ex_submit: "交卷", ex_confirm: "还有 {n} 题未作答。确定交卷？", ex_done: "已交卷", ex_total: "估计总分", ex_note: "按参考换算表估算（ETS 每套题有各自的换算表）。在 📖 查看答案 中看答案和解析。", t_listen: "听", t_pend: "你选了 {a} — 等待答案", t_nokey: "暂无答案 — 结果页可看全房间答题卡，主持人会输入答案批改。", tsh_who: "玩家", tsh_h: "答题卡 · Test {t} · Part {p}", tsh_graded: "已有答案 — 绿色对，红色错。Σ 行：每个选项多少人选。", tsh_nokey: "暂无答案 — 这是每个人的最终选择。Σ 行：每个选项多少人选。", tsh_key: "输入答案批改", tsh_keytip: "输入 \"{a}C {a}A …\" 或只输入字母（CABD…），从第 {a} 题到第 {b} 题依次对应。", tsh_save: "保存并批改", tsh_bad: "没有识别到答案 — 例如 7C 8A 9B", tsh_fail: "已批改，但有 {n} 个答案未能保存。", tsh_ok: "✓ 已批改并保存 {n} 个答案。", t_ptr: "📖 全文翻译", t_traps: "陷阱", t_pick: "已选择——时间结束前可以更改，时间到自动进入下一题", t_alldone: "🏁 你已做完——等待时间结束或主持人结束游戏", rv_listen: "🔊 再听一遍", tv_h: "要学的词汇", tv_tip: "点句子里的词——再点旁边的词连成词组，然后点 ⭐ 保存", tv_save: "保存学习", tv_saved: "已保存", tv_nomean: "暂无释义——仍可保存", tv_err: "保存失败，请再试一次。", t_claude: "答案由 Claude 解答，尚未与官方答案核对。", t_saved: "已记录 — 做完后在 📖 查看答案 中看答案和解析", t_skip: "已跳过", t_right: "你选对了", t_wrong: "你选错了", q_toeic: "选出正确答案（A、B、C、D）", lang_room: "🌐 跟随房间", q_order: "把词块排成正确的英文句子", q_chunk: "选出缺少的词块", q_listen: "听句子，选出正确意思", q_polite: "选出礼貌程度合适的句子", redo: "重来", reg_casual: "对好朋友说", reg_neutral: "对同事说", reg_formal: "对客户 / 上级说", no_voice: "🔇 此设备没有{l}语音，游戏不会朗读。请在系统的语言/语音设置中添加。", type_ph_zh: "输入汉字或拼音（如 pangxie）…", learning_now: "正在学", pair_note: "🎯 学习：{t} · 词义：{m}", pair_tt: "本房间正在学习{t}。词义以{m}显示（你的母语 — 在 Language 中更改；不能选择正在学习的语言）。", force_note: "🔒 词义：{l}", force_tt: "主持人为全房间设定了词义语言：{l}。Language 只改变界面文字。", back_hist: "← 返回历史", rv_all: "📖 查看所有比赛", rv_wrong: "❌ 只看答错的词", rv_word: "第 {n}/{m} 个词", rv_tally: "所有比赛：✓ 对 {c} 次 · ✗ 错 {w} 次", rv_none_wrong: "你还没有答错过 🎉", past_ok: "✓ 这个词你答对了", past_bad: "✗ 这个词你答错了 — 建议收藏复习", no_answers: "这场比赛没有保存你的答案。", next_q: "下一题 ▶", reveal_btn: "👁 显示答案", wait_nextq: "等待主持人进入下一题…", no_time: "∞ 不计时", review_btn: "📖 查看答案", review_h: "📖 查看答案", prev: "◀ 上一题", next: "下一题 ▶", back_res: "← 返回结果", you_typed: "你的答案：{a}", you_none: "你没有回答这题", right_ans: "正确答案：{a}", same_name: "名字 \"{n}\" 已被使用：{list}。\n如果是你（换了设备/浏览器）-> 输入你的编号（如 1）以保留历史记录。\n如果是别人 -> 留空并点确定。", tab_other: "游戏已在另一个标签页打开——此标签页已暂停。", tab_busy: "另一个标签页正在进行比赛——此标签页不进入房间，以免打乱比赛。", tab_use: "在此标签页使用游戏", q_en2m: "选出这个英文单词的正确意思", pts_speed: "速度分", h_right: "✓ 答对", h_wrong: "✗ 答错", s_bestc: "单局最多答对", q_sheet: "给所有空格选词，然后点提交", q_write: "用这个词写一个英文句子", q_dict: "点 🔊 听，然后输入整句话", listen: "🔊 听", headphones: "🎧 请戴耳机，避免声音传进语音通话", submit_sheet: "📄 提交", grading: "✍️ 正在批改大家的句子…", write_ph: "写一个英文句子…", dict_ph: "输入你听到的句子…", r_sheet: "✓ {k}/{n} 空正确", r_dict: "✓ {k}/{n} 词正确", r_write: "句子得分 {p}/100（语法 {g}/50 · 用词 {u}/50）", fix: "修改：", your_ans: "你输入的：", sent_ok: "已提交——等待其他人…", mother_h: "释义显示语言（你的母语）", mother_tt: "你的母语（界面 + 释义）", name_h: "你叫什么名字？", name_sub: "本设备会记住你的名字——无需邮箱。", name_ph: "输入名字…", avatar_h: "选择头像", upload: "📷 上传照片", save: "保存并继续 →", need_name: "请先输入名字。", saving: "保存中…", uploading: "上传中…", not_image: "这个文件不是图片。",
+    zh: { snd_on: "🔊 有声音", snd_off: "🔇 已静音", snd_on_t: "点击让本设备静音（例如在 HelloTalk 通话时）", snd_off_t: "点击重新打开声音", vol: "音量", taphint: "🔈 点一下屏幕以开启声音", tap_listen: "点击收听", snd_you: "你的声音：", tstats_btn: "📊 TOEIC 成绩", tmarks_btn: "🔖 收藏的听力", t_doneg: "完成本组", t_skipg: "前往下一组", t_backg: "返回当前题组", t_next: "预览下一组题目", tips_btn: "🧠 应试策略", tips_h: "TOEIC 高分策略", replay_q: "现在和房间里的所有人重玩这一局？", replay_btn: "🔁 重玩这一局", ex_left: "剩余 {t} · 已答 {n}/{m} — 点题号跳转，可随时改答案", ex_submit: "交卷", ex_confirm: "还有 {n} 题未作答。确定交卷？", ex_done: "已交卷", ex_total: "估计总分", ex_note: "按参考换算表估算（ETS 每套题有各自的换算表）。在 📖 查看答案 中看答案和解析。", t_listen: "听", t_pend: "你选了 {a} — 等待答案", t_nokey: "暂无答案 — 结果页可看全房间答题卡，主持人会输入答案批改。", tsh_who: "玩家", tsh_h: "答题卡 · Test {t} · Part {p}", tsh_graded: "已有答案 — 绿色对，红色错。Σ 行：每个选项多少人选。", tsh_nokey: "暂无答案 — 这是每个人的最终选择。Σ 行：每个选项多少人选。", tsh_key: "输入答案批改", tsh_keytip: "输入 \"{a}C {a}A …\" 或只输入字母（CABD…），从第 {a} 题到第 {b} 题依次对应。", tsh_save: "保存并批改", tsh_bad: "没有识别到答案 — 例如 7C 8A 9B", tsh_fail: "已批改，但有 {n} 个答案未能保存。", tsh_ok: "✓ 已批改并保存 {n} 个答案。", t_ptr: "📖 全文翻译", t_traps: "陷阱", t_pick: "已选择——时间结束前可以更改，时间到自动进入下一题", t_alldone: "🏁 你已做完——等待时间结束或主持人结束游戏", rv_listen: "🔊 再听一遍", tv_h: "要学的词汇", tv_tip: "点句子里的词——再点旁边的词连成词组，然后点 ⭐ 保存", tv_save: "保存学习", tv_saved: "已保存", tv_nomean: "暂无释义——仍可保存", tv_err: "保存失败，请再试一次。", t_claude: "答案由 Claude 解答，尚未与官方答案核对。", t_saved: "已记录 — 做完后在 📖 查看答案 中看答案和解析", t_skip: "已跳过", t_right: "你选对了", t_wrong: "你选错了", q_toeic: "选出正确答案（A、B、C、D）", lang_room: "🌐 跟随房间", q_order: "把词块排成正确的英文句子", q_chunk: "选出缺少的词块", q_listen: "听句子，选出正确意思", q_polite: "选出礼貌程度合适的句子", redo: "重来", reg_casual: "对好朋友说", reg_neutral: "对同事说", reg_formal: "对客户 / 上级说", no_voice: "🔇 此设备没有{l}语音，游戏不会朗读。请在系统的语言/语音设置中添加。", type_ph_zh: "输入汉字或拼音（如 pangxie）…", learning_now: "正在学", pair_note: "🎯 学习：{t} · 词义：{m}", pair_tt: "本房间正在学习{t}。词义以{m}显示（你的母语 — 在 Language 中更改；不能选择正在学习的语言）。", force_note: "🔒 词义：{l}", force_tt: "主持人为全房间设定了词义语言：{l}。Language 只改变界面文字。", back_hist: "← 返回历史", rv_all: "📖 玩过的词 →", rv_wrong: "❌ 只看答错的词", rv_word: "第 {n}/{m} 个词", rv_tally: "所有比赛：✓ 对 {c} 次 · ✗ 错 {w} 次", rv_none_wrong: "你还没有答错过 🎉", past_ok: "✓ 这个词你答对了", past_bad: "✗ 这个词你答错了 — 建议收藏复习", no_answers: "这场比赛没有保存你的答案。", next_q: "下一题 ▶", reveal_btn: "👁 显示答案", wait_nextq: "等待主持人进入下一题…", no_time: "∞ 不计时", review_btn: "📖 查看答案", review_last: "📖 查看上一局", review_h: "📖 查看答案", prev: "◀ 上一题", next: "下一题 ▶", back_res: "← 返回结果", you_typed: "你的答案：{a}", you_none: "你没有回答这题", right_ans: "正确答案：{a}", same_name: "名字 \"{n}\" 已被使用：{list}。\n如果是你（换了设备/浏览器）-> 输入你的编号（如 1）以保留历史记录。\n如果是别人 -> 留空并点确定。", tab_other: "游戏已在另一个标签页打开——此标签页已暂停。", tab_busy: "另一个标签页正在进行比赛——此标签页不进入房间，以免打乱比赛。", tab_use: "在此标签页使用游戏", q_en2m: "选出这个英文单词的正确意思", pts_speed: "速度分", h_right: "✓ 答对", h_wrong: "✗ 答错", s_bestc: "单局最多答对", q_sheet: "给所有空格选词，然后点提交", q_write: "用这个词写一个英文句子", q_dict: "点 🔊 听，然后输入整句话", listen: "🔊 听", headphones: "🎧 请戴耳机，避免声音传进语音通话", submit_sheet: "📄 提交", grading: "✍️ 正在批改大家的句子…", write_ph: "写一个英文句子…", dict_ph: "输入你听到的句子…", r_sheet: "✓ {k}/{n} 空正确", r_dict: "✓ {k}/{n} 词正确", r_write: "句子得分 {p}/100（语法 {g}/50 · 用词 {u}/50）", fix: "修改：", your_ans: "你输入的：", sent_ok: "已提交——等待其他人…", mother_h: "释义显示语言（你的母语）", mother_tt: "你的母语（界面 + 释义）", name_h: "你叫什么名字？", name_sub: "本设备会记住你的名字——无需邮箱。", name_ph: "输入名字…", avatar_h: "选择头像", upload: "📷 上传照片", save: "保存并继续 →", need_name: "请先输入名字。", saving: "保存中…", uploading: "上传中…", not_image: "这个文件不是图片。",
       join_h: "加入房间", code_ph: "房间码", go: "加入", hist_btn: "📜 历史与排名", no_room: "找不到房间 {c}。", room: "房间", room_code: "房间码", copy_link: "🔗 复制邀请链接", copied: "✓ 已复制", screen_btn: "📺 共享屏幕", players: "玩家", vocab: "词汇", wait_host: "等待主持人开始", host_away: "主持人还没进房间——可以先看看。", wait_next: "等待主持人开始新一局…", host_lost: "⚠ 主持人断线了——等待主持人回来…", host_lost_free: "⚠ 主持人断线了——继续答题，主持人回来后会自动提交",
       m_kahoot: "同一题", m_free: "自由模式", left_q: "剩 {n} 题", per_min: "{n} 题/分", missed: "漏 {n}", st_right: "对", st_wrong: "错", st_done: "已做", st_left: "剩余", st_acc: "正确率", st_pace: "题/分", st_avg: "平均", st_q: "题", t_acc: "已答题正确率", t_pace: "每分钟答题数", t_avg: "平均作答时间", t_miss: "超时未作答（不算错）", t_left: "本局剩余题数", avg_s: "均 {n}秒", react_s: "⚡均 {n}秒", q_of: "第 {i} / {n} 题", done_of: "已做 {a}/{n}", m_race: "⚡ 竞速", sec_q: "秒/题", q_meaning: "选出这个意思的英文单词", q_gap: "选出填入空格的单词", q_recall: "输入这个意思的英文单词", type_ph: "输入英文单词…", submit: "提交",
       picked: "已作答——等待其他人…", picked_change: "已选择——时间未到可点其他答案更改", answered: "{n} 人已作答", right: "✓ 正确！", wrong: "✗ 错误——答案：{a}", timeout: "⏱ 时间到——答案：{a}", answer: "答案：{a}", fastest: "⚡ 最快：{n}", n_right: "{n} 人答对", time_up: "⏱ 时间到——等待结果…", loading: "正在加载词汇…", mc: "你是主持人——打开 📺 共享屏幕让大家一起看。",
@@ -141,7 +150,7 @@
   };
 
   /* ---------- tiện ích ---------- */
-  function show(id) { $$(".g-screen").forEach(function (s) { s.hidden = s.id !== id; }); document.body.classList.toggle("big", id === "s-screen"); paintSide(); }
+  function show(id) { if (id === "s-play") G.soundPh = "play"; $$(".g-screen").forEach(function (s) { s.hidden = s.id !== id; }); document.body.classList.toggle("big", id === "s-screen"); paintSide(); }
   function norm(t) { return String(t || "").toLowerCase().replace(/\s+/g, " ").trim(); }
   /* chấm câu GÕ TAY giống WordLoop (w.normalizeAnswer): bỏ dấu câu/ngoặc, thường hoá, gộp khoảng trắng */
   function normAns(s) { return String(s || "").normalize("NFC").toLowerCase().trim().replace(/[.,!?;:"'`()\[\]。，！？；：、¿¡“”‘’（）「」]/g, "").replace(/\s*\/\s*/g, " / ").replace(/\s+/g, " ").trim(); }
@@ -185,6 +194,8 @@
   function readLS(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
   function writeLS(k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
   function param(k) { return new URLSearchParams(location.search).get(k); }
+  function inFrame() { try { return window.self !== window.top; } catch (e) { return true; } }   /* chạy trong iframe của Learning = chế độ nhúng, dù địa chỉ có mất ?embed=1 */
+  function embQ() { return G.embed ? "&embed=1" : ""; }   /* đổi địa chỉ trang KHÔNG được làm mất embed=1 (trang tự tải lại khi có bản mới -> bật nhầm giao diện độc lập: cột Chủ đề + tiêu đề lòi ra trong Learning) */
   function roomLink(code, screen) { return location.origin + location.pathname + "?room=" + code + (screen ? "&view=screen" : ""); }
   function teamName(t) { return TEAM_C[t] ? T(TEAM_C[t].k) : ""; }
   function teamDot(t) { return t && TEAM_C[t] ? '<span class="g-tdot" style="background:' + TEAM_C[t].c + '" title="' + esc(teamName(t)) + '"></span>' : ""; }
@@ -426,7 +437,7 @@
   /* ---------- 2. trang chính ---------- */
   var picked = [];   /* [{table, id, title}] */
   function renderHome() { show("s-home"); }
-  $("#h-go").addEventListener("click", function () { var c = $("#h-code").value.trim().toUpperCase(); if (c) { history.replaceState(null, "", "?room=" + c); joinRoom(c); } });
+  $("#h-go").addEventListener("click", function () { var c = $("#h-code").value.trim().toUpperCase(); if (c) { history.replaceState(null, "", "?room=" + c + embQ()); joinRoom(c); } });
   $("#h-code").addEventListener("keydown", function (e) { if (e.key === "Enter") $("#h-go").click(); });
   $("#h-hist").addEventListener("click", function () { renderHistory("me"); });
   $("#e-hist").addEventListener("click", function () { renderHistory("me"); });
@@ -525,7 +536,7 @@
   function paintSide() {
     var side = $("#g-side"); if (!side || !SIDE) return;
     document.documentElement.style.setProperty("--gtop", $(".g-top").offsetHeight + "px");
-    var on = !!(G.isHost && G.view !== "screen" && !$("#s-lobby").hidden), pinned = SIDE.pinned && !narrow();
+    var on = !!(G.isHost && G.view !== "screen" && !$("#s-lobby").hidden && !G.embed), pinned = SIDE.pinned && !narrow();   /* trong WordLoop (embed): chủ đề chọn ở cột Notebooks/Pages của WordLoop, không dùng cây riêng của game */
     if (!on) SIDE.open = false;
     side.hidden = !on || (!pinned && !SIDE.open);
     side.classList.toggle("fly", !pinned);
@@ -533,7 +544,7 @@
     $("#h-sidetab").hidden = !on || pinned || SIDE.open;
     $("#h-sidebd").hidden = !on || pinned || !SIDE.open;
     $("#h-pin").classList.toggle("on", SIDE.pinned);
-    $("#h-sideopen").hidden = pinned;
+    $("#h-sideopen").hidden = pinned || !!G.embed;
     if (side.hidden) $("#h-dotmenu").hidden = true;
   }
   function sideOpen(on) { SIDE.open = on; paintSide(); }
@@ -588,6 +599,13 @@
       var on = b.dataset.act === "open";
       if (box.tagName === "DETAILS") { box.open = on; box.querySelectorAll("details").forEach(function (d) { d.open = on; }); }
       $("#h-dotmenu").hidden = true;
+      return;
+    }
+    if (b.dataset.act === "bd-vw" || b.dataset.act === "bd-w") {   /* 🖤 Block trong nhánh này -> mở lên bảng theo thứ tự cây */
+      var bl = Array.prototype.filter.call(box.querySelectorAll('[data-pick="blocks"]'), function (x) { return x.dataset.pick === "blocks"; }).map(function (x) { return [x.dataset.id, x.dataset.title]; });
+      $("#h-dotmenu").hidden = true;
+      if (!bl.length) { alert("Mục này chưa có Block nào."); return; }
+      if (window.Board) Board.openBlocks(bl, b.dataset.act === "bd-w" ? "w" : "wv");
       return;
     }
     if (b.dataset.act === "only") picked = [me];
@@ -693,7 +711,7 @@
     var own = await sb.from("game_rooms").select("code").eq("code", DEFAULT_ROOM).eq("host_id", G.profile.id).maybeSingle();   /* phòng "TJ" ưu tiên */
     var code = own.data ? own.data.code : r.data && r.data[0] ? r.data[0].code : await createRoom([], "", { mode: "kahoot", qtype: "meaning", minutes: 5, q_seconds: 15, lang: "vi" });
     var sc = param("scope");   /* giữ chủ đề chọn từ chuột phải cho initHostLobby */
-    history.replaceState(null, "", "?room=" + code + (sc ? "&scope=" + encodeURIComponent(sc) + "&title=" + encodeURIComponent(param("title") || "") : ""));
+    history.replaceState(null, "", "?room=" + code + (sc ? "&scope=" + encodeURIComponent(sc) + "&title=" + encodeURIComponent(param("title") || "") : "") + embQ());
     return joinRoom(code);
   }
   /* host đổi chủ đề trong phòng chờ -> lưu vào phòng + tải trước kho từ để báo số từ/câu */
@@ -1432,7 +1450,7 @@
       } else G.ch.send({ type: "broadcast", event: "hello", payload: {} });   /* xin host gửi lại trạng thái hiện tại */
     });
   }
-  function track() { return G.ch.track({ ts: Date.now(), id: G.me.id, tab: G.tab, cand: !!G.cand, since: G.since, pf: G.profile ? G.profile.id : null, name: G.me.name, no: G.me.name_no, avatar: G.me.avatar, host: G.isHost, play: G.isHost ? hostPlays() : true, lang: G.myLang }); }
+  function track() { return G.ch.track({ ver: GAME_VER, ts: Date.now(), id: G.me.id, tab: G.tab, cand: !!G.cand, since: G.since, pf: G.profile ? G.profile.id : null, name: G.me.name, no: G.me.name_no, avatar: G.me.avatar, host: G.isHost, play: G.isHost ? hostPlays() : true, lang: G.myLang }); }
   /* "Host" do PHÒNG quyết định (hồ sơ = host_id của phòng), không tin máy tự nhận — bản cũ đang mở ở máy khác
      (vd Anti_TJ lúc còn admin) có thể vẫn gửi host:true */
   function isRoomHost(p) { return !!(p && p.pf && G.room && p.pf === G.room.host_id && p.host); }
@@ -1464,6 +1482,7 @@
       if (best) list.push(best);
     });
     G.online = list;
+    if (list.some(function (p) { return +p.ver > GAME_VER; })) { clearTimeout(G.verT); G.verT = setTimeout(checkVersion, 800); }   /* TJ 2026-10-06: có máy trong phòng chạy bản MỚI HƠN -> không đợi 2 phút, kiểm tra + cập nhật ngay (tránh 3 máy 3 bản khác nhau) */
     if (G.cand) {   /* nhiều máy/tab TJ: tab vào sớm nhất làm host */
       var ctrl = cands.filter(function (p) { return p.pf === G.room.host_id; })
         .sort(function (a, b) { return (a.since || 0) - (b.since || 0) || ((a.tab || a.id) < (b.tab || b.id) ? -1 : 1); })[0];
@@ -1525,23 +1544,85 @@
 
   /* ---------- phòng chờ ---------- */
   /* WordLoop (thẻ 🎮 Game, nút 🎮 trên Block card) gửi chủ đề mới khi game đã mở sẵn — đổi tại chỗ, không tải lại */
-  window.addEventListener("message", function (e) {
+  /* TJ 2026-10-06: đưa phòng về PHÒNG CHỜ để chuẩn bị ván mới (đổi chủ đề từ Block / nút Game → trên Bảng): đang chơi dở -> tự kết thúc ván; đang xem kết quả -> ván mới. Trả false nếu không về được phòng chờ (vd ván thi chưa nộp xong). */
+  async function hostPrepLobby() {
+    if (!G.st) return false;
+    if (G.st.phase === "lobby") return true;
+    if (G.st.phase === "play") {   /* TJ 2026-10-06: "tại sao phải bắt như vậy" — bấm Chơi game ở đâu cũng TỰ kết thúc ván dở (kết quả vẫn được lưu) rồi sang phòng chờ, không hỏi */
+      await hostEnd();
+      for (var k = 0; k < 14 && G.st && G.st.phase === "play"; k++) await new Promise(function (r) { setTimeout(r, 500); });   /* ván thi: hostEnd đợi ~3.5s cho cả phòng nộp bài */
+      if (!G.st || G.st.phase === "play") return false;
+    }
+    G.st.phase = "lobby"; G.st.scores = {}; G.st.q = null; G.st.matchId = null;
+    G.answers = []; G.endAt = 0; G.qUntil = 0; G.lastN = -1; G.srsHtml = ""; G.inHist = false;
+    push(); renderLobby();
+    return true;
+  }
+  window.addEventListener("message", async function (e) {
     if (e.origin !== location.origin || !e.data || e.data.type !== "tjwl-game-scope") return;
     var sc = (e.data.scope || []).filter(function (p) { return p && p.table && p.id; });
     if (!sc.length) return;
     if (!G.isHost || !G.st) { G.pendingScope = sc; return; }   /* chưa vào phòng xong -> initHostLobby áp sau */
-    if (G.st.phase !== "lobby") { alert("Đang chơi dở — bấm Kết thúc / Ván mới rồi chọn lại chủ đề nhé."); return; }
+    if (!(await hostPrepLobby())) return;
     picked = sc.map(function (p) { return { table: p.table, id: p.id, title: p.title || p.id }; });
     if (TREE) paintTree(); else paintPicked();
     hostSetScope();
   });
+  /* 🖤 các Block nằm dưới 1 mục của cây (Hub/Notebook/Section/Page/Batch/Block) — tối đa 60 (giới hạn của bảng) */
+  function blocksUnder(table, id) {
+    if (!TREE) return [];
+    var kids = function (list, key, v) { return TREE[list].filter(function (r) { return r[key] === v; }); }, out = [];
+    var addBatch = function (b) { kids("blocks", "batch_id", b.id).forEach(function (x) { out.push([x.id, x.name]); }); };
+    var addPage = function (p) { kids("batches", "page_id", p.id).forEach(addBatch); };
+    var addSec = function (s) { kids("pages", "section_id", s.id).forEach(addPage); };
+    var addNb = function (n) { kids("sections", "notebook_id", n.id).forEach(addSec); kids("notebooks", "parent_notebook_id", n.id).forEach(addNb); };
+    var one = function (list) { return TREE[list].find(function (r) { return r.id === id; }); }, r;
+    if (table === "blocks") { r = one("blocks"); if (r) out.push([r.id, r.name]); }
+    else if (table === "batches") { r = one("batches"); if (r) addBatch(r); }
+    else if (table === "pages") { r = one("pages"); if (r) addPage(r); }
+    else if (table === "sections") { r = one("sections"); if (r) addSec(r); }
+    else if (table === "notebooks") { r = one("notebooks"); if (r) addNb(r); }
+    else if (table === "hubs") { TREE.notebooks.filter(function (n) { return n.hub_id === id && !n.parent_notebook_id; }).forEach(addNb); }
+    return out.slice(0, 60);
+  }
+  /* 🖤 Mở bảng cho 1 mục: đặt chủ đề (nếu đang ở phòng chờ) + mở bảng cho cả phòng + đưa MỌI Block của mục lên bảng (TJ 2026-10-05) */
+  async function openBoardScope(sc) {
+    if (!G.isHost || !G.st || !sc || !sc.length) return;
+    if (!TREE) await loadTree(true);
+    var list = []; sc.forEach(function (p) { list = list.concat(blocksUnder(p.table, p.id)); });
+    if (!list.length) {   /* cây đã tải từ trước -> Block/Batch mới dán bên WordLoop chưa có trong đó: tải lại cây mới rồi thử lại 1 lần (TJ 2026-10-06) */
+      await loadTree(true);
+      sc.forEach(function (p) { list = list.concat(blocksUnder(p.table, p.id)); });
+    }
+    if (!list.length) { alert("Mục này chưa có Block để mở lên bảng."); return; }
+    if (G.st.phase === "lobby") { picked = sc.map(function (p) { return { table: p.table, id: p.id, title: p.title || p.id }; }); hostSetScope(); }
+    if (!G.st.board) { G.st.board = true; push(); }
+    setTimeout(function () { if (window.Board) Board.openBlocks(list.slice(0, 60), "wv"); }, 350);
+  }
+  window.addEventListener("message", function (e) {
+    if (e.origin !== location.origin || !e.data || e.data.type !== "tjwl-game-board") return;
+    var sc = (e.data.scope || []).filter(function (p) { return p && p.table && p.id; });
+    if (!sc.length) return;
+    if (!G.isHost || !G.st) { G.pendingScope = sc; G.pendingBoard = true; return; }
+    openBoardScope(sc);
+  });
+  /* 🖤 nút "Bảng" của Learning: mở / đóng bảng ở màn DANH SÁCH Block (chưa chọn Block) */
+  window.addEventListener("message", function (e) {
+    if (e.origin !== location.origin || !e.data || (e.data.type !== "tjwl-game-boardopen" && e.data.type !== "tjwl-game-boardclose")) return;
+    var on = e.data.type === "tjwl-game-boardopen";
+    if (!G.isHost || !G.st) { G.pendingIdle = on; return; }
+    if (on && window.Board && G.st.bdoc) { G.st.bdoc = null; }
+    G.st.board = on; push();
+  });
   async function initHostLobby() {
+    var wantIdle = param("boardidle") === "1" || !!G.pendingIdle; G.pendingIdle = false;
+    var wantBoard = param("board") === "1" || !!G.pendingBoard; G.pendingBoard = false;
     var sc = param("scope");
     if (!sc && G.pendingScope) { var ps = G.pendingScope[0]; sc = ps.table + ":" + ps.id; G.pendingTitle = ps.title; G.pendingScope = null; }
     if (sc) {   /* mở từ chuột phải trong WordLoop: ?scope=<table>:<id>&title=… -> thành chủ đề ván tới */
       var i = sc.indexOf(":");
       picked = [{ table: sc.slice(0, i), id: sc.slice(i + 1), title: param("title") || G.pendingTitle || sc }];
-      history.replaceState(null, "", "?room=" + G.room.code);
+      history.replaceState(null, "", "?room=" + G.room.code + embQ());
       hostSetScope();
     } else {
       picked = (G.st.scope || []).map(function (p) { return { table: p.table, id: p.id, title: p.title || p.id }; });
@@ -1550,9 +1631,12 @@
     }
     renderLobby();
     await loadTree();
+    if (wantBoard && picked.length) openBoardScope(picked.map(function (p) { return { table: p.table, id: p.id, title: p.title }; }));
+    else if (wantIdle) { G.st.board = true; G.st.bdoc = null; push(); }
   }
   function renderLobby() {
     if (G.inHist) return;   /* đang xem lại / lịch sử: đổi host, ván mới… không kéo màn hình đi (bấm ← để về) */
+    if (G.soundPh !== "lobby") { G.soundPh = "lobby"; stopAllSound(); }   /* CHỈ lúc đổi màn (renderLobby còn chạy lại mỗi lần phòng gửi trạng thái — tắt hoài sẽ cắt tiếng đọc của Bảng) */
     $("#l-review").hidden = !G.log.length;
     show("s-lobby");
     $("#l-code").textContent = G.room.code;
@@ -1680,10 +1764,115 @@
     ch: function () { return G.ch; }, me: function () { return G.me; }, st: function () { return G.st; },
     lang: function () { return uiLang(); },
     isHost: function () { return !!G.isHost; }, players: function () { return players(); },
+    online: function () { return G.online || []; },
+    hostHere: function () { return !!G.isHost || (G.online || []).some(isRoomHost); },   /* host (kể cả máy host khác) đang có mặt trong phòng */   /* v201: dải avatar mọi người trong phòng dưới bảng (kể cả host làm MC) */
     isHostId: function (id) { return !!(G.me && G.isHost && id === G.me.id) || !!(G.st && G.st.hid === id); },
     setBoard: function (v) { if (!G.isHost || !G.st) return; G.st.board = !!v; push(); },
     /* 📁 tài liệu trên bảng (board.js Lib): file ở bucket toeic/lib/…, bài đọc WordLoop từ bảng blocks */
     setDoc: function (d) { if (!G.isHost || !G.st) return; G.st.bdoc = d || null; push(); },
+    /* ⭐ lưu từ trên bảng từ: TJ -> word_progress.bookmarked (vào ⭐ Ôn riêng); người chơi -> danh sách riêng lưu trên máy */
+    starState: async function (ids) {
+      var out = {};
+      if (isTJ()) {
+        var r = await sb.from("word_progress").select("word_id,bookmarked").eq("user_id", HOST_PROFILE_ID).in("word_id", ids);
+        (r.data || []).forEach(function (x) { out[x.word_id] = !!x.bookmarked; });
+      } else { var m = readLS("tjwl_board_stars_v1") || {}; ids.forEach(function (i) { out[i] = !!m[i]; }); }
+      return out;
+    },
+    toggleStar: async function (wid, on) {
+      if (isTJ()) {
+        var r = await sb.from("word_progress").upsert({ user_id: HOST_PROFILE_ID, word_id: wid, bookmarked: !!on }, { onConflict: "user_id,word_id" });
+        if (r.error) { console.warn("bookmark", r.error.message); return !on; }
+        return !!on;
+      }
+      var m = readLS("tjwl_board_stars_v1") || {}; if (on) m[wid] = 1; else delete m[wid]; writeLS("tjwl_board_stars_v1", m); return !!on;
+    },
+    /* ⭐ TỪ AI TRA TRÊN BẢNG -> ÔN RIÊNG CỦA TJ (TJ 2026-10-06: "những từ người chơi tra nghĩa thì cho vào Ôn riêng của TJ"; bỏ sổ riêng của người chơi).
+       Máy VỪA TRA tự ghi: từ của Block -> bookmark đúng dòng đó; từ khác -> tạo 1 dòng trong kho chung (Hub "TJ" › Notebook "🔎 Từ tra trên bảng", 10 từ/Block, không trùng chữ) rồi bookmark cho TJ.
+       Trả về id từ (để máy khác biết) hoặc null nếu lỗi. */
+    autoSave: async function (term, v, row) {
+      try {
+        var wid;
+        if (row && row.id) wid = row.id;
+        else {
+          var slug = tvSlug(term); if (!slug) return null; wid = "lk_w_" + slug;
+          var ex = await sb.from("words").select("id").eq("id", wid).maybeSingle();
+          if (!ex.data) {
+            var bt = await blEnsureTree(), blk = await blBlockFor(bt);
+            var w = await sb.from("words").insert({ id: wid, block_id: blk, term: term, pos: v && v.pos || null, ipa: v && v.ipa || null, meaning_vi: v && v.vi || null, def_en: v && v.en || null, meaning_zh: v && v.zh || null, meaning_es: v && v.es || null, sort: Date.now() % 100000 });
+            if (w.error && !/duplicate/i.test(w.error.message)) throw w.error;
+          }
+        }
+        var bp = await sb.from("word_progress").upsert({ user_id: HOST_PROFILE_ID, word_id: wid, bookmarked: true }, { onConflict: "user_id,word_id" });
+        if (bp.error) throw bp.error;
+        return wid;
+      } catch (e) { console.warn("autoSave", e && e.message || e); return null; }
+    },
+    canBookmark: function () { return isTJ(); },   /* chỉ TJ bỏ ⭐ được (Ôn riêng là của TJ) */
+    setBookmark: async function (wid, on) {
+      if (!isTJ() || !wid) return !on;
+      var r = await sb.from("word_progress").upsert({ user_id: HOST_PROFILE_ID, word_id: wid, bookmarked: !!on }, { onConflict: "user_id,word_id" });
+      return r.error ? !on : !!on;
+    },
+    /* 🪪 thẻ Block trên bảng: đường dẫn, cấp độ, từ; riêng host-TJ thêm tiến độ + hạn ôn (word_progress / block_progress của TJ) */
+    blockInfo: async function (bid) {
+      var out = { bid: bid, path: "", name: "", lv: {}, terms: [], adm: G.isHost && isTJ() ? null : undefined };
+      if (!TREE) await loadTree(true);
+      var b = TREE && TREE.blocks.find(function (r) { return r.id === bid; });
+      if (b) { out.name = b.name; out.path = pathOf({ table: "blocks", id: bid, title: b.name }); }
+      var r = await sb.from("words").select("id,term,level,sort").eq("block_id", bid).limit(300), ids = [];
+      (r.data || []).sort(function (a, b) { return (a.sort || 0) - (b.sort || 0); }).forEach(function (w) { out.terms.push(w.term); ids.push(w.id); var k = lvKey(w.level); out.lv[k] = (out.lv[k] || 0) + 1; });
+      if (G.isHost && isTJ() && ids.length) {
+        var p = await sb.from("word_progress").select("word_id,mastered").eq("user_id", HOST_PROFILE_ID).in("word_id", ids);
+        var m = (p.data || []).filter(function (x) { return x.mastered; }).length;
+        var bp = await sb.from("block_progress").select("passed,next_review_at").eq("user_id", HOST_PROFILE_ID).eq("block_id", bid).maybeSingle();
+        var due = ""; if (bp.data && bp.data.next_review_at) { var dd = Math.round((bp.data.next_review_at - Date.now()) / DAY_MS); due = dd > 0 ? "Ôn sau " + dd + " ngày" : "Đến hạn ôn"; }
+        out.adm = { pct: Math.round(m * 100 / ids.length), passed: !!(bp.data && bp.data.passed), due: due };
+      }
+      return out;
+    },
+    /* Block đang đứng đầu/cuối Batch? (để mũi tên ⏪ ⏩ đổi thành ⏮ ⏭) */
+    edge: function (bid) {
+      if (!TREE) return null;
+      var by = function (l, i) { return TREE[l].find(function (r) { return r.id === i; }); };
+      var bl = by("blocks", bid), ba = bl && by("batches", bl.batch_id), pg = ba && by("pages", ba.page_id), sc = pg && by("sections", pg.section_id); if (!sc) return null;
+      var L = TREE.blocks.filter(function (b) { var a = by("batches", b.batch_id), p = a && by("pages", a.page_id), s2 = p && by("sections", p.section_id); return !!(s2 && s2.notebook_id === sc.notebook_id); });
+      var i = L.findIndex(function (b) { return b.id === bid; }); if (i < 0) return null;
+      return { first: !L[i - 1] || L[i - 1].batch_id !== bl.batch_id, last: !L[i + 1] || L[i + 1].batch_id !== bl.batch_id };
+    },
+    /* ⏪ ⏩ Block kế · ⏮ ⏭ Batch kế (cùng Notebook, theo thứ tự cây) */
+    neighbor: async function (bid, kind, dir) {
+      if (!TREE) await loadTree(true);
+      var by = function (l, i) { return TREE[l].find(function (r) { return r.id === i; }); };
+      var bl = by("blocks", bid), ba = bl && by("batches", bl.batch_id), pg = ba && by("pages", ba.page_id), sc = pg && by("sections", pg.section_id); if (!sc) return null;
+      var inNb = function (b) { var a = by("batches", b.batch_id), p = a && by("pages", a.page_id), s2 = p && by("sections", p.section_id); return !!(s2 && s2.notebook_id === sc.notebook_id); };
+      var L = TREE.blocks.filter(inNb), i = L.findIndex(function (b) { return b.id === bid; }); if (i < 0) return null;
+      if (kind === "block") { var t = L[i + dir]; return t ? { bid: t.id, name: t.name, sameBatch: t.batch_id === bl.batch_id } : null; }
+      var bo = []; L.forEach(function (b) { if (bo.indexOf(b.batch_id) < 0) bo.push(b.batch_id); });
+      var nb = bo[bo.indexOf(bl.batch_id) + dir]; if (!nb) return null;
+      var first = L.find(function (b) { return b.batch_id === nb; }); return first ? { bid: first.id, name: first.name } : null;
+    },
+    /* mở Block + tab học trong WordLoop (tab mới) — app tự khôi phục đúng Notebook/Block từ localStorage */
+    openInApp: function (bid, tab) {
+      if (!TREE) return;
+      var by = function (l, i) { return TREE[l].find(function (r) { return r.id === i; }); };
+      var bl = by("blocks", bid), ba = bl && by("batches", bl.batch_id), pg = ba && by("pages", ba.page_id), sc = pg && by("sections", pg.section_id), nb = sc && by("notebooks", sc.notebook_id);
+      if (!nb) { alert("Không tìm thấy Block trong cây."); return; }
+      try {
+        localStorage.setItem("tjwl_selection_v1", JSON.stringify({ hubId: nb.hub_id, notebookId: nb.id, sectionId: sc.id, pageId: pg.id, batchId: ba.id }));
+        localStorage.setItem("tjwl_last_block_v1", JSON.stringify({ blockId: bid, tab: tab || "study" }));
+      } catch (e) {}
+      window.open("index.html", "_blank");
+    },
+    /* 🎮 chơi game đúng Block đang xem (chỉ khi đang ở phòng chờ) */
+    playBlock: async function (bid, name) {   /* TJ 2026-10-06: Game → trên Bảng = sang thẻ Game với đúng Block đang chiếu, vào PHÒNG CHỜ chờ host chọn dạng game + thời gian rồi tự bấm Bắt đầu (trước: tự bắt đầu ngay) */
+      if (!G.isHost || !G.st) return false;
+      if (!(await hostPrepLobby())) return false;
+      picked = [{ table: "blocks", id: bid, title: name || "Block" }]; hostSetScope();
+      G.st.board = false; push();
+      try { window.parent.postMessage({ type: "tjwl-game-show" }, location.origin); } catch (e) {}   /* WordLoop: rời chế độ Bảng, hiện thẻ Game */
+      return true;
+    },
     lib: {
       list: async function (folder) {
         var r = await sb.storage.from("toeic").list("lib" + (folder ? "/" + folder : ""), { limit: 500, sortBy: { column: "name", order: "asc" } });
@@ -1710,7 +1899,13 @@
     },
     tree: async function () { if (!TREE) await loadTree(true); return TREE; },   /* cây Hub › Notebook › … › Block của game, dùng chung cho hộp chọn bài ở bảng */
     lookup: function (t, ctx) { return boardLookup(t, ctx); },
-    say: function (text) { try { if (!soundOn()) return; sayIt._lang = "en"; sayIt(String(text || ""), true); } catch (e) {} },
+    lookupErr: function () { return boardLookup.err || ""; },
+    say: function (text, force) { try { if (!force && !soundOn()) return; sayIt._lang = "en"; sayIt(String(text || ""), true); } catch (e) {} },   /* force: bấm 🔊 chủ động thì đọc dù đang tắt tiếng */
+    speak: function (text, lang, rate, onB, silent) { return speakP(text, lang, rate, onB, silent); },
+    soundOn: function () { return soundOn(); },
+    volume: function () { return volLevel(); },   /* công tắc 🔊/🔇 CHUNG với game (mỗi máy tự bật/tắt, lưu trên máy) */
+    inLobby: function () { return !G.st || G.st.phase !== "play"; },   /* phòng chờ / kết quả (chưa chơi): bảng người chơi = form riêng toàn màn hình */
+    toggleSound: function () { var on = !soundOn(); try { localStorage.setItem(LS_SOUND, on ? "1" : "0"); } catch (er) {} if (!on && window.speechSynthesis) window.speechSynthesis.cancel(); paintSoundBtn(); return on; },   /* đọc xong mới trả (đọc bài / đọc từ trên bảng), onB(charIndex) = ranh giới từ cho karaoke */
     words: function (bid) { return boardWords(bid); },
     block: async function (id) { var r = await sb.from("blocks").select("id,name,context_passage,context_passage_candidates").eq("id", id).maybeSingle(); return r.data; },
     /* ✨ Tạo bài đọc mới cho Block ngay trên bảng (TJ 2026-10-04): dùng đúng Context.generateAI của WordLoop (Gemini qua gemini-proxy trước, lỗi thì OpenAI qua
@@ -1763,6 +1958,7 @@
     players().forEach(function (p) { G.st.scores[p.id] = { s: 0, c: 0, w: 0, st: 0, best: 0 }; });
     if (G.st.auto !== false && !G.st.race) { var at = autoSec(); G.st.totalSec = at.sec; G.st.minutes = Math.max(1, Math.ceil(at.sec / 60)); } else G.st.totalSec = G.st.minutes * 60;
     G.endAt = Date.now() + G.st.totalSec * 1000;
+    if (window.ga4) window.ga4("game_started", { mode: G.st.mode, qtype: G.st.qtype, players: players().length });
     await sb.from("game_rooms").update({ status: "playing", started_at: new Date().toISOString(), mode: G.st.mode, qtype: G.st.qtype, meaning_lang: G.st.lang, minutes: G.st.minutes, q_seconds: G.st.qs, team_mode: !!G.st.teams, teams: G.st.teams }).eq("id", G.room.id);
     /* mỗi lần bắt đầu = 1 VÁN riêng (lịch sử xem theo ván) */
     var mr = await sb.from("game_matches").insert({ target: tgt(), room_id: G.room.id, title: G.st.title, scope: G.st.scope, mode: G.st.mode, qtype: G.st.qtype, scoring: G.st.scoring || "q", meaning_lang: G.st.lang, minutes: G.st.minutes, q_seconds: G.st.qs, teams: G.st.teams || 0 }).select("id").single();
@@ -1771,7 +1967,7 @@
     clearInterval(G.hostTimer);
     G.hostTimer = setInterval(hostTick, 250);
   });
-  $("#p-stop").addEventListener("click", function () { if (G.isHost && confirm("Kết thúc trận ngay?")) hostEnd(); });
+  $("#p-stop").addEventListener("click", function () { if (G.isHost) hostEnd(); });   /* TJ 2026-10-06: bấm Kết thúc là đóng ván luôn, không hỏi */
   function roomLangs() {
     var set = {}; players().forEach(function (p) { set[effLang(p.lang, G.st, "recall")] = 1; if (G.st.force) set[roomLang(G.st)] = 1; });
     return Object.keys(set);
@@ -1994,6 +2190,7 @@
       if (!G.st.exSubmitAt) { G.st.exSubmitAt = Date.now(); if (G.ex && !G.ex.done && hostPlays()) exSubmit(); push(); setTimeout(hostEnd, 3500); return; }
       if (Date.now() - G.st.exSubmitAt < 3300) return;
     }
+    if (window.ga4) window.ga4("game_finished", { mode: G.st.mode, qtype: G.st.qtype, players: players().length });
     G.st.elapsed = elapsedMs(G.st);   /* chốt thời gian chơi thật trước khi đổi phase -> câu/phút ở màn kết quả đúng */
     clearInterval(G.hostTimer);
     G.st.phase = "end"; G.st.q = null; G.endAt = 0; G.qUntil = 0;
@@ -2247,12 +2444,19 @@
     paintProg(s);
     var roster = s.roster || {}, list = live(s, rankList(s.scores)), teams = +s.teams;
     $("#p-teams").innerHTML = teams ? teamSummary(s, true) : "";
+    /* 🏆 top 3 gọn ngay trên câu hỏi (vòng tròn avatar + hạng); bảng đầy đủ nằm DƯỚI câu hỏi */
+    var t3 = $("#p-top3");
+    if (t3) t3.innerHTML = list.slice(0, 3).map(function (x, i) {
+      var p = roster[x.pid] || {}, sc = x.c != null ? x.c : "";
+      return '<span class="g-t3 g-t3-' + (i + 1) + (G.me && x.pid === G.me.id ? " me" : "") + '" title="' + esc(p.name || "") + '"><i class="g-t3m">' + ["🥇", "🥈", "🥉"][i] + "</i>" + avatar(p.avatar, "g-av-md") + '<em class="g-t3n">' + esc(p.name || "") + "</em>" + (sc !== "" ? "<b>✓" + esc(sc) + "</b>" : "") + "</span>";
+    }).join("");
     $("#p-board").innerHTML = list.map(function (x) {
       var p = roster[x.pid] || {};
       return '<li class="' + (x.pid === G.me.id ? "me" : "") + '"><span class="g-rank">' + x.rank + "</span>" + avatar(p.avatar) +
         '<span class="g-pname">' + label(p) + "</span>" + (teams ? teamDot((s.teamOf || {})[x.pid]) : "") +
         '<span class="g-streak">' + (x.st >= 2 ? "🔥" + x.st : "") + "</span>" + statsHTML(x, s) + tally(x, s) + "</li>";
     }).join("");
+    requestAnimationFrame(fitTImg);   /* bố cục đổi (top 3 / thống kê) -> đo lại cho hình đề vừa màn hình */
   }
 
   /* vẽ 1 câu hỏi (dùng chung Kahoot / Tự do): gợi ý dạng câu + nội dung + 4 lựa chọn HOẶC ô gõ */
@@ -2297,6 +2501,16 @@
     b.onclick = function () { b.hidden = true; fn(); };
   }
   function tStop() { tSeqTok++; if (TAUD) TAUD.pause(); }
+  /* hết ván / về phòng chờ: dừng MỌI âm thanh còn đang đọc (đề thi Listening, đọc từ, giọng máy) — trước đây bấm Kết thúc vẫn nghe đọc tiếp */
+  function stopAllSound() {
+    tStop(); if (AP) { AP.live = false; try { apSync(); } catch (e) {} }
+    if (TAUD) TAUD.ontimeupdate = null;
+    if (AUD) { try { AUD.pause(); } catch (e) {} } G.nextSay = null;
+    playFile._tok = (playFile._tok || 0) + 1;
+    try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) {}
+    G.utt = null; G.saying = false; clearTimeout(G.sayDog);
+    document.body.classList.remove("g-exam");
+  }
   function tPlaySeq(url, seq, onEnd) {   /* phát lần lượt các đoạn [từ, tới] của 1 file */
     var a = tAudio(), tok = ++tSeqTok, i = 0;
     a.playbackRate = 1; if (AP) AP.live = false;
@@ -2461,8 +2675,20 @@
   }
   /* 📖 Xem lại: gắn thanh nghe vào đầu phần lời giải câu Listening */
   function apReview(L) {
-    var q = L && L.tq; if (!q || !q.full) return;
-    var m = String(q.full).match(/^\[aud\] q=([\d.]+)-([\d.]+)(?: g=([\d.]+)-([\d.]+))?/m); if (!m) return;
+    var q = L && L.tq; if (!q) return;
+    if (!q.audl) { var it0 = (G.tItems || []).filter(function (x) { return x.num === q.num && String(x.test || q.test) === String(q.test); })[0]; if (it0) q.audl = (String(it0.passage || "").match(/^\[aud\][^\n]*/m) || [""])[0]; }   /* ván cũ chưa lưu mốc audio -> lấy từ đề */
+    if (!q.audl && !q.audTried && q.test != null && q.num != null) {   /* trang vừa tải (chưa có G.tItems): hỏi thẳng kho đề rồi vẽ lại thanh nghe — kể cả "Cả bài nói" của Part 3–4 */
+      q.audTried = true;
+      sb.from("test_items").select("passage").eq("exam", "toeic").eq("test", String(q.test)).eq("num", q.num).limit(1).then(function (r) {
+        var p = r && r.data && r.data[0] && r.data[0].passage; if (!p) return;
+        q.audl = (String(p).match(/^\[aud\][^\n]*/m) || [""])[0];
+        if (q.audl && rvCur() && rvCur().tq === q && !$("#rv-ap")) apReview(rvCur());
+      }, function () {});
+      return;
+    }
+    if (!q.audl && !q.full) return;
+    q.ansL = (String(L.ans || "").match(/^\(?([A-D])\)?(?:\s|$)/) || [])[1] || "";
+    var m = String(q.audl || q.full).match(/^\[aud\] q=([\d.]+)-([\d.]+)(?: g=([\d.]+)-([\d.]+))?/m); if (!m) return;
     var qa = +m[1], qb = q.gEnd || +m[2], segs = [];
     if (m[3]) { segs.push({ label: apT("all"), a: +m[3], b: qb }); segs.push({ label: apT("q"), a: qa, b: qb }); }
     else segs.push({ label: apT("q"), a: qa, b: qb });
@@ -2507,9 +2733,21 @@
       (Object.keys(evAt).length ? '<div class="g-aprow">' + Object.keys(evAt).sort(function (x, y) { return x - y; }).map(function (n) { var r = evR[n]; return '<button type="button" class="g-btn g-btn-soft g-btn-sm" data-scrp="' + Math.max(span[0], r[0] - 1).toFixed(1) + "-" + Math.min(span[1], r[1] + 1).toFixed(1) + '">🎯 ' + esc(apT("evq")) + " " + n + "</button>"; }).join("") + "</div>" : "") +
       scr.lines.map(function (l, i) {
         var r = T0[i];
-        return '<div class="g-scl' + (mark[i] ? " ev" : "") + '" data-scrp="' + Math.max(span[0], r[0] - 0.8).toFixed(1) + "-" + Math.min(span[1], r[1] + 0.5).toFixed(1) + '">' + (l.sp ? '<b class="g-scsp">' + esc(l.sp) + "</b> " : "") + esc(l.t) + (mark[i] ? ' <span class="g-scq">🎯 ' + mark[i].join(", ") + "</span>" : "") + "</div>";
-      }).join("") + "</div>";
+        var lm = String(l.t).match(/^\(?([A-D])\)\s/), okL = lm && q.ansL && lm[1] === q.ansL;
+        return '<div class="g-scl' + (mark[i] ? " ev" : "") + (okL ? " ok" : "") + '" data-scrp="' + Math.max(span[0], r[0] - 0.8).toFixed(1) + "-" + Math.min(span[1], r[1] + 0.5).toFixed(1) + '">' + (l.sp ? '<b class="g-scsp">' + esc(l.sp) + "</b> " : "") + esc(l.t) + (mark[i] ? ' <span class="g-scq">🎯 ' + mark[i].join(", ") + "</span>" : "") + "</div>";
+      }).join("") + "</div>" +
+      /* 🇻🇳 BẢN DỊCH tiếng Việt dưới lời thoại (TJ 2026-10-06): chạm 1 dòng = nghe đúng câu đó; nút trên đầu = nghe lại cả đoạn */
+      '<div class="g-scr g-scvi"><div class="g-tvh">🇻🇳 Bản dịch tiếng Việt <button type="button" class="g-btn g-btn-soft g-btn-sm" data-scrp="' + span[0].toFixed(1) + "-" + span[1].toFixed(1) + '">🔊 ' + esc(apT("h")) + "</button></div>" +
+      (scr.lines.some(function (l) { return l.vi; }) ? scr.lines.map(function (l, i) {
+        var r = T0[i], lm = String(l.t).match(/^\(?([A-D])\)\s/), okL = lm && q.ansL && lm[1] === q.ansL;
+        return '<div class="g-scl' + (okL ? " ok" : "") + '" data-scrp="' + Math.max(span[0], r[0] - 0.8).toFixed(1) + "-" + Math.min(span[1], r[1] + 0.5).toFixed(1) + '">' + (l.sp ? '<b class="g-scsp">' + esc(l.sp) + "</b> " : "") + esc(l.vi || "") + "</div>";
+      }).join("") : '<div class="g-sub">Câu này chưa có bản dịch tiếng Việt.</div>') + "</div>";
     box.insertAdjacentHTML("beforeend", html);
+    /* 🔊 loa ngay cạnh từng câu con (Part 3–4): nghe đúng chỗ có đáp án, khỏi kéo xuống lời thoại (TJ 2026-10-06) */
+    $$("#rv-opts .g-tsub").forEach(function (s) {
+      var tn = s.querySelector(".g-tnum"), n = tn ? parseInt(tn.textContent, 10) : NaN, r = evR[n]; if (!r || s.querySelector(".g-subev")) return;
+      tn.insertAdjacentHTML("afterend", ' <button type="button" class="g-subev" data-scrp="' + Math.max(span[0], r[0] - 1).toFixed(1) + "-" + Math.min(span[1], r[1] + 1).toFixed(1) + '" title="' + esc(apT("evq")) + " " + n + '">🔊</button>');
+    });
   }
   document.addEventListener("click", function (e) {
     var b = e.target.closest && e.target.closest("[data-scrp]"); if (!b || !AP) return;
@@ -2752,7 +2990,7 @@
       G.log.push({ hint: $("#p-hint").textContent, vi: vi.innerHTML, opts: opts.innerHTML, msg: q.subs ? "✓ " + q.subs.filter(function (sq, i) { return (mine || [])[i] != null && norm(mine[i]) === norm(sq.ans); }).length + "/" + q.subs.length : q.type === "toeic" ? (mine == null ? T("t_skip") : q.pend ? "📝 " + T("t_pend", { a: mine }) : ok ? "✓ " + T("t_right") : "✗ " + T("t_wrong")) : $("#p-msg").textContent.split("  ·  " + T("wait_nextq")).join(""), res: q.type === "toeic" ? (q.pend ? '<div class="g-sub">⏳ ' + esc(T("t_nokey")) + "</div>" : toeicExpl(q)) : $("#p-res").innerHTML,
                    mine: typed ? (mine == null ? "" : String(mine)) : null, ans: typeof q.ans === "string" ? q.ans : "", ok: !!ok, typed: typed, played: iPlay(),
                    wid: q.type === "sheet" ? null : q.wid, tg: tgt() !== "en" ? tgt() : null, sl: q.type === "dict" ? "en" : tgt(),
-                   tq: q.type === "toeic" ? { xm: tPre() === "toeic" ? "" : tPre(), test: q.test || (G.st && G.st.test && G.st.test.test), part: q.part || (G.st && G.st.test && G.st.test.part), num: q.num, vocab: q.vocab || [], full: toeicFull(q), gEnd: q.gEnd || null, last: q.subs ? q.subs[q.subs.length - 1].num : q.num, nums: q.subs ? q.subs.map(function (x) { return x.num; }) : null } : null,
+                   tq: q.type === "toeic" ? { xm: tPre() === "toeic" ? "" : tPre(), test: q.test || (G.st && G.st.test && G.st.test.test), part: q.part || (G.st && G.st.test && G.st.test.part), num: q.num, vocab: q.vocab || [], full: toeicFull(q), audl: (String(q.passage || "").match(/^\[aud\][^\n]*/m) || [""])[0], gEnd: q.gEnd || null, last: q.subs ? q.subs[q.subs.length - 1].num : q.num, nums: q.subs ? q.subs.map(function (x) { return x.num; }) : null } : null,
                    say: q.type === "toeic" ? toeicFull(q) : q.type === "dict" ? q.say || q.ans : q.type === "en2m" ? baseTerm(q.word) : q.type === "write" ? baseTerm(q.term) : typeof q.ans === "string" ? baseTerm(q.ans) : "" });
       saveLog();
     } catch (e) { console.warn("logQ", e); }
@@ -2840,16 +3078,27 @@
   /* 🔍 tra nghĩa ngay trên bảng (chạm từ trong bài đọc / gõ vào ô tra): Gemini qua gemini-proxy, nghĩa theo tiếng giao diện + định nghĩa tiếng Anh, nhớ theo từ+câu */
   var blCache = {};
   async function boardLookup(t, ctx) {
-    var L = uiLang(), k = t.toLowerCase() + "|" + L + "|" + String(ctx || "").slice(0, 60); if (blCache[k]) return blCache[k];
-    var langs = L !== "en" ? [L] : [];
-    try {
-      var res = await fetch(cfg.SUPABASE_URL.replace(/\/$/, "") + "/functions/v1/gemini-proxy", {
-        method: "POST", headers: { "Content-Type": "application/json", "Authorization": "Bearer " + cfg.SUPABASE_ANON_KEY, "apikey": cfg.SUPABASE_ANON_KEY },
-        body: JSON.stringify({ model: cfg.GEMINI_MODEL || "gemini-3.5-flash-lite", user_id: null, block_id: null, sys: "You are a concise bilingual dictionary for English learners. Reply JSON only.",
-          user: "Word/phrase: " + JSON.stringify(t) + (ctx ? ". Paragraph: " + JSON.stringify(String(ctx).slice(0, 700)) : "") + ". Give its meaning" + (ctx ? " IN THIS PARAGRAPH" : "") + ". Return JSON {\"pos\":\"n|v|adj|adv|phr|…\",\"en\":\"short English definition\"" + langs.map(function (l) { return ",\"" + l + "\":\"short meaning in " + LANG_NAME[l] + "\""; }).join("") + "}" }) });
-      var d = await res.json(), raw = d.candidates && d.candidates[0] && d.candidates[0].content.parts[0].text;
-      var v = JSON.parse(String(raw || "").replace(/^```(json)?|```$/g, "").trim()); blCache[k] = v; return v;
-    } catch (e) { return null; }
+    var k = t.toLowerCase() + "|" + String(ctx || "").slice(0, 60); if (blCache[k]) return blCache[k];
+    var langs = ["vi", "zh", "es"];   /* tra 1 lần đủ 3 tiếng + tiếng Anh: kết quả gửi cho cả phòng, mỗi người xem theo tiếng của mình */
+    var payload = JSON.stringify({ model: cfg.GEMINI_MODEL || "gemini-3.5-flash-lite", user_id: null, block_id: null, sys: "You are a concise bilingual dictionary for English learners. Reply JSON only.",
+      user: "Word/phrase: " + JSON.stringify(t) + (ctx ? ". Paragraph: " + JSON.stringify(String(ctx).slice(0, 700)) : "") + ". Give its meaning" + (ctx ? " IN THIS PARAGRAPH" : "") + ". Return JSON {\"pos\":\"n|v|adj|adv|phr|…\",\"ipa\":\"IPA pronunciation like /ˈwɛə.haʊs/\",\"en\":\"short English definition\"" + langs.map(function (l) { return ",\"" + l + "\":\"short meaning in " + LANG_NAME[l] + "\""; }).join("") + "}" });
+    boardLookup.err = "";
+    /* TJ 2026-10-06: có máy tra được, máy khác không -> lỗi chập chờn (mạng chậm quá 12s / AI từ chối tạm thời) chỉ báo chung "chưa tra được". Nay: thử lại 1 lần + ghi LÝ DO (HTTP / quá giờ / định dạng) để hiện cho người dùng. */
+    for (var attempt = 0; attempt < 2; attempt++) {
+      var ac = typeof AbortController !== "undefined" ? new AbortController() : null, tm = ac ? setTimeout(function () { ac.abort(); }, attempt ? 15000 : 12000) : null;   /* quá giờ thì bỏ (hết treo ⏳ trên điện thoại) */
+      try {
+        var res = await fetch(cfg.SUPABASE_URL.replace(/[/]$/, "") + "/functions/v1/gemini-proxy", {
+          signal: ac ? ac.signal : undefined, method: "POST", headers: { "Content-Type": "application/json", "Authorization": "Bearer " + cfg.SUPABASE_ANON_KEY, "apikey": cfg.SUPABASE_ANON_KEY }, body: payload });
+        if (!res.ok) { boardLookup.err = "AI báo lỗi " + res.status + (res.status === 429 ? " (quá nhiều lượt, đợi vài giây)" : ""); if (attempt === 0) { await new Promise(function (r) { setTimeout(r, 1200); }); continue; } return null; }
+        var d = await res.json(), raw = d.candidates && d.candidates[0] && d.candidates[0].content.parts[0].text;
+        var v = JSON.parse(String(raw || "").replace(/^```(json)?|```$/g, "").trim()); blCache[k] = v; boardLookup.err = ""; return v;
+      } catch (e) {
+        boardLookup.err = e && e.name === "AbortError" ? "AI trả lời quá chậm" : "AI trả lời sai định dạng hoặc mất mạng";
+        if (attempt === 0) { await new Promise(function (r) { setTimeout(r, 800); }); continue; }
+        return null;
+      } finally { if (tm) clearTimeout(tm); }
+    }
+    return null;
   }
   async function tvEnsureTree(test, part) {
     var sec = "toe_ex_t" + test, pg = sec + "_p" + part, bt = pg + "_b";
@@ -2859,6 +3108,24 @@
       ["batches", { id: bt, page_id: pg, name: "Từ đã lưu", sort: 0, created_at: Date.now() }]];
     for (var i = 0; i < rows.length; i++) { var r = await sb.from(rows[i][0]).upsert(rows[i][1], { onConflict: "id", ignoreDuplicates: true }); if (r.error) throw r.error; }
     return bt;
+  }
+  /* 🔎 kho "Từ tra trên bảng": Hub "TJ" (hub_toeic_hub) › Notebook › Section › Page › Batch › Block (10 từ/Block) */
+  var BL = { hub: "hub_toeic_hub", nb: "nb_board_lookup", sec: "sec_board_lookup", pg: "pg_board_lookup", bt: "bt_board_lookup" };
+  async function blEnsureTree() {
+    var rows = [["notebooks", { id: BL.nb, hub_id: BL.hub, name: "🔎 Từ tra trên bảng", sort: 98, visibility: "everyone" }],
+      ["sections", { id: BL.sec, notebook_id: BL.nb, name: "Từ người chơi tra", sort: 0 }],
+      ["pages", { id: BL.pg, section_id: BL.sec, name: "Tất cả", sort: 0 }],
+      ["batches", { id: BL.bt, page_id: BL.pg, name: "Từ đã tra", sort: 0, created_at: Date.now() }]];
+    for (var i = 0; i < rows.length; i++) { var r = await sb.from(rows[i][0]).upsert(rows[i][1], { onConflict: "id", ignoreDuplicates: true }); if (r.error) throw r.error; }
+    return BL.bt;
+  }
+  async function blBlockFor(bt) {   /* Block cuối còn chỗ (<10 từ), hết chỗ thì mở Block mới */
+    var bl = await sb.from("blocks").select("id,sort").eq("batch_id", bt).order("sort");
+    var last = (bl.data || []).slice(-1)[0];
+    if (last) { var c = await sb.from("words").select("id", { count: "exact", head: true }).eq("block_id", last.id); if ((c.count || 0) < 10) return last.id; }
+    var n = (bl.data || []).length + 1, id = "bl_board_lookup_" + n;
+    var r = await sb.from("blocks").insert({ id: id, batch_id: bt, name: "Từ tra #" + n, global_index: n, sort: n });
+    if (r.error && !/duplicate/i.test(r.error.message)) throw r.error; return id;
   }
   async function tvBlockFor(bt) {   /* Block CUỐI của Part còn chỗ (<10 từ), hết chỗ thì mở Block mới */
     var bl = await sb.from("blocks").select("id,sort").eq("batch_id", bt).order("sort");
@@ -2904,20 +3171,24 @@
   /* G.rv = danh sách đang xem: ván vừa chơi (G.log) hoặc 1 ván cũ trong 📜 Lịch sử (pastReview) */
   function renderReview(i, list) {
     var rp = $("#rv-replay"); if (rp) rp.hidden = !(G.isHost && G.room && G.st && G.st.phase !== "play" && (G.rvFrom === "end" || (G.rvMatch && G.rvMatch.qtype !== "toeic")));   /* 🔁 ván cũ đề thi: chưa lưu đề/Part nên không chơi lại được */
-    if (list) G.rv = list;
+    if (list) { G.rv = list; G.rvOnlyWrong = false; G.rvWrongIdx = null; }
     var R = G.rv || G.log;
     if (!R.length) return;
     G.inHist = true;   /* phòng gửi trạng thái cũng không kéo khỏi màn này (xem onState) */
     rvI = Math.max(0, Math.min(R.length - 1, i));
     var L = R[rvI];
     show("s-review");
-    $("#rv-pos").textContent = (rvI + 1) + " / " + R.length;
-    $("#rv-prev").disabled = rvI === 0; $("#rv-next").disabled = rvI === R.length - 1;
+    var wl = G.rvOnlyWrong && G.rvWrongIdx, wp = wl ? wl.indexOf(rvI) : -1;
+    $("#rv-pos").textContent = wl ? (wp >= 0 ? wp + 1 : "–") + " / " + wl.length + " ❌" : (rvI + 1) + " / " + R.length;
+    $("#rv-prev").disabled = wl ? !wl.some(function (x) { return x < rvI; }) : rvI === 0;
+    $("#rv-next").disabled = wl ? !wl.some(function (x) { return x > rvI; }) : rvI === R.length - 1;
+    var rw = $("#rv-wrong"); if (rw) { rw.hidden = !R.some(function (x) { return x.tq; }); rw.classList.toggle("on", !!G.rvOnlyWrong); rw.classList.toggle("g-btn-soft", !G.rvOnlyWrong); rw.textContent = "❌ Câu sai" + (wl ? " (" + wl.length + ")" : ""); }
     paintStar(L);
     $("#rv-back").textContent = G.rvFrom === "hist" ? T("back_hist") : T("back_res");
-    $("#rv-hint").textContent = L.hint; $("#rv-vi").innerHTML = L.vi; $("#rv-opts").innerHTML = L.opts; $("#rv-opts").classList.toggle("g-tbook", !!L.tq); if (L.tq) tqPickAvatars(L); $("#rv-hint").hidden = !!L.tq; $$("#rv-vi .g-taud").forEach(function (x) { var r = x.closest(".g-row") || x; r.hidden = true; }); $("#rv-res").innerHTML = L.res; $("#rv-msg").textContent = L.msg;
+    $("#rv-hint").textContent = L.hint; $("#rv-vi").innerHTML = L.vi; $("#rv-opts").innerHTML = L.opts; $("#rv-opts").classList.toggle("g-tbook", !!L.tq); if (L.tq) tqPickAvatars(L); if (L.tq) { var tqn = L.tq.nums && L.tq.nums.length > 1 ? L.tq.nums[0] + "–" + L.tq.nums[L.tq.nums.length - 1] : L.tq.num; $("#rv-hint").innerHTML = '<span class="g-rvtag">📝 ' + esc(tName(L.tq.test)) + " · Part " + esc(L.tq.part) + " · " + (L.tq.nums && L.tq.nums.length > 1 ? "Câu " : "Câu ") + esc(tqn) + "</span>"; }
+    $("#rv-hint").hidden = !L.tq; $$("#rv-vi .g-taud").forEach(function (x) { var r = x.closest(".g-row") || x; r.hidden = true; }); $("#rv-res").innerHTML = L.res; $("#rv-msg").textContent = L.msg;
     /* 🔊 nghe lại (TJ 2026-10-02): nút cạnh ◀ ▶ + loa nhỏ ngay sau từ đúng; đang bật tiếng thì sang câu tự đọc */
-    $("#rv-say").hidden = !L.say || !!(L.tq && (L.tq.xm || /\[aud\]/.test(L.tq.full || ""))); $("#rv-say").dataset.say = L.say || ""; $("#rv-say").dataset.sl = L.sl || "en";
+    $("#rv-say").hidden = !L.say || !!(L.tq && (L.tq.xm || /\[aud\]/.test(L.tq.audl || L.tq.full || ""))); $("#rv-say").dataset.say = L.say || ""; $("#rv-say").dataset.sl = L.sl || "en";
     $$("#rv-vi .g-fill").forEach(function (f) { if (L.say && !L.tq) f.insertAdjacentHTML("afterend", spk(L.say, L.sl)); });   /* đề thi: nghe cả câu bằng nút #rv-say, không chen loa giữa câu */
     $("#rv-say").textContent = T("rv_listen");
     if (L.tg === "zh") { loadPinyin(); decoratePy($("#s-review"), true); }
@@ -3011,6 +3282,20 @@
   }
   /* 📖 XEM LẠI TẤT CẢ các ván (TJ 2026-10-03): gom game_answers của mình ở MỌI ván, mỗi từ (theo từng ngôn ngữ đã học)
      1 thẻ "đúng N lần · sai M lần". "❌ Chỉ từ hay sai": từ từng sai, sai nhiều nhất lên trước. */
+  /* 🔎 Từ đã tra (TJ 2026-10-06): từ người chơi tra trên Bảng — lưu trên máy này (board.js lkKeep), xem lại ở 📜 Lịch sử */
+  var LOOKED_T = { vi: "🔎 Từ đã tra", en: "🔎 Words I looked up", es: "🔎 Palabras buscadas", zh: "🔎 查过的词" };
+  function renderLooked() {
+    G.inHist = true; show("s-looked");
+    var L = []; try { L = JSON.parse(localStorage.getItem("tjwl_looked_v1") || "[]"); } catch (e) {}
+    var lang = uiLang(), box = $("#lk-body");
+    if (!L.length) { box.innerHTML = '<p class="g-sub">Chưa có từ nào. Khi bạn chạm hoặc gõ tra từ ở Bảng, từ sẽ được lưu ở đây để xem lại.</p>'; return; }
+    box.innerHTML = '<p class="g-sub">' + L.length + " từ · mới nhất ở trên</p>" + L.map(function (x) {
+      var v = x.v || {}, mean = v[lang] || v.vi || v.en || "", d = new Date(x.t || 0);
+      return '<div class="g-lkrow"><div class="g-lkh">' + spk(x.w, "en") + '<b class="g-lkw">' + esc(x.w) + "</b>" + (v.pos ? '<span class="g-lkpos">' + esc(v.pos) + "</span>" : "") + (v.ipa ? '<span class="g-sub">' + esc(v.ipa) + "</span>" : "") + '<span class="g-sub g-lkd">' + d.toLocaleDateString() + "</span></div>" +
+        (mean ? '<div class="g-lkm">' + esc(mean) + "</div>" : "") + (v.en && v.en !== mean ? '<div class="g-sub">' + esc(v.en) + "</div>" : "") + "</div>";
+    }).join("");
+  }
+  $("#lk-back").addEventListener("click", function () { renderHistory("me"); });
   async function allReview(onlyWrong) {
     if (!G.me) return;
     var rows = [], from = 0;
@@ -3035,14 +3320,39 @@
     renderReview(0, list);
   }
   $("#hi-body").addEventListener("click", function (e) {
+    if (e.target.closest("[data-looked]")) { renderLooked(); return; }
     var all = e.target.closest("[data-rvall]"); if (all) { allReview(all.dataset.rvall === "wrong"); return; }
+    var rp = e.target.closest("[data-replay]"); if (rp) { replayMatch(rp.dataset.replay); return; }
     var b = e.target.closest("[data-rvmatch]"); if (!b) return;
     e.preventDefault(); pastReview(b.dataset.rvmatch, b.dataset.title);
   });
   function spk(text, lang) { return '<button type="button" class="g-spk" data-say="' + esc(text) + '" data-sl="' + esc(lang || "") + '" title="Nghe lại">🔊</button>'; }
   document.addEventListener("click", function (e) { var b = e.target.closest("[data-say]"); if (b && b.dataset.say) { sayIt._lang = b.dataset.sl || null; sayIt(b.dataset.say, true); } });
-  $("#rv-prev").addEventListener("click", function () { renderReview(rvI - 1); });
-  $("#rv-next").addEventListener("click", function () { renderReview(rvI + 1); });
+  function rvStep(d) {
+    var wl = G.rvOnlyWrong && G.rvWrongIdx; if (!wl) return renderReview(rvI + d);
+    var c = wl.filter(function (x) { return d < 0 ? x < rvI : x > rvI; }); if (c.length) renderReview(d < 0 ? c[c.length - 1] : c[0]);
+  }
+  $("#rv-prev").addEventListener("click", function () { rvStep(-1); });
+  $("#rv-next").addEventListener("click", function () { rvStep(1); });
+  /* ❌ CHỈ XEM CÂU SAI (TJ 2026-10-06): câu mà có người CHỌN đáp án sai; người ở trong phòng nhưng không chọn gì thì không tính (pick map chỉ có dòng choice != null) */
+  $("#rv-wrong").addEventListener("click", async function () {
+    var R = G.rv || G.log;
+    if (G.rvOnlyWrong) { G.rvOnlyWrong = false; return renderReview(rvI); }
+    var mid = G.logMatch; if (!mid || !/^[0-9a-f-]{20,}$/i.test(String(mid))) return;
+    this.textContent = "⏳"; var M = await tqPickMap(mid), idx = [];
+    R.forEach(function (L, i) {
+      if (!L.tq) return;
+      var d = document.createElement("div"); d.innerHTML = L.opts; var bad = false;
+      d.querySelectorAll(".g-opt").forEach(function (b) {
+        var num = b.dataset.sub != null && L.tq.nums ? L.tq.nums[+b.dataset.sub] : L.tq.num, m0 = M["toeic:" + L.tq.test + ":" + L.tq.part + ":" + num] || {}, who = m0[norm(b.dataset.opt)] || [];
+        if (who.length && !b.classList.contains("ok")) bad = true;
+      });
+      if (bad) idx.push(i);
+    });
+    G.rvWrongIdx = idx; G.rvOnlyWrong = true;
+    var first = idx.filter(function (x) { return x >= rvI; })[0]; if (first == null) first = idx[0];
+    renderReview(first != null ? first : rvI);
+  });
   $("#rv-back").addEventListener("click", function () { apStop();   /* về đúng màn hiện tại của phòng (ván mới đã mở thì về phòng chờ) */
     if (G.rvFrom === "hist") { G.rvFrom = null; return renderHistory("me"); }   /* xem ván cũ -> về 📜 Lịch sử */
     G.inHist = false;
@@ -3106,7 +3416,7 @@
             return "<tr><td>" + (typeof p.p === "number" ? "Part " : "Câu ") + p.p + "</td><td>" + esc(p.name) + '</td><td class="g-num">' + p.q + ' câu</td><td class="g-num">' +
               (p.sec ? p.sec : fmtMin(p.min) + (p.each ? "<br><small>" + p.each + " phút/câu</small>" : "")) + "</td></tr>"; }).join("") + "</tbody></table></div>";
       }).join("") +
-      tScoreGuide() +
+      tScoreGuide() + tIntroHTML() +
       '<p class="g-sub">Đã có: ETS 2024 Test 1–10, mỗi đề đủ 200 câu (đáp án chính thức, audio Listening, lời giải Reading 4 thứ tiếng). Sắp có: 📝 thi thử full 2 giờ · ✍️🎙 Viết/Nói dạng ghép câu + AI chấm theo đúng tiêu chí ở trên.</p>';
   }
   /* ---------- 📊 ĐIỂM TOEIC & CÂU HAY SAI (TJ 2026-10-04: "từng Part nhớ điểm, full bài xem đạt bao nhiêu, thống kê câu hay sai, cho luyện thêm") ----------
@@ -3210,9 +3520,18 @@
     zh: { h: "🎯 房间正在准备 TOEIC 考试", what: "TOEIC 是 ETS 的职场英语考试。听力 + 阅读总分 10–990，每部分最高 495 分。", lc: "🎧 听力 — 100 题，约 45 分钟：Part 1 看图 · Part 2 应答 · Part 3 对话 · Part 4 独白", rc: "📖 阅读 — 100 题，75 分钟：Part 5 句子填空 · Part 6 段落填空 · Part 7 阅读理解", tips: "🧠 应试策略", wait: "等待主持人选题并开始" },
     es: { h: "🎯 La sala se prepara para un examen TOEIC", what: "TOEIC es el examen de inglés laboral de ETS. Listening + Reading se puntúan de 10 a 990, hasta 495 cada parte.", lc: "🎧 Listening — 100 preguntas, ~45 min: Part 1 fotos · Part 2 pregunta–respuesta · Part 3 conversaciones · Part 4 charlas", rc: "📖 Reading — 100 preguntas, 75 min: Part 5 frases · Part 6 completar textos · Part 7 comprensión lectora", tips: "🧠 Estrategias del examen", wait: "Esperando a que el anfitrión elija el examen y empiece" }
   };
+  function tIntroHTML() {   /* bảng giới thiệu + chiến thuật TOEIC — bung hết (host) */
+    var L = uiLang(), X = TINTRO[L] || TINTRO.en, tips = (window.TOEIC_TIPS || {})[L] || (window.TOEIC_TIPS || {}).en || [];
+    return '<div class="g-card g-tintro g-tintro-host"><h3 class="g-tih">' + esc(X.h) + '</h3><p class="g-tiw">' + esc(X.what) + '</p><ul class="g-til"><li>' + esc(X.lc) + "</li><li>" + esc(X.rc) + "</li></ul>" +
+      '<div class="g-tih2">' + esc(X.tips) + "</div>" +
+      tips.map(function (sec) { return "<details open><summary><b>" + esc(sec.h) + "</b></summary><ul>" + sec.items.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></details>"; }).join("") + "</div>";
+  }
   function paintTIntro() {
+    document.body.classList.toggle("g-viewer", !!(G.room && !G.isHost));   /* người chơi trong phòng: không thấy thanh Phòng game · TOEIC · IELTS · EA · Digital Marketing (chỉ host cần) */
+    var hh = (G.isHost ? G.hub : "vocab") || "vocab";   /* TJ 2026-10-06: người chơi chỉ giữ "WordLoop Game" như hiện tại cho cả phòng; TOEIC chỉ là việc của host */
+    if (hh !== window.TJ_HUB) { window.TJ_HUB = hh; try { document.dispatchEvent(new CustomEvent("tjwl-hubchanged", { detail: hh })); } catch (e) {} }
     var box = $("#l-tintro"); if (!box) return;
-    var on = !!(G.st && G.st.hub === "test" && G.st.phase === "lobby" && !G.isHost);
+    var on = false;   /* TJ 2026-10-06: bảng giới thiệu + chiến thuật TOEIC chuyển sang giao diện host (dưới "Cách tính điểm"), người chơi không thấy */
     box.hidden = !on; if (!on) { box.dataset.k = ""; return; }
     var L = uiLang(), k = L + "|" + (G.st.title || "") + "|" + (G.st.xm || ""); if (box.dataset.k === k) return; box.dataset.k = k;
     var xs = G.st.xm && XM && XM[G.st.xm]; if (xs) { box.innerHTML = xs.introHTML(L, G.st.qtype === "toeic" ? G.st.title : ""); return; }   /* 🧩 phòng chờ của môn ngoài TOEIC */
@@ -3421,7 +3740,7 @@
     var tab = h === "dm" && XM && XM.dm ? "dm" : h === "test" ? "test" : "vocab", xk = tab === "dm" ? "dm" : "";   /* nút hub: vocab | test (TOEIC) | môn ngoài TOEIC (G.hub vẫn là "test") */
     h = xk ? "test" : tab;
     if (h === "test" && G.hub !== "test") vocabSnap();
-    G.hub = h; G.xmHub = xk;
+    G.hub = h; G.xmHub = xk; window.TJ_HUB = h; try { document.dispatchEvent(new CustomEvent("tjwl-hubchanged", { detail: h })); } catch (e) {}   /* thanh thẻ trên (learn.js) tô sáng đúng thẻ */
     if (G.isHost && G.st && (G.st.hub !== h || (G.st.xm || "") !== xk)) { G.st.hub = h; if (xk) G.st.xm = xk; else delete G.st.xm; push(); }   /* người chơi thấy giới thiệu + chiến thuật TOEIC trong phòng chờ */
     var box = $("#l-host"); if (!box) return;
     box.classList.toggle("g-hubtest", h === "test");
@@ -3441,6 +3760,8 @@
     try { localStorage.setItem(LS_HUB, tab); } catch (e) {}
   }
   $("#l-hubs").addEventListener("click", function (e) { var b = e.target.closest("[data-hub]"); if (b) setHub(b.dataset.hub); });
+  /* TJ 2026-10-06: thanh thẻ TRÊN "Phòng game · TOEIC · IELTS · EA · Digital Marketing" (learn.js): bấm TOEIC / Phòng game = host đổi hub (người chơi chỉ thấy bảng giới thiệu TOEIC khi host đang ở thẻ TOEIC) */
+  document.addEventListener("tjwl-sethub", function (e) { if (G.isHost) setHub(e.detail); });
   setHub(readLSraw(LS_HUB) || "vocab");
 
   /* 🔀 GHÉP CÂU: bấm mảnh -> lên hàng câu; bấm mảnh trên hàng -> trả về; đủ mảnh -> tự nộp */
@@ -3664,13 +3985,20 @@
   }
   async function tqPickAvatars(L) {
     var mid = G.logMatch; if (!mid || !/^[0-9a-f-]{20,}$/i.test(String(mid))) return;
-    var M = await tqPickMap(mid, L.tq.xm), tq = L.tq, ros = (G.st && G.st.roster) || {};
+    var M = await tqPickMap(mid, L.tq.xm), tq = L.tq, ros = Object.assign({}, G.plCache || {}, (G.st && G.st.roster) || {});
+    /* roster của phòng hiện tại có thể không còn người đó (ván cũ / đã về phòng chờ) -> lấy tên + avatar từ bảng người chơi để KHÔNG mất avatar/tên */
+    var miss = {}; Object.keys(M).forEach(function (k) { Object.keys(M[k]).forEach(function (o) { M[k][o].forEach(function (pid) { if (!ros[pid]) miss[pid] = 1; }); }); });
+    var mk = Object.keys(miss);
+    if (mk.length) { try { var pr = await sb.from("game_players").select("id,name,avatar").in("id", mk); G.plCache = G.plCache || {}; (pr.data || []).forEach(function (x) { G.plCache[x.id] = { name: x.name, avatar: x.avatar }; ros[x.id] = G.plCache[x.id]; }); } catch (e) {} }
     if (rvCur() !== L) return;   /* đã sang câu khác */
     $$("#rv-opts .g-opt").forEach(function (b) {
       var num = b.dataset.sub != null && tq.nums ? tq.nums[+b.dataset.sub] : tq.num, m0 = M[(tq.xm || "toeic") + ":" + tq.test + ":" + tq.part + ":" + num] || {}, who = m0[norm(b.dataset.opt)] || [];
       var box = b.querySelector(".g-pickers"); if (!box) { box = document.createElement("span"); box.className = "g-pickers"; b.appendChild(box); }
-      box.innerHTML = who.map(function (pid) { var p = ros[pid] || {}; return '<span title="' + esc(p.name || "") + '">' + avatar(p.avatar, "g-av-sm") + "</span>"; }).join("") + (who.length ? '<span class="g-cnt">' + who.length + "</span>" : "");
+      if (who.length && !b.classList.contains("ok")) b.classList.add("bad");   /* người chọn sai -> đáp án đó đỏ (TJ 2026-10-06) */
+      box.innerHTML = who.map(function (pid) { var p = ros[pid] || {}; return '<span class="g-pk" title="' + esc(p.name || "") + '">' + avatar(p.avatar, "g-av-sm") + '<em>' + esc(p.name || "") + "</em></span>"; }).join("");
     });
+    /* ❌ chỉ xem câu sai: trong nhóm Part 3–4, ẩn câu con mà ai chọn cũng đúng */
+    if (G.rvOnlyWrong && tq.nums && tq.nums.length > 1) $$("#rv-opts .g-tsub").forEach(function (s) { s.hidden = !s.querySelector(".g-opt.bad"); });
   }
   function paintPickers(q, roster, sel) {
     if (q.type === "toeic") return;   /* 🎯 làm đề: không tô đáp án lúc đang làm (màn hình chung cũng vậy) */
@@ -3681,7 +4009,7 @@
       if (o === norm(q.ans)) b.classList.add("ok");
       else if (G.myChoice && o === norm(G.myChoice)) b.classList.add("bad");
       var box = b.querySelector(".g-pickers");
-      if (box) box.innerHTML = who.map(function (pid) { var p = roster[pid] || {}; return avatar(p.avatar, "g-av-sm" + (pid === q.fast ? " g-fast" : "")); }).join("") + (who.length ? '<span class="g-cnt">' + who.length + "</span>" : "");
+      if (box) box.innerHTML = who.map(function (pid) { var p = roster[pid] || {}; return '<span class="g-pk" title="' + esc(p.name || "") + '">' + avatar(p.avatar, "g-av-sm" + (pid === q.fast ? " g-fast" : "")) + '<em>' + esc(p.name || "") + "</em></span>"; }).join("");
     });
   }
   /* host CHẤM LUÔN câu của chính mình (không đi vòng qua mạng): trước đây host gửi rồi tự nhận lại qua kênh —
@@ -3733,6 +4061,7 @@
   });
   function sendAnswer(choice) {
     var s = G.st;
+    if (window.ga4) window.ga4("quiz_answered", { qtype: s.qtype });
     G.myChoice = choice;
     if (isChoice(s.q)) $("#p-msg").textContent = T("picked_change");   /* KHÔNG khoá: còn giờ thì bấm ô khác để đổi */
     else lockAll(T("picked"));
@@ -3767,6 +4096,12 @@
      - Lỗi âm thanh tạm (audio-busy / synthesis-failed) -> thử lại 1 lần. */
   /* 🔊 FILE GHI ÂM có sẵn (words.audio) -> phát file; lỗi file thì đọc bằng giọng máy. Dùng 1 thẻ <audio> cho cả trang
      (điện thoại cho phát sau lần chạm đầu). Tự đọc khi file đang phát -> xếp hàng như giọng máy. */
+  /* TJ 2026-10-06: giọng đọc của Game/Bảng do người dùng TỰ CHỌN (ô 🗣 trên thanh âm thanh của Bảng), RIÊNG máy này, KHÔNG theo Learning.
+     Chưa chọn -> để trống = tự động như cũ (ưu tiên giọng có sẵn trong máy). */
+  function learnVoice(all) {
+    var nm = readLSraw("tjwl_game_voice_v1");
+    return nm && all.find(function (x) { return x.name === nm; }) || null;
+  }
   var AUD = null;
   function playFile(url, text, now) {
     if (!AUD) { AUD = new Audio(); AUD.preload = "auto"; }
@@ -3803,6 +4138,33 @@
     window.esc = window.esc || esc;
     return (ctxP = new Promise(function (ok, no) { var sc = document.createElement("script"); sc.src = "js/context.js?v=" + CTX_VER; sc.onload = ok; sc.onerror = function () { ctxP = null; no(new Error("Không tải được bộ tạo bài đọc")); }; document.head.appendChild(sc); }));
   }
+  function speakP(text, lang, rate, onB, silent) {
+    return new Promise(function (ok) {
+      var done = false, wd = 0, fin = function () { if (!done) { done = true; clearTimeout(wd); ok(); } };
+      try {
+        var syn = window.speechSynthesis; if (!syn || !text) return ok();
+        if (silent) { wd = setTimeout(fin, 300 + String(text).length * 66 / Math.max(.25, rate || .9)); return; }   /* máy này TẮT TIẾNG: không phát, chỉ giữ nhịp theo thời lượng ước tính để karaoke vẫn chạy */
+        var tl = TTS_LANG[lang] || lang || "en-US", u = new SpeechSynthesisUtterance(String(text));
+        u.lang = tl; u.rate = rate || 0.9; u.volume = volLevel();   /* thanh âm lượng CHUNG với game (0 = im lặng) */
+        var all = syn.getVoices() || [], v = tl === "en-US" && learnVoice(all) || null;
+        if (!v) {   /* ưu tiên giọng CÓ SẴN trong máy (giọng "Google…/Online" đọc qua mạng, có máy im lặng) */
+          var m = all.filter(function (x) { return x.lang.replace("_", "-").toLowerCase().indexOf(tl.toLowerCase()) === 0; });
+          if (!m.length) m = all.filter(function (x) { return x.lang.slice(0, 2).toLowerCase() === tl.slice(0, 2).toLowerCase(); });
+          v = m.filter(function (x) { return x.localService; })[0] || m[0] || null;
+        }
+        if (v) u.voice = v;
+        (G.sayKeep = G.sayKeep || []).push(u); if (G.sayKeep.length > 8) G.sayKeep.shift();   /* giữ tham chiếu: Chrome có lỗi dọn mất utterance -> onend không bao giờ tới */
+        var started = false; u.onstart = function () { started = true; };
+        u.onend = fin;
+        u.onerror = function (e) { if (e && e.error === "not-allowed") tapHint(true); fin(); };
+        setTimeout(function () { if (!started && !done && window.Board && Board.noSound) Board.noSound(); }, 2500);   /* 2.5s chưa phát được -> báo rõ thay vì im lặng */
+        if (onB) u.onboundary = function (e) { if (e && e.charIndex != null) onB(e.charIndex); };
+        wd = setTimeout(function () { try { if (started || !syn.speaking) syn.cancel(); } catch (e) {} fin(); }, 4000 + String(text).length * 140 / Math.max(.25, u.rate));   /* chưa bắt đầu mà hàng đợi đang đọc của cửa sổ KHÁC (cùng Chrome) -> đừng cancel làm cắt tiếng họ */
+        try { syn.resume(); } catch (e) {}
+        syn.speak(u);
+      } catch (e) { fin(); }
+    });
+  }
   function sayIt(text, now) {
     try {
       var fl = sayIt._lang || tgt(), url = sayIt._nofile === text || (G.fileFails || 0) >= 2 ? null : G.audioMap[fl + "|" + String(text || "").trim()];
@@ -3817,7 +4179,7 @@
       var tl = TTS_LANG[sayIt._lang || tgt()] || "en-US"; sayIt._lang = null;
       var u = new SpeechSynthesisUtterance(text); u.lang = tl; u.rate = 0.9; u.volume = volLevel();
       var all = syn.getVoices(), mine = readLSraw("tjwl_voice_v1");   /* giọng đã chọn bên WordLoop (js/speech.js LS_VOICE) */
-      var v = tl === "en-US" && mine && all.find(function (x) { return x.name === mine; }) || null;   /* giọng chọn bên WordLoop là giọng tiếng Anh */
+      var v = tl === "en-US" && learnVoice(all) || null;   /* đúng giọng Learning đang dùng (đã chọn, hoặc giọng mặc định của Learning) */
       if (!v) { var pre = tl.slice(0, 2), en = all.filter(function (x) { return x.lang.replace("_", "-").toLowerCase().indexOf(tl.toLowerCase()) === 0; });
         if (!en.length) en = all.filter(function (x) { return x.lang.slice(0, 2).toLowerCase() === pre; });
         /* giọng "Google …"/"… Online" đọc qua máy chủ Google/Microsoft — ở Trung Quốc không vào được Google nên im lặng.
@@ -4128,6 +4490,7 @@
   function freeAnswer(choice, btn) {
     var q = G.myQ; if (!q) return;
     q.done = true;
+    if (window.ga4) window.ga4("quiz_answered", { qtype: G.st && G.st.qtype });
     var ms0 = Date.now() - G.myQStart;
     if (q.type === "dict") {
       var acc = wordAcc(choice, q.ans);
@@ -4324,6 +4687,7 @@
     paintTSheet(G.st);
   }
   function renderEnd(s) {
+    if (G.soundPh !== "end") { G.soundPh = "end"; stopAllSound(); }   /* chỉ lúc đổi màn, không tắt tiếng mỗi lần làm tươi */
     var mq = G.myQ;   /* 🎯 đề thi (Tự do): câu đang làm dở lúc hết ván vẫn vào Xem lại, ghi "Bỏ qua" như Kahoot (QA v95 T4) */
     if (G.ex) { if (!G.ex.done && iPlay()) exSubmit(); }   /* 📝 Thi thật: host bấm Kết thúc khi chưa nộp -> chấm phần đã làm (vào 📖 Xem lại) */
     else if (mq && mq.type === "toeic" && !mq.done && s.mode === "free" && iPlay()) toeicCommit(mq, true);   /* ván đã chấm xong -> chỉ ghi vào Xem lại */
@@ -4369,7 +4733,9 @@
 
   /* ---------- 👥 quản lý người chơi (chỉ TJ) ---------- */
   $("#l-users").addEventListener("click", function () { renderUsers(); });
-  $("#us-back").addEventListener("click", function () { G.inHist = false; if (G.st && G.st.phase === "lobby") renderLobby(); else if (G.st) onState(G.st); });
+  window.addEventListener("message", function (e) { if (e.origin === location.origin && e.data && e.data.type === "tjwl-game-users") renderUsers(); });   /* menu TJ · Admin của WordLoop (gamelayer.openUsers) */
+  if (param("users") === "1") setTimeout(function () { renderUsers(); }, 1800);   /* iframe vừa tạo từ menu: đợi nhận ra hồ sơ TJ rồi mở */
+  $("#us-back").addEventListener("click", function () { G.inHist = false; if (G.st && G.st.phase === "lobby") renderLobby(); else if (G.st) onState(G.st); else show("s-home"); });
   /* Danh sách tự làm mới (TJ 2026-10-01: "vừa tạo tk mới mà quản lý tk không thấy") — trước chỉ tải 1 lần lúc mở màn.
      Nay: 🔄 Tải lại · 10 giây/lần khi đang mở màn · ngay khi có người vào/ra phòng (onPresence). */
   $("#us-reload").addEventListener("click", function () { renderUsers(true); });
@@ -4481,6 +4847,22 @@
         }).join("") + "</tbody></table>" : '<p class="g-sub">' + T(tab === "week" ? "no_week" : "no_all") + "</p>";
     } catch (e) { $("#hi-body").innerHTML = '<p class="g-err">' + T("err") + ": " + esc(e.message || e) + "</p>"; }
   }
+  /* 🎮 CHƠI GAME LẠI 1 ván cũ (TJ 2026-10-05): lấy lại chủ đề + kiểu chơi của ván đó, về phòng chờ rồi bắt đầu ván mới. Hiện chỉ host (người chơi tự chơi lại một mình: làm sau). */
+  async function replayMatch(mid) {
+    if (!G.isHost || !G.st) { alert("Chỉ host mới bắt đầu được ván mới."); return; }
+    if (!(await hostPrepLobby())) return;   /* TJ 2026-10-06: đang chơi dở -> tự kết thúc ván rồi sang phòng chờ, không bắt bấm lại */
+    var r = await sb.from("game_matches").select("scope,title,mode,qtype,meaning_lang,q_seconds").eq("id", mid).maybeSingle();
+    var m = r.data;
+    if (!m || !m.scope || !m.scope.length) { alert("Ván này không còn thông tin chủ đề để chơi lại."); return; }
+    picked = m.scope.map(function (p) { return { table: p.table, id: p.id, title: p.title }; });
+    if (m.mode) G.st.mode = m.mode;
+    if (m.qtype && m.qtype !== "toeic") G.st.qtype = m.qtype;
+    if (m.meaning_lang) G.st.lang = m.meaning_lang;
+    if (m.q_seconds) G.st.qs = m.q_seconds;
+    G.inHist = false;
+    hostSetScope();
+    renderLobby();   /* TJ 2026-10-06: KHÔNG tự bắt đầu nữa — vào phòng chờ với chủ đề + cài đặt của ván đó, host tự bấm Bắt đầu (trước đây bấm là chạy ván 120 phút ngay) */
+  }
   async function histMine() {
     if (!G.me) { $("#hi-body").innerHTML = '<p class="g-sub">' + T("no_name") + "</p>"; return; }
     var r = await sb.from("game_results").select("match_id,team,score,rank,correct,wrong,best_streak,created_at,game_matches(title,mode,qtype,meaning_lang,target,minutes,teams,scoring)").eq("player_id", G.me.id).not("match_id", "is", null).order("created_at", { ascending: false }).limit(200);
@@ -4495,11 +4877,12 @@
     var QT = { meaning: "🔤", en2m: "🔤", gap: "📝", recall: "⌨️", mix: "🔀", sheet: "📄", write: "✍️", dict: "🎧" };
     $("#hi-body").innerHTML =
       '<div class="g-stats"><div><b>' + r.data.length + "</b><span>" + T("s_games") + "</span></div><div><b>" + wins + "</b><span>" + T("s_wins") + "</span></div><div><b>✓" + best + "</b><span>" + T("s_bestc") + "</span></div><div><b>🔥" + streak + "</b><span>" + T("s_streak") + "</span></div></div>" +
-      '<div class="g-row g-allrv"><button type="button" class="g-btn" data-rvall="all">' + esc(T("rv_all")) + '</button><button type="button" class="g-btn g-btn-soft" data-rvall="wrong">' + esc(T("rv_wrong")) + "</button></div>" +
+      '<div class="g-row g-allrv"><button type="button" class="g-btn" data-rvall="all">' + esc(T("rv_all")) + '</button><button type="button" class="g-btn g-btn-soft" data-rvall="wrong">' + esc(T("rv_wrong")) + '</button><button type="button" class="g-btn g-btn-soft" data-looked="1">' + esc(LOOKED_T[uiLang()] || LOOKED_T.vi) + "</button></div>" +
       '<table class="g-table"><thead><tr><th>' + T("h_date") + "</th><th>" + T("h_topic") + "</th><th>" + T("h_rw") + "</th><th>" + T("h_rank") + "</th></tr></thead><tbody>" +
       r.data.map(function (x) {
         var rm = x.game_matches || {}, d = new Date(x.created_at);
-        return "<tr><td>" + d.toLocaleDateString() + " " + d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + '</td><td><button type="button" class="g-mini g-rvbtn" title="' + esc(T("review_btn")) + '" data-rvmatch="' + esc(x.match_id) + '" data-title="' + esc(rm.title || "") + '">📖</button> <a href="?match=' + esc(x.match_id) + '">' + esc(rm.title || "—") + "</a>" +
+        return "<tr><td>" + d.toLocaleDateString() + " " + d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + '</td><td><a href="?match=' + esc(x.match_id) + '">' + esc(rm.title || "—") + "</a>" +
+          '<div class="g-rvact"><button type="button" class="g-btn g-btn-sm g-btn-rv g-rvbtn" data-rvmatch="' + esc(x.match_id) + '" data-title="' + esc(rm.title || "") + '">Ôn ngay →</button>' + (G.isHost ? '<button type="button" class="g-btn g-btn-sm g-btn-play" data-replay="' + esc(x.match_id) + '">🎮 Chơi game →</button>' : "") + "</div>" +
           '<div class="g-sub">' + (QT[rm.qtype] || "") + " " + (rm.target && rm.target !== "en" ? "🎯" + FLAG[rm.target] + " " : "") + (FLAG[rm.meaning_lang] || "") + " " + (rm.mode === "kahoot" ? T("m_kahoot") : T("m_free")) + (x.team && TEAM_C[x.team] ? " · " + TEAM_C[x.team].e + " " + esc(teamName(x.team)) : "") + "</div></td><td>" + tally({ c: x.correct, w: x.wrong }) + (x.correct === best && best ? " 🏆" : "") + "</td><td>" +
           (x.rank === 1 ? "🥇" : x.rank) + "/" + (nIn[x.match_id] || "?") + "</td></tr>";
       }).join("") + "</tbody></table>";
@@ -4530,6 +4913,9 @@
        (kể cả TJ = host), không phải tạo tài khoản mới. Người chơi dùng link trần, không cần ?u= */
     var qid = param("u"), id = qid;
     if (!id) { try { id = localStorage.getItem(LS_LINK); } catch (e) {} }
+    /* TJ 2026-10-06: "đang tài khoản Admin mà host gì nữa" — thẻ Game/Bảng chạy TRONG WordLoop (embed, cùng trang) thì lấy luôn hồ sơ WordLoop đang đăng nhập,
+       khỏi bắt mở lại link ?u= trên máy/địa chỉ mới (vd localhost) rồi mới được làm host. Không ghi LS_LINK (chỉ dùng cho phiên này). */
+    if (!id && G.embed) { try { var pu = window.parent && window.parent !== window && window.parent.Auth && window.parent.Auth.user; if (pu && pu.id && String(pu.id).length === 36) id = pu.id; } catch (e) {} }
     if (!id) return;
     var r = await sb.from("profiles").select("id,display_name,is_admin").eq("id", id).maybeSingle();
     if (!r.data) return;
@@ -4549,6 +4935,14 @@
         else if (cur.data && !cur.data.profile_id) sb.from("game_players").update({ profile_id: G.profile.id }).eq("id", G.me.id).then(function () {});   /* hồ sơ chưa có người chơi nào -> gắn luôn người chơi này */
       }
     }
+    /* TJ 2026-10-06: "đang tài khoản admin mà bấm Game lại ra Thảo" — máy đăng nhập hồ sơ TJ mở thẻ 🎮 Game (embed) nhưng đang NHỚ người chơi khác
+       gắn cùng hồ sơ (vd Thảo, do từng mở link ?p= để thử) -> không ai làm host ("Host chưa vào phòng"). Đổi về người chơi tên "TJ" của hồ sơ.
+       Không đụng link ?p= (G.fromLink: vẫn đóng vai đúng người trong link) và không áp cho game.html mở riêng của người chơi. */
+    if (G.embed && !G.fromLink && G.profile.id === HOST_PROFILE_ID && !isTJPlayer()) {
+      var hp = await sb.from("game_players").select("id,name,name_no,avatar").eq("profile_id", G.profile.id).order("created_at");
+      var tjp = (hp.data || []).find(function (x) { return String(x.name || "").trim().toLowerCase() === "tj"; });
+      if (tjp) { G.me = { id: tjp.id, name: tjp.name, name_no: tjp.name_no, avatar: tjp.avatar }; writeLS(LS_ME, G.me); }
+    }
     /* máy mới chưa có người chơi: dùng lại người chơi cũ của hồ sơ này (tên + ảnh + lịch sử) thay vì bắt tạo mới */
     if (!G.me) {
       var gp = await sb.from("game_players").select("id,name,name_no,avatar").eq("profile_id", G.profile.id).order("created_at").limit(1);
@@ -4559,6 +4953,10 @@
     var room = param("room"), match = param("match");
     if (match) return showMatch(match);                        /* xem lại 1 ván đã lưu (từ lịch sử) */
     if (G.view === "screen" && room) return joinRoom(room);   /* màn hình chung không cần tên */
+    if (!G.embed && isTJ() && !G.view && !room && param("standalone") !== "1") {   /* TJ 2026-10-05: "Notebook của mình đâu, 2 thanh ghim, dàn menu đâu" -> game.html mở riêng không có khung Learning; chuyển vào thẻ 🎮 Game của WordLoop (thêm ?standalone=1 để ở lại trang riêng) */
+      var gq = new URLSearchParams(); gq.set("game", "1"); ["scope", "title", "board"].forEach(function (k) { if (param(k)) gq.set(k, param(k)); });
+      location.replace("index.html?" + gq.toString()); return;
+    }
     if (!G.me) return renderNameScreen();
     if (room) return joinRoom(room);
     if (isTJ()) return openHostRoom();   /* host: vào thẳng PHÒNG CỐ ĐỊNH (kể cả mở từ chuột phải ?scope=) */
@@ -4571,7 +4969,7 @@
   window.addEventListener("pagehide", function () { try { if (G.ch) { G.ch.untrack(); sb.removeChannel(G.ch); } } catch (e) {} });
   (async function boot() {
     G.view = param("view");
-    G.embed = param("embed") === "1";   /* mở trong thẻ 🎮 Game của WordLoop (iframe, js/gamelayer.js) */
+    G.embed = param("embed") === "1" || inFrame();   /* mở trong thẻ 🎮 Game của WordLoop (iframe, js/gamelayer.js) */
     document.body.classList.toggle("embed", G.embed);
     G.myLang = readLS(LS_LANG);
     G.langSet = !!(G.myLang && G.myLang !== "room");   /* đã TỰ chọn ngôn ngữ chưa (chưa -> theo tiếng chung của phòng) */
@@ -4597,6 +4995,7 @@
     if (G.fromLink && G.profile && G.linkProfile !== G.profile.id) G.profile = null;
     if (!G.langSet && isTJ()) { G.myLang = "vi"; $("#g-mylang").value = "vi"; applyUI(); }   /* máy TJ mặc định tiếng Việt */
     paintMe();
+    if (param("usersonly") === "1") { document.body.classList.add("usersonly"); renderUsers(); return; }   /* TJ 2026-10-06: pop-up Quản lý người chơi (menu Admin của WordLoop): CHỈ màn danh sách, KHÔNG vào phòng / không tranh vai host */
     route();
   })();
 })();

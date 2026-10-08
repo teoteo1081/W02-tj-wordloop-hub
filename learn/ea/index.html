@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EA Quest</title>
+<meta name="description" content="Game ôn thi Enrolled Agent: từ vựng, trắc nghiệm, research nhanh và tình huống tiếp khách.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦉</text></svg>">
+<link rel="stylesheet" href="../quest.css?v=1">
+</head>
+<body>
+<!-- Mở thẳng (không nằm trong Góc tự học của game.html) thì có nút quay về phòng game. Trong iframe thì thanh của game.html lo việc này. -->
+<a class="quest-home" href="../../game.html" hidden>🎮 Về phòng game</a>
+<main id="app" aria-live="polite"></main>
+<div id="toast" role="status"></div>
+<noscript>Game cần bật JavaScript để chạy nha 🥺</noscript>
+<script>
+if (window.top === window) document.querySelector(".quest-home").hidden = false;
+window.QUEST_CONFIG = { lessonBase: "https://github.com/teoteo1081/L04-ea-2025/blob/main/" };
+</script>
+<script src="data/lessons-data.js?v=1"></script>
+<script src="data/cases.js?v=1"></script>
+<script src="data/research.js?v=1"></script>
+<script src="../quest.js?v=1"></script>
+</body>
+</html>

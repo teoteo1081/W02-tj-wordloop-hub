@@ -7,8 +7,9 @@
 <link rel="icon" href="icon.svg">
 <!-- Google tag (gtag.js) — cùng property GA4 với WordLoop -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM');</script>
-<link rel="stylesheet" href="css/game.css?v=98">
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'wordloop'});</script>
+<script>window.ga4=function(n,p){try{if(window.gtag)gtag('event',n,p||{});}catch(e){}};</script>
+<link rel="stylesheet" href="css/game.css?v=203">
 </head>
 <body>
 <!-- 🎮 Phòng game chơi chung — xem README.md "Việc còn dang dở" > PHÒNG GAME, bảng: tools/game_schema.sql.
@@ -20,6 +21,8 @@
   <span class="g-room" id="g-room-badge" hidden></span>
   <label class="g-langlbl"><span>🌐 Language</span><select class="g-mylang" id="g-mylang" data-tt="mother_tt"><option value="vi">🇻🇳 Tiếng Việt</option><option value="en">🇺🇸 English</option><option value="es">🇪🇸 Español</option><option value="zh">🇨🇳 中文</option></select><b class="g-forcenote" id="g-forcenote" hidden></b></label>
   <button class="g-me" id="g-me" hidden></button>
+  <!-- 📚 Góc tự học (js/learn.js): Phòng game = game từ vựng + TOEIC sẵn có; EA / Marketing = game tự học trong learn/ -->
+  <nav class="g-learn" id="g-learn" aria-label="Góc tự học"><button type="button" data-learn="" class="on">🎮 Phòng game</button><button type="button" data-learn="toeic">🎯 TOEIC</button><button type="button" data-learn="ielts" disabled title="IELTS: chưa có, sắp tới">🎓 IELTS</button><button type="button" data-learn="ea">🧾 EA</button><button type="button" data-learn="dm">📣 Digital Marketing</button></nav>
 </header>
 
 <!-- 📚 Cây chủ đề — CỘT TRÁI kiểu sidebar Notebooks của WordLoop (TJ 2026-10-01): chỉ HOST, chỉ ở phòng chờ.
@@ -40,7 +43,7 @@
 </aside>
 <button class="g-sidetab" id="h-sidetab" title="Mở cây chủ đề" hidden>📚</button>
 <div class="g-sidebd" id="h-sidebd" hidden></div>
-<div class="g-dotmenu" id="h-dotmenu" hidden><button data-act="branch">☑ Chọn cả nhánh</button><button data-act="only">🎯 Chỉ chọn mục này</button><button data-act="off">✖ Bỏ chọn (cả nhánh)</button><hr class="g-dotsep" data-fold><button data-act="open" data-fold>▸▸ Bung hết nhánh này</button><button data-act="close" data-fold>▾▾ Thu hết nhánh này</button></div>
+<div class="g-dotmenu" id="h-dotmenu" hidden><button data-act="branch">☑ Chọn cả nhánh</button><button data-act="only">🎯 Chỉ chọn mục này</button><hr class="g-dotsep"><button data-act="bd-vw">🖤 Mở lên bảng: 📋 từ vựng → 📖 bài đọc</button><button data-act="bd-w">🖤 Mở lên bảng: chỉ 📖 bài đọc</button><button data-act="off">✖ Bỏ chọn (cả nhánh)</button><hr class="g-dotsep" data-fold><button data-act="open" data-fold>▸▸ Bung hết nhánh này</button><button data-act="close" data-fold>▾▾ Thu hết nhánh này</button></div>
 
 <main id="g-main">
   <!-- 1. Tên + ảnh -->
@@ -92,7 +95,7 @@
     </div>
     <div class="g-card g-tintro" id="l-tintro" hidden></div>
     <div class="g-h2row"><h2><span data-t="players">Người chơi</span> (<span id="l-count">0</span>) <span class="g-sub" id="l-teamhint"></span></h2>
-    <span class="g-row g-row-tight"><button class="g-btn g-btn-soft g-btn-sm" id="l-users" hidden>👥 Quản lý người chơi</button><button class="g-btn g-btn-soft g-btn-sm" id="l-review" hidden data-t="review_btn">📖 Xem lại đáp án</button><button class="g-btn g-btn-soft g-btn-sm" id="l-hist" data-t="hist_btn">📜 Lịch sử & Xếp hạng</button><button class="g-btn g-btn-soft g-btn-sm" id="l-tstats" data-t="tstats_btn">📊 Điểm TOEIC</button><button class="g-btn g-btn-soft g-btn-sm" id="l-ttips" data-t="tips_btn">🧠 Chiến thuật</button><button class="g-btn g-btn-soft g-btn-sm" id="l-tmarks" data-t="tmarks_btn">🔖 Đoạn nghe</button></span></div>
+    <span class="g-row g-row-tight"><button class="g-btn g-btn-soft g-btn-sm" id="l-users" hidden>👥 Quản lý người chơi</button><button class="g-btn g-btn-soft g-btn-sm" id="l-review" hidden data-t="review_last">📖 Xem lại ván vừa chơi</button><button class="g-btn g-btn-soft g-btn-sm" id="l-hist" data-t="hist_btn">📜 Lịch sử & Xếp hạng</button><button class="g-btn g-btn-soft g-btn-sm" id="l-tstats" data-t="tstats_btn">📊 Điểm TOEIC</button><button class="g-btn g-btn-soft g-btn-sm" id="l-ttips" data-t="tips_btn">🧠 Chiến thuật</button><button class="g-btn g-btn-soft g-btn-sm" id="l-tmarks" data-t="tmarks_btn">🔖 Đoạn nghe</button></span></div>
     <!-- âm thanh RIÊNG máy này (người chơi tự bật/tắt + âm lượng, không phụ thuộc host) — TJ 2026-10-02 -->
     <div class="g-taphint js-taphint" hidden data-t="taphint">🔈 Chạm vào màn hình 1 lần để bật tiếng đọc</div>
     <div class="g-sndrow"><span class="g-sub" data-t="snd_you">Âm thanh của bạn:</span><button class="g-mute js-snd" type="button"></button><span class="g-volbox"><span class="g-volval js-volval"></span><input type="range" class="g-vol js-vol" min="0" max="100" step="5" aria-label="Âm lượng đọc từ"></span></div>
@@ -148,7 +151,7 @@
     <!-- 📊 dải ô thống kê của MÌNH (TJ 2026-10-02: hàng trên "kỳ quá" -> tách 2 tầng, số to + nhãn nhỏ) -->
     <div class="g-statbar" id="p-prog"></div>
     <div class="g-teambar" id="p-teams"></div>
-    <ol class="g-board" id="p-board"></ol>
+    <div class="g-top3" id="p-top3"></div>
     <div class="g-q">
       <div class="g-qbar"><div id="p-qbar"></div></div>
       <div class="g-qhint g-sub" id="p-hint"></div>
@@ -160,6 +163,7 @@
       <div class="g-res" id="p-res"></div>
       <div class="g-row g-center"><button class="g-btn g-btn-soft" id="p-reveal" type="button" hidden data-t="reveal_btn">👁 Hiện đáp án</button><button class="g-btn" id="p-next" type="button" hidden data-t="next_q">Câu tiếp ▶</button></div>
     </div>
+    <ol class="g-board g-board-below" id="p-board"></ol>
   </section>
 
   <!-- 5. Kết quả -->
@@ -176,8 +180,8 @@
 
   <!-- 5b. Xem lại đáp án từng câu của ván vừa chơi (◀ ▶) -->
   <section class="g-screen" id="s-review" hidden>
-    <h1 data-t="review_h">📖 Xem lại đáp án</h1>
-    <div class="g-row g-center g-revnav"><button class="g-btn g-btn-soft" id="rv-prev" data-t="prev">◀ Trước</button><b id="rv-pos"></b><button class="g-btn g-btn-soft" id="rv-next" data-t="next">Sau ▶</button><button class="g-btn g-btn-soft" id="rv-say" type="button" hidden data-say="">🔊 Nghe lại</button><button class="g-btn g-btn-soft g-star" id="rv-star" type="button" hidden>☆ Để dành học lại</button></div>
+    <div class="g-h1row"><button class="g-btn g-btn-soft g-btn-sm" id="rv-back" data-t="back_res">← Về kết quả</button><h1 data-t="review_h">📖 Xem lại đáp án</h1></div>
+    <div class="g-row g-center g-revnav"><button class="g-btn g-btn-soft" id="rv-prev" data-t="prev">◀ Trước</button><b id="rv-pos"></b><button class="g-btn g-btn-soft" id="rv-next" data-t="next">Sau ▶</button><button class="g-btn g-btn-soft" id="rv-wrong" type="button" hidden title="Chỉ xem câu có người chọn sai (không tính người không chọn gì)">❌ Câu sai</button><button class="g-btn g-btn-soft" id="rv-say" type="button" hidden data-say="">🔊 Nghe lại</button><button class="g-btn g-btn-soft g-star" id="rv-star" type="button" hidden>☆ Để dành học lại</button></div>
     <div class="g-q">
       <div class="g-qhint g-sub" id="rv-hint"></div>
       <div class="g-qvi" id="rv-vi"></div>
@@ -186,16 +190,23 @@
       <div class="g-sub g-qmsg" id="rv-msg"></div>
       <div class="g-res" id="rv-res"></div>
     </div>
-    <div class="g-row"><button class="g-btn g-btn-soft" id="rv-back" data-t="back_res">← Về kết quả</button><button class="g-btn" id="rv-replay" hidden data-t="replay_btn">🔁 Chơi lại ván này</button></div>
+    <div class="g-row"><button class="g-btn" id="rv-replay" hidden data-t="replay_btn">🔁 Chơi lại ván này</button></div>
   </section>
 
   <!-- 6. Lịch sử & xếp hạng -->
   <!-- 👥 Quản lý người chơi (chỉ TJ) — đổi tên, gộp tài khoản trùng (TJ#2…) về 1, xoá -->
   <section class="g-screen" id="s-users" hidden>
     <h1>👥 Quản lý người chơi</h1>
+    <!-- TJ 2026-10-06: dòng Về phòng chờ · Tải lại · số người nằm NGAY DƯỚI tiêu đề (không phải cuộn xuống cuối danh sách) -->
+    <div class="g-row"><button class="g-btn g-btn-soft" id="us-back">← Về phòng chờ</button><button class="g-btn g-btn-soft" id="us-reload">🔄 Tải lại</button><span class="g-sub" id="us-time"></span></div>
     <p class="g-sub">Gộp = chuyển hết lịch sử ván + câu trả lời sang tài khoản kia rồi xoá tài khoản này (ván nào cả hai cùng chơi thì giữ kết quả của tài khoản được gộp vào). Không hoàn tác được.</p>
     <div id="us-body"></div>
-    <div class="g-row"><button class="g-btn g-btn-soft" id="us-back">← Về phòng chờ</button><button class="g-btn g-btn-soft" id="us-reload">🔄 Tải lại</button><span class="g-sub" id="us-time"></span></div>
+  </section>
+
+  <!-- 🔎 Từ đã tra: từ người chơi đã tra trên Bảng (lưu trên máy này, board.js lkKeep) -->
+  <section class="g-screen" id="s-looked" hidden>
+    <div class="g-h1row"><button class="g-btn g-btn-soft g-btn-sm" id="lk-back">← Về Lịch sử</button><h1>🔎 Từ đã tra</h1></div>
+    <div id="lk-body"></div>
   </section>
 
   <section class="g-screen" id="s-hist" hidden>
@@ -228,8 +239,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="js/config.js?v=4"></script>
 <script src="js/toeic_tips.js?v=1"></script>
-<script src="js/board.js?v=17"></script>
+<script src="js/board.js?v=99"></script>
 <script src="js/exams.js?v=2"></script>
-<script src="js/game.js?v=155"></script>
+<script src="js/game.js?v=265"></script>
+<script src="js/learn.js?v=2"></script>
 </body>
 </html>
