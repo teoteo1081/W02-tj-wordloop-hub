@@ -790,7 +790,7 @@
         if (kn) { kn.textContent = eg && eg.last ? "⏭" : "⏩"; kn.title = eg && eg.last ? "Batch sau" : "Block sau"; }
       }
       var ib0 = $("#bd-iconbar"); if (ib0) { var pp0 = $("#bd-people"); ib0.hidden = nav.hidden && (!pp0 || pp0.hidden); }   /* chưa có nội dung: dải công cụ ẩn nhưng hàng avatar mọi người dưới bảng PHẢI còn (TJ 2026-10-06) */
-      $("#bd-dtree").hidden = !host; $("#bd-dclose").hidden = !host || !d; $("#bd-dpg").hidden = !d || isTxt;
+      $("#bd-dtree").hidden = !host; $("#bd-dclose").hidden = !d; $("#bd-dpg").hidden = !d || isTxt;
       $("#bd-dsrch").hidden = !isTxt;
       var sw0 = $("#bd-dswap"); if (sw0) sw0.hidden = !(host && d && d.k === "wl");
       if (!isTxt) { $("#bd-lk").hidden = true; $("#bd-lkq").hidden = true; }
@@ -800,7 +800,7 @@
     var scr0 = txt0 || !!(d && d.k === "mk"); if (bdl) bdl.classList.toggle("bd-txt", scr0);   /* CSS: lớp vẽ nhường chạm/lăn chuột cho bài cuộn */
     if (pnb) pnb.hidden = scr0; if (scr0 && penMode) setPen(false);   /* bút vẽ tự do không dùng trên bài cuộn (nét sẽ lệch chữ) — chạm câu để tô sáng */
     paintCard(d); paintMe(); paintPeople(); paintHostAway(); notifyParent(open && !mini);
-    if (k === docKey) { if (txt0) paintHL(d); return; }
+    if (k === docKey) { if (txt0) paintHL(d); var bx0 = $("#bd-doc"); if (!d && bx0 && !bx0.firstChild) paintDoc(null); return; }   /* bảng trống mở lần đầu: vẫn hiện dòng hướng dẫn */
     lastA = null; lfz = Math.max(0.7, Math.min(2.6, +d0zf(d) || 1));
     var nbid = d && d.bid || ""; if (nbid !== feedBid) { feedBid = nbid; lkFeed = []; }   /* sang Block khác -> Từ vừa tra làm mới (mọi máy cùng đổi Block nên cùng xoá) */
     stash[docKey] = { items: items, order: order };   /* cất nét của trang cũ */
@@ -819,7 +819,7 @@
     var ub = $("#bd-ubar");
     if (ub) {
       var showU = !(api && api.isHost()) && !document.body.classList.contains("embed"), wasH = ub.hidden; ub.hidden = !showU;
-      var uh = showU ? '<span class="bd-mering">' + pic + "</span><b>" + esc(m.name) + (m.name_no > 1 ? " #" + m.name_no : "") + "</b>" + (curDoc() ? "" : '<span class="bd-ubhint">⏳ Đang chờ host chọn nội dung lên bảng…</span>') : "";
+      var uh = showU ? '<span class="bd-mering">' + pic + "</span><b>" + esc(m.name) + (m.name_no > 1 ? " #" + m.name_no : "") + "</b>" + "" : "";
       if (ub._h !== uh) { ub._h = uh; ub.innerHTML = uh; relayout(); } else if (wasH !== ub.hidden) relayout();   /* thanh tên đổi cao -> tính lại khung (trước đây bảng quá cao, đẩy hàng avatar dưới ra khỏi màn) */
     }
   }

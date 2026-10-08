@@ -1387,11 +1387,11 @@
     G.ch.on("presence", { event: "sync" }, onPresence);
     G.ch.on("broadcast", { event: "state" }, function (m) {
       var d = m.payload;
+      if (d.relay && (G.isHost || G.st)) return;   /* bản sao do người chơi gửi khi host vắng: chỉ cho máy CHƯA có trạng thái; PHẢI chặn TRƯỚC khối nhường host (QA: host tải lại giữa ván bị hạ vai) */
       /* so theo TAB (htab), không theo người chơi: 2 tab cùng trình duyệt chung hid -> trước đây không tab nào nhường */
       var other = d.htab ? d.htab !== G.tab : !!(d.hid && G.me && d.hid !== G.me.id);
       if (G.isHost && other && (d.hsince || 0) < G.since) { setHost(false); }   /* có host vào trước -> nhường */
       if (G.isHost && other) return;   /* host không nhận trạng thái của host khác */
-      if (d.relay && G.st) return;   /* bản sao do 1 người chơi gửi khi host vắng: chỉ dùng cho máy chưa có trạng thái nào */
       if (!G.isHost && G.st && (G.st.bts || 0) > (d.bts || 0)) { d.board = G.st.board; d.bdoc = G.st.bdoc; d.bts = G.st.bts; bmetaSoon(); }   /* TJ 2026-10-08: bảng/bài do NGƯỜI CHƠI đặt (mới hơn bản host) không bị host đè lại */
       onState(d);
     });
@@ -1518,7 +1518,7 @@
     }
     var pv = (sn && sn.st && sn.st.phase === "lobby" ? sn.st : null) || G.st || {};   /* phòng chờ: lấy lại cài đặt + bảng vẽ đã lưu */   /* trạng thái nhận từ host cũ -> lấy lại CÀI ĐẶT, còn ván đang dở thì bỏ (về phòng chờ) */
     G.st = { phase: "lobby", sound: pv.sound !== false, auto: pv.auto !== false, levels: pv.levels || [], gapsrc: pv.gapsrc || "lib", scoring: pv.scoring || G.room.scoring || "q", scope: pv.scope || G.room.scope || [], title: pv.title || G.room.title || "", mode: pv.mode || G.room.mode, qtype: pv.qtype || G.room.qtype || "meaning", lang: pv.lang || G.room.meaning_lang || "vi", force: !!pv.force, minutes: pv.minutes || +G.room.minutes, qs: pv.qs || G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
-    ["race", "target", "teams", "teamOf", "hostplay", "hub", "bdoc", "tq"].forEach(function (k) { if (pv[k] !== undefined) G.st[k] = pv[k]; });   /* tải lại ở phòng chờ: giữ ⚡ Đua, tiếng đang học, đội, host chơi/MC (QA) */
+    ["race", "target", "teams", "teamOf", "hostplay", "hub", "bdoc", "tq", "bts"].forEach(function (k) { if (pv[k] !== undefined) G.st[k] = pv[k]; });   /* tải lại ở phòng chờ: giữ ⚡ Đua, tiếng đang học, đội, host chơi/MC (QA) */
     if (pv.board) { G.st.board = true; G.st.bperm = pv.bperm || {}; }   /* đổi máy giữ phòng (mạng chập chờn) -> bảng vẽ KHÔNG tự đóng (TJ 2026-10-04: "bảng tự trả về màn hình chính") */
     G.endAt = 0; G.qUntil = 0; clearInterval(G.hostTimer);
     G.online.forEach(function (p) { G.st.roster[p.id] = { name: p.name, no: p.no, avatar: p.avatar }; });
@@ -1598,7 +1598,7 @@
     }
     if (!list.length) { alert("Mục này chưa có Block để mở lên bảng."); return; }
     if (G.st.phase === "lobby") { picked = sc.map(function (p) { return { table: p.table, id: p.id, title: p.title || p.id }; }); hostSetScope(); }
-    if (!G.st.board) { G.st.board = true; push(); }
+    if (!G.st.board) setBoardMeta({ board: true });
     setTimeout(function () { if (window.Board) Board.openBlocks(list.slice(0, 60), "wv"); }, 350);
   }
   window.addEventListener("message", function (e) {
@@ -1613,8 +1613,7 @@
     if (e.origin !== location.origin || !e.data || (e.data.type !== "tjwl-game-boardopen" && e.data.type !== "tjwl-game-boardclose")) return;
     var on = e.data.type === "tjwl-game-boardopen";
     if (!G.isHost || !G.st) { G.pendingIdle = on; return; }
-    if (on && window.Board && G.st.bdoc) { G.st.bdoc = null; }
-    G.st.board = on; push();
+    setBoardMeta(on && window.Board && G.st.bdoc ? { bdoc: null, board: on } : { board: on });
   });
   async function initHostLobby() {
     var wantIdle = param("boardidle") === "1" || !!G.pendingIdle; G.pendingIdle = false;
@@ -1634,7 +1633,7 @@
     renderLobby();
     await loadTree();
     if (wantBoard && picked.length) openBoardScope(picked.map(function (p) { return { table: p.table, id: p.id, title: p.title }; }));
-    else if (wantIdle) { G.st.board = true; G.st.bdoc = null; push(); }
+    else if (wantIdle) { setBoardMeta({ board: true, bdoc: null }); }
   }
   function renderLobby() {
     if (G.inHist) return;   /* đang xem lại / lịch sử: đổi host, ván mới… không kéo màn hình đi (bấm ← để về) */
@@ -1898,7 +1897,7 @@
       if (!G.isHost || !G.st) return false;
       if (!(await hostPrepLobby())) return false;
       picked = [{ table: "blocks", id: bid, title: name || "Block" }]; hostSetScope();
-      G.st.board = false; push();
+      setBoardMeta({ board: false });
       try { window.parent.postMessage({ type: "tjwl-game-show" }, location.origin); } catch (e) {}   /* WordLoop: rời chế độ Bảng, hiện thẻ Game */
       return true;
     },
