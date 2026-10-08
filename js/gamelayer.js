@@ -96,10 +96,11 @@
     if (ws.firstChild !== top) ws.insertBefore(top, ws.firstChild);
     if (ws.lastChild !== bot) ws.appendChild(bot);
     var m = d.me;
-    top.innerHTML = m ? '<span class="lbd-ring">' + lbdAv(m.avatar) + (m.host ? "<i>👑</i>" : "") + "</span><b>" + w.esc(m.name || "") + '</b><span class="lbd-hint">Chọn 1 Block để mở lên bảng cho cả phòng</span>' : "";
+    top.innerHTML = m ? '<span class="lbd-ring">' + lbdAv(m.avatar) + (m.host ? "<i>👑</i>" : "") + "</span><b>" + w.esc(m.name || "") + '</b>' + (isTJ() ? '<button type="button" class="lbd-users" id="lbd-users" title="Mở thẻ Quản lý người chơi (pop-up)">👥 Quản lý người chơi</button>' : "") + '<span class="lbd-hint">Chọn 1 Block để mở lên bảng cho cả phòng</span>' : "";
     var L = (d.people || []).slice().sort(function (a, b) { return (b.id === d.mine) - (a.id === d.mine) || (!!b.host - !!a.host) || String(a.name || "").localeCompare(String(b.name || "")); });
     bot.innerHTML = L.map(function (p) { return '<div class="lbd-p' + (p.id === d.mine ? " me" : "") + '" title="' + w.esc(p.name || "") + '"><span class="lbd-ring">' + lbdAv(p.avatar) + (p.host ? "<i>👑</i>" : "") + (LFLAG[p.lang] ? "<u>" + LFLAG[p.lang] + "</u>" : "") + "</span><b>" + w.esc(p.name || "?") + "</b></div>"; }).join("");
   }
+  document.addEventListener("click", function (e) { if (e.target.closest && e.target.closest("#lbd-users")) openUsers(); });   /* chế độ Bảng: nút Quản lý người chơi (pop-up) trên hàng avatar đầu trang, TJ 2026-10-08 */
   w.addEventListener("message", function (e) {
     if (e.origin !== location.origin || !e.data || e.data.type !== "tjwl-board-people") return;
     lbdPeople = e.data; lbdRender();

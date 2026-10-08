@@ -2486,3 +2486,7 @@ body.board-skin .lbd-people{margin-top:1rem}
 .modal-box.pop .pop-head{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.7rem 1rem;border-bottom:1px solid var(--border);flex:none}
 .modal-box.pop .pop-head h3{margin:0}
 .modal-box.pop iframe{flex:1 1 auto;width:100%;border:0;background:var(--bg-main,#262624)}
+
+/* TJ 2026-10-08: chế độ Bảng — nút "Quản lý người chơi" (pop-up) cạnh tên ở đầu trang */
+.lbd-users{flex:none;border:1px solid rgba(255,255,255,.22);border-radius:10px;padding:7px 12px;background:rgba(255,255,255,.08);color:#f3efe6;font:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+.lbd-users:hover{background:rgba(255,255,255,.14)}
