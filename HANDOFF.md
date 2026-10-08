@@ -10,6 +10,41 @@
 
 ## Trạng thái hiện tại
 
+## ▶ CHECKPOINT 2026-10-08 (máy cloud, Claude Sonnet 5.5; TJ chuyển sang máy khác làm tiếp) — ĐỌC TRƯỚC, rồi verify bằng lệnh thật
+> Các mục cũ ở dưới (checkpoint 2026-10-06) vẫn còn đúng phần việc treo; mục này là cái MỚI nhất.
+
+### Phiên bản live trên `main` sau đợt này
+`game.css?v=202` · `board.js?v=99` · `game.js?v=265` (+ `game-version.json` = 265, PHẢI khớp). Kiểm: `git log --oneline -8 origin/main`.
+
+### ĐÃ LÀM + ĐÃ LÊN `main` (đợt 2026-10-07/08)
+1. **Chữ bài đọc trên Bảng trọn vẹn** — bỏ `hyphens:auto` ("sch-/ool" bị gạch nối) ở `css/game.css` (bài đọc + cột bảng từ vựng, `overflow-wrap:anywhere` -> `break-word`).
+2. **Chạm từ trong bài đọc ra đúng từ** — `board.js` `docTap`: dùng `getClientRects()` từng dòng + chọn từ GẦN điểm chạm nhất (trước: hộp bao của cụm vắt 2 dòng nuốt cú chạm vào từ khác). Đã tái hiện + sửa bằng Playwright (bề rộng 260px: cũ sai 4/5, mới đúng 5/5).
+3. **Lịch sử › "Ôn ngay →" ván ĐỀ THI không nhảy sang màn "Đang tính điểm…" nữa** — `pastToeicReview`/`pastToeicEntry` (game.js, ngay trên `pastReview`): dựng lại từng câu từ `test_items` + `game_answers` của ván (dùng `paintQuestion` vào div ẩn `#rb-*`), mở khung Xem lại: avatar mọi người chọn ở CẢ đáp án đúng lẫn sai, nhóm Part 3–4 theo 3 câu, ❌ Câu sai = câu có ÍT NHẤT 1 người sai. `G.rvMid` = ván đang xem lại (dùng thay `G.logMatch` để KHÔNG phá log ván đang chơi). Đã thử bằng Playwright + Supabase giả (Part 5 + nhóm Part 3 + 1 câu ai cũng đúng bị loại); **CHƯA thử với dữ liệu thật, Part 1/2/6/7, tên/avatar thật.**
+4. **Workflow xem thử theo nhánh** `.github/workflows/pages-preview.yml` đã vào `main` (`/preview/<tên-nhánh>/` cho nhánh `fix/` `feat/` `preview/`). **CHƯA CHẠY THẬT** — chờ TJ chỉnh trên GitHub: Settings › Pages › Source = **GitHub Actions**; Settings › Environments › github-pages › Deployment branches = **All branches**; rồi Actions › Run workflow (nhánh main). Web chính có thể ngắt 1–3 phút. Chưa làm xong bước đó thì web vẫn chạy kiểu cũ (Deploy from a branch = main) và workflow báo đỏ ở bước đăng — bình thường. Hỏi TJ đã làm chưa trước khi tin.
+
+### VIỆC TJ ĐÃ NÊU, CHƯA LÀM (theo thứ tự nên làm)
+1. **Bảng — gỡ nút "🖐 Tự đọc" và nút "đọc chung"** (TJ: "gạt qua đi", gây hiểu lầm, rối); các nút **to/nhỏ chữ + công cụ** dời sang **bên phải bảng, không cuộn, hiện hết**. Code: `board.js` ~1189 (`freeView`), ~1876 (nhãn nút), `#bd-iconbar`.
+2. **Chia sẻ màn hình**: video chỉ hiện 1 phần nhỏ — nghi do `.bd-video{inset:…}` ở `game.css` ~894–1109 chừa lề y như `.bd-doc`; sửa: khi `.bd-screen-view` cho video phủ kín bảng (`inset:0`). **Nút share** (`#bd-share`, `game.css` ~1572) quá nổi (gradient xanh + bóng): đổi trung tính, nhỏ bằng công cụ khác, chỉ sáng khi đang bật.
+3. **Loa tra từ iPhone 15 không kêu** — nghi `Speech.speakWord` (`js/speech.js` ~134) gọi `synth.cancel()` rồi `speak()` ngay trong cùng tick (iOS nuốt tiếng) + tra qua mạng làm mất "cú chạm" người dùng. Hướng sửa: chỉ `cancel()` khi đang đọc, chờ ~60ms, `resume()`, mở khoá loa ở lần chạm đầu bằng utterance im lặng. CHƯA thử trên iPhone thật.
+4. **Review Part 5 trong ván VỪA CHƠI** (G.log): TJ báo bấm câu sai chỉ hiện đúng 1 câu, phải "giống bài nghe"; mọi người chọn đúng/sai đều phải hiện — phần ván cũ (mục 3 ở trên) đã làm; **kiểm lại luồng ván vừa chơi** (`#rv-wrong` ~3327, `tqPickAvatars`).
+5. **Host thoát thì Bảng/game đứng** — kế hoạch đề xuất (CHƯA làm, hỏi TJ trước): mọi máy giữ bản `G.st` mới nhất; host vắng >~15s thì người kế nhiệm theo thứ tự cố định (moderator rồi người vào sớm nhất) làm "host tạm", host thật về thì trả; thêm số "đời host" chống 2 máy cùng tự nhận host. Giới hạn: chia sẻ màn hình/giọng nói đến từ máy host nên vẫn dừng. Xem thêm HANDOFF cũ "Còn treo (game)".
+6. **Đọc bài tới đâu hiện tới đó + chấm điểm giọng, từ sai highlight, vẫn đọc tiếp; voice room trong phòng game** — chưa có `SpeechRecognition`/`getUserMedia` trong code. Hướng: Web Speech API (miễn phí; Chrome/Edge ổn, Safari iPhone kém ổn định, Firefox không) hoặc Whisper qua `openai-proxy` (tốn tiền); so khớp từ với bài, tô xanh/đỏ, phát vị trí qua kênh phòng có sẵn. Voice room: WebRTC mesh (đã có mesh cho share màn hình, tối đa ~6 người), đông hơn cần dịch vụ ngoài (tốn tiền, hỏi TJ).
+7. **Công cụ Text trên Bảng** (spec chi tiết ở checkpoint 2026-10-06 dưới đây — "CHƯA LÀM — Công cụ Text").
+8. **"Âm thanh đọc tầm bậy"** — TJ báo, CHƯA rõ lỗi nào (đọc sai từ? sai câu? lộn xộn?). Có thể là hệ quả lỗi chạm nhầm từ (đã sửa), hoặc 2 cửa sổ Chrome dùng chung hàng đợi đọc. Hỏi TJ: bấm gì, 1 hay 2 cửa sổ, máy/điện thoại nào.
+9. **Chơi game MỘT MÌNH cho người chơi + Admin bật/tắt quyền** — đã ghi ở README "Việc còn dang dở" (hỏi TJ trước).
+10. **Chia nhỏ `game.js` (~5000 dòng) / `app.js` (~5200 dòng)**, gom `BOARD.md`/`HANDOFF.md`/`TEAM_PROCESS.md` vào `docs/` — để SAU khi sửa xong lỗi, từng bước nhỏ (không build step: mỗi file mới phải thêm `<script>` + `?v=`).
+11. Backup dữ liệu Supabase (README ghi CHƯA có backup tự động) — đề nghị làm sớm.
+
+### Cách làm việc TJ muốn (mới bổ sung)
+- **"Mình sửa một cái là những cái liên quan/tương tự cũng sửa luôn. Nhớ nha."** — mỗi lần sửa phải `grep` các chỗ giống (Part 5/6/7, bài nghe, game khác, bảng từ vựng…) và sửa CÙNG lượt.
+- **Giải thích git cho TJ vừa làm vừa chỉ** (TJ mới học git): dùng nhánh riêng → tự kiểm → TJ xem thử → mới đưa lên `main`; nói rõ "ship = đưa bản nháp lên main = web thật đổi". Giải thích bằng tiếng Việt đơn giản, ít thuật ngữ, ví dụ đời thường.
+- Khi nói về Pages/Netlify: TJ dùng **GitHub Pages**, đừng đề xuất Netlify (đã bị nhắc).
+
+### Ghi chú git của máy cloud (đừng lặp lại sai lầm)
+- Nhánh `main` CỤC BỘ trong container cloud là bản CŨ, lịch sử KHÔNG liên quan `origin/main` (`git merge` báo "unrelated histories"). Luôn làm việc từ `origin/main`: `git fetch origin && git switch -c <nhánh> origin/main`, và đẩy lên web bằng `git push origin <nhánh>:main` (một lệnh riêng).
+- Container cloud KHÔNG vào được `github.io` (proxy 403) → không tự kiểm web live được; nhờ TJ kiểm hoặc làm ở máy khác.
+- Nhánh `claude/stoic-bell-6hna0k` là của agent L04 — không đụng.
+
 ## ▶ CHECKPOINT 2026-10-06 (máy local TJ, Claude Sonnet 5.5) — ĐỌC TRƯỚC KHI LÀM TIẾP
 > Phiên dài sửa giao diện Game/Bảng. Mọi thứ dưới đây ĐÃ LÊN WEB THẬT (main) trừ khi ghi khác. **Verify bằng lệnh thật trước khi tin** (luật đầu file).
 
