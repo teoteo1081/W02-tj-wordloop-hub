@@ -63,7 +63,7 @@ def check(path):
             bad(w, "có 2 đáp án giống nhau")
         if len(str(q.get("explain", ""))) < 30:
             bad(w, "lời giải quá ngắn (<30 ký tự) — phải nói rõ vì sao đúng/sai")
-        if re.search(r"(lorem|TODO|\?\?\?|xxx)", json.dumps(q, ensure_ascii=False), re.I):
+        if re.search(r"(?i:lorem|xxx)|\bTODO\b|\?\?\?", json.dumps(q, ensure_ascii=False)):  # TODO phân biệt hoa/thường: "todo" tiếng Tây Ban Nha là từ thường
             bad(w, "còn chữ giữ chỗ (lorem/TODO/???/xxx)")
         for tag in (q.get("i18n") or {}):
             if tag not in ("vi", "en", "zh", "es", "meta"):
