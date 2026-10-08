@@ -106,7 +106,6 @@
             '<button type="button" class="bd-hb bd-fab" id="bd-close" hidden data-btt="close">✕</button>' +
             '<button type="button" class="bd-hb bd-fab" id="bd-lib" hidden data-ico="1" data-bt="lib"></button>' +
             '<button type="button" class="bd-hb bd-fab" id="bd-share" hidden data-ico="1" data-btt="sharet" data-bt="share"></button>' +
-            '<button type="button" class="bd-hb bd-fab" id="bd-free" hidden title="Tự cuộn / tự đọc riêng — bấm lại để theo màn hình chung của mọi người">🖐</button>' +
             '<button type="button" class="bd-hb bd-fab" id="bd-penbtn" title="Vẽ / ghi chú">✏️</button>' +
             '<button type="button" class="bd-hb bd-fab" id="bd-lkbtn" title="Tra nghĩa: bấm rồi chạm vào từ">🔍</button>' +
             '<button type="button" class="bd-hb bd-fab" id="bd-more" hidden title="Công cụ Block (chỉ Admin)">⋯</button>' +
@@ -322,7 +321,7 @@
   /* TJ 2026-10-06: chuột + cửa sổ rộng = các nút công cụ (A− Aa A+ 📁 📱 ⋯) thành MỘT CỘT DỌC bên phải bảng (dải 56px có sẵn của khung); điện thoại / cảm ứng / bảng nhỏ = hàng ngang dưới bảng như cũ */
   function placeTools() {
     var dn = $("#bd-docnav"), sfx = $("#bd-sfx"), ib = $("#bd-iconbar"); if (!dn || !sfx || !ib) return;
-    var rail = !!big && window.matchMedia("(hover:hover) and (pointer:fine) and (min-width:700px)").matches;
+    var rail = !!big && window.matchMedia("(hover:hover) and (pointer:fine) and (min-width:420px)").matches;
     if (placeTools._r === rail) return; placeTools._r = rail;
     if (rail) { sfx.appendChild(dn); sfx.classList.add("bd-hasrail"); dn.classList.add("bd-railtools"); }
     else { var cp = $("#bd-cplay"); ib.insertBefore(dn, cp && cp.parentNode === ib ? cp : null); sfx.classList.remove("bd-hasrail"); dn.classList.remove("bd-railtools"); }

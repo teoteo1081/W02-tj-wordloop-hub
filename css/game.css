@@ -1716,3 +1716,6 @@ body.g-viewer #l-roomcard #l-toprow{display:none}
 #l-roomcard #l-players .g-player .g-tag{position:absolute;top:-6px;right:-2px;font-size:0;background:transparent;padding:0}
 #l-roomcard #l-players .g-player .g-tag::before{content:"👑";font-size:12px}
 #l-roomcard #l-toprow{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+
+/* TJ 2026-10-08: ô trống (nút "nhảy tới trang" chưa có chữ) chiếm chỗ ở đầu cột công cụ -> ẩn khi trống */
+.bd .bd-docnav #bd-dpg:empty{display:none}
