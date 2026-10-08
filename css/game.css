@@ -1686,23 +1686,13 @@ body.usersonly #g-main{max-width:none;padding:8px 14px 24px}
 
 /* TJ 2026-10-08: gọn khung phòng chờ — (1) avatar người chơi thành vòng tròn nhỏ ngay hàng "Phòng TJ" (tên = chú thích; chơi theo đội thì hiện tên),
    (2) "▶ Bắt đầu" dính đáy màn hình, luôn thấy ngay khi mở, (3) "Tiếng chung" + "🔒 Ép" chung 1 hàng */
-#l-roomcard #l-players{flex-wrap:wrap;align-items:center;gap:4px}
-#l-roomcard #l-players{display:flex;margin-top:8px}
-#l-roomcard #l-players .g-player{flex-direction:row;align-items:center;gap:4px;width:auto;padding:0;background:transparent;border:2px solid transparent;border-radius:999px}
-#l-roomcard #l-players .g-player .g-av{width:28px;height:28px;font-size:16px;box-shadow:0 0 0 1px rgba(255,255,255,.2)}
-#l-roomcard #l-players .g-player.me .g-av{box-shadow:0 0 0 2px #e07a5f}
-#l-roomcard #l-players .g-player .g-pname,#l-roomcard #l-players .g-player .g-sub{display:none}
-#l-roomcard #l-players.g-pl-names{gap:6px}#l-roomcard #l-players.g-pl-names .g-player{padding:0 10px 0 0;background:rgba(255,255,255,.06);border-radius:999px}
-#l-roomcard #l-players.g-pl-names .g-player .g-pname{display:inline;max-width:130px;font-size:12px;font-weight:600}
-#l-roomcard #l-players .g-player .g-tag{right:-4px;top:-6px}
-#l-roomcard #l-players .g-player .g-tag::before{font-size:11px}
 .g-startrow{position:sticky;bottom:0;z-index:3;margin:10px -14px -14px;padding:10px 14px;background:var(--card);border-top:1px solid var(--line);border-radius:0 0 12px 12px}
 .g-lang2{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;align-self:end}.g-lang2 select{flex:1 1 9.5em;min-width:0}
 .g-lang2 .g-check{white-space:nowrap}
 .g-lang2-t{display:none;font-size:13px;color:var(--text-2);white-space:nowrap}
 #l-force-wrap[hidden] ~ .g-lang2-t{display:inline}   /* ô tick bị ẩn (học khác English / dạng câu không phải Nghĩa) -> vẫn có nhãn "Tiếng chung" cho ô chọn ngôn ngữ */
 body.g-host .g-learn{display:flex}
-#l-roomcard{padding:8px 12px}#l-roomcard .g-bigcode{font-size:26px;letter-spacing:4px;line-height:1.1}#l-roomcard .g-lobby-head{flex-wrap:nowrap}#l-roomcard #l-hostbtns{flex-wrap:nowrap}#l-roomcard #l-hostbtns .g-btn{padding:6px 12px;font-size:13px}#l-roomcard #l-usersrow{margin-bottom:8px}#l-roomcard #l-usersrow:has(#l-users[hidden]){display:none}
+#l-roomcard{padding:8px 12px}#l-roomcard .g-bigcode{font-size:26px;letter-spacing:4px;line-height:1.1}#l-roomcard .g-lobby-head{flex-wrap:nowrap}#l-roomcard #l-hostbtns{flex-wrap:nowrap}#l-roomcard #l-hostbtns .g-btn{padding:6px 12px;font-size:13px}
 
 /* TJ 2026-10-08: nút ✕ đóng ở GÓC PHẢI TRÊN cho mọi màn/cửa sổ con (Quản lý người chơi, Lịch sử, Xem lại đáp án, Từ đã tra + các pop-up Điểm TOEIC/Mẹo) */
 .g-xwrap{position:relative;padding-right:46px}
@@ -1714,4 +1704,15 @@ body.usersonly #s-users .g-xclose{display:none}
 body.g-viewer #l-roomcard .g-lobby-head,body.g-viewer #l-roomcard #l-info{display:none}
 body.g-viewer #l-roomcard #l-players{margin-top:0}
 
-body.g-viewer #l-roomcard #l-usersrow{display:none}
+body.g-viewer #l-roomcard #l-toprow{display:none}
+
+/* TJ 2026-10-08: avatar trong thẻ Mã phòng = vòng tròn nhỏ + huy hiệu cờ ngôn ngữ ở góc dưới trái + tên ngay dưới (host nhìn nhanh để quản lý) */
+#l-roomcard #l-players{display:flex;flex-wrap:wrap;align-items:flex-start;gap:4px 8px;margin-top:8px}
+#l-roomcard #l-players .g-player{flex-direction:column;align-items:center;justify-content:flex-start;gap:2px;width:auto;min-width:44px;padding:2px 0;background:transparent;border:0;border-radius:10px;position:relative;text-align:center}
+#l-roomcard #l-players .g-player .g-av{width:34px;height:34px;font-size:19px;box-shadow:0 0 0 2px rgba(255,255,255,.2)}
+#l-roomcard #l-players .g-player.me .g-av{box-shadow:0 0 0 2px #e07a5f}
+#l-roomcard #l-players .g-player .g-pname{display:block;max-width:76px;font-size:11px;font-weight:600;line-height:1.15}
+#l-roomcard #l-players .g-player > .g-sub{display:block;position:absolute;left:-3px;top:20px;font-size:9px;line-height:1;font-weight:700;padding:2px 3px;border-radius:999px;background:#2b2724;color:#ffd27a;border:1px solid rgba(255,255,255,.25)}
+#l-roomcard #l-players .g-player .g-tag{position:absolute;top:-6px;right:-2px;font-size:0;background:transparent;padding:0}
+#l-roomcard #l-players .g-player .g-tag::before{content:"👑";font-size:12px}
+#l-roomcard #l-toprow{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
