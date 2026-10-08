@@ -71,7 +71,7 @@
       if (st === "failed" || st === "disconnected" || (st !== "connected" && age > 8000)) return "⚠ " + n + " (chưa nghe được — mạng có thể chặn)";
       return "⏳ " + n + " (đang nối…)";
     });
-    if (stream) names.unshift("🎙 " + esc(myName()) + " (bạn)<br>" + '<button type="button" data-vcraw="1" style="margin-top:3px;border:0;border-radius:999px;padding:4px 10px;font:700 11px/1.2 inherit;font-family:inherit;cursor:pointer;background:' + (rawMode() ? "#ffd84d;color:#2b2420" : "rgba(255,255,255,.22);color:#fff") + '">🎧 ' + (rawMode() ? "Âm thanh máy tính: BẬT" : "Phát âm thanh máy tính? Bấm bật") + "</button>");
+    if (stream) names.unshift("🎙 " + esc(myName()) + " (bạn)<br><span id=\"vc-lv\" style=\"font-size:11px;opacity:.9\">mic đang gửi: …</span><br>" + '<button type="button" data-vcraw="1" style="margin-top:3px;border:0;border-radius:999px;padding:4px 10px;font:700 11px/1.2 inherit;font-family:inherit;cursor:pointer;background:' + (rawMode() ? "#ffd84d;color:#2b2420" : "rgba(255,255,255,.22);color:#fff") + '">🎧 ' + (rawMode() ? "Âm thanh máy tính: BẬT" : "Phát âm thanh máy tính? Bấm bật") + "</button>");
     var wh = $("#vc-who"); if (wh) { wh.hidden = !names.length; wh.innerHTML = names.join("<br>"); }
   }
   /* chẩn đoán tiếng (hiện cạnh tên người nói): KB đã nhận, mức âm, loa đang phát/dừng -> biết tiếng KHÔNG TỚI máy hay TỚI mà loa im */
@@ -111,10 +111,25 @@
     catch (e) { stream = null; alert((e && e.name === "NotAllowedError") ? "Bạn chưa cho phép dùng micro. Bấm vào biểu tượng ổ khoá cạnh thanh địa chỉ để cho phép, rồi bấm 🎤 lại." : "Không mở được micro: " + (e && (e.message || e.name))); paint(); return; }
     stream.getAudioTracks().forEach(function (t) { t.onended = micOff; });
     announce(); clearInterval(annT); annT = setInterval(announce, 5000);
-    paint();
+    paint(); meterStart();
   }
+  /* đo mức tiếng mic CỦA MÌNH đang gửi đi (hiện trong nhãn): ▁▂▃▄▅▆▇ + số; 0 mãi khi đang nói = tiếng gửi đi bị câm ở máy này */
+  var meter = null;
+  function meterStart() {
+    meterStop(); try {
+      var AC = window.AudioContext || window.webkitAudioContext; if (!AC || !stream) return;
+      var c = new AC(), src = c.createMediaStreamSource(stream), an = c.createAnalyser(); an.fftSize = 1024; src.connect(an);
+      var buf = new Float32Array(1024), peak = 0, t = setInterval(function () {
+        an.getFloatTimeDomainData(buf); var m = 0; for (var k = 0; k < buf.length; k++) { var a = Math.abs(buf[k]); if (a > m) m = a; } peak = Math.max(m, peak * 0.85);
+        var el = document.getElementById("vc-lv"); if (!el) return; var n = Math.min(7, Math.round(Math.sqrt(peak) * 9)), bars = "▁▂▃▄▅▆▇".slice(0, n) || "·";
+        el.textContent = "mic đang gửi: " + bars + " " + Math.round(peak * 100);
+      }, 200);
+      meter = { c: c, t: t };
+    } catch (e) {}
+  }
+  function meterStop() { if (!meter) return; clearInterval(meter.t); try { meter.c.close(); } catch (e) {} meter = null; }
   function micOff() {
-    if (!stream) return;
+    if (!stream) return; meterStop();
     var s = stream; stream = null; clearInterval(annT);
     s.getTracks().forEach(function (t) { t.onended = null; t.stop(); });
     Object.keys(out).forEach(closeOut); send({ t: "off" });
