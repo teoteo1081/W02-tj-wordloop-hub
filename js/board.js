@@ -151,9 +151,11 @@
       '<div class="bd-feed" id="bd-feed" hidden>' +
         '<div class="bd-fh"><span class="bd-ftit">🔎 Từ vừa tra <i id="bd-fn">0</i><i id="bd-fs" hidden>0</i></span>' +
         '<span class="bd-fq" id="bd-fq" hidden><input type="search" id="bd-lkin" placeholder="Gõ từ / cụm từ cần tra…" autocomplete="off" autocapitalize="off"><button type="button" class="bd-hb" id="bd-lkgo">Tra</button></span>' +
-        '<button type="button" class="bd-hb" id="bd-fread" title="Đọc các từ đã lưu" hidden>🔊 Đọc</button></div>' +
+        '<button type="button" class="bd-hb" id="bd-fread" title="Đọc các từ đã lưu" hidden>🔊 Đọc</button>' +
+        '<button type="button" class="bd-hb bd-fsz" id="bd-fsz" title="Đổi độ cao khung Từ vừa tra (chỉ máy bạn)">⇕</button><button type="button" class="bd-hb bd-fsz" id="bd-focus" title="Bung bảng to hết màn hình (chỉ máy bạn)">⛶</button></div>' +
         '<div class="bd-fl" id="bd-fl"></div></div>' +
         '</div></div>' +
+      '<button type="button" class="bd-hb" id="bd-unfocus" hidden>⤡ Thu lại</button>' +
       '<div class="bd-permbox" id="bd-permbox" hidden></div><div class="bd-view" id="bd-view" data-bt="viewmsg"></div>';
     document.body.appendChild(el);
     var dock = document.createElement("button");
@@ -242,6 +244,9 @@
     if (b.id === "bd-penbtn") { setPen(!penMode); return; }
     if (b.id === "bd-dots") { var dw0 = $("#bd-drawer"); if (dw0) { dw0.hidden = !dw0.hidden; var mb = $("#bd-more"); if (mb) mb.classList.toggle("on", !dw0.hidden); } poke(); return; }
     if (b.id === "bd-lkbtn") { setLook(!lookMode); return; }
+    if (b.id === "bd-fsz") { fsz = (fsz + 2) % 3; try { localStorage.setItem("tjwl_feed_sz_v1", String(fsz)); } catch (e) {} applyView(); return; }   /* 1 vừa -> 0 gọn -> 2 to -> 1 ... (riêng từng máy) */
+    if (b.id === "bd-focus") { focusOn = true; applyView(); return; }
+    if (b.id === "bd-unfocus") { focusOn = false; applyView(); return; }
     if (b.dataset.fsave) { toggleSave(b.dataset.fsave); return; }
     if (b.dataset.lkstar) { lkStar(b.dataset.lkstar); return; }
     if (b.dataset.ftab) { lkTab = b.dataset.ftab; paintFeed(); return; }
@@ -327,6 +332,15 @@
     try { window.parent.postMessage({ type: "tjwl-board-on", on: !!show, doc: has }, location.origin); } catch (e) {}
   }
   /* TJ 2026-10-06: chuột + cửa sổ rộng = các nút công cụ (A− Aa A+ 📁 📱 ⋯) thành MỘT CỘT DỌC bên phải bảng (dải 56px có sẵn của khung); điện thoại / cảm ứng / bảng nhỏ = hàng ngang dưới bảng như cũ */
+  /* TJ 2026-10-08: "màn hình mỗi người tự điều chỉnh riêng" — độ cao khung Từ vừa tra (0 gọn / 1 vừa / 2 to) + nút bung bảng to hết cỡ; nhớ theo máy, KHÔNG gửi cho ai */
+  var fsz = 1, focusOn = false; try { var fv = parseInt(localStorage.getItem("tjwl_feed_sz_v1"), 10); if (fv >= 0 && fv <= 2) fsz = fv; } catch (e) {}
+  function applyView() {
+    var el = $("#bd"); if (!el) return;
+    el.classList.remove("bd-fs0", "bd-fs1", "bd-fs2"); el.classList.add("bd-fs" + fsz);
+    document.body.classList.toggle("bd-focus", focusOn); var u = $("#bd-unfocus"); if (u) u.hidden = !focusOn;
+    var sz = $("#bd-fsz"); if (sz) sz.textContent = fsz === 0 ? "⇕ gọn" : fsz === 2 ? "⇕ to" : "⇕";
+    relayout(); setTimeout(function () { try { fit(); } catch (e) {} }, 120);
+  }
   function placeTools() {
     var dn = $("#bd-docnav"), sfx = $("#bd-sfx"), ib = $("#bd-iconbar"); if (!dn || !sfx || !ib) return;
     var rail = !!big && window.matchMedia("(hover:hover) and (pointer:fine) and (min-width:420px)").matches;
@@ -348,7 +362,7 @@
     document.body.classList.toggle("bd-on", show); document.body.classList.toggle("bd-bigon", show && big);
     el.classList.toggle("bd-big", big);
     placeTools();
-    if (show) { fit(); paintTools(); paintPerm(); }
+    if (show) { applyView(); fit(); paintTools(); paintPerm(); }
     document.body.style.paddingTop = show && !big ? el.offsetHeight + "px" : "";   /* bảng nhỏ nằm trên cùng, game đẩy xuống dưới; bảng to phủ cả màn hình */
   }
   /* khung bảng: tỉ lệ theo tài liệu; chế độ to = lớn nhất vừa phần còn lại của màn hình */

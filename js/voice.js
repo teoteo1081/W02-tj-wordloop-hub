@@ -38,6 +38,7 @@
     var b = document.createElement("button"); b.type = "button"; b.id = "vc-btn"; b.className = "vc-btn off"; b.hidden = true; b.title = "Bật / tắt mic của bạn (mặc định đang tắt)";
     b.innerHTML = '<svg class="cb-ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 14.5a3.2 3.2 0 0 0 3.2-3.2V6.2a3.2 3.2 0 0 0-6.4 0v5.1A3.2 3.2 0 0 0 12 14.5z" fill="currentColor"/><path d="M6.2 11.2a5.8 5.8 0 0 0 11.6 0M12 17.2v3.3M8.8 20.5h6.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><g class="vcs"><path d="M4.5 4.5l15 15" style="stroke:var(--cb-btn,#34332f)" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M4.5 4.5l15 15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></g></svg>'; bar().appendChild(b);
     var p = document.createElement("div"); p.id = "vc-who"; p.className = "vc-who"; p.hidden = true; document.body.appendChild(p);
+    p.addEventListener("click", function (e) { if (e.target.closest && !e.target.closest("[data-vcraw]")) { dbgOn = !dbgOn; paint(); } });   /* chạm nhãn = bật/tắt số chẩn đoán */
     p.addEventListener("click", function (e) {   /* nút "Âm thanh máy tính" trong nhãn: đổi chế độ mic rồi bật lại mic */
       var t = e.target.closest && e.target.closest("[data-vcraw]"); if (!t) return;
       var v = !rawMode(); setRaw(v); flash(v ? "🎧 ÂM THANH GỐC: tắt khử ồn/khử vọng — tiếng máy tính qua mic không còn bị cắt" : "🗣 Chế độ GIỌNG NÓI (lọc ồn)");
@@ -77,8 +78,10 @@
   /* chẩn đoán tiếng (hiện cạnh tên người nói): KB đã nhận, mức âm, loa đang phát/dừng -> biết tiếng KHÔNG TỚI máy hay TỚI mà loa im */
   function dbgText(i) {
     if (!i || !i.dbg) return ""; var d = i.dbg, el = i.el;
+    if (!dbgOn && el && !el.paused && !i.blocked) return "";   /* ổn thì chỉ hiện tên cho gọn (khỏi che phụ đề); chạm vào nhãn để xem số chẩn đoán */
     return '<br><span style="opacity:.85;font-size:11px">' + (d.kb >= 0 ? "nhận " + d.kb + "KB" : "") + (d.lv != null ? " · mức " + d.lv : "") + " · loa " + (!el ? "chưa có" : el.paused ? "DỪNG" : "phát") + (el && el.muted ? " (tắt tiếng)" : "") + "</span>";
   }
+  var dbgOn = false;
   function probe() {
     Object.keys(inc).forEach(function (k) {
       var i = inc[k]; if (!i || !i.pc || !i.pc.getStats || i.pc.connectionState !== "connected") return;
