@@ -1909,3 +1909,21 @@ body:has(.ch-btn.ch-inbar) .ch-panel{bottom:72px}
 @keyframes vcPulse{0%{box-shadow:0 0 0 0 rgba(22,163,74,.55)}70%{box-shadow:0 0 0 12px rgba(22,163,74,0)}100%{box-shadow:0 0 0 0 rgba(22,163,74,0)}}
 .vc-who{position:fixed;z-index:84;max-width:min(260px,calc(100vw - 20px));padding:6px 10px;border-radius:12px;background:rgba(22,163,74,.92);color:#fff;font-size:12px;line-height:1.3;box-shadow:0 3px 10px rgba(0,0,0,.4)}
 .vc-who[hidden]{display:none}
+
+/* ===== THANH DƯỚI ĐÁY kiểu HelloTalk: [ ô gõ chat ][🎤][CC][💬] (TJ 2026-10-08) ===== */
+.cb-bar{position:fixed;z-index:86;left:0;right:0;bottom:0;display:flex;align-items:center;gap:8px;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));background:#201f1d;border-top:1px solid rgba(255,255,255,.12);box-sizing:border-box}
+.cb-bar[hidden]{display:none}
+.cb-form{flex:1;min-width:0;order:1;margin:0}
+.cb-form input{width:100%;box-sizing:border-box;border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:10px 16px;background:#34332f;color:#f5f4ef;font:inherit;font-size:16px;outline:none}
+.cb-form input:focus{border-color:#e07a5f}
+.cb-form input:disabled{opacity:.55}
+.cb-form input.ch-wait{border-color:#ef4444}
+.cb-bar .vc-btn{order:2}
+.cb-bar .cc-btn{order:3}
+.cb-bar .ch-btn{order:4}
+.cb-bar .vc-btn,.cb-bar .ch-btn,.cb-bar .cc-btn{position:relative;right:auto;bottom:auto;left:auto;flex:none;width:42px;height:42px;box-shadow:none;margin:0;font-size:19px}
+.cb-bar .ch-btn i{top:-3px;right:-3px}
+body.has-cbar{padding-bottom:calc(60px + env(safe-area-inset-bottom,0px))}
+body.has-cbar .bd.bd-big{bottom:calc(58px + env(safe-area-inset-bottom,0px));height:auto}
+.ch-peek{left:10px !important;right:auto !important;bottom:calc(66px + env(safe-area-inset-bottom,0px)) !important}
+.ch-quick{display:flex !important}

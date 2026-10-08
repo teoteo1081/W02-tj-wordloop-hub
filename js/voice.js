@@ -27,22 +27,24 @@
   function desc(d) { return { type: d.type, sdp: d.sdp }; }
 
   /* ---------- giao diện: nút 🎤 tròn, đặt cạnh nút 💬 (nếu có) ---------- */
+  function bar() {   /* thanh dưới đáy dùng chung với chat.js / cc.js (ai gọi trước thì tạo) */
+    var b = document.getElementById("cb-bar");
+    if (!b) { b = document.createElement("div"); b.id = "cb-bar"; b.className = "cb-bar"; b.hidden = true; b.innerHTML = '<form id="cb-form" class="cb-form" autocomplete="off"><input id="cb-in" name="chat-message" type="text" maxlength="200" placeholder="Nhập tin nhắn…" enterkeyhint="send" autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-form-type="other"></form>'; document.body.appendChild(b); }
+    return b;
+  }
   function build() {
     if (built) return; built = true;
     var b = document.createElement("button"); b.type = "button"; b.id = "vc-btn"; b.className = "vc-btn off"; b.hidden = true; b.title = "Bật / tắt mic của bạn (mặc định đang tắt)";
-    b.innerHTML = '<span class="vc-ic">🎤</span><i class="vc-slash"></i>'; document.body.appendChild(b);
+    b.innerHTML = '<span class="vc-ic">🎤</span><i class="vc-slash"></i>'; bar().appendChild(b);
     var p = document.createElement("div"); p.id = "vc-who"; p.className = "vc-who"; p.hidden = true; document.body.appendChild(p);
     b.addEventListener("click", function () { if (locked) { flash("🔇 Đang trong ván — mic tạm khoá. Hết giờ bạn tự bật mic nhé."); return; } if (stream) micOff(); else micOn(); });
     setInterval(tick, 700);
   }
   var flashT = 0;
   function flash(txt) { var wh = $("#vc-who"); if (!wh) return; wh.hidden = false; wh.textContent = txt; clearTimeout(flashT); flashT = setTimeout(paint, 3500); }
-  function place() {   /* đứng ngay bên trái nút 💬 (cùng hàng); không có 💬 thì góc dưới phải */
-    var b = $("#vc-btn"), c = $("#ch-btn"); if (!b) return;
-    var w = b.offsetWidth || 46, key;
-    if (c && c.getClientRects().length) { var r = c.getBoundingClientRect(); b.style.right = "auto"; b.style.left = Math.max(6, Math.round(r.left - w - 8)) + "px"; b.style.bottom = Math.round(innerHeight - r.bottom) + "px"; key = "c"; }
-    else { b.style.left = "auto"; b.style.right = "66px"; b.style.bottom = "78px"; }
-    var wh = $("#vc-who"); if (wh) { wh.style.left = b.style.left; wh.style.right = b.style.right; wh.style.bottom = (parseInt(b.style.bottom, 10) + w + 8) + "px"; }
+  function place() {   /* nút 🎤 nằm trong thanh đáy; chỉ đặt ô "ai đang nói" ngay trên thanh, sát bên phải */
+    var wh = $("#vc-who"), br = $("#cb-bar"); if (!wh) return;
+    wh.style.left = "auto"; wh.style.right = "10px"; wh.style.bottom = ((br && br.offsetHeight ? br.offsetHeight : 56) + 8) + "px";
   }
   function paint() {
     var b = $("#vc-btn"); if (!b) return;
