@@ -4742,6 +4742,7 @@
 
   /* ---------- 👥 quản lý người chơi (chỉ TJ) ---------- */
   $("#l-users").addEventListener("click", function () { renderUsers(); });
+  document.addEventListener("click", function (e) { var x = e.target.closest && e.target.closest("[data-xfor]"); if (!x) return; var t = document.getElementById(x.dataset.xfor); if (t) t.click(); });   /* ✕ góc phải trên = làm đúng việc của nút "← Về …" của màn đó (TJ 2026-10-08) */
   window.addEventListener("message", function (e) { if (e.origin === location.origin && e.data && e.data.type === "tjwl-game-users") renderUsers(); });   /* menu TJ · Admin của WordLoop (gamelayer.openUsers) */
   if (param("users") === "1") setTimeout(function () { renderUsers(); }, 1800);   /* iframe vừa tạo từ menu: đợi nhận ra hồ sơ TJ rồi mở */
   $("#us-back").addEventListener("click", function () { G.inHist = false; if (G.st && G.st.phase === "lobby") renderLobby(); else if (G.st) onState(G.st); else show("s-home"); });

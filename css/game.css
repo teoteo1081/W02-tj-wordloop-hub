@@ -1705,3 +1705,10 @@ body:has(#s-lobby:not([hidden])) .g-top #l-players{display:flex}
 #l-force-wrap[hidden] ~ .g-lang2-t{display:inline}   /* ô tick bị ẩn (học khác English / dạng câu không phải Nghĩa) -> vẫn có nhãn "Tiếng chung" cho ô chọn ngôn ngữ */
 body.g-host .g-learn{display:flex}
 #l-roomcard{padding:8px 12px}#l-roomcard .g-bigcode{font-size:26px;letter-spacing:4px;line-height:1.1}#l-roomcard .g-lobby-head{flex-wrap:nowrap}#l-roomcard #l-screen{padding:6px 12px;font-size:13px}
+
+/* TJ 2026-10-08: nút ✕ đóng ở GÓC PHẢI TRÊN cho mọi màn/cửa sổ con (Quản lý người chơi, Lịch sử, Xem lại đáp án, Từ đã tra + các pop-up Điểm TOEIC/Mẹo) */
+.g-xwrap{position:relative;padding-right:46px}
+.g-xclose,#ts-close{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;min-height:0;padding:0;border-radius:50%;border:1px solid var(--line);background:var(--raise);color:var(--text);font-size:18px;line-height:1;cursor:pointer}
+.g-xclose{position:absolute;top:0;right:0;z-index:2}
+.g-xclose:hover,#ts-close:hover{background:var(--red);border-color:var(--red);color:#fff}
+body.usersonly #s-users .g-xclose{display:none}
