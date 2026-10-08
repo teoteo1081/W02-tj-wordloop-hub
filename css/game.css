@@ -1854,3 +1854,26 @@ body:has(.ch-btn.ch-inbar) .ch-panel{bottom:72px}
 .ch-back[hidden]{display:none}
 @media (min-width:521px){.ch-back{display:none}}
 .ch-panel{transition:transform .18s ease-out}
+
+/* 💬 Chat bung lên kiểu Clubhouse: khung gần full chiều cao, trượt từ đáy; hàng tin gọn "Tên nội dung"; nút ⌄ lớn bên trái để hạ xuống */
+.ch-panel{background:#2b2b2e;border-radius:22px 22px 0 0;box-shadow:0 -6px 30px rgba(0,0,0,.5)}
+.ch-panel.ch-enter{animation:chUp .24s cubic-bezier(.2,.8,.2,1)}
+@keyframes chUp{from{transform:translateY(100%)}to{transform:none}}
+@media (max-width:520px){.ch-panel{height:88vh;height:88dvh;max-height:none}}
+@media (min-width:521px){.ch-panel{height:min(78vh,620px);width:min(400px,calc(100vw - 24px));border-radius:22px}}
+.ch-head{justify-content:center;position:relative;padding:6px 12px 10px;border-bottom:0;background:transparent}
+.ch-head b{margin:0;font-size:17px;text-align:center}
+.ch-head .ch-down{position:absolute;left:8px;top:2px;width:44px;height:44px;border:0;background:transparent;font-size:0}
+.ch-head #ch-menu{position:absolute;right:8px;top:6px}
+.ch-list{gap:2px;padding:6px 14px}
+.ch-m,.ch-m.me{align-self:stretch;flex-direction:row;max-width:100%;gap:10px;padding:7px 0}
+.ch-m.same{margin-top:-8px}
+.ch-b,.ch-m.me .ch-b{display:block;background:transparent;color:inherit;padding:0;border-radius:0}
+.ch-n{display:inline;margin-right:6px;font-size:15px;font-weight:800;color:#fff}
+.ch-t{display:inline;font-size:16px;line-height:1.4}
+.ch-ts{display:none}
+.ch-av{width:34px;height:34px;font-size:19px}
+.ch-form{padding:10px 14px calc(12px + env(safe-area-inset-bottom,0px))}
+.ch-form input{border-radius:999px;background:#3a3a3e;border-color:transparent;padding:12px 16px}
+.ch-form button{border-radius:999px;min-width:60px}
+.ch-quick{padding:6px 14px 0}

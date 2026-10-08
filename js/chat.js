@@ -13,6 +13,20 @@
   var QUICK = ["❓ Chưa hiểu", "✅ Hiểu rồi", "⏳ Chờ mình chút", "🔁 Đọc lại giúp mình", "👏", "😂"];   /* trả lời nhanh 1 chạm — tiện cho lớp học, khỏi gõ chữ */
   var $ = function (s) { return document.querySelector(s); };
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  /* nhớ 30 tin gần nhất trong localStorage của CHÍNH máy này, 24 giờ, theo mã phòng — tải lại / lỡ tắt tab vẫn còn chat. KHÔNG gửi lên Supabase (TJ chốt: không tốn dung lượng). */
+  var TTL = 24 * 3600 * 1000, loadedFor = "";
+  function skey() { var c = api && api.room && api.room(); return c ? "tjwl_chat_v1_" + c : ""; }
+  function save() { var k = skey(); if (!k) return; try { localStorage.setItem(k, JSON.stringify({ at: Date.now(), log: log.slice(-MAXLOG) })); } catch (e) {} }
+  function clean(m) { return { id: String(m.id), n: String(m.n || "").slice(0, 40), a: String(m.a || "").slice(0, 300), x: String(m.x || "").slice(0, MAXLEN), ts: +m.ts || 0 }; }
+  function mergeIn(arr) {   /* gộp tin (đã nhớ trên máy / host gửi lại), bỏ trùng, theo giờ, tối đa 30, bỏ tin quá 24 giờ */
+    var seen = {}, out = [], now = Date.now();
+    log.concat(arr || []).forEach(function (m) { if (!m || typeof m.x !== "string" || !m.id) return; var ts = +m.ts || 0; if (ts && now - ts > TTL) return; var key = m.id + "|" + ts + "|" + m.x; if (seen[key]) return; seen[key] = 1; out.push(m); });
+    out.sort(function (a, b) { return (a.ts || 0) - (b.ts || 0); }); log = out.slice(-MAXLOG);
+  }
+  function loadSaved() {
+    var k = skey(); if (!k || loadedFor === k) return; loadedFor = k;
+    try { var v = JSON.parse(localStorage.getItem(k) || "null"); if (v && Array.isArray(v.log) && Date.now() - (v.at || 0) < TTL) { mergeIn(v.log.map(clean)); paint(); } else if (v) localStorage.removeItem(k); } catch (e) {}
+  }
   function st() { return api && api.st ? api.st() : null; }
   function me() { return api && api.me ? api.me() : null; }
   function host() { return !!(api && api.isHost && api.isHost()); }
@@ -27,7 +41,7 @@
     var pv = document.createElement("div"); pv.id = "ch-peek"; pv.className = "ch-peek"; pv.hidden = true; document.body.appendChild(pv);
     pv.addEventListener("click", function () { toggle(true); });
     var p = document.createElement("div"); p.id = "ch-panel"; p.className = "ch-panel"; p.hidden = true;
-    p.innerHTML = '<div class="ch-grab" id="ch-grab" aria-hidden="true"><i></i></div><div class="ch-head" id="ch-headbar"><button type="button" id="ch-close" class="ch-x ch-down" title="Hạ xuống" aria-label="Hạ khung chat xuống">⌄</button><b>💬 Chat phòng</b><span class="ch-note">chỉ lưu tạm</span><button type="button" id="ch-menu" class="ch-x" hidden title="Cài đặt chat (host)">⋯</button></div>' +
+    p.innerHTML = '<div class="ch-grab" id="ch-grab" aria-hidden="true"><i></i></div><div class="ch-head" id="ch-headbar"><button type="button" id="ch-close" class="ch-x ch-down" title="Hạ xuống" aria-label="Hạ khung chat xuống"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M5 9l7 7 7-7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button><b>Chat phòng</b><span class="ch-note">chỉ lưu tạm</span><button type="button" id="ch-menu" class="ch-x" hidden title="Cài đặt chat (host)">⋯</button></div>' +
       '<div class="ch-hostmenu" id="ch-hostmenu" hidden><button type="button" id="ch-off"></button><button type="button" id="ch-clear">🗑 Xoá hết tin nhắn</button><div class="ch-hint">Bấm vào tên 1 người trong khung chat để tắt / bật chat của họ.</div></div>' +
       '<div class="ch-list" id="ch-list"></div>' +
       '<div class="ch-quick" id="ch-quick">' + QUICK.map(function (q) { return '<button type="button" data-q="' + esc(q) + '">' + esc(q) + "</button>"; }).join("") + "</div>" +
@@ -62,15 +76,19 @@
       if (confirm((muted(id) ? "Bật lại chat cho " : "Tắt chat của ") + (n.textContent || "người này") + "?")) { api.setChat({ mute: id }); setTimeout(paint, 300); }
     });
   }
-  function place() {   /* đang ở màn Bảng: nút nằm TRONG hàng dưới bảng (cạnh avatar / công cụ), không đè lên gì; màn khác: nổi góc dưới phải */
+  function place() {   /* nút LUÔN nổi góc dưới phải toàn app, không chèn vào bố cục nào (không làm đổi giao diện); ở màn Bảng chỉ nâng lên khi hàng công cụ dưới bảng nằm đúng chỗ đó */
     var b = $("#ch-btn"); if (!b) return;
-    var ib = $("#bd-iconbar"), want = ib && ib.offsetParent !== null && document.body.classList.contains("bd-on") ? ib : document.body;
-    if (b.parentNode !== want) want.appendChild(b);
-    b.classList.toggle("ch-inbar", want === ib);
+    var ib = $("#bd-iconbar"), dn = $("#bd-docnav"), bot = 78;
+    if (document.body.classList.contains("bd-on") && ib && ib.offsetParent !== null) {
+      bot = dn && dn.parentNode === ib && dn.offsetParent !== null ? Math.round(innerHeight - ib.getBoundingClientRect().top + 8) : 14;
+    }
+    if (b.dataset.bot === String(bot)) return; b.dataset.bot = String(bot);
+    b.style.bottom = bot + "px"; var pk = $("#ch-peek"), pn = $("#ch-panel");
+    if (pk) pk.style.bottom = (bot + 6) + "px"; if (pn && innerWidth > 520) pn.style.bottom = (bot + 56) + "px";
   }
   setInterval(place, 700);
   function toggle(v) {
-    isOpen = !!v; var p = $("#ch-panel"); if (!p) return; p.hidden = !isOpen; var bkd = $("#ch-back"); if (bkd) bkd.hidden = !isOpen; var pk = $("#ch-peek"); if (pk) pk.hidden = true;
+    isOpen = !!v; var p = $("#ch-panel"); if (!p) return; p.hidden = !isOpen; if (isOpen) { p.classList.remove("ch-enter"); void p.offsetWidth; p.classList.add("ch-enter"); }   /* bung lên từ đáy */ var bkd = $("#ch-back"); if (bkd) bkd.hidden = !isOpen; var pk = $("#ch-peek"); if (pk) pk.hidden = true;
     var bt = $("#ch-btn"); if (bt) bt.classList.toggle("on", isOpen);
     if (isOpen) { unread = 0; paint(); var i = $("#ch-in"); if (i && !i.disabled) try { i.focus(); } catch (e) {} scrollEnd(); }
     badge();
@@ -95,7 +113,7 @@
       var mine = mm && m.id === mm.id, same = prev && prev.id === m.id && (m.ts - prev.ts) < 60000, crown = s && s.hid === m.id;
       prev = m;
       return '<div class="ch-m' + (mine ? " me" : "") + (same ? " same" : "") + '"><span class="ch-av">' + (same ? "" : avatarHtml(m.a)) + '</span><div class="ch-b">' +
-        (same || mine ? "" : '<span class="ch-n' + (h ? " ch-clk" : "") + (muted(m.id) ? " ch-muted" : "") + '" data-chid="' + esc(m.id) + '">' + (crown ? "👑 " : "") + esc(m.n || "?") + "</span>") +
+        (same ? "" : '<span class="ch-n' + (h && !mine ? " ch-clk" : "") + (muted(m.id) ? " ch-muted" : "") + '" data-chid="' + esc(m.id) + '">' + (crown ? "👑 " : "") + esc(m.n || "?") + "</span>") +
         '<span class="ch-t">' + esc(m.x) + '</span><span class="ch-ts">' + hhmm(m.ts) + "</span></div></div>";
     }).join("") : '<div class="ch-empty"><div class="ch-big">💬</div>Chưa có tin nhắn nào.<br>Nói xin chào cả lớp nhé 👋</div>';
     var inp = $("#ch-in"), sd = $("#ch-send"), blocked = (off() && !h) || (mm && muted(mm.id) && !h);
@@ -107,7 +125,7 @@
     if (atEnd || !isOpen) scrollEnd();
   }
   function add(m) {
-    log.push(m); if (log.length > MAXLOG) log = log.slice(-MAXLOG);
+    log.push(m); if (log.length > MAXLOG) log = log.slice(-MAXLOG); save();
     var mm = me(), mine = mm && m.id === mm.id;
     if (!isOpen && !mine) { unread++; badge(); peek(m); }
     paint();
@@ -130,20 +148,20 @@
         if (muted(p.id) && !host()) return;   /* người bị tắt chat: bỏ (host vẫn thấy để biết) */
         if (off() && !host() && p.id !== (st() && st().hid)) return;
         add({ id: String(p.id), n: String(p.n || "").slice(0, 40), a: String(p.a || "").slice(0, 300), x: p.x.slice(0, MAXLEN), ts: +p.ts || Date.now() });
-      } else if (p.t === "clear") { log = []; unread = 0; badge(); paint(); }
+      } else if (p.t === "clear") { log = []; unread = 0; badge(); paint(); var kc = skey(); if (kc) try { localStorage.removeItem(kc); } catch (e) {} }
       else if (p.t === "req") { if (host() && log.length && Date.now() - lastSync > 3000) { lastSync = Date.now(); send({ t: "sync", log: log.slice(-MAXLOG) }); } }
       else if (p.t === "sync") {
-        if (log.length || !Array.isArray(p.log)) return;   /* chỉ máy chưa có gì mới nhận bản của host */
-        log = p.log.slice(-MAXLOG).filter(function (m) { return m && typeof m.x === "string" && m.id; }).map(function (m) { return { id: String(m.id), n: String(m.n || "").slice(0, 40), a: String(m.a || "").slice(0, 300), x: m.x.slice(0, MAXLEN), ts: +m.ts || 0 }; });
-        paint();
+        if (!Array.isArray(p.log)) return;   /* gộp với tin đã nhớ trên máy này (bỏ trùng) */
+        mergeIn(p.log.slice(-MAXLOG).filter(function (m) { return m && typeof m.x === "string" && m.id; }).map(clean));
+        save(); paint();
       }
     },
     onState: function (s) {
       if (!api || !s) return;
-      build(); var b = $("#ch-btn"); if (b) b.hidden = false; place();
+      build(); var b = $("#ch-btn"); if (b) b.hidden = false; place(); loadSaved();
       if (!asked) { asked = true; setTimeout(function () { send({ t: "req" }); }, 1200); }   /* vào sau: xin host gửi lại 30 tin gần nhất */
       var sg = (s.chatOff ? 1 : 0) + "|" + (s.chatMute || []).join(",") + "|" + (host() ? 1 : 0); if (sg !== sig) { sig = sg; paint(); }   /* chỉ vẽ lại khi cài đặt chat / vai trò đổi (không giật khung đang cuộn) */
     },
-    reset: function () { log = []; unread = 0; asked = false; var b = $("#ch-btn"); if (b) b.hidden = true; toggle(false); }
+    reset: function () { log = []; unread = 0; asked = false; loadedFor = ""; var b = $("#ch-btn"); if (b) b.hidden = true; toggle(false); }
   };
 })();

@@ -1758,6 +1758,7 @@
   /* 🖤 bảng vẽ chung (js/board.js) — host mở/đóng cho cả phòng + cấp quyền từng người (st.board / st.bperm) */
   if (window.Chat) Chat.attach({
     ch: function () { return G.ch; }, me: function () { return G.me; }, st: function () { return G.st; }, isHost: function () { return !!G.isHost; },
+    room: function () { return G.room && G.room.code; },
     setChat: function (o) {   /* host: tắt/bật chat cả phòng, tắt/bật chat 1 người */
       if (!G.isHost || !G.st || !o) return;
       if (o.off != null) G.st.chatOff = !!o.off;
