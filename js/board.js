@@ -90,6 +90,7 @@
         '<div class="bd-sfx" id="bd-sfx">' +'<div class="bd-stage" id="bd-stage">' +
         '<div class="bd-zoom" id="bd-zoom"><video id="bd-video" class="bd-video" autoplay playsinline muted hidden></video><div class="bd-doc" id="bd-doc"></div><canvas id="bd-cv"></canvas><div class="bd-texts" id="bd-texts"></div></div>' +
         '<button type="button" class="bd-aud" id="bd-aud" hidden data-bt="unmute"></button>' +
+        '<div id="bd-scrstat" hidden></div>' +
         '<button type="button" id="bd-scrfull" hidden title="Xem hình chia sẻ toàn màn hình (Esc để thoát)">⛶ Toàn màn hình</button>' +
         '<button type="button" id="bd-scrmin" hidden title="Thu hình chia sẻ thành ô nhỏ để xem tiếp bài / bảng">▁ Thu nhỏ để xem bài</button>' +
         '<div id="bd-sharebar" hidden><video id="bd-prev" muted autoplay playsinline title="Bấm để phóng to / thu nhỏ hình bạn đang chia sẻ"></video><div class="bd-shtx"><b>🔴 Đang chia sẻ màn hình</b><span>Mọi người trong phòng đang xem</span></div><button type="button" id="bd-prevfull" title="Xem hình đang chia sẻ toàn màn hình (Esc để thoát)">⛶</button><button type="button" id="bd-shstop">Dừng chia sẻ</button></div>' +
@@ -1831,7 +1832,7 @@
     clearTimeout(showVideo.t);
     if (stream && !local) showVideo.t = setTimeout(function () {
       var vv = $("#bd-video"), st = $("#bd-stage"); if (!vv || !st || vv.hidden) return;
-      if (!(vv.videoWidth > 0 && vv.readyState >= 2 && !vv.paused)) st.classList.remove("bd-screen-view", "bd-screen");
+      if (!(vv.videoWidth > 0 && vv.readyState >= 2 && !vv.paused)) { st.classList.remove("bd-screen-view", "bd-screen"); paintShare(); }
     }, 5000);   /* TJ 2026-10-06: NGƯỜI XEM thấy màn hình chia sẻ thay cho bài (trước: lớp bài đè lên hình, chỉ nghe tiếng); host vẫn thấy bài của mình */
     paintShare();
   }
@@ -1855,6 +1856,11 @@
     if (id === "bd-shstop") stopShare();
     else if (id === "bd-prev") { var sb = $("#bd-sharebar"); if (sb) sb.classList.toggle("bd-bigp"); }   /* host: phóng to hình đang chia sẻ để xem (nếu chia sẻ cả màn hình chứa bảng này thì hình lồng nhau là bình thường) */
     else if (id === "bd-scrmin") { var st = $("#bd-stage"); if (st) st.classList.add("bd-screen-min"); }
+    else if (id === "bd-scrstat") {   /* thử nối lại / bật phát hình (iPhone cần 1 cú chạm mới chịu phát) */
+      if (rvErr || !rv) { rvErr = ""; rvRetryAt = 0; if (rvHost) rvWant(); }
+      else if (rv.stream) { showVideo(rv.stream); var vv = $("#bd-video"); if (vv) vv.play().catch(function () {}); }
+      paintShare();
+    }
     else if (id === "bd-scrfull") fsVideo($("#bd-video"));
     else if (id === "bd-prevfull") fsVideo($("#bd-prev"));
     else { var st2 = $("#bd-stage"), v2 = $("#bd-video"); if (st2 && v2 && st2.classList.contains("bd-screen-min")) { var r2 = v2.getBoundingClientRect(); if (e.clientX >= r2.left && e.clientX <= r2.right && e.clientY >= r2.top && e.clientY <= r2.bottom) st2.classList.remove("bd-screen-min"); } }   /* bấm vào ô nhỏ = phóng lại */
@@ -1991,6 +1997,12 @@
       line = t("sharing") + " · " + t("nview").replace("{n}", nc) + (nf ? " · " + t("hostfull").replace("{n}", nf) : "");
     } else if (rvErr) line = t(rvErr);
     else if (rv) line = rv.ok ? t("watching").replace("{n}", rvName || "Host") : t("conn");
+    var ss = $("#bd-scrstat");   /* NGƯỜI XEM thấy rõ tình trạng nối màn hình host (trước chỉ ghi vào ô ẩn -> không biết vì sao không thấy hình) */
+    if (ss) {
+      var stx = "";
+      if (!shStream && rvHost && !$("#bd-stage").classList.contains("bd-screen-view")) stx = rvErr ? "⚠️ Chưa thấy được màn hình của host. Mạng điện thoại / công ty có thể chặn. Bấm vào đây để thử lại, hoặc đổi sang Wi-Fi." : rv && rv.ok ? "▶ Chạm vào đây để xem màn hình của host" : "📡 Host đang chia sẻ màn hình — đang kết nối…";
+      ss.hidden = !stx; ss.textContent = stx;
+    }
     var sc = $("#bd-scr"); sc.textContent = line; sc.classList.toggle("err", !shStream && !!rvErr);
     var a = $("#bd-aud"), v = $("#bd-video"), au = !shStream && rv && rv.stream && rv.stream.getAudioTracks().length;
     a.hidden = !au; if (au) { a.dataset.bt = v.muted ? "unmute" : "mute"; a.textContent = t(a.dataset.bt); }

@@ -1747,3 +1747,5 @@ body.g-viewer #l-roomcard #l-toprow{display:none}
 #bd-prev:fullscreen,#bd-video:fullscreen{width:100% !important;height:100% !important;object-fit:contain;background:#000}
 .bd-stage.bd-screen.bd-screen-min{background:#1d2a24}
 @media (pointer:coarse){#bd-scrmin,#bd-scrfull{min-height:40px;padding:8px 14px;font-size:14px}#bd-scrfull{top:56px}.bd-stage.bd-screen-min #bd-scrfull{top:8px}#bd-shstop,#bd-prevfull{min-height:42px;padding:8px 14px}}   /* điện thoại: nút chạm đủ to (≥40px) */
+#bd-scrstat{position:absolute;left:8px;right:8px;top:8px;z-index:7;box-sizing:border-box;padding:10px 12px;background:rgba(24,22,20,.96);border:1px solid #f59e0b;border-radius:12px;font-size:13px;line-height:1.35;color:#fde68a;text-align:center;cursor:pointer}
+#bd-scrstat[hidden]{display:none}
