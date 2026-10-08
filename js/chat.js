@@ -45,7 +45,7 @@
       '<div class="ch-hostmenu" id="ch-hostmenu" hidden><button type="button" id="ch-off"></button><button type="button" id="ch-clear">🗑 Xoá hết tin nhắn</button><div class="ch-hint">Bấm vào tên 1 người trong khung chat để tắt / bật chat của họ.</div></div>' +
       '<div class="ch-list" id="ch-list"></div>' +
       '<div class="ch-quick" id="ch-quick">' + QUICK.map(function (q) { return '<button type="button" data-q="' + esc(q) + '">' + esc(q) + "</button>"; }).join("") + "</div>" +
-      '<form class="ch-form" id="ch-form" autocomplete="off"><input id="ch-in" maxlength="' + MAXLEN + '" placeholder="Nhập tin nhắn…" enterkeyhint="send"><button type="submit" id="ch-send">Gửi</button></form>';
+      '<form class="ch-form" id="ch-form" autocomplete="off"><input id="ch-in" name="chat-message" type="text" maxlength="' + MAXLEN + '" placeholder="Nhập tin nhắn…" enterkeyhint="send" autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-form-type="other"><button type="submit" id="ch-send">Gửi</button></form>';
     document.body.appendChild(p);
     var bk = document.createElement("div"); bk.id = "ch-back"; bk.className = "ch-back"; bk.hidden = true; document.body.appendChild(bk);   /* điện thoại: chạm vùng mờ phía trên để hạ chat xuống */
     bk.addEventListener("click", function () { toggle(false); });
@@ -95,8 +95,17 @@
     if (pn && innerWidth > 520) pn.style.bottom = (bot + 56) + "px";
   }
   setInterval(place, 700);
+  /* iPhone: bàn phím mở thì vùng nhìn thấy (visualViewport) co lại nhưng khung chat vẫn cao 88% -> tiêu đề, nút ⌄ và tin nhắn bị đẩy lên khuất. Co khung vừa vùng nhìn thấy, dán ngay trên bàn phím. */
+  function fitVV() {
+    var p = $("#ch-panel"), vv = window.visualViewport; if (!p) return;
+    if (!isOpen || !vv || innerWidth > 520) { p.style.height = ""; if (innerWidth <= 520) p.style.bottom = ""; return; }
+    var kb = Math.max(0, Math.round(innerHeight - vv.height - vv.offsetTop));
+    p.style.bottom = kb + "px"; p.style.height = Math.round(Math.min(innerHeight * 0.88, vv.height - 8)) + "px";
+    scrollEnd();
+  }
+  if (window.visualViewport) { window.visualViewport.addEventListener("resize", fitVV); window.visualViewport.addEventListener("scroll", fitVV); }
   function toggle(v) {
-    isOpen = !!v; var p = $("#ch-panel"); if (!p) return; p.hidden = !isOpen; if (isOpen) { p.classList.remove("ch-enter"); void p.offsetWidth; p.classList.add("ch-enter"); }   /* bung lên từ đáy */ var bkd = $("#ch-back"); if (bkd) bkd.hidden = !isOpen; var pk = $("#ch-peek"); if (pk) pk.hidden = true;
+    isOpen = !!v; var p = $("#ch-panel"); if (!p) return; p.hidden = !isOpen; setTimeout(fitVV, 0); if (isOpen) { p.classList.remove("ch-enter"); void p.offsetWidth; p.classList.add("ch-enter"); }   /* bung lên từ đáy */ var bkd = $("#ch-back"); if (bkd) bkd.hidden = !isOpen; var pk = $("#ch-peek"); if (pk) pk.hidden = true;
     var bt = $("#ch-btn"); if (bt) bt.classList.toggle("on", isOpen);
     if (isOpen) { unread = 0; paint(); var i = $("#ch-in"); if (i && !i.disabled) try { i.focus(); } catch (e) {} scrollEnd(); }
     badge();
