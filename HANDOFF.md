@@ -16,15 +16,10 @@
 2. **"Tra từ hết ra nghĩa"** (TJ báo, nghi do giới hạn): `boardLookup` (`game.js` ~3094) trước đây tự gọi thẳng `gemini-proxy`, KHÔNG có dự phòng — Gemini free-tier quá tải (nhiều người tra cùng lúc trong phòng) là tắt hẳn, không có đường lui. Sửa: đổi sang gọi `Context._callProvider` (đã có sẵn trong `js/context.js`, dùng cho tính năng "✨ Tạo bài đọc mới" — Gemini trước, lỗi (quá tải/mất mạng/rỗng) tự rơi qua OpenAI qua `openai-proxy`, TRỪ lỗi "hết lượt hôm nay" (`quota_user`) thì KHÔNG lách qua OpenAI, giữ đúng thiết kế cũ của TJ "giới hạn free phải có ý nghĩa thật"). Tra từ vẫn KHÔNG tính vào hạn mức 3 Block AI/ngày (như code cũ, chỉ áp dụng cho tạo bài đọc). **CHƯA thử thật** — cần TJ tra vài chục từ liên tục trong phòng đông người xem còn bị "hết nghĩa" không, và kiểm Supabase có phát sinh chi phí OpenAI (bảng log nếu có) hay chỉ toàn Gemini free như trước.
 **Cách TJ xem thử**: máy local (D:\Python\Git\W02-tj-wordloop-hub) đã checkout nhánh `fix/cc-overlap-lookup-fallback`, chạy server tĩnh `py -m http.server` rồi mở `http://localhost:PORT/game.html?...` — vẫn nối Supabase thật. Duyệt xong, TJ báo để gộp vào `main` (nhớ đổi version nếu còn sửa thêm).
 
-## ▶ CHECKPOINT 2026-10-08 (cuối ngày) — VOICE/CC: admin nói, người nghe KHÔNG nghe tiếng
-**Triệu chứng TJ báo**: admin bật mic -> phụ đề CC của admin nhảy chữ bên máy người chơi, nhưng người chơi KHÔNG nghe tiếng.
-**ĐÃ QUYẾT (TJ 2026-10-08, xem README "Việc còn dang dở"): KHÔNG deploy TURN (Cloudflare Realtime có phí)** — `turn-creds` vẫn 404, để vậy, KHÔNG hỏi lại TJ chuyện này. Hệ quả chấp nhận: 2 máy ở mạng "khó tính" (5G / wifi công ty / NAT đối xứng) có thể KHÔNG bao giờ nối được tiếng — đây là giới hạn đã biết, không phải bug.
-**CÒN CẦN KIỂM** (chưa làm, vì chỉ có máy CLI không có 2 thiết bị thật + mic):
-1. Cùng 1 mạng wifi mà vẫn câm -> ĐÂY MỚI LÀ BUG thật, tìm trong `js/voice.js` (`ontrack`, `el.play()` bị chặn tự phát tiếng — cờ `i.blocked`, bật lại ở lần chạm kế trong listener `pointerdown`; signalling `want/offer/answer/ice`; khoá mic khi `st.phase==="play"`). Review code 2026-10-08: logic autoplay-unlock có vẻ đúng, nhưng CHƯA thử thật trên 2 thiết bị — không được tin chỉ vì đọc code thấy hợp lý.
-2. Test ở phòng riêng mã ZZ…, TUYỆT ĐỐI không vào phòng "TJ".
-**Đã chắc / chưa chắc**: code autoplay-recovery đã có; toàn bộ voice/CC/đọc-theo mới chỉ thử bằng trang giả + Playwright, CHƯA thử 2 máy thật hay iPhone.
+## ▶ CHECKPOINT 2026-10-08 (cuối ngày) — Voice iPhone: ĐÃ XONG (TJ xác nhận có tiếng); bài học đã dời sang CLAUDE.md
+Lỗi 'người nghe không nghe tiếng' đã giải quyết (xem CLAUDE.md mục Voice: mở khoá <audio> iOS, âm thanh gốc, chẩn đoán, tự nối lại). Còn lại chỉ là việc chờ TJ bên dưới.
 **Việc khác đang chờ TJ**: (a) chốt kiểu hiện điểm "Đọc theo" (sao + vòng % thay vì /100? giới hạn 5 từ cần luyện? chia sẻ cả phòng tự gửi hay hỏi trước?) — đã research ELSA/Google Read Along/Microsoft Reading Coach; (b) "Mở phòng game không chạy" ở menu Block/Batch/Page — chưa tái hiện được, cần biết máy/trình duyệt/hiện gì; (c) chat có gửi ảnh nhỏ không.
-Khi xong: dời info bền vững sang README/CLAUDE rồi xoá mục này.
+Khi xong: xoá mục này.
 
 ## ▶ CHECKPOINT 2026-10-08 (máy cloud, Claude Sonnet 5.5; TJ chuyển sang máy khác làm tiếp) — ĐỌC TRƯỚC, rồi verify bằng lệnh thật
 > Các mục cũ ở dưới (checkpoint 2026-10-06) vẫn còn đúng phần việc treo; mục này là cái MỚI nhất.
