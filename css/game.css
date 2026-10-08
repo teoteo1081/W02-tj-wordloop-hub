@@ -1749,3 +1749,8 @@ body.g-viewer #l-roomcard #l-toprow{display:none}
 @media (pointer:coarse){#bd-scrmin,#bd-scrfull{min-height:40px;padding:8px 14px;font-size:14px}#bd-scrfull{top:56px}.bd-stage.bd-screen-min #bd-scrfull{top:8px}#bd-shstop,#bd-prevfull{min-height:42px;padding:8px 14px}}   /* điện thoại: nút chạm đủ to (≥40px) */
 #bd-scrstat{position:absolute;left:8px;right:8px;top:8px;z-index:7;box-sizing:border-box;padding:10px 12px;background:rgba(24,22,20,.96);border:1px solid #f59e0b;border-radius:12px;font-size:13px;line-height:1.35;color:#fde68a;text-align:center;cursor:pointer}
 #bd-scrstat[hidden]{display:none}
+
+/* TJ 2026-10-08: người chơi thấy GIỐNG HOST: bảng/bài nguyên vẹn + thanh nhỏ có hình chia sẻ (không còn phủ cả bảng). #bd-video chỉ để phát TIẾNG -> thu còn 2px, gần như trong suốt (KHÔNG display:none: iPhone không phát) */
+.bd .bd-stage.bd-viewshare .bd-video{inset:auto !important;left:0 !important;top:0 !important;width:2px !important;height:2px !important;opacity:.01;pointer-events:none}
+#bd-sharebar.bd-sbview{border-color:#14b8a6}
+#bd-sharebar.bd-sbview #bd-shstop{display:none}

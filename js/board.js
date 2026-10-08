@@ -1821,20 +1821,21 @@
   function showVideo(stream, local) {
     var v = $("#bd-video"); if (!v) return;
     if (v.srcObject !== (stream || null)) v.srcObject = stream || null;
-    v.hidden = !stream || !!local; if (local || !stream) v.muted = true;   /* host KHÔNG xem lại hình đang chia sẻ: hình chồng lên bài của host nên rối + lặp vô tận (TJ 2026-10-06) */   /* tự phát cần muted; người xem bấm 🔊 Bật tiếng */
+    v.hidden = !stream || !!local; if (local || !stream) v.muted = true;   /* host KHÔNG xem lại hình đang chia sẻ ở khung chính (lặp vô tận). Tự phát cần muted; người xem bấm 🔊 Bật tiếng */
     if (stream) v.play().catch(function () {});
-    var sb = $("#bd-sharebar"), pv = $("#bd-prev");   /* kiểu Google Meet: người chia sẻ thấy thanh "Bạn đang chia sẻ" + hình thu nhỏ + nút Dừng (không phủ hình đầy khung -> không bị lặp vô tận) */
-    var sm = $("#bd-scrmin"); if (sm) sm.hidden = !(stream && !local); var sf = $("#bd-scrfull"); if (sf) sf.hidden = !(stream && !local); if (!stream || local) $("#bd-stage").classList.remove("bd-screen-min");   /* người xem: ▁ thu hình chia sẻ thành ô nhỏ góc dưới để xem tiếp bài/bảng; bấm ô nhỏ để phóng lại */
-    if (sb && !(stream && local)) sb.classList.remove("bd-bigp");
-    if (sb && pv) { sb.hidden = !(stream && local); if (pv.srcObject !== ((stream && local) ? stream : null)) pv.srcObject = (stream && local) ? stream : null; if (stream && local) pv.play().catch(function () {}); }
-    $("#bd-stage").classList.toggle("bd-screen", !!stream && !local);
-    $("#bd-stage").classList.toggle("bd-screen-view", !!stream && !local);
-    /* iPhone/Safari đôi khi KHÔNG phát được hình chia sẻ -> lớp bài bị ẩn mà video đen = bảng trống. Sau 5s chưa có khung hình thì trả lại bài (TJ 2026-10-06: bạn dùng iPhone 15 không thấy nội dung bảng) */
-    clearTimeout(showVideo.t);
-    if (stream && !local) showVideo.t = setTimeout(function () {
-      var vv = $("#bd-video"), st = $("#bd-stage"); if (!vv || !st || vv.hidden) return;
-      if (!(vv.videoWidth > 0 && vv.readyState >= 2 && !vv.paused)) { st.classList.remove("bd-screen-view", "bd-screen"); refitSoon(); paintShare(); }
-    }, 5000);   /* TJ 2026-10-06: NGƯỜI XEM thấy màn hình chia sẻ thay cho bài (trước: lớp bài đè lên hình, chỉ nghe tiếng); host vẫn thấy bài của mình */
+    /* TJ 2026-10-08: người chơi thấy GIỐNG HOST — bảng/bài đọc vẫn nguyên, hình chia sẻ nằm trong thanh nhỏ phía trên (hình thu nhỏ + ⛶ + bấm hình để phóng to). #bd-video chỉ còn là nguồn TIẾNG (ẩn bằng CSS .bd-viewshare). */
+    var sb = $("#bd-sharebar"), pv = $("#bd-prev"), st = $("#bd-stage"), viewer = !!stream && !local, tx = sb && sb.querySelector(".bd-shtx");
+    if (sb && pv) {
+      sb.hidden = !stream;
+      sb.classList.toggle("bd-sbview", viewer);
+      if (!stream) sb.classList.remove("bd-bigp");
+      if (pv.srcObject !== (stream || null)) pv.srcObject = stream || null;
+      if (stream) pv.play().catch(function () {});
+      if (tx) tx.innerHTML = viewer ? "<b>🔴 " + esc(rvName || "Host") + " đang chia sẻ màn hình</b><span>Bấm hình để phóng to</span>" : "<b>🔴 Đang chia sẻ màn hình</b><span>Mọi người trong phòng đang xem</span>";
+    }
+    var sm = $("#bd-scrmin"); if (sm) sm.hidden = true; var sf = $("#bd-scrfull"); if (sf) sf.hidden = true;   /* kiểu cũ (hình phủ cả bảng + nút Thu nhỏ) đã bỏ */
+    st.classList.toggle("bd-viewshare", viewer);
+    st.classList.remove("bd-screen", "bd-screen-view", "bd-screen-min");
     refitSoon();
     paintShare();
   }
@@ -1860,18 +1861,14 @@
     else if (id === "bd-scrmin") { var st = $("#bd-stage"); if (st) st.classList.add("bd-screen-min"); refitSoon(); }
     else if (id === "bd-scrstat") {   /* thử nối lại / bật phát hình (iPhone cần 1 cú chạm mới chịu phát) */
       if (rvErr || !rv) { rvErr = ""; rvRetryAt = 0; if (rvHost) rvWant(); }
-      else if (rv.stream) { showVideo(rv.stream); var vv = $("#bd-video"); if (vv) vv.play().catch(function () {}); }
+      else if (rv.stream) { showVideo(rv.stream); var vv = $("#bd-video"), pp = $("#bd-prev"); if (vv) vv.play().catch(function () {}); if (pp) pp.play().catch(function () {}); setTimeout(paintShare, 400); }
       paintShare();
     }
     else if (id === "bd-scrfull") fsVideo($("#bd-video"));
     else if (id === "bd-prevfull") fsVideo($("#bd-prev"));
-    else if (rv && rv.stream && $("#bd-video") && !$("#bd-video").hidden && $("#bd-video").paused && e.target.closest && e.target.closest("#bd-stage")) { $("#bd-video").play().catch(function () {}); }   /* iPhone: hình chưa tự phát -> chạm vào khung là phát */
+    else if (rv && rv.stream && $("#bd-prev") && $("#bd-prev").paused && e.target.closest && e.target.closest("#bd-stage")) { $("#bd-prev").play().catch(function () {}); var vv0 = $("#bd-video"); if (vv0) vv0.play().catch(function () {}); setTimeout(paintShare, 400); }   /* iPhone: hình chưa tự phát -> chạm vào khung là phát */
     else { var st2 = $("#bd-stage"), v2 = $("#bd-video"); if (st2 && v2 && st2.classList.contains("bd-screen-min")) { var r2 = v2.getBoundingClientRect(); if (e.clientX >= r2.left && e.clientX <= r2.right && e.clientY >= r2.top && e.clientY <= r2.bottom) st2.classList.remove("bd-screen-min"); } }   /* bấm vào ô nhỏ = phóng lại */
   });
-  document.addEventListener("playing", function (e) {   /* hình bắt đầu phát (kể cả sau khi chạm trên iPhone) -> hiện lại lớp màn hình chia sẻ nếu 5 giây đầu đã trả bài về */
-    if (!e.target || e.target.id !== "bd-video" || !rv || !rv.stream) return;
-    var st = $("#bd-stage"); if (st && !st.classList.contains("bd-screen-min")) { st.classList.add("bd-screen-view", "bd-screen"); paintShare(); }
-  }, true);
   function fsVideo(v) {   /* bung video toàn màn hình (Esc thoát); iPhone/Safari dùng cách riêng */
     if (!v) return;
     try { if (v.requestFullscreen) v.requestFullscreen().catch(function () {}); else if (v.webkitRequestFullscreen) v.webkitRequestFullscreen(); else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen(); } catch (e) {}
@@ -2007,7 +2004,8 @@
     var ss = $("#bd-scrstat");   /* NGƯỜI XEM thấy rõ tình trạng nối màn hình host (trước chỉ ghi vào ô ẩn -> không biết vì sao không thấy hình) */
     if (ss) {
       var stx = "";
-      if (!shStream && rvHost && !$("#bd-stage").classList.contains("bd-screen-view")) stx = rvErr ? "⚠️ Chưa thấy được màn hình của host. Mạng điện thoại / công ty có thể chặn. Bấm vào đây để thử lại, hoặc đổi sang Wi-Fi." : rv && rv.ok ? "▶ Chạm vào đây để xem màn hình của host" : "📡 Host đang chia sẻ màn hình — đang kết nối…";
+      var pvv = $("#bd-prev"), shown = !!(rv && rv.stream && pvv && !pvv.paused);
+      if (!shStream && rvHost && !shown) stx = rvErr ? "⚠️ Chưa thấy được màn hình của host. Mạng điện thoại / công ty có thể chặn. Bấm vào đây để thử lại, hoặc đổi sang Wi-Fi." : rv && rv.ok ? "▶ Chạm vào đây để xem màn hình của host" : "📡 Host đang chia sẻ màn hình — đang kết nối…";
       ss.hidden = !stx; ss.textContent = stx;
     }
     var sc = $("#bd-scr"); sc.textContent = line; sc.classList.toggle("err", !shStream && !!rvErr);
@@ -2017,7 +2015,7 @@
 
   window.Board = {
     attach: function (a) { api = a; build(); },
-    onMsg: onMsg, onState: onState, onRtc: onRtc,
+    onMsg: onMsg, onState: onState, onRtc: onRtc, _showVideo: showVideo,   /* _showVideo: chỉ để kiểm thử giao diện chia sẻ bằng hình giả */
     resync: function () { if (open) setTimeout(function () { send({ t: "hello" }); }, 400); },
     isOpen: function () { return open; },
     noSound: function () { if (!noSoundAt || Date.now() - noSoundAt > 20000) { noSoundAt = Date.now(); feedNote("🔇 Máy này chưa phát được tiếng đọc — kiểm tra loa / âm lượng máy và quyền âm thanh của trình duyệt, rồi bấm đọc lại."); } },
