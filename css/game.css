@@ -1827,3 +1827,18 @@ body.g-viewer #l-roomcard #l-toprow{display:none}
 .ch-form button{min-width:56px}
 .ch-btn{width:40px;height:40px}
 .ch-head b{white-space:nowrap}
+
+/* 💬 Chat kiểu Clubhouse: nút tròn nhỏ nổi, chấm xanh báo tin mới, bong bóng xem trước */
+.ch-btn{position:fixed;z-index:85;right:12px;bottom:78px;width:46px;height:46px;border-radius:50%;background:#2f2e2b;border:1px solid rgba(255,255,255,.2);box-shadow:0 4px 14px rgba(0,0,0,.45);font-size:21px}
+.ch-btn.on{background:#e07a5f;border-color:#e07a5f}
+.ch-btn i{top:-3px;right:-3px;background:#2f8cff;min-width:20px;height:20px;line-height:20px;font-size:11px;border:2px solid #262624;box-sizing:content-box}
+.ch-peek{position:fixed;z-index:84;right:66px;bottom:84px;max-width:min(260px,calc(100vw - 90px));padding:8px 12px;border-radius:14px;border-bottom-right-radius:4px;background:#2f8cff;color:#fff;font-size:13px;line-height:1.3;box-shadow:0 4px 14px rgba(0,0,0,.4);cursor:pointer;animation:chPop .18s ease-out}
+.ch-peek[hidden]{display:none}
+.ch-peek b{font-weight:700}
+@keyframes chPop{from{transform:translateY(6px) scale(.96);opacity:0}to{transform:none;opacity:1}}
+.ch-panel{bottom:132px}
+@media (max-width:520px){.ch-panel{bottom:0}}
+.ch-btn.ch-inbar{position:static;flex:none;width:42px;height:42px;margin:0 0 0 auto !important;box-shadow:none;order:100;font-size:19px}
+body:has(.ch-btn.ch-inbar) .ch-peek{bottom:70px}
+body:has(.ch-btn.ch-inbar) .ch-panel{bottom:72px}
+@media (max-width:520px){body:has(.ch-btn.ch-inbar) .ch-panel{bottom:0}}
