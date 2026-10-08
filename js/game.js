@@ -3158,7 +3158,7 @@
   /* G.rv = danh sách đang xem: ván vừa chơi (G.log) hoặc 1 ván cũ trong 📜 Lịch sử (pastReview) */
   function renderReview(i, list) {
     var rp = $("#rv-replay"); if (rp) rp.hidden = !(G.isHost && G.room && G.st && G.st.phase !== "play" && (G.rvFrom === "end" || (G.rvMatch && G.rvMatch.qtype !== "toeic")));   /* 🔁 ván cũ đề thi: chưa lưu đề/Part nên không chơi lại được */
-    if (list) { G.rv = list; G.rvOnlyWrong = false; G.rvWrongIdx = null; }
+    if (list) { G.rv = list; G.rvMid = list.mid || null; G.rvOnlyWrong = false; G.rvWrongIdx = null; }
     var R = G.rv || G.log;
     if (!R.length) return;
     G.inHist = true;   /* phòng gửi trạng thái cũng không kéo khỏi màn này (xem onState) */
@@ -3247,13 +3247,68 @@
              opts: '<div class="g-rvmean">' + esc(mean[ml] || mean.vi || mean.en || "") + "</div>", ans: t, say: tg === "zh" || tg === "en" ? baseTerm(t) : t, sl: tg,
              tg: tg !== "en" ? tg : null, wid: w.id, typed: false, played: true }, extra);
   }
+  /* 📖 ÔN NGAY một ván ĐỀ THI cũ ở Lịch sử (TJ 2026-10-08: "bấm Ôn ngay lại đi tính điểm là sai"): dựng lại TỪNG CÂU từ kho đề (test_items)
+     + đáp án đã lưu của ván (game_answers) rồi mở đúng khung Xem lại như ván vừa chơi (avatar mọi người chọn, ❌ Câu sai, nghe lại, từ vựng).
+     Dùng chính paintQuestion để HTML y hệt lúc làm bài (Part 1–7, nhóm 3 câu, hình, đoạn văn). */
+  function pastToeicEntry(grp, isGroup, test, mine) {
+    var sc = $("#rb-hint");
+    if (!sc) { var d0 = document.createElement("div"); d0.hidden = true; d0.innerHTML = '<div id="rb-hint"></div><div id="rb-q"></div><div id="rb-opts"></div>'; document.body.appendChild(d0); }
+    var tk = function (it) { return "toeic:" + test + ":" + it.part + ":" + it.num; },
+        mc = function (it) { var m = mine[tk(it)]; return m && m.choice != null ? String(m.choice) : null; },
+        sub = function (it) { var ai = "ABCD".indexOf(String(it.answer || "").trim().toUpperCase()); return { num: it.num, part: it.part, test: String(test), sent: tStemOf(it), opts: (it.opts || []).slice(), ans: ai >= 0 ? it.opts[ai] : "" }; }, q;
+    if (isGroup) q = { type: "toeic", wid: null, num: grp[0].num, sent: "", passage: grp[0].passage || "", opts: [], ans: "", subs: grp.map(sub), gEnd: tCueEnd(grp[grp.length - 1]), nxt: [], test: String(test), part: grp[0].part, asrc: grp[0].answer_src || "" };
+    else { var it0 = grp[0], s0 = sub(it0); q = { type: "toeic", wid: null, num: it0.num, sent: s0.sent, passage: it0.passage || "", opts: s0.opts, ans: s0.ans, tag: it0.tag || "", expl: it0.explain || "", vi: it0.stem_vi || "", i18n: it0.i18n || null, vocab: it0.vocab || null, test: String(test), part: it0.part, asrc: it0.answer_src || "", pend: !s0.ans }; }
+    paintQuestion(q, "#rb-hint", "#rb-q", "#rb-opts");
+    var vi = $("#rb-q").cloneNode(true), opts = $("#rb-opts").cloneNode(true), nOk = 0;
+    if (!isGroup && q.ans) vi.querySelectorAll(".g-blank").forEach(function (b) { b.outerHTML = '<b class="g-fill">' + esc(q.ans.replace(/^\([A-D]\)\s*/, "")) + "</b>"; });
+    opts.querySelectorAll(".g-opt").forEach(function (b) {
+      b.classList.remove("g-picked"); b.disabled = true;
+      var si = isGroup && b.dataset.sub != null ? +b.dataset.sub : -1, c = mc(si >= 0 ? grp[si] : grp[0]), ans = si >= 0 ? (q.subs[si] || {}).ans : q.ans;
+      if (ans && norm(b.dataset.opt) === norm(ans)) b.classList.add("ok");
+      else if (c != null && norm(b.dataset.opt) === norm(c)) b.classList.add(ans ? "bad" : "g-mine");
+    });
+    grp.forEach(function (it, i) { var a = isGroup ? q.subs[i].ans : q.ans, c = mc(it); if (a && c != null && norm(c) === norm(a)) nOk++; });
+    var c0 = mc(grp[0]), ok = isGroup ? nOk === grp.length : !!(q.ans && c0 != null && norm(c0) === norm(q.ans));
+    return { hint: $("#rb-hint").textContent, vi: vi.innerHTML, opts: opts.innerHTML,
+             msg: isGroup ? "✓ " + nOk + "/" + grp.length : c0 == null ? T("t_skip") : q.pend ? "📝 " + T("t_pend", { a: c0 }) : ok ? "✓ " + T("t_right") : "✗ " + T("t_wrong"),
+             res: !isGroup && q.pend ? '<div class="g-sub">⏳ ' + esc(T("t_nokey")) + "</div>" : toeicExpl(q),
+             mine: null, ans: q.ans || "", ok: ok, typed: false, played: true, wid: null, tg: null, sl: "en",
+             tq: { test: q.test, part: q.part, num: q.num, vocab: q.vocab || [], full: toeicFull(q), audl: (String(q.passage || "").match(/^\[aud\][^\n]*/m) || [""])[0], gEnd: q.gEnd || null, last: q.subs ? q.subs[q.subs.length - 1].num : q.num, nums: q.subs ? q.subs.map(function (x) { return x.num; }) : null },
+             say: toeicFull(q) };
+  }
+  async function pastToeicReview(matchId) {
+    var all = [];
+    for (var from = 0; ; from += 1000) {
+      var r = await sb.from("game_answers").select("player_id,term,choice").eq("match_id", matchId).like("term", "toeic:%").range(from, from + 999);
+      if (r.error) { alert(r.error.message); return; }
+      all = all.concat(r.data || []); if (!r.data || r.data.length < 1000) break;
+    }
+    var byTest = {}, mine = {};
+    all.forEach(function (x) { var p = String(x.term).split(":"), t = p[1], n = +p[3]; if (!t || !n) return; (byTest[t] = byTest[t] || {})[n] = 1; if (x.player_id === G.me.id) mine[x.term] = x; });
+    var list = [], cols = "id,num,part,stem,stem_vi,opts,answer,tag,explain,passage,answer_src,vocab";
+    var tests = Object.keys(byTest).sort(function (a, b) { return a - b; });
+    for (var ti = 0; ti < tests.length; ti++) {
+      var t = tests[ti], nums = Object.keys(byTest[t]).map(Number), items = [];
+      for (var i = 0; i < nums.length; i += 150) {
+        var q0 = function (c) { return sb.from("test_items").select(c).eq("exam", "toeic").eq("test", String(t)).in("num", nums.slice(i, i + 150)); };
+        var rr = await q0(cols + ",i18n"); if (rr.error) rr = await q0(cols);   /* bảng chưa có cột i18n -> vẫn xem được */
+        if (rr.error) { alert(rr.error.message); return; }
+        items = items.concat(rr.data || []);
+      }
+      items.sort(function (a, b) { return a.num - b.num; });
+      for (var k = 0; k < items.length;) { var g0 = tGroupAt(items, k), grp = g0 || [items[k]]; list.push(pastToeicEntry(grp, !!g0, t, mine)); k += grp.length; }
+    }
+    if (!list.length) { alert(T("no_answers")); return; }
+    list.mid = matchId;   /* ván nào -> avatar người chọn + ❌ Câu sai lấy đúng ván này (không đụng G.logMatch của ván đang chơi) */
+    G.rvFrom = "hist"; renderReview(0, list);
+  }
   async function pastReview(matchId, title) {
     if (!G.me) return;
     G.rvMatch = null;
     sb.from("game_matches").select("*").eq("id", matchId).maybeSingle().then(function (r) { G.rvMatch = r.data || null; var rp = $("#rv-replay"); if (rp) rp.hidden = !(G.isHost && G.room && G.st && G.st.phase !== "play" && G.rvMatch && G.rvMatch.qtype !== "toeic"); });   /* 🔁 chơi lại ván cũ (QA v128 #5) */
     var a = await sb.from("game_answers").select("word_id,term,correct,target,choice").eq("match_id", matchId).eq("player_id", G.me.id);
     var rows = (a.data || []).filter(function (x) { return x.word_id; });
-    if (!rows.length && (a.data || []).some(function (x) { return /^toeic:/.test(x.term || ""); })) { tStats(); return; }   /* ván đề thi: chưa dựng lại được từng câu -> mở 📊 điểm TOEIC (QA) */
+    if (!rows.length && (a.data || []).some(function (x) { return /^toeic:/.test(x.term || ""); })) { pastToeicReview(matchId); return; }   /* ván đề thi: dựng lại từng câu từ kho đề + đáp án đã lưu (TJ 2026-10-08: không nhảy sang trang tính điểm) */
     if (!rows.length) { alert(T("no_answers")); return; }
     var ids = rows.map(function (x) { return x.word_id; }).filter(function (v, i, arr) { return arr.indexOf(v) === i; });
     var wr = await inIds("words", HIST_COLS, "id", ids), W = {};
@@ -3324,7 +3379,7 @@
   $("#rv-wrong").addEventListener("click", async function () {
     var R = G.rv || G.log;
     if (G.rvOnlyWrong) { G.rvOnlyWrong = false; return renderReview(rvI); }
-    var mid = G.logMatch; if (!mid || !/^[0-9a-f-]{20,}$/i.test(String(mid))) return;
+    var mid = G.rvMid || G.logMatch; if (!mid || !/^[0-9a-f-]{20,}$/i.test(String(mid))) return;
     this.textContent = "⏳"; var M = await tqPickMap(mid), idx = [];
     R.forEach(function (L, i) {
       if (!L.tq) return;
@@ -3936,7 +3991,7 @@
     })());
   }
   async function tqPickAvatars(L) {
-    var mid = G.logMatch; if (!mid || !/^[0-9a-f-]{20,}$/i.test(String(mid))) return;
+    var mid = G.rvMid || G.logMatch; if (!mid || !/^[0-9a-f-]{20,}$/i.test(String(mid))) return;
     var M = await tqPickMap(mid), tq = L.tq, ros = Object.assign({}, G.plCache || {}, (G.st && G.st.roster) || {});
     /* roster của phòng hiện tại có thể không còn người đó (ván cũ / đã về phòng chờ) -> lấy tên + avatar từ bảng người chơi để KHÔNG mất avatar/tên */
     var miss = {}; Object.keys(M).forEach(function (k) { Object.keys(M[k]).forEach(function (o) { M[k][o].forEach(function (pid) { if (!ros[pid]) miss[pid] = 1; }); }); });
