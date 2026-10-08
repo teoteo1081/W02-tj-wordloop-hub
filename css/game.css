@@ -1702,7 +1702,7 @@ body.usersonly #g-main{max-width:none;padding:8px 14px 24px}
 .g-lang2-t{display:none;font-size:13px;color:var(--text-2);white-space:nowrap}
 #l-force-wrap[hidden] ~ .g-lang2-t{display:inline}   /* ô tick bị ẩn (học khác English / dạng câu không phải Nghĩa) -> vẫn có nhãn "Tiếng chung" cho ô chọn ngôn ngữ */
 body.g-host .g-learn{display:flex}
-#l-roomcard{padding:8px 12px}#l-roomcard .g-bigcode{font-size:26px;letter-spacing:4px;line-height:1.1}#l-roomcard .g-lobby-head{flex-wrap:nowrap}#l-roomcard #l-hostbtns{flex-wrap:nowrap}#l-roomcard #l-hostbtns .g-btn{padding:6px 12px;font-size:13px}#l-roomcard #l-usersrow{margin-top:8px}#l-roomcard #l-usersrow:has(#l-users[hidden]){display:none}
+#l-roomcard{padding:8px 12px}#l-roomcard .g-bigcode{font-size:26px;letter-spacing:4px;line-height:1.1}#l-roomcard .g-lobby-head{flex-wrap:nowrap}#l-roomcard #l-hostbtns{flex-wrap:nowrap}#l-roomcard #l-hostbtns .g-btn{padding:6px 12px;font-size:13px}#l-roomcard #l-usersrow{margin-bottom:8px}#l-roomcard #l-usersrow:has(#l-users[hidden]){display:none}
 
 /* TJ 2026-10-08: nút ✕ đóng ở GÓC PHẢI TRÊN cho mọi màn/cửa sổ con (Quản lý người chơi, Lịch sử, Xem lại đáp án, Từ đã tra + các pop-up Điểm TOEIC/Mẹo) */
 .g-xwrap{position:relative;padding-right:46px}
