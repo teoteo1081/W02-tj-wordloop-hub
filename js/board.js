@@ -1874,7 +1874,10 @@
   function capRate(pc) {   /* giới hạn ~1.2 Mbps/người xem -> mesh 10 người ~12 Mbps tải lên */
     pc.getSenders().forEach(function (sd) {
       if (!sd.track || sd.track.kind !== "video" || !sd.getParameters || !sd.setParameters) return;
-      try { var pr = sd.getParameters(); if (!pr.encodings || !pr.encodings.length) pr.encodings = [{}]; var nv = Object.keys(peers).length; pr.encodings[0].maxBitrate = nv <= 3 ? 2800000 : nv <= 6 ? 1800000 : BITRATE; pr.degradationPreference = "maintain-resolution";   /* ít người xem -> nét hơn (chữ nhỏ trong màn hình chia sẻ đỡ mờ); đông thì hạ để mạng host không nghẽn; giữ độ phân giải, chịu giảm số khung hình */ sd.setParameters(pr).catch(function () {}); } catch (e) {}
+      var nv = Object.keys(peers).length, br = nv <= 3 ? 2800000 : nv <= 6 ? 1800000 : BITRATE;   /* ít người xem -> nét hơn (chữ nhỏ đỡ mờ); đông thì hạ để mạng host không nghẽn */
+      try { var pr = sd.getParameters(); if (!pr.encodings || !pr.encodings.length) pr.encodings = [{}]; pr.encodings[0].maxBitrate = br; sd.setParameters(pr).catch(function () {}); } catch (e) {}
+      /* giữ độ phân giải (chịu giảm số khung hình) — GỌI RIÊNG: Safari/Firefox có thể không hỗ trợ, lỗi ở đây không được làm mất giới hạn bitrate ở trên */
+      setTimeout(function () { try { var p2 = sd.getParameters(); if (!p2.encodings || !p2.encodings.length) p2.encodings = [{}]; p2.degradationPreference = "maintain-resolution"; sd.setParameters(p2).catch(function () {}); } catch (e) {} }, 300);
     });
   }
   function hostPeer(vc) {
