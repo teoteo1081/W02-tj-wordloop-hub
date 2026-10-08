@@ -9,7 +9,7 @@
   "use strict";
   if (/[?&]usersonly=1/.test(location.search)) return;
   var api = null, size = 0, lines = [], interim = {}, built = false, rec = null, recWant = false, lastSend = 0, noSupport = false, helloT = 0;
-  var MAXL = 60, SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var hold = false, MAXL = 60, SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   var LS_LANG = "tjwl_cc_lang_v1";
   var LANGS = [["en-US", "EN"], ["vi-VN", "VI"], ["zh-CN", "ZH"], ["es-ES", "ES"]];   /* ngôn ngữ MÌNH nói (để trình duyệt nhận giọng đúng) — nói tiếng Việt mà để EN thì chữ ra lung tung */
   var openKey = "", trans = {}, TRANS_MAX = 80;
@@ -101,7 +101,7 @@
   }
 
   /* ---------- người NÓI: nhận giọng -> chữ ---------- */
-  function wantRec() { return !!(SR && window.Voice && Voice.isOn() && !(Voice.isLocked && Voice.isLocked())); }
+  function wantRec() { return !!(!hold && SR && window.Voice && Voice.isOn() && !(Voice.isLocked && Voice.isLocked())); }
   function startRec() {
     if (rec || !SR) return;
     var r; try { r = new SR(); } catch (e) { noSupport = true; return; }
@@ -137,6 +137,7 @@
       else interim[p.id] = { n: n, x: x, at: Date.now() };
       if (size > 0) paint();
     },
+    hold: function (v) { hold = !!v; if (hold) stopRec(); },   /* nhường nhận giọng cho tính năng 🎤 Đọc theo (js/readalong.js) */
     setSize: setSize, size: function () { return size; },
     reset: function () { stopRec(); lines = []; interim = {}; setSize(0); var b = $("#cc-btn"); if (b) b.hidden = true; noSupport = false; }
   };

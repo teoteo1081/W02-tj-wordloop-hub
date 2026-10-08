@@ -1970,3 +1970,29 @@ body.has-cbar .bd.bd-big{bottom:calc(58px + env(safe-area-inset-bottom,0px));hei
 .cc-d{display:flex;align-items:center;gap:8px;margin-top:4px;padding:6px 8px;border-radius:8px;background:rgba(124,77,255,.18);font-size:14px;color:#e8e2ff}
 .cc-say{flex:none;border:0;border-radius:50%;width:32px;height:32px;background:#7c4dff;color:#fff;font-size:15px;cursor:pointer;padding:0}
 .cc-tr{min-width:0;overflow-wrap:break-word}
+
+/* 🎤 ĐỌC THEO + chấm điểm (js/readalong.js) */
+.bd .bd-vtbar [data-ra]{display:inline-flex !important}
+.bd:has(#bd-doc .bd-vt) .bd-vtbar [data-ra]{display:none !important}
+.bd-vtbar [data-ra].on{background:#ef4444 !important;border-color:#ef4444 !important;color:#fff !important}
+#bd-doc .ra-ok{color:#4ade80 !important;background:rgba(74,222,128,.14);border-radius:4px}
+#bd-doc .ra-bad{color:#ff8a7a !important;background:rgba(255,138,122,.16);border-radius:4px;text-decoration:underline wavy #ff8a7a;text-underline-offset:3px}
+#bd-doc .ra-miss{color:#fbbf24 !important;background:rgba(251,191,36,.12);border-radius:4px;text-decoration:underline dotted #fbbf24;text-underline-offset:3px}
+#bd-doc .ra-cur{box-shadow:0 0 0 2px #7c4dff;border-radius:4px;background:rgba(124,77,255,.28)}
+.ra-hud{position:absolute;z-index:20;left:8px;right:8px;top:8px;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;background:rgba(20,19,18,.94);border:1px solid #ef4444;color:#fff;font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,.45)}
+.ra-hud b{font-size:13px;white-space:nowrap}
+.ra-hud span{margin-right:auto;color:#d6d0c4;min-width:0}
+.ra-hud i{font-style:normal;font-weight:700}.ra-hud i.ok,.ra-card i.ok{color:#4ade80}.ra-hud i.bad,.ra-card i.bad{color:#ff8a7a}.ra-card i.miss{color:#fbbf24;font-style:normal}
+.ra-hud button{flex:none;border:0;border-radius:10px;padding:7px 12px;background:#ef4444;color:#fff;font:inherit;font-weight:700;cursor:pointer}
+.ra-card{position:absolute;z-index:25;left:10px;right:10px;top:10px;max-height:calc(100% - 20px);overflow:auto;padding:14px;border-radius:16px;background:rgba(26,25,23,.97);border:1px solid rgba(255,255,255,.2);color:#f5f4ef;box-shadow:0 8px 30px rgba(0,0,0,.55);text-align:center}
+.ra-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.ra-top b{font-size:14px;color:#b9b3a6}
+.ra-top button{width:30px;height:30px;border-radius:50%;border:0;background:rgba(255,255,255,.1);color:#fff;cursor:pointer}
+.ra-score{line-height:1}.ra-n{font-size:56px;font-weight:900;color:#ffd27a}.ra-u{font-size:18px;color:#b9b3a6;margin-left:2px}
+.ra-msg{font-size:15px;font-weight:700;margin:4px 0 8px}
+.ra-sum{font-size:13px;color:#d6d0c4;margin-bottom:8px}
+.ra-h{font-size:12px;color:#b9b3a6;margin:6px 0 4px}
+.ra-chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.ra-chip{border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:6px 12px;background:rgba(255,255,255,.07);color:inherit;font:inherit;font-size:14px;cursor:pointer}
+.ra-chip.bad{border-color:#ff8a7a}.ra-chip.miss{border-color:#fbbf24}
+.ra-act{margin-top:10px}.ra-act button{border:0;border-radius:12px;padding:10px 18px;background:#7c4dff;color:#fff;font:inherit;font-weight:700;cursor:pointer}
