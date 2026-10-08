@@ -2488,5 +2488,5 @@ body.board-skin .lbd-people{margin-top:1rem}
 .modal-box.pop iframe{flex:1 1 auto;width:100%;border:0;background:var(--bg-main,#262624)}
 
 /* TJ 2026-10-08: chế độ Bảng — nút "Quản lý người chơi" (pop-up) cạnh tên ở đầu trang */
-.lbd-users{flex:none;border:1px solid rgba(255,255,255,.22);border-radius:10px;padding:7px 12px;background:rgba(255,255,255,.08);color:#f3efe6;font:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
-.lbd-users:hover{background:rgba(255,255,255,.14)}
+.lbd-users{flex:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:36px;box-sizing:border-box;background:#3a3936;color:#f5f4ef;border:1px solid #3d3b37;border-radius:10px;padding:5px 10px;font-weight:600;font-size:12px;line-height:1.2;font-family:inherit;cursor:pointer;white-space:nowrap}   /* y hệt nút "Quản lý người chơi" trong Game (.g-btn.g-btn-soft.g-btn-sm) */
+.lbd-users:hover{background:#3d3b37}
