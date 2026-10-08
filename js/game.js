@@ -263,7 +263,7 @@
     $$("#n-langs [data-ml], #l-langs [data-ml]").forEach(function (b) { b.classList.toggle("on", b.dataset.ml === G.myLang); });
     $("#p-typein").placeholder = T("type_ph");
     paintForce();
-    if (G.room) { $("#g-room-badge").textContent = T("room") + " " + G.room.code; var tt = (G.st && G.st.title) || ""; $("#l-info").textContent = tt ? T("vocab") + ": " + tt : ""; }
+    if (G.room) { $("#g-room-badge").textContent = T("room") + " " + G.room.code; $("#l-info").textContent = scopeInfo(G.st); }
   }
   /* host 🔒 ép tiếng NGHĨA cho cả phòng -> nhãn nhỏ cạnh ô 🌐 Language: "🔒 Nghĩa: 🇨🇳 中文" (TJ 2026-10-03: "đổi qua tiếng
      Trung mà nó còn tiếng Việt" — ô Language chỉ đổi CHỮ GIAO DIỆN, nghĩa do host ép) */
@@ -1531,6 +1531,12 @@
 
   /* ---------- phòng chờ ---------- */
   /* WordLoop (thẻ 🎮 Game, nút 🎮 trên Block card) gửi chủ đề mới khi game đã mở sẵn — đổi tại chỗ, không tải lại */
+  /* dòng dưới "Mã phòng": cho biết chủ đề đang chọn thuộc LOẠI nào (Block / Batch / Page / Section / Notebook / Hub) — TJ 2026-10-08 */
+  function scopeInfo(st) {
+    var sc = (st && st.scope) || [], L = { hubs: "Hub", notebooks: "Notebook", sections: "Section", pages: "Page", batches: "Batch", blocks: "Block" };
+    if (!sc.length) return st && st.title ? T("vocab") + ": " + st.title : "";
+    return sc.map(function (p) { return (L[p.table] || T("vocab")) + ": " + (p.title || p.id); }).join(" + ");
+  }
   /* TJ 2026-10-06: đưa phòng về PHÒNG CHỜ để chuẩn bị ván mới (đổi chủ đề từ Block / nút Game → trên Bảng): đang chơi dở -> tự kết thúc ván; đang xem kết quả -> ván mới. Trả false nếu không về được phòng chờ (vd ván thi chưa nộp xong). */
   async function hostPrepLobby() {
     if (!G.st) return false;
@@ -1653,7 +1659,7 @@
   }
   function paintLobbyPlayers() {
     var st = G.st || {}, teams = +st.teams || 0, teamOf = st.teamOf || {};
-    var tt = st.title || ""; $("#l-info").textContent = tt ? T("vocab") + ": " + tt : "";
+    $("#l-info").textContent = scopeInfo(st);
     if (!G.isHost) $("#l-wait2").textContent = G.online.some(isRoomHost) ? T("wait_host") : T("host_away");
     $("#l-count").textContent = players().length;
     $("#l-teamhint").textContent = teams ? T("click_team") : "";
