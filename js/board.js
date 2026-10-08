@@ -1022,15 +1022,16 @@
   async function mkRead(root, btn) {
     var on = mkSay && mkSay === reading;
     stopReading(); clearReadHL();
-    if (on) { mkSay = 0; btn.textContent = "🔊 Nghe đọc"; return; }
+    if (on) { mkSay = 0; btn.textContent = "🔊 Nghe đọc"; if (canRead()) send({ t: "rd", k: null, paused: 1 }); return; }
     var sp = Array.prototype.slice.call(root.querySelectorAll(".bd-mks")), my = ++reading; mkSay = my; btn.textContent = "⏹ Dừng";
     for (var i = 0; i < sp.length; i++) {
       if (reading !== my) return;   /* bấm Dừng / đổi bài -> bỏ */
       clearReadHL(); sp[i].classList.add("bd-rd");
       try { sp[i].scrollIntoView({ block: "center", behavior: "smooth" }); } catch (e) {}
+      if (canRead()) send({ t: "rd", k: "mk", s: i, sp: 1, r: 0.9 });   /* host đọc -> cả phòng tô sáng + (máy đang BẬT tiếng) đọc theo, y như bài đọc/bảng từ */
       await speakOne(sp[i].textContent.trim(), "en-US", 0.9);
     }
-    if (reading === my) { mkSay = 0; clearReadHL(); if (btn.isConnected) btn.textContent = "🔊 Nghe đọc"; }
+    if (reading === my) { mkSay = 0; clearReadHL(); if (btn.isConnected) btn.textContent = "🔊 Nghe đọc"; if (canRead()) send({ t: "rd", k: null }); }
   }
   async function mkPage(d, job) {
     var box = $("#bd-doc"); box.innerHTML = '<div class="bd-docmsg">⏳</div>';
@@ -1102,6 +1103,11 @@
   function soonEnsure() { if (freeView) return; clearTimeout(ervT); ervT = setTimeout(ensureReadVisible, 160); }
   function applyReadHL(m, remote) {   /* m = {k:"wl", s: câu, w: từ} | {k:"vt", i: dòng} | {k:null} — chạy trên MỌI máy */
     clearReadHL(); var b = scBox();
+    if (m && m.k === "mk") {   /* bài đọc Marketing: câu thứ s trong .bd-mks */
+      var mks = document.querySelectorAll("#bd-doc .bd-mks")[m.s];
+      if (mks) { mks.classList.add("bd-rd"); if (remote) { try { mks.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (e) {} } }
+      return;
+    }
     if (!m || !m.k || !b) { paintReadBtn(); return; }
     var target = null;
     if (m.k === "vt") { var row = b.querySelector('.bd-vr[data-i="' + m.i + '"]'); if (row) { row.classList.add("rd"); target = row; } }
@@ -1127,11 +1133,13 @@
   var rsTok = 0;
   /* TJ 2026-10-06: Chrome dùng 1 hàng đợi đọc CHUNG cho mọi cửa sổ cùng trình duyệt (cả ẩn danh) — người chơi gọi cancel() lúc host đang đọc sẽ cắt tiếng của host (thử 2 cửa sổ trên 1 máy bị lộn xộn).
      Nay chỉ cancel khi CHÍNH máy này đang đọc (mySpk > 0). */
-  var mySpk = 0;
+  var mySpk = 0, offNoteAt = 0;
   function remoteStop() { rsTok++; try { if (mySpk > 0 && window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) {} }
   function remoteSpeak(m) {
     if (!m.k || m.paused) { remoteLastAt = 0; remoteStop(); return; }
     if (m.sp) remoteLastAt = Date.now();   /* host đang đọc: người chơi tra từ thì im lặng (xem sayWord) */
+    if (m.sp && api.soundOn && !api.soundOn() && (!offNoteAt || Date.now() - offNoteAt > 30000)) { offNoteAt = Date.now(); feedNote("🔇 Host đang đọc bài, nhưng máy bạn đang TẮT tiếng — bấm 🔊 trên thanh trên (hoặc nút \"Có tiếng\") để nghe cùng. Hình vẫn chạy theo lời đọc."); }   /* trước đây im lặng -> người chơi không biết vì sao không nghe */
+    if (m.sp && !window.speechSynthesis && (!offNoteAt || Date.now() - offNoteAt > 30000)) { offNoteAt = Date.now(); feedNote("🔇 Trình duyệt này không có giọng đọc, nên không nghe được lời đọc của host. Thử Chrome, Edge hoặc Safari."); }
     if (!m.sp || !api.soundOn || !api.soundOn() || !window.speechSynthesis) return;
     if (Date.now() - lastSayAt < 5000) return;
     if (Date.now() - hostLocalAt < 8000) return;   /* host đang đọc ở cửa sổ khác CÙNG trình duyệt -> không tranh hàng đợi đọc chung (đang nghe 1 từ mình vừa bấm -> không chen câu của host vào */
@@ -1139,7 +1147,8 @@
     try { if (mySpk > 0) window.speechSynthesis.cancel(); } catch (e) {}
     (async function () {
       await delay(60); if (my !== rsTok) return;
-      if (m.k === "wl") { var sn = scBox() && scBox().querySelector('.bd-s[data-s="' + m.s + '"]'); if (sn) await speakOne(sn.textContent, "en-US", rate); }
+      if (m.k === "mk") { var ms = document.querySelectorAll("#bd-doc .bd-mks")[m.s]; if (ms) await speakOne(ms.textContent.trim(), "en-US", rate); }
+      else if (m.k === "wl") { var sn = scBox() && scBox().querySelector('.bd-s[data-s="' + m.s + '"]'); if (sn) await speakOne(sn.textContent, "en-US", rate); }
       else { var w = d && (vtCache[d.bid] || [])[m.i]; if (w) { await speakOne(w.term, "en-US", rate); if (my !== rsTok) return; if (m.def && w.def_en) await speakOne("it means " + w.def_en, "en-US", rate); } }
     })();
   }
