@@ -38,6 +38,11 @@
     var b = document.createElement("button"); b.type = "button"; b.id = "vc-btn"; b.className = "vc-btn off"; b.hidden = true; b.title = "Bật / tắt mic của bạn (mặc định đang tắt)";
     b.innerHTML = '<svg class="cb-ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 14.5a3.2 3.2 0 0 0 3.2-3.2V6.2a3.2 3.2 0 0 0-6.4 0v5.1A3.2 3.2 0 0 0 12 14.5z" fill="currentColor"/><path d="M6.2 11.2a5.8 5.8 0 0 0 11.6 0M12 17.2v3.3M8.8 20.5h6.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><g class="vcs"><path d="M4.5 4.5l15 15" style="stroke:var(--cb-btn,#34332f)" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M4.5 4.5l15 15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></g></svg>'; bar().appendChild(b);
     var p = document.createElement("div"); p.id = "vc-who"; p.className = "vc-who"; p.hidden = true; document.body.appendChild(p);
+    p.addEventListener("click", function (e) {   /* nút "Âm thanh máy tính" trong nhãn: đổi chế độ mic rồi bật lại mic */
+      var t = e.target.closest && e.target.closest("[data-vcraw]"); if (!t) return;
+      var v = !rawMode(); setRaw(v); flash(v ? "🎧 ÂM THANH GỐC: tắt khử ồn/khử vọng — tiếng máy tính qua mic không còn bị cắt" : "🗣 Chế độ GIỌNG NÓI (lọc ồn)");
+      if (stream) { micOff(); micOn(); }
+    });
     var lpT = 0, lpDone = false;
     var lpStart = function () { lpDone = false; clearTimeout(lpT); lpT = setTimeout(function () {
       lpDone = true; var v = !rawMode(); setRaw(v);
@@ -66,7 +71,7 @@
       if (st === "failed" || st === "disconnected" || (st !== "connected" && age > 8000)) return "⚠ " + n + " (chưa nghe được — mạng có thể chặn)";
       return "⏳ " + n + " (đang nối…)";
     });
-    if (stream) names.unshift("🎙 " + esc(myName()) + " (bạn" + (rawMode() ? " · âm thanh gốc" : "") + ")");
+    if (stream) names.unshift("🎙 " + esc(myName()) + " (bạn)<br>" + '<button type="button" data-vcraw="1" style="margin-top:3px;border:0;border-radius:999px;padding:4px 10px;font:700 11px/1.2 inherit;font-family:inherit;cursor:pointer;background:' + (rawMode() ? "#ffd84d;color:#2b2420" : "rgba(255,255,255,.22);color:#fff") + '">🎧 ' + (rawMode() ? "Âm thanh máy tính: BẬT" : "Phát âm thanh máy tính? Bấm bật") + "</button>");
     var wh = $("#vc-who"); if (wh) { wh.hidden = !names.length; wh.innerHTML = names.join("<br>"); }
   }
   /* chẩn đoán tiếng (hiện cạnh tên người nói): KB đã nhận, mức âm, loa đang phát/dừng -> biết tiếng KHÔNG TỚI máy hay TỚI mà loa im */
