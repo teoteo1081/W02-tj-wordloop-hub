@@ -1692,8 +1692,8 @@ body.usersonly #g-main{max-width:none;padding:8px 14px 24px}
 #l-roomcard #l-players .g-player .g-av{width:28px;height:28px;font-size:16px;box-shadow:0 0 0 1px rgba(255,255,255,.2)}
 #l-roomcard #l-players .g-player.me .g-av{box-shadow:0 0 0 2px #e07a5f}
 #l-roomcard #l-players .g-player .g-pname,#l-roomcard #l-players .g-player .g-sub{display:none}
-#l-roomcard #l-players.g-pl-names .g-player{padding:0 8px 0 0}
-#l-roomcard #l-players.g-pl-names .g-player .g-pname{display:inline;max-width:72px;font-size:12px;font-weight:600}
+#l-roomcard #l-players.g-pl-names{gap:6px}#l-roomcard #l-players.g-pl-names .g-player{padding:0 10px 0 0;background:rgba(255,255,255,.06);border-radius:999px}
+#l-roomcard #l-players.g-pl-names .g-player .g-pname{display:inline;max-width:130px;font-size:12px;font-weight:600}
 #l-roomcard #l-players .g-player .g-tag{right:-4px;top:-6px}
 #l-roomcard #l-players .g-player .g-tag::before{font-size:11px}
 .g-startrow{position:sticky;bottom:0;z-index:3;margin:10px -14px -14px;padding:10px 14px;background:var(--card);border-top:1px solid var(--line);border-radius:0 0 12px 12px}

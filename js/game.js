@@ -1658,7 +1658,7 @@
     $("#l-count").textContent = players().length;
     $("#l-teamhint").textContent = teams ? T("click_team") : "";
     $("#l-teams").innerHTML = teams ? teamSummary(st, false) : "";
-    $("#l-players").classList.toggle("g-pl-names", !!teams);   /* chơi theo đội: hiện tên để host bấm đổi đội; còn lại chỉ vòng tròn avatar nhỏ (tên = chú thích khi rê chuột) */
+    $("#l-players").classList.toggle("g-pl-names", !!(teams || G.isHost));   /* host nhìn nhanh để quản lý phòng: luôn hiện tên cạnh avatar (TJ 2026-10-08) */   /* chơi theo đội: hiện tên để host bấm đổi đội; còn lại chỉ vòng tròn avatar nhỏ (tên = chú thích khi rê chuột) */
     $("#l-players").innerHTML = G.online.map(function (p) {
       var t = teamOf[p.id];
       return '<button class="g-player' + (teams && G.isHost && p.play !== false ? " g-click" : "") + (G.me && p.id === G.me.id ? " me" : "") + '" data-pid="' + esc(p.id) + '" title="' + esc(plain(p)) + '"' + (t && TEAM_C[t] ? ' style="border-color:' + TEAM_C[t].c + '"' : "") + ">" +
