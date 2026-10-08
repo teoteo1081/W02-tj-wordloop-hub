@@ -42,7 +42,7 @@
 
   function build() {
     if (built) return; built = true;
-    var b = document.createElement("button"); b.type = "button"; b.id = "ch-btn"; b.className = "ch-btn"; b.hidden = true; b.title = "Chat phòng"; b.innerHTML = '💬<i id="ch-badge" hidden>0</i>';
+    var b = document.createElement("button"); b.type = "button"; b.id = "ch-btn"; b.className = "ch-btn"; b.hidden = true; b.title = "Chat phòng"; b.innerHTML = '<svg class="cb-ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M5 4.5h14a2 2 0 0 1 2 2v8.2a2 2 0 0 1-2 2h-8.2L6.6 20v-3.3H5a2 2 0 0 1-2-2V6.5a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="8.6" cy="10.6" r="1.1" fill="currentColor"/><circle cx="12" cy="10.6" r="1.1" fill="currentColor"/><circle cx="15.4" cy="10.6" r="1.1" fill="currentColor"/></svg><i id="ch-badge" hidden>0</i>';
     bar().appendChild(b);   /* nút 💬 (lịch sử chat) nằm trong thanh đáy, có chấm báo tin mới + bong bóng xem trước tin mới nhất */
     var pv = document.createElement("div"); pv.id = "ch-peek"; pv.className = "ch-peek"; pv.hidden = true; document.body.appendChild(pv);
     pv.addEventListener("click", function () { toggle(true); });

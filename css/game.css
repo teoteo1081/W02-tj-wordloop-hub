@@ -1950,3 +1950,15 @@ body.has-cbar .bd.bd-big{bottom:calc(58px + env(safe-area-inset-bottom,0px));hei
 .cc-n{color:#ffd27a;font-weight:800;margin-right:2px}
 .cc-l.me .cc-n{color:#9fd3ff}
 .cc-empty{margin:auto;font-size:13px;color:#b9b3a6;text-align:center;padding:6px}
+
+/* Biểu tượng thanh đáy vẽ riêng (trắng, nét gọn như HelloTalk) thay emoji */
+.cb-bar{--cb-btn:#34332f}
+.cb-bar .vc-btn,.cb-bar .ch-btn,.cb-bar .cc-btn{background:var(--cb-btn);border:0;color:#fff;font-size:0}
+.cb-bar .cb-ic{display:block;pointer-events:none}
+.cb-bar .vc-btn.on{background:#16a34a}
+.cb-bar .vc-btn.on{--cb-btn:#16a34a}
+.cb-bar .vc-btn.on .vcs{display:none}
+.cb-bar .cc-btn.on{background:#7c4dff}
+.cb-bar .ch-btn.on{background:#e07a5f}
+.cb-bar .vc-btn.locked{opacity:.45}
+.cb-bar .cc-btn{display:inline-flex;align-items:center;justify-content:center}

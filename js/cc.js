@@ -24,7 +24,7 @@
 
   function build() {
     if (built) return; built = true;
-    var b = document.createElement("button"); b.type = "button"; b.id = "cc-btn"; b.className = "cc-btn"; b.hidden = true; b.title = "Phụ đề (CC): bấm để đổi cỡ"; b.textContent = "CC";
+    var b = document.createElement("button"); b.type = "button"; b.id = "cc-btn"; b.className = "cc-btn"; b.hidden = true; b.title = "Phụ đề (CC): bấm để đổi cỡ"; b.innerHTML = '<svg class="cb-ic" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><rect x="2.6" y="5.6" width="18.8" height="12.8" rx="3.2" fill="none" stroke="currentColor" stroke-width="2"/><text x="12" y="15.2" text-anchor="middle" font-size="8.6" font-weight="900" font-family="Arial,Helvetica,sans-serif" fill="currentColor">CC</text></svg>';
     bar().appendChild(b);
     var p = document.createElement("div"); p.id = "cc-panel"; p.className = "cc-panel"; p.hidden = true; p.setAttribute("data-size", "0");
     p.innerHTML = '<div class="cc-head"><b>CC · Phụ đề</b><span class="cc-me" id="cc-me"></span><button type="button" id="cc-grow" class="cc-x" title="Đổi cỡ" aria-label="Đổi cỡ phụ đề">⤢</button><button type="button" id="cc-close" class="cc-x" title="Tắt phụ đề" aria-label="Tắt phụ đề">✕</button></div><div class="cc-list" id="cc-list"></div>';
