@@ -53,7 +53,7 @@
     b.title = locked ? "Mic tạm khoá trong lúc chơi — hết giờ bạn tự bật" : stream ? "Đang BẬT mic — bấm để tắt" : "Bật mic của bạn (mặc định đang tắt)";
     var names = Object.keys(talkers).map(function (k) {
       var n = esc(talkers[k].n), i = inc[k], st = i && i.pc ? i.pc.connectionState : "", age = i ? Date.now() - i.at : 0;
-      if (st === "connected") return "🎙 " + n;
+      if (st === "connected") return (i.blocked ? "🔈 " + n + " — <b>chạm vào màn hình để nghe</b>" : "🎙 " + n);
       if (st === "failed" || st === "disconnected" || (st !== "connected" && age > 8000)) return "⚠ " + n + " (chưa nghe được — mạng có thể chặn)";
       return "⏳ " + n + " (đang nối…)";
     });
@@ -62,6 +62,7 @@
   }
   function tick() {
     place();
+    Object.keys(inc).forEach(function (k) { var i = inc[k]; if (i && i.el && i.pc && i.pc.connectionState === "connected" && i.el.paused) tryPlay(i); });   /* tiếng đã nối mà <audio> đang dừng -> thử phát lại */
     if (Object.keys(talkers).length) paint();   /* cập nhật trạng thái nối (đang nối / nghe được / bị chặn) */
     var now = Date.now(), ch = false;
     Object.keys(talkers).forEach(function (k) { if (now - talkers[k].at > 13000) { delete talkers[k]; closeIn(k); ch = true; } });
@@ -101,7 +102,7 @@
   /* ---------- người NGHE ---------- */
   function closeIn(c) {
     var i = inc[c]; if (!i) return; delete inc[c];
-    try { i.pc.close(); } catch (e) {} if (i.el) { try { i.el.srcObject = null; i.el.remove(); } catch (e) {} }
+    try { i.pc.close(); } catch (e) {} if (i.el) { try { i.el.srcObject = null; } catch (e) {} giveEl(i.el); i.el = null; }
   }
   function want(c) { if (inc[c] || FULL[c] > Date.now()) return; inc[c] = { pc: null, q: Promise.resolve(), pend: [], at: Date.now(), want: 1 }; send({ t: "want", to: c }); }
   function onOffer(m) {
@@ -109,8 +110,8 @@
     if (i.pc) try { i.pc.close(); } catch (e) {}
     var pc = i.pc = new RTCPeerConnection({ iceServers: iceServers() });
     pc.ontrack = function (e) {
-      var el = i.el; if (!el) { el = i.el = document.createElement("audio"); el.autoplay = true; el.playsInline = true; el.setAttribute("playsinline", ""); el.style.display = "none"; document.body.appendChild(el); }
-      el.srcObject = (e.streams && e.streams[0]) || new MediaStream([e.track]); var pl = el.play(); if (pl && pl.catch) pl.catch(function () { i.blocked = 1; });
+      var el = i.el; if (!el) el = i.el = takeEl();
+      el.removeAttribute("src"); el.srcObject = (e.streams && e.streams[0]) || new MediaStream([e.track]); el.muted = false; el.volume = 1; tryPlay(i);
     };
     pc.onicecandidate = function (e) { if (e.candidate && inc[m.cid] === i) send({ t: "ice", to: m.cid, d: "i", c: cand(e.candidate) }); };
     pc.onconnectionstatechange = function () { if (inc[m.cid] === i && pc.connectionState === "failed") { closeIn(m.cid); } };
@@ -119,9 +120,35 @@
         .then(function () { send({ t: "answer", to: m.cid, sdp: desc(pc.localDescription) }); var pd = i.pend; i.pend = []; return Promise.all(pd.map(function (c) { return pc.addIceCandidate(c).catch(function () {}); })); });
     });
   }
-  document.addEventListener("pointerdown", function () {   /* iPhone: tiếng tới trước khi chạm màn hình -> phát bù ở lần chạm đầu */
-    Object.keys(inc).forEach(function (k) { var i = inc[k]; if (i && i.el && i.blocked) { i.blocked = 0; i.el.play().catch(function () {}); } });
-  }, true);
+  /* ---- iPhone/Safari chặn tự phát tiếng: phần tử <audio> chỉ được "mở khoá" khi play() chạy TRONG 1 cú chạm (touchend/click — pointerdown thôi chưa đủ).
+     Cách làm: ở cú chạm đầu tiên, tạo sẵn một dàn <audio> và phát 1 đoạn im lặng để mở khoá; sau đó tiếng talker chỉ việc gắn vào các phần tử đã mở khoá. */
+  var pool = [], unlockedOk = false, SIL = "";
+  function silentUrl() {
+    if (SIL) return SIL; var n = 800, b = new ArrayBuffer(44 + n * 2), v = new DataView(b);
+    function w(o, t) { for (var k = 0; k < t.length; k++) v.setUint8(o + k, t.charCodeAt(k)); }
+    w(0, "RIFF"); v.setUint32(4, 36 + n * 2, true); w(8, "WAVEfmt "); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, 8000, true); v.setUint32(28, 16000, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); w(36, "data"); v.setUint32(40, n * 2, true);
+    SIL = URL.createObjectURL(new Blob([b], { type: "audio/wav" })); return SIL;
+  }
+  function mkEl() { var el = document.createElement("audio"); el.autoplay = true; el.playsInline = true; el.setAttribute("playsinline", ""); el.style.display = "none"; document.body.appendChild(el); return el; }
+  function unlock() {
+    if (unlockedOk) return;
+    if (!pool.length) for (var k = 0; k < MAXP; k++) pool.push({ el: mkEl(), use: 0 });
+    pool.forEach(function (o) {
+      if (o.use || o.ok) return;
+      try { o.el.src = silentUrl(); var p = o.el.play(); if (p && p.then) p.then(function () { o.ok = 1; unlockedOk = true; if (!o.use) o.el.pause(); }).catch(function () {}); } catch (e) {}
+    });
+  }
+  function takeEl() { for (var k = 0; k < pool.length; k++) if (!pool[k].use) { pool[k].use = 1; return pool[k].el; } var el = mkEl(); pool.push({ el: el, use: 1 }); return el; }
+  function giveEl(el) { for (var k = 0; k < pool.length; k++) if (pool[k].el === el) { pool[k].use = 0; return; } try { el.remove(); } catch (e) {} }
+  function tryPlay(i) {
+    if (!i || !i.el) return; var pl; try { pl = i.el.play(); } catch (e) { i.blocked = 1; return; }
+    if (pl && pl.then) pl.then(function () { i.blocked = 0; }).catch(function () { i.blocked = 1; });
+  }
+  function onTouch() {
+    unlock();
+    Object.keys(inc).forEach(function (k) { var i = inc[k]; if (i && i.el && (i.blocked || i.el.paused)) tryPlay(i); });
+  }
+  ["touchend", "click", "pointerdown", "keydown"].forEach(function (ev) { document.addEventListener(ev, onTouch, true); });
 
   window.Voice = {
     attach: function (a) { api = a; build(); send({ t: "hello" }); },
