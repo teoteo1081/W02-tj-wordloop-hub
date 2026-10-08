@@ -1842,3 +1842,15 @@ body.g-viewer #l-roomcard #l-toprow{display:none}
 body:has(.ch-btn.ch-inbar) .ch-peek{bottom:70px}
 body:has(.ch-btn.ch-inbar) .ch-panel{bottom:72px}
 @media (max-width:520px){body:has(.ch-btn.ch-inbar) .ch-panel{bottom:0}}
+
+/* 💬 Chat: hạ xuống như Clubhouse — thanh tay nắm, nút ⌄ bên trái tiêu đề, vuốt xuống để đóng, chạm vùng mờ để đóng */
+.ch-grab{display:flex;justify-content:center;padding:8px 0 2px;touch-action:none;cursor:grab;flex:none}
+.ch-grab i{width:44px;height:5px;border-radius:999px;background:rgba(255,255,255,.3)}
+.ch-head{touch-action:none}
+.ch-head b{margin-right:auto}
+.ch-head .ch-note{display:none}
+.ch-down{font-size:22px;line-height:1;padding-bottom:4px}
+.ch-back{position:fixed;inset:0;z-index:89;background:rgba(0,0,0,.35)}
+.ch-back[hidden]{display:none}
+@media (min-width:521px){.ch-back{display:none}}
+.ch-panel{transition:transform .18s ease-out}
