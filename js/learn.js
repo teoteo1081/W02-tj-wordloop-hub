@@ -16,9 +16,9 @@
   var hub = window.TJ_HUB || "vocab";
   function paintHub() {
     if (!layer.hidden) return;   /* đang ở EA / Marketing: giữ tô sáng của chúng */
-    nav.querySelectorAll("[data-learn]").forEach(function (b) { var k = b.dataset.learn; b.classList.toggle("on", (k === "" && hub !== "test") || (k === "toeic" && hub === "test")); });
+    nav.querySelectorAll("[data-learn]").forEach(function (b) { var k = b.dataset.learn; b.classList.toggle("on", (k === "" && hub !== "test" && hub !== "dm") || (k === "toeic" && hub === "test") || (k === "dmhub" && hub === "dm")); });
   }
-  document.addEventListener("tjwl-hubchanged", function (e) { hub = e.detail === "test" ? "test" : "vocab"; paintHub(); });
+  document.addEventListener("tjwl-hubchanged", function (e) { hub = e.detail === "test" || e.detail === "dm" ? e.detail : "vocab"; paintHub(); });
   function place() { layer.style.top = Math.round(top.getBoundingClientRect().bottom) + "px"; }
   function show(key) {
     if (!PAGES[key]) key = "";
@@ -38,7 +38,7 @@
   nav.addEventListener("click", function (e) {
     var b = e.target.closest("[data-learn]"); if (!b || b.disabled) return;
     var k = b.dataset.learn;
-    if (k === "" || k === "toeic") { show(""); document.dispatchEvent(new CustomEvent("tjwl-sethub", { detail: k === "toeic" ? "test" : "vocab" })); }
+    if (k === "" || k === "toeic" || k === "dmhub") { show(""); document.dispatchEvent(new CustomEvent("tjwl-sethub", { detail: k === "toeic" ? "test" : k === "dmhub" ? "dm" : "vocab" })); }   /* dmhub = hub 🕵️ Thám tử Marketing của phòng game (js/exams.js) */
     else show(k);
   });
   window.addEventListener("resize", function () { if (!layer.hidden) place(); });

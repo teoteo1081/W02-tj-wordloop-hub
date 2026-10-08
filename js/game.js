@@ -3528,7 +3528,7 @@
   }
   function paintTIntro() {
     document.body.classList.toggle("g-viewer", !!(G.room && !G.isHost));   /* người chơi trong phòng: không thấy thanh Phòng game · TOEIC · IELTS · EA · Digital Marketing (chỉ host cần) */
-    var hh = (G.isHost ? G.hub : "vocab") || "vocab";   /* TJ 2026-10-06: người chơi chỉ giữ "WordLoop Game" như hiện tại cho cả phòng; TOEIC chỉ là việc của host */
+    var hh = (G.isHost ? (G.xmHub || G.hub) : "vocab") || "vocab";   /* TJ 2026-10-06: người chơi chỉ giữ "WordLoop Game" như hiện tại cho cả phòng; TOEIC chỉ là việc của host */
     if (hh !== window.TJ_HUB) { window.TJ_HUB = hh; try { document.dispatchEvent(new CustomEvent("tjwl-hubchanged", { detail: hh })); } catch (e) {} }
     var box = $("#l-tintro"); if (!box) return;
     var on = false;   /* TJ 2026-10-06: bảng giới thiệu + chiến thuật TOEIC chuyển sang giao diện host (dưới "Cách tính điểm"), người chơi không thấy */
@@ -3736,11 +3736,11 @@
     X.paintHub(el, { lang: uiLang(), scoring: G.st && G.st.scoring, teams: G.st && G.st.teams, hostplay: hostPlays() });
   }
   function setHub(h) {
-    $$('#l-hubs [data-hub="dm"]').forEach(function (b) { b.hidden = !(XM && XM.dm); });   /* exams.js lỗi tải -> ẩn nút Marketing (khỏi bấm mà rơi về hub từ vựng) */
+    $$('#l-hubs [data-hub="dm"], #g-learn [data-learn="dmhub"]').forEach(function (b) { b.hidden = !(XM && XM.dm); });   /* exams.js lỗi tải -> ẩn nút Marketing (khỏi bấm mà rơi về hub từ vựng) */
     var tab = h === "dm" && XM && XM.dm ? "dm" : h === "test" ? "test" : "vocab", xk = tab === "dm" ? "dm" : "";   /* nút hub: vocab | test (TOEIC) | môn ngoài TOEIC (G.hub vẫn là "test") */
     h = xk ? "test" : tab;
     if (h === "test" && G.hub !== "test") vocabSnap();
-    G.hub = h; G.xmHub = xk; window.TJ_HUB = h; try { document.dispatchEvent(new CustomEvent("tjwl-hubchanged", { detail: h })); } catch (e) {}   /* thanh thẻ trên (learn.js) tô sáng đúng thẻ */
+    G.hub = h; G.xmHub = xk; window.TJ_HUB = tab; try { document.dispatchEvent(new CustomEvent("tjwl-hubchanged", { detail: tab })); } catch (e) {}   /* thanh thẻ trên (learn.js) tô sáng đúng thẻ */
     if (G.isHost && G.st && (G.st.hub !== h || (G.st.xm || "") !== xk)) { G.st.hub = h; if (xk) G.st.xm = xk; else delete G.st.xm; push(); }   /* người chơi thấy giới thiệu + chiến thuật TOEIC trong phòng chờ */
     var box = $("#l-host"); if (!box) return;
     box.classList.toggle("g-hubtest", h === "test");

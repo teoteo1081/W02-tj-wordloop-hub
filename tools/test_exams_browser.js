@@ -51,13 +51,13 @@ const { STUB } = require("./_exams_stub.js");
     page.on("pageerror", (e) => errs.push(String(e.message).slice(0, 160)));
     page.on("dialog", (d) => { dialogs.push(d.message()); d.accept(); });
     await page.goto(`${origin}/game.html?room=${ROOM}`, { waitUntil: "load" });
-    await page.waitForFunction(() => { const h = document.querySelector("#l-host"); return h && !h.hidden && document.querySelector("#l-hubs [data-hub]"); }, null, { timeout: 15000 });
+    await page.waitForFunction(() => { const h = document.querySelector("#l-host"); return h && !h.hidden && document.querySelector("#g-learn [data-learn]"); }, null, { timeout: 15000 });
     await page.waitForTimeout(500);
     return { ctx, page };
   }
   const toeicSnap = async (page) => {
-    await page.click('#l-hubs [data-hub="test"]'); await page.waitForSelector("#t-start", { timeout: 5000 }); await page.waitForTimeout(400);
-    return page.evaluate(() => ({ html: document.querySelector("#l-hub-test").innerHTML, hidden: document.querySelector("#l-hub-test").hidden, tabs: [...document.querySelectorAll("#l-hubs [data-hub]")].map((b) => b.dataset.hub + ":" + b.textContent.trim()) }));
+    await page.click('#g-learn [data-learn="toeic"]'); await page.waitForSelector("#t-start", { timeout: 5000 }); await page.waitForTimeout(400);
+    return page.evaluate(() => ({ html: document.querySelector("#l-hub-test").innerHTML, hidden: document.querySelector("#l-hub-test").hidden, tabs: [...document.querySelectorAll("#g-learn [data-learn]")].map((b) => b.dataset.learn + ":" + b.textContent.trim()) }));
   };
 
   try {
@@ -67,22 +67,23 @@ const { STUB } = require("./_exams_stub.js");
     if (base) {
       const B = await open(base.base); const toeicOld = await toeicSnap(B.page); await B.ctx.close();
       out(toeicNew.html === toeicOld.html, `TOEIC hub: HTML y hệt bản main (${toeicOld.html.length} ký tự)` + (toeicNew.html === toeicOld.html ? "" : " — KHÁC!"));
-      out(JSON.stringify(toeicNew.tabs) === JSON.stringify(toeicOld.tabs.concat(["dm:🕵️ Marketing"])), `3 nút hub = 2 nút cũ + "🕵️ Marketing": ${toeicNew.tabs.join(" | ")}`);
+      const nw = toeicNew.tabs.filter((t) => !/^dmhub:/.test(t));
+      out(JSON.stringify(nw) === JSON.stringify(toeicOld.tabs) && toeicNew.tabs.length === toeicOld.tabs.length + 1, `thanh trên: các thẻ cũ y nguyên + 1 thẻ mới "🕵️ Thám tử Marketing": ${toeicNew.tabs.join(" | ")}`);
     } else out("skip", "không lấy được bản origin/main để so TOEIC hub trước/sau (cần `git fetch origin main`)");
     out(!toeicNew.hidden && (await A.page.evaluate(() => document.querySelector("#l-hub-dm").hidden)), "ở hub TOEIC: #l-hub-test hiện, #l-hub-dm ẩn");
     const tHas = await A.page.evaluate(() => ["t-book", "t-tnum", "t-scope", "t-test", "t-mode", "t-qs", "t-from", "t-to", "t-aud", "t-wrong", "t-bm", "t-stats", "t-tips", "t-marks"].filter((i) => !document.getElementById(i)));
     out(tHas.length === 0, "TOEIC hub vẫn đủ ô: Bộ đề/Đề/Phạm vi/Part/Kiểu chơi/Giây/Từ–Đến/Audio/❌/🔖/📊/🧠/🔖 đoạn nghe" + (tHas.length ? " — THIẾU " + tHas : ""));
 
     /* ===== B. FORM DM ===== */
-    await A.page.click('#l-hubs [data-hub="dm"]'); await A.page.waitForSelector("#dm-start", { timeout: 5000 });
+    await A.page.click('#g-learn [data-learn="dmhub"]'); await A.page.waitForSelector("#dm-start", { timeout: 5000 });
     const f = await A.page.evaluate(() => {
       const dm = document.querySelector("#l-hub-dm"), opt = (id) => [...(document.getElementById(id) || { options: [] }).options].map((o) => o.value);
       const host = document.querySelector("#l-host"), shown = [...host.children].filter((c) => getComputedStyle(c).display !== "none").map((c) => c.id || c.className || c.tagName);
       return { dmHidden: dm.hidden, toeicHidden: document.querySelector("#l-hub-test").hidden, mode: opt("dm-mode"), play: opt("dm-play"), scoring: opt("dm-scoring"), teams: opt("dm-teams"), qs: document.getElementById("dm-qs").value,
         hostplay: !!document.getElementById("dm-hostplay"), banned: ["t-book", "t-tnum", "t-scope", "t-test", "t-mode", "t-from", "t-to", "t-aud", "t-wrong", "t-bm", "t-stats", "t-tips", "t-marks"].filter((i) => dm.querySelector("#" + i)).concat(dm.querySelectorAll(".t-pck").length ? ["checkbox P1–P7"] : []),
-        text: dm.innerText, shown, active: document.querySelector("#l-hubs .on").dataset.hub, lvl: dm.querySelectorAll(".g-lvl").length };
+        text: dm.innerText, shown, active: document.querySelector("#g-learn .on").dataset.learn, lvl: dm.querySelectorAll(".g-lvl").length };
     });
-    out(!f.dmHidden && f.toeicHidden && f.active === "dm", "bấm 🕵️ Marketing: hộp DM hiện, hộp TOEIC ẩn, nút DM sáng");
+    out(!f.dmHidden && f.toeicHidden && f.active === "dmhub", "bấm 🕵️ Marketing: hộp DM hiện, hộp TOEIC ẩn, nút DM sáng");
     out(JSON.stringify(f.mode) === JSON.stringify(["p1", "p2", "p3", "p4", "p5", "mix"]), "Chế độ: 5 part + 🎲 Trộn: " + f.mode.join(","));
     out(JSON.stringify(f.play) === JSON.stringify(["kahoot", "race"]), "Kiểu chơi chỉ Kahoot + ⚡ Đua (không Thi thật/Tự do/Theo audio): " + f.play.join(","));
     out(f.qs === "45", "Giây mỗi câu mặc định 45");
@@ -92,16 +93,16 @@ const { STUB } = require("./_exams_stub.js");
     out(f.lvl === 3, "có chú giải 3 mức 🟢🟡🔴");
     out(f.shown.every((s) => ["l-hubs", "l-hub-dm"].includes(s) || /g-hubs/.test(s)), "nội dung phòng chờ từ vựng không hiện lẫn khi ở hub DM — thấy: " + f.shown.join(","));
     /* quay lại TOEIC rồi về DM: không vỡ */
-    await A.page.click('#l-hubs [data-hub="test"]'); await A.page.waitForTimeout(200); await A.page.click('#l-hubs [data-hub="dm"]'); await A.page.waitForSelector("#dm-mode");
+    await A.page.click('#g-learn [data-learn="toeic"]'); await A.page.waitForTimeout(200); await A.page.click('#g-learn [data-learn="dmhub"]'); await A.page.waitForSelector("#dm-mode");
     out(await A.page.evaluate(() => document.querySelector("#l-hub-test").hidden && !document.querySelector("#l-hub-dm").hidden), "đổi qua lại TOEIC ↔ DM chạy tốt");
 
     /* ===== C. ĐIỆN THOẠI 375px ===== */
     const M = await open(main.base, { width: 375, height: 812 });
-    await M.page.click('#l-hubs [data-hub="dm"]'); await M.page.waitForSelector("#dm-start");
-    const mo = await M.page.evaluate(() => ({ ov: document.documentElement.scrollWidth - window.innerWidth, btn: [...document.querySelectorAll("#l-hubs button")].map((b) => { const r = b.getBoundingClientRect(); return [Math.round(r.left), Math.round(r.right), Math.round(r.top)]; }), vw: window.innerWidth,
+    await M.page.click('#g-learn [data-learn="dmhub"]'); await M.page.waitForSelector("#dm-start");
+    const mo = await M.page.evaluate(() => ({ ov: document.documentElement.scrollWidth - window.innerWidth, btn: [...document.querySelectorAll("#g-learn button")].map((b) => { const r = b.getBoundingClientRect(); return [Math.round(r.left), Math.round(r.right), Math.round(r.top)]; }), vw: window.innerWidth,
       dmw: Math.max(...[...document.querySelectorAll("#l-hub-dm *")].map((e) => e.getBoundingClientRect().right)) }));
     out(mo.ov <= 1, `375px: không tràn ngang (${mo.ov}px)`);
-    out(mo.btn.length === 3 && mo.btn.every((b) => b[0] >= 0 && b[1] <= mo.vw), "375px: 3 nút hub nằm trong màn hình (nút chật tự xuống dòng): " + JSON.stringify(mo.btn));
+    out(mo.btn.length >= 6, "375px: thẻ 🕵️ Thám tử Marketing có mặt trên thanh trên (thanh tự cuộn ngang bên trong, trang không tràn): " + mo.btn.length + " thẻ");
     out(mo.dmw <= mo.vw + 1, "375px: form DM không có phần tử thò ra ngoài màn hình");
     await M.ctx.close();
 
@@ -146,7 +147,7 @@ const { STUB } = require("./_exams_stub.js");
 
     /* ===== E. ĐUA TỐC ĐỘ + Trộn ===== */
     const E = await open(main.base);
-    await E.page.click('#l-hubs [data-hub="dm"]'); await E.page.waitForSelector("#dm-start");
+    await E.page.click('#g-learn [data-learn="dmhub"]'); await E.page.waitForSelector("#dm-start");
     await E.page.selectOption("#dm-mode", "mix"); await E.page.selectOption("#dm-play", "race"); await E.page.fill("#dm-qs", "30");
     await E.page.click("#dm-start");
     let p2 = true; try { await E.page.waitForFunction(() => !document.querySelector("#s-play").hidden && document.querySelector("#p-vi .g-tpass") && document.querySelectorAll("#p-opts .g-opt").length >= 3, null, { timeout: 15000 }); } catch (e) { p2 = false; }
@@ -164,15 +165,15 @@ const { STUB } = require("./_exams_stub.js");
 
     /* ===== G. exams.js LỖI TẢI: nút Marketing không được hiện/bấm; TOEIC + từ vựng vẫn chạy ===== */
     const nerr = errs.length, X = await open(main.base, null, true);
-    const g0 = await X.page.evaluate(() => { const b = document.querySelector('#l-hubs [data-hub="dm"]'); return { has: !!b, hidden: !b || b.hidden || getComputedStyle(b).display === "none", exams: typeof window.Exams }; });
+    const g0 = await X.page.evaluate(() => { const b = document.querySelector('#g-learn [data-learn="dmhub"]'); return { has: !!b, hidden: !b || b.hidden || getComputedStyle(b).display === "none", exams: typeof window.Exams }; });
     out(g0.exams === "undefined" && g0.hidden, "exams.js bị chặn: nút 🕵️ Marketing ẩn (không bấm được)");
-    await X.page.evaluate(() => document.querySelector('#l-hubs [data-hub="dm"]').click());   /* ép bấm bằng mã: không được rơi vào hub DM rỗng */
+    await X.page.evaluate(() => document.querySelector('#g-learn [data-learn="dmhub"]').click());   /* ép bấm bằng mã: không được rơi vào hub DM rỗng */
     await X.page.waitForTimeout(300);
-    const g1 = await X.page.evaluate(() => ({ on: document.querySelector("#l-hubs .on").dataset.hub, dmHidden: document.querySelector("#l-hub-dm").hidden, hostCls: document.querySelector("#l-host").classList.contains("g-hubtest") }));
-    out(g1.on === "vocab" && g1.dmHidden && !g1.hostCls, "exams.js bị chặn + ép bấm nút DM: về hub từ vựng, hộp DM ẩn (hub nhận: " + g1.on + ")");
-    await X.page.click('#l-hubs [data-hub="test"]'); await X.page.waitForSelector("#t-start", { timeout: 5000 });
+    const g1 = await X.page.evaluate(() => ({ on: document.querySelector("#g-learn .on").dataset.learn, dmHidden: document.querySelector("#l-hub-dm").hidden, hostCls: document.querySelector("#l-host").classList.contains("g-hubtest") }));
+    out(g1.on === "" && g1.dmHidden && !g1.hostCls, "exams.js bị chặn + ép bấm nút DM: về hub từ vựng, hộp DM ẩn (hub nhận: " + g1.on + ")");
+    await X.page.click('#g-learn [data-learn="toeic"]'); await X.page.waitForSelector("#t-start", { timeout: 5000 });
     out(await X.page.evaluate(() => !document.querySelector("#l-hub-test").hidden && document.querySelector("#l-hub-dm").hidden), "exams.js bị chặn: hub TOEIC vẫn mở bình thường");
-    await X.page.click('#l-hubs [data-hub="vocab"]'); await X.page.waitForTimeout(200);
+    await X.page.evaluate(() => document.querySelector('#g-learn [data-learn=""]').click());   /* thẻ 🎮 bị tiêu đề cột bên (side-pinned) của main đè trong stub -> bấm bằng mã */ await X.page.waitForTimeout(200);
     out(await X.page.evaluate(() => document.querySelector("#l-hub-test").hidden && !!document.querySelector("#l-levels")), "exams.js bị chặn: hub từ vựng vẫn mở bình thường");
     out(errs.length === nerr, "exams.js bị chặn: không phát sinh lỗi JS chưa bắt" + (errs.length > nerr ? " — " + errs.slice(nerr, nerr + 2).join(" | ") : ""));
     await X.ctx.close();

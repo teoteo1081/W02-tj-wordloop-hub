@@ -30,8 +30,8 @@ const ITEMS = [row(6, 131, "Memo text for part six."), row(6, 132, "Memo text tw
   const page = await ctx.newPage(), errs = []; page.on("pageerror", (e) => errs.push(String(e.message).slice(0, 160))); page.on("dialog", (d) => d.accept());
   try {
     await page.goto(`${base}/game.html?room=${ROOM}`, { waitUntil: "load" });
-    await page.waitForFunction(() => { const h = document.querySelector("#l-host"); return h && !h.hidden && document.querySelector("#l-hubs [data-hub]"); }, null, { timeout: 15000 });
-    await page.click('#l-hubs [data-hub="test"]'); await page.waitForSelector("#t-start");
+    await page.waitForFunction(() => { const h = document.querySelector("#l-host"); return h && !h.hidden && document.querySelector("#g-learn [data-learn]"); }, null, { timeout: 15000 });
+    await page.click('#g-learn [data-learn="toeic"]'); await page.waitForSelector("#t-start");
     await page.waitForFunction(() => document.querySelectorAll("#t-tnum option").length > 0, null, { timeout: 8000 });
     out(await page.evaluate(() => !document.querySelector("#l-hub-test .g-lvl") && !document.querySelector("#l-hub-test .g-lvlguide")), "(d) hub TOEIC: không có nhãn/chú giải mức 🟢🟡🔴");
     /* nhiều Part: Tuỳ chọn P6 + P7, Kahoot, giây mỗi câu ô "Giây mỗi câu" = 20 (khác T_SEC để phân biệt) */
