@@ -90,6 +90,7 @@
         '<div class="bd-sfx" id="bd-sfx">' +'<div class="bd-stage" id="bd-stage">' +
         '<div class="bd-zoom" id="bd-zoom"><video id="bd-video" class="bd-video" autoplay playsinline muted hidden></video><div class="bd-doc" id="bd-doc"></div><canvas id="bd-cv"></canvas><div class="bd-texts" id="bd-texts"></div></div>' +
         '<button type="button" class="bd-aud" id="bd-aud" hidden data-bt="unmute"></button>' +
+        '<div id="bd-sharebar" hidden><video id="bd-prev" muted autoplay playsinline></video><div class="bd-shtx"><b>🔴 Đang chia sẻ màn hình</b><span>Mọi người trong phòng đang xem</span></div><button type="button" id="bd-shstop">Dừng chia sẻ</button></div>' +
         '</div>' +
         '<div class="bd-hudl" id="bd-hudl">' +
           '<div class="bd-vtbar bd-hud" id="bd-vtbar" hidden>' +
@@ -1818,6 +1819,8 @@
     if (v.srcObject !== (stream || null)) v.srcObject = stream || null;
     v.hidden = !stream || !!local; if (local || !stream) v.muted = true;   /* host KHÔNG xem lại hình đang chia sẻ: hình chồng lên bài của host nên rối + lặp vô tận (TJ 2026-10-06) */   /* tự phát cần muted; người xem bấm 🔊 Bật tiếng */
     if (stream) v.play().catch(function () {});
+    var sb = $("#bd-sharebar"), pv = $("#bd-prev");   /* kiểu Google Meet: người chia sẻ thấy thanh "Bạn đang chia sẻ" + hình thu nhỏ + nút Dừng (không phủ hình đầy khung -> không bị lặp vô tận) */
+    if (sb && pv) { sb.hidden = !(stream && local); if (pv.srcObject !== ((stream && local) ? stream : null)) pv.srcObject = (stream && local) ? stream : null; if (stream && local) pv.play().catch(function () {}); }
     $("#bd-stage").classList.toggle("bd-screen", !!stream && !local);
     $("#bd-stage").classList.toggle("bd-screen-view", !!stream && !local);
     /* iPhone/Safari đôi khi KHÔNG phát được hình chia sẻ -> lớp bài bị ẩn mà video đen = bảng trống. Sau 5s chưa có khung hình thì trả lại bài (TJ 2026-10-06: bạn dùng iPhone 15 không thấy nội dung bảng) */
@@ -1843,6 +1846,7 @@
         clearInterval(shAnn); shAnn = setInterval(announce, 5000);   /* máy vào sau / lỡ tin -> 5 giây sau tự xin nối */
       }, function (e) { if (e && e.name !== "NotAllowedError" && e.name !== "AbortError") alert(t("shErr") + (e.message || e.name)); });
   }
+  document.addEventListener("click", function (e) { if (e.target && e.target.id === "bd-shstop") stopShare(); });
   function stopShare() {
     if (!shStream) return;
     var s = shStream; shStream = null; clearInterval(shAnn);

@@ -1719,3 +1719,15 @@ body.g-viewer #l-roomcard #l-toprow{display:none}
 
 /* TJ 2026-10-08: ô trống (nút "nhảy tới trang" chưa có chữ) chiếm chỗ ở đầu cột công cụ -> ẩn khi trống */
 .bd .bd-docnav #bd-dpg:empty{display:none}
+
+/* TJ 2026-10-08: (1) người XEM: hình chia sẻ phủ kín khung bảng (video là phần tử "thay thế" nên inset + width:auto KHÔNG kéo giãn -> từng hiện đúng cỡ gốc 1920px, chỉ thấy 1 góc);
+   (2) người CHIA SẺ (kiểu Google Meet): thanh "Bạn đang chia sẻ màn hình" + hình thu nhỏ + nút Dừng */
+.bd .bd-stage .bd-video{inset:0 !important;width:100% !important;height:100% !important;object-fit:contain}
+#bd-sharebar{position:absolute;z-index:30;left:0;right:0;margin:0 auto;width:max-content;top:8px;display:flex;align-items:center;gap:10px;max-width:calc(100% - 16px);box-sizing:border-box;padding:6px 8px;background:rgba(24,22,20,.94);border:1px solid #ef4444;border-radius:14px;box-shadow:0 4px 18px rgba(0,0,0,.45);pointer-events:auto}
+#bd-sharebar[hidden]{display:none}
+#bd-prev{width:112px;height:63px;flex:none;object-fit:contain;background:#000;border-radius:8px}
+#bd-sharebar .bd-shtx{white-space:nowrap;display:flex;flex-direction:column;gap:2px;min-width:0;font-size:13px;color:#e7e2d8}
+#bd-sharebar .bd-shtx b{font-size:14px;color:#fff}
+#bd-shstop{flex:none;border:0;border-radius:10px;padding:8px 12px;background:#ef4444;color:#fff;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+#bd-shstop:hover{background:#f25b5b}
+@media (max-width:560px){#bd-sharebar .bd-shtx span{display:none}#bd-sharebar .bd-shtx{white-space:normal;flex:1 1 auto}#bd-prev{width:84px;height:47px}#bd-sharebar{gap:8px}}
