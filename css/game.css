@@ -1645,3 +1645,30 @@ body.usersonly #g-main{max-width:none;padding:8px 14px 24px}
 #rv-hint{text-align:center;margin-bottom:8px}
 .g-subev{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;margin:0 4px;padding:0;border-radius:50%;border:0;background:linear-gradient(135deg,#14b8a6,#3b82f6);color:#fff;font-size:15px;cursor:pointer;vertical-align:middle;text-indent:0;box-shadow:0 1px 6px rgba(20,184,166,.4)}
 .g-subev:active{transform:scale(.92)}
+
+/* 📚 Bài đọc Marketing trên bảng (loại tài liệu "mk", xem board.js mkPage) */
+.bd-mk{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;box-sizing:border-box;padding:3% max(6%,58px) 2% 5%;color:#f3efe6;line-height:1.55;font-size:15px;font-size:clamp(14px,2.7cqw,19px);scrollbar-width:thin;scrollbar-color:rgba(255,210,122,.35) transparent}
+.bd-mk > *{max-width:46em;margin-left:auto;margin-right:auto}
+.bd-mk h3{margin:0 auto .5em;color:#ffd27a;font-size:1.2em;line-height:1.3}
+.bd-mk h4{margin:1.3em auto .4em;color:#ffd27a;font-size:1.02em}
+.bd-mk ul{margin:0 auto .6em;padding-left:1.2em}
+.bd-mk li{margin:.2em 0}
+.bd-mk p{margin:0 0 .7em}
+.bd-mk a{color:#9fd3ff}
+.bd-mkex{background:rgba(255,210,122,.12);border-radius:10px;padding:.5em .7em}
+.bd-mkh{display:flex;align-items:center;gap:.6em;margin-top:1.1em !important}
+.bd-mkt{background:#ffd27a;color:#2b2420;font-size:.75em;font-weight:700;padding:.1em .6em;border-radius:999px}
+.bd-mkb{background:#7c4dff;color:#fff;border:0;border-radius:8px;padding:.3em .8em;font:inherit;font-size:.85em;cursor:pointer}
+.bd-mken{background:rgba(255,255,255,.07);border-radius:10px;padding:.6em .8em;margin-top:.5em !important}
+.bd-mken b{display:block;margin-bottom:.4em;color:#ffd27a}
+.bd-mks.bd-rd{background:rgba(124,170,255,.25);box-shadow:0 0 0 3px rgba(124,170,255,.25);border-radius:4px}
+.bd-mkv{border-collapse:collapse;width:100%;font-size:.92em}
+.bd-mkv td{padding:.3em .4em;border-bottom:1px solid rgba(255,255,255,.12);vertical-align:top}
+.bd-mkq{margin:0 auto .9em}
+.bd-mkq p{font-weight:700;margin:0 0 .3em}
+.bd-mko{display:block;width:100%;text-align:left;margin:.25em 0;padding:.5em .7em;border:1px solid rgba(255,255,255,.22);border-radius:8px;background:rgba(255,255,255,.06);color:inherit;font:inherit;cursor:pointer}
+.bd-mko.ok{border-color:#6fcf97;color:#6fcf97;font-weight:700}
+.bd-mko.bad{border-color:#ff8a7a;color:#ff8a7a}
+.bd-mkw{font-size:.88em;opacity:.85;margin-top:.3em}
+.bd-mksc{color:#ffd27a}
+.bd-mkend{height:3em}

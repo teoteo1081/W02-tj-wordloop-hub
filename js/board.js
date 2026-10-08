@@ -623,7 +623,7 @@
     if (open) { var lb = $("#bd-lib"); if (lb) lb.hidden = !api.isHost(); syncDoc(s.bdoc || null); }
   }
   /* ---------- 📁 TÀI LIỆU TRÊN BẢNG (TJ 2026-10-04) ----------
-     Host chọn -> st.bdoc = {k:"pdf"|"img"|"wl"|"vt"|"office", url|bid, name, p, n, ar, hl} -> mọi máy tự vẽ tài liệu làm NỀN dưới lớp bút.
+     Host chọn -> st.bdoc = {k:"pdf"|"img"|"wl"|"vt"|"office"|"mk", url|bid, name, p, n, ar, hl}   (mk = bài đọc Marketing của L02, url:"mk:<id>", xem mkPage) -> mọi máy tự vẽ tài liệu làm NỀN dưới lớp bút.
      · ar = tỉ lệ khung (rộng/cao) của tài liệu: PDF/ảnh theo trang thật, bài đọc + bảng từ vựng 3:4 → khung bảng đổi theo, nét vẽ vẫn khớp.
      · Nét vẽ RIÊNG từng trang (cất/lấy lại khi lật trang). Phóng to/kéo là riêng từng máy.
      · "wl" bài đọc WordLoop · "vt" bảng từ vựng của Block (nghĩa theo tiếng của từng người; host chạm 1 dòng = chỉ cho cả phòng) ·
@@ -749,8 +749,8 @@
     }
     var txt0 = !!(d && (d.k === "wl" || d.k === "vt")), bdl = $("#bd"), pnb = $("#bd-penbtn");
     paintFeed();   /* chừa chỗ khung "Từ vừa tra" TRƯỚC khi dựng bài -> lần dựng đầu đã đúng cỡ, không giật khi bấm nút */   /* (trong hàm này "isTxt" là biến boolean) */
-    if (bdl) bdl.classList.toggle("bd-txt", txt0);   /* CSS: lớp vẽ nhường chạm/lăn chuột cho bài cuộn */
-    if (pnb) pnb.hidden = txt0; if (txt0 && penMode) setPen(false);   /* bút vẽ tự do không dùng trên bài cuộn (nét sẽ lệch chữ) — chạm câu để tô sáng */
+    var scr0 = txt0 || !!(d && d.k === "mk"); if (bdl) bdl.classList.toggle("bd-txt", scr0);   /* CSS: lớp vẽ nhường chạm/lăn chuột cho bài cuộn */
+    if (pnb) pnb.hidden = scr0; if (scr0 && penMode) setPen(false);   /* bút vẽ tự do không dùng trên bài cuộn (nét sẽ lệch chữ) — chạm câu để tô sáng */
     paintCard(d); paintMe(); paintPeople(); paintHostAway(); notifyParent(open && !mini);
     if (k === docKey) { if (txt0) paintHL(d); return; }
     lastA = null; lfz = Math.max(0.7, Math.min(2.6, +d0zf(d) || 1));
@@ -813,6 +813,7 @@
     if (!d) return;
     if (d.k === "img") { box.innerHTML = '<img alt="" src="' + esc(d.url) + '">'; return; }
     if (d.k === "pdf") return pdfPage(d, job);
+    if (d.k === "mk") return mkPage(d, job);
     if (isTxt(d)) return comboPage(d, job);   /* v207 (TJ 2026-10-06): bỏ 2 tab — BẢNG TỪ VỰNG rồi tới BÀI ĐỌC trong 1 trang cuộn, đúng thứ tự Learning */
     if (d.k === "office") { box.innerHTML = '<iframe class="bd-office-f" src="https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(d.url) + '" allowfullscreen></iframe><a class="bd-office-a" target="_blank" rel="noopener" href="' + esc(d.url) + '">⬇ ' + esc(d.name || "file") + "</a>"; return; }
   }
@@ -972,6 +973,76 @@
       var ttl = meta.title || d.name;
       box.innerHTML = '<div class="bd-wl bd-scroll" lang="en">' + (ttl ? "<h3>" + esc(ttl) + "</h3>" : "") + (raw.trim() ? wlScrollHTML(raw) : "<p>(Block này chưa có bài đọc)</p>") + "</div>";
       afterTxt(d);
+    } catch (e) { if (job === docJob) box.innerHTML = '<div class="bd-docmsg">⚠ ' + esc(e.message || e) + "</div>"; }
+  }
+  /* ====== 📚 BÀI ĐỌC MARKETING (L02, TJ 2026-10-08) ======
+     Tài liệu loại "mk": host chọn ở 📁 Tài liệu > tab 📚 Marketing -> st.bdoc = {k:"mk", url:"mk:<id>", name} -> mọi máy tự dựng CÙNG bài (chỉ cần id).
+     Dữ liệu = readings.js của repo L02-digital-marketing-beginner (GitHub Pages) nạp bằng thẻ <script> -> window.DM_READINGS (1 nguồn duy nhất:
+     sửa bài ở L02 thì game tự cập nhật). Cuộn + đáp án quiz là RIÊNG từng máy (chưa đồng bộ cả phòng). Nghe đọc: máy nào bấm thì máy đó phát. */
+  var MK_SRC = "https://teoteo1081.github.io/L02-digital-marketing-beginner/readings/readings.js", mkP = null, mkSay = 0;
+  function mkLoad() {
+    if (window.DM_READINGS) return Promise.resolve(window.DM_READINGS);
+    if (!mkP) mkP = loadScript(MK_SRC + "?t=" + Math.floor(Date.now() / 600000)).then(function () { if (!window.DM_READINGS) throw new Error("empty"); return window.DM_READINGS; }).catch(function () { mkP = null; throw new Error("Không tải được bài đọc Marketing (GitHub Pages của L02 chưa bật hoặc mất mạng)"); });
+    return mkP;
+  }
+  function mkEn(text) {   /* đoạn tiếng Anh -> từng câu 1 <span> (để tô sáng câu đang đọc); chỉ tách ở . ! ? theo sau là khoảng trắng + chữ HOA/số, nên "A.M.]" không bị cắt */
+    return String(text || "").split(/\n+/).map(function (p) {
+      p = p.trim(); if (!p) return "";
+      var out = [], re = /[.!?]["')\]”]*\s+(?=["“'(\[]?[A-Z0-9])/g, last = 0, m;
+      while ((m = re.exec(p))) { out.push(p.slice(last, m.index + m[0].length)); last = m.index + m[0].length; }
+      out.push(p.slice(last));
+      return "<p>" + out.map(function (s) { return '<span class="bd-mks">' + esc(s) + "</span>"; }).join("") + "</p>";
+    }).join("");
+  }
+  function mkHTML(r) {
+    var ABC = ["A", "B", "C", "D"];
+    return "<h3>📚 Module " + esc(r.id) + " · " + esc(r.title) + "</h3>" +
+      '<ul class="bd-mkvi">' + r.vi.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" +
+      '<p class="bd-mkex">💡 ' + esc(r.example) + "</p>" +
+      '<div class="bd-mkh"><span class="bd-mkt">' + esc(r.en.type) + '</span><button type="button" class="bd-mkb" data-mkr="1">🔊 Nghe đọc</button></div>' +
+      '<div class="bd-mken" lang="en"><b>' + esc(r.en.heading) + "</b>" + mkEn(r.en.text) + "</div>" +
+      "<h4>📝 Từ vựng TOEIC</h4>" +
+      '<table class="bd-mkv">' + r.vocab.map(function (v) { return "<tr><td><b>" + esc(v.en) + "</b></td><td>" + esc(v.vi) + "</td><td>" + esc(v.ex) + "</td></tr>"; }).join("") + "</table>" +
+      '<h4>✅ Câu hỏi kiểu TOEIC <span class="bd-mksc"></span></h4>' +
+      r.questions.map(function (q, i) {
+        return '<div class="bd-mkq" data-q="' + i + '"><p>' + (i + 1) + ". " + esc(q.q) + "</p>" + q.options.map(function (o, j) { return '<button type="button" class="bd-mko" data-o="' + j + '">(' + ABC[j] + ") " + esc(o) + "</button>"; }).join("") + '<div class="bd-mkw" hidden></div></div>';
+      }).join("") +
+      (r.sources && r.sources.length ? "<h4>🔗 Nguồn tham khảo</h4><ul>" + r.sources.map(function (s) { return '<li><a target="_blank" rel="noopener" href="' + esc(s.url) + '">' + esc(s.name) + "</a></li>"; }).join("") + "</ul>" : "") +
+      '<div class="bd-mkend"></div>';
+  }
+  async function mkRead(root, btn) {
+    var on = mkSay && mkSay === reading;
+    stopReading(); clearReadHL();
+    if (on) { mkSay = 0; btn.textContent = "🔊 Nghe đọc"; return; }
+    var sp = Array.prototype.slice.call(root.querySelectorAll(".bd-mks")), my = ++reading; mkSay = my; btn.textContent = "⏹ Dừng";
+    for (var i = 0; i < sp.length; i++) {
+      if (reading !== my) return;   /* bấm Dừng / đổi bài -> bỏ */
+      clearReadHL(); sp[i].classList.add("bd-rd");
+      try { sp[i].scrollIntoView({ block: "center", behavior: "smooth" }); } catch (e) {}
+      await speakOne(sp[i].textContent.trim(), "en-US", 0.9);
+    }
+    if (reading === my) { mkSay = 0; clearReadHL(); if (btn.isConnected) btn.textContent = "🔊 Nghe đọc"; }
+  }
+  async function mkPage(d, job) {
+    var box = $("#bd-doc"); box.innerHTML = '<div class="bd-docmsg">⏳</div>';
+    try {
+      var R = await mkLoad(); if (job !== docJob) return;
+      var id = String(d.url || "").replace(/^mk:/, ""), r = R.filter(function (x) { return x.id === id; })[0];
+      if (!r) throw new Error("Không thấy bài Marketing " + id);
+      var root = document.createElement("div"); root.className = "bd-mk"; root.lang = "vi"; root.innerHTML = mkHTML(r);
+      var done = 0, right = 0;
+      root.addEventListener("click", function (e) {
+        var rb = e.target.closest("[data-mkr]"); if (rb) { mkRead(root, rb); return; }
+        var ob = e.target.closest(".bd-mko"); if (!ob) return;
+        var qb = ob.closest(".bd-mkq"), q = r.questions[+qb.dataset.q];
+        if (!q || qb.dataset.done) return; qb.dataset.done = "1"; done++;
+        var j = +ob.dataset.o, os = qb.querySelectorAll(".bd-mko");
+        if (j === q.answer) right++; else ob.classList.add("bad");
+        os[q.answer].classList.add("ok");
+        var w = qb.querySelector(".bd-mkw"); w.hidden = false; w.textContent = (j === q.answer ? "🎉 Đúng rồi! " : "🙈 Chưa đúng. ") + q.explain;
+        if (done === r.questions.length) root.querySelector(".bd-mksc").textContent = "· " + right + "/" + done;
+      });
+      box.innerHTML = ""; box.appendChild(root);
     } catch (e) { if (job === docJob) box.innerHTML = '<div class="bd-docmsg">⚠ ' + esc(e.message || e) + "</div>"; }
   }
   /* ====== BẢNG TỪ: chức năng y chang Learning (TJ 2026-10-05) — Thu gọn · tốc độ · Copy · Bổ sung từ · Dừng · Đọc tất cả từ · Đọc + định nghĩa · ⭐ ====== */
@@ -1509,11 +1580,12 @@
     msg: function (x) { var e = $("#bd-libmsg"); if (e) e.textContent = x; },
     head: function () {
       return '<div class="bd-libin"><div class="bd-libh"><b>' + esc(t("lib")) + '</b><button type="button" data-lx="1" class="bd-libx">✕</button></div>' +
-        '<div class="bd-libtabs"><button type="button" data-lt="files" class="' + (Lib.tab === "files" ? "on" : "") + '">📄 PDF · 🖼 ' + esc(t("lib_img")) + ' · Word/Excel</button><button type="button" data-lt="wl" class="' + (Lib.tab === "wl" ? "on" : "") + '">📖 ' + esc(t("lib_wl")) + " · 📋 " + esc(t("lib_vt")) + "</button></div>";
+        '<div class="bd-libtabs"><button type="button" data-lt="files" class="' + (Lib.tab === "files" ? "on" : "") + '">📄 PDF · 🖼 ' + esc(t("lib_img")) + ' · Word/Excel</button><button type="button" data-lt="wl" class="' + (Lib.tab === "wl" ? "on" : "") + '">📖 ' + esc(t("lib_wl")) + " · 📋 " + esc(t("lib_vt")) + '</button><button type="button" data-lt="mk" class="' + (Lib.tab === "mk" ? "on" : "") + '">📚 Marketing</button></div>';
     },
     paint: async function () {
       var m = $("#bd-libm"); if (!m) return;
       if (Lib.tab === "wl") return Lib.paintWL();
+      if (Lib.tab === "mk") return Lib.paintMK();
       if (Lib.mode === "dest") return Lib.paintDest();
       var crumbs = '<button type="button" data-lgo="">lib</button>' + (Lib.folder ? Lib.folder.split("/").map(function (seg, i, arr) { return ' › <button type="button" data-lgo="' + esc(arr.slice(0, i + 1).join("/")) + '">' + esc(seg) + "</button>"; }).join("") : "");
       m.innerHTML = Lib.head() + Lib.recentHTML() + '<div class="bd-libbar"><span class="bd-crumb">📂 ' + crumbs + '</span></div><div class="bd-libbar"><label class="bd-libup">⬆️ ' + esc(t("lib_up")) + '<input type="file" id="bd-libfile" accept="application/pdf,image/*,.docx,.xlsx,.pptx,.doc,.xls,.ppt" multiple hidden></label> <button type="button" data-lnew="1">➕ ' + esc(t("lib_newf")) + '</button></div><div id="bd-liblist" class="bd-liblist">⏳</div><div class="bd-libmsg" id="bd-libmsg"></div></div>';
@@ -1540,9 +1612,17 @@
     recentHTML: function () {
       var L = recents().slice(0, 8); if (!L.length) return "";
       return '<div class="bd-rec"><div class="bd-recH">🕘 Gần đây</div><div class="bd-recL">' + L.map(function (x, i) {
-        var ico = x.k === "pdf" ? "📄" : x.k === "img" ? "🖼" : x.k === "office" ? "📝" : x.k === "vt" ? "📋" : "📖";
+        var ico = x.k === "pdf" ? "📄" : x.k === "img" ? "🖼" : x.k === "office" ? "📝" : x.k === "vt" ? "📋" : x.k === "mk" ? "📚" : "📖";
         return '<button type="button" data-rec="' + i + '">' + ico + " <span>" + esc(x.name || x.url || "") + "</span>" + (x.lb ? " <small>" + esc(x.lb) + "</small>" : "") + (x.p > 1 ? " <small>tr." + x.p + "</small>" : "") + "</button>";
       }).join("") + "</div></div>";
+    },
+    paintMK: async function () {   /* 📚 danh sách bài đọc Marketing (L02) */
+      var m = $("#bd-libm"); if (!m) return;
+      m.innerHTML = Lib.head() + '<div class="bd-libmsg">⏳ 📚 Marketing…</div></div>';
+      var R; try { R = await mkLoad(); } catch (e) { if (Lib.tab === "mk") m.innerHTML = Lib.head() + '<div class="bd-libmsg">⚠ ' + esc(e.message || e) + "</div></div>"; return; }
+      if (Lib.tab !== "mk") return;
+      m.innerHTML = Lib.head() + '<div class="bd-libmsg">📚 Digital Marketing — bài đọc song ngữ, luyện TOEIC. Chọn 1 bài để mở lên bảng cho cả phòng:</div><div class="bd-liblist">' +
+        R.map(function (x) { return '<div class="bd-lrow"><button type="button" class="bd-lopen bd-pass" data-mk="' + esc(x.id) + '"><b>' + esc(x.id) + "</b> · " + esc(x.title) + "</button></div>"; }).join("") + "</div></div>";
     },
     /* 📖 chọn bài đọc của 1 Block: bài gốc / OpenAI / Gemini / Claude / dán… + tạo bài mới */
     pBid: "", pName: "", pOrig: false, pHint: "",
@@ -1575,6 +1655,7 @@
       if (!b) return;
       if (b.dataset.lx) return Lib.close();
       if (b.dataset.lt) { Lib.tab = b.dataset.lt; Lib.mode = "list"; Lib.pending = null; Lib.mvFile = null; return Lib.paint(); }
+      if (b.dataset.mk) { var mid = b.dataset.mk, mr = (window.DM_READINGS || []).filter(function (x) { return x.id === mid; })[0]; Lib.close(); await openDoc({ k: "mk", url: "mk:" + mid, name: mr ? "Marketing " + mid + " · " + mr.title : "Marketing " + mid, p: 1 }); return; }
       if (b.dataset.lgo != null) { Lib.folder = b.dataset.lgo; return Lib.paint(); }
       if (b.dataset.ldir) { Lib.folder = Lib.path(b.dataset.ldir); return Lib.paint(); }
       if (b.dataset.lnew) {
