@@ -3089,30 +3089,28 @@
       var v = JSON.parse(String(raw || "").replace(/^```(json)?|```$/g, "").trim()); v.t = t; tvCache[k] = v; return v;
     } catch (e) { return null; }
   }
-  /* 🔍 tra nghĩa ngay trên bảng (chạm từ trong bài đọc / gõ vào ô tra): Gemini qua gemini-proxy, nghĩa theo tiếng giao diện + định nghĩa tiếng Anh, nhớ theo từ+câu */
+  /* 🔍 tra nghĩa ngay trên bảng (chạm từ trong bài đọc / gõ vào ô tra): Gemini qua gemini-proxy trước, lỗi (quá tải/mất mạng/rỗng) thì tự rơi qua OpenAI qua
+     openai-proxy — TJ 2026-10-09: trước đây tự gọi thẳng gemini-proxy, không có dự phòng, nên Gemini free-tier quá tải (nhiều người trong phòng tra cùng lúc)
+     là tra "hết ra nghĩa" luôn, không có đường lui. Giờ dùng CHUNG Context._callProvider (js/context.js, đã có fallback này cho tính năng tạo bài đọc) thay vì
+     code tay riêng. quotaCtx=null: tra từ KHÔNG tính vào hạn mức 3 Block AI/ngày (hạn mức đó chỉ áp dụng tạo bài đọc mới, giữ nguyên như code cũ). */
   var blCache = {};
   async function boardLookup(t, ctx) {
     var k = t.toLowerCase() + "|" + String(ctx || "").slice(0, 60); if (blCache[k]) return blCache[k];
     var langs = ["vi", "zh", "es"];   /* tra 1 lần đủ 3 tiếng + tiếng Anh: kết quả gửi cho cả phòng, mỗi người xem theo tiếng của mình */
-    var payload = JSON.stringify({ model: cfg.GEMINI_MODEL || "gemini-3.5-flash-lite", user_id: null, block_id: null, sys: "You are a concise bilingual dictionary for English learners. Reply JSON only.",
-      user: "Word/phrase: " + JSON.stringify(t) + (ctx ? ". Paragraph: " + JSON.stringify(String(ctx).slice(0, 700)) : "") + ". Give its meaning" + (ctx ? " IN THIS PARAGRAPH" : "") + ". Return JSON {\"pos\":\"n|v|adj|adv|phr|…\",\"ipa\":\"IPA pronunciation like /ˈwɛə.haʊs/\",\"en\":\"short English definition\"" + langs.map(function (l) { return ",\"" + l + "\":\"short meaning in " + LANG_NAME[l] + "\""; }).join("") + "}" });
+    var sys = "You are a concise bilingual dictionary for English learners. Reply JSON only.";
+    var user = "Word/phrase: " + JSON.stringify(t) + (ctx ? ". Paragraph: " + JSON.stringify(String(ctx).slice(0, 700)) : "") + ". Give its meaning" + (ctx ? " IN THIS PARAGRAPH" : "") + ". Return JSON {\"pos\":\"n|v|adj|adv|phr|…\",\"ipa\":\"IPA pronunciation like /ˈwɛə.haʊs/\",\"en\":\"short English definition\"" + langs.map(function (l) { return ",\"" + l + "\":\"short meaning in " + LANG_NAME[l] + "\""; }).join("") + "}";
     boardLookup.err = "";
-    /* TJ 2026-10-06: có máy tra được, máy khác không -> lỗi chập chờn (mạng chậm quá 12s / AI từ chối tạm thời) chỉ báo chung "chưa tra được". Nay: thử lại 1 lần + ghi LÝ DO (HTTP / quá giờ / định dạng) để hiện cho người dùng. */
-    for (var attempt = 0; attempt < 2; attempt++) {
-      var ac = typeof AbortController !== "undefined" ? new AbortController() : null, tm = ac ? setTimeout(function () { ac.abort(); }, attempt ? 15000 : 12000) : null;   /* quá giờ thì bỏ (hết treo ⏳ trên điện thoại) */
-      try {
-        var res = await fetch(cfg.SUPABASE_URL.replace(/[/]$/, "") + "/functions/v1/gemini-proxy", {
-          signal: ac ? ac.signal : undefined, method: "POST", headers: { "Content-Type": "application/json", "Authorization": "Bearer " + cfg.SUPABASE_ANON_KEY, "apikey": cfg.SUPABASE_ANON_KEY }, body: payload });
-        if (!res.ok) { boardLookup.err = "AI báo lỗi " + res.status + (res.status === 429 ? " (quá nhiều lượt, đợi vài giây)" : ""); if (attempt === 0) { await new Promise(function (r) { setTimeout(r, 1200); }); continue; } return null; }
-        var d = await res.json(), raw = d.candidates && d.candidates[0] && d.candidates[0].content.parts[0].text;
-        var v = JSON.parse(String(raw || "").replace(/^```(json)?|```$/g, "").trim()); blCache[k] = v; boardLookup.err = ""; return v;
-      } catch (e) {
-        boardLookup.err = e && e.name === "AbortError" ? "AI trả lời quá chậm" : "AI trả lời sai định dạng hoặc mất mạng";
-        if (attempt === 0) { await new Promise(function (r) { setTimeout(r, 800); }); continue; }
-        return null;
-      } finally { if (tm) clearTimeout(tm); }
+    try {
+      await ensureContext();
+      var raw = await Context._callProvider(cfg, sys, user, null);   /* Gemini trước, OpenAI dự phòng nếu lỗi (trừ quota_user); đã có thử lại + timeout 25s bên trong (js/context.js) */
+      var v = JSON.parse(String(raw || "").replace(/^```(json)?|```$/g, "").trim()); blCache[k] = v; boardLookup.err = ""; return v;
+    } catch (e) {
+      boardLookup.err = e && e.kind === "quota_user" ? (e.message || "Đã dùng hết lượt AI hôm nay")
+        : e && e.kind === "timeout" ? "AI trả lời quá chậm"
+        : e && e.kind === "network" ? "Mất mạng, thử lại"
+        : (e && e.message) || "AI trả lời sai định dạng";
+      return null;
     }
-    return null;
   }
   async function tvEnsureTree(test, part) {
     var sec = "toe_ex_t" + test, pg = sec + "_p" + part, bt = pg + "_b";
