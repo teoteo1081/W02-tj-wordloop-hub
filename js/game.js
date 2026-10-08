@@ -432,6 +432,12 @@
     var b = $("#g-me"); b.hidden = !G.me;
     if (G.me) b.innerHTML = avatar(G.me.avatar) + " " + label({ name: G.me.name, no: G.me.name_no });
   }
+  $("#g-boardbtn").addEventListener("click", function () {   /* 🖍 Bảng: host bật / tắt bảng cho cả phòng; người chơi tự vào / ra Bảng (riêng máy mình) */
+    if (!window.Board) return;
+    if (G.isHost && G.st) { G.st.board = !G.st.board; push(); }
+    else if (Board.isLocalOpen()) Board.closeLocal(); else Board.openLocal();
+    setTimeout(function () { var b = $("#g-boardbtn"); if (b) b.classList.toggle("on", !!(Board.isOpen && Board.isOpen())); }, 100);
+  });
   $("#g-me").addEventListener("click", function () { if (!G.room || !G.st || G.st.phase === "lobby") renderNameScreen(); });
 
   /* ---------- 2. trang chính ---------- */
@@ -1301,7 +1307,7 @@
   function leaveRoom() {
     clearInterval(G.hostTimer); clearInterval(G.aliveTimer); clearInterval(G.tick);
     try { if (G.ch) { G.ch.untrack(); sb.removeChannel(G.ch); } } catch (e) {}
-    G.ch = null; G.isHost = false; G.cand = false; G.st = null; G.room = null; G.online = []; if (window.Chat) Chat.reset(); if (window.Voice) Voice.reset(); if (window.CC) CC.reset();
+    G.ch = null; G.isHost = false; G.cand = false; G.st = null; G.room = null; G.online = []; var gb0 = $("#g-boardbtn"); if (gb0) { gb0.hidden = true; gb0.classList.remove("on"); } if (window.Board && Board.closeLocal) Board.closeLocal(); if (window.Chat) Chat.reset(); if (window.Voice) Voice.reset(); if (window.CC) CC.reset();
   }
   function pauseTab(msg) { G.asleep = true; leaveRoom(); $("#g-room-badge").hidden = true; $("#t-msg").textContent = msg; show("s-tab"); }
   if (BC) BC.onmessage = function (e) {
@@ -1380,6 +1386,11 @@
     } catch (e) {}
   }
 
+  function bootBars() {
+    var s0 = G.st || { phase: "lobby" };
+    if (window.Chat) Chat.onState(s0); if (window.Voice) Voice.onState(s0); if (window.CC) CC.onState(s0);
+    var b = $("#g-boardbtn"); if (b) b.hidden = !(window.Board && Board.openLocal);
+  }
   function connect() {
     if (G.ch) sb.removeChannel(G.ch);
     var key = G.view === "screen" ? "screen-" + Math.random().toString(36).slice(2) : G.me.id;
@@ -1438,6 +1449,7 @@
         if (G.st.phase === "play") onState(pub());
         else initHostLobby();
       } else G.ch.send({ type: "broadcast", event: "hello", payload: {} });   /* xin host gửi lại trạng thái hiện tại */
+      bootBars();   /* TJ 2026-10-09: chat / mic / CC hiện NGAY ngoài phòng chờ, không đợi host (host chưa vào vẫn chat được) */
     });
   }
   function track() { return G.ch.track({ ver: GAME_VER, ts: Date.now(), id: G.me.id, tab: G.tab, cand: !!G.cand, since: G.since, pf: G.profile ? G.profile.id : null, name: G.me.name, no: G.me.name_no, avatar: G.me.avatar, host: G.isHost, play: G.isHost ? hostPlays() : true, lang: G.myLang }); }

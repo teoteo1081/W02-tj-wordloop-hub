@@ -636,9 +636,21 @@
       draw(); paintTexts();
     }
   }
+  /* TJ 2026-10-09: nút "🖍 Bảng" ở phòng chờ — ai thích vào Bảng thì tự mở (riêng máy mình, kể cả khi host chưa vào phòng); ai thích ở ngoài chat thì ở ngoài */
+  var localOpen = false;
+  function lclose() { var u = $("#bd-lclose"); if (!u) { u = document.createElement("button"); u.id = "bd-lclose"; u.type = "button"; u.className = "bd-hb"; u.textContent = "✕ Thoát bảng"; u.addEventListener("click", function () { Board.closeLocal(); }); document.body.appendChild(u); } return u; }
+  function openLocal() {
+    if (!api) return; localOpen = true; lclose().hidden = false;
+    if (!open) { open = true; mini = false; build(); paintOpen(); send({ t: "hello" }); }
+    paintOpen(); if (open) { paintTools(); paintShare(); var s0 = st(); syncDoc(s0 && s0.bdoc || null); }
+  }
+  function closeLocal() {
+    localOpen = false; var u = $("#bd-lclose"); if (u) u.hidden = true;
+    var s0 = st(); if (!(s0 && s0.board) && open) { open = false; paintOpen(); if (shStream) stopShare(); }
+  }
   function onState(s) {
     if (!s) return;
-    var want = !!s.board;
+    var want = !!s.board || localOpen;   /* localOpen: người chơi tự bấm "🖍 Bảng" ở phòng chờ (riêng máy này) */
     if (want && !open) { open = true; mini = false; build(); paintOpen(); if (!api.isHost() || !order.length) send({ t: "hello" }); }   /* host tải lại trang (bảng trống) cũng xin lại nét từ moderator/người chơi */
     else if (!want && open) { open = false; paintOpen(); if (shStream) stopShare(); }   /* host đóng bảng = dừng chia sẻ màn hình */
     paintOpen();
@@ -2077,6 +2089,7 @@
 
   window.Board = {
     attach: function (a) { api = a; build(); },
+    openLocal: openLocal, closeLocal: closeLocal, isLocalOpen: function () { return localOpen; },
     broadcast: function (m) { send(m); }, myName: function () { var x = me(); return x && x.name ? x.name : ""; }, onMsg: onMsg, onState: onState, onRtc: onRtc, _showVideo: showVideo,   /* _showVideo: chỉ để kiểm thử giao diện chia sẻ bằng hình giả */
     resync: function () { if (open) setTimeout(function () { send({ t: "hello" }); }, 400); },
     isOpen: function () { return open; },
