@@ -10,6 +10,7 @@
   if (/[?&]usersonly=1/.test(location.search)) return;   /* pop-up Quản lý người chơi: không cần chat */
   var api = null, sig = "", log = [], unread = 0, isOpen = false, lastSend = 0, asked = false, lastSync = 0, built = false;
   var MAXLOG = 30, MAXLEN = 200, GAP = 2000;
+  var QUICK = ["❓ Chưa hiểu", "✅ Hiểu rồi", "⏳ Chờ mình chút", "🔁 Đọc lại giúp mình", "👏", "😂"];   /* trả lời nhanh 1 chạm — tiện cho lớp học, khỏi gõ chữ */
   var $ = function (s) { return document.querySelector(s); };
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function st() { return api && api.st ? api.st() : null; }
@@ -25,9 +26,10 @@
     var top = document.querySelector(".g-top"), meb = $("#g-me");
     if (top) top.insertBefore(b, meb || null); else document.body.appendChild(b);
     var p = document.createElement("div"); p.id = "ch-panel"; p.className = "ch-panel"; p.hidden = true;
-    p.innerHTML = '<div class="ch-head"><b>💬 Chat phòng</b><span class="ch-note">chỉ lưu tạm, đóng phòng là mất</span><button type="button" id="ch-menu" class="ch-x" hidden title="Cài đặt chat (host)">⋯</button><button type="button" id="ch-close" class="ch-x" title="Đóng">✕</button></div>' +
+    p.innerHTML = '<div class="ch-head"><b>💬 Chat phòng</b><span class="ch-note">chỉ lưu tạm</span><button type="button" id="ch-menu" class="ch-x" hidden title="Cài đặt chat (host)">⋯</button><button type="button" id="ch-close" class="ch-x" title="Đóng">✕</button></div>' +
       '<div class="ch-hostmenu" id="ch-hostmenu" hidden><button type="button" id="ch-off"></button><button type="button" id="ch-clear">🗑 Xoá hết tin nhắn</button><div class="ch-hint">Bấm vào tên 1 người trong khung chat để tắt / bật chat của họ.</div></div>' +
       '<div class="ch-list" id="ch-list"></div>' +
+      '<div class="ch-quick" id="ch-quick">' + QUICK.map(function (q) { return '<button type="button" data-q="' + esc(q) + '">' + esc(q) + "</button>"; }).join("") + "</div>" +
       '<form class="ch-form" id="ch-form" autocomplete="off"><input id="ch-in" maxlength="' + MAXLEN + '" placeholder="Nhập tin nhắn…" enterkeyhint="send"><button type="submit" id="ch-send">Gửi</button></form>';
     document.body.appendChild(p);
     b.addEventListener("click", function () { toggle(!isOpen); });
@@ -35,6 +37,7 @@
     $("#ch-menu").addEventListener("click", function () { var m = $("#ch-hostmenu"); m.hidden = !m.hidden; });
     $("#ch-off").addEventListener("click", function () { if (api.setChat) api.setChat({ off: !off() }); setTimeout(paint, 300); });
     $("#ch-clear").addEventListener("click", function () { if (!host()) return; send({ t: "clear" }); $("#ch-hostmenu").hidden = true; });
+    $("#ch-quick").addEventListener("click", function (e) { var q = e.target.closest && e.target.closest("[data-q]"); if (q) submit(q.dataset.q); });
     $("#ch-form").addEventListener("submit", function (e) { e.preventDefault(); submit(); });
     $("#ch-list").addEventListener("click", function (e) {   /* host bấm tên = tắt / bật chat của người đó */
       var n = e.target.closest && e.target.closest("[data-chid]"); if (!n || !host() || !api.setChat) return;
@@ -50,20 +53,27 @@
   function badge() { var bd = $("#ch-badge"); if (!bd) return; bd.hidden = !(unread > 0 && !isOpen); bd.textContent = unread > 9 ? "9+" : String(unread); }
   function scrollEnd() { var l = $("#ch-list"); if (l) l.scrollTop = l.scrollHeight; }
   function avatarHtml(a) { a = String(a || ""); return /^https?:/.test(a) ? '<img alt="" src="' + esc(a) + '">' : esc(a || "👤"); }
+  function hhmm(ts) { var d = new Date(ts || Date.now()); return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2); }
   function paint() {
     if (!built) return;
-    var l = $("#ch-list"), mm = me(), h = host();
+    var l = $("#ch-list"), mm = me(), h = host(), s = st();
     if (!l) return;
+    var atEnd = l.scrollHeight - l.scrollTop - l.clientHeight < 60;   /* đang xem tin cũ thì đừng giật xuống cuối */
+    var prev = null;
     l.innerHTML = log.length ? log.map(function (m) {
-      var mine = mm && m.id === mm.id;
-      return '<div class="ch-m' + (mine ? " me" : "") + '"><span class="ch-av">' + avatarHtml(m.a) + '</span><div class="ch-b"><span class="ch-n' + (h && !mine ? " ch-clk" : "") + (muted(m.id) ? " ch-muted" : "") + '" data-chid="' + esc(m.id) + '">' + esc(m.n || "?") + '</span><span class="ch-t">' + esc(m.x) + "</span></div></div>";
-    }).join("") : '<div class="ch-empty">Chưa có tin nhắn nào. Nói xin chào nhé 👋</div>';
+      var mine = mm && m.id === mm.id, same = prev && prev.id === m.id && (m.ts - prev.ts) < 60000, crown = s && s.hid === m.id;
+      prev = m;
+      return '<div class="ch-m' + (mine ? " me" : "") + (same ? " same" : "") + '"><span class="ch-av">' + (same ? "" : avatarHtml(m.a)) + '</span><div class="ch-b">' +
+        (same || mine ? "" : '<span class="ch-n' + (h ? " ch-clk" : "") + (muted(m.id) ? " ch-muted" : "") + '" data-chid="' + esc(m.id) + '">' + (crown ? "👑 " : "") + esc(m.n || "?") + "</span>") +
+        '<span class="ch-t">' + esc(m.x) + '</span><span class="ch-ts">' + hhmm(m.ts) + "</span></div></div>";
+    }).join("") : '<div class="ch-empty"><div class="ch-big">💬</div>Chưa có tin nhắn nào.<br>Nói xin chào cả lớp nhé 👋</div>';
     var inp = $("#ch-in"), sd = $("#ch-send"), blocked = (off() && !h) || (mm && muted(mm.id) && !h);
-    if (inp) { inp.disabled = !!blocked; inp.placeholder = off() && !h ? "Host đã tắt chat" : (mm && muted(mm.id) && !h ? "Bạn đang bị tắt chat" : "Nhập tin nhắn…"); }
+    if (inp) { inp.disabled = !!blocked; inp.placeholder = off() && !h ? "Host đã tạm tắt chat" : (mm && muted(mm.id) && !h ? "Bạn đang bị tắt chat" : "Nhập tin nhắn…"); }
     if (sd) sd.disabled = !!blocked;
+    var qk = $("#ch-quick"); if (qk) qk.hidden = !!blocked;
     var mn = $("#ch-menu"); if (mn) mn.hidden = !h;
     var of = $("#ch-off"); if (of) of.textContent = off() ? "✅ Bật lại chat cả phòng" : "🚫 Tắt chat cả phòng";
-    scrollEnd();
+    if (atEnd || !isOpen) scrollEnd();
   }
   function add(m) {
     log.push(m); if (log.length > MAXLOG) log = log.slice(-MAXLOG);
@@ -71,12 +81,12 @@
     if (!isOpen && !mine) { unread++; badge(); }
     paint();
   }
-  function submit() {
+  function submit(preset) {
     var inp = $("#ch-in"), mm = me(); if (!inp || !mm) return;
-    var x = String(inp.value || "").replace(/[\u0000-\u001f\u007f]/g, " ").replace(/\s+/g, " ").trim().slice(0, MAXLEN); if (!x) return;
+    var x = String(preset != null ? preset : inp.value || "").replace(/[\u0000-\u001f\u007f]/g, " ").replace(/\s+/g, " ").trim().slice(0, MAXLEN); if (!x) return;
     if (!host() && (off() || muted(mm.id))) return;
     if (Date.now() - lastSend < GAP) { inp.classList.add("ch-wait"); setTimeout(function () { inp.classList.remove("ch-wait"); }, 400); return; }   /* chậm lại chút (2 giây / tin) */
-    lastSend = Date.now(); inp.value = "";
+    lastSend = Date.now(); if (preset == null) inp.value = "";
     send({ t: "m", id: mm.id, n: mm.name || "", a: mm.avatar || "", x: x, ts: Date.now() });
   }
 

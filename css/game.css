@@ -1805,3 +1805,25 @@ body.g-viewer #l-roomcard #l-toprow{display:none}
 .ch-form button{flex:none;border:0;border-radius:10px;padding:0 16px;background:#e07a5f;color:#fff;font:inherit;font-weight:700;cursor:pointer}
 .ch-form button:disabled{opacity:.5;cursor:not-allowed}
 @media (max-width:520px){.ch-panel{right:0;bottom:0;width:100vw;height:68vh;border-radius:16px 16px 0 0}}
+
+/* 💬 Chat: bản gọn gàng thân thiện hơn */
+.ch-panel{background:#2b2a28;border-color:rgba(255,255,255,.14)}
+.ch-head{background:rgba(255,255,255,.03)}
+.ch-head b{font-size:16px}
+.ch-m.same{margin-top:-5px}
+.ch-m.same .ch-av{visibility:hidden}
+.ch-b{position:relative;padding:7px 11px 5px;border-radius:14px;border-top-left-radius:4px;background:rgba(255,255,255,.1)}
+.ch-m.me .ch-b{border-top-left-radius:14px;border-top-right-radius:4px;background:#e07a5f;color:#fff}
+.ch-ts{align-self:flex-end;font-size:10px;opacity:.55;margin-top:1px}
+.ch-t{font-size:15px}
+.ch-empty{color:var(--text-2,#b9b3a6);line-height:1.5}
+.ch-big{font-size:42px;margin-bottom:6px}
+.ch-quick{display:flex;gap:6px;padding:8px 12px 0;overflow-x:auto;scrollbar-width:none;flex:none}
+.ch-quick::-webkit-scrollbar{display:none}
+.ch-quick[hidden]{display:none}
+.ch-quick button{flex:none;border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:7px 12px;background:rgba(255,255,255,.07);color:inherit;font:inherit;font-size:13px;cursor:pointer;white-space:nowrap}
+.ch-quick button:active{background:rgba(224,122,95,.35)}
+.ch-form{border-top:0;padding-top:8px}
+.ch-form button{min-width:56px}
+.ch-btn{width:40px;height:40px}
+.ch-head b{white-space:nowrap}
