@@ -1898,3 +1898,14 @@ body:has(.ch-btn.ch-inbar) .ch-panel{bottom:72px}
 .ch-bolt{flex:none;width:38px;border:0;border-radius:999px;background:rgba(255,255,255,.1);color:#ffd27a;font-size:17px;cursor:pointer;padding:0}
 .ch-bolt:active{background:rgba(224,122,95,.4)}
 .ch-form button.ch-bolt{min-width:38px}
+
+/* 🎤 Voice (js/voice.js): nút tròn cạnh nút 💬; mặc định TẮT (gạch chéo), bật = xanh; khoá trong ván = mờ */
+.vc-btn{position:fixed;z-index:85;right:66px;bottom:78px;width:46px;height:46px;border-radius:50%;background:#2f2e2b;border:1px solid rgba(255,255,255,.2);box-shadow:0 4px 14px rgba(0,0,0,.45);color:#fff;font-size:20px;cursor:pointer;padding:0;display:inline-flex;align-items:center;justify-content:center}
+.vc-btn[hidden]{display:none}
+.vc-btn .vc-slash{position:absolute;left:11px;right:11px;top:50%;height:3px;border-radius:2px;background:#ef4444;transform:rotate(-40deg);box-shadow:0 0 0 1px #2f2e2b}
+.vc-btn.on{background:#16a34a;border-color:#16a34a;animation:vcPulse 1.8s ease-out infinite}
+.vc-btn.on .vc-slash{display:none}
+.vc-btn.locked{opacity:.45}
+@keyframes vcPulse{0%{box-shadow:0 0 0 0 rgba(22,163,74,.55)}70%{box-shadow:0 0 0 12px rgba(22,163,74,0)}100%{box-shadow:0 0 0 0 rgba(22,163,74,0)}}
+.vc-who{position:fixed;z-index:84;max-width:min(260px,calc(100vw - 20px));padding:6px 10px;border-radius:12px;background:rgba(22,163,74,.92);color:#fff;font-size:12px;line-height:1.3;box-shadow:0 3px 10px rgba(0,0,0,.4)}
+.vc-who[hidden]{display:none}

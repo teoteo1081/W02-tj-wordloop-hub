@@ -1,0 +1,147 @@
+/* voice.js — 🎤 Nói chuyện bằng giọng trong phòng game (TJ 2026-10-08).
+   · MẶC ĐỊNH TẮT MIC khi vào phòng. Ai cũng tự bật / tắt mic của mình bất cứ lúc nào, KHÔNG cần host duyệt (trình duyệt vẫn tự hỏi quyền micro 1 lần — không tránh được).
+   · WebRTC dạng LƯỚI (mesh) chỉ-âm-thanh: người đang BẬT mic mở 1 kết nối tới MỖI người còn lại (≈ 30–40 kbps mỗi luồng) -> ổn cho khoảng 6–8 người cùng nói.
+     Báo hiệu qua kênh phòng sẵn có (broadcast event "voice"), cùng kiểu chia sẻ màn hình trong board.js:
+       talker: "on" (lặp 5 giây/lần + trả lời "hello" của máy vào sau) -> người nghe gửi "want" -> talker offer -> người nghe answer -> trao ICE.
+   · Host: nút "Tắt mic cả phòng" (Voice.muteAll) — chỉ tắt 1 lần, ai cũng bật lại được.
+   · Chỉ STUN Google; TURN tuỳ chọn qua window.APP_CONFIG.TURN (mảng RTCIceServer) — KHÔNG để mật khẩu TURN trong repo. Không có TURN thì mạng 5G / công ty có thể không nối được.
+   · Dùng TAI NGHE để khỏi vọng tiếng (đã bật echoCancellation nhưng loa ngoài vẫn dễ hú).
+   Game gọi: Voice.attach(api) · Voice.onMsg(payload) · Voice.reset(). api = { ch, me, isHost }. */
+(function () {
+  "use strict";
+  if (/[?&]usersonly=1/.test(location.search)) return;
+  var locked = false, helloSent = false, api = null, cid = Math.random().toString(36).slice(2, 10), stream = null, annT = 0, built = false;
+  var out = {}, inc = {}, talkers = {}, MAXP = 8, FULL = {};   /* out[cid] = kết nối GỬI tiếng của mình tới máy đó; inc[cid] = kết nối NHẬN tiếng từ talker đó; talkers[cid] = {n, at} */
+  var $ = function (s) { return document.querySelector(s); };
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function me() { return api && api.me ? api.me() : null; }
+  function myName() { var m = me(); return m && m.name ? m.name : "?"; }
+  function send(m) { var ch = api && api.ch && api.ch(); if (!ch) return; m.cid = cid; ch.send({ type: "broadcast", event: "voice", payload: m }); }
+  function iceServers() {
+    var s = [{ urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] }], c = window.APP_CONFIG;
+    if (c && Array.isArray(c.TURN)) s = s.concat(c.TURN);
+    return s;
+  }
+  function chain(o, f) { o.q = o.q.then(f).catch(function (e) { console.warn("[voice]", e); }); }
+  function cand(c) { return c.toJSON ? c.toJSON() : { candidate: c.candidate, sdpMid: c.sdpMid, sdpMLineIndex: c.sdpMLineIndex }; }
+  function desc(d) { return { type: d.type, sdp: d.sdp }; }
+
+  /* ---------- giao diện: nút 🎤 tròn, đặt cạnh nút 💬 (nếu có) ---------- */
+  function build() {
+    if (built) return; built = true;
+    var b = document.createElement("button"); b.type = "button"; b.id = "vc-btn"; b.className = "vc-btn off"; b.hidden = true; b.title = "Bật / tắt mic của bạn (mặc định đang tắt)";
+    b.innerHTML = '<span class="vc-ic">🎤</span><i class="vc-slash"></i>'; document.body.appendChild(b);
+    var p = document.createElement("div"); p.id = "vc-who"; p.className = "vc-who"; p.hidden = true; document.body.appendChild(p);
+    b.addEventListener("click", function () { if (locked) { flash("🔇 Đang trong ván — mic tạm khoá. Hết giờ bạn tự bật mic nhé."); return; } if (stream) micOff(); else micOn(); });
+    setInterval(tick, 700);
+  }
+  var flashT = 0;
+  function flash(txt) { var wh = $("#vc-who"); if (!wh) return; wh.hidden = false; wh.textContent = txt; clearTimeout(flashT); flashT = setTimeout(paint, 3500); }
+  function place() {   /* đứng ngay bên trái nút 💬 (cùng hàng); không có 💬 thì góc dưới phải */
+    var b = $("#vc-btn"), c = $("#ch-btn"); if (!b) return;
+    var w = b.offsetWidth || 46, key;
+    if (c && c.getClientRects().length) { var r = c.getBoundingClientRect(); b.style.right = "auto"; b.style.left = Math.max(6, Math.round(r.left - w - 8)) + "px"; b.style.bottom = Math.round(innerHeight - r.bottom) + "px"; key = "c"; }
+    else { b.style.left = "auto"; b.style.right = "66px"; b.style.bottom = "78px"; }
+    var wh = $("#vc-who"); if (wh) { wh.style.left = b.style.left; wh.style.right = b.style.right; wh.style.bottom = (parseInt(b.style.bottom, 10) + w + 8) + "px"; }
+  }
+  function paint() {
+    var b = $("#vc-btn"); if (!b) return;
+    b.classList.toggle("off", !stream); b.classList.toggle("on", !!stream); b.classList.toggle("locked", !!locked);
+    b.title = locked ? "Mic tạm khoá trong lúc chơi — hết giờ bạn tự bật" : stream ? "Đang BẬT mic — bấm để tắt" : "Bật mic của bạn (mặc định đang tắt)";
+    var names = Object.keys(talkers).map(function (k) { return talkers[k].n; });
+    if (stream) names.unshift(myName());
+    var wh = $("#vc-who"); if (wh) { wh.hidden = !names.length; wh.innerHTML = "🎙 " + names.map(esc).join(", "); }
+  }
+  function tick() {
+    place();
+    var now = Date.now(), ch = false;
+    Object.keys(talkers).forEach(function (k) { if (now - talkers[k].at > 13000) { delete talkers[k]; closeIn(k); ch = true; } });
+    if (ch) paint();
+  }
+
+  /* ---------- người NÓI ---------- */
+  function announce() { if (stream) send({ t: "on", n: myName() }); }
+  async function micOn() {
+    if (stream) return;
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.RTCPeerConnection) { alert("Trình duyệt này không hỗ trợ nói chuyện bằng mic. Thử Chrome, Edge hoặc Safari mới."); return; }
+    try { stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }, video: false }); }
+    catch (e) { stream = null; alert((e && e.name === "NotAllowedError") ? "Bạn chưa cho phép dùng micro. Bấm vào biểu tượng ổ khoá cạnh thanh địa chỉ để cho phép, rồi bấm 🎤 lại." : "Không mở được micro: " + (e && (e.message || e.name))); paint(); return; }
+    stream.getAudioTracks().forEach(function (t) { t.onended = micOff; });
+    announce(); clearInterval(annT); annT = setInterval(announce, 5000);
+    paint();
+  }
+  function micOff() {
+    if (!stream) return;
+    var s = stream; stream = null; clearInterval(annT);
+    s.getTracks().forEach(function (t) { t.onended = null; t.stop(); });
+    Object.keys(out).forEach(closeOut); send({ t: "off" });
+    paint();
+  }
+  function closeOut(c) { var o = out[c]; if (!o) return; delete out[c]; try { o.pc.close(); } catch (e) {} }
+  function offerTo(to) {
+    if (!stream) return;
+    if (!out[to] && Object.keys(out).length >= MAXP - 1) { send({ t: "full", to: to }); return; }
+    closeOut(to);
+    var pc = new RTCPeerConnection({ iceServers: iceServers() }), o = out[to] = { pc: pc, q: Promise.resolve(), at: Date.now(), pend: [] };
+    stream.getAudioTracks().forEach(function (t) { pc.addTrack(t, stream); });
+    pc.onicecandidate = function (e) { if (e.candidate && out[to] === o) send({ t: "ice", to: to, d: "o", c: cand(e.candidate) }); };   /* d:"o" = ICE của kết nối GỬI (người nghe nhận vào inc) */
+    pc.onconnectionstatechange = function () { if (out[to] === o && (pc.connectionState === "failed" || pc.connectionState === "closed")) closeOut(to); };
+    chain(o, function () { return pc.createOffer().then(function (d) { return pc.setLocalDescription(d); }).then(function () { send({ t: "offer", to: to, sdp: desc(pc.localDescription) }); }); });
+  }
+
+  /* ---------- người NGHE ---------- */
+  function closeIn(c) {
+    var i = inc[c]; if (!i) return; delete inc[c];
+    try { i.pc.close(); } catch (e) {} if (i.el) { try { i.el.srcObject = null; i.el.remove(); } catch (e) {} }
+  }
+  function want(c) { if (inc[c] || FULL[c] > Date.now()) return; inc[c] = { pc: null, q: Promise.resolve(), pend: [], at: Date.now(), want: 1 }; send({ t: "want", to: c }); }
+  function onOffer(m) {
+    var i = inc[m.cid]; if (!i) return;
+    if (i.pc) try { i.pc.close(); } catch (e) {}
+    var pc = i.pc = new RTCPeerConnection({ iceServers: iceServers() });
+    pc.ontrack = function (e) {
+      var el = i.el; if (!el) { el = i.el = document.createElement("audio"); el.autoplay = true; el.playsInline = true; el.setAttribute("playsinline", ""); el.style.display = "none"; document.body.appendChild(el); }
+      el.srcObject = (e.streams && e.streams[0]) || new MediaStream([e.track]); var pl = el.play(); if (pl && pl.catch) pl.catch(function () { i.blocked = 1; });
+    };
+    pc.onicecandidate = function (e) { if (e.candidate && inc[m.cid] === i) send({ t: "ice", to: m.cid, d: "i", c: cand(e.candidate) }); };
+    pc.onconnectionstatechange = function () { if (inc[m.cid] === i && pc.connectionState === "failed") { closeIn(m.cid); } };
+    chain(i, function () {
+      return pc.setRemoteDescription(m.sdp).then(function () { return pc.createAnswer(); }).then(function (a) { return pc.setLocalDescription(a); })
+        .then(function () { send({ t: "answer", to: m.cid, sdp: desc(pc.localDescription) }); var pd = i.pend; i.pend = []; return Promise.all(pd.map(function (c) { return pc.addIceCandidate(c).catch(function () {}); })); });
+    });
+  }
+  document.addEventListener("pointerdown", function () {   /* iPhone: tiếng tới trước khi chạm màn hình -> phát bù ở lần chạm đầu */
+    Object.keys(inc).forEach(function (k) { var i = inc[k]; if (i && i.el && i.blocked) { i.blocked = 0; i.el.play().catch(function () {}); } });
+  }, true);
+
+  window.Voice = {
+    attach: function (a) { api = a; build(); send({ t: "hello" }); },
+    /* TJ 2026-10-08: cả nhóm nói chuyện bên HelloTalk -> TRONG VÁN (phase "play") mic bị khoá + tự tắt mic đang mở; hết giờ (về phòng chờ / kết quả) ai cũng TỰ bật mic của mình. App không bao giờ tự mở mic. */
+    onState: function (s) {
+      if (!api || !s) return; build(); var b = $("#vc-btn"); if (b) b.hidden = false;
+      var lk = s.phase === "play";
+      if (lk !== locked) { locked = lk; if (lk && stream) micOff(); paint(); }
+      if (!helloSent) { helloSent = true; send({ t: "hello" }); }   /* vào sau: báo để người đang nói nối tiếng tới mình */
+    },
+    show: function () { build(); var b = $("#vc-btn"); if (b) b.hidden = false; place(); },
+    onMsg: function (m) {
+      if (!m || !api || m.cid === cid || (m.to && m.to !== cid)) return;
+      var t = m.t;
+      if (t === "on") { var first = !talkers[m.cid]; talkers[m.cid] = { n: String(m.n || "?").slice(0, 40), at: Date.now() }; want(m.cid); if (first) paint(); }
+      else if (t === "off") { delete talkers[m.cid]; closeIn(m.cid); paint(); }
+      else if (t === "hello") { if (stream) announce(); }
+      else if (t === "want") { offerTo(m.cid); }
+      else if (t === "offer") { onOffer(m); }
+      else if (t === "answer") { var o = out[m.cid]; if (o) chain(o, function () { return o.pc.setRemoteDescription(m.sdp).then(function () { var pd = o.pend; o.pend = []; return Promise.all(pd.map(function (c) { return o.pc.addIceCandidate(c).catch(function () {}); })); }); }); }
+      else if (t === "ice") {
+        var tgt = m.d === "o" ? inc[m.cid] : out[m.cid];   /* ICE của luồng GỬI (d:"o") đi vào kết nối NHẬN của mình, và ngược lại */
+        if (!tgt) return; if (tgt.pc && tgt.pc.remoteDescription) tgt.pc.addIceCandidate(m.c).catch(function () {}); else tgt.pend.push(m.c);
+      }
+      else if (t === "full") { FULL[m.cid] = Date.now() + 15000; closeIn(m.cid); }
+      else if (t === "muteall") { if (stream) { micOff(); } }
+    },
+    muteAll: function () { if (api && api.isHost && api.isHost()) { send({ t: "muteall" }); if (stream) micOff(); } },   /* chỉ host */
+    on: micOn, off: micOff, isOn: function () { return !!stream; },
+    reset: function () { helloSent = false; locked = false; micOff(); Object.keys(inc).forEach(closeIn); talkers = {}; var b = $("#vc-btn"); if (b) b.hidden = true; paint(); }
+  };
+})();

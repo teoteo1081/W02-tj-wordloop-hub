@@ -42,7 +42,7 @@
     pv.addEventListener("click", function () { toggle(true); });
     var p = document.createElement("div"); p.id = "ch-panel"; p.className = "ch-panel"; p.hidden = true;
     p.innerHTML = '<div class="ch-grab" id="ch-grab" aria-hidden="true"><i></i></div><div class="ch-head" id="ch-headbar"><button type="button" id="ch-close" class="ch-x ch-down" title="Hạ xuống" aria-label="Hạ khung chat xuống"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M5 9l7 7 7-7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button><b>Chat phòng</b><span class="ch-note">chỉ lưu tạm</span><button type="button" id="ch-menu" class="ch-x" hidden title="Cài đặt chat (host)">⋯</button></div>' +
-      '<div class="ch-hostmenu" id="ch-hostmenu" hidden><button type="button" id="ch-off"></button><button type="button" id="ch-clear">🗑 Xoá hết tin nhắn</button><div class="ch-hint">Bấm vào tên 1 người trong khung chat để tắt / bật chat của họ.</div></div>' +
+      '<div class="ch-hostmenu" id="ch-hostmenu" hidden><button type="button" id="ch-off"></button><button type="button" id="ch-clear">🗑 Xoá hết tin nhắn</button><button type="button" id="ch-muteall">🔇 Tắt mic cả phòng (1 lần)</button><div class="ch-hint">Bấm vào tên 1 người trong khung chat để tắt / bật chat của họ.</div></div>' +
       '<div class="ch-list" id="ch-list"></div>' +
       '<div class="ch-quick" id="ch-quick">' + QUICK.map(function (q) { return '<button type="button" data-q="' + esc(q) + '">' + esc(q) + "</button>"; }).join("") + "</div>" +
       '<form class="ch-form" id="ch-form" autocomplete="off"><button type="button" id="ch-bolt" class="ch-bolt" title="Trả lời nhanh" aria-label="Trả lời nhanh">⚡</button><input id="ch-in" name="chat-message" type="text" maxlength="' + MAXLEN + '" placeholder="Nhập tin nhắn…" enterkeyhint="send" autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-form-type="other"><button type="submit" id="ch-send">Gửi</button></form>';
@@ -71,6 +71,7 @@
     $("#ch-close").addEventListener("click", function () { toggle(false); });
     $("#ch-menu").addEventListener("click", function () { var m = $("#ch-hostmenu"); m.hidden = !m.hidden; });
     $("#ch-off").addEventListener("click", function () { if (api.setChat) api.setChat({ off: !off() }); setTimeout(paint, 300); });
+    $("#ch-muteall").addEventListener("click", function () { if (window.Voice) Voice.muteAll(); $("#ch-hostmenu").hidden = true; });
     $("#ch-clear").addEventListener("click", function () { if (!host()) return; send({ t: "clear" }); $("#ch-hostmenu").hidden = true; });
     $("#ch-bolt").addEventListener("click", function () { var q = $("#ch-quick"); q.classList.toggle("open"); setTimeout(function () { scrollEnd(); }, 30); });
     $("#ch-quick").addEventListener("click", function (e) { var q = e.target.closest && e.target.closest("[data-q]"); if (q) { submit(q.dataset.q); $("#ch-quick").classList.remove("open"); } });
