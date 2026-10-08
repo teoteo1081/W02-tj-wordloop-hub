@@ -82,7 +82,11 @@
   }
   function tick() {
     place(); probe();
-    Object.keys(inc).forEach(function (k) { var i = inc[k]; if (i && i.el && i.pc && i.pc.connectionState === "connected" && i.el.paused) tryPlay(i); });   /* tiếng đã nối mà <audio> đang dừng -> thử phát lại */
+    Object.keys(inc).forEach(function (k) {
+      var i = inc[k]; if (!i) return;
+      if (i.el && i.pc && i.pc.connectionState === "connected" && i.el.paused) tryPlay(i);
+      if (Date.now() - i.at > 12000 && !(i.pc && i.pc.connectionState === "connected")) redo(k);   /* nối mãi không xong -> làm lại từ đầu */
+    });   /* tiếng đã nối mà <audio> đang dừng -> thử phát lại */
     if (Object.keys(talkers).length) paint();   /* cập nhật trạng thái nối (đang nối / nghe được / bị chặn) */
     var now = Date.now(), ch = false;
     Object.keys(talkers).forEach(function (k) { if (now - talkers[k].at > 13000) { delete talkers[k]; closeIn(k); ch = true; } });
@@ -128,6 +132,7 @@
     var i = inc[c]; if (!i) return; delete inc[c];
     try { i.pc.close(); } catch (e) {} if (i.el) { try { i.el.srcObject = null; } catch (e) {} giveEl(i.el); i.el = null; }
   }
+  function redo(c) { closeIn(c); if (talkers[c]) setTimeout(function () { if (talkers[c]) want(c); }, 400); }
   function want(c) { if (inc[c] || FULL[c] > Date.now()) return; inc[c] = { pc: null, q: Promise.resolve(), pend: [], at: Date.now(), want: 1 }; send({ t: "want", to: c }); }
   function onOffer(m) {
     var i = inc[m.cid]; if (!i) return;
@@ -138,7 +143,11 @@
       el.removeAttribute("src"); el.srcObject = (e.streams && e.streams[0]) || new MediaStream([e.track]); el.muted = false; el.volume = 1; tryPlay(i);
     };
     pc.onicecandidate = function (e) { if (e.candidate && inc[m.cid] === i) send({ t: "ice", to: m.cid, d: "i", c: cand(e.candidate) }); };
-    pc.onconnectionstatechange = function () { if (inc[m.cid] === i && pc.connectionState === "failed") { closeIn(m.cid); } };
+    pc.onconnectionstatechange = function () {   /* mạng chập chờn (5G/wifi): rớt thì tự nối lại thay vì chờ — trước đây chỉ "failed" mới đóng nên tiếng có rồi mất */
+      if (inc[m.cid] !== i) return; var st = pc.connectionState; clearTimeout(i.rt);
+      if (st === "failed") redo(m.cid);
+      else if (st === "disconnected") i.rt = setTimeout(function () { if (inc[m.cid] === i && pc.connectionState !== "connected") redo(m.cid); }, 3500);
+    };
     chain(i, function () {
       return pc.setRemoteDescription(m.sdp).then(function () { return pc.createAnswer(); }).then(function (a) { return pc.setLocalDescription(a); })
         .then(function () { send({ t: "answer", to: m.cid, sdp: desc(pc.localDescription) }); var pd = i.pend; i.pend = []; return Promise.all(pd.map(function (c) { return pc.addIceCandidate(c).catch(function () {}); })); });
