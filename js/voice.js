@@ -38,7 +38,16 @@
     var b = document.createElement("button"); b.type = "button"; b.id = "vc-btn"; b.className = "vc-btn off"; b.hidden = true; b.title = "Bật / tắt mic của bạn (mặc định đang tắt)";
     b.innerHTML = '<svg class="cb-ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 14.5a3.2 3.2 0 0 0 3.2-3.2V6.2a3.2 3.2 0 0 0-6.4 0v5.1A3.2 3.2 0 0 0 12 14.5z" fill="currentColor"/><path d="M6.2 11.2a5.8 5.8 0 0 0 11.6 0M12 17.2v3.3M8.8 20.5h6.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><g class="vcs"><path d="M4.5 4.5l15 15" style="stroke:var(--cb-btn,#34332f)" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M4.5 4.5l15 15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></g></svg>'; bar().appendChild(b);
     var p = document.createElement("div"); p.id = "vc-who"; p.className = "vc-who"; p.hidden = true; document.body.appendChild(p);
-    b.addEventListener("click", function () { if (locked) { flash("🔇 Đang trong ván — mic tạm khoá. Hết giờ bạn tự bật mic nhé."); return; } if (stream) micOff(); else micOn(); });
+    var lpT = 0, lpDone = false;
+    var lpStart = function () { lpDone = false; clearTimeout(lpT); lpT = setTimeout(function () {
+      lpDone = true; var v = !rawMode(); setRaw(v);
+      flash(v ? "🎧 Mic: ÂM THANH GỐC (không lọc) — dùng khi phát âm thanh máy tính vào mic" : "🗣 Mic: GIỌNG NÓI (lọc ồn) — chế độ thường");
+      if (stream) { micOff(); micOn(); }
+    }, 700); };
+    var lpEnd = function () { clearTimeout(lpT); };
+    b.addEventListener("pointerdown", lpStart); b.addEventListener("pointerup", lpEnd); b.addEventListener("pointerleave", lpEnd); b.addEventListener("pointercancel", lpEnd);
+    b.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+    b.addEventListener("click", function (e) { if (lpDone) { lpDone = false; e.stopImmediatePropagation(); return; } if (locked) { flash("🔇 Đang trong ván — mic tạm khoá. Hết giờ bạn tự bật mic nhé."); return; } if (stream) micOff(); else micOn(); });
     setInterval(tick, 700);
   }
   var flashT = 0;
@@ -57,7 +66,7 @@
       if (st === "failed" || st === "disconnected" || (st !== "connected" && age > 8000)) return "⚠ " + n + " (chưa nghe được — mạng có thể chặn)";
       return "⏳ " + n + " (đang nối…)";
     });
-    if (stream) names.unshift("🎙 " + esc(myName()) + " (bạn)");
+    if (stream) names.unshift("🎙 " + esc(myName()) + " (bạn" + (rawMode() ? " · âm thanh gốc" : "") + ")");
     var wh = $("#vc-who"); if (wh) { wh.hidden = !names.length; wh.innerHTML = names.join("<br>"); }
   }
   function tick() {
@@ -71,10 +80,14 @@
 
   /* ---------- người NÓI ---------- */
   function announce() { if (stream) send({ t: "on", n: myName() }); }
+  /* "Âm thanh gốc": khi đưa âm thanh MÁY TÍNH (YouTube, nhạc, podcast…) vào mic, bộ lọc giọng nói của trình duyệt (khử ồn / khử vọng / tự chỉnh âm lượng) coi đó là tiếng ồn và làm méo -> nghe rì rào.
+     Bật chế độ này (nhấn GIỮ nút 🎤 ~0,7 giây) thì tắt cả 3 bộ lọc + tăng chất lượng truyền. Nhớ theo máy. */
+  function rawMode() { try { return localStorage.getItem("tjwl_voice_raw_v1") === "1"; } catch (e) { return false; } }
+  function setRaw(v) { try { localStorage.setItem("tjwl_voice_raw_v1", v ? "1" : "0"); } catch (e) {} }
   async function micOn() {
     if (stream) return;
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.RTCPeerConnection) { alert("Trình duyệt này không hỗ trợ nói chuyện bằng mic. Thử Chrome, Edge hoặc Safari mới."); return; }
-    try { stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }, video: false }); }
+    try { stream = await navigator.mediaDevices.getUserMedia({ audio: rawMode() ? { echoCancellation: false, noiseSuppression: false, autoGainControl: false, channelCount: 1 } : { echoCancellation: true, noiseSuppression: true, autoGainControl: true }, video: false }); }
     catch (e) { stream = null; alert((e && e.name === "NotAllowedError") ? "Bạn chưa cho phép dùng micro. Bấm vào biểu tượng ổ khoá cạnh thanh địa chỉ để cho phép, rồi bấm 🎤 lại." : "Không mở được micro: " + (e && (e.message || e.name))); paint(); return; }
     stream.getAudioTracks().forEach(function (t) { t.onended = micOff; });
     announce(); clearInterval(annT); annT = setInterval(announce, 5000);
@@ -93,7 +106,7 @@
     if (!out[to] && Object.keys(out).length >= MAXP - 1) { send({ t: "full", to: to }); return; }
     closeOut(to);
     var pc = new RTCPeerConnection({ iceServers: iceServers() }), o = out[to] = { pc: pc, q: Promise.resolve(), at: Date.now(), pend: [] };
-    stream.getAudioTracks().forEach(function (t) { pc.addTrack(t, stream); });
+    stream.getAudioTracks().forEach(function (t) { var sn = pc.addTrack(t, stream); if (rawMode() && sn && sn.getParameters) { try { var pr = sn.getParameters(); if (!pr.encodings || !pr.encodings.length) pr.encodings = [{}]; pr.encodings[0].maxBitrate = 64000; sn.setParameters(pr).catch(function () {}); } catch (e) {} } });
     pc.onicecandidate = function (e) { if (e.candidate && out[to] === o) send({ t: "ice", to: to, d: "o", c: cand(e.candidate) }); };   /* d:"o" = ICE của kết nối GỬI (người nghe nhận vào inc) */
     pc.onconnectionstatechange = function () { if (out[to] === o && (pc.connectionState === "failed" || pc.connectionState === "closed")) closeOut(to); };
     chain(o, function () { return pc.createOffer().then(function (d) { return pc.setLocalDescription(d); }).then(function () { send({ t: "offer", to: to, sdp: desc(pc.localDescription) }); }); });
