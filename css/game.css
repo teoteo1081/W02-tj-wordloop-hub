@@ -1917,8 +1917,8 @@ body:has(.ch-btn.ch-inbar) .ch-panel{bottom:72px}
 body.has-cbar{padding-bottom:calc(60px + env(safe-area-inset-bottom,0px))}
 body.has-cbar .bd.bd-big{bottom:calc(58px + env(safe-area-inset-bottom,0px));height:auto}
 /* TJ 2026-10-09: panel CC (#cc-panel) là fixed, đè lên Bảng -> chừa thêm chỗ ở cỡ NHỎ/VỪA để chữ/nút không bị che mất phía dưới (cỡ TO chiếm gần hết màn hình, không chừa nổi, coi là bình thường) */
-body[data-cc-size="1"] .bd.bd-big{bottom:calc(58px + 96px + 8px + env(safe-area-inset-bottom,0px));height:auto}
-body[data-cc-size="2"] .bd.bd-big{bottom:calc(58px + min(38vh,340px) + 8px + env(safe-area-inset-bottom,0px));height:auto}
+body[data-cc-size="1"]:not(.cc-docked) .bd.bd-big{bottom:calc(58px + 96px + 8px + env(safe-area-inset-bottom,0px));height:auto}
+body[data-cc-size="2"]:not(.cc-docked) .bd.bd-big{bottom:calc(58px + min(38vh,340px) + 8px + env(safe-area-inset-bottom,0px));height:auto}
 .ch-peek{left:10px !important;right:auto !important;bottom:calc(66px + env(safe-area-inset-bottom,0px)) !important}
 .ch-quick{display:flex !important}
 

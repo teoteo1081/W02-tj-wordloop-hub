@@ -50,12 +50,25 @@
     $("#cc-close").addEventListener("click", function () { setSize(0); });
     setInterval(tick, 1000); paintLang();
   }
+  /* TJ 2026-10-08 (kiểu HelloTalk): phụ đề nằm NGAY DƯỚI dãy avatar, bung xuống tới thanh đáy; bảng ở trên không bị che. Không có dãy avatar -> như cũ (neo đáy). */
+  function dock() {
+    var p = $("#cc-panel"); if (!p) return;
+    var clear = function () { p.style.top = ""; p.style.bottom = ""; p.style.height = ""; document.body.classList.remove("cc-docked"); };
+    if (size === 0) { clear(); return; }
+    var a = document.querySelector("#bd-mebar:not([hidden])") || document.querySelector("#bd-people:not([hidden])"), r = a && a.offsetParent !== null ? a.getBoundingClientRect() : null;
+    var bar = $("#cb-bar"), barTop = bar && bar.offsetHeight ? bar.getBoundingClientRect().top : window.innerHeight - 60;
+    if (!r || r.height < 20 || r.bottom > barTop - 90 || r.bottom < 40) { clear(); return; }
+    var top = Math.round(r.bottom + 6), avail = Math.round(barTop - 6 - top);
+    p.style.top = top + "px"; p.style.bottom = "auto";
+    p.style.height = (size === 1 ? Math.min(110, avail) : size === 2 ? Math.min(Math.max(Math.round(avail * 0.62), 150), avail) : avail) + "px";
+    document.body.classList.add("cc-docked");
+  }
   function setSize(n) {
     size = n; var p = $("#cc-panel"), b = $("#cc-btn"); if (!p) return;
     p.hidden = size === 0; p.setAttribute("data-size", String(size)); if (b) { b.classList.toggle("on", size > 0); b.setAttribute("data-size", String(size)); }
     document.body.setAttribute("data-cc-size", String(size));   /* TJ 2026-10-09: panel CC đè lên Bảng (fixed) -> chừa chỗ cho #bd-big khi cỡ 1/2, xem game.css body[data-cc-size] */
     document.documentElement.style.setProperty("--bd-extra", size === 1 ? "104px" : size === 2 ? "min(38vh,340px)" : "0px");   /* bảng nhỏ (không bd-big): co #bd-stage lại để chữ/nút cuối bảng không chui xuống dưới panel CC */
-    paint();
+    dock(); paint();
     var l = $("#cc-list"); if (l) { l.scrollTop = l.scrollHeight; setTimeout(function () { l.scrollTop = l.scrollHeight; }, 60); }   /* mở / đổi cỡ: luôn thấy dòng mới nhất ở cuối */
   }
   /* mỗi người 1 màu cố định theo TÊN (máy nào cũng thấy cùng màu); 10 tông pastel cùng độ sáng/độ đậm nên hài hoà trên nền tối */
@@ -147,7 +160,9 @@
     rec = r; try { r.start(); } catch (e) { rec = null; }
   }
   function stopRec() { clearTimeout(interTimer); recWant = false; if (rec) { try { rec.onend = null; rec.stop(); } catch (e) {} rec = null; } }
+  window.addEventListener("resize", function () { dock(); });
   function tick() {
+    dock();
     var w = wantRec();
     if (w && !rec && !noSupport) { recWant = true; startRec(); }
     else if (!w && (rec || recWant)) stopRec();
