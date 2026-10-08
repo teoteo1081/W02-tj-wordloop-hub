@@ -2027,3 +2027,9 @@ body.bd-focus .bd .bd-feed,body.bd-focus .bd .bd-people{display:none !important}
 .sh-lv{display:block;height:8px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden;align-self:center}
 .sh-lv u{display:block;height:100%;width:0;background:linear-gradient(90deg,#4ade80,#ffd84d);transition:width .08s}
 .sh-bar button{white-space:nowrap}.sh-bar > span.sh-pl{flex:none;min-width:max-content;margin-right:auto}.sh-bar{flex-wrap:wrap;row-gap:6px}
+/* TJ 2026-10-09: điện thoại — "Lịch sử & Xếp hạng" / "Điểm TOEIC"… không xuống hàng lộn xộn: tiêu đề 1 dòng, các nút xếp đều thành 1–2 hàng ngay dưới */
+@media (max-width:600px){
+  .g-h2row{flex-wrap:wrap;row-gap:8px}
+  .g-h2row > .g-row-tight{flex:1 1 100%;display:flex;flex-wrap:wrap;gap:8px;margin:0}
+  .g-h2row > .g-row-tight > .g-btn{flex:1 1 calc(50% - 4px);min-width:0;display:inline-flex;align-items:center;justify-content:center;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+}
