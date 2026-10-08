@@ -107,6 +107,8 @@
 
   /* ---------- người NÓI: nhận giọng -> chữ ---------- */
   function wantRec() { return !!(!hold && SR && window.Voice && Voice.isOn() && !(Voice.isLocked && Voice.isLocked())); }
+  var interTimer = 0;
+  function chunks(t, max) { var out = []; while (t.length > max) { var k = t.lastIndexOf(" ", max); if (k < max / 2) k = max; out.push(t.slice(0, k).trim()); t = t.slice(k).trim(); } if (t) out.push(t); return out; }
   function startRec() {
     if (rec || !SR) return;
     var r; try { r = new SR(); } catch (e) { noSupport = true; return; }
@@ -115,14 +117,19 @@
       var inter = "", fin = "";
       for (var i = e.resultIndex; i < e.results.length; i++) { var t = e.results[i][0] ? e.results[i][0].transcript : ""; if (e.results[i].isFinal) fin += t; else inter += t; }
       var mm = me(); if (!mm) return;
-      if (fin.trim()) send({ id: mm.id, n: mm.name || "", x: fin.trim().slice(0, 300), f: 1, l: lang() });
-      else if (inter.trim() && Date.now() - lastSend > 350) { lastSend = Date.now(); send({ id: mm.id, n: mm.name || "", x: inter.trim().slice(0, 300), f: 0, l: lang() }); }
+      if (fin.trim()) { clearTimeout(interTimer); chunks(fin.trim(), 280).forEach(function (c) { send({ id: mm.id, n: mm.name || "", x: c, f: 1, l: lang() }); }); }   /* câu dài: chia nhiều dòng, KHÔNG cắt cụt */
+      else if (inter.trim()) {
+        var it = inter.trim(); if (it.length > 240) { it = it.slice(-240); var sp = it.indexOf(" "); if (sp > -1 && sp < 40) it = it.slice(sp + 1); }   /* dòng tạm: chỉ gửi ĐUÔI mới nhất (trước đây cắt 300 ký tự đầu nên nói dài thì chữ đứng yên) */
+        var go = function () { lastSend = Date.now(); send({ id: mm.id, n: mm.name || "", x: it, f: 0, l: lang() }); };
+        clearTimeout(interTimer);
+        if (Date.now() - lastSend > 250) go(); else interTimer = setTimeout(go, 250);   /* bị giãn nhịp thì vẫn gửi bản mới nhất sau 250ms, không bỏ rơi chữ cuối */
+      }
     };
     r.onerror = function (e) { if (e && (e.error === "not-allowed" || e.error === "service-not-allowed" || e.error === "language-not-supported")) { noSupport = true; recWant = false; } };
     r.onend = function () { rec = null; if (recWant && wantRec()) setTimeout(startRec, 250); };   /* Chrome tự dừng sau lúc im lặng -> mở lại khi mic còn bật */
     rec = r; try { r.start(); } catch (e) { rec = null; }
   }
-  function stopRec() { recWant = false; if (rec) { try { rec.onend = null; rec.stop(); } catch (e) {} rec = null; } }
+  function stopRec() { clearTimeout(interTimer); recWant = false; if (rec) { try { rec.onend = null; rec.stop(); } catch (e) {} rec = null; } }
   function tick() {
     var w = wantRec();
     if (w && !rec && !noSupport) { recWant = true; startRec(); }
@@ -137,7 +144,7 @@
     onState: function (s) { if (!api || !s) return; build(); var b = $("#cc-btn"); if (b) b.hidden = false; bar().hidden = false; document.body.classList.add("has-cbar"); },
     onMsg: function (p) {
       if (!p || typeof p.x !== "string" || !p.id) return;
-      var x = p.x.slice(0, 300), n = String(p.n || "").slice(0, 40);
+      var x = p.x.slice(0, 400), n = String(p.n || "").slice(0, 40);
       if (p.f) { delete interim[p.id]; lines.push({ id: String(p.id), n: n, x: x, l: p.l ? String(p.l).slice(0, 8) : "", ts: Date.now() + "" + lines.length }); if (lines.length > MAXL) lines = lines.slice(-MAXL); }
       else interim[p.id] = { n: n, x: x, at: Date.now() };
       if (size > 0) paint();
