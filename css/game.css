@@ -1681,8 +1681,6 @@ body.usersonly #g-main{max-width:none;padding:8px 14px 24px}
 .g-back-lobby{background:#4fae82;color:#0d261b}.g-back-lobby:hover{background:#429a71}
 .g-back-home{background:#b9a4ff;color:#1d1240}.g-back-home:hover{background:#a58df0}
 /* hàng nút của host (Copy link mời · Quản lý người chơi) nằm TRÊN CÙNG, trên "Phòng TJ" — chỉ hiện ở phòng chờ và khi có ít nhất 1 nút */
-#g-hostbar{display:none;order:-1;flex-basis:100%;gap:8px;flex-wrap:wrap}
-body:has(#s-lobby:not([hidden])) #g-hostbar:has(> button:not([hidden])){display:flex}
 /* TJ 2026-10-08: thẻ "Từ vựng · TOEIC · IELTS · EA · Digital Marketing" bị ép co hẹp hơn chữ -> chữ đè lên thẻ bên cạnh ("Phòng ga|me"). Giữ chiều rộng tối thiểu = chiều rộng chữ; thừa chỗ thì giãn đều, thiếu chỗ thì thanh cuộn ngang */
 .g-learn button{flex:1 0 auto}
 
@@ -1704,7 +1702,7 @@ body:has(#s-lobby:not([hidden])) .g-top #l-players{display:flex}
 .g-lang2-t{display:none;font-size:13px;color:var(--text-2);white-space:nowrap}
 #l-force-wrap[hidden] ~ .g-lang2-t{display:inline}   /* ô tick bị ẩn (học khác English / dạng câu không phải Nghĩa) -> vẫn có nhãn "Tiếng chung" cho ô chọn ngôn ngữ */
 body.g-host .g-learn{display:flex}
-#l-roomcard{padding:8px 12px}#l-roomcard .g-bigcode{font-size:26px;letter-spacing:4px;line-height:1.1}#l-roomcard .g-lobby-head{flex-wrap:nowrap}#l-roomcard #l-screen{padding:6px 12px;font-size:13px}
+#l-roomcard{padding:8px 12px}#l-roomcard .g-bigcode{font-size:26px;letter-spacing:4px;line-height:1.1}#l-roomcard .g-lobby-head{flex-wrap:nowrap}#l-roomcard #l-hostbtns{margin-top:8px;flex-wrap:wrap}
 
 /* TJ 2026-10-08: nút ✕ đóng ở GÓC PHẢI TRÊN cho mọi màn/cửa sổ con (Quản lý người chơi, Lịch sử, Xem lại đáp án, Từ đã tra + các pop-up Điểm TOEIC/Mẹo) */
 .g-xwrap{position:relative;padding-right:46px}

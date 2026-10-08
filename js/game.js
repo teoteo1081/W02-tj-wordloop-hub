@@ -1628,7 +1628,7 @@
     show("s-lobby");
     $("#l-code").textContent = G.room.code;
     applyUI();
-    $("#l-host").hidden = !G.isHost; $("#l-wait").hidden = G.isHost; $("#l-hostbtns").hidden = !G.isHost; $("#l-copy").hidden = !G.isHost;   /* "Copy link mời" nằm ở hàng nút trên cùng (#g-hostbar), không còn trong thẻ mã phòng */
+    $("#l-host").hidden = !G.isHost; $("#l-wait").hidden = G.isHost; $("#l-hostbtns").hidden = !G.isHost;   /* "Copy link mời" nằm trong thẻ Mã phòng cùng "Quản lý người chơi" (#l-hostbtns); đã bỏ nút Màn hình chung — cũ: không còn trong thẻ mã phòng */
     $("#l-roomcard").hidden = !G.isHost;   /* người chơi chỉ chơi: không mã phòng, link mời, 📺, chủ đề */
     $("#l-users").hidden = !(G.isHost && isTJ());
     paintSoundBtn();
@@ -1693,7 +1693,6 @@
     (navigator.clipboard ? navigator.clipboard.writeText(link) : Promise.reject()).then(function () { b.textContent = "✓ Đã copy"; }, function () { prompt("Link:", link); });
     setTimeout(function () { b.textContent = "🔗 Copy link mời"; }, 2000);
   });
-  $("#l-screen").addEventListener("click", function () { window.open(roomLink(G.room.code, true), "_blank"); });
   $("#l-tq-wrap").addEventListener("change", function (e) {
     var i = e.target.closest("[data-tq]"); if (!i || !G.isHost || !G.st) return;
     G.st.tq = Object.assign({}, G.st.tq || {}); G.st.tq[i.dataset.tq] = Math.max(3, Math.min(180, Math.round(+i.value) || tqDefault(i.dataset.tq, +G.st.qs || 15)));

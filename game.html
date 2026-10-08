@@ -9,7 +9,7 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'wordloop'});</script>
 <script>window.ga4=function(n,p){try{if(window.gtag)gtag('event',n,p||{});}catch(e){}};</script>
-<link rel="stylesheet" href="css/game.css?v=206">
+<link rel="stylesheet" href="css/game.css?v=207">
 </head>
 <body>
 <!-- 🎮 Phòng game chơi chung — xem README.md "Việc còn dang dở" > PHÒNG GAME, bảng: tools/game_schema.sql.
@@ -17,7 +17,6 @@
      Chữ giao diện dịch theo ô 🌐 của TỪNG người (data-t / data-tp, từ điển UI trong js/game.js).
      Phần cài đặt chỉ host (TJ) dùng thì để tiếng Việt. -->
 <header class="g-top">
-  <div id="g-hostbar"><button class="g-btn g-btn-soft g-btn-sm" id="l-copy" hidden>🔗 Copy link mời</button><button class="g-btn g-btn-soft g-btn-sm" id="l-users" hidden>👥 Quản lý người chơi</button></div>
   <a class="g-brand" href="game.html">🎮 <b>WordLoop Game</b></a>
   <span class="g-room" id="g-room-badge" hidden></span>
   <div class="g-players" id="l-players"></div>
@@ -85,9 +84,9 @@
     <div class="g-card" id="l-roomcard" hidden>
       <div class="g-lobby-head">
         <div><div class="g-sub" data-t="room_code">Mã phòng</div><div class="g-bigcode" id="l-code"></div></div>
-        <div class="g-row g-row-tight" id="l-hostbtns" hidden><button class="g-btn g-btn-soft" id="l-screen">📺 Màn hình chung</button></div>
       </div>
       <div class="g-sub" id="l-info"></div>
+      <div class="g-row g-row-tight" id="l-hostbtns" hidden><button class="g-btn g-btn-soft g-btn-sm" id="l-copy">🔗 Copy link mời</button><button class="g-btn g-btn-soft g-btn-sm" id="l-users" hidden>👥 Quản lý người chơi</button></div>
     </div>
     <!-- người chơi: CHỈ thẻ chào + chọn "Nghĩa hiển thị bằng" + danh sách người chơi (TJ 2026-09-30) -->
     <div class="g-card g-mecard" id="l-mecard" hidden>
@@ -239,7 +238,7 @@
 <script src="js/config.js?v=4"></script>
 <script src="js/toeic_tips.js?v=1"></script>
 <script src="js/board.js?v=100"></script>
-<script src="js/game.js?v=270"></script>
+<script src="js/game.js?v=271"></script>
 <script src="js/learn.js?v=2"></script>
 </body>
 </html>
