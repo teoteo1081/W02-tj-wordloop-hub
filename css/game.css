@@ -1962,3 +1962,11 @@ body.has-cbar .bd.bd-big{bottom:calc(58px + env(safe-area-inset-bottom,0px));hei
 .cb-bar .ch-btn.on{background:#e07a5f}
 .cb-bar .vc-btn.locked{opacity:.45}
 .cb-bar .cc-btn{display:inline-flex;align-items:center;justify-content:center}
+
+/* CC: ngôn ngữ mình nói + bấm dòng để xem nghĩa / nghe lại */
+.cc-lang{flex:none;border:0;border-radius:999px;height:28px;padding:0 10px;background:rgba(124,77,255,.35);color:#fff;font:700 12px/1 inherit;font-family:inherit;cursor:pointer}
+.cc-l.cc-f{cursor:pointer;border-radius:8px;padding:2px 4px;margin:0 -4px}
+.cc-l.cc-f:active,.cc-l.cc-f.open{background:rgba(255,255,255,.08)}
+.cc-d{display:flex;align-items:center;gap:8px;margin-top:4px;padding:6px 8px;border-radius:8px;background:rgba(124,77,255,.18);font-size:14px;color:#e8e2ff}
+.cc-say{flex:none;border:0;border-radius:50%;width:32px;height:32px;background:#7c4dff;color:#fff;font-size:15px;cursor:pointer;padding:0}
+.cc-tr{min-width:0;overflow-wrap:break-word}

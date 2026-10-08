@@ -1825,6 +1825,7 @@
   function iceServers() {
     var s = [{ urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] }], c = window.APP_CONFIG;
     if (c && Array.isArray(c.TURN)) s = s.concat(c.TURN);
+    if (Array.isArray(window.__turnServers)) s = s.concat(window.__turnServers);   /* TURN cấp tạm từ Edge Function turn-creds (js/turn.js) */
     return s;
   }
   function rtc(m) { var ch = api && api.ch(); if (!ch) return; m.cid = cid; m.pid = myId(); ch.send({ type: "broadcast", event: "rtc", payload: m }); }

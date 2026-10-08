@@ -20,6 +20,7 @@
   function iceServers() {
     var s = [{ urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] }], c = window.APP_CONFIG;
     if (c && Array.isArray(c.TURN)) s = s.concat(c.TURN);
+    if (Array.isArray(window.__turnServers)) s = s.concat(window.__turnServers);   /* TURN cấp tạm từ Edge Function turn-creds (js/turn.js) */
     return s;
   }
   function chain(o, f) { o.q = o.q.then(f).catch(function (e) { console.warn("[voice]", e); }); }
@@ -50,12 +51,18 @@
     var b = $("#vc-btn"); if (!b) return;
     b.classList.toggle("off", !stream); b.classList.toggle("on", !!stream); b.classList.toggle("locked", !!locked);
     b.title = locked ? "Mic tạm khoá trong lúc chơi — hết giờ bạn tự bật" : stream ? "Đang BẬT mic — bấm để tắt" : "Bật mic của bạn (mặc định đang tắt)";
-    var names = Object.keys(talkers).map(function (k) { return talkers[k].n; });
-    if (stream) names.unshift(myName());
-    var wh = $("#vc-who"); if (wh) { wh.hidden = !names.length; wh.innerHTML = "🎙 " + names.map(esc).join(", "); }
+    var names = Object.keys(talkers).map(function (k) {
+      var n = esc(talkers[k].n), i = inc[k], st = i && i.pc ? i.pc.connectionState : "", age = i ? Date.now() - i.at : 0;
+      if (st === "connected") return "🎙 " + n;
+      if (st === "failed" || st === "disconnected" || (st !== "connected" && age > 8000)) return "⚠ " + n + " (chưa nghe được — mạng có thể chặn)";
+      return "⏳ " + n + " (đang nối…)";
+    });
+    if (stream) names.unshift("🎙 " + esc(myName()) + " (bạn)");
+    var wh = $("#vc-who"); if (wh) { wh.hidden = !names.length; wh.innerHTML = names.join("<br>"); }
   }
   function tick() {
     place();
+    if (Object.keys(talkers).length) paint();   /* cập nhật trạng thái nối (đang nối / nghe được / bị chặn) */
     var now = Date.now(), ch = false;
     Object.keys(talkers).forEach(function (k) { if (now - talkers[k].at > 13000) { delete talkers[k]; closeIn(k); ch = true; } });
     if (ch) paint();
@@ -120,7 +127,7 @@
     attach: function (a) { api = a; build(); send({ t: "hello" }); },
     /* TJ 2026-10-08: cả nhóm nói chuyện bên HelloTalk -> TRONG VÁN (phase "play") mic bị khoá + tự tắt mic đang mở; hết giờ (về phòng chờ / kết quả) ai cũng TỰ bật mic của mình. App không bao giờ tự mở mic. */
     onState: function (s) {
-      if (!api || !s) return; build(); var b = $("#vc-btn"); if (b) b.hidden = false;
+      if (!api || !s) return; build(); var b = $("#vc-btn"); if (b) b.hidden = false; bar().hidden = false; document.body.classList.add("has-cbar");
       var lk = s.phase === "play";
       if (lk !== locked) { locked = lk; if (lk && stream) micOff(); paint(); }
       if (!helloSent) { helloSent = true; send({ t: "hello" }); }   /* vào sau: báo để người đang nói nối tiếng tới mình */
