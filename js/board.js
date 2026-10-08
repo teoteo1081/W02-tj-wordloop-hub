@@ -283,7 +283,7 @@
     if (b.id === "bd-close") { api.setBoard(false); return; }
     if (b.id === "bd-lib") { Lib.open(); return; }
     if (b.dataset.vt) { vtAction(b.dataset.vt); return; }
-    if (b.id === "bd-back") { if (ctl()) docSet(null); return; }   /* ← Quay lại danh sách Block (bảng chưa có Block = hiện màn hình Learning) */
+    if (b.id === "bd-back") { if (api.isHost()) docSet(null); return; }   /* ← Quay lại danh sách Block (bảng chưa có Block = hiện màn hình Learning) */
     if (b.id === "bd-bprev" || b.id === "bd-bnext") { navStep("block", b.id === "bd-bnext" ? 1 : -1); return; }
     if (b.dataset.sw) { swKind(b.dataset.sw); return; }
     if (b.dataset.nv) { var pz = b.dataset.nv.split(":"); navStep(pz[0], +pz[1]); return; }
@@ -291,14 +291,14 @@
     if (b.id === "bd-cplay") { var dP = curDoc(); if (dP && dP.bid && api.isHost() && api.playBlock) api.playBlock(dP.bid, dP.name || ""); return; }
     if (b.id === "bd-acttog") { actCol = !actCol; try { localStorage.setItem("tjwl_bd_actcol_v1", actCol ? "1" : "0"); } catch (e) {} paintAct(); return; }
     if (b.id === "bd-dprev" || b.id === "bd-dnext") { flip(b.id === "bd-dnext" ? 1 : -1); return; }
-    if (b.id === "bd-dtree") { if (ctl()) sideShow(!sideOn); return; }
+    if (b.id === "bd-dtree") { if (api.isHost()) sideShow(!sideOn); return; }
     if (sideClick(b)) return;
     if (b.id === "bd-dsrch") { var lq = $("#bd-lkq"), lk = $("#bd-lk"); var showq = lq.hidden; lq.hidden = !showq; lk.hidden = showq ? false : !$("#bd-lkr").innerHTML; if (showq) { $("#bd-lkin").focus(); } setTimeout(fit, 0); return; }
     if (b.id === "bd-lkx") { $("#bd-lk").hidden = true; $("#bd-lkq").hidden = true; $("#bd-lkr").innerHTML = ""; selWord(null); setTimeout(fit, 0); return; }
     if (b.id === "bd-lkgo") { var qv = $("#bd-lkin").value.trim(); if (qv) lookupShow(qv, "", true); return; }
     if (b.dataset.lksay) { sayWord(b.dataset.lksay); return; }
     if (b.id === "bd-dpg") { var dj = curDoc(); if (dj && ctl() && dj.n > 1) { var pj = parseInt(prompt("1 – " + dj.n, dj.p || 1), 10); if (pj >= 1) docSet(Object.assign({}, dj, { p: Math.min(dj.n, pj) })); } return; }
-    if (b.id === "bd-dswap") { var dw = curDoc(); if (dw && dw.k === "wl" && ctl()) { Lib.open(); Lib.tab = "wl"; Lib.paintPass(dw.bid, dw.name, true); } return; }
+    if (b.id === "bd-dswap") { var dw = curDoc(); if (dw && dw.k === "wl" && api.isHost()) { Lib.open(); Lib.tab = "wl"; Lib.paintPass(dw.bid, dw.name, true); } return; }
     if (b.id === "bd-dclose") { if (ctl()) docSet(null); return; }
     if (b.id === "bd-perm") { var pb = $("#bd-permbox"); pb.hidden = !pb.hidden; paintPerm(); paintOpen(); return; }   /* QA v106 L2: cập nhật phần đẩy nội dung xuống */
     if (b.dataset.perm) { api.togglePerm(b.dataset.perm); return; }
@@ -352,6 +352,7 @@
   }
   function paintOpen() {
     var el = $("#bd"); if (!el) return;
+    el.classList.toggle("bd-realhost", !!(api && api.isHost()));   /* TJ 2026-10-09: người chơi KHÔNG thấy Notebook / Hub / Page / Block (CSS ẩn khi không có lớp này) */
     el.classList.toggle("bd-isHost", ctl());
     var cpx = $("#bd-cplay"); if (cpx) cpx.style.display = api && api.isHost() ? "" : "none";   /* "Game →" (bắt đầu ván) vẫn chỉ host */   /* ai cũng thấy đủ thanh công cụ như host */
     var hd = el.querySelector(".bd-head"); if (hd) hd.style.display = ctl() ? "" : "none";   /* thanh trên (Bảng / Tài liệu / Quyền / ✕…) CHỈ host thấy (TJ 2026-10-05: "người chơi sẽ hong thấy thanh trên") */
@@ -647,7 +648,7 @@
     if (shStream && !canPresent()) stopShare();   /* host thu quyền trình bày -> máy người chơi tự dừng chia sẻ */
     if (open) paintShare();
     if (open) { paintTools(); paintPerm(); var who = $("#bd-who"); if (who) who.textContent = t(canDraw() ? "can" : "view"); }
-    if (open) { var lb = $("#bd-lib"); if (lb) lb.hidden = !ctl(); syncDoc(s.bdoc || null); }
+    if (open) { var lb = $("#bd-lib"); if (lb) lb.hidden = !ctl(); syncDoc(s.bdoc || null); janitor(); }
   }
   /* ---------- 📁 TÀI LIỆU TRÊN BẢNG (TJ 2026-10-04) ----------
      Host chọn -> st.bdoc = {k:"pdf"|"img"|"wl"|"vt"|"office"|"mk", url|bid, name, p, n, ar, hl}   (mk = bài đọc Marketing của L02, url:"mk:<id>", xem mkPage) -> mọi máy tự vẽ tài liệu làm NỀN dưới lớp bút.
@@ -660,6 +661,21 @@
   /* 🕘 GẦN ĐÂY (TJ 2026-10-04): nhớ tài liệu/bài đã mở + trang đang đọc, trên MÁY này (localStorage) */
   var RK = "tjwl_bd_recent_v1";
   function recents() { try { return JSON.parse(localStorage.getItem(RK) || "[]") || []; } catch (e) { return []; } }
+  /* dọn kho tạm: file do người chơi chia sẻ quá 4 giờ mà vẫn còn (người chia sẻ tắt máy giữa chừng) -> xoá. Chạy 1 lần khi mở bảng. */
+  var janitorDone = false;
+  async function janitor() {
+    if (janitorDone || !api || !api.lib || !api.lib.list || !api.room || !api.room()) return; janitorDone = true;
+    try {
+      var rc = String(api.room()).replace(/[^A-Za-z0-9_-]/g, ""), r = await api.lib.list("_tmp/" + rc), cur = curDoc(), keep = cur && cur.tmp;
+      (r.items || []).forEach(function (x) { if (x.dir) return; var ts = parseInt(String(x.name).split("_")[0], 36), pth = "_tmp/" + rc + "/" + x.name; if (ts && Date.now() - ts > 4 * 3600 * 1000 && pth !== keep) api.lib.remove(pth); });
+    } catch (e) {}
+  }
+  window.addEventListener("pagehide", function () {   /* người chia sẻ đóng tab -> xoá file tạm của mình (gửi kèm keepalive để kịp) */
+    try {
+      var d = curDoc(), c = window.APP_CONFIG; if (!d || !d.tmp || !c || !c.SUPABASE_URL || d.by !== myId()) return;
+      fetch(c.SUPABASE_URL.replace(/\/$/, "") + "/storage/v1/object/toeic/lib/" + d.tmp.split("/").map(encodeURIComponent).join("/"), { method: "DELETE", keepalive: true, headers: { apikey: c.SUPABASE_ANON_KEY, Authorization: "Bearer " + c.SUPABASE_ANON_KEY } });
+    } catch (e) {}
+  });
   function recentPut(d) {
     if (!d) return;
     var key = d.k + ":" + (d.url || d.bid) + (d.ph ? ":" + d.ph : "");
@@ -667,7 +683,12 @@
     L.unshift({ key: key, k: d.k, url: d.url, bid: d.bid, name: d.name, lb: d.lb, ph: d.ph, p: d.p || 1, ar: d.ar, n: d.n, t: Date.now() });
     try { localStorage.setItem(RK, JSON.stringify(L.slice(0, 15))); } catch (e) {}
   }
-  function docSet(d) { if (d && !d.by && myId()) d = Object.assign({}, d, { by: myId() }); api.setDoc(d); if (d) recentPut(d); }   /* by = người mở bài (chỉ người đó chuẩn hoá số trang) */
+  function docSet(d) {
+    var old = curDoc();
+    if (d && !d.by && myId()) d = Object.assign({}, d, { by: myId() });
+    api.setDoc(d); if (d && !d.tmp) recentPut(d);
+    if (old && old.tmp && (!d || d.tmp !== old.tmp) && api.lib && api.lib.remove) { try { api.lib.remove(old.tmp); } catch (e) {} }   /* file tạm của người chơi: hết chia sẻ -> xoá liền */
+  }   /* by = người mở bài (chỉ người đó chuẩn hoá số trang) */
   /* nhận diện bài đọc: bài GỐC (văn bản lesson không có dấu AI / bài dán / nguyên văn bài báo) hay bài AI sinh */
   var SEPM = "\n<<<TJWL_META>>>\n";
   function metaOf(raw) {
@@ -1572,7 +1593,7 @@
   function sidePinned() { try { return localStorage.getItem(SPK) === "1"; } catch (e) { return false; } }
   var sideOn = false;
   async function sideShow(on) {
-    sideOn = !!on && ctl();
+    sideOn = !!on && api.isHost();
     var sd = $("#bd-side"), el = $("#bd"); if (!sd) return;
     sd.hidden = !sideOn;
     $("#bd-sidepin").classList.toggle("on", sidePinned()); var pp = $("#bd-ppin"); if (pp) pp.classList.toggle("on", sidePinned());
@@ -1603,7 +1624,14 @@
     folder: "", tab: "files", mode: "list", pending: null, mvFile: null, folders: [],
     open: function () {
       var m = $("#bd-libm"); if (!m) { m = document.createElement("div"); m.id = "bd-libm"; m.className = "bd-libm"; document.body.appendChild(m); m.addEventListener("click", Lib.click); m.addEventListener("change", Lib.change); m.addEventListener("input", Lib.input); }
-      m.hidden = false; Lib.mode = "list"; Lib.paint();
+      m.hidden = false; Lib.mode = "list"; if (!api.isHost()) { Lib.paintPlayer(); return; } Lib.paint();
+    },
+    /* người chơi: CHỈ chia sẻ file từ máy mình (không thấy kho / Notebook của host). File lên kho TẠM, hết chia sẻ là xoá liền (docSet) */
+    paintPlayer: function () {
+      var m = $("#bd-libm"); if (!m) return;
+      m.innerHTML = '<div class="bd-libin"><div class="bd-libh"><b>📁 Chia sẻ file của tôi</b><button type="button" data-lx="1" class="bd-libx">✕</button></div>' +
+        '<div class="bd-libmsg">Chọn file từ máy bạn (PDF, ảnh, Word / Excel / PowerPoint, tối đa 50 MB). File hiện lên bảng cho cả phòng; khi có người chia sẻ cái khác hoặc bảng đóng, file bị xoá khỏi kho tạm.</div>' +
+        '<div class="bd-libbar"><label class="bd-libup">⬆️ Chọn file từ máy<input type="file" id="bd-pfile" accept="application/pdf,image/*,.docx,.xlsx,.pptx,.doc,.xls,.ppt" hidden></label></div><div class="bd-libmsg" id="bd-libmsg"></div></div>';
     },
     close: function () { var m = $("#bd-libm"); if (m) m.hidden = true; },
     path: function (n) { return (Lib.folder ? Lib.folder + "/" : "") + n; },
@@ -1717,6 +1745,16 @@
     change: async function (e) {
       if (Lib.treeChange(e)) return;
       if (e.target.id === "bd-destsel") { var nw = $("#bd-destnew"); if (nw) nw.hidden = e.target.value !== "__new"; return; }
+      if (e.target.id === "bd-pfile") {
+        var pf = (e.target.files || [])[0]; if (!pf) return;
+        if (pf.size > 50 * 1024 * 1024) { Lib.msg("⚠ " + pf.name + ": > 50 MB"); return; }
+        var rc = api.room ? api.room() : "", pn = pf.name.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").replace(/[^A-Za-z0-9._-]+/g, "_");
+        var tp = "_tmp/" + String(rc || "room").replace(/[^A-Za-z0-9_-]/g, "") + "/" + Date.now().toString(36) + "_" + pn;
+        Lib.msg("⏳ Đang tải lên…"); var up = await api.lib.upload(tp, pf);
+        if (up.error) { Lib.msg("⚠ " + up.error + (/mime/i.test(up.error) ? " — loại file này chưa được phép" : "")); return; }
+        var kk = /\.pdf$/i.test(pn) ? "pdf" : /\.(docx?|xlsx?|pptx?|rtf|csv)$/i.test(pn) ? "office" : "img";
+        Lib.close(); await openDoc({ k: kk, url: api.lib.url(tp), name: pf.name, p: 1, tmp: tp }); return;
+      }
       if (e.target.id !== "bd-libfile") return;
       var fs = [].slice.call(e.target.files || []); if (!fs.length) return;
       Lib.pending = fs.filter(function (f0) { if (f0.size > 50 * 1024 * 1024) { Lib.msg("⚠ " + f0.name + ": > 50 MB"); return false; } return true; });
@@ -1783,7 +1821,7 @@
       Lib.selPaint(); return true;
     },
     qGo: async function () {
-      if (!ctl()) return;
+      if (!api.isHost()) return;
       if (!Lib.sel.length || !Lib.parts) { Lib.msg("Chọn ít nhất 1 Block và 1 phần (từ vựng / bài đọc)"); return; }
       Lib.close(); sideAfter(); await openQueue(Lib.sel.map(function (x) { return [x.id, x.n]; }), Lib.parts);
     },
@@ -2081,7 +2119,7 @@
     /* 🖤 từ cây chủ đề của game (⋯ › Mở lên bảng): list = [[blockId, tên], …], parts = "vw" | "w" | "v" */
     /* TJ 2026-10-05: bảng là TỪNG BLOCK — 1 Block thì mở thẳng (bài đọc trước); nhiều Block (Batch/Page/…) thì mở bảng ở màn DANH SÁCH để TJ chọn */
     openBlocks: function (list, parts) {
-      if (!ctl()) return;
+      if (!api.isHost()) return;
       if (list && list.length === 1) openQueue(list, "wv");
       else { if (!open) api.setBoard(true); mini = false; if (curDoc()) docSet(null); else notifyParent(true); }
     }

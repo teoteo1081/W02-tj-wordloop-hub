@@ -2014,3 +2014,5 @@ html body .bd.bd-fs2 .bd-feed,html body .bd.bd-fs2.bd-big .bd-feed{height:clamp(
 body.bd-focus .bd .bd-feed,body.bd-focus .bd .bd-people{display:none !important}
 #bd-unfocus{position:fixed;z-index:93;top:calc(8px + env(safe-area-inset-top,0px));right:8px;padding:6px 12px;border-radius:999px;background:rgba(36,35,33,.9);color:#fff;border:1px solid rgba(255,255,255,.25);font:700 12px/1 inherit;font-family:inherit;cursor:pointer}
 #bd-unfocus[hidden]{display:none}
+/* TJ 2026-10-09: người chơi KHÔNG thấy Notebook / Hub / Page / Block của host (chỉ bảng, file được chia sẻ, công cụ) */
+.bd:not(.bd-realhost) #bd-tlg,.bd:not(.bd-realhost) #bd-navrow,.bd:not(.bd-realhost) #bd-pane,.bd:not(.bd-realhost) #bd-dtree,.bd:not(.bd-realhost) #bd-dswap,.bd:not(.bd-realhost) #bd-more,.bd:not(.bd-realhost) #bd-dots,.bd:not(.bd-realhost) #bd-path,.bd:not(.bd-realhost) #bd-act,.bd:not(.bd-realhost) #bd-side,.bd:not(.bd-realhost) #bd-sidepin,.bd:not(.bd-realhost) [data-nv],.bd:not(.bd-realhost) #bd-vtadd,.bd:not(.bd-realhost) #bd-kprev,.bd:not(.bd-realhost) #bd-knext{display:none !important}
