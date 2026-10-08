@@ -90,7 +90,9 @@
         '<div class="bd-sfx" id="bd-sfx">' +'<div class="bd-stage" id="bd-stage">' +
         '<div class="bd-zoom" id="bd-zoom"><video id="bd-video" class="bd-video" autoplay playsinline muted hidden></video><div class="bd-doc" id="bd-doc"></div><canvas id="bd-cv"></canvas><div class="bd-texts" id="bd-texts"></div></div>' +
         '<button type="button" class="bd-aud" id="bd-aud" hidden data-bt="unmute"></button>' +
-        '<div id="bd-sharebar" hidden><video id="bd-prev" muted autoplay playsinline></video><div class="bd-shtx"><b>🔴 Đang chia sẻ màn hình</b><span>Mọi người trong phòng đang xem</span></div><button type="button" id="bd-shstop">Dừng chia sẻ</button></div>' +
+        '<button type="button" id="bd-scrfull" hidden title="Xem hình chia sẻ toàn màn hình (Esc để thoát)">⛶ Toàn màn hình</button>' +
+        '<button type="button" id="bd-scrmin" hidden title="Thu hình chia sẻ thành ô nhỏ để xem tiếp bài / bảng">▁ Thu nhỏ để xem bài</button>' +
+        '<div id="bd-sharebar" hidden><video id="bd-prev" muted autoplay playsinline title="Bấm để phóng to / thu nhỏ hình bạn đang chia sẻ"></video><div class="bd-shtx"><b>🔴 Đang chia sẻ màn hình</b><span>Mọi người trong phòng đang xem</span></div><button type="button" id="bd-prevfull" title="Xem hình đang chia sẻ toàn màn hình (Esc để thoát)">⛶</button><button type="button" id="bd-shstop">Dừng chia sẻ</button></div>' +
         '</div>' +
         '<div class="bd-hudl" id="bd-hudl">' +
           '<div class="bd-vtbar bd-hud" id="bd-vtbar" hidden>' +
@@ -1820,6 +1822,8 @@
     v.hidden = !stream || !!local; if (local || !stream) v.muted = true;   /* host KHÔNG xem lại hình đang chia sẻ: hình chồng lên bài của host nên rối + lặp vô tận (TJ 2026-10-06) */   /* tự phát cần muted; người xem bấm 🔊 Bật tiếng */
     if (stream) v.play().catch(function () {});
     var sb = $("#bd-sharebar"), pv = $("#bd-prev");   /* kiểu Google Meet: người chia sẻ thấy thanh "Bạn đang chia sẻ" + hình thu nhỏ + nút Dừng (không phủ hình đầy khung -> không bị lặp vô tận) */
+    var sm = $("#bd-scrmin"); if (sm) sm.hidden = !(stream && !local); var sf = $("#bd-scrfull"); if (sf) sf.hidden = !(stream && !local); if (!stream || local) $("#bd-stage").classList.remove("bd-screen-min");   /* người xem: ▁ thu hình chia sẻ thành ô nhỏ góc dưới để xem tiếp bài/bảng; bấm ô nhỏ để phóng lại */
+    if (sb && !(stream && local)) sb.classList.remove("bd-bigp");
     if (sb && pv) { sb.hidden = !(stream && local); if (pv.srcObject !== ((stream && local) ? stream : null)) pv.srcObject = (stream && local) ? stream : null; if (stream && local) pv.play().catch(function () {}); }
     $("#bd-stage").classList.toggle("bd-screen", !!stream && !local);
     $("#bd-stage").classList.toggle("bd-screen-view", !!stream && !local);
@@ -1846,7 +1850,19 @@
         clearInterval(shAnn); shAnn = setInterval(announce, 5000);   /* máy vào sau / lỡ tin -> 5 giây sau tự xin nối */
       }, function (e) { if (e && e.name !== "NotAllowedError" && e.name !== "AbortError") alert(t("shErr") + (e.message || e.name)); });
   }
-  document.addEventListener("click", function (e) { if (e.target && e.target.id === "bd-shstop") stopShare(); });
+  document.addEventListener("click", function (e) {
+    var id = e.target && e.target.id;
+    if (id === "bd-shstop") stopShare();
+    else if (id === "bd-prev") { var sb = $("#bd-sharebar"); if (sb) sb.classList.toggle("bd-bigp"); }   /* host: phóng to hình đang chia sẻ để xem (nếu chia sẻ cả màn hình chứa bảng này thì hình lồng nhau là bình thường) */
+    else if (id === "bd-scrmin") { var st = $("#bd-stage"); if (st) st.classList.add("bd-screen-min"); }
+    else if (id === "bd-scrfull") fsVideo($("#bd-video"));
+    else if (id === "bd-prevfull") fsVideo($("#bd-prev"));
+    else { var st2 = $("#bd-stage"), v2 = $("#bd-video"); if (st2 && v2 && st2.classList.contains("bd-screen-min")) { var r2 = v2.getBoundingClientRect(); if (e.clientX >= r2.left && e.clientX <= r2.right && e.clientY >= r2.top && e.clientY <= r2.bottom) st2.classList.remove("bd-screen-min"); } }   /* bấm vào ô nhỏ = phóng lại */
+  });
+  function fsVideo(v) {   /* bung video toàn màn hình (Esc thoát); iPhone/Safari dùng cách riêng */
+    if (!v) return;
+    try { if (v.requestFullscreen) v.requestFullscreen().catch(function () {}); else if (v.webkitRequestFullscreen) v.webkitRequestFullscreen(); else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen(); } catch (e) {}
+  }
   function stopShare() {
     if (!shStream) return;
     var s = shStream; shStream = null; clearInterval(shAnn);
@@ -1858,7 +1874,7 @@
   function capRate(pc) {   /* giới hạn ~1.2 Mbps/người xem -> mesh 10 người ~12 Mbps tải lên */
     pc.getSenders().forEach(function (sd) {
       if (!sd.track || sd.track.kind !== "video" || !sd.getParameters || !sd.setParameters) return;
-      try { var pr = sd.getParameters(); if (!pr.encodings || !pr.encodings.length) pr.encodings = [{}]; pr.encodings[0].maxBitrate = BITRATE; sd.setParameters(pr).catch(function () {}); } catch (e) {}
+      try { var pr = sd.getParameters(); if (!pr.encodings || !pr.encodings.length) pr.encodings = [{}]; var nv = Object.keys(peers).length; pr.encodings[0].maxBitrate = nv <= 3 ? 2800000 : nv <= 6 ? 1800000 : BITRATE; pr.degradationPreference = "maintain-resolution";   /* ít người xem -> nét hơn (chữ nhỏ trong màn hình chia sẻ đỡ mờ); đông thì hạ để mạng host không nghẽn; giữ độ phân giải, chịu giảm số khung hình */ sd.setParameters(pr).catch(function () {}); } catch (e) {}
     });
   }
   function hostPeer(vc) {
