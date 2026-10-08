@@ -1635,7 +1635,9 @@
     $("#l-code").textContent = G.room.code;
     applyUI();
     $("#l-host").hidden = !G.isHost; $("#l-wait").hidden = G.isHost; $("#l-hostbtns").hidden = !G.isHost;   /* "Copy link mời" nằm trong thẻ Mã phòng cùng "Quản lý người chơi" (#l-hostbtns); đã bỏ nút Màn hình chung — cũ: không còn trong thẻ mã phòng */
-    $("#l-roomcard").hidden = false;   /* thẻ giờ chứa cả hàng avatar -> người chơi cũng thấy, nhưng CSS (body.g-viewer) ẩn mã phòng/nút host của họ */
+    $("#l-roomcard").hidden = !G.isHost;   /* thẻ Mã phòng chỉ host thấy */
+    (function () { var pl = $("#l-players"), card = $("#l-roomcard"), tm = $("#l-teams");   /* host: hàng avatar nằm TRONG thẻ Mã phòng; người chơi: trả về chỗ cũ (mục "Người chơi", trên khung chọn đội) — TJ 2026-10-08 */
+      if (G.isHost) { if (pl.parentNode !== card) card.appendChild(pl); } else if (tm && pl.nextSibling !== tm) tm.parentNode.insertBefore(pl, tm); })();
     $("#l-users").hidden = !(G.isHost && isTJ());
     paintSoundBtn();
     paintSide();
