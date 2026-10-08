@@ -1877,3 +1877,24 @@ body:has(.ch-btn.ch-inbar) .ch-panel{bottom:72px}
 .ch-form input{border-radius:999px;background:#3a3a3e;border-color:transparent;padding:12px 16px}
 .ch-form button{border-radius:999px;min-width:60px}
 .ch-quick{padding:6px 14px 0}
+
+/* 💬 Chat khung gọn: cao bằng khung "Từ vừa tra", chip trả lời nhanh nằm sau nút ⚡ */
+.ch-panel,.ch-panel.ch-enter{border-radius:14px;box-shadow:0 4px 18px rgba(0,0,0,.45);max-height:none}
+.ch-back{display:none !important}
+.ch-grab{padding:5px 0 0}
+.ch-head{padding:0 10px 4px;min-height:34px}
+.ch-head b{font-size:15px}
+.ch-head .ch-down{width:34px;height:34px;top:0}
+.ch-head .ch-down svg{width:22px;height:22px}
+.ch-head #ch-menu{top:2px;width:30px;height:30px}
+.ch-list{padding:2px 12px;gap:0}
+.ch-m,.ch-m.me{padding:4px 0;gap:8px}
+.ch-t,.ch-n{font-size:14px}
+.ch-av{width:28px;height:28px;font-size:16px}
+.ch-quick{display:none;padding:4px 12px 0}
+.ch-quick.open{display:flex}
+.ch-form{padding:6px 10px calc(8px + env(safe-area-inset-bottom,0px));gap:6px}
+.ch-form input{padding:9px 14px}
+.ch-bolt{flex:none;width:38px;border:0;border-radius:999px;background:rgba(255,255,255,.1);color:#ffd27a;font-size:17px;cursor:pointer;padding:0}
+.ch-bolt:active{background:rgba(224,122,95,.4)}
+.ch-form button.ch-bolt{min-width:38px}

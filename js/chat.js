@@ -45,11 +45,15 @@
       '<div class="ch-hostmenu" id="ch-hostmenu" hidden><button type="button" id="ch-off"></button><button type="button" id="ch-clear">🗑 Xoá hết tin nhắn</button><div class="ch-hint">Bấm vào tên 1 người trong khung chat để tắt / bật chat của họ.</div></div>' +
       '<div class="ch-list" id="ch-list"></div>' +
       '<div class="ch-quick" id="ch-quick">' + QUICK.map(function (q) { return '<button type="button" data-q="' + esc(q) + '">' + esc(q) + "</button>"; }).join("") + "</div>" +
-      '<form class="ch-form" id="ch-form" autocomplete="off"><input id="ch-in" name="chat-message" type="text" maxlength="' + MAXLEN + '" placeholder="Nhập tin nhắn…" enterkeyhint="send" autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-form-type="other"><button type="submit" id="ch-send">Gửi</button></form>';
+      '<form class="ch-form" id="ch-form" autocomplete="off"><button type="button" id="ch-bolt" class="ch-bolt" title="Trả lời nhanh" aria-label="Trả lời nhanh">⚡</button><input id="ch-in" name="chat-message" type="text" maxlength="' + MAXLEN + '" placeholder="Nhập tin nhắn…" enterkeyhint="send" autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-form-type="other"><button type="submit" id="ch-send">Gửi</button></form>';
     document.body.appendChild(p);
     var bk = document.createElement("div"); bk.id = "ch-back"; bk.className = "ch-back"; bk.hidden = true; document.body.appendChild(bk);   /* điện thoại: chạm vùng mờ phía trên để hạ chat xuống */
     bk.addEventListener("click", function () { toggle(false); });
     document.addEventListener("keydown", function (e) { if (e.key === "Escape" && isOpen) toggle(false); });
+    document.addEventListener("pointerdown", function (e) {   /* chạm / bấm ra NGOÀI khung chat thì tự hạ xuống (lần chạm đó vẫn đi tiếp tới chỗ bấm) */
+      if (!isOpen || (e.target.closest && e.target.closest("#ch-panel, #ch-btn, #ch-peek"))) return;
+      toggle(false);
+    }, true);
     /* vuốt xuống ở thanh tay nắm / tiêu đề để hạ chat xuống (như Clubhouse) */
     var drag = null;
     function dEnd(e) {
@@ -68,7 +72,8 @@
     $("#ch-menu").addEventListener("click", function () { var m = $("#ch-hostmenu"); m.hidden = !m.hidden; });
     $("#ch-off").addEventListener("click", function () { if (api.setChat) api.setChat({ off: !off() }); setTimeout(paint, 300); });
     $("#ch-clear").addEventListener("click", function () { if (!host()) return; send({ t: "clear" }); $("#ch-hostmenu").hidden = true; });
-    $("#ch-quick").addEventListener("click", function (e) { var q = e.target.closest && e.target.closest("[data-q]"); if (q) submit(q.dataset.q); });
+    $("#ch-bolt").addEventListener("click", function () { var q = $("#ch-quick"); q.classList.toggle("open"); setTimeout(function () { scrollEnd(); }, 30); });
+    $("#ch-quick").addEventListener("click", function (e) { var q = e.target.closest && e.target.closest("[data-q]"); if (q) { submit(q.dataset.q); $("#ch-quick").classList.remove("open"); } });
     $("#ch-form").addEventListener("submit", function (e) { e.preventDefault(); submit(); });
     $("#ch-list").addEventListener("click", function (e) {   /* host bấm tên = tắt / bật chat của người đó */
       var n = e.target.closest && e.target.closest("[data-chid]"); if (!n || !host() || !api.setChat) return;
@@ -94,18 +99,21 @@
     if (pk) { pk.style.bottom = (bot + 52) + "px"; pk.style.left = L ? Math.max(8, parseInt(L, 10) - 20) + "px" : "auto"; pk.style.right = L ? "auto" : "66px"; if (!L) pk.style.bottom = (bot + 6) + "px"; }
     if (pn && innerWidth > 520) pn.style.bottom = (bot + 56) + "px";
   }
-  setInterval(place, 700);
-  /* iPhone: bàn phím mở thì vùng nhìn thấy (visualViewport) co lại nhưng khung chat vẫn cao 88% -> tiêu đề, nút ⌄ và tin nhắn bị đẩy lên khuất. Co khung vừa vùng nhìn thấy, dán ngay trên bàn phím. */
-  function fitVV() {
-    var p = $("#ch-panel"), vv = window.visualViewport; if (!p) return;
-    if (!isOpen || !vv || innerWidth > 520) { p.style.height = ""; if (innerWidth <= 520) p.style.bottom = ""; return; }
-    var kb = Math.max(0, Math.round(innerHeight - vv.height - vv.offsetTop));
-    p.style.bottom = kb + "px"; p.style.height = Math.round(Math.min(innerHeight * 0.88, vv.height - 8)) + "px";
-    scrollEnd();
+  setInterval(function () { place(); dock(); }, 700);
+  /* TJ 2026-10-08: khung chat CAO BẰNG khung "Từ vừa tra" và nằm đúng chỗ đó (không phủ bảng); luôn cùng cỡ dù có gõ bàn phím hay không, không giật. Tin cũ cuộn lên xem.
+     Màn không có khung "Từ vừa tra" (phòng chờ…): khung nổi cùng chiều cao mặc định, dính đáy. */
+  function dock() {
+    var p = $("#ch-panel"); if (!p || !isOpen) return;
+    var fd = $("#bd-feed"), on = fd && fd.getClientRects().length > 0 && fd.getBoundingClientRect().height > 40 && document.body.classList.contains("bd-on"), L, W, H, B;
+    if (on) { var r = fd.getBoundingClientRect(); L = r.left; W = r.width; H = Math.max(190, Math.min(r.height, innerHeight * 0.6)); B = innerHeight - r.bottom; }
+    else { H = Math.min(260, Math.round(innerHeight * 0.4)); if (innerWidth <= 520) { L = 0; W = innerWidth; B = 0; } else { W = 380; L = innerWidth - W - 12; B = 78 + 56; } }
+    var key = [Math.round(L), Math.round(W), Math.round(H), Math.round(B)].join(",");
+    if (p.dataset.dock === key) return; p.dataset.dock = key;
+    p.style.left = L + "px"; p.style.right = "auto"; p.style.width = W + "px"; p.style.height = H + "px"; p.style.bottom = Math.max(0, B) + "px"; p.style.maxHeight = "none";
   }
-  if (window.visualViewport) { window.visualViewport.addEventListener("resize", fitVV); window.visualViewport.addEventListener("scroll", fitVV); }
+  window.addEventListener("resize", dock);
   function toggle(v) {
-    isOpen = !!v; var p = $("#ch-panel"); if (!p) return; p.hidden = !isOpen; setTimeout(fitVV, 0); if (isOpen) { p.classList.remove("ch-enter"); void p.offsetWidth; p.classList.add("ch-enter"); }   /* bung lên từ đáy */ var bkd = $("#ch-back"); if (bkd) bkd.hidden = !isOpen; var pk = $("#ch-peek"); if (pk) pk.hidden = true;
+    isOpen = !!v; var p = $("#ch-panel"); if (!p) return; p.hidden = !isOpen; if (isOpen) { p.dataset.dock = ""; dock(); } if (isOpen) { p.classList.remove("ch-enter"); void p.offsetWidth; p.classList.add("ch-enter"); }   /* bung lên từ đáy */ var bkd = $("#ch-back"); if (bkd) bkd.hidden = true; var pk = $("#ch-peek"); if (pk) pk.hidden = true;
     var bt = $("#ch-btn"); if (bt) bt.classList.toggle("on", isOpen);
     if (isOpen) { unread = 0; paint(); var i = $("#ch-in"); if (i && !i.disabled) try { i.focus(); } catch (e) {} scrollEnd(); }
     badge();
