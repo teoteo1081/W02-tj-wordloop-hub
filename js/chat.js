@@ -76,15 +76,23 @@
       if (confirm((muted(id) ? "Bật lại chat cho " : "Tắt chat của ") + (n.textContent || "người này") + "?")) { api.setChat({ mute: id }); setTimeout(paint, 300); }
     });
   }
-  function place() {   /* nút LUÔN nổi góc dưới phải toàn app, không chèn vào bố cục nào (không làm đổi giao diện); ở màn Bảng chỉ nâng lên khi hàng công cụ dưới bảng nằm đúng chỗ đó */
+  function place() {   /* nút NỔI (không chèn vào bố cục). Màn thường: góc dưới phải. Màn Bảng: nằm vào KHOẢNG TRỐNG giữa hàng avatar và cụm công cụ (A− Aa A+) ở hàng dưới bảng -> không đè chữ nào */
     var b = $("#ch-btn"); if (!b) return;
-    var ib = $("#bd-iconbar"), dn = $("#bd-docnav"), bot = 78;
+    var ib = $("#bd-iconbar"), dn = $("#bd-docnav"), pe = $("#bd-people"), pk = $("#ch-peek"), pn = $("#ch-panel");
+    var key = "r78", L = "", bot = 78;
     if (document.body.classList.contains("bd-on") && ib && ib.offsetParent !== null) {
-      bot = dn && dn.parentNode === ib && dn.offsetParent !== null ? Math.round(innerHeight - ib.getBoundingClientRect().top + 8) : 14;
+      var ir = ib.getBoundingClientRect(), bw = b.offsetWidth || 44, bh = b.offsetHeight || 44;
+      var last = pe && pe.offsetParent !== null ? pe.lastElementChild : null, leftEdge = last ? last.getBoundingClientRect().right + 8 : ir.left + 8;
+      var dr = dn && dn.parentNode === ib && dn.offsetParent !== null ? dn.getBoundingClientRect() : null, rightEdge = dr ? dr.left - 8 : ir.right - 8;
+      bot = Math.round(innerHeight - ir.bottom + Math.max(0, (ir.height - bh) / 2));
+      if (!dr) { key = "c" + bot; }   /* không có cụm công cụ: góc dưới phải của hàng */
+      else if (rightEdge - leftEdge >= bw + 4) { var lf = Math.round(leftEdge + (rightEdge - leftEdge - bw) / 2); key = "g" + bot + "," + lf; L = lf + "px"; }
+      else { bot = Math.round(innerHeight - ir.top + 8); key = "a" + bot; }   /* hết chỗ: nâng lên ngay trên hàng */
     }
-    if (b.dataset.bot === String(bot)) return; b.dataset.bot = String(bot);
-    b.style.bottom = bot + "px"; var pk = $("#ch-peek"), pn = $("#ch-panel");
-    if (pk) pk.style.bottom = (bot + 6) + "px"; if (pn && innerWidth > 520) pn.style.bottom = (bot + 56) + "px";
+    if (b.dataset.key === key) return; b.dataset.key = key;
+    b.style.bottom = bot + "px"; b.style.left = L || "auto"; b.style.right = L ? "auto" : "12px";
+    if (pk) { pk.style.bottom = (bot + 52) + "px"; pk.style.left = L ? Math.max(8, parseInt(L, 10) - 20) + "px" : "auto"; pk.style.right = L ? "auto" : "66px"; if (!L) pk.style.bottom = (bot + 6) + "px"; }
+    if (pn && innerWidth > 520) pn.style.bottom = (bot + 56) + "px";
   }
   setInterval(place, 700);
   function toggle(v) {
