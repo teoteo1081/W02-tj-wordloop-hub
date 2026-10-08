@@ -1672,3 +1672,16 @@ body.usersonly #g-main{max-width:none;padding:8px 14px 24px}
 .bd-mkw{font-size:.88em;opacity:.85;margin-top:.3em}
 .bd-mksc{color:#ffd27a}
 .bd-mkend{height:3em}
+
+/* TJ 2026-10-08: nút "← Về …" có MÀU theo nơi quay về (dễ tìm, cùng bảng màu chữ tối trên nền sáng như "Ôn ngay") và luôn nằm ĐẦU màn.
+   Lịch sử = vàng (cùng nút "Ôn ngay") · kết quả = xanh dương · phòng chờ = xanh lá · trang game = tím nhạt */
+.g-back{font-weight:700}
+.g-back-hist{background:#d9a03c;color:#2a1d05}.g-back-hist:hover{background:#c2872a}
+.g-back-res{background:#8fb8e8;color:#10233d}.g-back-res:hover{background:#79a4d6}
+.g-back-lobby{background:#4fae82;color:#0d261b}.g-back-lobby:hover{background:#429a71}
+.g-back-home{background:#b9a4ff;color:#1d1240}.g-back-home:hover{background:#a58df0}
+/* hàng nút của host (Copy link mời · Quản lý người chơi) nằm TRÊN CÙNG, trên "Phòng TJ" — chỉ hiện ở phòng chờ và khi có ít nhất 1 nút */
+#g-hostbar{display:none;order:-1;flex-basis:100%;gap:8px;flex-wrap:wrap}
+body:has(#s-lobby:not([hidden])) #g-hostbar:has(> button:not([hidden])){display:flex}
+/* TJ 2026-10-08: thẻ "Từ vựng · TOEIC · IELTS · EA · Digital Marketing" bị ép co hẹp hơn chữ -> chữ đè lên thẻ bên cạnh ("Phòng ga|me"). Giữ chiều rộng tối thiểu = chiều rộng chữ; thừa chỗ thì giãn đều, thiếu chỗ thì thanh cuộn ngang */
+.g-learn button{flex:1 0 auto}

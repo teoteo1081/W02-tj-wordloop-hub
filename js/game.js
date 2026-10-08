@@ -1628,7 +1628,7 @@
     show("s-lobby");
     $("#l-code").textContent = G.room.code;
     applyUI();
-    $("#l-host").hidden = !G.isHost; $("#l-wait").hidden = G.isHost; $("#l-hostbtns").hidden = !G.isHost;
+    $("#l-host").hidden = !G.isHost; $("#l-wait").hidden = G.isHost; $("#l-hostbtns").hidden = !G.isHost; $("#l-copy").hidden = !G.isHost;   /* "Copy link mời" nằm ở hàng nút trên cùng (#g-hostbar), không còn trong thẻ mã phòng */
     $("#l-roomcard").hidden = !G.isHost;   /* người chơi chỉ chơi: không mã phòng, link mời, 📺, chủ đề */
     $("#l-users").hidden = !(G.isHost && isTJ());
     paintSoundBtn();
@@ -3172,7 +3172,7 @@
     var rw = $("#rv-wrong"); if (rw) { rw.hidden = !R.some(function (x) { return x.tq; }); rw.classList.toggle("on", !!G.rvOnlyWrong); rw.classList.toggle("g-btn-soft", !G.rvOnlyWrong); rw.textContent = "❌ Câu sai" + (wl ? " (" + wl.length + ")" : ""); }
     paintStar(L);
     $("#rv-back").textContent = G.rvFrom === "hist" ? T("back_hist") : T("back_res");
-    $("#rv-back").classList.toggle("g-btn-rv", G.rvFrom === "hist"); $("#rv-back").classList.toggle("g-btn-soft", G.rvFrom !== "hist");   /* TJ 2026-10-08: nút "← Về Lịch sử" cùng màu nút "Ôn ngay" */
+    $("#rv-back").classList.toggle("g-back-hist", G.rvFrom === "hist"); $("#rv-back").classList.toggle("g-back-res", G.rvFrom !== "hist");   /* TJ 2026-10-08: nút Về có MÀU theo nơi quay về (Lịch sử = vàng như "Ôn ngay", kết quả = xanh dương) */
     $("#rv-hint").textContent = L.hint; $("#rv-vi").innerHTML = L.vi; $("#rv-opts").innerHTML = L.opts; $("#rv-opts").classList.toggle("g-tbook", !!L.tq); if (L.tq) tqPickAvatars(L); if (L.tq) { var tqn = L.tq.nums && L.tq.nums.length > 1 ? L.tq.nums[0] + "–" + L.tq.nums[L.tq.nums.length - 1] : L.tq.num; $("#rv-hint").innerHTML = '<span class="g-rvtag">📝 ' + esc(tName(L.tq.test)) + " · Part " + esc(L.tq.part) + " · " + (L.tq.nums && L.tq.nums.length > 1 ? "Câu " : "Câu ") + esc(tqn) + "</span>"; }
     $("#rv-hint").hidden = !L.tq; $$("#rv-vi .g-taud").forEach(function (x) { var r = x.closest(".g-row") || x; r.hidden = true; }); $("#rv-res").innerHTML = L.res; $("#rv-msg").textContent = L.msg;
     /* 🔊 nghe lại (TJ 2026-10-02): nút cạnh ◀ ▶ + loa nhỏ ngay sau từ đúng; đang bật tiếng thì sang câu tự đọc */
