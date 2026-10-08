@@ -2014,3 +2014,16 @@ html body .bd.bd-fs2 .bd-feed,html body .bd.bd-fs2.bd-big .bd-feed{height:clamp(
 body.bd-focus .bd .bd-feed,body.bd-focus .bd .bd-people{display:none !important}
 #bd-unfocus{position:fixed;z-index:93;top:calc(8px + env(safe-area-inset-top,0px));right:8px;padding:6px 12px;border-radius:999px;background:rgba(36,35,33,.9);color:#fff;border:1px solid rgba(255,255,255,.25);font:700 12px/1 inherit;font-family:inherit;cursor:pointer}
 #bd-unfocus[hidden]{display:none}
+/* 🎧 Shadowing (js/shadow.js): nút trong thanh âm thanh + thanh ghi âm nổi trên bảng */
+.bd .bd-vtbar [data-sh]{display:inline-flex !important}
+.bd-vtbar [data-sh].on{background:#3a86ff !important;border-color:#3a86ff !important;color:#fff !important}
+.sh-bar{position:absolute;z-index:21;left:8px;right:8px;bottom:8px;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;background:rgba(20,19,18,.95);border:1px solid #3a86ff;color:#f3efe6;font-size:13px}
+.sh-bar b{font-size:13px;white-space:nowrap}.sh-bar b i{font-style:normal;font-variant-numeric:tabular-nums;font-weight:700}
+.sh-bar b.live{color:#ff8a7a}
+.sh-bar > span{margin-right:auto;color:#d6d0c4;min-width:0}
+.sh-bar button{flex:none;border:0;border-radius:10px;padding:7px 12px;background:#3a86ff;color:#fff;font:inherit;font-weight:700;cursor:pointer}
+.sh-bar button.rec{background:#ef4444}.sh-bar button.ghost{background:rgba(255,255,255,.14)}
+.sh-bar button[data-shx]{background:rgba(255,255,255,.1);padding:7px 10px}
+.sh-lv{display:block;height:8px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden;align-self:center}
+.sh-lv u{display:block;height:100%;width:0;background:linear-gradient(90deg,#4ade80,#ffd84d);transition:width .08s}
+.sh-bar button{white-space:nowrap}.sh-bar > span.sh-pl{flex:none;min-width:max-content;margin-right:auto}.sh-bar{flex-wrap:wrap;row-gap:6px}

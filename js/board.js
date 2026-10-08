@@ -168,7 +168,8 @@
     if (mb0) {
       var vb0 = $("#bd-vtbar"); if (vb0) { vb0.classList.remove("bd-hud"); vb0.classList.add("bd-audio"); mb0.appendChild(vb0); }
       if (vb0) { var rd0 = document.createElement("button"); rd0.type = "button"; rd0.className = "pri"; rd0.setAttribute("data-wlread", ""); rd0.title = "Đọc cả bài đọc"; rd0.innerHTML = '🔊 <span>Đọc bài</span>'; vb0.appendChild(rd0); }
-      if (vb0) { var ra0 = document.createElement("button"); ra0.type = "button"; ra0.className = "pri"; ra0.setAttribute("data-ra", ""); ra0.title = "Bạn đọc to bài, app nghe: tô sáng chỗ đã đọc, báo từ đúng / sai và chấm điểm (riêng máy bạn)"; ra0.innerHTML = '🎤 <span>Đọc theo</span>'; vb0.appendChild(ra0); }   /* TJ 2026-10-08: ĐỌC THEO + chấm điểm (js/readalong.js); ai cũng dùng được */
+      if (vb0) { var ra0 = document.createElement("button"); ra0.type = "button"; ra0.className = "pri"; ra0.setAttribute("data-ra", ""); ra0.title = "Bạn đọc to bài, app nghe: tô sáng chỗ đã đọc, báo từ đúng / sai và chấm điểm (riêng máy bạn)"; ra0.innerHTML = '🎤 <span>Đọc theo</span>'; vb0.appendChild(ra0); }
+      if (vb0) { var sh0 = document.createElement("button"); sh0.type = "button"; sh0.className = "pri"; sh0.setAttribute("data-sh", ""); sh0.title = "Shadowing: nói theo giọng mẫu, app ghi lại để bạn NGHE LẠI chính mình (riêng máy bạn, không gửi ai)"; sh0.innerHTML = '🎧 <span>Nghe lại mình</span>'; vb0.appendChild(sh0); }   /* TJ 2026-10-09: shadowing (js/shadow.js) */   /* TJ 2026-10-08: ĐỌC THEO + chấm điểm (js/readalong.js); ai cũng dùng được */
       mb0.addEventListener("change", function (e) { if (e.target.id === "bd-vtrate" && api.isHost()) send({ t: "rt", r: parseFloat(e.target.value) }); });
       mb0.addEventListener("click", function (e) { var t = e.target; if (!t.closest) return; if (t.closest("[data-wlread]")) readPassage(); else if (t.closest("[data-snd]")) { if (api.toggleSound) { api.toggleSound(); rsTok++; paintSndBtn(); } } });
     }
