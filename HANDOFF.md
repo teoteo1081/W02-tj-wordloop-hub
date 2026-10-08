@@ -10,6 +10,19 @@
 
 ## Trạng thái hiện tại
 
+## ▶ CHECKPOINT 2026-10-08 (cuối ngày, máy cloud) — VOICE/CC: admin nói, người nghe KHÔNG nghe tiếng (cần máy có CLI/2 thiết bị thật kiểm)
+**Triệu chứng TJ báo**: admin bật mic -> phụ đề CC của admin nhảy chữ bên máy người chơi, nhưng người chơi KHÔNG nghe tiếng.
+**Giả thuyết số 1 (chưa chứng minh)**: CC đi qua kênh Realtime broadcast (chữ, qua mọi mạng); tiếng đi qua WebRTC mesh (`js/voice.js`) mà ICE hiện CHỈ có STUN -> 2 máy khác mạng (5G / wifi công ty / NAT đối xứng) không nối được. TURN code đã có (`js/turn.js`, `supabase/functions/turn-creds/index.ts`) nhưng **CHƯA deploy**: lệnh sau trả 404 (kiểm 2026-10-08):
+`curl -s -X POST https://pqarpszsipbdugrumhfy.supabase.co/functions/v1/turn-creds -H "Content-Type: application/json" -d '{}'` -> `{"code":"NOT_FOUND"...}`
+**Việc cần TJ làm** (hoặc cấp PAT Supabase tạm để máy khác làm): tạo TURN key ở Cloudflare Realtime -> `supabase secrets set CF_TURN_KEY_ID=… CF_TURN_API_TOKEN=… --project-ref pqarpszsipbdugrumhfy` + `supabase functions deploy turn-creds --project-ref pqarpszsipbdugrumhfy --no-verify-jwt`. Sau đó lệnh curl trên phải trả JSON có `iceServers`.
+**Việc cho máy kiểm thử** (phòng riêng mã ZZ…, TUYỆT ĐỐI không vào phòng "TJ"):
+1. Mở 2 trình duyệt/2 mạng khác nhau (1 máy Wi-Fi, 1 điện thoại 5G) -> admin bật 🎤, người nghe xem chấm trạng thái trên thanh voice: "đang nối" / "nghe được" / "⚠ mạng chặn".
+2. Cùng 1 mạng wifi mà vẫn câm -> KHÔNG phải lỗi mạng, tìm trong `js/voice.js` (`ontrack`, `el.play()` bị chặn tự phát tiếng — cờ `i.blocked`, bật lại ở lần chạm kế; signalling `want/offer/answer/ice`; khoá khi `st.phase==="play"`).
+3. Sau khi bật TURN: lặp lại bước 1, xác nhận `window.__turnServers` có dữ liệu và `pc.connectionState` lên `connected`.
+**Đã chắc / chưa chắc**: code autoplay-recovery đã có; toàn bộ voice/CC/đọc-theo mới chỉ thử bằng trang giả + Playwright, CHƯA thử 2 máy thật hay iPhone.
+**Việc khác đang chờ TJ**: (a) chốt kiểu hiện điểm "Đọc theo" (sao + vòng % thay vì /100? giới hạn 5 từ cần luyện? chia sẻ cả phòng tự gửi hay hỏi trước?) — đã research ELSA/Google Read Along/Microsoft Reading Coach; (b) "Mở phòng game không chạy" ở menu Block/Batch/Page — chưa tái hiện được, cần biết máy/trình duyệt/hiện gì; (c) chat có gửi ảnh nhỏ không.
+Khi xong: dời info bền vững sang README/CLAUDE rồi xoá mục này.
+
 ## ▶ CHECKPOINT 2026-10-08 (máy cloud, Claude Sonnet 5.5; TJ chuyển sang máy khác làm tiếp) — ĐỌC TRƯỚC, rồi verify bằng lệnh thật
 > Các mục cũ ở dưới (checkpoint 2026-10-06) vẫn còn đúng phần việc treo; mục này là cái MỚI nhất.
 
