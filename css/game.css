@@ -2048,3 +2048,30 @@ body.bd-focus .bd .bd-feed,body.bd-focus .bd .bd-people{display:none !important}
 .bd .bd-bottom .bd-tools .bd-col,.bd .bd-bottom .bd-tools .bd-sz{order:3}
 .bd .bd-bottom .bd-tools .bd-sz:first-of-type{margin-left:6px}
 .bd.bd-pen .bd-bottom{height:auto !important;align-items:flex-end !important;min-height:44px}
+/* ==== TJ 2026-10-09: THANH BÚT thiết kế lại (gọn, 1 hàng; màu + cỡ nét gấp trong nút ●; tự ẩn khi chạm / vẽ) ==== */
+.bd .bd-bottom .bd-tools{flex-wrap:wrap !important;height:auto !important;overflow:visible !important;justify-content:center !important;gap:4px !important;row-gap:6px !important;padding:6px 8px !important;border-radius:16px !important;background:rgba(28,27,25,.92) !important;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 6px 18px rgba(0,0,0,.45);transition:opacity .22s ease,transform .22s ease;-webkit-mask-image:none !important;mask-image:none !important}
+.bd .bd-bottom .bd-tools > button,.bd .bd-bottom .bd-tools .bd-extras > button#bd-undo,.bd .bd-bottom .bd-tools .bd-extras > button#bd-redo,.bd .bd-bottom .bd-tools .bd-extras > button#bd-clear{min-width:36px !important;width:36px;height:36px !important;min-height:36px !important;padding:0 !important;border-radius:12px;font-size:16px}
+/* hàng 1 (dưới): ✋ 🔴 ✏️ T ● ↶ ↷ 🗑 ; hàng 2 (trên, chỉ khi bấm ●): màu + cỡ nét */
+.bd .bd-bottom .bd-tools > button[data-tool]{order:0}
+.bd .bd-bottom .bd-tools #bd-palbtn{order:0}
+.bd .bd-bottom .bd-tools #bd-undo{order:0}.bd .bd-bottom .bd-tools #bd-redo{order:0}.bd .bd-bottom .bd-tools #bd-clear{order:0}
+.bd .bd-bottom .bd-tools .bd-sep{display:none !important}
+.bd .bd-bottom .bd-tools .bd-col,.bd .bd-bottom .bd-tools .bd-sz{order:-1;display:none}
+.bd.bd-palopen .bd-bottom .bd-tools .bd-col,.bd.bd-palopen .bd-bottom .bd-tools .bd-sz{display:inline-flex}
+.bd .bd-bottom .bd-tools .bd-col{width:26px !important;min-width:26px !important;height:26px !important;min-height:26px !important;border-radius:50% !important}
+.bd .bd-bottom .bd-tools .bd-sz{width:30px;min-width:30px !important;height:30px !important;min-height:30px !important;border-radius:10px;margin-left:2px}
+#bd-palbtn{display:inline-flex;align-items:center;justify-content:center}
+#bd-palbtn[hidden]{display:none !important}
+#bd-palbtn i{display:block;width:20px;height:20px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.5);background:#f5f4ef}
+.bd.bd-palopen #bd-palbtn{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent) inset}
+/* chạm / vẽ: thanh công cụ mờ đi và nhường chỗ (hiện lại sau ~1 giây) */
+.bd.bd-drawing .bd-bottom .bd-tools{opacity:0;transform:translateY(8px);pointer-events:none}
+/* thanh bút rộng hết bề ngang bảng khi đang cầm bút (không chừa chỗ cho cột nút bên phải) */
+.bd.bd-pen .bd-bottom{height:auto !important;align-items:flex-end !important;min-height:44px;right:14px !important;left:14px !important;justify-content:center}
+@media (min-width:700px){.bd.bd-pen .bd-bottom{left:8px !important;right:56px !important}}
+/* bảng màu + cỡ nét: 1 khối riêng nằm TRÊN hàng nút, chỉ hiện khi bấm ● */
+.bd .bd-bottom .bd-tools .bd-pal{display:none}
+.bd.bd-palopen .bd-bottom .bd-tools .bd-pal{display:flex;flex:1 1 100%;order:-1;flex-direction:column;align-items:center;gap:8px;padding:2px 0 8px;border-bottom:1px solid rgba(255,255,255,.1)}
+.bd .bd-bottom .bd-tools .bd-pal .bd-palc,.bd .bd-bottom .bd-tools .bd-pal .bd-pals{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.bd .bd-bottom .bd-tools .bd-pal .bd-col,.bd .bd-bottom .bd-tools .bd-pal .bd-sz{display:inline-flex;order:0}
+.bd-tools .bd-sz i{flex:none;display:block;border-radius:50%}

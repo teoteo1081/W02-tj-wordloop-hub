@@ -138,10 +138,12 @@
               '<button type="button" data-tool="laser" data-btt="laser">🔴</button>' +
               '<button type="button" data-tool="pen" data-btt="pen">✏️</button>' +
               '<button type="button" data-tool="text" data-btt="text">T</button>' +
-              '<span class="bd-extras" id="bd-extras"><span class="bd-sep"></span>' +
+              '<button type="button" id="bd-palbtn" title="Màu &amp; cỡ nét"><i></i></button>' +
+              '<span class="bd-extras" id="bd-extras"><span class="bd-pal" id="bd-pal"><span class="bd-palc">' +
               COLORS.map(function (c) { return '<button type="button" class="bd-col" data-col="' + c + '" style="--c:' + c + '" data-btt="color"></button>'; }).join("") +
-              '<span class="bd-sep"></span>' +
+              '</span><span class="bd-pals">' +
               SIZES.map(function (z, i) { return '<button type="button" class="bd-sz" data-sz="' + z + '" data-btt="size"><i style="width:' + (6 + i * 5) + 'px;height:' + (6 + i * 5) + 'px"></i></button>'; }).join("") +
+              '</span></span>' +
               '<span class="bd-sep"></span>' +
               '<button type="button" id="bd-undo" data-btt="undo">↶</button><button type="button" id="bd-redo" data-btt="redo">↷</button>' +
               '<button type="button" id="bd-clear" hidden>🗑</button></span>' +
@@ -263,6 +265,7 @@
     }
     if (b.id === "bd-big") { bigPref = !big; paintOpen(); return; }
     if (b.dataset.col) { color = b.dataset.col; if (tool === "laser" || tool === "hand") tool = "pen"; paintTools(); return; }
+    if (b.id === "bd-palbtn") { var e0 = $("#bd"); if (e0) e0.classList.toggle("bd-palopen"); return; }   /* mở / đóng màu + cỡ nét (mặc định GỌN, đóng) */
     if (b.dataset.sz) { size = +b.dataset.sz; paintTools(); return; }
     if (b.id === "bd-undo") return undo();
     if (b.id === "bd-redo") return redoOne();
@@ -312,7 +315,8 @@
     document.querySelectorAll("#bd-tools [data-tool]").forEach(function (b) { b.classList.toggle("on", b.dataset.tool === tool); if (b.dataset.tool !== "hand") b.hidden = !ok; });
     document.querySelectorAll("#bd-tools [data-col]").forEach(function (b) { b.classList.toggle("on", b.dataset.col === color); });
     document.querySelectorAll("#bd-tools [data-sz]").forEach(function (b) { b.classList.toggle("on", +b.dataset.sz === size); });
-    var ex = $("#bd-extras"); if (ex) ex.classList.toggle("off", !(ok && (tool === "pen" || tool === "text")));   /* màu/cỡ/hoàn tác chỉ hiện khi cầm bút hoặc ô chữ */
+    var ex = $("#bd-extras"); if (ex) ex.classList.toggle("off", !(ok && (tool === "pen" || tool === "text")));
+    var palb = $("#bd-palbtn"); if (palb) { palb.hidden = !(ok && (tool === "pen" || tool === "text")); var pi = palb.querySelector("i"); if (pi) pi.style.background = color; if (palb.hidden) { var e1 = $("#bd"); if (e1) e1.classList.remove("bd-palopen"); } }   /* màu/cỡ/hoàn tác chỉ hiện khi cầm bút hoặc ô chữ */
     $("#bd-clear").hidden = !ok; $("#bd-clear").title = t("clearAll"); relabel(); $("#bd-close").hidden = !ctl(); var pn = $("#bd-pane"); if (pn) pn.hidden = !ctl(); $("#bd-perm").hidden = true;
     cv.style.cursor = !ok || tool === "hand" ? (Z.s > 1 ? "grab" : "default") : tool === "text" ? "text" : "crosshair";
     $("#bd-undo").disabled = !mine.length; $("#bd-redo").disabled = !redo.length;
@@ -472,7 +476,11 @@
     });
     if (any) sched();
   }
+  var drawT = 0;
+  function hideBars() { var el = $("#bd"); if (!el) return; clearTimeout(drawT); el.classList.add("bd-drawing"); el.classList.remove("bd-palopen"); }   /* TJ 2026-10-09: chạm / vẽ -> ẩn thanh công cụ + bảng màu, xong 1 giây hiện lại */
+  function showBars() { clearTimeout(drawT); drawT = setTimeout(function () { var el = $("#bd"); if (el) el.classList.remove("bd-drawing"); }, 1100); }
   function down(e) {
+    if (penMode) hideBars();
     ptrs[e.pointerId] = { x: e.clientX, y: e.clientY };
     var n = Object.keys(ptrs).length;
     if (n === 2) { if (cur) up(); e.preventDefault(); return beginPinch(); }   /* 2 ngón = phóng to, đang vẽ dở thì chốt nét */
@@ -503,6 +511,7 @@
     if (Date.now() - sendT > 80) { sendT = Date.now(); var f = cur.sent; cur.sent = cur.pts.length; send({ t: "s", id: cur.id, c: cur.c, w: cur.w, from: f, pts: cur.pts.slice(f), done: false }); }   /* ~12 lần/giây, CHỈ gửi phần mới */
   }
   function upEv(e) {
+    if (penMode) showBars();
     if (e && e.pointerId != null) delete ptrs[e.pointerId];
     if (gest) {
       var g = gest;
