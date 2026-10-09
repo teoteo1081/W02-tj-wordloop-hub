@@ -9,6 +9,28 @@
 4. **Không dùng file này để ghi kiến trúc/quyết định lâu dài** (đó là việc của `CLAUDE.md`) hay backlog nhiều-phiên (đó là việc của `README.md`) — chỉ ghi đúng 1 việc đang dở dang NGAY LÚC NGẮT PHIÊN.
 
 ## Trạng thái hiện tại
+
+## ▶ CHECKPOINT 2026-10-09 (máy local TJ, Claude Sonnet 5.5) — SOẠN TOEIC SPEAKING & WRITING + DỌN SUPABASE
+> Hết token giữa chừng. **Verify bằng lệnh thật trước khi tin** (luật đầu file).
+
+**Đã xong và đã lên `main`:**
+- Dọn Supabase Storage bucket `toeic`: xoá 19 file (898 → 325,5 MB; TJ tự xoá trên Dashboard, Claude kiểm lại đủ file cần giữ). Chi tiết + cấu trúc kho: `SUPABASE_STORAGE.md`. Bản sao lưu 19 file ở máy TJ `Desktop\TJ\_backup_supabase	oeic\` (TJ có thể xoá sau vài ngày).
+- Kế hoạch sắp xếp lại luồng học theo "Khoá học": `PLAN_LUONG_HOC.md` (chờ TJ trả lời 4 câu ở mục 8).
+- Phòng chờ Admin: 2 nút "Quản lý người chơi" + "Copy link mời" nằm cùng hàng Mã phòng (css v252, đã kiểm trang thử + web live).
+- Đã khảo sát EA: `learn/ea` (EA Quest) chạy, nhưng nút "mở bài học" trỏ repo L04 PRIVATE nên người khác 404; Part I còn thiếu bài riêng SU04–SU14. Giáo trình gốc EA nằm ở bucket private `source-docs/04-ea-2025/`.
+- Excel duyệt PDF gốc: `Desktop\TJ\Duyet_PDF_goc_Supabase.xlsx` (chỉ ở máy TJ, không đưa lên repo).
+
+**ĐANG LÀM DỞ — TOEIC SPEAKING & WRITING (TJ chọn làm trước; "toàn quyền thiết kế hiển thị trong Game"):**
+- Nguồn: `Project\L07-toeic\SPEAKING & WRITING\TOEIC SPEAKING & WRITING NHÂN TRÍ VIỆT\` — `NTV TOEIC SPEAKING.pdf` (292 trang), `NTV TOEIC SPEAKING - ANSWER KEY.pdf` (104 trang), `NTV TOEIC WRITING.pdf` (202 trang) + thư mục audio (Booklet 46, Self-check #001–030, My Practice Session #031–167, Practice Test #168–222). **Cả 3 PDF là BẢN SCAN (không có lớp chữ).** Sách có bản quyền: KHÔNG đưa lên bucket public `toeic`, KHÔNG commit vào repo.
+- Cấu trúc sách Speaking (từ mục lục trang 10–11): phần nền phát âm + ngữ pháp (tr.22–83); Part 01 Read a Text Aloud (tr.84); Part 02 Describe a Picture (tr.112); Part 03 Respond to Questions (tr.152); Part 04 Respond using Information Provided (tr.184); Part 05 Propose a Solution (tr.218); Part 06 Express an Opinion (tr.257–288). Mỗi Part: Kiểm tra sơ lược → Tìm hiểu các mảnh puzzle → Ghép các mảnh → Câu hỏi thực tế.
+- **Chưa có bảng DB nào, chưa ghi gì lên Supabase.** `test_items` chỉ có Part 1–7 (Listening/Reading) + EA.
+- **OCR:** máy này KHÔNG có tesseract/pdftoppm. Đã cài `pymupdf` + `pillow` (dựng trang PDF → PNG chạy tốt, đọc ảnh bằng công cụ Read được). `rapidocr-onnxruntime` bị SẬP (segfault, onnxruntime) → đã gỡ. OCR có sẵn của Windows qua PowerShell: lỗi "TypeNotFound" (cả pwsh 7 lẫn Windows PowerShell 5.1) — chưa giải quyết. Hướng còn lại: (a) đọc ảnh từng trang bằng Read (chậm, tốn token nhưng chắc); (b) máy khác có tesseract/Linux thì `pdftoppm -r 250` + `tesseract --psm 6`, đúng cách đã làm cho đề ETS (xem `tools/toeic_ocr_*.py`).
+- **Thiết kế đề xuất (chưa làm):** bảng `sw_tasks` (id, test, part 1–6 Speaking / 1–3 Writing, đề bài, ảnh (url `sw-media`), thời gian chuẩn bị/trả lời, đáp án mẫu, tiêu chí chấm) + `sw_attempts` (user, bài viết/bản chữ lời nói, điểm AI, nhận xét; ghi âm KHÔNG lưu hoặc xoá sau 30 ngày). Hiển thị trong Game: màn "Speaking & Writing" cạnh thẻ TOEIC; đếm ngược chuẩn bị→trả lời; Bảng chiếu đề (ảnh / đoạn đọc) cho cả phòng, ghi âm shadowing có sẵn (`js/readalong.js`). Chấm bằng AI qua `openai-proxy`/`gemini-proxy` (HỎI TJ chi phí trước). Cần PAT mới của TJ để tạo bảng + bucket (nhắc TJ thu hồi sau).
+- Bước kế: (1) trích đề Part 1–6 + đáp án mẫu từ Answer Key ra JSON trong thư mục tạm; (2) đưa TJ duyệt 1 mẫu mỗi Part; (3) mới tạo bảng + đẩy lên.
+
+**Việc treo khác:** nút "Game →" trên Bảng không sang thẻ Game (thiếu bộ nhận tin `tjwl-game-show` trong `js/gamelayer.js`; ✕ khi mở Bảng từ thẻ Game đóng luôn Game; chạm thanh dưới đáy điện thoại thoát Bảng) — phân tích trong `PLAN_LUONG_HOC.md` mục 2 #6. Sửa nút "mở bài học" EA (`learn/ea/index.html` `lessonBase`). Soạn EA Part I SU04–14. Thư viện `lib/EA2025` ở bucket PUBLIC `toeic` chứa giáo trình gốc (nên chuyển bucket private `library` rồi sửa Bảng). Dọn nốt `lib/_tmp/ZZ_QA_PROBE/probe_*.png`. Hook "git push cần xác nhận" nằm trong `~/.claude/settings.json` của TJ; Claude không tự sửa được quyền của chính mình.
+
+
 > **2026-10-09 (cuối phiên):** toàn bộ việc còn lại đã dời sang `README.md` mục "Việc còn dang dở" → bullet "📋 VIỆC CÒN LẠI SAU PHIÊN 2026-10-09" (10 mục, theo thứ tự nên làm) + quyết định bền vững ở `CLAUDE.md` ("Bảng: quyền MỌI NGƯỜI như host"). Không còn việc dở giữa chừng ở đây.
 
 
