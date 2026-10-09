@@ -2040,3 +2040,11 @@ body.bd-focus .bd .bd-feed,body.bd-focus .bd .bd-people{display:none !important}
 .g-boardbtn[hidden]{display:none}.g-boardbtn.on{background:#7c4dff;border-color:#7c4dff;color:#fff}
 #bd-lclose{position:fixed;z-index:94;top:calc(8px + env(safe-area-inset-top,0px));right:8px;padding:7px 12px;border-radius:999px;background:rgba(36,35,33,.92);color:#fff;border:1px solid rgba(255,255,255,.25);font:700 12px/1 inherit;font-family:inherit;cursor:pointer}
 #bd-lclose[hidden]{display:none}
+/* TJ 2026-10-09: điện thoại — thanh bút KHÔNG cuộn ngang nữa (↶ ↷ 🗑 và ô chữ bị giấu ngoài mép): xuống hàng; hàng 1 = ✋ 🔴 ✏️ T ↶ ↷ 🗑, hàng 2 = màu + cỡ nét */
+.bd .bd-bottom .bd-tools{flex-wrap:wrap !important;height:auto !important;overflow:visible !important;justify-content:center !important;-webkit-mask-image:none !important;mask-image:none !important;row-gap:4px}
+.bd .bd-bottom .bd-tools > button[data-tool]{order:0}
+.bd .bd-bottom .bd-tools #bd-undo,.bd .bd-bottom .bd-tools #bd-redo,.bd .bd-bottom .bd-tools #bd-clear{order:1}
+.bd .bd-bottom .bd-tools .bd-sep{order:2;display:none}
+.bd .bd-bottom .bd-tools .bd-col,.bd .bd-bottom .bd-tools .bd-sz{order:3}
+.bd .bd-bottom .bd-tools .bd-sz:first-of-type{margin-left:6px}
+.bd.bd-pen .bd-bottom{height:auto !important;align-items:flex-end !important;min-height:44px}
