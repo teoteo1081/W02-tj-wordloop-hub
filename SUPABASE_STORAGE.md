@@ -24,7 +24,7 @@
 **Kết quả kiểm lại:** 260 → 245 file, 897,8 → 325,5 MB. Cả 19 file đã biến mất, không file nào khác bị xoá nhầm. Còn đủ: `TEST_n_LC.mp3` 10/10 (HTTP 200), `TEST_n_LC.pdf` 10/10, `TEST_n_RC.pdf` 10/10, `listening/img` 110/110, `lib/EA2025` 87/87, bản `lib/TOEIC/Listening/DAP_AN_ETS_2024_LC.pdf`.
 **Còn sót:** `lib/_tmp/ZZ_QA_PROBE/probe_*.png` (file thử của agent QA, ~0 MB, xoá được).
 
-## Danh sách dọn đợt 2 (TJ duyệt 2026-10-09, CHƯA xoá — xoá khi cần chỗ cho ETS 2023)
+## Dọn đợt 2 — ĐÃ XOÁ 2026-10-09 (TJ tự xoá, Claude kiểm lại: 245 → 225 file, 325,5 → 258,9 MB; không xoá nhầm gì, còn đủ TEST_n_LC.mp3 10/10, img 110/110, EA2025 87/87)
 20 file PDF đề ETS 2024, ~66 MB: `reading/TEST_1_RC.pdf` … `TEST_10_RC.pdf` và `listening/TEST_1_LC.pdf` … `TEST_10_LC.pdf`. Chỉ công cụ OCR từng dùng; game đọc dữ liệu từ `test_items` (đủ 2.000 câu). **GIỮ** `listening/TEST_n_LC.mp3` (game phát). Đã sao lưu về máy TJ: `Desktop\TJ\_backup_supabase	oeiceading|listening\` (đã kiểm khớp dung lượng). TJ tự xoá trên Dashboard.
 
 ## Đề xuất lưu trữ cho các lớp
