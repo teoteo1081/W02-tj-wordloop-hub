@@ -1,6 +1,6 @@
 # SUPABASE_STORAGE.md — cấu trúc kho file (bucket `toeic`) và việc dọn dẹp
 
-> Kiểm kê ngày 2026-10-08. Gói Free: 1 GB. Lúc kiểm: 898 MB đã dùng (260 file). Chỉ xem được bucket `toeic` bằng anon key; bucket `game-avatars` (ảnh đại diện game) có tồn tại nhưng chưa liệt kê được (cần PAT).
+> Kiểm kê ngày 2026-10-08. Gói Free: 1 GB. Trước dọn: 898 MB (260 file); sau dọn: 325,5 MB (245 file). Chỉ xem được bucket `toeic` bằng anon key; bucket `game-avatars` (ảnh đại diện game) có tồn tại nhưng chưa liệt kê được (cần PAT).
 
 ## Cấu trúc hiện tại
 | Thư mục | Chứa gì | Ai dùng |
@@ -13,7 +13,7 @@
 | `lib/EA2025/Part I-II-III/` (87 file) | Sách gốc EA 2025 | Thư viện của Bảng (`GameLayer`/`game.js` `api.lib`) — GIỮ |
 | `lib/Books, Communication, Data-Analyst, Digital-Marketing, Grammar, IELTS, Other, TOEIC/*` | Cây thư viện (hầu hết rỗng) | Bảng — GIỮ |
 
-## Danh sách đề xuất dọn (TJ duyệt 2026-10-08 — CHƯA xoá được)
+## Đã dọn 2026-10-08 (TJ tự xoá trên Dashboard, Claude kiểm lại)
 19 file, ~572 MB, đã sao lưu về máy TJ: `C:\Users\User\Desktop\TJ\_backup_supabase\toeic\` (đã kiểm khớp dung lượng).
 - `listening/Test_01.mp3` … `Test_10.mp3` (~439 MB)
 - `listening/script/ETS2024_LC_giai_p001-100|p101-200|p201-296.pdf`, `listening/script/TRANSCRIPT_PART 3_TEST 1_ETS 2024.pdf`
@@ -21,7 +21,8 @@
 - `lib/DAP_AN_ETS_2024_LC.pdf` (trùng với `lib/TOEIC/Listening/DAP_AN_ETS_2024_LC.pdf`)
 - `lib/_Trash/probe.tmp`
 
-**Trạng thái:** lệnh xoá qua API bị trình duyệt quyền của Claude Code chặn → TJ tự xoá trên Supabase Dashboard (Storage › toeic) hoặc cấp quyền cho Claude. Sau khi xoá: chạy lại liệt kê để xác nhận còn ~326 MB.
+**Kết quả kiểm lại:** 260 → 245 file, 897,8 → 325,5 MB. Cả 19 file đã biến mất, không file nào khác bị xoá nhầm. Còn đủ: `TEST_n_LC.mp3` 10/10 (HTTP 200), `TEST_n_LC.pdf` 10/10, `TEST_n_RC.pdf` 10/10, `listening/img` 110/110, `lib/EA2025` 87/87, bản `lib/TOEIC/Listening/DAP_AN_ETS_2024_LC.pdf`.
+**Còn sót:** `lib/_tmp/ZZ_QA_PROBE/probe_*.png` (file thử của agent QA, ~0 MB, xoá được).
 
 ## Đề xuất lưu trữ cho các lớp
 - **Sách AEF/Upper/AEF5/Business Result/Real Listening (~840 MB PDF)**: KHÔNG đưa lên Supabase (hết chỗ, file 60–270 MB, vượt 50 MB/file). Dùng Cloudflare R2 hoặc Backblaze B2 (10 GB free) hoặc Google Drive; đặt cùng cấu trúc `aef/aef3|upper|aef5|business-result|real-listening-4/`.
