@@ -1683,7 +1683,7 @@ body.usersonly #g-main{max-width:none;padding:8px 14px 24px}
 .g-lang2-t{display:none;font-size:13px;color:var(--text-2);white-space:nowrap}
 #l-force-wrap[hidden] ~ .g-lang2-t{display:inline}   /* ô tick bị ẩn (học khác English / dạng câu không phải Nghĩa) -> vẫn có nhãn "Tiếng chung" cho ô chọn ngôn ngữ */
 body.g-host .g-learn{display:flex}
-#l-roomcard{padding:8px 12px}#l-roomcard .g-bigcode{font-size:26px;letter-spacing:4px;line-height:1.1}#l-roomcard .g-lobby-head{flex-wrap:nowrap}#l-roomcard #l-hostbtns{flex-wrap:nowrap}#l-roomcard #l-hostbtns .g-btn{padding:6px 12px;font-size:13px}
+#l-roomcard{padding:8px 12px}#l-roomcard .g-bigcode{font-size:26px;letter-spacing:4px;line-height:1.1}#l-roomcard .g-lobby-head{flex-wrap:wrap}#l-roomcard #l-hostbtns{flex-wrap:nowrap}#l-roomcard #l-hostbtns .g-btn{padding:6px 12px;font-size:13px}
 
 /* TJ 2026-10-08: nút ✕ đóng ở GÓC PHẢI TRÊN cho mọi màn/cửa sổ con (Quản lý người chơi, Lịch sử, Xem lại đáp án, Từ đã tra + các pop-up Điểm TOEIC/Mẹo) */
 .g-xwrap{position:relative;padding-right:46px}
@@ -1706,7 +1706,7 @@ body.g-viewer #l-roomcard #l-toprow{display:none}
 #l-roomcard #l-players .g-player > .g-sub{display:block;position:absolute;left:-3px;top:20px;font-size:9px;line-height:1;font-weight:700;padding:2px 3px;border-radius:999px;background:#2b2724;color:#ffd27a;border:1px solid rgba(255,255,255,.25)}
 #l-roomcard #l-players .g-player .g-tag{position:absolute;top:-6px;right:-2px;font-size:0;background:transparent;padding:0}
 #l-roomcard #l-players .g-player .g-tag::before{content:"👑";font-size:12px}
-#l-roomcard #l-toprow{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+#l-roomcard #l-toprow{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin:0 0 0 auto;flex-wrap:wrap}#l-roomcard #l-toprow .g-btn{padding:6px 12px;font-size:13px;white-space:nowrap}   /* TJ 2026-10-09: 2 nút Admin nằm CÙNG HÀNG với Mã phòng (bên phải) cho đỡ tốn 1 hàng */
 
 /* TJ 2026-10-08: ô trống (nút "nhảy tới trang" chưa có chữ) chiếm chỗ ở đầu cột công cụ -> ẩn khi trống */
 .bd .bd-docnav #bd-dpg:empty{display:none}
