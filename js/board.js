@@ -116,6 +116,7 @@
             '<button type="button" class="bd-hb bd-fab" id="bd-share" hidden data-ico="1" data-btt="sharet" data-bt="share"></button>' +
             '<button type="button" class="bd-hb bd-fab" id="bd-pres" hidden title="Cho người chơi chia sẻ màn hình (mỗi lúc 1 người)">🙋</button>' +
             '<button type="button" class="bd-hb bd-fab" id="bd-penbtn" title="Vẽ / ghi chú">✏️</button>' +
+            '<button type="button" class="bd-hb bd-fab" id="bd-shbtn" data-sh title="Shadowing: nói theo rồi nghe lại giọng chính mình (riêng máy bạn, không gửi ai)">🎧</button>' +
             '<button type="button" class="bd-hb bd-fab" id="bd-lkbtn" title="Tra nghĩa: bấm rồi chạm vào từ">🔍</button>' +
             '<button type="button" class="bd-hb bd-fab" id="bd-more" hidden title="Công cụ Block (chỉ Admin)">⋯</button>' +
           '</div>' +
@@ -206,7 +207,7 @@
       var sfx0 = $("#bd-sfx");
       if (sfx0) {
         var ib = document.createElement("div"); ib.id = "bd-iconbar"; ib.className = "bd-iconbar"; sfx0.parentNode.insertBefore(ib, sfx0.nextSibling); ib.appendChild(dn0);
-        ["bd-lib", "bd-share", "bd-pres", "bd-free", "bd-penbtn", "bd-more"].forEach(function (id) { var e = $("#" + id); if (e) { e.classList.add("bd-ibtn"); dn0.insertBefore(e, cp); } });
+        ["bd-lib", "bd-share", "bd-pres", "bd-free", "bd-penbtn", "bd-shbtn", "bd-more"].forEach(function (id) { var e = $("#" + id); if (e) { e.classList.add("bd-ibtn"); dn0.insertBefore(e, cp); } });
         /* TJ 2026-10-06: cửa sổ hẹp thì 🎮 và ✕ nằm cuối dải cuộn ngang (ẩn thanh cuộn) -> bị cắt mất. ✕ = góc TRÊN-PHẢI của bảng (luôn thấy, đúng thói quen đóng cửa sổ);
            🎮 = ghim cuối hàng icon, NGOÀI dải cuộn */
         var cl0 = $("#bd-close"), hl0 = $("#bd-hudl"); if (cl0 && hl0) { cl0.classList.add("bd-closetop"); hl0.appendChild(cl0); }

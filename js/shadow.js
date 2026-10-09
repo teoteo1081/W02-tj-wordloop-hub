@@ -16,7 +16,7 @@
     for (var i = 0; i < c.length; i++) { try { if (MediaRecorder.isTypeSupported(c[i])) return c[i]; } catch (e) {} }
     return "";
   }
-  function setBtn(on) { var b = $("[data-sh]"); if (b) b.classList.toggle("on", !!on); }
+  function setBtn(on) { [].forEach.call(document.querySelectorAll("[data-sh]"), function (b) { b.classList.toggle("on", !!on); }); }
   function paint() {
     if (!bar) return;
     var h = "";

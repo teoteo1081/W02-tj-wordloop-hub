@@ -2075,3 +2075,7 @@ body.bd-focus .bd .bd-feed,body.bd-focus .bd .bd-people{display:none !important}
 .bd .bd-bottom .bd-tools .bd-pal .bd-palc,.bd .bd-bottom .bd-tools .bd-pal .bd-pals{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
 .bd .bd-bottom .bd-tools .bd-pal .bd-col,.bd .bd-bottom .bd-tools .bd-pal .bd-sz{display:inline-flex;order:0}
 .bd-tools .bd-sz i{flex:none;display:block;border-radius:50%}
+/* 🎧 Shadowing luôn có ở dải nút (cạnh ✏️), dùng được với mọi loại bài; bảng trống thì ẩn A− / 100% / A+ cho khỏi tràn */
+#bd-shbtn{display:inline-flex !important}
+.bd:not(:has(.bd-hasdoc)) #bd-docnav [data-z],.bd:not(:has(.bd-hasdoc)) #bd-docnav #bd-zfit{display:none !important}
+.sh-bar{gap:6px !important;padding:7px 8px !important}.sh-bar button{padding:7px 9px !important;font-size:12px !important}.sh-bar b{font-size:12px !important}.sh-bar > span.sh-pl{margin-right:auto !important}
