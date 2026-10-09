@@ -9,6 +9,8 @@
 4. **Không dùng file này để ghi kiến trúc/quyết định lâu dài** (đó là việc của `CLAUDE.md`) hay backlog nhiều-phiên (đó là việc của `README.md`) — chỉ ghi đúng 1 việc đang dở dang NGAY LÚC NGẮT PHIÊN.
 
 ## Trạng thái hiện tại
+> **2026-10-09 (cuối phiên):** toàn bộ việc còn lại đã dời sang `README.md` mục "Việc còn dang dở" → bullet "📋 VIỆC CÒN LẠI SAU PHIÊN 2026-10-09" (10 mục, theo thứ tự nên làm) + quyết định bền vững ở `CLAUDE.md` ("Bảng: quyền MỌI NGƯỜI như host"). Không còn việc dở giữa chừng ở đây.
+
 
 ## ▶ CHECKPOINT 2026-10-09 — nhánh `fix/cc-overlap-lookup-fallback` (CHƯA gộp main, TJ đang xem thử)
 **2 fix trên nhánh riêng** (`game.css?v=237`, `cc.js?v=6`, `game.js?v=281`, `game-version.json`=281 — chỉ đổi 3 file này + game.html, CHƯA đụng gì khác):
