@@ -9,7 +9,7 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'wordloop'});</script>
 <script>window.ga4=function(n,p){try{if(window.gtag)gtag('event',n,p||{});}catch(e){}};</script>
-<link rel="stylesheet" href="css/game.css?v=256">
+<link rel="stylesheet" href="css/game.css?v=257">
 </head>
 <body>
 <!-- 🎮 Phòng game chơi chung — xem README.md "Việc còn dang dở" > PHÒNG GAME, bảng: tools/game_schema.sql.
@@ -18,9 +18,9 @@
      Phần cài đặt chỉ host (TJ) dùng thì để tiếng Việt. -->
 <!-- 🎯 làm bài test: thanh trên cùng ẩn; rê chuột lên mép trên / chạm tay nắm để hiện lại (css .g-tplaying) -->
 <div id="g-topzone" aria-hidden="true"></div><button type="button" id="g-tophandle" aria-label="Hiện thanh trên" title="Hiện thanh trên (hoặc Esc)"></button>
-<button type="button" id="g-righthandle" aria-label="Quản trị" title="⚙ Quản trị"></button>
+<button type="button" id="g-righthandle" aria-label="Quản trị" title="⚙ Quản trị"></button><button type="button" id="g-bothandle" aria-label="Hiện thanh chat" title="Hiện thanh chat (hoặc Alt+↓)"></button>
 <aside id="g-admin" hidden aria-label="Quản trị">
-  <div class="ga-head"><b>⚙ Quản trị</b><button type="button" id="ga-x" aria-label="Đóng">✕</button></div>
+  <div class="ga-head"><b>⚙ Quản trị</b><span class="ga-hb"><button type="button" id="ga-pin" class="g-pin" aria-label="Ghim / bỏ ghim ngăn kéo" title="Ghim: ngăn kéo luôn hiện và đẩy khung game co lại">📍</button><button type="button" id="ga-x" aria-label="Đóng">✕</button></span></div>
   <div class="ga-body">
     <h3>Ván</h3><div class="ga-row"><span id="ga-end"></span><button type="button" class="g-btn g-btn-soft g-btn-sm" id="ga-next" data-ga="next" hidden></button></div>
     <h3>Người chơi</h3><ol class="g-board ga-players" id="ga-players"></ol><div class="ga-row"><button type="button" class="g-btn g-btn-soft g-btn-sm" id="ga-users" data-ga="users" hidden>👥 Quản lý người chơi</button></div>
@@ -29,7 +29,7 @@
   </div>
 </aside>
 <header class="g-top">
-  <a class="g-brand" href="game.html">🎮 <b>WordLoop Game</b></a>
+  <a class="g-brand" href="game.html">🎮 <b>WordLoop Game</b></a><button type="button" class="g-pin" id="g-toppin" aria-label="Ghim / bỏ ghim thanh trên" title="Ghim: thanh trên luôn hiện khi chơi">📍</button>
   <button type="button" class="g-boardbtn" id="g-boardbtn" hidden title="Vào Bảng (bài đọc, vẽ, chia sẻ màn hình) — ở ngoài này vẫn chat / nói chuyện được">🖍 <span>Bảng</span></button>
   <span class="g-room" id="g-room-badge" hidden></span>
   <label class="g-langlbl"><span>🌐 Language</span><select class="g-mylang" id="g-mylang" data-tt="mother_tt"><option value="vi">🇻🇳 Tiếng Việt</option><option value="en">🇺🇸 English</option><option value="es">🇪🇸 Español</option><option value="zh">🇨🇳 中文</option></select><b class="g-forcenote" id="g-forcenote" hidden></b></label>
@@ -257,7 +257,7 @@
 <script src="js/cc.js?v=9"></script>
 <script src="js/voice.js?v=13"></script>
 <script src="js/chat.js?v=16"></script>
-<script src="js/game.js?v=289"></script>
+<script src="js/game.js?v=290"></script>
 <script src="js/learn.js?v=2"></script>
 </body>
 </html>

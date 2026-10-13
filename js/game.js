@@ -156,17 +156,38 @@
     var on = !!(G.st && G.st.phase === "play" && $("#s-play") && !$("#s-play").hidden && G.view !== "screen" && !G.spectating);   /* MỌI loại ván đang chơi (từ vựng, Kahoot, test…) */
     document.body.classList.toggle("g-playing", on);
     document.body.classList.toggle("g-adm", on && !!G.isHost);
-    if (!on) { document.body.classList.remove("g-topshow", "g-admopen"); $("#g-admin").hidden = true; }
-    admMove();
+    if (!on) { document.body.classList.remove("g-topshow", "g-admopen", "g-cbshow", "g-admpin"); $("#g-admin").hidden = true; }
+    admMove(); applyPins();
     if (on === !!G.tFocus) return; G.tFocus = on;
     focusParent(on);
     setTimeout(fitTImg, 60);
   }
-  function focusParent(on) { if (G.embed) { try { window.parent.postMessage({ type: "tjwl-game-focus", on: !!on }, location.origin); } catch (e) {} } }
+  function focusParent(on) { if (on && PIN.top) on = false; if (G.embed) { try { window.parent.postMessage({ type: "tjwl-game-focus", on: !!on }, location.origin); } catch (e) {} } }
   /* ----- hiện lại thanh trên / ngăn kéo Quản trị khi đang chơi (TJ 2026-10-13: "quơ chuột hoặc chạm cho hiện lên thôi") -----
      Máy tính: rê vào dải mép trên (48px) = thanh trên; mép phải (40px) = ⚙ Quản trị (chỉ host); rời chuột ~1.5s tự ẩn.
      Cảm ứng: vuốt xuống từ mép trên / vuốt từ mép phải vào, hoặc chạm vạch mỏng; chạm ngoài hoặc ~4s tự ẩn. Bàn phím: Esc / Alt+↑. */
   var PK = { top: 0, adm: 0, hov: false };
+  /* 📌 GHIM (TS-076 + TJ 2026-10-13): giống nút ghim cột Notebooks của app (📌 đang ghim / 📍 bỏ ghim, nhớ bằng localStorage, mặc định BỎ GHIM).
+     top = thanh trên (4 tầng) luôn hiện khi chơi; adm = ngăn kéo ⚙ Quản trị luôn hiện + ĐẨY khung game co lại (chỉ ≥ 900px). Hai trạng thái độc lập. */
+  var LS_GPIN = { top: "tjwl_game_toppin_v1", adm: "tjwl_game_admpin_v1" }, PIN = { top: false, adm: false };
+  try { PIN.top = localStorage.getItem(LS_GPIN.top) === "1"; PIN.adm = localStorage.getItem(LS_GPIN.adm) === "1"; } catch (e) {}
+  function admDocked() { return PIN.adm && window.innerWidth >= 900; }
+  function applyPins() {
+    var b = document.body, pl = playing();
+    b.classList.toggle("g-toppin", PIN.top); b.classList.toggle("g-admpin", admDocked());
+    [["#g-toppin", PIN.top], ["#ga-pin", PIN.adm]].forEach(function (t) { var el = $(t[0]); if (!el) return; el.classList.toggle("off", !t[1]); el.textContent = t[1] ? "📌" : "📍"; el.setAttribute("aria-pressed", t[1] ? "true" : "false"); });
+    if (b.classList.contains("g-adm") && pl) { if (admDocked()) { b.classList.add("g-admopen"); $("#g-admin").hidden = false; paintAdmin(); } else if (b.classList.contains("g-admopen") && !PK.adm && !PK.admTouch) { b.classList.remove("g-admopen"); $("#g-admin").hidden = true; } }
+    if (pl) { focusParent(!PIN.top && !b.classList.contains("g-topshow")); setTimeout(fitTImg, 60); }
+  }
+  function togglePin(k) { PIN[k] = !PIN[k]; try { localStorage.setItem(LS_GPIN[k], PIN[k] ? "1" : "0"); } catch (e) {} applyPins(); }
+  window.addEventListener("resize", applyPins);
+  /* 💬 thanh chat dưới đáy ẨN khi đang chơi (TJ: che hàng người chơi); rê mép dưới / vuốt lên / chạm vạch / Alt+↓ để hiện tạm */
+  function cbBusy() { var a = document.activeElement; return !!(a && a.id === "cb-in") || !!document.querySelector("#vc-btn.on, #cc-btn.on, #ch-btn.on, #ch-panel:not([hidden])"); }
+  function cbShow(v, touch) {
+    if (v && !playing()) return; var b = document.body; b.classList.toggle("g-cbshow", !!v); clearTimeout(PK.cb);
+    if (v) cbArm(touch ? 5000 : 2500); setTimeout(fitTImg, 0);
+  }
+  function cbArm(ms) { PK.cb = setTimeout(function () { if (PK.cbHov || cbBusy()) cbArm(1000); else cbShow(false); }, ms); }
   function playing() { return document.body.classList.contains("g-playing"); }
   function topShow(v, touch) {
     if (v && !playing()) return; var b = document.body, was = b.classList.contains("g-topshow");
@@ -177,16 +198,20 @@
   function topArm(ms) { PK.top = setTimeout(function () { if (PK.hov) topArm(800); else topShow(false); }, ms); }
   function admShow(v, touch) {
     var b = document.body; if (v && !(playing() && b.classList.contains("g-adm"))) return;
+    if (!v && admDocked() && playing()) return;   /* đang ghim: luôn hiện */
     b.classList.toggle("g-admopen", !!v); $("#g-admin").hidden = !v; clearTimeout(PK.adm);
-    if (v) { paintAdmin(); if (!touch) PK.adm = 0; }
+    if (v) { paintAdmin(); PK.admTouch = !!touch; if (!touch) PK.adm = 0; }
   }
   function admArm() { clearTimeout(PK.adm); PK.adm = setTimeout(function () { if (!PK.admIn) admShow(false); }, 1500); }
   document.addEventListener("click", function (e) {
-    if (e.target.closest("#g-tophandle")) topShow(!document.body.classList.contains("g-topshow"), true);
+    if (e.target.closest("#g-toppin")) togglePin("top");
+    else if (e.target.closest("#ga-pin")) togglePin("adm");
+    else if (e.target.closest("#g-bothandle")) cbShow(!document.body.classList.contains("g-cbshow"), true);
+    else if (e.target.closest("#g-tophandle")) topShow(!document.body.classList.contains("g-topshow"), true);
     else if (e.target.closest("#g-righthandle")) admShow(!document.body.classList.contains("g-admopen"), true);
-    else if (e.target.closest("#ga-x")) admShow(false);
+    else if (e.target.closest("#ga-x")) { if (!admDocked()) admShow(false); }
     else if (e.target.closest("#g-admin")) { var a = e.target.closest("[data-ga]"); if (a) admAct(a.dataset.ga); }
-    else if (document.body.classList.contains("g-admopen") && !e.target.closest(".g-top")) admShow(false);   /* chạm ngoài ngăn kéo = đóng */
+    else if (document.body.classList.contains("g-admopen") && !admDocked() && !e.target.closest(".g-top")) admShow(false);   /* chạm ngoài ngăn kéo = đóng */
   });
   document.addEventListener("pointerdown", function (e) {   /* chạm ngoài thanh trên (cảm ứng) = ẩn lại, không chặn thao tác */
     if (e.pointerType === "mouse" || !document.body.classList.contains("g-topshow")) return;
@@ -194,23 +219,27 @@
   }, true);
   document.addEventListener("mousemove", function (e) {
     if (!playing() || (e.sourceCapabilities && e.sourceCapabilities.firesTouchEvents)) return;
-    var b = document.body, nearTop = e.clientY <= 48, nearR = e.clientX >= innerWidth - 40 && b.classList.contains("g-adm");
+    var b = document.body, nearTop = e.clientY <= 48, nearR = e.clientX >= innerWidth - 40 && b.classList.contains("g-adm") && !admDocked();
     var inTop = !!e.target.closest(".g-top"), inAdm = !!e.target.closest("#g-admin");
     PK.hov = inTop || nearTop; PK.admIn = inAdm || nearR;
     if (nearTop || inTop) topShow(true); else if (b.classList.contains("g-topshow") && !PK.top) topShow(true);
     if (nearR && !b.classList.contains("g-admopen")) admShow(true);
-    if (b.classList.contains("g-admopen") && !PK.admIn) admArm(); else clearTimeout(PK.adm);
+    if (b.classList.contains("g-admopen") && !PK.admIn && !admDocked()) admArm(); else clearTimeout(PK.adm);
+    var nearB = e.clientY >= innerHeight - 40, inCb = !!e.target.closest("#cb-bar"); PK.cbHov = nearB || inCb;
+    if (nearB && !b.classList.contains("g-cbshow")) cbShow(true); else if (b.classList.contains("g-cbshow") && !PK.cbHov && !PK.cb) cbShow(true);
   });
   var TS = null;
-  document.addEventListener("touchstart", function (e) { var t = e.touches[0]; TS = t && e.touches.length === 1 ? { x: t.clientX, y: t.clientY, top: t.clientY <= 28, right: t.clientX >= innerWidth - 24 } : null; }, { passive: true });
+  document.addEventListener("touchstart", function (e) { var t = e.touches[0]; TS = t && e.touches.length === 1 ? { x: t.clientX, y: t.clientY, top: t.clientY <= 28, right: t.clientX >= innerWidth - 24, bot: t.clientY >= innerHeight - 28 } : null; }, { passive: true });
   document.addEventListener("touchmove", function (e) {
     if (!TS || !playing()) return; var t = e.touches[0];
     if (TS.top && t.clientY - TS.y > 24) { TS = null; topShow(true, true); }
     else if (TS.right && TS.x - t.clientX > 24) { TS = null; admShow(true, true); }
+    else if (TS.bot && TS.y - t.clientY > 24) { TS = null; cbShow(true, true); }
   }, { passive: true });
   document.addEventListener("keydown", function (e) {
     if (!playing()) return;
-    if (e.key === "Escape") { if (document.body.classList.contains("g-admopen")) admShow(false); else topShow(!document.body.classList.contains("g-topshow"), true); }
+    if (e.key === "Escape") { if (document.body.classList.contains("g-cbshow") && !cbBusy()) cbShow(false); else if (document.body.classList.contains("g-admopen") && !admDocked()) admShow(false); else topShow(!document.body.classList.contains("g-topshow"), true); }
+    else if (e.altKey && e.key === "ArrowDown") { e.preventDefault(); cbShow(!document.body.classList.contains("g-cbshow"), true); }
     else if (e.altKey && e.key === "ArrowUp") { e.preventDefault(); topShow(!document.body.classList.contains("g-topshow"), true); }
   });
   window.addEventListener("message", function (e) {   /* khung WordLoop báo chuột đang ở trên thanh của nó -> chưa tự ẩn */

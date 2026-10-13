@@ -2126,3 +2126,33 @@ body.g-playing.g-adm #g-admin:not([hidden]){display:flex;flex-direction:column;p
 }
 /* host đang chơi: không rải nút quản trị ngoài ngăn kéo */
 body.g-adm #p-mode{display:none}
+
+/* ===== TS-076 + TJ 2026-10-13: nút ghim (kiểu 📌 của cột Notebooks), thanh chat ẩn khi chơi ===== */
+.g-pin{background:transparent;border:none;cursor:pointer;font-size:.95rem;line-height:1;padding:.3rem;border-radius:5px;opacity:.85;color:inherit;flex:none}
+.g-pin:hover{background:rgba(255,255,255,.1);opacity:1}
+.g-pin.off{opacity:.45;transform:rotate(45deg)}
+#g-toppin{display:none}
+body.g-playing #g-toppin{display:inline-block}
+.ga-hb{display:flex;align-items:center;gap:6px}
+#ga-pin{display:none;width:36px;height:36px;font-size:17px}
+/* thanh trên GHIM: như giao diện cũ (nằm trong luồng, không ẩn), bỏ tay nắm */
+body.g-playing.g-toppin .g-top{position:sticky;transform:none;box-shadow:none;transition:none}
+body.g-playing.g-toppin #g-tophandle{display:none}
+/* thanh chat dưới đáy: ẩn khi đang chơi, hiện tạm (body.g-cbshow); phần cuối trang không bị che */
+#g-bothandle{display:none}
+body.g-playing #g-bothandle{display:block;position:fixed;bottom:0;left:50%;transform:translateX(-50%);z-index:73;width:64px;height:8px;padding:0;border:0;border-radius:6px 6px 0 0;background:rgba(255,255,255,.28);cursor:pointer;-webkit-tap-highlight-color:transparent}
+body.g-playing.g-cbshow #g-bothandle{display:none}
+body.g-playing .cb-bar{transition:transform .18s ease,visibility 0s}
+body.g-playing:not(.g-cbshow) .cb-bar{transform:translateY(110%);visibility:hidden;pointer-events:none;transition:transform .18s ease,visibility 0s .18s}
+body.g-playing.has-cbar{padding-bottom:12px}
+body.g-playing.has-cbar.g-cbshow{padding-bottom:calc(60px + env(safe-area-inset-bottom,0px))}
+@media (prefers-reduced-motion:reduce){body.g-playing .cb-bar{transition:none !important}}
+/* ngăn kéo Quản trị GHIM (≥ 900px): luôn hiện, đẩy khung game co lại */
+@media (min-width:900px){
+  #ga-pin{display:inline-block}
+  body.g-playing.g-adm.g-admpin{padding-right:320px}
+  body.g-playing.g-adm.g-admpin #g-admin:not([hidden]){width:320px;box-shadow:none;animation:none;z-index:70}
+  body.g-playing.g-adm.g-admpin #g-righthandle,body.g-playing.g-adm.g-admpin #ga-x{display:none}
+  body.g-playing.g-adm.g-admpin .g-top,body.g-playing.g-adm.g-admpin .cb-bar{right:320px}
+  body.g-playing.g-adm.g-admpin #g-tophandle,body.g-playing.g-adm.g-admpin #g-bothandle{left:calc(50% - 160px)}
+}
