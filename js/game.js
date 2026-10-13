@@ -1619,6 +1619,7 @@
     if (sn && sn.st && sn.st.phase === "end") {   /* đang ở màn kết quả mà tải lại -> về lại đúng màn kết quả (bảng điểm, 📝 phiếu, bảng vẽ) */
       G.st = sn.st; G.endAt = 0; G.qUntil = 0; clearInterval(G.hostTimer); push(); renderEnd(G.st); return;
     }
+    G.prefSnap = !!(sn && sn.st && sn.st.phase === "lobby");
     var pv = (sn && sn.st && sn.st.phase === "lobby" ? sn.st : null) || G.st || {};   /* phòng chờ: lấy lại cài đặt + bảng vẽ đã lưu */   /* trạng thái nhận từ host cũ -> lấy lại CÀI ĐẶT, còn ván đang dở thì bỏ (về phòng chờ) */
     G.st = { phase: "lobby", sound: pv.sound !== false, auto: pv.auto !== false, levels: pv.levels || [], gapsrc: pv.gapsrc || "lib", scoring: pv.scoring || G.room.scoring || "q", scope: pv.scope || G.room.scope || [], title: pv.title || G.room.title || "", mode: pv.mode || G.room.mode, qtype: pv.qtype || G.room.qtype || "meaning", lang: pv.lang || G.room.meaning_lang || "vi", force: !!pv.force, minutes: pv.minutes || +G.room.minutes, qs: pv.qs || G.room.q_seconds, teams: 0, teamOf: {}, scores: {}, roster: {} };
     ["race", "target", "teams", "teamOf", "hostplay", "hub", "bdoc", "tq", "bts"].forEach(function (k) { if (pv[k] !== undefined) G.st[k] = pv[k]; });   /* tải lại ở phòng chờ: giữ ⚡ Đua, tiếng đang học, đội, host chơi/MC (QA) */
@@ -1669,6 +1670,7 @@
     if (!sc.length) return;
     if (!G.isHost || !G.st) { G.pendingScope = sc; return; }   /* chưa vào phòng xong -> initHostLobby áp sau */
     if (!(await hostPrepLobby())) return;
+    toVocabHub(); vocabApplyLS();
     picked = sc.map(function (p) { return { table: p.table, id: p.id, title: p.title || p.id }; });
     if (TREE) paintTree(); else paintPicked();
     hostSetScope();
@@ -1723,6 +1725,8 @@
     var wantBoard = param("board") === "1" || !!G.pendingBoard; G.pendingBoard = false;
     var sc = param("scope");
     if (!sc && G.pendingScope) { var ps = G.pendingScope[0]; sc = ps.table + ":" + ps.id; G.pendingTitle = ps.title; G.pendingScope = null; }
+    if (sc) toVocabHub();   /* từ bài học bấm Chơi game: về Hub từ vựng, không kẹt ở TOEIC */
+    if (!G.prefSnap) vocabApplyLS();   /* host mới vào / tải lại không có trạng thái từ máy khác -> lấy lại kiểu chơi đã chọn */
     if (sc) {   /* mở từ chuột phải trong WordLoop: ?scope=<table>:<id>&title=… -> thành chủ đề ván tới */
       var i = sc.indexOf(":");
       picked = [{ table: sc.slice(0, i), id: sc.slice(i + 1), title: param("title") || G.pendingTitle || sc }];
@@ -1844,6 +1848,7 @@
       if (s === "#l-qtype" && wantsGap(st.qtype)) aiGaps();
       if (s === "#l-gapsrc") { applyGap(); paintPoolInfo(); }
       sb.from("game_rooms").update({ scoring: st.scoring, mode: st.mode, qtype: st.qtype, meaning_lang: st.lang, minutes: st.minutes, q_seconds: st.qs, team_mode: !!tn, teams: tn }).eq("id", G.room.id).then(function () {});
+      vocabSave();
       push(); paintLobbyPlayers();
     });
   });
@@ -3897,10 +3902,26 @@
     var st = G.st; if (!st || st.qtype === "toeic") return;
     G.vSnap = { qtype: st.qtype, title: st.title, mode: st.mode, qs: st.qs, race: st.race, scoring: st.scoring, teams: st.teams, hostplay: hostPlays(), auto: st.auto !== false, minutes: st.minutes };
   }
+  /* TJ 2026-10-13: "host chọn kiểu chơi, refresh hoặc qua đường dẫn bài học khác thì nhảy mất" -> nhớ cài đặt Hub từ vựng trên máy host (không gồm chủ đề/tên) */
+  var LS_VSET = "tjwl_game_vset_v1";
+  function vocabSave() {
+    var st = G.st; if (!G.isHost || !st || G.hub === "test" || st.qtype === "toeic") return;
+    try { localStorage.setItem(LS_VSET, JSON.stringify({ qtype: st.qtype, mode: st.mode, qs: st.qs, race: !!st.race, scoring: st.scoring, teams: st.teams || 0, hostplay: hostPlays(), auto: st.auto !== false, minutes: st.minutes })); } catch (e) {}
+  }
+  function vocabApplyLS() {   /* áp lại cài đặt đã nhớ vào phòng chờ hiện tại (chỉ Hub từ vựng) */
+    if (!G.isHost || !G.st || G.hub === "test" || G.st.phase !== "lobby") return;
+    var v = G.vSnap || readLS(LS_VSET); if (!v || !v.qtype || v.qtype === "toeic") return;
+    G.vSnap = v; vocabRestore(); paintQtypes(); paintAutoTime();
+    G.poolKey = null; ensurePool(G.st.scope).then(function () { if (G.st.phase === "lobby") paintPoolInfo(); }); push();
+  }
+  /* mở game từ 1 bài học (Chơi game ở Block/Page…): luôn về Hub TỪ VỰNG + thẻ 🎮 Phòng game, kể cả khi lần trước đang ở thẻ TOEIC / EA / Marketing */
+  function toVocabHub() {
+    setHub("vocab"); document.dispatchEvent(new CustomEvent("tjwl-learn-home"));
+  }
   function vocabRestore() {
     var v = G.vSnap, st = G.st; if (!v || !st) return;
     st.qtype = v.qtype || "meaning"; st.hostpace = false; st.auto = v.auto !== false; if (v.minutes) { st.minutes = v.minutes; $("#l-min").value = v.minutes; } $("#l-auto").checked = st.auto;
-    ["exam", "tplay", "taud", "test"].forEach(function (k) { delete st[k]; });   /* bỏ cài đặt riêng của đề thi (QA: ván từ vựng sau đó chạy 120 phút) */ st.title = v.title; st.mode = v.mode; st.qs = v.qs; st.race = !!v.race; st.scoring = v.scoring; st.teams = v.teams;
+    ["exam", "tplay", "taud", "test"].forEach(function (k) { delete st[k]; });   /* bỏ cài đặt riêng của đề thi (QA: ván từ vựng sau đó chạy 120 phút) */ if (v.title !== undefined) st.title = v.title; if (v.mode) st.mode = v.mode; if (v.qs) st.qs = v.qs; st.race = !!v.race; if (v.scoring) st.scoring = v.scoring; if (v.teams != null) st.teams = v.teams;
     $("#l-qtype").value = st.qtype; $("#l-mode").value = st.race ? "race" : st.mode; $("#l-qs").value = st.qs; $("#l-scoring").value = st.scoring || "q";
     $("#l-teamn").value = String(st.teams || 0); $("#l-hostplay").checked = v.hostplay !== false;
     /* chạy đúng đường xử lý của 2 ô này (QA v103: st.hostplay + track() không được cập nhật -> host vẫn là MC) */

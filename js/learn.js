@@ -41,6 +41,7 @@
     if (k === "" || k === "toeic") { show(""); document.dispatchEvent(new CustomEvent("tjwl-sethub", { detail: k === "toeic" ? "test" : "vocab" })); }
     else show(k);
   });
+  document.addEventListener("tjwl-learn-home", function () { show(""); });   /* game.js: mở từ bài học -> bỏ lớp phủ EA/Marketing, về thẻ Phòng game */
   window.addEventListener("resize", function () { if (!layer.hidden) place(); });
   try { var last = sessionStorage.getItem("tjwl_learn_tab"); if (last) show(last); } catch (e) {}
   paintHub();
