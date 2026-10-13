@@ -2121,3 +2121,6 @@ body.g-playing.g-adm #g-admin:not([hidden]){display:flex;flex-direction:column;p
 }
 /* host đang chơi: không rải nút quản trị ngoài ngăn kéo */
 body.g-adm #p-mode{display:none}
+
+/* TJ 2026-10-13: đang thi thì bỏ nút 🔊 tròn trong khung câu hỏi (phát lại audio không hợp phòng thi; âm lượng/tắt tiếng nằm ở ⚙ Quản trị hoặc dòng đồng hồ) */
+body.g-playing .g-qvi .g-taud, body.g-playing .g-qvi > .g-row:has(.g-taud){display:none !important}
