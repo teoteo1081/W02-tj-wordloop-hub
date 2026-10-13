@@ -105,6 +105,12 @@
     if (e.origin !== location.origin || !e.data || e.data.type !== "tjwl-board-people") return;
     lbdPeople = e.data; lbdRender();
   });
+  /* 🎯 Game đang LÀM BÀI TEST -> ẩn thanh trên cùng + thanh điều hướng dưới đáy của WordLoop để câu hỏi + đáp án vừa 1 màn không cuộn
+     (js/game.js syncTestFocus gửi tjwl-game-focus; tay nắm ở mép trên của game bật lại tạm thời). Đóng game / tải lại -> luôn trả thanh về. */
+  w.addEventListener("message", function (e) {
+    if (e.origin !== location.origin || !e.data || e.data.type !== "tjwl-game-focus") return;
+    document.body.classList.toggle("game-focus", !!e.data.on && isOpen());
+  });
   w.addEventListener("message", function (e) {
     if (e.origin !== location.origin || !e.data || e.data.type !== "tjwl-board-on") return;
     var on = !!e.data.on, doc = !!e.data.doc;
@@ -135,7 +141,7 @@
   function close() {
     try { sessionStorage.removeItem("tjwl_board_mode"); } catch (e) {}
     if (boardMode && !gameOpened) { leaveBoard(); return; }   /* chỉ đang ở chế độ bảng: thoát bảng, giữ nguyên nút Learning / Game */
-    gameOpened = false;
+    gameOpened = false; document.body.classList.remove("game-focus");
     setFit(false);
     boardOnState = false; boardMode = false; seenOn = false; layer.style.visibility = ""; layer.style.pointerEvents = ""; layer.classList.remove("board-idle"); document.body.classList.remove("board-skin", "board-mode"); if (bb) bb.classList.remove("active"); refreshLb();
     layer.hidden = true;

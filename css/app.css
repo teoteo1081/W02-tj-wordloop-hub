@@ -2490,3 +2490,7 @@ body.board-skin .lbd-people{margin-top:1rem}
 /* TJ 2026-10-08: chế độ Bảng — nút "Quản lý người chơi" (pop-up) cạnh tên ở đầu trang */
 .lbd-users{flex:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:36px;box-sizing:border-box;background:#3a3936;color:#f5f4ef;border:1px solid #3d3b37;border-radius:10px;padding:5px 10px;font-weight:600;font-size:12px;line-height:1.2;font-family:inherit;cursor:pointer;white-space:nowrap}   /* y hệt nút "Quản lý người chơi" trong Game (.g-btn.g-btn-soft.g-btn-sm) */
 .lbd-users:hover{background:#3d3b37}
+
+/* 🎯 Game đang làm bài test (js/gamelayer.js, tjwl-game-focus): ẩn thanh trên + thanh dưới của WordLoop, khung game phủ cả màn hình */
+body.game-focus .topbar,body.game-focus .mobile-nav{display:none !important}
+body.game-focus .game-layer:not(.board-fit){top:0 !important;bottom:0 !important}

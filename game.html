@@ -9,13 +9,15 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'wordloop'});</script>
 <script>window.ga4=function(n,p){try{if(window.gtag)gtag('event',n,p||{});}catch(e){}};</script>
-<link rel="stylesheet" href="css/game.css?v=252">
+<link rel="stylesheet" href="css/game.css?v=253">
 </head>
 <body>
 <!-- 🎮 Phòng game chơi chung — xem README.md "Việc còn dang dở" > PHÒNG GAME, bảng: tools/game_schema.sql.
      Game IM LẶNG hoàn toàn (chơi kèm voice HelloTalk) — báo đúng/sai bằng màu.
      Chữ giao diện dịch theo ô 🌐 của TỪNG người (data-t / data-tp, từ điển UI trong js/game.js).
      Phần cài đặt chỉ host (TJ) dùng thì để tiếng Việt. -->
+<!-- 🎯 làm bài test: thanh trên cùng ẩn; rê chuột lên mép trên / chạm tay nắm để hiện lại (css .g-tplaying) -->
+<div id="g-topzone" aria-hidden="true"></div><button type="button" id="g-tophandle" aria-label="Hiện / ẩn thanh trên" title="Hiện thanh trên"><i></i></button>
 <header class="g-top">
   <a class="g-brand" href="game.html">🎮 <b>WordLoop Game</b></a>
   <button type="button" class="g-boardbtn" id="g-boardbtn" hidden title="Vào Bảng (bài đọc, vẽ, chia sẻ màn hình) — ở ngoài này vẫn chat / nói chuyện được">🖍 <span>Bảng</span></button>
@@ -245,7 +247,7 @@
 <script src="js/cc.js?v=9"></script>
 <script src="js/voice.js?v=13"></script>
 <script src="js/chat.js?v=16"></script>
-<script src="js/game.js?v=284"></script>
+<script src="js/game.js?v=285"></script>
 <script src="js/learn.js?v=2"></script>
 </body>
 </html>

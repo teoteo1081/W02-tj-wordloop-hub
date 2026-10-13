@@ -150,7 +150,28 @@
   };
 
   /* ---------- tiện ích ---------- */
-  function show(id) { if (id === "s-play") G.soundPh = "play"; $$(".g-screen").forEach(function (s) { s.hidden = s.id !== id; }); document.body.classList.toggle("big", id === "s-screen"); paintSide(); }
+  /* 🎯 CHẾ ĐỘ LÀM BÀI TEST (TJ 2026-10-13): đang làm đề TOEIC -> mọi thanh cố định (thanh app Notebooks/tab, hàng tab Từ vựng/TOEIC/…, thanh chat dưới đáy)
+     thu gọn để câu hỏi + ảnh + 4 đáp án + chỉ số vừa trọn 1 khung nhìn, KHÔNG phải cuộn. Rê chuột lên mép trên (máy tính) hoặc chạm tay nắm nhỏ ở mép trên (điện thoại) để hiện lại. */
+  function syncTestFocus() {
+    var on = !!(G.st && G.st.phase === "play" && G.st.qtype === "toeic" && $("#s-play") && !$("#s-play").hidden && G.view !== "screen" && !G.spectating);
+    document.body.classList.toggle("g-tplaying", on);
+    if (!on) document.body.classList.remove("g-topshow");
+    if (on === !!G.tFocus) return; G.tFocus = on;
+    if (!on) document.body.classList.remove("g-topshow");
+    focusParent(on);
+    setTimeout(fitTImg, 60);
+  }
+  function focusParent(on) { if (G.embed) { try { window.parent.postMessage({ type: "tjwl-game-focus", on: !!on }, location.origin); } catch (e) {} } }
+  function topShow(v) {
+    if (!document.body.classList.contains("g-tplaying")) return;
+    document.body.classList.toggle("g-topshow", !!v); focusParent(!v);
+    clearTimeout(G.topT); if (v) G.topT = setTimeout(function () { topShow(false); }, 6000);
+    setTimeout(fitTImg, 80);
+  }
+  document.addEventListener("click", function (e) { if (e.target.closest && e.target.closest("#g-tophandle")) topShow(!document.body.classList.contains("g-topshow")); });
+  document.addEventListener("mouseover", function (e) { if (e.target && e.target.id === "g-topzone") topShow(true); });
+  window.addEventListener("pagehide", function () { if (G.tFocus) focusParent(false); });
+  function show(id) { if (id === "s-play") G.soundPh = "play"; $$(".g-screen").forEach(function (s) { s.hidden = s.id !== id; }); document.body.classList.toggle("big", id === "s-screen"); paintSide(); syncTestFocus(); }
   function norm(t) { return String(t || "").toLowerCase().replace(/\s+/g, " ").trim(); }
   /* chấm câu GÕ TAY giống WordLoop (w.normalizeAnswer): bỏ dấu câu/ngoặc, thường hoá, gộp khoảng trắng */
   function normAns(s) { return String(s || "").normalize("NFC").toLowerCase().trim().replace(/[.,!?;:"'`()\[\]。，！？；：、¿¡“”‘’（）「」]/g, "").replace(/\s*\/\s*/g, " / ").replace(/\s+/g, " ").trim(); }
@@ -2416,9 +2437,11 @@
     if (s.phase === "end") { clearInterval(G.tick); return renderEnd(s); }
     if (s.phase === "play") {
       if (was !== "play" || $("#s-play").hidden) enterPlay(s);
+      syncTestFocus();
       paintBoard(s);
       if (s.mode === "kahoot" && s.q) paintKahoot(s);
     }
+    syncTestFocus();
   }
   function modeLine(s) { return (s.target && s.target !== "en" ? "🎯 " + FLAG[s.target] + " · " : "") + (s.mode === "kahoot" ? T("m_kahoot") + (untimed(s) ? "" : " · " + s.qs + " " + T("sec_q")) : T(s.race ? "m_race" : "m_free")) + (untimed(s) ? " · " + T("no_time") : ""); }
   /* 🔥 làm nóng giọng đọc: Chrome tải bộ đọc + danh sách giọng chậm ở lần đầu -> câu đầu bị trễ / im (TJ 2026-10-02) */
@@ -2497,7 +2520,7 @@
     }).join("");
     $("#p-board").innerHTML = list.map(function (x) {
       var p = roster[x.pid] || {};
-      return '<li class="' + (x.pid === G.me.id ? "me" : "") + '"><span class="g-rank">' + x.rank + "</span>" + avatar(p.avatar) +
+      return '<li title="' + esc(p.name || "") + '" class="' + (x.pid === G.me.id ? "me" : "") + ((s.q && s.q.picks && s.q.picks[x.pid] != null && !s.q.revealed) ? " dn" : "") + '"><span class="g-rank">' + x.rank + "</span>" + avatar(p.avatar) +
         '<span class="g-pname">' + label(p) + "</span>" + (teams ? teamDot((s.teamOf || {})[x.pid]) : "") +
         '<span class="g-streak">' + (x.st >= 2 ? "🔥" + x.st : "") + "</span>" + statsHTML(x, s) + tally(x, s) + "</li>";
     }).join("");
@@ -2916,7 +2939,7 @@
         (tc ? '<div class="g-row g-center"><button type="button" class="g-btn g-btn-soft g-btn-sm g-taud" data-tcue="' + esc(tc.url + "|" + tc.q.join("-") + "|" + (tc.g ? tc.g.join("-") : "")) + '">🔊 ' + esc(T("t_listen")) + "</button></div>" : "") +
         '<span class="g-gapline g-tstem"><b class="g-tnum">' + esc(q.num) + ".</b> " + esc(q.sent).replace("_______", '<span class="g-blank" style="width:4em"></span>') + "</span>";
       if (mine) $("#p-type").hidden = true;
-      if (mine && window.innerWidth < 1100) { var qv = $(textEl); setTimeout(function () { qv.scrollIntoView({ block: "start", behavior: "smooth" }); }, 50); }   /* điện thoại: bảng điểm chiếm ~410px -> cuộn tới đề để thấy A–D (QA v109) */
+      if (mine && window.innerWidth < 1100 && !document.body.classList.contains("g-tplaying")) { var qv = $(textEl); setTimeout(function () { qv.scrollIntoView({ block: "start", behavior: "smooth" }); }, 50); }   /* điện thoại: bảng điểm chiếm ~410px -> cuộn tới đề để thấy A–D (QA v109) */
       setTimeout(fitTImg, 0);
       var pk = (G.st && G.st.matchId || "") + ":" + q.num + ":" + (q.qn || ""); if (mine && tc && G.st && G.st.tplay && pk !== G.tPlayedQn) { G.tPlayedQn = pk; tAutoPlay(q); }
       $(optsEl).innerHTML = (q.opts || []).map(function (o) { return '<button class="g-opt g-topt" data-opt="' + esc(o) + '"><span class="g-otext">' + esc(o) + '</span><span class="g-pickers"></span></button>'; }).join(""); markLongOpts(optsEl);
