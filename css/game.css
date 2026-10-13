@@ -2124,3 +2124,11 @@ body.g-adm #p-mode{display:none}
 
 /* TJ 2026-10-13: đang thi thì bỏ nút 🔊 tròn trong khung câu hỏi (phát lại audio không hợp phòng thi; âm lượng/tắt tiếng nằm ở ⚙ Quản trị hoặc dòng đồng hồ) */
 body.g-playing .g-qvi .g-taud, body.g-playing .g-qvi > .g-row:has(.g-taud){display:none !important}
+
+/* 📌 Ghim thanh trên khi đang chơi (TJ 2026-10-13): ghim = về dòng chảy bình thường, luôn hiện; nhả = tự ẩn như cũ */
+#g-toppin{display:none}
+body.g-playing #g-toppin{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;margin-left:auto;padding:0;border:1px solid var(--line);border-radius:50%;background:transparent;color:var(--text-2);font-size:16px;cursor:pointer;opacity:.75}
+body.g-playing #g-toppin:hover{opacity:1}
+body.g-playing #g-toppin.on{opacity:1;background:var(--accent);border-color:var(--accent);color:#fff;transform:rotate(-20deg)}
+body.g-playing.g-toppin .g-top{position:static;transform:none;box-shadow:none}
+body.g-playing.g-toppin #g-tophandle{display:none}

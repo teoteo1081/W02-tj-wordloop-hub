@@ -156,7 +156,8 @@
     var on = !!(G.st && G.st.phase === "play" && $("#s-play") && !$("#s-play").hidden && G.view !== "screen" && !G.spectating);   /* MỌI loại ván đang chơi (từ vựng, Kahoot, test…) */
     document.body.classList.toggle("g-playing", on);
     document.body.classList.toggle("g-adm", on && !!G.isHost);
-    if (!on) { document.body.classList.remove("g-topshow", "g-admopen"); $("#g-admin").hidden = true; }
+    if (on && !G.tFocus && G.topPin) topPin(false);   /* vào ván mới: mặc định ẩn (không ghim) */
+    if (!on) { document.body.classList.remove("g-topshow", "g-admopen", "g-toppin"); G.topPin = false; $("#g-admin").hidden = true; }
     admMove();
     if (on === !!G.tFocus) return; G.tFocus = on;
     focusParent(on);
@@ -169,10 +170,21 @@
   var PK = { top: 0, adm: 0, hov: false };
   function playing() { return document.body.classList.contains("g-playing"); }
   function topShow(v, touch) {
-    if (v && !playing()) return; var b = document.body, was = b.classList.contains("g-topshow");
+    if (v && !playing()) return; if (!v && G.topPin) return;   /* đang 📌 ghim: không tự ẩn */
+    var b = document.body, was = b.classList.contains("g-topshow");
     b.classList.toggle("g-topshow", !!v);
     if (was !== !!v) { focusParent(!v); setTimeout(fitTImg, 120); }
     clearTimeout(PK.top); if (v) topArm(touch ? 4000 : 1500);
+  }
+  /* 📌 GHIM thanh trên (TJ 2026-10-13: "nút loa cam không đụng vào được, chưa rê tới menu đã hiện... cho nút Ghim; vào test mặc định ẩn"):
+     ghim = thanh trên trở về dòng chảy bình thường (luôn hiện, không che nội dung); nhả ghim = lại tự ẩn, rê mép trên / Esc để hiện. Mỗi ván mới mặc định KHÔNG ghim. */
+  function topPin(v) {
+    var b = document.body; G.topPin = !!v; b.classList.toggle("g-toppin", G.topPin);
+    var pb = $("#g-toppin"); if (pb) { pb.classList.toggle("on", G.topPin); pb.setAttribute("aria-pressed", G.topPin ? "true" : "false"); pb.title = G.topPin ? "Nhả ghim (thanh trên tự ẩn khi thi)" : "Ghim thanh trên (luôn hiện)"; }
+    clearTimeout(PK.top);
+    if (G.topPin) { if (!b.classList.contains("g-topshow")) { b.classList.add("g-topshow"); focusParent(false); } }
+    else if (b.classList.contains("g-topshow")) topArm(1500);
+    setTimeout(fitTImg, 120);
   }
   function topArm(ms) { PK.top = setTimeout(function () { if (PK.hov) topArm(800); else topShow(false); }, ms); }
   function admShow(v, touch) {
@@ -182,7 +194,8 @@
   }
   function admArm() { clearTimeout(PK.adm); PK.adm = setTimeout(function () { if (!PK.admIn) admShow(false); }, 1500); }
   document.addEventListener("click", function (e) {
-    if (e.target.closest("#g-tophandle")) topShow(!document.body.classList.contains("g-topshow"), true);
+    if (e.target.closest("#g-toppin")) topPin(!G.topPin);
+    else if (e.target.closest("#g-tophandle")) topShow(!document.body.classList.contains("g-topshow"), true);
     else if (e.target.closest("#g-righthandle")) admShow(!document.body.classList.contains("g-admopen"), true);
     else if (e.target.closest("#ga-x")) admShow(false);
     else if (e.target.closest("#g-admin")) { var a = e.target.closest("[data-ga]"); if (a) admAct(a.dataset.ga); }
@@ -194,10 +207,12 @@
   }, true);
   document.addEventListener("mousemove", function (e) {
     if (!playing() || (e.sourceCapabilities && e.sourceCapabilities.firesTouchEvents)) return;
-    var b = document.body, nearTop = e.clientY <= 48, nearR = e.clientX >= innerWidth - 40 && b.classList.contains("g-adm");
+    var b = document.body, nearTop = e.clientY <= 12, nearR = e.clientX >= innerWidth - 40 && b.classList.contains("g-adm");
     var inTop = !!e.target.closest(".g-top"), inAdm = !!e.target.closest("#g-admin");
     PK.hov = inTop || nearTop; PK.admIn = inAdm || nearR;
-    if (nearTop || inTop) topShow(true); else if (b.classList.contains("g-topshow") && !PK.top) topShow(true);
+    if (inTop) { clearTimeout(PK.dw); topShow(true); }
+    else if (nearTop) { if (!PK.dw) PK.dw = setTimeout(function () { PK.dw = 0; if (PK.hov) topShow(true); }, 300); }   /* chờ 0,3s mới hiện: rê ngang qua mép không bật menu */
+    else { clearTimeout(PK.dw); PK.dw = 0; if (b.classList.contains("g-topshow") && !PK.top) topShow(true); }
     if (nearR && !b.classList.contains("g-admopen")) admShow(true);
     if (b.classList.contains("g-admopen") && !PK.admIn) admArm(); else clearTimeout(PK.adm);
   });
