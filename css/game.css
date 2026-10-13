@@ -1608,7 +1608,12 @@ body.usersonly #g-main{max-width:none;padding:8px 14px 24px}
 .g-opt .g-pickers .g-av{width:26px;height:26px;font-size:15px;border:2px solid var(--card);box-sizing:border-box;margin-left:-6px;box-shadow:0 1px 3px rgba(0,0,0,.35)}
 .g-opt .g-pickers .g-av:first-child{margin-left:0}
 .g-opt .g-pickers .g-cnt{margin-left:6px}
-.g-timg{transition:max-height .2s ease}
+/* TS-075: khung ảnh đề cao cố định (JS fitTImg đặt height), ảnh contain + canh giữa + mờ hiện dần -> không nhảy bố cục giữa ảnh đứng/ngang/tải trễ */
+.g-timgbox{display:flex;align-items:center;justify-content:center;height:32vh;margin:0 auto 10px;max-width:100%;box-sizing:border-box}
+.g-timgbox .g-timg{max-height:100%;max-width:100%;width:auto;height:auto;margin:0;opacity:0;transition:opacity .22s ease}
+.g-timgbox .g-timg.ok{opacity:1}
+#p-vi.g-qaud{flex-direction:column;justify-content:center;align-items:center;gap:6px}
+#p-vi.g-qaud::before{content:"🎧";font-size:64px;line-height:1;opacity:.3}
 
 /* v195: avatar tròn + TÊN (TJ 2026-10-06 "đáp án vẫn chưa có tên") */
 .g-opt .g-pickers{gap:4px;justify-content:center}

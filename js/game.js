@@ -2949,26 +2949,63 @@
     body = body.replace(/^\[([^\]\n]{2,40})\]\n?/gm, '<span class="g-tdoc">$1</span>');
     /* OCR ghi chú định dạng bằng chữ "7:00 A.M. (underlined)" -> gạch chân thật (TJ 2026-10-04: thấy lạ) */
     body = body.replace(/([^\n—–]*?\S)\s*\((underlined|bold|bolded|in bold|italic|italics|circled|highlighted)\)/gi, function (m, t, k) { k = k.toLowerCase(); return /under/.test(k) ? "<u>" + t + "</u>" : /ital/.test(k) ? "<i>" + t + "</i>" : "<b>" + t + "</b>"; });
-    return (txt ? '<div class="g-tpass">' + body + "</div>" : "") + img.map(function (u) { return '<img class="g-timg" alt="" src="' + esc(u) + '">'; }).join("");
+    return (txt ? '<div class="g-tpass">' + body + "</div>" : "") + img.map(function (u) { return '<div class="g-timgbox"><img class="g-timg" alt="" onload="this.classList.add(&quot;ok&quot;)" onerror="this.classList.add(&quot;ok&quot;)" src="' + esc(u) + '"></div>'; }).join("");
   }
   /* 📐 ảnh đề vừa KHÍT màn hình đang dùng (TJ 2026-10-04: "tuỳ kích cỡ màn hình mà phải phù hợp"): đo chỗ trống thật
      = cao màn hình − phần phía trên ảnh − câu hỏi + 4 nút bên dưới. Không đủ chỗ (điện thoại, bảng vẽ đang mở) thì tính
      sau khi đã cuộn tới đề. Đo lại khi ảnh tải xong / xoay máy / đổi cỡ cửa sổ. */
+  /* TS-075 (TJ: "không có ảnh thì đáp án giật LÊN, có ảnh thì giật XUỐNG"): khung đề (#p-vi) của mọi câu TOEIC cao CỐ ĐỊNH = chỗ trống từ đỉnh khung tới khối đáp án vừa màn hình
+     -> (A)(B)(C)(D) + "Câu tiếp" đứng yên dù câu có ảnh đứng/ngang, đồ thị, không ảnh (Part 2, 5…). Đoạn văn dài (Part 6–7) cuộn BÊN TRONG khung (máy tính). */
+  function docY(e) { var y = 0; while (e) { y += e.offsetTop; e = e.offsetParent; } return y; }   /* toạ độ trang KHÔNG tính hiệu ứng trượt g-in */
+  function fitQBox() {
+    var vi = $("#p-vi"); if (!vi) return;
+    var q = G.st && G.st.q, on = !!(q && q.type === "toeic" && vi.offsetParent);
+    var tp = vi.querySelector(".g-tpass"); if (tp) tp.style.maxHeight = "";
+    vi.classList.toggle("g-qaud", on && q.part <= 4 && !q.sent && !vi.querySelector(".g-tpass,.g-timgbox"));   /* câu chỉ nghe (Part 2…): biểu tượng 🎧 nhạt giữ chỗ vùng media */
+    if (!on) { vi.style.minHeight = ""; return; }
+    var ops = $("#p-opts"), rv = $("#p-reveal"), card = vi.parentNode;
+    var sub1 = card.querySelector(".g-tsub");   /* nhóm 3 câu: chỉ tính câu đầu (giống fitTImg) */
+    var after = sub1 ? sub1.offsetHeight + 28 : (ops ? ops.offsetTop + ops.offsetHeight - vi.offsetTop - vi.offsetHeight : 0) + 28   /* offset* (không tính hiệu ứng trượt g-in) */;
+    if (rv && !rv.hidden) after += rv.offsetHeight + 8;
+    var vh = window.innerHeight, top = docY(vi), cardTop = docY(card);
+    var H = vh - top - after - 24;
+    if (H < 200) H = vh - (top - cardTop) - after - 24;
+    H = Math.max(sub1 ? 230 : 160, Math.round(H));
+    if (Math.abs((parseFloat(vi.style.minHeight) || 0) - H) > 1) vi.style.minHeight = H + "px";
+    if (tp && window.innerWidth > 600) { var over = vi.offsetHeight - H; if (over > 1) tp.style.maxHeight = Math.max(120, tp.clientHeight - over) + "px"; }
+  }
   function fitTImg() {
+    fitQBox();
     $$(".g-timg").forEach(function (img) {
-      if (!img.offsetParent) return;
-      var box = img.closest(".g-qvi") || img.parentNode, card = box.parentNode;
-      var below = 0, sib = img.nextElementSibling; while (sib) { below += sib.offsetHeight; sib = sib.nextElementSibling; }
+      var fr = img.parentNode && img.parentNode.classList.contains("g-timgbox") ? img.parentNode : null;
+      if (img.complete && img.naturalWidth) img.classList.add("ok");   /* ảnh đã có trong cache -> hiện ngay */
+      var me = fr || img; if (!me.offsetParent) return;
+      var box = img.closest(".g-qvi") || me.parentNode, card = box.parentNode;
+      var below = 0, sib = me.nextElementSibling; while (sib) { below += sib.offsetHeight; sib = sib.nextElementSibling; }
       var ops = card && card.querySelector(".g-opts"), rv = card && card.querySelector("#p-reveal");
       var sub1 = card && card.querySelector(".g-tsub");   /* nhóm 3 câu (hình "Look at the graphic"): chỉ chừa chỗ cho câu đầu, không ép hình còn 120px (QA thiết kế) */
-      var after = sub1 ? sub1.offsetHeight + 28 : ops ? ops.getBoundingClientRect().bottom - box.getBoundingClientRect().bottom + 28 : 0;   /* tới hết 4 nút + 1 dòng thông báo (Xem lại: không tính lời giải dài bên dưới) */
+      var after = sub1 ? sub1.offsetHeight + 28 : ops ? ops.offsetTop + ops.offsetHeight - box.offsetTop - box.offsetHeight + 28 : 0;   /* tới hết 4 nút + 1 dòng thông báo (Xem lại: không tính lời giải dài bên dưới) */
       if (rv && !rv.hidden) after += rv.offsetHeight + 8;   /* host 🎧 theo audio: nút "Câu tiếp ▶" */
-      var docTop = img.getBoundingClientRect().top + window.scrollY, boxTop = box.getBoundingClientRect().top + window.scrollY;
-      var need = below + after + 24, vh = window.innerHeight;
+      var docTop = docY(me), boxTop = docY(box);
+      var need = below + after + 36, vh = window.innerHeight;
       var h = vh - docTop - need;                       /* vừa ngay không cần cuộn */
       if (h < 180) h = vh - (docTop - boxTop) - need;   /* không đủ -> vừa sau khi cuộn tới đề */
-      img.style.maxHeight = Math.max(120, Math.round(h)) + "px";
+      if (fr && box.id === "p-vi" && parseFloat(box.style.minHeight)) h = parseFloat(box.style.minHeight) - below - (docY(fr) - docY(box)) - 16;   /* khung ảnh lấp đầy phần còn lại của khung đề (cùng 1 phép tính với fitQBox) */
+      h = Math.max(150, Math.round(h));
+      /* TS-075: KHUNG ảnh cao CỐ ĐỊNH (không phụ thuộc ảnh đứng/ngang hay đã tải xong) -> đáp án + nút Câu tiếp đứng yên giữa các câu */
+      if (fr) { if (Math.abs((parseFloat(fr.style.height) || 0) - h) > 1) fr.style.height = h + "px"; } else img.style.maxHeight = h + "px";
     });
+  }
+  /* TS-075: tải trước ảnh của vài câu kế tiếp (máy host có sẵn danh sách đề) để sang câu là hiện luôn */
+  function tPreloadNext(q) {
+    try {
+      var L = G.tItems || []; if (!L.length || !q) return; var i = -1;
+      for (var k = 0; k < L.length; k++) if (L[k].num === q.num) { i = k; break; }
+      if (i < 0) return; G.tPre = G.tPre || {};
+      for (var j = i + 1; j <= i + 3 && j < L.length; j++) String(L[j].passage || "").split("\n").forEach(function (l) {
+        var m = l.match(/^\[img\]\s*(https:\/\/\S+)$/); if (m && !G.tPre[m[1]]) { G.tPre[m[1]] = 1; new Image().src = m[1]; }
+      });
+    } catch (e) {}
   }
   window.addEventListener("resize", function () { clearTimeout(G.fitT); G.fitT = setTimeout(fitTImg, 150); });
   /* 🔍 chạm hình đề -> phóng to cả màn hình (kéo 2 ngón để zoom), chạm lần nữa để đóng */
@@ -2984,6 +3021,7 @@
     [textEl, optsEl].forEach(function (sel) { var el = $(sel); if (!el) return; el.classList.remove("g-in"); void el.offsetWidth; el.classList.add("g-in"); });
     $(hintEl).textContent = T(QHINT[q.type] || "q_meaning");
     var mine = optsEl === "#p-opts";
+    if (mine && q.type !== "toeic") $(textEl).style.minHeight = "";   /* TS-075: hết đề thi -> bỏ chiều cao cố định của khung đề */
     if (mine) { $("#p-saywrap").hidden = q.type !== "dict" && q.type !== "listen"; $("#p-res").innerHTML = ""; paintSoundBtn(); paintReplay(q); }
     var oe0 = $(optsEl); if (oe0) oe0.classList.toggle("g-tbook", q.type === "toeic");   /* 📖 đề thi: đáp án xếp dọc như sách (TJ 2026-10-04) */
     if (q.type === "toeic") {
@@ -3003,16 +3041,17 @@
         var pk = (G.st && G.st.matchId || "") + ":" + q.num + ":" + (q.qn || "");
         if (mine && tc && G.st && G.st.tplay && pk !== G.tPlayedQn) { G.tPlayedQn = pk; tAutoPlay(q); }
         else if (mine && !(tc && G.st && G.st.tplay)) { setTimeout(tShowNext, 0); if (G.st && G.st.mode === "free" && !G.st.race) G.tQEnd = Date.now() + ((T_SEC[q.part] || 30) * q.subs.length + 45) * 1000; }
+        fitTImg(); tPreloadNext(q);
         return;
       }
       $(textEl).innerHTML = tPassHTML(q.passage, q.num) +
         (tc ? '<div class="g-row g-center"><button type="button" class="g-btn g-btn-soft g-btn-sm g-taud" data-tcue="' + esc(tc.url + "|" + tc.q.join("-") + "|" + (tc.g ? tc.g.join("-") : "")) + '">🔊 ' + esc(T("t_listen")) + "</button></div>" : "") +
         '<span class="g-gapline g-tstem"><b class="g-tnum">' + esc(q.num) + ".</b> " + esc(q.sent).replace("_______", '<span class="g-blank" style="width:4em"></span>') + "</span>";
       if (mine) $("#p-type").hidden = true;
-      if (mine && window.innerWidth < 1100) { var qv = $(textEl); setTimeout(function () { qv.scrollIntoView({ block: "start", behavior: "smooth" }); }, 50); }   /* điện thoại: bảng điểm chiếm ~410px -> cuộn tới đề để thấy A–D (QA v109) */
+      if (mine && window.innerWidth < 1100) { var qv = $(textEl); setTimeout(function () { if (Math.abs(qv.getBoundingClientRect().top) > 8) qv.scrollIntoView({ block: "start", behavior: "smooth" }); }, 50); }   /* TS-075: đã ở đúng chỗ thì KHÔNG cuộn lại mỗi câu */   /* điện thoại: bảng điểm chiếm ~410px -> cuộn tới đề để thấy A–D (QA v109) */
       setTimeout(fitTImg, 0);
       var pk = (G.st && G.st.matchId || "") + ":" + q.num + ":" + (q.qn || ""); if (mine && tc && G.st && G.st.tplay && pk !== G.tPlayedQn) { G.tPlayedQn = pk; tAutoPlay(q); }
-      $(optsEl).innerHTML = (q.opts || []).map(function (o) { return '<button class="g-opt g-topt" data-opt="' + esc(o) + '"><span class="g-otext">' + esc(o) + '</span><span class="g-pickers"></span></button>'; }).join(""); markLongOpts(optsEl);
+      $(optsEl).innerHTML = (q.opts || []).map(function (o) { return '<button class="g-opt g-topt" data-opt="' + esc(o) + '"><span class="g-otext">' + esc(o) + '</span><span class="g-pickers"></span></button>'; }).join(""); markLongOpts(optsEl); fitTImg(); tPreloadNext(q);
       return;
     }
     if (q.type === "sheet") {
