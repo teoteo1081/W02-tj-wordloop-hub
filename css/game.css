@@ -585,8 +585,18 @@ body.embed .g-brand{display:none}
 @media (max-width:700px){ body.g-exam .g-exnav{position:fixed;left:0;right:0;bottom:0;margin:0;justify-content:center;padding:8px 12px calc(8px + env(safe-area-inset-bottom))} body.g-exam #s-play{padding-bottom:80px} }   /* QA v129 #6: điện thoại — ◀ ▶ Nộp bài luôn nằm đáy màn hình */
 .g-tips details{border-bottom:1px solid var(--line,#3334);padding:6px 0}.g-tips summary{cursor:pointer;padding:4px 0}.g-tips ul{margin:6px 0 4px;padding-left:20px}.g-tips li{margin:6px 0;line-height:1.5}
 /* 🎧 nhóm 3 câu Part 3–4 */
-.g-tsub{margin:10px 0 4px;text-align:left}.g-tsub .g-tstem{margin-bottom:6px}
-.g-tsubopts{display:grid;grid-template-columns:1fr 1fr;gap:6px}@media (max-width:600px){.g-tsubopts{grid-template-columns:1fr}}
+/* TS-074 (2026-10-13): nhóm 3 câu = 3 THẺ dọc rộng hết khung; đáp án lưới 2 cột khi thẻ >= ~334px, 1 cột khi hẹp; chữ xuống dòng theo TỪ (không ngắt giữa từ). Nhiều thẻ cạnh nhau chỉ khi mỗi thẻ >= 340px. */
+.g-opts.g-opts:has(> .g-tsub){display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:14px;align-items:start;margin-top:12px}
+.g-opts.g-opts:has(> .g-tsub) > :not(.g-tsub){grid-column:1/-1;margin:0}
+.g-tsub{margin:0;padding:12px;border:1px solid var(--line);border-radius:12px;text-align:left;min-width:0}
+.g-tsub .g-tstem{margin-bottom:10px;font-size:17px;line-height:1.4;overflow-wrap:break-word;word-break:normal;hyphens:none}
+.g-tsub:has(.g-opt.g-picked){border-color:var(--vi)}
+.g-tsub:has(.g-opt.g-picked) .g-tnum::after{content:"✓";display:inline-block;width:1.4em;height:1.4em;line-height:1.4em;margin-left:6px;text-align:center;border-radius:50%;background:var(--green);color:#fff;font-size:.7em;vertical-align:.15em}
+.g-tsubopts{display:grid;grid-template-columns:repeat(auto-fit,minmax(max(150px,calc(50% - 4px)),1fr));gap:8px}
+.g-tsub .g-tsubopts .g-opt{min-width:0;min-height:48px;padding:10px 12px;font-size:16px;line-height:1.4;font-weight:500;text-align:left;justify-content:flex-start;word-break:normal;overflow-wrap:break-word;hyphens:none}
+.g-tsub .g-tsubopts .g-opt .g-otext{word-break:normal;overflow-wrap:break-word;hyphens:none}
+.g-opts:has(> .g-tsub) #p-tskip{width:100%;min-height:48px;font-size:16px}
+.g-opts:has(> .g-tsub) > .g-row{display:block}
 .g-tnext{margin-top:12px;padding:8px 10px;border:1px dashed var(--line,#3335);border-radius:10px;text-align:left;opacity:.85}
 .g-tnq{margin:6px 0}.g-tnq small{display:block;opacity:.75;margin-top:2px}
 body.g-tahead #p-opts .g-tsub{display:none}body.g-tahead #p-opts .g-tnext{opacity:1;border-style:solid}
@@ -604,7 +614,7 @@ body.g-tahead #p-opts .g-tsub{display:none}body.g-tahead #p-opts .g-tnext{opacit
 .g-apm .g-btn:first-child{flex:1;text-align:left}
 .g-aptip{font-size:.85em}
 /* đáp án dài -> 1 cột, chữ canh trái (câu chèn Part 6, câu hỏi Part 3–4/7) */
-.g-opts.g-opts-1,.g-tsubopts.g-opts-1{grid-template-columns:1fr}
+.g-opts.g-opts-1{grid-template-columns:1fr}
 .g-opts-1 > .g-opt{text-align:left;justify-content:flex-start;font-weight:500;line-height:1.4}
 /* 📜 lời thoại ở 📖 Xem lại */
 .g-scr{margin-top:10px;text-align:left}
@@ -618,14 +628,8 @@ body.g-tahead #p-opts .g-tsub{display:none}body.g-tahead #p-opts .g-tnext{opacit
 .g-opts.g-tbook{display:flex;flex-direction:column;gap:6px;text-align:left}
 .g-tbook .g-opt{display:flex;align-items:center;gap:8px;min-height:44px;padding:8px 12px;border-width:1px;border-radius:9px;text-align:left;font-size:16px;font-weight:500;line-height:1.4}
 .g-tbook .g-opt .g-otext{flex:1;min-width:0}
-.g-tbook .g-tsub{margin:6px 0 12px}
-.g-tbook .g-tsub .g-tstem{font-size:16px;font-weight:600;padding-left:2.1em;text-indent:-2.1em;margin-bottom:6px}
-.g-tbook .g-tsubopts{display:flex;flex-direction:column;gap:5px;padding-left:2.1em}
-@media (min-width:1100px){
-  .g-opts.g-tbook:has(.g-tsub){display:grid;grid-template-columns:1fr 1fr;column-gap:22px;align-items:start}
-  .g-tbook > .g-row,.g-tbook > .g-tnext{grid-column:1/-1}
-}
-@media (max-width:600px){ .g-tbook .g-tsubopts{padding-left:0} .g-tbook .g-tsub .g-tstem{font-size:17px} .g-tbook .g-opt{font-size:17px} }
+.g-tbook .g-tsub .g-tstem{font-weight:600}
+@media (max-width:600px){ .g-tbook .g-opt{font-size:17px} }
 .g-tbook .g-opt,.g-tbook .g-opt .g-otext{text-align:left!important;justify-content:flex-start!important}
 .g-tbook .g-opt{min-height:40px;padding:7px 12px;flex-direction:row}
 /* 🎯 phòng chờ người chơi: giới thiệu TOEIC + chiến thuật */
