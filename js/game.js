@@ -3127,6 +3127,7 @@
       var typed = q.type === "recall" || q.type === "dict" || q.type === "write";
       G.log.push({ hint: $("#p-hint").textContent, vi: vi.innerHTML, opts: opts.innerHTML, msg: q.subs ? "✓ " + q.subs.filter(function (sq, i) { return (mine || [])[i] != null && norm(mine[i]) === norm(sq.ans); }).length + "/" + q.subs.length : q.type === "toeic" ? (mine == null ? T("t_skip") : q.pend ? "📝 " + T("t_pend", { a: mine }) : ok ? "✓ " + T("t_right") : "✗ " + T("t_wrong")) : $("#p-msg").textContent.split("  ·  " + T("wait_nextq")).join(""), res: q.type === "toeic" ? (q.pend ? '<div class="g-sub">⏳ ' + esc(T("t_nokey")) + "</div>" : toeicExpl(q)) : $("#p-res").innerHTML,
                    mine: typed ? (mine == null ? "" : String(mine)) : null, ans: typeof q.ans === "string" ? q.ans : "", ok: !!ok, typed: typed, played: iPlay(),
+                   pk: q.type === "toeic" ? tqLivePicks(q, mine) : null, ros: q.type === "toeic" ? tqLiveRoster(q, mine) : null,   /* TS-012: ai chọn gì, chụp tại chỗ để Xem lại luôn có avatar+tên dù chưa có game_answers / matchId */
                    wid: q.type === "sheet" ? null : q.wid, tg: tgt() !== "en" ? tgt() : null, sl: q.type === "dict" ? "en" : tgt(),
                    tq: q.type === "toeic" ? { test: q.test || (G.st && G.st.test && G.st.test.test), part: q.part || (G.st && G.st.test && G.st.test.part), num: q.num, vocab: q.vocab || [], full: toeicFull(q), audl: (String(q.passage || "").match(/^\[aud\][^\n]*/m) || [""])[0], gEnd: q.gEnd || null, last: q.subs ? q.subs[q.subs.length - 1].num : q.num, nums: q.subs ? q.subs.map(function (x) { return x.num; }) : null } : null,
                    say: q.type === "toeic" ? toeicFull(q) : q.type === "dict" ? q.say || q.ans : q.type === "en2m" ? baseTerm(q.word) : q.type === "write" ? baseTerm(q.term) : typeof q.ans === "string" ? baseTerm(q.ans) : "" });
@@ -3423,6 +3424,7 @@
              msg: isGroup ? "✓ " + nOk + "/" + grp.length : c0 == null ? T("t_skip") : q.pend ? "📝 " + T("t_pend", { a: c0 }) : ok ? "✓ " + T("t_right") : "✗ " + T("t_wrong"),
              res: !isGroup && q.pend ? '<div class="g-sub">⏳ ' + esc(T("t_nokey")) + "</div>" : toeicExpl(q),
              mine: null, ans: q.ans || "", ok: ok, typed: false, played: true, wid: null, tg: null, sl: "en",
+             pk: G.me && G.me.id ? (function (o) { var v = isGroup ? grp.map(mc) : mc(grp[0]); if (isGroup ? v.some(function (x) { return x != null; }) : v != null) o[G.me.id] = v; return o; })({}) : null, ros: G.me ? (function (o) { o[G.me.id] = { name: G.me.name, avatar: G.me.avatar }; return o; })({}) : null,   /* TS-012: dự phòng nếu game_answers không đọc được */
              tq: { test: q.test, part: q.part, num: q.num, vocab: q.vocab || [], full: toeicFull(q), audl: (String(q.passage || "").match(/^\[aud\][^\n]*/m) || [""])[0], gEnd: q.gEnd || null, last: q.subs ? q.subs[q.subs.length - 1].num : q.num, nums: q.subs ? q.subs.map(function (x) { return x.num; }) : null },
              say: toeicFull(q) };
   }
@@ -3529,14 +3531,12 @@
   $("#rv-wrong").addEventListener("click", async function () {
     var R = G.rv || G.log;
     if (G.rvOnlyWrong) { G.rvOnlyWrong = false; return renderReview(rvI); }
-    var mid = G.rvMid || G.logMatch; if (!mid || !/^[0-9a-f-]{20,}$/i.test(String(mid))) return;
-    this.textContent = "⏳"; var M = await tqPickMap(mid), idx = [];
+    var mid = G.rvMid || G.logMatch; this.textContent = "⏳"; var M = mid && /^[0-9a-f-]{20,}$/i.test(String(mid)) ? await tqPickMap(mid) : null, idx = [];   /* không có matchId -> dùng L.pk chụp lúc làm (cùng tqWho với Xem lại) */
     R.forEach(function (L, i) {
       if (!L.tq) return;
       var d = document.createElement("div"); d.innerHTML = L.opts; var bad = false;
       d.querySelectorAll(".g-opt").forEach(function (b) {
-        var num = b.dataset.sub != null && L.tq.nums ? L.tq.nums[+b.dataset.sub] : L.tq.num, m0 = M["toeic:" + L.tq.test + ":" + L.tq.part + ":" + num] || {}, who = m0[norm(b.dataset.opt)] || [];
-        if (who.length && !b.classList.contains("ok")) bad = true;
+        if (tqWho(L, M, b).length && !b.classList.contains("ok")) bad = true;
       });
       if (bad) idx.push(i);
     });
@@ -4118,6 +4118,39 @@
       (out[0].l !== "en" && out[0].x.passage ? '<details class="g-tpdet"><summary>' + esc(T("t_ptr")) + "</summary>" + '<div class="g-tpass">' + esc(out[0].x.passage) + "</div></details>" : "") +
       (q.asrc === "claude" ? '<div class="g-sub">⚠️ ' + esc(T("t_claude")) + "</div>" : "") + "</div>";
   }
+  /* TS-012: dữ liệu DỰ PHÒNG cho avatar+tên người đã chọn — chụp ngay lúc lộ đáp án (bộ nhớ ván), không chờ game_answers (host chỉ ghi lúc HẾT ván,
+     và matchId có thể rỗng -> trước đây mất sạch avatar, kể cả 1 người chơi). pk = {pid: lựa chọn | mảng lựa chọn của nhóm 3 câu}. */
+  function tqLivePicks(q, mine) {
+    var out = {}, src = q.picks && !Array.isArray(q.picks) ? q.picks : null;   /* Kahoot: host gửi picks của cả phòng; tự do chỉ có của mình */
+    if (src) Object.keys(src).forEach(function (pid) { if (src[pid] != null) out[pid] = src[pid]; });
+    if (G.me && G.me.id && mine != null && !(Array.isArray(mine) && !mine.some(function (x) { return x != null; }))) out[G.me.id] = mine;
+    return out;
+  }
+  function tqLiveRoster(q, mine) {
+    var out = {}, ros = Object.assign({}, G.plCache || {}, (G.st && G.st.roster) || {});
+    Object.keys(tqLivePicks(q, mine)).forEach(function (pid) { var p = ros[pid] || (G.me && G.me.id === pid ? G.me : null); if (p) out[pid] = { name: p.name || "", avatar: p.avatar }; });
+    return out;
+  }
+  /* ai đã chọn đáp án (nút) b của câu L: ưu tiên game_answers (M) nếu có dòng của câu này, không thì dùng L.pk chụp lúc làm */
+  function tqWho(L, M, b) {
+    var tq = L.tq, i = b.dataset.sub != null && tq.nums ? +b.dataset.sub : -1, num = i >= 0 ? tq.nums[i] : tq.num, o = norm(b.dataset.opt);
+    var m0 = M && M["toeic:" + tq.test + ":" + tq.part + ":" + num];
+    if (m0) return m0[o] || [];
+    var out = []; Object.keys(L.pk || {}).forEach(function (pid) {
+      var c = L.pk[pid]; if (b.dataset.sub != null) c = Array.isArray(c) ? c[+b.dataset.sub] : null;
+      if (c != null && !Array.isArray(c) && norm(String(c)) === o) out.push(pid);
+    });
+    return out;
+  }
+  /* MỘT hàm vẽ avatar+tên dưới từng đáp án cho mọi nơi Xem lại đề thi (Xem lại trong ván, Ôn ngay ván cũ, ❌ Câu sai, nhóm 3 câu) */
+  function tqPaintPicks(L, M, ros) {
+    $$("#rv-opts .g-opt").forEach(function (b) {
+      var who = tqWho(L, M, b), box = b.querySelector(".g-pickers"); if (!box) { box = document.createElement("span"); box.className = "g-pickers"; b.appendChild(box); }
+      if (who.length && !b.classList.contains("ok")) b.classList.add("bad");   /* người chọn sai -> đáp án đó đỏ (TJ 2026-10-06) */
+      box.innerHTML = who.map(function (pid) { var p = ros[pid] || {}; return '<span class="g-pk" title="' + esc(p.name || "") + '">' + avatar(p.avatar, "g-av-sm") + '<em>' + esc(p.name || "") + "</em></span>"; }).join("");
+    });
+    if (G.rvOnlyWrong && L.tq.nums && L.tq.nums.length > 1) $$("#rv-opts .g-tsub").forEach(function (s) { s.hidden = !s.querySelector(".g-opt.bad"); });   /* ❌ chỉ xem câu sai: ẩn câu con ai chọn cũng đúng */
+  }
   /* 👥 XEM LẠI đề thi: avatar những người đã chọn từng đáp án (TJ 2026-10-04). Lấy từ game_answers của ván (host ghi lúc kết thúc,
      nên thử lại vài lần); avatar nằm DƯỚI chữ đáp án, không đè lên. */
   function tqPickMap(mid) {
@@ -4141,21 +4174,19 @@
     })());
   }
   async function tqPickAvatars(L) {
-    var mid = G.rvMid || G.logMatch; if (!mid || !/^[0-9a-f-]{20,}$/i.test(String(mid))) return;
-    var M = await tqPickMap(mid), tq = L.tq, ros = Object.assign({}, G.plCache || {}, (G.st && G.st.roster) || {});
+    var mid = G.rvMid || G.logMatch, okMid = mid && /^[0-9a-f-]{20,}$/i.test(String(mid));
+    var ros = Object.assign({}, G.plCache || {}, (G.st && G.st.roster) || {}, L.ros || {});
+    if (G.me && G.me.id && !ros[G.me.id]) ros[G.me.id] = { name: G.me.name, avatar: G.me.avatar };
+    tqPaintPicks(L, null, ros);   /* vẽ NGAY từ dữ liệu chụp lúc làm (người chơi 1 mình / chưa có matchId / game_answers chưa ghi) */
+    if (!okMid) return;
+    var M = await tqPickMap(mid);   /* rồi nâng cấp lên dữ liệu đầy đủ của ván khi game_answers đã có */
+    if (!Object.keys(M).length) return;
     /* roster của phòng hiện tại có thể không còn người đó (ván cũ / đã về phòng chờ) -> lấy tên + avatar từ bảng người chơi để KHÔNG mất avatar/tên */
     var miss = {}; Object.keys(M).forEach(function (k) { Object.keys(M[k]).forEach(function (o) { M[k][o].forEach(function (pid) { if (!ros[pid]) miss[pid] = 1; }); }); });
     var mk = Object.keys(miss);
     if (mk.length) { try { var pr = await sb.from("game_players").select("id,name,avatar").in("id", mk); G.plCache = G.plCache || {}; (pr.data || []).forEach(function (x) { G.plCache[x.id] = { name: x.name, avatar: x.avatar }; ros[x.id] = G.plCache[x.id]; }); } catch (e) {} }
     if (rvCur() !== L) return;   /* đã sang câu khác */
-    $$("#rv-opts .g-opt").forEach(function (b) {
-      var num = b.dataset.sub != null && tq.nums ? tq.nums[+b.dataset.sub] : tq.num, m0 = M["toeic:" + tq.test + ":" + tq.part + ":" + num] || {}, who = m0[norm(b.dataset.opt)] || [];
-      var box = b.querySelector(".g-pickers"); if (!box) { box = document.createElement("span"); box.className = "g-pickers"; b.appendChild(box); }
-      if (who.length && !b.classList.contains("ok")) b.classList.add("bad");   /* người chọn sai -> đáp án đó đỏ (TJ 2026-10-06) */
-      box.innerHTML = who.map(function (pid) { var p = ros[pid] || {}; return '<span class="g-pk" title="' + esc(p.name || "") + '">' + avatar(p.avatar, "g-av-sm") + '<em>' + esc(p.name || "") + "</em></span>"; }).join("");
-    });
-    /* ❌ chỉ xem câu sai: trong nhóm Part 3–4, ẩn câu con mà ai chọn cũng đúng */
-    if (G.rvOnlyWrong && tq.nums && tq.nums.length > 1) $$("#rv-opts .g-tsub").forEach(function (s) { s.hidden = !s.querySelector(".g-opt.bad"); });
+    tqPaintPicks(L, M, ros);
   }
   function paintPickers(q, roster, sel) {
     if (q.type === "toeic") return;   /* 🎯 làm đề: không tô đáp án lúc đang làm (màn hình chung cũng vậy) */
