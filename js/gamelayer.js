@@ -111,6 +111,13 @@
     if (e.origin !== location.origin || !e.data || e.data.type !== "tjwl-game-focus") return;
     document.body.classList.toggle("game-focus", !!e.data.on && isOpen());
   });
+  /* thanh WordLoop đang hiện tạm khi chơi: báo cho game biết chuột có đang ở trên thanh không (game chỉ tự ẩn lại khi chuột đã rời) */
+  var hovLast = false;
+  document.addEventListener("mouseover", function (e) {
+    var over = !!(e.target.closest && e.target.closest(".topbar, #sidebar-left, #sidebar-right, .mobile-nav"));
+    if (over === hovLast) return; hovLast = over;
+    try { if (layer.firstChild && layer.firstChild.contentWindow) layer.firstChild.contentWindow.postMessage({ type: "tjwl-parent-hover", on: over }, location.origin); } catch (er) {}
+  });
   w.addEventListener("message", function (e) {
     if (e.origin !== location.origin || !e.data || e.data.type !== "tjwl-board-on") return;
     var on = !!e.data.on, doc = !!e.data.doc;

@@ -2089,12 +2089,12 @@ body.bd-focus .bd .bd-feed,body.bd-focus .bd .bd-people{display:none !important}
    · hàng người chơi: ô cố định (không nhảy), cuộn ngang, thấy đủ mọi người
    =================================================================================================== */
 #g-topzone,#g-tophandle{display:none}
-body.g-tplaying #g-topzone{display:block;position:fixed;top:0;left:0;right:0;height:6px;z-index:70}
-body.g-tplaying #g-tophandle{display:flex;position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:73;width:64px;height:24px;align-items:flex-start;justify-content:center;border:0;background:transparent;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
-#g-tophandle i{display:block;width:36px;height:5px;margin-top:5px;border-radius:3px;background:var(--text-2);opacity:.6}
-body.g-tplaying .g-top{position:fixed;left:0;right:0;top:0;z-index:72;transform:translateY(-120%);transition:transform .18s ease;box-shadow:0 6px 16px rgba(0,0,0,.45)}
-body.g-tplaying.g-topshow .g-top{transform:none}
-@media (prefers-reduced-motion:reduce){body.g-tplaying .g-top{transition:none}}
+body.g-playing #g-topzone{display:none}
+body.g-playing #g-tophandle{display:block;position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:73;width:64px;height:8px;padding:0;border:0;border-radius:0 0 6px 6px;background:rgba(255,255,255,.28);cursor:pointer;-webkit-tap-highlight-color:transparent}
+#g-tophandle:hover{background:rgba(255,255,255,.5)}
+body.g-playing .g-top{position:fixed;left:0;right:0;top:0;z-index:72;transform:translateY(-120%);transition:transform .18s ease;box-shadow:0 6px 16px rgba(0,0,0,.45)}
+body.g-playing.g-topshow .g-top{transform:none}
+@media (prefers-reduced-motion:reduce){body.g-playing .g-top{transition:none}}
 
 body.g-tplaying{padding-bottom:0 !important;overflow:hidden}
 body.g-tplaying #g-main{max-width:1100px;height:100vh;height:100dvh;padding:8px 10px 6px;display:flex;flex-direction:column}
@@ -2199,3 +2199,28 @@ body.g-tplaying #s-play > .g-statbar{order:1}
 @media (min-width:900px){ body.g-tplaying .g-opts.g-tbook:not(.g-tabcd):not(:has(.g-tsub)){display:grid;grid-template-columns:1fr 1fr;gap:8px} }
 body.g-tplaying .g-qvi:not(:has(.g-tstem)):not(:has(.g-timg)):not(:has(.g-tpass)){min-height:0;margin:0}
 body.g-tplaying .g-tbook .g-tsubopts .g-opt{min-height:36px;padding:4px 10px;font-size:15px}
+
+/* ===== ⚙ Quản trị (chỉ host, chỉ khi đang chơi) + vạch mỏng mép trên / mép phải (không chiếm chỗ) ===== */
+#g-righthandle,#g-admin{display:none}
+body.g-playing.g-adm #g-righthandle{display:block;position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:73;width:8px;height:64px;padding:0;border:0;border-radius:6px 0 0 6px;background:rgba(255,255,255,.28);cursor:pointer}
+body.g-playing.g-adm #g-righthandle:hover{background:rgba(255,255,255,.5)}
+body.g-playing.g-adm #g-admin:not([hidden]){display:flex;flex-direction:column;position:fixed;z-index:80;top:0;right:0;bottom:0;width:min(360px,92vw);background:var(--deep);border-left:1px solid var(--line);box-shadow:-10px 0 28px rgba(0,0,0,.5);animation:gaIn .16s ease-out}
+@keyframes gaIn{from{transform:translateX(30px);opacity:0}to{transform:none;opacity:1}}
+.ga-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--line);font-size:16px}
+#ga-x{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--card);cursor:pointer;font-size:16px}
+.ga-body{flex:1;overflow:auto;padding:4px 14px 18px}
+.ga-body h3{margin:16px 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-2)}
+.ga-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0}
+.ga-players{max-height:34vh;margin:0}
+.ga-players li{padding:4px 8px;gap:6px;margin-bottom:3px;font-size:14px}
+.ga-players .g-tally{margin-left:auto;white-space:nowrap;font-variant-numeric:tabular-nums}
+.ga-dn{color:var(--green);font-style:normal;font-size:10px}
+#ga-snd .g-qtools{margin:0;display:flex;gap:8px;align-items:center}
+#ga-snd #p-replay{display:none}
+#ga-end #p-stop{display:inline-flex;margin:0}
+@media (max-width:700px){
+  body.g-playing.g-adm #g-admin:not([hidden]){top:auto;left:0;right:0;width:auto;max-height:78dvh;border-left:0;border-top:1px solid var(--line);border-radius:16px 16px 0 0;box-shadow:0 -10px 28px rgba(0,0,0,.5);animation:gaUp .18s ease-out}
+  @keyframes gaUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+}
+/* host đang chơi: không rải nút quản trị ngoài ngăn kéo */
+body.g-adm #p-mode{display:none}

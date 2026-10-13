@@ -2493,4 +2493,4 @@ body.board-skin .lbd-people{margin-top:1rem}
 
 /* 🎯 Game đang làm bài test (js/gamelayer.js, tjwl-game-focus): ẩn thanh trên + thanh dưới của WordLoop, khung game phủ cả màn hình */
 body.game-focus .topbar,body.game-focus .mobile-nav{display:none !important}
-body.game-focus .game-layer:not(.board-fit){top:0 !important;bottom:0 !important}
+body.game-focus .game-layer,body.game-focus .game-layer.board-fit{top:0 !important;left:0 !important;right:0 !important;bottom:0 !important;width:auto !important;z-index:900;box-shadow:none}
