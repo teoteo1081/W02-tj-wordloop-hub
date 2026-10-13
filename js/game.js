@@ -154,9 +154,7 @@
      thu gọn để câu hỏi + ảnh + 4 đáp án + chỉ số vừa trọn 1 khung nhìn, KHÔNG phải cuộn. Rê chuột lên mép trên (máy tính) hoặc chạm tay nắm nhỏ ở mép trên (điện thoại) để hiện lại. */
   function syncTestFocus() {
     var on = !!(G.st && G.st.phase === "play" && $("#s-play") && !$("#s-play").hidden && G.view !== "screen" && !G.spectating);   /* MỌI loại ván đang chơi (từ vựng, Kahoot, test…) */
-    var test = on && G.st.qtype === "toeic";   /* bố cục nén vừa 1 màn riêng cho đề TOEIC */
     document.body.classList.toggle("g-playing", on);
-    document.body.classList.toggle("g-tplaying", test);
     document.body.classList.toggle("g-adm", on && !!G.isHost);
     if (!on) { document.body.classList.remove("g-topshow", "g-admopen"); $("#g-admin").hidden = true; }
     admMove();
@@ -2592,7 +2590,7 @@
     }).join("");
     $("#p-board").innerHTML = list.map(function (x) {
       var p = roster[x.pid] || {};
-      return '<li title="' + esc(p.name || "") + '" class="' + (x.pid === G.me.id ? "me" : "") + ((s.q && s.q.picks && s.q.picks[x.pid] != null && !s.q.revealed) ? " dn" : "") + '"><span class="g-rank">' + x.rank + "</span>" + avatar(p.avatar) +
+      return '<li class="' + (x.pid === G.me.id ? "me" : "") + '"><span class="g-rank">' + x.rank + "</span>" + avatar(p.avatar) +
         '<span class="g-pname">' + label(p) + "</span>" + (teams ? teamDot((s.teamOf || {})[x.pid]) : "") +
         '<span class="g-streak">' + (x.st >= 2 ? "🔥" + x.st : "") + "</span>" + statsHTML(x, s) + tally(x, s) + "</li>";
     }).join("");
@@ -3011,7 +3009,7 @@
         (tc ? '<div class="g-row g-center"><button type="button" class="g-btn g-btn-soft g-btn-sm g-taud" data-tcue="' + esc(tc.url + "|" + tc.q.join("-") + "|" + (tc.g ? tc.g.join("-") : "")) + '">🔊 ' + esc(T("t_listen")) + "</button></div>" : "") +
         '<span class="g-gapline g-tstem"><b class="g-tnum">' + esc(q.num) + ".</b> " + esc(q.sent).replace("_______", '<span class="g-blank" style="width:4em"></span>') + "</span>";
       if (mine) $("#p-type").hidden = true;
-      if (mine && window.innerWidth < 1100 && !document.body.classList.contains("g-tplaying")) { var qv = $(textEl); setTimeout(function () { qv.scrollIntoView({ block: "start", behavior: "smooth" }); }, 50); }   /* điện thoại: bảng điểm chiếm ~410px -> cuộn tới đề để thấy A–D (QA v109) */
+      if (mine && window.innerWidth < 1100) { var qv = $(textEl); setTimeout(function () { qv.scrollIntoView({ block: "start", behavior: "smooth" }); }, 50); }   /* điện thoại: bảng điểm chiếm ~410px -> cuộn tới đề để thấy A–D (QA v109) */
       setTimeout(fitTImg, 0);
       var pk = (G.st && G.st.matchId || "") + ":" + q.num + ":" + (q.qn || ""); if (mine && tc && G.st && G.st.tplay && pk !== G.tPlayedQn) { G.tPlayedQn = pk; tAutoPlay(q); }
       $(optsEl).innerHTML = (q.opts || []).map(function (o) { return '<button class="g-opt g-topt" data-opt="' + esc(o) + '"><span class="g-otext">' + esc(o) + '</span><span class="g-pickers"></span></button>'; }).join(""); markLongOpts(optsEl);

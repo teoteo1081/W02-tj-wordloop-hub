@@ -2081,125 +2081,22 @@ body.bd-focus .bd .bd-feed,body.bd-focus .bd .bd-people{display:none !important}
 .sh-bar{gap:6px !important;padding:7px 8px !important}.sh-bar button{padding:7px 9px !important;font-size:12px !important}.sh-bar b{font-size:12px !important}.sh-bar > span.sh-pl{margin-right:auto !important}
 
 /* ===================================================================================================
-   🎯 LÀM BÀI TEST — vừa TRỌN 1 khung nhìn (TJ 2026-10-13: "phần trên chiếm hết màn hình, phải cuộn mới thấy đáp án")
-   body.g-tplaying do js/game.js (syncTestFocus) bật khi đang chơi đề TOEIC. Mọi cỡ màn hình.
-   · thanh trên cùng ẩn (rê chuột lên mép trên / chạm tay nắm nhỏ để hiện); thanh app WordLoop ngoài khung cũng ẩn (postMessage tjwl-game-focus)
-   · #s-play cao đúng 1 màn: hàng đồng hồ + thống kê + người chơi gọn, khung câu hỏi chiếm phần còn lại;
-     hình đề co theo chỗ trống (object-fit:contain), đoạn văn dài Part 6–7 cuộn BÊN TRONG khung, đáp án + nút tiếp luôn thấy
-   · hàng người chơi: ô cố định (không nhảy), cuộn ngang, thấy đủ mọi người
+   🎮 ĐANG CHƠI (js/game.js syncTestFocus -> body.g-playing): ẩn thanh trên cùng của game (rê chuột mép trên / vuốt xuống / chạm vạch mỏng / Esc để hiện lại);
+   thanh app WordLoop bên ngoài ẩn qua postMessage tjwl-game-focus. KHÔNG đổi bố cục điểm/thống kê/người chơi.
    =================================================================================================== */
 #g-topzone,#g-tophandle{display:none}
-body.g-playing #g-topzone{display:none}
 body.g-playing #g-tophandle{display:block;position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:73;width:64px;height:8px;padding:0;border:0;border-radius:0 0 6px 6px;background:rgba(255,255,255,.28);cursor:pointer;-webkit-tap-highlight-color:transparent}
 #g-tophandle:hover{background:rgba(255,255,255,.5)}
 body.g-playing .g-top{position:fixed;left:0;right:0;top:0;z-index:72;transform:translateY(-120%);transition:transform .18s ease;box-shadow:0 6px 16px rgba(0,0,0,.45)}
 body.g-playing.g-topshow .g-top{transform:none}
 @media (prefers-reduced-motion:reduce){body.g-playing .g-top{transition:none}}
-
-body.g-tplaying{padding-bottom:0 !important;overflow:hidden}
-body.g-tplaying #g-main{max-width:1100px;height:100vh;height:100dvh;padding:8px 10px 6px;display:flex;flex-direction:column}
-body.g-tplaying.has-cbar #g-main{padding-bottom:46px}   /* chừa 1 dải đáy cho cụm nút mic / CC / chat (thu nhỏ, không thanh nhập) */
-body.g-tplaying #s-play{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:hidden}
-body.g-tplaying #s-play > *{flex:none}
-body.g-tplaying .g-play{min-height:0}
-body.g-tplaying .g-taphint{margin:2px 0;font-size:12px;padding:4px 8px}
-body.g-tplaying .g-alert{margin:2px 0;padding:4px 8px;font-size:12px}
-
-/* hàng đồng hồ: 1 dòng, không xuống hàng */
-body.g-tplaying .g-clock{flex-wrap:nowrap;gap:6px;row-gap:0;min-height:34px}
-body.g-tplaying #p-left{font-size:20px;min-width:2.2em}
-body.g-tplaying #p-mode{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
-body.g-tplaying .g-clock .g-qtools{margin-left:auto;flex:none;gap:6px}
-body.g-tplaying #p-replay{display:none}
-body.g-tplaying .g-clock .g-mute{padding:4px 9px;font-size:12px}
-body.g-tplaying .g-clock .g-vol{width:64px}
-body.g-tplaying .g-clock #p-stop{margin-left:0;padding:5px 10px;min-height:32px;flex:none;white-space:nowrap}
-@media (max-width:560px){ body.g-tplaying #p-mode{display:none} body.g-tplaying #p-left{margin-right:auto} body.g-tplaying .g-clock .g-vol{width:52px} }
-
-/* dải thống kê: 1 hàng nhỏ, ô co giãn đều, số tabular -> không nhảy */
-body.g-tplaying .g-play .g-statbar{margin:3px 0 2px;gap:3px;overflow-x:auto}
-body.g-tplaying .g-play .g-stat{flex:1 1 auto;min-width:0;padding:2px 5px;text-align:center;white-space:nowrap}
-body.g-tplaying .g-play .g-stat b{font-size:13px;font-variant-numeric:tabular-nums}
-body.g-tplaying .g-play .g-stat span{font-size:9.5px;margin-left:2px}
-body.g-tplaying .g-teambar{margin:2px 0}
-
-/* 👥 hàng người chơi: thay top-3 + bảng dài bằng 1 dải ô nhỏ (avatar + ✓đúng ✗sai), kích thước CỐ ĐỊNH, cuộn ngang, mờ mép phải báo còn nữa */
-body.g-tplaying #p-top3{display:none}
-body.g-tplaying #p-board{display:flex;flex-wrap:nowrap;gap:5px;margin:2px 0 4px;padding:2px 14px 3px 0;max-height:none;overflow-x:auto;overflow-y:hidden;flex:none;scrollbar-width:thin;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 18px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 18px),transparent)}
-body.g-tplaying #p-board li{flex:0 0 54px;width:54px;height:46px;margin:0;padding:3px 2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border-radius:10px;position:relative;scroll-snap-align:start;transition:none;overflow:hidden}
-body.g-tplaying #p-board li.me{outline:2px solid var(--accent);outline-offset:-2px;order:-1}
-body.g-tplaying #p-board li > :not(.g-av):not(.g-tally){display:none}
-body.g-tplaying #p-board .g-av{width:22px;height:22px;font-size:14px}
-body.g-tplaying #p-board .g-tally{display:block;font-size:11px;line-height:1.1;white-space:nowrap;font-variant-numeric:tabular-nums;text-align:center}
-body.g-tplaying #p-board .g-tally .g-pts{display:none}
-body.g-tplaying #p-board li.dn::after{content:"";position:absolute;top:3px;right:4px;width:7px;height:7px;border-radius:50%;background:var(--green)}   /* đã trả lời câu này */
-
-/* khung câu hỏi: chiếm hết phần còn lại */
-body.g-tplaying .g-q{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;padding:8px 10px;position:relative;overflow:hidden}
-body.g-tplaying .g-q > *{flex:none}
-body.g-tplaying .g-qbar{margin-bottom:6px;height:4px}
-body.g-tplaying .g-qhint{margin-bottom:2px;font-size:12px;padding:0 44px}
-body.g-tplaying .g-qvi{flex:0 1 auto;min-height:2.4em;overflow:auto;margin:6px 0 0;font-size:17px;display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;gap:6px}
-body.g-tplaying .g-qvi .g-tstem{text-align:left;font-size:17px;line-height:1.4;flex:none}
-body.g-tplaying .g-qvi:has(.g-timg),body.g-tplaying .g-qvi:has(.g-tpass){flex:1 1 0;overflow:hidden}
-/* hình: co theo chỗ trống, canh giữa */
-body.g-tplaying .g-qvi .g-timg{flex:1 1 0;min-height:70px;width:100%;max-width:100%;max-height:none !important;height:auto;object-fit:contain;object-position:center;align-self:center;transition:none}
-/* đoạn văn Part 6–7: cuộn trong khung riêng */
-body.g-tplaying .g-qvi .g-tpass{flex:1 1 0;min-height:64px;max-height:none;overflow:auto;font-size:15px;line-height:1.5;padding:8px 10px;margin:0;-webkit-overflow-scrolling:touch}
-body.g-tplaying .g-qvi:has(.g-tpass) .g-tstem{font-size:16px}
-/* 🔊 nghe: icon nhỏ góc phải khung, không chiếm hàng riêng */
-body.g-tplaying .g-qvi:has(.g-taud){flex-direction:column;gap:6px;text-align:left}
-body.g-tplaying .g-qvi > .g-row:has(.g-taud){position:absolute;top:6px;right:8px;width:auto;margin:0;z-index:2}
-body.g-tplaying .g-qvi .g-taud{width:38px;height:38px;min-height:0;padding:0;margin:0;border-radius:50%;font-size:0;gap:0;justify-content:center;box-shadow:0 1px 6px rgba(20,184,166,.4)}
-body.g-tplaying .g-qvi .g-taud::before{content:"🔊";font-size:18px;line-height:1}
-body.g-tplaying .g-qvi .g-taud.on::before{content:"⏸"}
-body.g-tplaying .g-qvi:has(.g-taud) .g-tstem{text-align:left}
-body.g-tplaying .g-needtap{top:12px;padding:8px 16px;font-size:15px}
-/* đáp án + nút tiếp */
-body.g-tplaying .g-opts{margin-top:6px;gap:6px}
-body.g-tplaying .g-tbook .g-opt{min-height:clamp(40px,7dvh,64px);padding:6px 12px}
-body.g-tplaying .g-opts.g-tbook.g-tabcd > .g-opt{min-height:clamp(46px,8dvh,72px)}
-body.g-tplaying .g-opts:has(.g-tsub){flex:1 1 auto;overflow:auto;min-height:60px}   /* nhóm 3 câu: cuộn trong khung nếu máy thấp */
-body.g-tplaying .g-tbook .g-tsub{margin:4px 0 8px}
-body.g-tplaying .g-tbook .g-tsubopts{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding-left:0}
-body.g-tplaying .g-tbook .g-tsub .g-tstem{font-size:15px;padding-left:0;text-indent:0;margin-bottom:4px}
-body.g-tplaying .g-qmsg{margin-top:4px;min-height:0;font-size:12px}
-body.g-tplaying .g-qmsg:empty{display:none}
-body.g-tplaying .g-res{margin-top:4px}
-body.g-tplaying .g-q > .g-row{margin-top:6px;gap:6px}
-body.g-tplaying .g-q > .g-row .g-btn{min-height:38px;padding:6px 18px}
-body.g-tplaying .g-q > .g-row:not(:has(.g-btn:not([hidden]))){display:none}
-body.g-tplaying .g-board-below{display:none}
-/* thanh chat / voice dưới đáy: bỏ ô nhập, chỉ còn cụm nút nhỏ ở góc phải đáy (chạm chat -> mở khung chat như thường) */
-body.g-tplaying .cb-bar{left:auto;right:6px;bottom:calc(4px + env(safe-area-inset-bottom,0px));width:auto;padding:0;gap:6px;background:transparent;border:0;z-index:60}
-body.g-tplaying .cb-bar .cb-form{display:none}
-body.g-tplaying .cb-bar .vc-btn,body.g-tplaying .cb-bar .ch-btn,body.g-tplaying .cb-bar .cc-btn{width:36px;height:36px;box-shadow:0 2px 8px rgba(0,0,0,.4)}
-body.g-tplaying .bd-dock{bottom:calc(48px + env(safe-area-inset-bottom,0px))}
-
-/* màn rộng */
-@media (min-width:900px){
-  body.g-tplaying #g-main{padding:10px 16px 8px}
-  body.g-tplaying .g-clock{min-height:38px}
-  body.g-tplaying #p-board li{flex-basis:64px;width:64px;height:50px}
-  body.g-tplaying #p-board .g-av{width:26px;height:26px}
-  body.g-tplaying .g-qvi .g-tstem{font-size:20px}
-  body.g-tplaying .g-tbook .g-opt{font-size:18px;min-height:clamp(44px,7dvh,68px)}
-  body.g-tplaying .g-qvi .g-tpass{font-size:17px}
-  body.g-tplaying .g-qhint{font-size:13px}
-}
-/* màn thấp (điện thoại ngang / laptop nhỏ) */
-@media (max-height:600px){
-  body.g-tplaying .g-tbook .g-opt{min-height:34px;padding:4px 10px;font-size:15px}
-  body.g-tplaying .g-qvi .g-tstem{font-size:15px}
-  body.g-tplaying #p-board li{height:40px}
-}
-body.g-tplaying #s-play > .g-q{flex:1 1 auto;order:5}
-body.g-tplaying #s-play > #p-board{order:2}
-body.g-tplaying #s-play > .g-statbar{order:1}
-@media (min-width:900px){ body.g-tplaying .g-opts.g-tbook:not(.g-tabcd):not(:has(.g-tsub)){display:grid;grid-template-columns:1fr 1fr;gap:8px} }
-body.g-tplaying .g-qvi:not(:has(.g-tstem)):not(:has(.g-timg)):not(:has(.g-tpass)){min-height:0;margin:0}
-body.g-tplaying .g-tbook .g-tsubopts .g-opt{min-height:36px;padding:4px 10px;font-size:15px}
-
+/* 🔊 Nghe (đề Listening): icon tròn nhỏ ở góc phải khung câu hỏi, không chiếm hàng riêng */
+body.g-playing .g-q{position:relative}
+body.g-playing .g-qvi > .g-row:has(.g-taud){position:absolute;top:6px;right:8px;width:auto;margin:0;z-index:2}
+body.g-playing .g-qvi:has(.g-taud){gap:0}
+body.g-playing .g-qvi .g-taud{width:38px;height:38px;min-height:0;padding:0;margin:0;border-radius:50%;font-size:0;gap:0;justify-content:center;box-shadow:0 1px 6px rgba(20,184,166,.4)}
+body.g-playing .g-qvi .g-taud::before{content:"🔊";font-size:18px;line-height:1}
+body.g-playing .g-qvi .g-taud.on::before{content:"⏸"}
 /* ===== ⚙ Quản trị (chỉ host, chỉ khi đang chơi) + vạch mỏng mép trên / mép phải (không chiếm chỗ) ===== */
 #g-righthandle,#g-admin{display:none}
 body.g-playing.g-adm #g-righthandle{display:block;position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:73;width:8px;height:64px;padding:0;border:0;border-radius:6px 0 0 6px;background:rgba(255,255,255,.28);cursor:pointer}
