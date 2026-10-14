@@ -5,7 +5,7 @@
 ## Cấu trúc hiện tại
 | Thư mục | Chứa gì | Ai dùng |
 |---|---|---|
-| `listening/TEST_<n>_LC.mp3` (10 file, ~19 MB mỗi file) | Audio đề Listening ETS 2024 (đã nén) | **game.js** (`tCue`, `apUrl`) — GIỮ |
+| ~~`listening/TEST_<n>_LC.mp3`~~ (20 file, ~18,6 MB mỗi file, 371 MB) | Audio đề Listening ETS 2024 + 2023 (đã nén) | ĐÃ CHUYỂN sang R2 `tj-game` (xem mục cuối); bản Supabase còn tạm làm dự phòng, TJ tự xoá sau khi thử |
 | `listening/img/*.jpg` (110 file, 22 MB) | Ảnh Part 1 / hình đề | `test_items.passage` ("[img] url") — GIỮ, cả 110 đều được tham chiếu |
 | `listening/TEST_<n>_LC.pdf`, `reading/TEST_<n>_RC.pdf` | PDF đề (nguồn OCR) | Chỉ công cụ `tools/toeic_ocr_*` — chưa dọn |
 | `listening/script/`, `reading/script/` | PDF lời giải ETS 2024 | Chỉ công cụ OCR — ứng viên dọn (đã OCR vào DB) |
@@ -38,3 +38,11 @@
 - `lib/Books` (2 sách), `lib/EA2025` (82 PDF gốc + 5 bài Lessons) và `lib/TOEIC/Listening/DAP_AN_ETS_2024_LC.pdf` đã xoá khỏi Supabase (TJ tự xoá; bản gốc ở R2 `tj-source-staging`, bản kệ ở R2 `tj-shelf`).
 - Kệ sách Bảng đọc từ Cloudflare Worker `tj-shelf` (mã: `tools/shelf-worker/worker.js`); chỉ `_tmp/` còn ở Supabase.
 - Đo lại: Storage 378,2 MB / 1024 (230 file `toeic` + 2 avatar), Database 56,7 MB / 500. Bucket `source-docs` đã xoá.
+
+## 2026-10-14 (2) — âm thanh nghe chuyển sang R2 `tj-game`
+- **Vì sao:** 20 file mp3 = 371 MB = 93% Storage; mỗi lượt nghe tải ~18,6 MB nên 5 GB egress/tháng của Supabase Free chỉ đủ ~270 lượt. R2 không tính băng thông ra.
+- **Chuyển gì:** CHỈ `listening/TEST_<n>_LC.mp3` (20 file, đã kiểm kích thước + md5 khớp bản Supabase). Ảnh `listening/img/*.jpg` (28 MB) GIỮ ở Supabase vì đường dẫn nằm sẵn trong dữ liệu `test_items.passage` (đổi phải sửa DB thật); `lib/_tmp` và `game-avatars` GIỮ vì ghi trực tiếp từ trình duyệt bằng khoá anon.
+- **Game phát từ đâu:** `cfg.AUDIO_BASE` (js/config.js) = Worker `tj-game` → `GET /listening/TEST_<n>_LC.mp3` (Range/tua, 304, cache 7 ngày). Hàm dùng chung `audUrl()` trong js/game.js; xoá `AUDIO_BASE` thì game tự quay về đường Supabase cũ.
+- **Nạp đề mới:** `tools/ets2023/deploy_test.py` / `deploy_lc2.py` gọi `tools/game-worker/upload_audio.py` (mp3 → R2); ảnh vẫn lên Supabase.
+- **Xoá bản Supabase:** TJ tự xoá `listening/TEST_*_LC.mp3` trên Dashboard SAU KHI thử nghe trong game (xem `tools/game-worker/README.md`).
+- Chi tiết 3 bucket R2 (game / sách tham khảo / sách soạn bài): `R2_BUCKETS.md`.

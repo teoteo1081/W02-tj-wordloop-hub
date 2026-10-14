@@ -13,6 +13,11 @@ window.APP_CONFIG = {
   SUPABASE_URL: "https://pqarpszsipbdugrumhfy.supabase.co",
   SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxYXJwc3pzaXBiZHVncnVtaGZ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg3MDc0NTcsImV4cCI6MjEwNDI4MzQ1N30.zB6uvPPt-vQ78TVwPUTMmfulbFVz-lNz9F5RJF9owwc",
 
+  // Âm thanh nghe TOEIC (listening/TEST_<n>_LC.mp3) phát từ Cloudflare R2 qua Worker tj-game (chỉ đọc, gói Free),
+  // KHÔNG còn từ Supabase Storage (mỗi file ~18,6 MB, ăn egress 5 GB/tháng của Supabase). Xem tools/game-worker/README.md.
+  // Để trống/xoá dòng này -> game tự quay về đường Supabase cũ (chỉ chạy được khi file còn nằm ở bucket toeic).
+  AUDIO_BASE: "https://tj-game.tj-wordloop.workers.dev",
+
   // ĐÃ BỎ HẲN GEMINI_API_KEY khỏi file này (2026-09-10) — key trần ở đây
   // (repo Public) đã bị Google TỰ ĐỘNG THU HỒI 3 LẦN LIÊN TIẾP trong vòng
   // ~24 tiếng, kể cả sau khi giới hạn domain trong Cloud Console (restriction

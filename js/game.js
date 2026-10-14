@@ -2675,11 +2675,13 @@
   /* đoạn văn đề thi: dòng "[img] <url>" = ảnh (Part 1 / hình "Look at the graphic" của Listening, ảnh nằm ở bucket toeic) */
   /* 🎧 audio đề Listening (TJ 2026-10-04): mốc thời gian từng câu nằm trong passage dạng "[aud] q=885.27-889.37 g=816.38-883.05"
      (q = đoạn đọc số câu + câu hỏi / 4 câu mô tả / câu hỏi+3 đáp án; g = hội thoại/bài nói của nhóm câu Part 3–4).
-     File nghe: bucket toeic/listening/TEST_<n>_LC.mp3 (đã nén ~56kbps). Cắt mốc bằng dò khoảng lặng + nghe ra chữ (pocketsphinx). */
+     File nghe: listening/TEST_<n>_LC.mp3 (đã nén ~56kbps) nằm ở Cloudflare R2 bucket `tj-game`, phát qua Worker tj-game
+     (cfg.AUDIO_BASE); còn Supabase bucket toeic chỉ là đường dự phòng cũ. Cắt mốc bằng dò khoảng lặng + nghe ra chữ (pocketsphinx). */
+  function audUrl(t) { return (cfg.AUDIO_BASE ? String(cfg.AUDIO_BASE).replace(/\/$/, "") + "/listening/TEST_" : cfg.SUPABASE_URL + "/storage/v1/object/public/toeic/listening/TEST_") + t + "_LC.mp3"; }
   function tCue(q) {
     var m = String((q && q.passage) || "").match(/^\[aud\] q=([\d.]+)-([\d.]+)(?: g=([\d.]+)-([\d.]+))?/m); if (!m) return null;
     var t = q.test || (G.st && G.st.test && G.st.test.test);
-    return { url: cfg.SUPABASE_URL + "/storage/v1/object/public/toeic/listening/TEST_" + t + "_LC.mp3", q: [+m[1], q.gEnd || +m[2]], g: m[3] ? [+m[3], +m[4]] : null };   /* nhóm: từ câu đầu tới hết câu 3 (gồm khoảng chờ giữa các câu như đề thật) */
+    return { url: audUrl(t), q: [+m[1], q.gEnd || +m[2]], g: m[3] ? [+m[3], +m[4]] : null };   /* nhóm: từ câu đầu tới hết câu 3 (gồm khoảng chờ giữa các câu như đề thật) */
   }
   var TAUD = null, tSeqTok = 0;
   function tAudio() { if (!TAUD) { TAUD = new Audio(); TAUD.preload = "auto"; } tVol(); return TAUD; }
@@ -2784,7 +2786,7 @@
     es: { scr: "Transcripción", scrtip: "toca una línea para escucharla", evq: "Escuchar la parte de la respuesta P", qon: "Guardada — repetir luego", qoff: "Guardar para repetir", h: "Escuchar de nuevo", all: "📻 Todo el audio", q: "❓ Pregunta", loop: "Repetir", mark: "🔖 Marcar desde aquí", mark2: "🔖 Terminar y guardar", saveall: "🔖 Guardar todo el fragmento", saved: "✓ Guardado", mine: "🔖 Fragmentos guardados de esta pregunta", list: "🔖 Fragmentos guardados", none: "Aún no hay nada — en 📖 Revisar de una pregunta de Listening, pulsa 🔖 para guardar un fragmento difícil.", del: "¿Borrar este fragmento?", tip: "Arrastra la barra para avanzar/retroceder · pulsa 🔖 en lo difícil para escucharlo luego (dictado más adelante).", seg: "Fragmento", qn: "P" }
   };
   function apT(k) { var d = AP_TX[uiLang()] || AP_TX.vi; return d[k] || AP_TX.vi[k] || k; }
-  function apUrl(t) { return cfg.SUPABASE_URL + "/storage/v1/object/public/toeic/listening/TEST_" + t + "_LC.mp3"; }
+  function apUrl(t) { return audUrl(t); }
   function apClock(s) { s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ":" + ("0" + s % 60).slice(-2); }
   var AP = null;   /* {box, url, a, b, loop, meta, A(mốc đánh dấu)} */
   function apStop() { if (AP && TAUD) { TAUD.pause(); TAUD.ontimeupdate = null; } if (AP) apSync(); }

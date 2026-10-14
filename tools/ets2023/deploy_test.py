@@ -1,4 +1,4 @@
-# Tải audio+ảnh lên Supabase Storage (khoá anon công khai, upsert) rồi nạp test_items. py deploy_test.py <N>  (đặt SBPAT trong môi trường)
+# Tải audio (-> Cloudflare R2 tj-game) + ảnh (-> Supabase Storage, khoá anon công khai, upsert) rồi nạp test_items. py deploy_test.py <N>  (đặt SBPAT trong môi trường)
 import json, re, os, sys, urllib.request
 N = int(sys.argv[1])
 REF = "pqarpszsipbdugrumhfy"
@@ -28,7 +28,9 @@ def up(path, file, ct):
         sys.exit("lệch kích thước, dừng")
 
 
-up("listening/TEST_%s_LC.mp3" % TEST, "audio/TEST_2023_%02d_LC.mp3" % N, "audio/mpeg")
+sys.path.insert(0, r"C:\Users\User\Desktop\TJ\Project\W02-tj-wordloop-hub\tools\game-worker")
+from upload_audio import upload_mp3   # mp3 nghe -> R2 bucket tj-game (KHÔNG còn đẩy lên Supabase); ảnh vẫn ở Supabase
+if not upload_mp3({"TEST_%s_LC.mp3" % TEST: "audio/TEST_2023_%02d_LC.mp3" % N}): sys.exit("lệch kích thước mp3 trên R2")
 files = set()
 for it in items:
     for u in re.findall(r"\[img\] (\S+)", it["passage"]):

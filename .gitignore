@@ -24,3 +24,8 @@ supabase/.temp/
 
 # Excel xem việc tự sinh (tools/readme_to_xlsx.py) — không commit, nguồn thật là README.md
 TJ_CongViec.xlsx
+
+# Secrets - never commit
+.env
+.env.*
+!.env.example

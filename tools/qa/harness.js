@@ -109,6 +109,14 @@ const restCache = new Map();
 const MIME = { '.html': 'text/html', '.js': 'application/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml' };
 const CORS = { 'access-control-allow-origin': '*', 'access-control-allow-headers': '*', 'access-control-allow-methods': '*', 'access-control-expose-headers': '*' };
 const blocked = [];
+/* File nghe TEST_n_LC.mp3: game gọi Worker R2 `tj-game` (cfg.AUDIO_BASE); đường Supabase cũ vẫn được giả lập để thử dự phòng. */
+const AUDIO_HOST = 'tj-game.tj-wordloop.workers.dev';
+function serveMp3(route, req) {
+  const st = fs.statSync(MP3), rg = req.headers()['range'];
+  const H = Object.assign({ 'content-type': 'audio/mpeg', 'accept-ranges': 'bytes' }, CORS);
+  if (rg) { let [a, b] = rg.replace('bytes=', '').split('-'); a = +a; b = b ? +b : Math.min(st.size - 1, a + 4 * 1024 * 1024); const fd = fs.openSync(MP3, 'r'); const buf = Buffer.alloc(b - a + 1); fs.readSync(fd, buf, 0, buf.length, a); fs.closeSync(fd); return route.fulfill({ status: 206, body: buf, headers: Object.assign(H, { 'content-range': `bytes ${a}-${b}/${st.size}`, 'content-length': String(buf.length) }) }); }
+  return route.fulfill({ status: 200, body: fs.readFileSync(MP3), headers: H });
+}
 async function setupRoutes(ctx) {
   await ctx.route('**/*', async (route) => {
     const req = route.request(), url = req.url(), u = new URL(url);
@@ -119,6 +127,11 @@ async function setupRoutes(ctx) {
         return route.fulfill({ status: 200, body: fs.readFileSync(f), headers: { 'content-type': MIME[path.extname(f)] || 'application/octet-stream', 'cache-control': 'no-store' } });
       }
       if (u.host === 'cdn.jsdelivr.net' && /supabase-js/.test(url)) return route.fulfill({ status: 200, body: UMD, contentType: 'application/javascript' });
+      if (u.host === AUDIO_HOST) {
+        if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: CORS });
+        if (/^\/listening\/[\w.-]+_LC\.mp3$/.test(u.pathname)) return serveMp3(route, req);
+        return route.fulfill({ status: 404, body: '' });
+      }
       if (url.startsWith(SUPA)) {
         if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: CORS });
         if (u.pathname.startsWith('/storage/v1/object/public/toeic/listening/') && /_LC\.mp3$/.test(u.pathname)) {

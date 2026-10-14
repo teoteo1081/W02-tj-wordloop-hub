@@ -28,7 +28,7 @@
 | 7 | Mốc audio từng câu | `./cues_pipeline.sh N` (build_cues → fix_cues_gen → pad_cues_2 → check_q_cues --fix → snap_cues) | `cues_N.json` |
 | 8 | Dựng + tự kiểm (0 vấn đề mới nạp) | `python build_test.py N` | `items_N.json`, `load_N.sql`, `report_N.txt` |
 | 9 | Kiểm chéo đáp án | `verify_all.py N` (Reading vs sách), `verify_lc2.py N` (Part 3–4 bằng transcript sách), `verify_p2.py N` (Part 2) ; Part 1 xem ảnh | in ra số lệch |
-| 10 | Tải audio+ảnh lên Storage, nạp `test_items` | `SBPAT=... python deploy_test.py N` | DB |
+| 10 | Tải **audio → R2 `tj-game`** (qua `tools/game-worker/upload_audio.py`, cần `CF_ACCOUNT_ID`+`CF_SHELF_TOKEN` trong `~/.tj-secrets/kho.env`), **ảnh → Supabase Storage**, nạp `test_items` | `SBPAT=... python deploy_test.py N` | DB + R2 |
 | 11 | Lời giải tiếng Việt (từ sách chữa) | `cd book; python lc_extract.py; python lc_build.py; python rc_extract.py; python rc_build.py` (1 lần cho cả bộ) rồi `SUPABASE_PAT=... python finalize.py N` | `explain/stem_vi/vocab` |
 | 12 | Lời thoại có mốc từng lượt nói (`i18n.scr`) | `python build_scr.py N [--push]` | `scr_N.json` + DB |
 

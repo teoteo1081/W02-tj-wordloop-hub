@@ -17,7 +17,9 @@ def lit(v):
     if v is None: return "null"
     return "'" + str(v).replace("'", "''") + "'"
 if sys.argv[1] == "upload":
-    up("listening/TEST_%s_LC.mp3" % TEST, "audio/TEST_2023_02_LC.mp3", "audio/mpeg")
+    sys.path.insert(0, r"C:\Users\User\Desktop\TJ\Project\W02-tj-wordloop-hub\tools\game-worker")
+    from upload_audio import upload_mp3   # mp3 nghe -> R2 bucket tj-game (KHÔNG còn đẩy lên Supabase)
+    if not upload_mp3({"TEST_%s_LC.mp3" % TEST: "audio/TEST_2023_02_LC.mp3"}): sys.exit("lệch kích thước mp3 trên R2")
     for f in sorted({u.split("/")[-1].split("?")[0] for it in items for u in re.findall(r"\[img\] (\S+)", it["passage"])}):
         up("listening/img/" + f, "img/" + f, "image/jpeg")
 else:
