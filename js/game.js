@@ -2677,7 +2677,10 @@
       if (tok !== tSeqTok) return;
       if (i >= seq.length) { a.pause(); if (onEnd) onEnd(); return; }
       var r = seq[i++];
-      var go = function () { if (tok !== tSeqTok) return; try { a.currentTime = r[0]; } catch (e) {} var p = a.play(); if (p && p.catch) p.catch(function (e) { if (e && e.name === "NotAllowedError" && tok === tSeqTok) { var rest = seq.slice(i - 1); tNeedTap(function () { tPlaySeq(url, rest, onEnd); tVol(); }); } }); };
+      var go = function () { if (tok !== tSeqTok) return; try { a.currentTime = r[0]; } catch (e) {}
+        /* timeupdate chỉ chạy ~250ms/lần -> audio phát lố vào chữ "Number" câu sau rồi mới bị cắt ("nghẹt", TJ 2026-10-13): canh mốc cuối mỗi 30ms */
+        var iv = setInterval(function () { if (tok !== tSeqTok) { clearInterval(iv); return; } if (!a.paused && a.currentTime >= r[1]) { clearInterval(iv); a.ontimeupdate = null; next(); } }, 30);
+        var p = a.play(); if (p && p.catch) p.catch(function (e) { if (e && e.name === "NotAllowedError" && tok === tSeqTok) { var rest = seq.slice(i - 1); tNeedTap(function () { tPlaySeq(url, rest, onEnd); tVol(); }); } }); };
       a.ontimeupdate = function () { if (tok === tSeqTok && a.currentTime >= r[1]) { a.ontimeupdate = null; next(); } };
       if (a.readyState >= 1) go(); else a.addEventListener("loadedmetadata", go, { once: true });
     }
