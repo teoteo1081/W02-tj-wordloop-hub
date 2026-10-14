@@ -6,7 +6,7 @@ D, T, KEYF, OUT = sys.argv[1:5]
 KEYS = json.load(open(KEYF))['rc'][T]
 cfg = open(r'C:\Users\User\Desktop\TJ\Project\W02-tj-wordloop-hub\js\config.js', encoding='utf-8').read()
 URL = re.search(r'https://[a-z0-9]+\.supabase\.co', cfg).group(0); ANON = re.search(r'eyJ[\w-]+\.[\w-]+\.[\w-]+', cfg).group(0)
-MODELS = ['gemini-3.6-flash', 'gemini-3.5-flash-lite']
+MODELS = ['gemini-3.5-flash-lite', 'gemini-3.8-flash', 'gemini-3.6-flash']
 NOISE = re.compile(r'Thi thu|Toeic mi|Key va transcript|GO ON TO THE NEXT|group S Toeic', re.I)
 pg = sorted(int(re.findall(r'L-(\d+)', f)[0]) for f in glob.glob(D + '/L-*.txt'))
 full = {n: open(f'{D}/L-{n:02d}.txt', encoding='utf8', errors='ignore').read() for n in pg}
@@ -50,7 +50,7 @@ def one(g):
     if b <= 146:
         extra = '\nLƯU Ý: bài Part 6 PHẢI giữ đủ mọi chỗ trống dạng -----(%d)----- đến -----(%d)----- tại đúng vị trí; nếu OCR mất ký hiệu chỗ trống thì dựa vào ngữ cảnh để đặt lại đúng chỗ.' % (a, b)
     for attempt in range(5):
-        m = MODELS[0] if attempt < 4 else MODELS[1]
+        m = MODELS[attempt % len(MODELS)]
         try:
             raw = call(m, SYS, prompt(a, b, blk) + extra); j = json.loads(re.search(r'\{[\s\S]*\}', raw).group(0))
             nums = [q['num'] for q in j['questions']]

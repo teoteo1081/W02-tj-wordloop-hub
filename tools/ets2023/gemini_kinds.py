@@ -9,7 +9,7 @@ SYS = 'Bạn gắn nhãn loại tài liệu cho bài đọc TOEIC. Chỉ trả �
 def call(user):
     last = None
     for rnd in range(6):
-        for m in ('gemini-3.6-flash', 'gemini-3.5-flash-lite'):
+        for m in ('gemini-3.5-flash-lite', 'gemini-3.8-flash', 'gemini-3.6-flash'):
             try:
                 req = urllib.request.Request(URL + '/functions/v1/gemini-proxy', data=json.dumps({'model': m, 'sys': SYS, 'user': user}).encode(), headers={'Content-Type': 'application/json', 'Authorization': 'Bearer ' + ANON, 'apikey': ANON})
                 return json.load(urllib.request.urlopen(req, timeout=170))['candidates'][0]['content']['parts'][0]['text']
