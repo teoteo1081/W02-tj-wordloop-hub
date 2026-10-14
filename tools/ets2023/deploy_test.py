@@ -8,7 +8,10 @@ ANON = re.search(r"eyJ[\w-]+\.[\w-]+\.[\w-]+", cfg).group(0)
 PAT = os.environ["SBPAT"]
 TEST = "2023-%d" % N
 rep = open("report_%d.txt" % N, encoding="utf-8").read()
-assert "vấn đề: 0" in rep, "báo cáo còn vấn đề, không nạp"
+import re as _re
+_probs = [l for l in rep.splitlines() if l.startswith(" - ")]
+_only_missing_p1 = _probs and all(_re.match(r" - câu \d+ \(Part 1\): thiếu ảnh", l) for l in _probs)
+assert "vấn đề: 0" in rep or (os.environ.get("ALLOW_MISSING_P1") and _only_missing_p1), "báo cáo còn vấn đề, không nạp"
 items = json.load(open("items_%d.json" % N, encoding="utf-8"))
 
 

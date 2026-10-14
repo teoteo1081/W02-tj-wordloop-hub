@@ -1,6 +1,6 @@
 # Dựng Part 6-7 của 1 đề ETS 2023 từ OCR bằng Gemini (qua gemini-proxy, KHÔNG tốn token Claude).
 # py gemini_p67.py <thư mục OCR đã chuẩn hoá rcp/tN> <N> <keys.json> <out.json>
-import re, json, sys, os, glob, time, urllib.request
+import re, json, sys, os, glob, time, urllib.request, urllib.error
 from concurrent.futures import ThreadPoolExecutor
 D, T, KEYF, OUT = sys.argv[1:5]
 KEYS = json.load(open(KEYF))['rc'][T]
@@ -12,11 +12,18 @@ pg = sorted(int(re.findall(r'L-(\d+)', f)[0]) for f in glob.glob(D + '/L-*.txt')
 full = {n: open(f'{D}/L-{n:02d}.txt', encoding='utf8', errors='ignore').read() for n in pg}
 p6s = [n for n in pg if 'PART 6' in full[n] and 'PART 5' not in full[n]][0]
 body = '\n'.join('\n'.join(l for l in full[n].split('\n') if not NOISE.search(l)) + '\n=== PAGE ===' for n in pg if n >= p6s)
-H = re.compile(r'Questions?\s+(\d{3})\s*[-–~—]\s*(\d{3})\s+refer\s+to\s+(?:the\s+)?following\s+([^.\n]*)', re.I)
+H = re.compile(r'Questions?\s+(\d{3})\s*[-–~—]\s*(\d{3})\s*(?:refer\s+to\s+(?:the\s+)?following)?\s*([^.\n]*)', re.I)
 hs = list(H.finditer(body)); groups = []
 for i, h in enumerate(hs):
     a, b = int(h.group(1)), int(h.group(2)); blk = body[h.start():(hs[i + 1].start() if i + 1 < len(hs) else len(body))].replace('=== PAGE ===', '\n')
     groups.append((a, b, blk))
+# chuẩn hoá số nhóm theo thứ tự liên tục (OCR hay đọc sai số: "196-200" -> "496-200")
+exp = 131; fixed_groups = []
+for a_, b_, blk_ in groups:
+    if a_ != exp: print('sửa số nhóm', a_, '->', exp)
+    fixed_groups.append((exp, b_, blk_)); exp = b_ + 1
+groups = fixed_groups
+assert groups[-1][1] == 200, 'nhóm cuối không kết thúc ở 200: %s' % (groups[-1][:2],)
 SYS = 'Bạn là người số hoá đề thi TOEIC từ văn bản OCR bị nhiễu. Chỉ trả đúng 1 object JSON, không markdown. Sửa lỗi OCR (chữ dính, ký tự lạ, dấu câu) nhưng KHÔNG đổi nội dung, KHÔNG tự bịa câu hay đáp án.'
 def prompt(a, b, blk):
     return (f'Văn bản OCR dưới đây là nhóm câu {a}-{b} của TOEIC (Reading). Hãy tách thành bài đọc và các câu hỏi.\n'
@@ -26,23 +33,36 @@ def prompt(a, b, blk):
             '(4) Nếu thiếu thông tin thì để "opts": [] cho câu đó và thêm vào "flags" mô tả ngắn.\n'
             'Schema: {"kind":"...","passage":"...","questions":[{"num":131,"stem":"","opts":["(A) ...","(B) ...","(C) ...","(D) ..."]}],"flags":[]}\n\n=== OCR ===\n' + blk)
 def call(model, sysm, user):
+    for _try in range(6):
+        try: return _call(model, sysm, user)
+        except urllib.error.HTTPError as e:
+            if e.code != 429: raise
+            time.sleep(20 + 15 * _try)
+    return _call(model, sysm, user)
+def _call(model, sysm, user):
     req = urllib.request.Request(URL + '/functions/v1/gemini-proxy', data=json.dumps({'model': model, 'sys': sysm, 'user': user}).encode(),
         headers={'Content-Type': 'application/json', 'Authorization': 'Bearer ' + ANON, 'apikey': ANON})
     d = json.load(urllib.request.urlopen(req, timeout=170))
     return d['candidates'][0]['content']['parts'][0]['text']
 def one(g):
     a, b, blk = g; last = None
-    for attempt in range(4):
-        m = MODELS[0] if attempt < 3 else MODELS[1]
+    extra = ''
+    if b <= 146:
+        extra = '\nLƯU Ý: bài Part 6 PHẢI giữ đủ mọi chỗ trống dạng -----(%d)----- đến -----(%d)----- tại đúng vị trí; nếu OCR mất ký hiệu chỗ trống thì dựa vào ngữ cảnh để đặt lại đúng chỗ.' % (a, b)
+    for attempt in range(5):
+        m = MODELS[0] if attempt < 4 else MODELS[1]
         try:
-            raw = call(m, SYS, prompt(a, b, blk)); j = json.loads(re.search(r'\{[\s\S]*\}', raw).group(0))
+            raw = call(m, SYS, prompt(a, b, blk) + extra); j = json.loads(re.search(r'\{[\s\S]*\}', raw).group(0))
             nums = [q['num'] for q in j['questions']]
             if sorted(nums) != list(range(a, b + 1)): raise ValueError('nums %s' % nums)
+            if b <= 146:   # Part 6: bài phải còn đủ mọi chỗ trống -----(n)-----
+                lost = [n for n in range(a, b + 1) if not re.search(r'-{3,}\(%d\)' % n, j.get('passage', ''))]
+                if lost: raise ValueError('mất chỗ trống %s' % lost)
             return {'group': f'{a}-{b}', **j}
         except Exception as e:
             last = e; time.sleep(3 * (attempt + 1))
     return {'group': f'{a}-{b}', 'error': str(last)[:200], 'questions': []}
-with ThreadPoolExecutor(3) as ex: res = list(ex.map(one, groups))
+with ThreadPoolExecutor(2) as ex: res = list(ex.map(one, groups))
 items = []; bad = []
 for r in res:
     if r.get('error'): bad.append((r['group'], r['error'])); continue

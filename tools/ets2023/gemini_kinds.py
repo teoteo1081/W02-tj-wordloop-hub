@@ -7,12 +7,15 @@ URL = re.search(r'https://[a-z0-9]+\.supabase\.co', cfg).group(0); ANON = re.sea
 KINDS = 'E-mail, Article, Advertisement, Text-message chain, Notice, Instructions, Web page, Schedule, Job advertisement, Letter, Press release, Memo, Work order, Review, List, Product information, Online profile, Process chart, Report, Form, Product description, Online article, Meeting minutes, Online chat discussion, Menu, Company newsletter article, Coupon, Gift certificate, Checklist, Invoice, Receipt, Flyer, Announcement, Brochure, Survey, Table, Calendar, Itinerary'
 SYS = 'Bạn gắn nhãn loại tài liệu cho bài đọc TOEIC. Chỉ trả đúng 1 object JSON, không markdown.'
 def call(user):
-    for m in ('gemini-3.6-flash', 'gemini-3.5-flash-lite'):
-        try:
-            req = urllib.request.Request(URL + '/functions/v1/gemini-proxy', data=json.dumps({'model': m, 'sys': SYS, 'user': user}).encode(), headers={'Content-Type': 'application/json', 'Authorization': 'Bearer ' + ANON, 'apikey': ANON})
-            return json.load(urllib.request.urlopen(req, timeout=170))['candidates'][0]['content']['parts'][0]['text']
-        except Exception as e: time.sleep(3)
-    raise RuntimeError('gemini fail')
+    last = None
+    for rnd in range(6):
+        for m in ('gemini-3.6-flash', 'gemini-3.5-flash-lite'):
+            try:
+                req = urllib.request.Request(URL + '/functions/v1/gemini-proxy', data=json.dumps({'model': m, 'sys': SYS, 'user': user}).encode(), headers={'Content-Type': 'application/json', 'Authorization': 'Bearer ' + ANON, 'apikey': ANON})
+                return json.load(urllib.request.urlopen(req, timeout=170))['candidates'][0]['content']['parts'][0]['text']
+            except Exception as e: last = e; time.sleep(3)
+        time.sleep(20 + 10 * rnd)   # 429 / quá tải: chờ rồi thử lại cả 2 model
+    raise RuntimeError('gemini fail: %s' % last)
 norm = lambda t: re.sub(r'\s+', '', t)
 items = json.load(open(IN, encoding='utf-8')); groups = {}
 for it in items: groups.setdefault(it['group'], it['passage'])
