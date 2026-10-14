@@ -10,8 +10,8 @@
 | `listening/TEST_<n>_LC.pdf`, `reading/TEST_<n>_RC.pdf` | PDF đề (nguồn OCR) | Chỉ công cụ `tools/toeic_ocr_*` — chưa dọn |
 | `listening/script/`, `reading/script/` | PDF lời giải ETS 2024 | Chỉ công cụ OCR — ứng viên dọn (đã OCR vào DB) |
 | `listening/Test_01..10.mp3` (~44 MB mỗi file) | Bản audio chưa nén | **Không code/DB nào tham chiếu** — ứng viên dọn |
-| `lib/EA2025/Part I-II-III/` (87 file) | Sách gốc EA 2025 | Thư viện của Bảng (`GameLayer`/`game.js` `api.lib`) — GIỮ |
-| `lib/Books, Communication, Data-Analyst, Digital-Marketing, Grammar, IELTS, Other, TOEIC/*` | Cây thư viện (hầu hết rỗng) | Bảng — GIỮ |
+| ~~`lib/EA2025/…`~~ | ĐÃ CHUYỂN sang kệ R2 (Worker `tj-shelf`), xoá khỏi Supabase 2026-10-14 | Kệ Bảng nay đọc từ R2 |
+| `lib/_tmp/<mã phòng>/` | File người chơi chia sẻ tạm trên Bảng, tự xoá | Bảng (`api.lib`, đường `_tmp`) — GIỮ ở Supabase |
 
 ## Đã dọn 2026-10-08 (TJ tự xoá trên Dashboard, Claude kiểm lại)
 19 file, ~572 MB, đã sao lưu về máy TJ: `C:\Users\User\Desktop\TJ\_backup_supabase\toeic\` (đã kiểm khớp dung lượng).
@@ -33,3 +33,8 @@
 - **EA 2025**: 81 file Part I–III đã có đủ; 2 file ở Downloads (`EA 2025.pdf` 9 MB, `EA 2025 - Part I Individuals.pdf` 82 MB) chưa có.
 - Bài do mình tạo (TuVung, Reading…) nằm trên GitHub (L02/L03/L04), không cần lên Supabase.
 - Bản quyền: sách ETS/sách thương mại để bucket private, không commit vào repo.
+
+## 2026-10-14 — kệ sách Bảng chuyển sang R2
+- `lib/Books` (2 sách), `lib/EA2025` (82 PDF gốc + 5 bài Lessons) và `lib/TOEIC/Listening/DAP_AN_ETS_2024_LC.pdf` đã xoá khỏi Supabase (TJ tự xoá; bản gốc ở R2 `tj-source-staging`, bản kệ ở R2 `tj-shelf`).
+- Kệ sách Bảng đọc từ Cloudflare Worker `tj-shelf` (mã: `tools/shelf-worker/worker.js`); chỉ `_tmp/` còn ở Supabase.
+- Đo lại: Storage 378,2 MB / 1024 (230 file `toeic` + 2 avatar), Database 56,7 MB / 500. Bucket `source-docs` đã xoá.
