@@ -1919,6 +1919,34 @@
       push();
     }
   });
+  /* Kệ sách Bảng: file thường ở R2 qua Cloudflare Worker `tj-shelf` (không giữ khoá nào ở client); file chia sẻ tạm `_tmp/…` ở Supabase */
+  var SHELF = "https://tj-shelf.tj-wordloop.workers.dev";
+  function isTmp(p) { return /^_tmp(\/|$)/.test(String(p || "")); }
+  function shelfPath(p) { return String(p).split("/").map(encodeURIComponent).join("/"); }
+    var sbLib = {
+    list: async function (folder) {
+      var r = await sb.storage.from("toeic").list("lib" + (folder ? "/" + folder : ""), { limit: 500, sortBy: { column: "name", order: "asc" } });
+      if (r.error) return { error: r.error.message };
+      return { items: (r.data || []).filter(function (x) { return x.name !== ".emptyFolderPlaceholder"; }).map(function (x) { return { name: x.name, dir: !x.id, size: x.metadata && x.metadata.size }; }) };
+    },
+    upload: async function (path, file) { var r = await sb.storage.from("toeic").upload("lib/" + path, file, { upsert: true, contentType: file.type || undefined }); return { error: r.error && r.error.message }; },
+    remove: async function (path) { var r = await sb.storage.from("toeic").remove(["lib/" + path]); return { error: r.error ? r.error.message : (r.data && !r.data.length ? "Không xoá được (chưa có quyền xoá trong kho)" : null) }; },
+    move: async function (a, b) { var r = await sb.storage.from("toeic").move("lib/" + a, "lib/" + b); return { error: r.error && r.error.message }; },
+    folders: async function () {   /* mọi thư mục trong lib/ (sâu tối đa 3 cấp) */
+      var out = [], level = [""];
+      for (var d = 0; d < 3 && level.length; d++) {
+        var next = [];
+        await Promise.all(level.map(async function (p) {
+          var r = await sb.storage.from("toeic").list("lib" + (p ? "/" + p : ""), { limit: 300 });
+          (r.data || []).forEach(function (x) { if (!x.id && x.name && x.name[0] !== "." && x.name[0] !== "_") { var q = (p ? p + "/" : "") + x.name; out.push(q); next.push(q); } });
+        }));
+        level = next;
+      }
+      return out.sort();
+    },
+    mkdir: async function (path) { var r = await sb.storage.from("toeic").upload("lib/" + path + "/.emptyFolderPlaceholder", new Blob([""], { type: "application/octet-stream" }), { upsert: true, contentType: "application/octet-stream" }); return { error: r.error && r.error.message }; },
+    url: function (path) { return cfg.SUPABASE_URL + "/storage/v1/object/public/toeic/lib/" + path.split("/").map(encodeURIComponent).join("/"); }
+  };
   if (window.Board) Board.attach({
     room: function () { return G.room && G.room.code; },   /* thư mục file tạm _tmp/<mã phòng> + dọn kho */
     ch: function () { return G.ch; }, me: function () { return G.me; }, st: function () { return G.st || G.bst || null; },
@@ -2034,29 +2062,31 @@
       try { window.parent.postMessage({ type: "tjwl-game-show" }, location.origin); } catch (e) {}   /* WordLoop: rời chế độ Bảng, hiện thẻ Game */
       return true;
     },
-    lib: {
+    lib: {   /* kệ sách Bảng: file thường nằm ở R2 (Worker tj-shelf); riêng file chia sẻ tạm `_tmp/…` vẫn ở Supabase (xoá nhanh, game cần) */
       list: async function (folder) {
-        var r = await sb.storage.from("toeic").list("lib" + (folder ? "/" + folder : ""), { limit: 500, sortBy: { column: "name", order: "asc" } });
-        if (r.error) return { error: r.error.message };
-        return { items: (r.data || []).filter(function (x) { return x.name !== ".emptyFolderPlaceholder"; }).map(function (x) { return { name: x.name, dir: !x.id, size: x.metadata && x.metadata.size }; }) };
+        if (isTmp(folder)) return sbLib.list(folder);
+        try { var r = await fetch(SHELF + "/list?prefix=" + encodeURIComponent(folder || "")), j = await r.json(); return r.ok ? { items: j.items || [] } : { error: j.error || ("HTTP " + r.status) }; } catch (e) { return { error: String(e.message || e) }; }
       },
-      upload: async function (path, file) { var r = await sb.storage.from("toeic").upload("lib/" + path, file, { upsert: true, contentType: file.type || undefined }); return { error: r.error && r.error.message }; },
-      remove: async function (path) { var r = await sb.storage.from("toeic").remove(["lib/" + path]); return { error: r.error ? r.error.message : (r.data && !r.data.length ? "Không xoá được (chưa có quyền xoá trong kho)" : null) }; },
-      move: async function (a, b) { var r = await sb.storage.from("toeic").move("lib/" + a, "lib/" + b); return { error: r.error && r.error.message }; },
-      folders: async function () {   /* mọi thư mục trong lib/ (sâu tối đa 3 cấp) */
-        var out = [], level = [""];
-        for (var d = 0; d < 3 && level.length; d++) {
-          var next = [];
-          await Promise.all(level.map(async function (p) {
-            var r = await sb.storage.from("toeic").list("lib" + (p ? "/" + p : ""), { limit: 300 });
-            (r.data || []).forEach(function (x) { if (!x.id && x.name && x.name[0] !== "." && x.name[0] !== "_") { var q = (p ? p + "/" : "") + x.name; out.push(q); next.push(q); } });
-          }));
-          level = next;
-        }
-        return out.sort();
+      upload: async function (path, file) {
+        if (isTmp(path)) return sbLib.upload(path, file);
+        try { var r = await fetch(SHELF + "/file/" + shelfPath(path), { method: "PUT", headers: { "content-type": file.type || "application/octet-stream" }, body: file }); var j = await r.json().catch(function () { return {}; }); return { error: r.ok ? null : (j.error || ("HTTP " + r.status)) }; } catch (e) { return { error: String(e.message || e) }; }
       },
-      mkdir: async function (path) { var r = await sb.storage.from("toeic").upload("lib/" + path + "/.emptyFolderPlaceholder", new Blob([""], { type: "application/octet-stream" }), { upsert: true, contentType: "application/octet-stream" }); return { error: r.error && r.error.message }; },
-      url: function (path) { return cfg.SUPABASE_URL + "/storage/v1/object/public/toeic/lib/" + path.split("/").map(encodeURIComponent).join("/"); }
+      remove: async function (path) {
+        if (isTmp(path)) return sbLib.remove(path);
+        try { var r = await fetch(SHELF + "/file/" + shelfPath(path), { method: "DELETE" }); var j = await r.json().catch(function () { return {}; }); return { error: r.ok ? null : (j.error || ("HTTP " + r.status)) }; } catch (e) { return { error: String(e.message || e) }; }
+      },
+      move: async function (a, b) {
+        if (isTmp(a) && isTmp(b)) return sbLib.move(a, b);
+        try { var r = await fetch(SHELF + "/move", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ from: a, to: b }) }); var j = await r.json().catch(function () { return {}; }); return { error: r.ok ? null : (j.error || ("HTTP " + r.status)) }; } catch (e) { return { error: String(e.message || e) }; }
+      },
+      folders: async function () {   /* mọi thư mục trong kệ (sâu tối đa 3 cấp) */
+        try { var r = await fetch(SHELF + "/folders"), j = await r.json(); return (j.folders || []).sort(); } catch (e) { return []; }
+      },
+      mkdir: async function (path) {
+        if (isTmp(path)) return sbLib.mkdir(path);
+        try { var r = await fetch(SHELF + "/mkdir", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ path: path }) }); var j = await r.json().catch(function () { return {}; }); return { error: r.ok ? null : (j.error || ("HTTP " + r.status)) }; } catch (e) { return { error: String(e.message || e) }; }
+      },
+      url: function (path) { return isTmp(path) ? sbLib.url(path) : SHELF + "/file/" + shelfPath(path); }
     },
     tree: async function () { if (!TREE) await loadTree(true); return TREE; },   /* cây Hub › Notebook › … › Block của game, dùng chung cho hộp chọn bài ở bảng */
     lookup: function (t, ctx) { return boardLookup(t, ctx); },
