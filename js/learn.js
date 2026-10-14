@@ -4,7 +4,8 @@
    iframe tạo 1 lần rồi GIỮ SỐNG (ẩn chứ không xoá) để chuyển qua lại không mất lượt đang chơi, và phòng TOEIC bên dưới vẫn chạy. */
 (function () {
   "use strict";
-  var PAGES = { ea: "learn/ea/index.html?v=1", dm: "learn/dm/index.html?v=1" };
+  var PAGES = { ea: "learn/ea/index.html?v=1", dm: "learn/dm/index.html?v=1", sp: "learn/sw/index.html?v=1&kind=speaking", wr: "learn/sw/index.html?v=1&kind=writing" };
+  var TITLES = { ea: "EA Quest", dm: "Marketing Quest", sp: "TOEIC Speaking", wr: "TOEIC Writing" };
   var nav = document.getElementById("g-learn"), top = document.querySelector(".g-top");
   if (!nav || !top) return;
   var layer = document.createElement("div");
@@ -26,7 +27,7 @@
     Object.keys(frames).forEach(function (k) { frames[k].hidden = k !== key; });
     if (key && !frames[key]) {
       var f = document.createElement("iframe");
-      f.src = PAGES[key]; f.title = key === "ea" ? "EA Quest" : "Marketing Quest"; f.allow = "autoplay";
+      f.src = PAGES[key]; f.title = TITLES[key] || key; f.allow = "autoplay; microphone";
       layer.appendChild(f); frames[key] = f;
     }
     layer.hidden = !key;

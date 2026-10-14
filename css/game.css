@@ -2177,3 +2177,5 @@ body.g-playing.g-adm #g-righthandle{top:2px;right:8px;width:30px;height:30px;fon
 .g-tnext > .g-tsub{margin:6px 0 10px}
 /* 🧭 đường dẫn đề trong ô đen */
 .g-tcrumb{font-size:12px;line-height:1.3;opacity:.65;margin-bottom:6px;letter-spacing:.2px}
+/* thanh thẻ "Góc tự học": nhiều thẻ thì xuống 2 hàng trên màn nhỏ (TJ 2026-10-14) */
+@media (max-width:760px){ .g-learn{flex-wrap:wrap;overflow-x:visible} .g-learn button{flex:1 1 30%} }

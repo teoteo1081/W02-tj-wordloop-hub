@@ -1,0 +1,1983 @@
+{
+ "version": 1,
+ "note": "Đề do AI sinh theo dạng ETS (tools/sw/gen_sets.py). Q3 Speaking và Q1-5 Writing dùng mô tả ảnh bằng chữ.",
+ "speaking": [
+  {
+   "title": "Phỏng vấn: working hours",
+   "tasks": [
+    {
+     "q": 1,
+     "type": "read_aloud",
+     "text": "Are you looking for a new career opportunity? Join us at the annual Apex City Job Fair this coming Saturday at the Grand Exhibition Center. More than fifty top employers from the technology, finance, and healthcare sectors will be present to collect resumes and conduct on-the-spot interviews. Admission is completely free for all job seekers, and professional headshot photography will be available on-site throughout the morning."
+    },
+    {
+     "q": 2,
+     "type": "read_aloud",
+     "text": "May I have your attention, please? Flight 408 to Vancouver, originally scheduled to board at Gate 12 at 2:15 PM, has been reassigned to Gate 15 due to unexpected maintenance operations. All passengers requiring pre-boarding assistance are invited to approach the podium at this time. We apologize for any inconvenience this gate change may cause and appreciate your patience."
+    },
+    {
+     "q": 3,
+     "type": "describe",
+     "scene": "This is a picture taken inside a modern corporate office. In the foreground, a man in a blue button-down shirt is pointing at a laptop screen while explaining something to a woman seated next to him. In the background, several colleagues are sitting around a large glass conference table, and large windows show a bright city skyline outside."
+    },
+    {
+     "q": 4,
+     "type": "respond",
+     "scenario": "Imagine that a market research firm is conducting a telephone interview about working hours. You have agreed to participate.",
+     "question": "How many hours do you typically work in a standard week, and do you frequently work overtime?"
+    },
+    {
+     "q": 5,
+     "type": "respond",
+     "scenario": "Imagine that a market research firm is conducting a telephone interview about working hours. You have agreed to participate.",
+     "question": "What is your preferred daily work schedule, for instance, starting early or starting late, and why?"
+    },
+    {
+     "q": 6,
+     "type": "respond",
+     "scenario": "Imagine that a market research firm is conducting a telephone interview about working hours. You have agreed to participate.",
+     "question": "Do you think companies should allow employees to choose their own working hours? Please explain your reasons."
+    },
+    {
+     "q": 7,
+     "type": "info",
+     "info": {
+      "title": "Downtown Historical Walking Tour Schedule",
+      "rows": [
+       [
+        "Time",
+        "Activity",
+        "Meeting Point"
+       ],
+       [
+        "9:00 AM",
+        "Welcome and Registration",
+        "Central Station Entrance"
+       ],
+       [
+        "9:30 AM",
+        "Old Town Hall Exhibition",
+        "Information Desk"
+       ],
+       [
+        "11:00 AM",
+        "Guided Museum Tour",
+        "Museum Main Gate"
+       ],
+       [
+        "12:30 PM",
+        "Networking Lunch",
+        "Greenwood Café"
+       ],
+       [
+        "2:00 PM",
+        "Closing Remarks & Souvenir Distribution",
+        "Plaza Fountain"
+       ]
+      ]
+     },
+     "question": "What time does the guided museum tour start, and where is the meeting point?"
+    },
+    {
+     "q": 8,
+     "type": "info",
+     "question": "Is there any activity scheduled after the networking lunch, and what is it?"
+    },
+    {
+     "q": 9,
+     "type": "info",
+     "question": "Could you provide me with all the events and their corresponding locations that are scheduled to take place before 1:00 PM?"
+    },
+    {
+     "q": 10,
+     "type": "solution",
+     "message": "Hi, this is David Miller from the marketing department. I just received the new wireless presentation clicker that I ordered from your office supply catalog yesterday, but unfortunately, it is defective. The laser pointer does not turn on at all, even after replacing the batteries with brand new ones. I have an important client presentation tomorrow morning, and I really need a working device. Could you please call me back immediately to let me know if I can come to your store to exchange it today?"
+    },
+    {
+     "q": 11,
+     "type": "opinion",
+     "question": "Do you agree or disagree that working from home is more productive than working in a traditional office? Give reasons and specific examples to support your opinion."
+    }
+   ],
+   "models": {
+    "3": "This is a photo of an office. A man and a woman are looking at a laptop. They seem to be discussing work. In the background, other people are in a meeting.",
+    "4": "I typically work forty hours a week, from Monday to Friday. Fortunately, I rarely have to work overtime because I manage my tasks efficiently during regular hours.",
+    "5": "I prefer starting my workday early, around eight in the morning. This allows me to complete my most important tasks while the office is quiet and peaceful.",
+    "6": "I definitely think companies should allow flexible working hours. First, it helps employees maintain a better work-life balance, which reduces stress and prevents burnout. Second, people have different peak productivity times; some are morning persons while others work better in the afternoon. Therefore, flexibility benefits both workers and companies.",
+    "7": "The guided museum tour starts at 11:00 AM, and the meeting point is at the museum main gate.",
+    "8": "Yes, there is an event after lunch. It is the closing remarks and souvenir distribution at 2:00 PM.",
+    "9": "Here is the schedule before 1:00 PM. At 9:00 AM, there is welcome and registration at Central Station Entrance. At 9:30 AM, there is the Old Town Hall Exhibition at the Information Desk. At 11:00 AM, there is a guided museum tour at the Museum Main Gate, and at 12:30 PM, there is a networking lunch at Greenwood Café.",
+    "10": "Hello David, this is Sarah from customer service. I am very sorry to hear that your new wireless presentation clicker is defective and that the laser pointer is not working. I understand you need it for your client presentation tomorrow. We have a replacement available in stock right now. You can visit our store before 6:00 PM today, and our staff will exchange it for you immediately. If you need any further assistance, please let me know.",
+    "11": "I strongly agree that working from home can be more productive than working in a traditional office for several reasons. First, remote workers save a significant amount of time and energy by avoiding daily commutes. For instance, instead of spending two hours stuck in traffic, employees can use that time to rest or start working early. Second, working from home provides a quieter environment with fewer workplace distractions, allowing individuals to focus deeply on complex projects. In conclusion, although some collaboration might require face-to-face interaction, remote work generally boosts overall productivity and job satisfaction."
+   },
+   "id": "s01"
+  },
+  {
+   "title": "Phỏng vấn: public transportation in your city",
+   "tasks": [
+    {
+     "q": 1,
+     "type": "read_aloud",
+     "text": "Attention all shoppers! This weekend, Downtown Electronics is hosting our biggest clearance sale of the year. Whether you are looking for smart home devices, kitchen appliances, or the latest audio gear, you will find massive discounts storewide. Plus, the first fifty customers on Saturday morning will receive a complimentary gift card. Do not miss this chance to upgrade your gadgets at unbeatable prices. Visit us at our main branch on Maple Avenue."
+    },
+    {
+     "q": 2,
+     "type": "read_aloud",
+     "text": "Welcome to First National Bank’s audio guide for our new digital banking services. Managing your personal finances has never been easier or more secure. With our newly updated mobile application, you can now deposit checks remotely, transfer funds instantly, and schedule automated monthly bill payments with just a few taps on your smartphone. For assistance with setting up your online profile, please press zero to speak with a customer service representative."
+    },
+    {
+     "q": 3,
+     "type": "describe",
+     "scene": "This is a picture taken in a busy office workspace. In the center, two colleagues are sitting at a wooden desk looking at a laptop screen together, and one woman is pointing at the display. In the background, there are large glass windows, a bookshelf filled with binders, and several indoor green plants."
+    },
+    {
+     "q": 4,
+     "type": "respond",
+     "scenario": "Imagine that a market research company is conducting a survey about public transportation in your city. You have agreed to participate in this telephone interview.",
+     "question": "How often do you usually use public transportation, and what is your preferred mode of travel?"
+    },
+    {
+     "q": 5,
+     "type": "respond",
+     "scenario": "Imagine that a market research company is conducting a survey about public transportation in your city. You have agreed to participate in this telephone interview.",
+     "question": "What is the most significant problem you face when commuting on public buses or trains?"
+    },
+    {
+     "q": 6,
+     "type": "respond",
+     "scenario": "Imagine that a market research company is conducting a survey about public transportation in your city. You have agreed to participate in this telephone interview.",
+     "question": "In your opinion, what improvements should the local government make to encourage more citizens to use public transportation instead of private cars?"
+    },
+    {
+     "q": 7,
+     "type": "info",
+     "info": {
+      "title": "Green Valley Business Conference Schedule",
+      "rows": [
+       [
+        "Time",
+        "Session",
+        "Speaker"
+       ],
+       [
+        "9:00 AM - 10:15 AM",
+        "Opening Keynote: Future of Tech",
+        "Dr. Robert Vance"
+       ],
+       [
+        "10:30 AM - 11:45 AM",
+        "Panel: Sustainable Marketing",
+        "Sarah Jenkins"
+       ],
+       [
+        "12:00 PM - 1:15 PM",
+        "Networking Lunch",
+        "Grand Ballroom"
+       ],
+       [
+        "1:30 PM - 3:00 PM",
+        "Workshop: AI in Customer Service",
+        "Michael Chang"
+       ],
+       [
+        "3:15 PM - 4:30 PM",
+        "Closing Remarks & Awards",
+        "Board of Directors"
+       ]
+      ]
+     },
+     "question": "Could you tell me what time the opening keynote starts and who is speaking?"
+    },
+    {
+     "q": 8,
+     "type": "info",
+     "question": "I missed the morning session. Is there a panel discussion scheduled before lunch, and what is its topic?"
+    },
+    {
+     "q": 9,
+     "type": "info",
+     "question": "I would like to attend all the afternoon events after the networking lunch. Could you please give me the details of the afternoon schedule, including the times, sessions, and speakers?"
+    },
+    {
+     "q": 10,
+     "type": "solution",
+     "message": "Hi, this is David Miller from apartment 4B. I am calling because I just received my monthly utility bill, and there seems to be a major error. I was charged twice for the water usage fee, and my total bill is significantly higher than usual. I already paid my previous bill on time, so this double charge is incorrect. Could you please look into my account, correct this billing mistake, and call me back as soon as possible so I know how much to pay? Thank you."
+    },
+    {
+     "q": 11,
+     "type": "opinion",
+     "question": "Some people prefer learning new skills and acquiring knowledge by reading traditional books. Others prefer learning online through videos and digital articles. Which do you prefer and why? Give specific reasons and examples to support your choice."
+    }
+   ],
+   "models": {
+    "3": "In this picture, two people are collaborating in an office. They are sitting at a desk and reviewing documents on a laptop together. The environment looks bright and professional, with a bookshelf and indoor plants in the background.",
+    "4": "I use public transportation about five days a week. My preferred mode of travel is the subway because it is fast and helps me avoid traffic jams.",
+    "5": "The most significant problem I face is overcrowding during peak morning and evening rush hours, which makes the commute quite uncomfortable.",
+    "6": "To encourage more citizens to use public transportation, the local government should first expand the rail network to cover suburban areas. Additionally, they should increase the frequency of buses during rush hours and lower ticket fares to make public transit more affordable for everyone.",
+    "7": "The opening keynote starts at 9:00 AM and runs until 10:15 AM, and it will be presented by Dr. Robert Vance.",
+    "8": "Yes, there is a panel discussion before lunch. It is titled 'Sustainable Marketing' and is led by Sarah Jenkins from 10:30 AM to 11:45 AM.",
+    "9": "Certainly. Following the networking lunch at 12:00 PM, there are two afternoon sessions. First, from 1:30 PM to 3:00 PM, there is a workshop titled 'AI in Customer Service' led by Michael Chang. After that, from 3:15 PM to 4:30 PM, you can attend the closing remarks and awards presented by the Board of Directors.",
+    "10": "Hello Mr. Miller, this is customer service calling back regarding the billing issue you reported. I sincerely apologize for the inconvenience caused by the double charge on your water usage fee. I have checked your account and found that a system glitch caused the duplicate billing. I have already corrected the invoice, and your new total is updated. Please disregard the previous bill and check your email for the revised statement. Thank you for your patience.",
+    "11": "I prefer learning new skills and acquiring knowledge through the Internet rather than traditional books. There are two main reasons for this. First, online learning offers multimedia resources such as interactive videos, podcasts, and real-time forums, which make complex topics much easier to understand. For instance, when I wanted to learn graphic design, watching step-by-step video tutorials was far more effective than reading a static textbook. Second, the Internet provides instant access to up-to-date information and global updates, whereas books can quickly become outdated. Therefore, I firmly believe that digital learning platforms are superior for modern education."
+   },
+   "id": "s02"
+  },
+  {
+   "title": "Phỏng vấn: hobbies",
+   "tasks": [
+    {
+     "q": 1,
+     "type": "read_aloud",
+     "text": "Attention all library patrons. Please be advised that the central library will implement new operating hours starting from next Monday. We will be open from nine in the morning until eight in the evening on weekdays. Additionally, the quiet study rooms on the second floor will be closed for routine maintenance this weekend. We apologize for any inconvenience this may cause and appreciate your cooperation."
+    },
+    {
+     "q": 2,
+     "type": "read_aloud",
+     "text": "Welcome to the Grand Horizon Hotel. We are delighted to offer our guests a wide range of premium services, including complimentary high-speed internet access, a fully equipped fitness center, and twenty-four-hour room service. If you wish to schedule a wake-up call or book a sightseeing tour, please contact the front desk by dialing zero on your room telephone. We hope you enjoy your stay with us."
+    },
+    {
+     "q": 3,
+     "type": "describe",
+     "scene": "A man and a woman are standing inside a modern office kitchen, looking at a laptop computer on the counter. The woman is holding a white coffee cup, and there are several cabinets and a refrigerator in the background."
+    },
+    {
+     "q": 4,
+     "type": "respond",
+     "scenario": "Imagine that a marketing research company is conducting a telephone interview about hobbies.",
+     "question": "What is your favorite hobby, and how often do you practice it?"
+    },
+    {
+     "q": 5,
+     "type": "respond",
+     "scenario": "Imagine that a marketing research company is conducting a telephone interview about hobbies.",
+     "question": "Do you prefer pursuing your hobbies alone or with other people? Why?"
+    },
+    {
+     "q": 6,
+     "type": "respond",
+     "scenario": "Imagine that a marketing research company is conducting a telephone interview about hobbies.",
+     "question": "Describe a new hobby you would like to try in the near future and explain why it interests you."
+    },
+    {
+     "q": 7,
+     "type": "info",
+     "info": {
+      "title": "QuickPrint Shop Price List",
+      "rows": [
+       [
+        "Service",
+        "Black & White",
+        "Color"
+       ],
+       [
+        "Standard Printing (per page)",
+        "$0.10",
+        "$0.50"
+       ],
+       [
+        "Poster Printing (each)",
+        "$5.00",
+        "$12.00"
+       ],
+       [
+        "Binding Service",
+        "$2.00 per book",
+        "$2.00 per book"
+       ],
+       [
+        "Lamination (per page)",
+        "$1.00",
+        "$1.00"
+       ]
+      ]
+     },
+     "question": "How much does it cost for a color standard printing per page, and what is the price for a black and white poster?"
+    },
+    {
+     "q": 8,
+     "type": "info",
+     "question": "I need to get some documents bound and laminated. Could you tell me the prices for these two services?"
+    },
+    {
+     "q": 9,
+     "type": "info",
+     "question": "I am planning to print twenty color standard pages and one color poster. Can you give me the complete schedule of costs for these items?"
+    },
+    {
+     "q": 10,
+     "type": "solution",
+     "message": "Hi, this is David Miller from the marketing department. I am calling because I booked Conference Room B for our team meeting at two o'clock this afternoon, but when we arrived, another team was already inside using it. They said they reserved it too. We really need a space right now to discuss our upcoming project deadline. Could you please check what went wrong with the reservation system and find us another available room immediately? Please call me back as soon as possible."
+    },
+    {
+     "q": 11,
+     "type": "opinion",
+     "question": "Some people prefer learning new skills from books, while others prefer learning them on the Internet. Which do you prefer and why? Give specific reasons and examples to support your opinion."
+    }
+   ],
+   "models": {
+    "3": "This is a picture taken in a bright office kitchen. In the foreground, a man and a woman are standing near a counter, looking intently at a laptop screen. The woman is holding a cup of coffee. In the background, there are clean wooden cabinets and a modern refrigerator.",
+    "4": "My favorite hobby is reading books. I try to read for at least thirty minutes every single night before I go to sleep.",
+    "5": "I definitely prefer pursuing my hobbies with other people. Doing things together makes the experience much more enjoyable and helps build stronger relationships.",
+    "6": "If I could try a new hobby in the near future, I would love to learn photography. It interests me because I have always wanted to capture beautiful landscapes and special moments with my own artistic perspective, rather than just using my smartphone casually.",
+    "7": "A color standard printing costs fifty cents per page, and a black and white poster is five dollars.",
+    "8": "Binding service costs two dollars per book, and lamination is one dollar per page.",
+    "9": "Certainly. For twenty color standard pages, the total is ten dollars, since each page is fifty cents. Additionally, one color poster will cost twelve dollars. Therefore, the total cost for these items will be twenty-two dollars.",
+    "10": "Hello David, this is the facilities manager returning your call. I am very sorry to hear about the confusion regarding Conference Room B. It appears there was a scheduling error in our digital booking system. To resolve this immediately, I have reserved Conference Room C for your team right now, and it is fully equipped with a projector and seating. Please feel free to move your group there, and I will ensure this booking error does not happen again. Thank you for your patience.",
+    "11": "In my opinion, learning new skills on the Internet is much better than learning them from books. There are two main reasons for this. First, online learning offers dynamic multimedia resources, such as video tutorials and interactive exercises, which make complex concepts much easier to grasp than static text in a book. For example, when I wanted to learn video editing, watching step-by-step YouTube tutorials helped me understand the software tools much faster than reading a manual. Second, the Internet provides instant access to updated information and global communities where learners can ask questions and receive immediate feedback. For these reasons, I believe the Internet is a superior tool for acquiring new skills."
+   },
+   "id": "s03"
+  },
+  {
+   "title": "Phỏng vấn: hobbies",
+   "tasks": [
+    {
+     "q": 1,
+     "type": "read_aloud",
+     "text": "Welcome everyone to our annual company workshop. Today, we will explore innovative marketing strategies and customer engagement techniques. Please ensure you have signed in at the front desk and collected your conference materials. Our keynote speaker will begin the morning session promptly at nine o'clock in the main auditorium."
+    },
+    {
+     "q": 2,
+     "type": "read_aloud",
+     "text": "May I have your attention, please. Flight four hundred twelve to Singapore is now ready for boarding at gate fourteen. All passengers traveling in business class and those needing special assistance are invited to board at this time. Please have your boarding passes and identification ready for inspection."
+    },
+    {
+     "q": 3,
+     "type": "describe",
+     "scene": "A man and a woman are reviewing documents together in a brightly lit modern office. The man is pointing at a laptop screen while the woman holds a pen and listens attentively. Several notebooks and coffee mugs are placed on the wooden desk."
+    },
+    {
+     "q": 4,
+     "type": "respond",
+     "scenario": "Imagine that a marketing research company is conducting a telephone interview about hobbies.",
+     "question": "What is your favorite hobby, and how often do you practice it?"
+    },
+    {
+     "q": 5,
+     "type": "respond",
+     "scenario": "Imagine that a marketing research company is conducting a telephone interview about hobbies.",
+     "question": "Do you prefer practicing your hobby alone or with other people? Why?"
+    },
+    {
+     "q": 6,
+     "type": "respond",
+     "scenario": "Imagine that a marketing research company is conducting a telephone interview about hobbies.",
+     "question": "Describe a memorable experience you had related to your hobby and explain why it was special to you."
+    },
+    {
+     "q": 7,
+     "type": "info",
+     "info": {
+      "title": "Apex Print Shop Price List",
+      "rows": [
+       [
+        "Service Item",
+        "Standard Rate",
+        "Express Rate"
+       ],
+       [
+        "Black & White Copies",
+        "$0.10 per page",
+        "$0.20 per page"
+       ],
+       [
+        "Color Copies",
+        "$0.50 per page",
+        "$0.80 per page"
+       ],
+       [
+        "Spiral Binding",
+        "$3.50 per document",
+        "$5.00 per document"
+       ],
+       [
+        "Lamination",
+        "$1.20 per page",
+        "$2.00 per page"
+       ],
+       [
+        "Poster Printing",
+        "$15.00 each",
+        "$22.00 each"
+       ]
+      ]
+     },
+     "question": "How much does it cost per page for standard black and white copies?"
+    },
+    {
+     "q": 8,
+     "type": "info",
+     "question": "I need to get some documents bound. What is the express rate for spiral binding?"
+    },
+    {
+     "q": 9,
+     "type": "info",
+     "question": "Could you provide details about all the printing and finishing services that cost less than two dollars at the standard rate?"
+    },
+    {
+     "q": 10,
+     "type": "solution",
+     "message": "Hi, this is David from the sales department. We have a major scheduling conflict for our quarterly client meeting next Tuesday. The conference room we booked is currently undergoing urgent plumbing repairs, so we cannot host our twenty attendees there. We need an alternative venue or a way to reschedule. Could you please call me back as soon as possible to discuss how we can solve this problem?"
+    },
+    {
+     "q": 11,
+     "type": "opinion",
+     "question": "Some people prefer using public transportation for their daily commute, while others prefer driving private cars. Which do you prefer and why? Give specific reasons and details to support your opinion."
+    }
+   ],
+   "models": {
+    "3": "This is a picture of an office setting. A man and a woman are sitting at a wooden desk, looking at a laptop computer. The man is pointing at the screen, and the woman is holding a pen. There are coffee mugs and notebooks on the table.",
+    "4": "My favorite hobby is reading fiction books. I usually read for about thirty minutes every evening before going to sleep.",
+    "5": "I definitely prefer reading alone. It helps me concentrate better on the story and provides a quiet space to relax after a long day.",
+    "6": "A very memorable experience was attending a book signing event for my favorite author last year. I had the chance to speak with her directly and get a signed copy of her latest novel. It was special because I had admired her writing for many years.",
+    "7": "The standard rate for black and white copies is ten cents per page.",
+    "8": "The express rate for spiral binding is five dollars per document.",
+    "9": "Here are the services under two dollars at the standard rate: standard black and white copies cost ten cents per page, color copies are fifty cents per page, spiral binding is three dollars and fifty cents per document, and lamination is one dollar and twenty cents per page.",
+    "10": "Hello David, this is Sarah returning your call regarding the venue issue for next Tuesday's quarterly client meeting. I understand that the original conference room is unavailable due to plumbing repairs. To solve this, I suggest we either book the large executive meeting room on the third floor or postpone the meeting to Wednesday afternoon. Please let me know which option works best so I can update all the attendees immediately. Thank you.",
+    "11": "I strongly prefer using public transportation for my daily commute over driving private cars. First, public transportation is much more cost-effective because I do not have to worry about expensive fuel, parking fees, or vehicle maintenance. Second, it allows me to use my travel time productively. Instead of getting stressed in heavy traffic jams, I can read books, listen to podcasts, or catch up on work emails. For instance, taking the subway to my office saves me nearly an hour of daily frustration compared to driving. Therefore, public transportation is the better choice for urban commuters."
+   },
+   "id": "s04"
+  },
+  {
+   "title": "Phỏng vấn: public transportation in your city",
+   "tasks": [
+    {
+     "q": 1,
+     "type": "read_aloud",
+     "text": "Are you looking for a new career opportunity? Do not miss the upcoming annual job fair at the Grand Metro Convention Center this Saturday. Over fifty leading companies from various industries, including technology, finance, and marketing, will be attending. Attendees can submit resumes, network with industry professionals, and participate in brief on-site interviews. Admission is completely free for all registered participants. Please visit our website to secure your badge today."
+    },
+    {
+     "q": 2,
+     "type": "read_aloud",
+     "text": "Good evening, diners, and welcome to the grand opening of Bella Cucina. Tonight, we are proud to introduce our award-winning executive chef, Marco Rossi, who has crafted a brand-new seasonal menu featuring authentic Italian dishes. All the ingredients used in our kitchen are imported directly from Italy or sourced from local organic farms. We invite you to sit back, relax, and enjoy an unforgettable culinary experience with your family and friends."
+    },
+    {
+     "q": 3,
+     "type": "describe",
+     "scene": "This is a picture of a bustling office workspace. In the foreground, a woman wearing a blue blazer is typing on her laptop while holding a notebook. In the background, two men are standing near a large glass window, pointing at a whiteboard filled with charts and sticky notes. Several potted plants and coffee mugs are placed on the wooden desks."
+    },
+    {
+     "q": 4,
+     "type": "respond",
+     "scenario": "Imagine that a market research company is conducting a telephone interview about public transportation in your city.",
+     "question": "How often do you use public transportation, and what is your primary mode of transit?"
+    },
+    {
+     "q": 5,
+     "type": "respond",
+     "scenario": "Imagine that a market research company is conducting a telephone interview about public transportation in your city.",
+     "question": "What is the biggest challenge you face when commuting on public buses or trains?"
+    },
+    {
+     "q": 6,
+     "type": "respond",
+     "scenario": "Imagine that a market research company is conducting a telephone interview about public transportation in your city.",
+     "question": "If the city government had a budget to improve only one aspect of public transportation, what feature should they prioritize and why?"
+    },
+    {
+     "q": 7,
+     "type": "info",
+     "info": {
+      "title": "City Express Train Schedule - Saturday",
+      "rows": [
+       [
+        "Train Number",
+        "Destination",
+        "Departure Time",
+        "Platform"
+       ],
+       [
+        "Express 102",
+        "North Station",
+        "08:15 AM",
+        "Platform 3"
+       ],
+       [
+        "Express 105",
+        "West Terminal",
+        "09:30 AM",
+        "Platform 1"
+       ],
+       [
+        "Express 109",
+        "Central Park",
+        "11:00 AM",
+        "Platform 4"
+       ],
+       [
+        "Express 114",
+        "South Harbor",
+        "01:15 PM",
+        "Platform 2"
+       ],
+       [
+        "Express 120",
+        "East Suburbs",
+        "03:45 PM",
+        "Platform 5"
+       ]
+      ]
+     },
+     "question": "Could you tell me the departure time for Express 109, and which platform it leaves from?"
+    },
+    {
+     "q": 8,
+     "type": "info",
+     "question": "I am interested in taking the train to West Terminal. What is the train number and when does it depart?"
+    },
+    {
+     "q": 9,
+     "type": "info",
+     "question": "I need to plan my afternoon trips. Could you provide me with all the details regarding the trains departing after 12:00 PM?"
+    },
+    {
+     "q": 10,
+     "type": "solution",
+     "message": "Hi, this is David Miller from the shipping department. I am calling to inform you about a serious issue regarding the office furniture shipment that was supposed to arrive at your branch office this morning. Unfortunately, the delivery truck broke down on the highway, and the shipment has been delayed by at least four hours. I am very sorry for the inconvenience this may cause to your daily operations. To resolve this, I have arranged for a backup vehicle to pick up the cargo, and it should arrive at your location by 3:00 PM today. Please let me know if you need any further assistance."
+    },
+    {
+     "q": 11,
+     "type": "opinion",
+     "question": "Do you prefer to use public transportation or drive a private car for your daily commute? Give reasons and specific examples to support your opinion."
+    }
+   ],
+   "models": {
+    "3": "This is a photo of a busy office where three colleagues are working. A woman is sitting at her desk typing on a laptop, while two men are standing by a whiteboard discussing a project. The office is modern and well-lit.",
+    "4": "I usually take the subway to work about five times a week because it is the most reliable and affordable way to commute in my city.",
+    "5": "The biggest challenge I face is the overcrowding during rush hour. It is often very difficult to find a seat or even get onto the train.",
+    "6": "If the city government had a budget to improve public transit, they should definitely focus on increasing the frequency of trains during peak hours. This would significantly reduce overcrowding and shorten waiting times, making the commute much more comfortable for everyone.",
+    "7": "Express 109 departs at 11:00 AM and it leaves from Platform 4.",
+    "8": "The train to West Terminal is Express 105, and it departs at 09:30 AM.",
+    "9": "There are two trains scheduled for the afternoon. First, Express 114 departs for South Harbor at 01:15 PM from Platform 2. Second, Express 120 departs for East Suburbs at 03:45 PM from Platform 5.",
+    "10": "Hello David, thank you for calling to inform me about the delayed shipment. I understand that the delivery truck broke down and the furniture will arrive around 3:00 PM instead of this morning. While this causes a minor delay for our meetings today, I appreciate you arranging a backup vehicle so quickly. Please keep me updated if there are any further changes. Thank you.",
+    "11": "I strongly prefer using public transportation over driving a private car for my daily commute. There are two main reasons for this. First, public transportation is much more cost-effective. Gas prices and parking fees in the city center are extremely high, whereas a monthly transit pass saves me a lot of money. Second, taking the train allows me to be productive. Instead of getting stressed in traffic jams, I can read books, answer emails, or listen to podcasts during my trip. For example, last week I finished reading an important report on the train while other drivers were stuck in gridlock. Therefore, public transit is the better choice."
+   },
+   "id": "s05"
+  },
+  {
+   "title": "Phỏng vấn: online shopping",
+   "tasks": [
+    {
+     "q": 1,
+     "type": "read_aloud",
+     "text": "Attention all library members. Please note that the main reading room on the second floor will be closed for renovation starting next Monday. All books located in this section have been temporarily moved to the first-floor lobby. We apologize for any inconvenience this may cause and appreciate your patience as we work to improve our facilities for everyone."
+    },
+    {
+     "q": 2,
+     "type": "read_aloud",
+     "text": "Welcome to the Grand Horizon Hotel. We are delighted to announce the opening of our brand-new spa and wellness center on the fifth floor. Whether you are looking to unwind after a long business meeting or enjoy a relaxing weekend getaway, our professional therapists are here to provide exceptional service. Visit the front desk today to book your appointment."
+    },
+    {
+     "q": 3,
+     "type": "describe",
+     "scene": "This is a picture of a busy public library. In the foreground, a young woman with glasses is sitting at a wooden table, typing on her laptop. In the background, several shelves filled with books are visible, and another person is walking down the aisle holding a stack of documents."
+    },
+    {
+     "q": 4,
+     "type": "respond",
+     "scenario": "Imagine that a marketing research firm is conducting a survey in your country. You have agreed to participate in a short telephone interview about online shopping.",
+     "question": "How often do you usually shop online, and what type of products do you buy the most?"
+    },
+    {
+     "q": 5,
+     "type": "respond",
+     "scenario": "Imagine that a marketing research firm is conducting a survey in your country. You have agreed to participate in a short telephone interview about online shopping.",
+     "question": "When you choose an online store to make a purchase, what is the most important factor you consider?"
+    },
+    {
+     "q": 6,
+     "type": "respond",
+     "scenario": "Imagine that a marketing research firm is conducting a survey in your country. You have agreed to participate in a short telephone interview about online shopping.",
+     "question": "Do you think shopping online will completely replace traditional in-store shopping in the near future? Why or why not?"
+    },
+    {
+     "q": 7,
+     "type": "info",
+     "info": {
+      "title": "Community Center Opening Event Schedule",
+      "rows": [
+       [
+        "Time",
+        "Activity"
+       ],
+       [
+        "9:00 AM",
+        "Welcome Speech by Mayor"
+       ],
+       [
+        "10:00 AM",
+        "Ribbon Cutting Ceremony"
+       ],
+       [
+        "11:15 AM",
+        "Guided Tour of the Facility"
+       ],
+       [
+        "1:00 PM",
+        "Buffet Lunch in the Main Hall"
+       ],
+       [
+        "2:30 PM",
+        "Live Music Performance"
+       ]
+      ]
+     },
+     "question": "What time does the ribbon cutting ceremony begin, and where will it take place?"
+    },
+    {
+     "q": 8,
+     "type": "info",
+     "question": "Is there any activity scheduled between the guided tour and the live music performance, and what is it?"
+    },
+    {
+     "q": 9,
+     "type": "info",
+     "question": "Could you please give me the complete schedule of events happening in the afternoon?"
+    },
+    {
+     "q": 10,
+     "type": "solution",
+     "message": "Hi, this is David Miller calling from order number 45892. I am calling because I recently ordered a new office desk from your company, and it was supposed to be delivered yesterday. However, the package has not arrived yet, and I have an important client meeting in my office tomorrow. I really need this desk assembled before then. Could you please check the status of my shipment and call me back immediately with a solution? Thank you."
+    },
+    {
+     "q": 11,
+     "type": "opinion",
+     "question": "Some people prefer to use public transportation for their daily commute, while others prefer to drive their private cars. Which do you prefer and why? Give specific reasons and examples to support your opinion."
+    }
+   ],
+   "models": {
+    "3": "This is an indoor scene at a library. A woman is working on a laptop at a table. Behind her, bookshelves line the wall while a person walks past.",
+    "4": "I usually shop online about twice a week, and I mostly buy electronic gadgets and books.",
+    "5": "The most important factor I consider is customer reviews and the overall rating of the seller.",
+    "6": "I do not think online shopping will completely replace traditional stores. While online shopping offers great convenience, many people still enjoy the physical experience of seeing and trying on items, especially for clothing and groceries, before making a purchase decision.",
+    "7": "The ribbon cutting ceremony begins at 10:00 AM.",
+    "8": "Yes, there is a buffet lunch in the main hall at 1:00 PM.",
+    "9": "Certainly. At 1:00 PM, there is a buffet lunch in the main hall, and following that, at 2:30 PM, there will be a live music performance.",
+    "10": "Hello Mr. Miller, this is customer service calling back regarding your delayed shipment. First of all, I sincerely apologize for the inconvenience caused by the delivery delay. I checked our system and found that your package was delayed due to unexpected weather conditions. To resolve this, we have upgraded your shipping to express delivery at no extra cost, and your desk will arrive by this evening. Thank you for your patience.",
+    "11": "I strongly prefer using public transportation for my daily commute over driving a private car. There are two main reasons for this. First, public transportation is much more cost-effective since I do not have to worry about expensive fuel prices, parking fees, or vehicle maintenance. Second, it is environmentally friendly because it helps reduce traffic congestion and carbon emissions in the city. For example, taking the subway allows me to read or catch up on work emails instead of getting stressed in a traffic jam. Therefore, I believe public transportation is the better choice."
+   },
+   "id": "s06"
+  },
+  {
+   "title": "Phỏng vấn: public transportation usage in your city",
+   "tasks": [
+    {
+     "q": 1,
+     "type": "read_aloud",
+     "text": "Attention passengers on Flight 402 to Chicago. We would like to inform you that this flight has been delayed by approximately forty-five minutes due to unexpected severe weather conditions along the flight path. We sincerely apologize for any inconvenience this may cause to your travel schedule. Please remain in the terminal area, and listen for further announcements regarding boarding times and gate changes."
+    },
+    {
+     "q": 2,
+     "type": "read_aloud",
+     "text": "Welcome to the annual City Career Fair held at the Metro Convention Center. Today, we have over one hundred leading employers from various industries, including technology, finance, and healthcare, looking for talented professionals. Whether you are seeking an entry-level position or a career change, this event provides an excellent opportunity to network with hiring managers and submit your resume directly."
+    },
+    {
+     "q": 3,
+     "type": "describe",
+     "scene": "This is a picture taken in a busy office workspace. In the foreground, two colleagues are sitting at a wooden desk looking at a laptop computer and smiling. In the background, there are large glass windows, a bookshelf filled with binders, and another employee walking by while holding a cup of coffee."
+    },
+    {
+     "q": 4,
+     "type": "respond",
+     "scenario": "Imagine that a market research company is conducting a telephone interview about public transportation usage in your city.",
+     "question": "How often do you use public transportation, and what is your primary means of travel?"
+    },
+    {
+     "q": 5,
+     "type": "respond",
+     "scenario": "Imagine that a market research company is conducting a telephone interview about public transportation usage in your city.",
+     "question": "What is the biggest challenge you face when commuting on public buses or trains?"
+    },
+    {
+     "q": 6,
+     "type": "respond",
+     "scenario": "Imagine that a market research company is conducting a telephone interview about public transportation usage in your city.",
+     "question": "If the local government could make one major improvement to the current public transportation system, what would you suggest and why?"
+    },
+    {
+     "q": 7,
+     "type": "info",
+     "info": {
+      "title": "Marketing Department Meeting Schedule",
+      "rows": [
+       [
+        "Time",
+        "Agenda Item",
+        "Presenter"
+       ],
+       [
+        "9:00 AM",
+        "Quarterly Sales Review",
+        "Sarah Jenkins"
+       ],
+       [
+        "10:00 AM",
+        "New Social Media Campaign",
+        "David Ross"
+       ],
+       [
+        "11:15 AM",
+        "Budget Allocation",
+        "Manager"
+       ],
+       [
+        "12:00 PM",
+        "Lunch Break",
+        "Cafeteria"
+       ],
+       [
+        "1:00 PM",
+        "Q&A and Action Items",
+        "All Staff"
+       ]
+      ]
+     },
+     "question": "What time does the meeting start, and who is leading the first agenda item?"
+    },
+    {
+     "q": 8,
+     "type": "info",
+     "question": "I missed the morning session. Can you tell me what topic is scheduled right after the social media campaign and who will present it?"
+    },
+    {
+     "q": 9,
+     "type": "info",
+     "question": "Could you give me the complete details of all the activities scheduled for the morning session before the lunch break?"
+    },
+    {
+     "q": 10,
+     "type": "solution",
+     "message": "Hi, this is Mark Spencer. I recently purchased a new smart vacuum cleaner from your online store last week, but I am very disappointed with it. When I opened the box yesterday, I noticed that the charging dock was completely missing, and the main unit refuses to turn on even after plugging it into a different outlet. I need this issue resolved immediately because I have guests arriving this weekend and really need my house cleaned. Could you please call me back as soon as possible to arrange a replacement?"
+    },
+    {
+     "q": 11,
+     "type": "opinion",
+     "question": "Do you agree or disagree that public transportation is much better than private cars for daily commuting? Give reasons and specific examples to support your opinion."
+    }
+   ],
+   "models": {
+    "3": "This picture shows two people working together in an office. They are looking at a laptop and smiling. In the background, there is a large window and another worker walking past with coffee.",
+    "4": "I use public transportation about four times a week. My primary means of travel is the subway because it is fast and helps me avoid heavy traffic jams.",
+    "5": "The biggest challenge I face when commuting is overcrowding during peak morning hours. It is often very difficult to find a comfortable space or even board the first available train.",
+    "6": "If the government could make one improvement, I would suggest increasing the frequency of trains during rush hours. This would significantly reduce overcrowding and shorten wait times, making the daily commute much more pleasant and efficient for everyone.",
+    "7": "The meeting starts at 9:00 AM, and the first agenda item is the Quarterly Sales Review presented by Sarah Jenkins.",
+    "8": "Right after the social media campaign, the topic is Budget Allocation, and it will be presented by the Manager.",
+    "9": "Certainly. The morning schedule begins at 9:00 AM with the Quarterly Sales Review by Sarah Jenkins. Then, at 10:00 AM, David Ross will present the New Social Media Campaign. After that, at 11:15 AM, the Manager will discuss Budget Allocation, followed by a lunch break at 12:00 PM.",
+    "10": "Hello Mr. Spencer, this is customer service calling back regarding the smart vacuum cleaner you purchased last week. I am terribly sorry to hear that the charging dock was missing and that the unit wouldn't turn on. To resolve this issue right away, I would like to arrange an express delivery of a brand new replacement unit along with a prepaid return label for the defective one, so it arrives before your guests come this weekend. Thank you for your patience, and please let me know if you need any further assistance.",
+    "11": "I strongly agree that public transportation is better than private cars for daily commuting for two main reasons. First, using subways and buses is much more environmentally friendly, as it significantly reduces carbon emissions in congested urban areas. Second, public transit is far more cost-effective because commuters do not have to worry about expensive fuel prices, vehicle maintenance, and parking fees. For instance, taking the train allows me to read or work during my commute instead of stressing over driving in traffic. Therefore, I believe public transportation is the superior choice for daily travel."
+   },
+   "id": "s07"
+  },
+  {
+   "title": "Phỏng vấn: reading habits in your country",
+   "tasks": [
+    {
+     "q": 1,
+     "type": "read_aloud",
+     "text": "Attention all shoppers! Welcome to our annual weekend clearance sale starting this Friday at Central Department Store. For three days only, you can enjoy massive discounts of up to fifty percent off on selected electronics, winter clothing, and home appliances. Early birds who arrive before ten in the morning will also receive a special voucher for our downtown café. Do not miss this fantastic opportunity to save big on your favorite items."
+    },
+    {
+     "q": 2,
+     "type": "read_aloud",
+     "text": "Good morning, museum members and visitors. We are thrilled to announce the official opening of our brand-new modern art wing, featuring contemporary masterpieces from around the globe. Guided tours will begin every hour starting at ten a.m. in the main lobby. Please note that photography without flash is permitted in all galleries, but large bags must be checked at the entrance counter. We hope you enjoy your cultural journey with us today."
+    },
+    {
+     "q": 3,
+     "type": "describe",
+     "scene": "This is a picture of a busy office workplace. In the center, a man and a woman are sitting around a wooden table, looking closely at a laptop screen. The man is pointing at the monitor while explaining something. In the background, large glass windows show a city view, and several green potted plants are placed on a nearby shelf."
+    },
+    {
+     "q": 4,
+     "type": "respond",
+     "scenario": "Imagine that a marketing research firm is conducting a survey about reading habits in your country. You have agreed to participate in a telephone interview.",
+     "question": "How often do you read books, and where do you usually read them?"
+    },
+    {
+     "q": 5,
+     "type": "respond",
+     "scenario": "Imagine that a marketing research firm is conducting a survey about reading habits in your country. You have agreed to participate in a telephone interview.",
+     "question": "What genres of books do you find most interesting, and why?"
+    },
+    {
+     "q": 6,
+     "type": "respond",
+     "scenario": "Imagine that a marketing research firm is conducting a survey about reading habits in your country. You have agreed to participate in a telephone interview.",
+     "question": "Describe the last book you read. Did you enjoy it, and would you recommend it to others? Give details."
+    },
+    {
+     "q": 7,
+     "type": "info",
+     "info": {
+      "title": "Marketing Department Meeting Schedule",
+      "rows": [
+       [
+        "Time",
+        "Agenda Item",
+        "Speaker"
+       ],
+       [
+        "9:00 AM - 9:30 AM",
+        "Quarterly Sales Review",
+        "Sarah Jenkins"
+       ],
+       [
+        "9:30 AM - 10:15 AM",
+        "New Product Launch Strategy",
+        "David Lee"
+       ],
+       [
+        "10:15 AM - 10:30 AM",
+        "Coffee Break",
+        "-"
+       ],
+       [
+        "10:30 AM - 11:15 AM",
+        "Social Media Advertising Plan",
+        "Maria Garcia"
+       ],
+       [
+        "11:15 AM - 12:00 PM",
+        "Q&A and Closing Remarks",
+        "All Team Members"
+       ]
+      ]
+     },
+     "question": "What time does the meeting start, and who is the speaker for the first session?"
+    },
+    {
+     "q": 8,
+     "type": "info",
+     "question": "Is there a coffee break scheduled during the morning, and if so, when does it take place?"
+    },
+    {
+     "q": 9,
+     "type": "info",
+     "question": "Could you please give me the details of all the sessions scheduled after the coffee break?"
+    },
+    {
+     "q": 10,
+     "type": "solution",
+     "message": "Hello, this is Robert Taylor calling from Room 402. I am currently checking my reservation details online, and I noticed a serious mistake. I booked a deluxe room for four nights starting this coming Friday, but the system shows my reservation is only for three nights and for a standard room instead. I need that deluxe room because I am traveling with my family and require extra space. Could you please look into this issue, update my booking correctly, and call me back as soon as possible to confirm?"
+    },
+    {
+     "q": 11,
+     "type": "opinion",
+     "question": "Some people prefer working on projects as part of a team, while others prefer working independently on their own. Which do you prefer and why? Use specific reasons and examples to support your opinion."
+    }
+   ],
+   "models": {
+    "3": "In this picture, two colleagues are collaborating on a project in a modern office. They are seated at a desk reviewing information on a laptop. The man is pointing at the screen, and the woman is listening attentively. The office has a bright and professional atmosphere with large windows in the background.",
+    "4": "I usually read books every evening before going to bed. I prefer reading in my living room on the comfortable sofa because it is quiet and relaxing.",
+    "5": "I am most interested in science fiction and historical biographies. I find science fiction very creative and imaginative, while historical books help me understand past events and human behavior better.",
+    "6": "The last book I read was a historical novel about World War II. I thoroughly enjoyed it because the plot was captivating and the characters felt very authentic. I would definitely recommend it to anyone who loves history, as it offers a deep emotional insight into that difficult era.",
+    "7": "The meeting starts at 9:00 AM, and the speaker for the first session is Sarah Jenkins, who will review the quarterly sales.",
+    "8": "Yes, there is a coffee break scheduled from 10:15 AM to 10:30 AM.",
+    "9": "Certainly. After the coffee break, Maria Garcia will present the social media advertising plan from 10:30 AM to 11:15 AM. Following that, there will be a Q&A and closing remarks session with all team members from 11:15 AM to 12:00 PM.",
+    "10": "Hello Mr. Taylor, this is the front desk manager returning your call. I sincerely apologize for the confusion regarding your room reservation. I have just checked our system, and you are completely right; you booked a deluxe room for four nights. I have immediately corrected the error in our database and upgraded your booking back to the deluxe room at no extra charge. Thank you for bringing this to our attention, and we look forward to welcoming you this Friday.",
+    "11": "I strongly prefer working on projects as part of a team rather than working independently. There are two main reasons for this. First, teamwork allows us to combine different skills and perspectives, which leads to much more creative and effective solutions. For instance, when I worked on a marketing project last year, my teammate's strong design skills complemented my analytical abilities, resulting in a very successful campaign. Second, sharing responsibilities reduces individual stress and workload, making the entire process more enjoyable and efficient. Therefore, I believe collaboration yields better results than working alone."
+   },
+   "id": "s08"
+  },
+  {
+   "title": "Phỏng vấn: music",
+   "tasks": [
+    {
+     "q": 1,
+     "type": "read_aloud",
+     "text": "Attention all staff members. We are pleased to announce that our new human resources software training will begin next Monday. All employees are required to complete the introductory module before the end of the month. If you experience any technical difficulties while logging into the system, please contact the IT support helpdesk immediately. Thank you for your cooperation."
+    },
+    {
+     "q": 2,
+     "type": "read_aloud",
+     "text": "May I have your attention, please. This is a final boarding announcement for Flight 405 to San Francisco. All remaining passengers should proceed to Gate B12 immediately. Please have your boarding pass and photo identification ready for inspection. We wish you a pleasant flight and thank you for choosing Horizon Airlines."
+    },
+    {
+     "q": 3,
+     "type": "describe",
+     "scene": "A man and a woman are reviewing documents together in a bright office. The man is pointing at a laptop screen while the woman is taking notes on a notepad. Several coffee cups and folders are placed on the wooden desk."
+    },
+    {
+     "q": 4,
+     "type": "respond",
+     "scenario": "Imagine that a company is doing research in your country. You have agreed to participate in a telephone interview about music.",
+     "question": "How often do you listen to music, and what is your favorite genre?"
+    },
+    {
+     "q": 5,
+     "type": "respond",
+     "scenario": "Imagine that a company is doing research in your country. You have agreed to participate in a telephone interview about music.",
+     "question": "Do you prefer listening to recorded music at home or attending live concerts? Why?"
+    },
+    {
+     "q": 6,
+     "type": "respond",
+     "scenario": "Imagine that a company is doing research in your country. You have agreed to participate in a telephone interview about music.",
+     "question": "Describe a memorable musical event or concert that you attended in the past. What made it so special?"
+    },
+    {
+     "q": 7,
+     "type": "info",
+     "info": {
+      "title": "Annual Corporate Leadership Seminar Schedule",
+      "rows": [
+       [
+        "Time",
+        "Event",
+        "Speaker"
+       ],
+       [
+        "9:00 AM - 10:00 AM",
+        "Opening Keynote",
+        "Director Smith"
+       ],
+       [
+        "10:15 AM - 11:30 AM",
+        "Global Market Trends",
+        "Manager Davis"
+       ],
+       [
+        "11:30 AM - 1:00 PM",
+        "Networking Lunch",
+        "Grand Ballroom"
+       ],
+       [
+        "1:00 PM - 2:30 PM",
+        "Interactive Workshop",
+        "Consultant Lee"
+       ],
+       [
+        "2:45 PM - 4:00 PM",
+        "Closing Remarks",
+        "CEO Wilson"
+       ]
+      ]
+     },
+     "question": "What time does the opening keynote begin, and who is the speaker?"
+    },
+    {
+     "q": 8,
+     "type": "info",
+     "question": "Where is the networking lunch going to take place, and how long does it last?"
+    },
+    {
+     "q": 9,
+     "type": "info",
+     "question": "Could you give me the details of all the afternoon events scheduled after lunch?"
+    },
+    {
+     "q": 10,
+     "type": "solution",
+     "message": "Hi, this is David Miller calling from the logistics department. I am looking at the tracking details for the office supply shipment that was supposed to arrive this morning, and it looks like it has been significantly delayed due to customs issues. We really need these supplies before the regional managers meeting tomorrow afternoon. Could you please call the shipping vendor, find out the exact updated delivery time, and let me know as soon as possible? Thanks."
+    },
+    {
+     "q": 11,
+     "type": "opinion",
+     "question": "Do you agree or disagree that working from home is more effective than working in a traditional office environment? Give reasons and examples to support your opinion."
+    }
+   ],
+   "models": {
+    "3": "This is a photo of two colleagues working together in a modern office. On the left, a man in a blue shirt is pointing at a laptop screen. On the right, a woman is taking notes on a notepad. The desk is clean and tidy with some folders.",
+    "4": "I listen to music almost every day during my commute to work. My favorite genre is classical music because it helps me concentrate and relax.",
+    "5": "I definitely prefer attending live concerts. The energy of the crowd and the experience of hearing instruments played live create an atmosphere that recorded music simply cannot match.",
+    "6": "Last year, I attended an outdoor jazz festival by the lake. It was memorable because the weather was perfect, and I got to hear my favorite band perform live for the very first time, surrounded by hundreds of enthusiastic fans.",
+    "7": "The opening keynote begins at 9:00 AM, and it will be presented by Director Smith.",
+    "8": "The networking lunch will take place in the Grand Ballroom, and it lasts for one hour and thirty minutes, from 11:30 AM to 1:00 PM.",
+    "9": "Certainly. In the afternoon, there are two events scheduled. First, there is an interactive workshop led by Consultant Lee from 1:00 PM to 2:30 PM. Following that, closing remarks will be delivered by CEO Wilson from 2:45 PM to 4:00 PM.",
+    "10": "Hello David, I understand your concern about the delayed office supply shipment before tomorrow's meeting. I am very sorry for this inconvenience. I will contact the shipping vendor immediately to check the updated delivery status and call you back within twenty minutes with a solution. Please let me know if there is anything else I can do. Thank you.",
+    "11": "I strongly agree that working from home is often more effective than working in a traditional office environment for several reasons. First, remote work eliminates daily commuting time, allowing employees to start their workday with less stress and more energy. Second, working from home provides a quieter environment that minimizes office distractions, thereby boosting overall productivity. For example, when I work from home, I can complete complex reports much faster than in a busy open-plan office. In conclusion, while occasional in-person meetings are valuable, working from home offers superior flexibility and efficiency."
+   },
+   "id": "s09"
+  },
+  {
+   "title": "Phỏng vấn: eating out habits",
+   "tasks": [
+    {
+     "q": 1,
+     "type": "read_aloud",
+     "text": "Are you looking to improve your health and boost your energy levels this season? Welcome to the new Metro Fitness Center, where your wellness journey begins. We offer state-of-the-art equipment, professional personal trainers, and a wide variety of group fitness classes. Whether you prefer yoga, spinning, or high-intensity interval training, our facility has something for everyone. Stop by today for a free guided tour and take the first step toward a healthier lifestyle."
+    },
+    {
+     "q": 2,
+     "type": "read_aloud",
+     "text": "Attention all local job seekers and recent graduates. The annual Metro Career and Job Fair will take place this coming Friday at the City Convention Center. Over fifty top-tier companies from various industries, including technology, finance, and marketing, will be present to recruit talented professionals. Attendees will have the unique opportunity to network with hiring managers, participate in on-the-spot interviews, and attend free resume-building workshops. Admission is completely free of charge."
+    },
+    {
+     "q": 3,
+     "type": "describe",
+     "scene": "This is a picture of a busy office breakroom. In the center, a man and a woman are standing near a kitchen counter, talking and smiling while holding coffee cups. In the background, there is a refrigerator, a microwave, and a large window letting in natural light. On the counter, a fruit bowl and a coffee machine are visible."
+    },
+    {
+     "q": 4,
+     "type": "respond",
+     "scenario": "Imagine that a market research company is conducting a telephone interview about eating out habits.",
+     "question": "How often do you usually eat out at restaurants, and what is your favorite meal of the day to eat out?"
+    },
+    {
+     "q": 5,
+     "type": "respond",
+     "scenario": "Imagine that a market research company is conducting a telephone interview about eating out habits.",
+     "question": "When you choose a restaurant, what factors are most important to you: the food quality, the price, or the atmosphere?"
+    },
+    {
+     "q": 6,
+     "type": "respond",
+     "scenario": "Imagine that a market research company is conducting a telephone interview about eating out habits.",
+     "question": "Do you prefer trying newly opened restaurants or going to your familiar, regular dining spots? Please explain why."
+    },
+    {
+     "q": 7,
+     "type": "info",
+     "info": {
+      "title": "Marketing Department Quarterly Meeting Schedule",
+      "rows": [
+       [
+        "Time",
+        "Agenda Item",
+        "Presenter"
+       ],
+       [
+        "9:00 AM",
+        "Review of Q3 Campaign Results",
+        "Sarah Jenkins"
+       ],
+       [
+        "10:00 AM",
+        "New Social Media Strategy",
+        "David Lee"
+       ],
+       [
+        "11:15 AM",
+        "Budget Allocation for Next Quarter",
+        "Amanda Ross"
+       ],
+       [
+        "12:00 PM",
+        "Working Lunch and Networking",
+        "All Staff"
+       ],
+       [
+        "1:30 PM",
+        "Q&A and Closing Remarks",
+        "Michael Chang"
+       ]
+      ]
+     },
+     "question": "What time does the meeting start, and who is the first presenter?"
+    },
+    {
+     "q": 8,
+     "type": "info",
+     "question": "Is there a session scheduled right after the presentation on the new social media strategy, and what is it called?"
+    },
+    {
+     "q": 9,
+     "type": "info",
+     "question": "Could you please give me the details of all the afternoon events scheduled on the agenda?"
+    },
+    {
+     "q": 10,
+     "type": "solution",
+     "message": "Hi, this is Robert calling from apartment 4B. I recently purchased the new smart kitchen blender from your online store, but I am experiencing a major issue. When I tried to use it for the first time this morning, the motor started making a strange grinding noise, and the blades would not spin at all, even though it was plugged in securely. I need this blender for my daily meal preparation, so this is quite inconvenient. Could you please call me back as soon as possible to let me know how I can exchange this defective unit or get a full refund?"
+    },
+    {
+     "q": 11,
+     "type": "opinion",
+     "question": "Some people prefer to work at a company that offers high job stability, while others prefer a job with a very high salary, even if it is less stable. Which do you prefer and why? Give specific reasons and examples to support your opinion."
+    }
+   ],
+   "models": {
+    "3": "This is a photo of an office breakroom where two colleagues are chatting near the counter. They are holding coffee mugs and smiling at each other. In the background, there is a refrigerator and large windows.",
+    "4": "I usually eat out about two or three times a week. My favorite meal to eat out is dinner because I have more free time to relax with my friends.",
+    "5": "When choosing a restaurant, the food quality is definitely the most important factor for me. However, reasonable prices and good customer service also matter a lot.",
+    "6": "I actually prefer trying newly opened restaurants because I love exploring different culinary styles and discovering unique dishes. While my regular spots are comfortable, new places offer exciting experiences, and I enjoy reading reviews online before deciding to visit them with my family.",
+    "7": "The meeting starts at 9:00 AM, and the first presenter is Sarah Jenkins, who will review the Q3 campaign results.",
+    "8": "Yes, there is. At 10:00 AM, David Lee will present the new social media strategy.",
+    "9": "Certainly. The afternoon session begins at 12:00 PM with a working lunch and networking for all staff. After that, at 1:30 PM, there will be a Q&A and closing remarks hosted by Michael Chang.",
+    "10": "Hello Robert, this is customer service calling in response to your message about the smart kitchen blender. First of all, I sincerely apologize for the inconvenience caused by receiving a defective unit with a faulty motor. We completely understand your frustration. To resolve this issue, we would like to offer you a brand-new replacement blender shipped via express delivery at no extra cost, along with a prepaid shipping label so you can return the defective one. Please let us know if this solution works for you, and we will process the shipment immediately. Thank you for your patience.",
+    "11": "In my opinion, I definitely prefer working at a company that offers high job stability rather than one with a high salary but low stability. There are two main reasons for this. First, job stability provides peace of mind, allowing me to focus on long-term career growth without the constant stress of potential layoffs. For example, working in a stable corporate environment helps me plan my finances, such as buying a house or saving for the future. Second, stable companies usually offer better comprehensive benefits, including healthcare and retirement plans, which outweigh a slightly higher paycheck in an unstable workplace. Therefore, stability is far more important to me."
+   },
+   "id": "s10"
+  }
+ ],
+ "writing": [
+  {
+   "title": "Email: Interview Follow-up",
+   "tasks": [
+    {
+     "q": 1,
+     "type": "sentence",
+     "words": [
+      "bookshelf",
+      "while"
+     ],
+     "scene": "A librarian is arranging thick volumes on a wooden bookshelf in a quiet reading room."
+    },
+    {
+     "q": 2,
+     "type": "sentence",
+     "words": [
+      "helmet",
+      "beside"
+     ],
+     "scene": "Several construction workers are reviewing blueprints beside a pile of steel beams."
+    },
+    {
+     "q": 3,
+     "type": "sentence",
+     "words": [
+      "vendor",
+      "although"
+     ],
+     "scene": "A fruit vendor is smiling at a customer although it is starting to rain."
+    },
+    {
+     "q": 4,
+     "type": "sentence",
+     "words": [
+      "counter",
+      "because"
+     ],
+     "scene": "A customer is paying for a jacket at the cash counter because she is in a hurry."
+    },
+    {
+     "q": 5,
+     "type": "sentence",
+     "words": [
+      "waiter",
+      "serving"
+     ],
+     "scene": "A waiter in a black uniform is serving hot dishes to guests at an outdoor table."
+    },
+    {
+     "q": 6,
+     "type": "email",
+     "email": {
+      "from": "Human Resources Department",
+      "to": "Job Applicant",
+      "subject": "Interview Follow-up",
+      "body": "Dear Applicant, Thank you for attending the second-round interview for the Marketing Specialist position on Tuesday. Our hiring committee was very impressed with your presentation and relevant experience. We are currently finalizing our evaluation process and plan to make a final decision regarding the position by the end of next week. Please let us know if you have any updates on your employment status."
+     },
+     "directions": "Respond to the e-mail. In your response, ask TWO questions and make ONE request."
+    },
+    {
+     "q": 7,
+     "type": "email",
+     "email": {
+      "from": "David Miller",
+      "to": "Project Team",
+      "subject": "Reminder: Quarterly Strategy Meeting",
+      "body": "Hi everyone, This is a quick reminder that our upcoming quarterly strategy meeting is scheduled for this Thursday at 10:00 AM in Conference Room B. We will be discussing the new product launch and the budget allocation for the upcoming fiscal year. Please ensure that you bring your updated departmental reports and any relevant notes to share with the team. Let me know if you have any scheduling conflicts."
+     },
+     "directions": "Respond to the e-mail. In your response, give TWO pieces of information and ask ONE question."
+    },
+    {
+     "q": 8,
+     "type": "essay",
+     "question": "Do you agree or disagree with the following statement? Working in a team is more beneficial for career development than working individually. Use specific reasons and examples to support your opinion."
+    }
+   ],
+   "models": {
+    "1": "The librarian is reaching for a heavy book on the high bookshelf while a student is studying nearby.",
+    "2": "A yellow safety helmet is placed neatly on the table beside the architectural blueprints.",
+    "3": "The vendor continues to organize his fresh produce although the weather is becoming stormy.",
+    "4": "The cashier scans the merchandise at the counter because many shoppers are waiting in line.",
+    "5": "The waiter is carefully serving delicious meals while smiling politely at the diners.",
+    "6": "Dear Hiring Manager, Thank you for the positive update regarding my interview. I am still very interested in joining your marketing team. Could you please let me know if there will be any additional interviews required? Also, when exactly can I expect to receive the final offer letter? Please send me a copy of the official job description if possible. Best regards, Jane Smith.",
+    "7": "Hi David, Thank you for the reminder about the quarterly strategy meeting on Thursday. I would like to inform you that my departmental report is already completed and printed. Additionally, I have prepared a short presentation regarding the upcoming budget allocation. Could you please confirm if projector equipment will be available in Conference Room B? See you on Thursday. Best regards, Mark.",
+    "8": "In the modern corporate world, professional development is a top priority for most employees. A common debate is whether working in a team or working individually is more advantageous for one's career growth. From my perspective, working in a team is significantly more beneficial because it enhances interpersonal skills and exposes individuals to diverse perspectives. First, collaboration fosters effective communication and problem-solving abilities. When employees tackle complex projects together, they learn how to negotiate, compromise, and delegate tasks efficiently. For instance, in my previous role at a tech firm, participating in cross-functional team projects allowed me to improve my leadership skills, which ultimately led to a promotion. Second, teamwork brings together people with varied backgrounds and expertise, sparking innovation that an individual working alone might not achieve. By brainstorming collectively, employees can overcome challenges much faster and learn from their peers' unique strengths. In conclusion, although individual work is important for focused tasks, teamwork provides invaluable opportunities for networking, skill enhancement, and overall career progression."
+   },
+   "id": "w01"
+  },
+  {
+   "title": "Email: Annual Company Gala Invita",
+   "tasks": [
+    {
+     "q": 1,
+     "type": "sentence",
+     "words": [
+      "customer / examine",
+      "a store"
+     ],
+     "scene": "A customer is standing near a display shelf inside a retail store, looking at several items."
+    },
+    {
+     "q": 2,
+     "type": "sentence",
+     "words": [
+      "worker / wear",
+      "a construction site"
+     ],
+     "scene": "A construction worker wearing a safety helmet and vest is operating a heavy machine."
+    },
+    {
+     "q": 3,
+     "type": "sentence",
+     "words": [
+      "waiter / serve",
+      "a restaurant"
+     ],
+     "scene": "A waiter is holding a tray with dishes while walking between dining tables in a busy dining room."
+    },
+    {
+     "q": 4,
+     "type": "sentence",
+     "words": [
+      "passenger / wait",
+      "an airport"
+     ],
+     "scene": "Several passengers are sitting on chairs near a boarding gate, holding their luggage."
+    },
+    {
+     "q": 5,
+     "type": "sentence",
+     "words": [
+      "jogger / run",
+      "a park"
+     ],
+     "scene": "A jogger is running along a paved pathway surrounded by tall trees and green grass."
+    },
+    {
+     "q": 6,
+     "type": "email",
+     "email": {
+      "from": "events@apexcorp.com",
+      "to": "employee@apexcorp.com",
+      "subject": "Annual Company Gala Invitation",
+      "body": "Dear Employee,\n\nWe are excited to invite you to our upcoming annual company gala, which will be held next Friday at the Grand Hotel starting at 6 PM. There will be dinner, entertainment, and an awards ceremony. Please let us know if you can attend.\n\nBest regards,\nEvents Team"
+     },
+     "directions": "Respond to the e-mail. In your response, ask TWO questions and make ONE request."
+    },
+    {
+     "q": 7,
+     "type": "email",
+     "email": {
+      "from": "sales@techgadgets.com",
+      "to": "customer@gmail.com",
+      "subject": "Inquiry regarding the new ergonomic office chair",
+      "body": "Dear Customer,\n\nThank you for your interest in our products. We noticed you browsed our new ergonomic office chair on our website. Would you like to know more about its features, or do you need assistance with placing an order?\n\nSincerely,\nSales Department"
+     },
+     "directions": "Respond to the e-mail. In your response, give TWO pieces of information and ask ONE question."
+    },
+    {
+     "q": 8,
+     "type": "essay",
+     "question": "Do you agree or disagree with the following statement? Working from home is more beneficial for employees than working in a traditional office. Use specific reasons and examples to support your opinion."
+    }
+   ],
+   "models": {
+    "1": "A customer is examining merchandise while standing in the store.",
+    "2": "A worker is wearing a helmet while operating equipment at the construction site.",
+    "3": "A waiter is serving food to customers as he walks through the restaurant.",
+    "4": "A passenger is waiting near the gate because the flight is delayed.",
+    "5": "A jogger is running across the park while listening to music.",
+    "6": "Dear Events Team, Thank you for the invitation to the annual company gala. I am very excited to attend this wonderful event. Could you please let me know what the dress code is for the evening? Also, I would like to know if I am allowed to bring a guest with me. Finally, please reserve a vegetarian meal for me due to my dietary restrictions. Thank you and best regards, John.",
+    "7": "Dear Sales Department, Thank you for reaching out regarding the new ergonomic office chair. I am very interested in purchasing one for my home office. First, I would like to purchase the black model with adjustable armrests. Second, I need it delivered to my home address in downtown Chicago by this Friday. Could you please tell me if free shipping is available for this order? Thank you, Sarah.",
+    "8": "In recent years, working from home has become increasingly popular among companies and employees worldwide. While some people argue that traditional office environments are essential for productivity, I strongly believe that working from home is more beneficial because it provides better flexibility and eliminates long daily commutes.\n\nFirst of all, working from home offers employees greater flexibility in managing their time. Without the rigid schedule of a traditional 9-to-5 office setup, workers can better balance their professional responsibilities and personal lives. For instance, parents can easily take care of family duties, such as picking up their children from school, while still completing their work tasks in the evening. This flexibility significantly reduces stress levels and improves overall job satisfaction.\n\nSecondly, working from home eliminates the need for daily commuting. Commuting to an office often wastes hours of valuable time and costs a significant amount of money in transportation fares or fuel. By removing the commute, employees have more energy and time to focus on their actual work or engage in healthy habits like exercising. A study conducted last year showed that remote workers reported being 20 percent more productive compared to when they worked in a centralized office.\n\nIn conclusion, although office environments have their merits, the advantages of working from home clearly outweigh the drawbacks. The improved flexibility and the elimination of commuting make remote work a superior option for the modern workforce."
+   },
+   "id": "w02"
+  },
+  {
+   "title": "Email: Overdue Invoice #4489",
+   "tasks": [
+    {
+     "q": 1,
+     "type": "sentence",
+     "words": [
+      "table",
+      "while"
+     ],
+     "scene": "A waiter is serving food to customers seated at a table inside a busy restaurant."
+    },
+    {
+     "q": 2,
+     "type": "sentence",
+     "words": [
+      "passenger",
+      "toward"
+     ],
+     "scene": "A passenger carrying a large suitcase is walking quickly toward the boarding gate at an airport."
+    },
+    {
+     "q": 3,
+     "type": "sentence",
+     "words": [
+      "helmet",
+      "because"
+     ],
+     "scene": "Several workers are wearing hard hats and safety vests because they are standing near heavy machinery at a construction site."
+    },
+    {
+     "q": 4,
+     "type": "sentence",
+     "words": [
+      "bench",
+      "under"
+     ],
+     "scene": "An elderly couple is sitting on a wooden bench shaded under a large leafy tree in a quiet public park."
+    },
+    {
+     "q": 5,
+     "type": "sentence",
+     "words": [
+      "platform",
+      "waiting"
+     ],
+     "scene": "A crowd of commuters is standing on the platform waiting for the arrival of the commuter train at a station."
+    },
+    {
+     "q": 6,
+     "type": "email",
+     "email": {
+      "from": "accounts@globaloffice.com",
+      "to": "purchasing@brighttech.com",
+      "subject": "Overdue Invoice #4489",
+      "body": "Dear Purchasing Manager, I am writing to remind you that Invoice #4489 for the office supplies delivered on October 10 is now fifteen days past due. The total amount of $1,250 is currently outstanding. Please process this payment as soon as possible to avoid any disruption in our service. Let me know if you need us to resend the invoice."
+     },
+     "directions": "Respond to the e-mail. In your response, ask TWO questions and make ONE request."
+    },
+    {
+     "q": 7,
+     "type": "email",
+     "email": {
+      "from": "events@apexcorp.com",
+      "to": "staff@apexcorp.com",
+      "subject": "Annual Company Dinner Invitation",
+      "body": "Dear Employees, We are excited to invite you to our annual company dinner celebration, which will take place on Friday, November 18th, at the Grand Hotel ballroom starting at 6:30 PM. There will be a buffet dinner, live music, and our yearly employee awards ceremony. Please RSVP by November 10th so we can finalize the seating arrangements and catering numbers."
+     },
+     "directions": "Respond to the e-mail. In your response, give TWO pieces of information and ask ONE question."
+    },
+    {
+     "q": 8,
+     "type": "essay",
+     "question": "Do you agree or disagree with the following statement? Learning English online is more effective than learning English in a traditional classroom. Use specific reasons and examples to support your opinion."
+    }
+   ],
+   "models": {
+    "1": "A waiter is serving food to customers seated at a table while they are talking.",
+    "2": "A passenger carrying a large suitcase is walking quickly toward the boarding gate.",
+    "3": "Several workers are wearing hard hats because they are at a construction site.",
+    "4": "An elderly couple is sitting on a wooden bench under a large leafy tree.",
+    "5": "A crowd of commuters is standing on the platform waiting for the train.",
+    "6": "Dear Accounts Team, Thank you for your email regarding Invoice #4489. Could you please confirm if you received our bank transfer sent last week? Also, could you check why our accounting department was not notified earlier? Please send an updated copy of our statement to my email address so we can verify the records. Sincerely, Purchasing Manager.",
+    "7": "Dear Events Committee, Thank you for organizing the upcoming annual company dinner. I am delighted to inform you that I will be attending the event, and I also plan to bring my spouse as my guest. Could you please let me know if there are any vegetarian meal options available during the buffet dinner? Best regards, Staff Member.",
+    "8": "In the modern era, mastering the English language has become an essential skill, leading to an ongoing debate about whether studying online is superior to learning in a traditional classroom environment. While both methods have their distinct merits, I firmly believe that learning English in a traditional classroom is more effective than studying online. This is primarily because traditional classrooms offer better opportunities for interactive communication and provide a structured learning environment that boosts student motivation.\n\nFirst and foremost, traditional classrooms facilitate immersive, face-to-face interaction, which is crucial for language acquisition. Learning a language is not merely about memorizing vocabulary or grammar rules; it requires active speaking and real-time listening practice. In a physical classroom, students can engage in spontaneous conversations with their peers and receive immediate, nuanced pronunciation corrections from qualified instructors. For instance, in my previous English speaking course, group discussions and role-playing activities held in the classroom significantly improved my fluency and confidence. In contrast, online learning often suffers from technical glitches, delayed feedback, and a lack of organic conversational flow.\n\nFurthermore, the physical structure of a traditional classroom fosters greater discipline and sustained motivation. Studying from home introduces numerous distractions, such as household chores, family members, and the temptation to check social media notifications. A classroom environment, however, creates a dedicated space focused entirely on education. The physical presence of a teacher and fellow motivated students encourages learners to stay on task and complete their assignments diligently. For example, attendance policies and scheduled class times force students to establish a consistent routine, whereas online learners frequently procrastinate or abandon their courses prematurely due to a lack of accountability.\n\nIn conclusion, although online English courses offer undeniable convenience and flexibility, they cannot fully replicate the interactive benefits and disciplined atmosphere of a traditional classroom. Because face-to-face communication accelerates language fluency and structured environments enhance student focus, traditional classrooms remain the superior choice for serious language learners."
+   },
+   "id": "w03"
+  },
+  {
+   "title": "Email: Request for a schedule cha",
+   "tasks": [
+    {
+     "q": 1,
+     "type": "sentence",
+     "words": [
+      "bench",
+      "sit"
+     ],
+     "scene": "A man and a woman are sitting on a wooden bench in a park under a large green tree, reading books."
+    },
+    {
+     "q": 2,
+     "type": "sentence",
+     "words": [
+      "helmet",
+      "wear"
+     ],
+     "scene": "Several construction workers wearing yellow hard hats are walking near a partially built concrete wall."
+    },
+    {
+     "q": 3,
+     "type": "sentence",
+     "words": [
+      "computer",
+      "type"
+     ],
+     "scene": "An office employee is typing on her laptop computer at a neat wooden desk while looking at a document."
+    },
+    {
+     "q": 4,
+     "type": "sentence",
+     "words": [
+      "counter",
+      "slice"
+     ],
+     "scene": "A chef in a white uniform is slicing fresh vegetables on a stainless steel counter in a commercial kitchen."
+    },
+    {
+     "q": 5,
+     "type": "sentence",
+     "words": [
+      "platform",
+      "wait"
+     ],
+     "scene": "Passengers are waiting on a crowded train station platform as an express train approaches from the distance."
+    },
+    {
+     "q": 6,
+     "type": "email",
+     "email": {
+      "from": "David Miller <d.miller@apexlogistics.com>",
+      "to": "HR Department <hr@apexlogistics.com>",
+      "subject": "Request for a schedule change",
+      "body": "Dear HR Team, I am writing to formally request a temporary change to my work schedule for next month. Due to personal family commitments, I would like to shift my working hours from 9:00 AM - 5:00 PM to 8:00 AM - 4:00 PM starting on the first of November. I have already discussed this minor adjustment with my direct supervisor, and she approved it pending your final review. Please let me know what paperwork I need to complete to finalize this change. Sincerely, David Miller"
+     },
+     "directions": "Respond to the e-mail. In your response, ask TWO questions and make ONE request."
+    },
+    {
+     "q": 7,
+     "type": "email",
+     "email": {
+      "from": "Sarah Jenkins <s.jenkins@retailcorp.net>",
+      "to": "Customer Support <support@globaloffice.com>",
+      "subject": "Customer complaint about a late delivery",
+      "body": "To Whom It May Concern, I am extremely disappointed with the service I received regarding order #88432, which was a set of ergonomic office chairs. According to your shipping policy and the confirmation email, the items were guaranteed to arrive by last Friday. However, as of today, the package has still not been delivered. This delay has seriously disrupted our office opening preparations. I expect a prompt explanation and immediate action regarding this issue. Regards, Sarah Jenkins"
+     },
+     "directions": "Respond to the e-mail. In your response, give TWO pieces of information and ask ONE question."
+    },
+    {
+     "q": 8,
+     "type": "essay",
+     "question": "Do you prefer learning English online or in a traditional classroom? Give reasons and examples to support your choice."
+    }
+   ],
+   "models": {
+    "1": "The people are sitting on the bench while reading books.",
+    "2": "The workers wear helmets while working at the construction site.",
+    "3": "An employee is typing on the computer at her office desk.",
+    "4": "The chef is slicing vegetables on the kitchen counter.",
+    "5": "The commuters wait on the platform for the train.",
+    "6": "Dear David, Thank you for reaching out regarding your schedule change request. We understand your situation and are glad to accommodate your needs. Could you please clarify if this change will be permanent or temporary? Also, when will you submit the signed form from your supervisor? Please send the completed paperwork by this Friday so we can update our system. Best regards, HR Department",
+    "7": "Dear Sarah Jenkins, Please accept our sincere apologies for the delay regarding order #88432. We have checked with our courier service, and we found that your package was delayed due to unexpected severe weather conditions. Furthermore, the shipment is now scheduled to arrive at your office tomorrow morning by 10 AM, and we have fully refunded your shipping fee as compensation. Could you please confirm if someone will be available to sign for the delivery at that time? Thank you for your patience. Sincerely, Customer Support",
+    "8": "In the modern era, mastering the English language has become increasingly essential, and learners have multiple options for how to study. While traditional classrooms have been the standard for decades, I firmly believe that learning English online is a superior choice due to its unmatched flexibility and access to diverse global resources.\n\nFirst and foremost, online learning offers incredible flexibility that accommodates busy lifestyles. Unlike traditional classrooms, which require fixed schedules and commuting time, online platforms allow students to study anytime and anywhere. For instance, working professionals or university students can easily access recorded video lessons, interactive quizzes, and virtual tutoring sessions during their lunch breaks or late at night. This convenience ensures that learners can maintain consistency without sacrificing other daily responsibilities.\n\nSecondly, studying online provides access to a much wider variety of educational materials and native speakers from around the world. In a physical classroom, students are often limited to a single textbook and the local teacher's accent and teaching style. Conversely, online learners can utilize AI-powered pronunciation tools, join international discussion forums, and practice speaking with native tutors from different countries. For example, a student living in Vietnam can have daily conversations with English speakers from the United States, Australia, and the UK, which vastly improves their listening comprehension and cultural awareness.\n\nIn conclusion, although traditional classrooms offer face-to-face interaction, the benefits of online English learning far outweigh those of physical ones. Because of the superior flexibility and the abundance of global learning resources, studying online is undoubtedly the most effective approach for contemporary language learners."
+   },
+   "id": "w04"
+  },
+  {
+   "title": "Email: Help with Q3 sales report",
+   "tasks": [
+    {
+     "q": 1,
+     "type": "sentence",
+     "words": [
+      "customer / order",
+      "waiter / serve"
+     ],
+     "scene": "A waiter is standing near a wooden table in a busy restaurant, holding a tray with beverages."
+    },
+    {
+     "q": 2,
+     "type": "sentence",
+     "words": [
+      "student / read",
+      "book / shelf"
+     ],
+     "scene": "A young woman is sitting at a large desk in a quiet library, opening a thick textbook."
+    },
+    {
+     "q": 3,
+     "type": "sentence",
+     "words": [
+      "cashier / scan",
+      "item / counter"
+     ],
+     "scene": "A cashier is scanning a grocery item at the checkout counter of a crowded retail store."
+    },
+    {
+     "q": 4,
+     "type": "sentence",
+     "words": [
+      "passenger / check",
+      "baggage / scale"
+     ],
+     "scene": "A traveler is placing a heavy suitcase on the scale at the airport check-in desk."
+    },
+    {
+     "q": 5,
+     "type": "sentence",
+     "words": [
+      "chef / chop",
+      "vegetable / board"
+     ],
+     "scene": "A chef is chopping fresh vegetables on a wooden cutting board in a well-equipped kitchen."
+    },
+    {
+     "q": 6,
+     "type": "email",
+     "email": {
+      "from": "David Miller",
+      "to": "Colleague",
+      "subject": "Help with Q3 sales report",
+      "body": "Hi, I am currently working on the quarterly sales report for the management meeting next Tuesday, but I am struggling to finalize the financial charts for the Asia-Pacific region. Since I know you handled this section previously, could you spare some time this week to review my draft? Let me know when you are available to meet."
+     },
+     "directions": "Respond to the e-mail. In your response, ask TWO questions and make ONE request."
+    },
+    {
+     "q": 7,
+     "type": "email",
+     "email": {
+      "from": "Human Resources",
+      "to": "All Employees",
+      "subject": "Annual Company Dinner",
+      "body": "Dear Staff, We are excited to announce that our annual company dinner will be held next Friday evening at the Grand Plaza Hotel starting at 7 PM. There will be a buffet dinner, live music, and an employee awards ceremony. Please let us know if you have any dietary restrictions by this Wednesday."
+     },
+     "directions": "Respond to the e-mail. In your response, give TWO pieces of information and ask ONE question."
+    },
+    {
+     "q": 8,
+     "type": "essay",
+     "question": "Do you agree or disagree with the following statement? Working in a team is always better than working individually. Use specific reasons and examples to support your opinion."
+    }
+   ],
+   "models": {
+    "1": "The waiter is serving drinks to the customer who placed an order.",
+    "2": "The student is reading a book that she found on the shelf.",
+    "3": "The cashier is scanning an item as it is placed on the counter.",
+    "4": "The passenger is checking his flight details while his baggage is on the scale.",
+    "5": "The chef is chopping fresh vegetables on the board.",
+    "6": "Dear David, I would be happy to help you with the financial charts for the Asia-Pacific region. Could we meet in the third-floor conference room tomorrow at 2 PM? Also, do you want me to bring my previous report templates for reference? Please send me your updated draft by tomorrow morning so I can look it over beforehand. Best regards.",
+    "7": "Dear Human Resources team, Thank you for the wonderful invitation to the annual company dinner. I am writing to let you know that I will definitely attend the event next Friday, and I have no dietary restrictions to report. Could you please let me know if parking spaces will be reserved for employees at the Grand Plaza Hotel? Thank you and best regards.",
+    "8": "In the modern workplace, the question of whether teamwork is superior to individual work is a subject of frequent debate. While some people believe that working alone yields better focus and autonomy, I firmly believe that teamwork is generally more effective because it fosters diverse perspectives and enhances overall productivity through shared responsibilities.\n\nFirst, teamwork brings together individuals with varied skill sets and backgrounds, leading to more creative problem-solving. When employees collaborate, they can brainstorm ideas and approach challenges from multiple angles, which is often difficult for someone working entirely on their own. For instance, in a marketing campaign project, a graphic designer, a copywriter, and a data analyst working together can produce a far more comprehensive strategy than any single person could accomplish independently. The diversity of thought inherent in group work naturally minimizes individual blind spots.\n\nSecond, collaborating on tasks significantly increases productivity and reduces burnout by distributing the workload. Large projects can easily overwhelm an individual worker, leading to stress and missed deadlines. However, when a team divides the tasks according to each member's strengths, the project progresses much faster and with higher quality. For example, a tech company developing a new software application will assign coding, testing, and documentation to different team members, ensuring the final product is launched on schedule.\n\nIn conclusion, although individual work has its merits in tasks requiring deep personal concentration, teamwork ultimately drives better results through diverse ideation and efficient workload distribution. Therefore, organizations should continue to encourage collaborative environments to achieve their goals effectively."
+   },
+   "id": "w05"
+  },
+  {
+   "title": "Email: Reminder: Quarterly Strate",
+   "tasks": [
+    {
+     "q": 1,
+     "type": "sentence",
+     "words": [
+      "bench",
+      "under"
+     ],
+     "scene": "A man is sitting on a wooden bench under a large leafy oak tree in a sunny park."
+    },
+    {
+     "q": 2,
+     "type": "sentence",
+     "words": [
+      "bookshelf",
+      "organized"
+     ],
+     "scene": "A librarian is standing next to a tall wooden bookshelf filled with neatly organized textbooks."
+    },
+    {
+     "q": 3,
+     "type": "sentence",
+     "words": [
+      "counter",
+      "prepare"
+     ],
+     "scene": "A chef in a white uniform is standing behind the kitchen counter to prepare fresh vegetables."
+    },
+    {
+     "q": 4,
+     "type": "sentence",
+     "words": [
+      "cart",
+      "browse"
+     ],
+     "scene": "Several customers pushing shopping carts are browsing grocery items in a bright supermarket aisle."
+    },
+    {
+     "q": 5,
+     "type": "sentence",
+     "words": [
+      "stalls",
+      "between"
+     ],
+     "scene": "Shoppers are walking along the narrow pathway between crowded fruit stalls at an outdoor street market."
+    },
+    {
+     "q": 6,
+     "type": "email",
+     "email": {
+      "from": "Sarah Jenkins <s.jenkins@apexcorp.com>",
+      "to": "All Department Managers <managers@apexcorp.com>",
+      "subject": "Reminder: Quarterly Strategy Meeting Tomorrow",
+      "body": "Dear Managers, This is a quick reminder that our quarterly strategy meeting is scheduled for tomorrow at 10:00 AM in the main conference room. We will discuss our upcoming marketing campaigns and budget allocations for the next quarter. Please make sure to bring your updated department reports and arrive five minutes early so we can start promptly. Thank you for your cooperation."
+     },
+     "directions": "Respond to the e-mail. In your response, ask TWO questions and make ONE request."
+    },
+    {
+     "q": 7,
+     "type": "email",
+     "email": {
+      "from": "David Miller <d.miller@globalparts.com>",
+      "to": "Purchasing Department <purchasing@apexcorp.com>",
+      "subject": "Pending Payment for Invoice #45892",
+      "body": "Dear Purchasing Team, I am writing to follow up on Invoice #45892 for the office supplies delivered to your facility on October 12th. According to our records, the payment of $2,450 is now two weeks past due. Please review this matter and arrange the bank transfer as soon as possible to avoid any interruption in our future deliveries. Let me know if you need us to resend the invoice."
+     },
+     "directions": "Respond to the e-mail. In your response, give TWO pieces of information and ask ONE question."
+    },
+    {
+     "q": 8,
+     "type": "essay",
+     "question": "Do you agree or disagree with the following statement? Public transportation is much better than driving private cars in modern cities. Use specific reasons and examples to support your answer."
+    }
+   ],
+   "models": {
+    "1": "A man is resting on a wooden bench under a large leafy oak tree in a sunny park.",
+    "2": "A librarian is standing next to a tall wooden bookshelf where textbooks are neatly organized.",
+    "3": "A chef is standing behind the kitchen counter to prepare fresh vegetables for the dinner service.",
+    "4": "Several customers pushing shopping carts are browsing grocery items while shopping in the supermarket.",
+    "5": "Shoppers are walking along the narrow pathway situated between crowded fruit stalls at the local street market.",
+    "6": "Dear Sarah, Thank you for the reminder about tomorrow's quarterly strategy meeting. Could you please let me know if we can join the meeting via video conference if we are working remotely? Also, will the final agenda be shared before the meeting starts? Could you please send me a soft copy of the previous meeting's minutes as soon as possible? Best regards, Manager.",
+    "7": "Dear David, Thank you for reaching out regarding Invoice #45892. I would like to inform you that our accounting department processed the bank transfer yesterday morning. Furthermore, the finance manager confirmed that the payment reference number has been sent to your email. Could you please check with your finance team to confirm if the funds have arrived in your account? Best regards, Purchasing Team.",
+    "8": "In contemporary urban areas, the debate over whether public transportation is superior to driving private cars has become increasingly prominent. While personal automobiles offer unmatched convenience and flexibility, I strongly believe that public transportation is much better for modern cities due to its environmental benefits and cost-effectiveness. First and foremost, public transportation significantly reduces carbon emissions and traffic congestion. In densely populated cities like New York or Tokyo, thousands of commuters utilizing buses and subways instead of individual cars mean fewer vehicles on the road. For instance, a single subway train can transport over a thousand people who would otherwise drive separate cars, drastically cutting down air pollution and greenhouse gases. Consequently, urban air quality improves, leading to a healthier living environment for all residents. Furthermore, relying on public transit is considerably more economical than owning and driving a private car. Maintaining a car involves continuous expenses such as fuel, insurance, regular maintenance, and expensive parking fees. In contrast, monthly public transit passes are heavily subsidized and much cheaper, making daily commuting accessible to a broader segment of the population. For example, students and entry-level workers save thousands of dollars annually by choosing buses and trains over personal vehicles. Admittedly, driving a car provides greater flexibility, especially when traveling to remote locations or during late hours when transit schedules are limited. However, continuous improvements in public transport infrastructure, such as extended operating hours and expanded coverage, are steadily addressing these drawbacks. In conclusion, although private cars offer personal convenience, the environmental advantages and financial savings of public transportation make it the far superior choice for modern cities."
+   },
+   "id": "w06"
+  },
+  {
+   "title": "Email: Help with Q3 sales report",
+   "tasks": [
+    {
+     "q": 1,
+     "type": "sentence",
+     "words": [
+      "bench",
+      "reading"
+     ],
+     "scene": "A man is sitting on a wooden bench in a crowded park, holding a book."
+    },
+    {
+     "q": 2,
+     "type": "sentence",
+     "words": [
+      "waiter",
+      "serving"
+     ],
+     "scene": "A waiter in a smart uniform is serving food to customers at a restaurant table."
+    },
+    {
+     "q": 3,
+     "type": "sentence",
+     "words": [
+      "luggage",
+      "waiting"
+     ],
+     "scene": "Passengers are standing with their luggage while waiting near the boarding gate at an airport."
+    },
+    {
+     "q": 4,
+     "type": "sentence",
+     "words": [
+      "worker",
+      "wearing"
+     ],
+     "scene": "A construction worker wearing a yellow hard hat is operating a heavy machine at a site."
+    },
+    {
+     "q": 5,
+     "type": "sentence",
+     "words": [
+      "train",
+      "arriving"
+     ],
+     "scene": "A commuter train is slowly arriving at the platform of a busy train station."
+    },
+    {
+     "q": 6,
+     "type": "email",
+     "email": {
+      "from": "David Miller",
+      "to": "Colleague",
+      "subject": "Help with Q3 sales report",
+      "body": "Hi, I am currently working on the quarterly sales report for the marketing department, but I am struggling to finish the financial analysis section by tomorrow's deadline. Since you have experience with this software, could you spare some time to assist me? Also, do you know if we need to include the regional branch data?"
+     },
+     "directions": "Respond to the e-mail. In your response, ask TWO questions and make ONE request."
+    },
+    {
+     "q": 7,
+     "type": "email",
+     "email": {
+      "from": "Human Resources",
+      "to": "All Employees",
+      "subject": "Annual Company Dinner Invitation",
+      "body": "Dear Staff, We are excited to announce that our annual company dinner will be held next Friday evening at the Grand Hotel starting at 6 PM. There will be a buffet dinner, live music, and an employee awards ceremony. Please let us know if you have any dietary restrictions by this Wednesday so we can inform the caterer."
+     },
+     "directions": "Respond to the e-mail. In your response, give TWO pieces of information and ask ONE question."
+    },
+    {
+     "q": 8,
+     "type": "essay",
+     "question": "Do you agree or disagree with the following statement? Children should be allowed to use smartphones at an early age. Use specific reasons and examples to support your opinion."
+    }
+   ],
+   "models": {
+    "1": "A man is reading a book while sitting on a wooden bench in the park.",
+    "2": "The waiter is serving delicious meals to the guests at the restaurant.",
+    "3": "The passengers are waiting near the gate with their luggage.",
+    "4": "The worker is wearing a hard hat while operating the machine.",
+    "5": "The train is arriving at the station as commuters watch.",
+    "6": "Dear David, I would be happy to help you with the quarterly sales report since I have some free time this afternoon. Could you please send me the draft file so I can review the financial analysis section? Also, are we required to include the regional branch data in the final document? Let me know when you are free to meet. Best regards,",
+    "7": "Dear Human Resources team, Thank you very much for organizing the annual company dinner. I am looking forward to attending the event next Friday evening. I would like to inform you that I have no dietary restrictions, and I can also help set up the venue if needed. Could you please let me know if parking is available at the Grand Hotel? Thank you, Best regards,",
+    "8": "In the modern digital era, smartphones have become an integral part of daily life. While some people argue that giving children access to smartphones at an early age can be beneficial for their technological literacy, I strongly believe that early smartphone use has more negative effects than positive ones. First and foremost, excessive screen time can severely harm a child's physical and mental health. Spending hours staring at a small screen often leads to sedentary lifestyles, poor eyesight, and sleep disorders. For instance, studies have shown that children who use smartphones before bedtime experience difficulties falling asleep, which negatively affects their academic performance the next day. Furthermore, unrestricted access to the internet exposes young minds to inappropriate content and cyberbullying. Children lack the emotional maturity to navigate online risks safely. In addition, reliance on smartphones diminishes face-to-face social interactions. Instead of playing outside or communicating with peers, children isolate themselves behind screens, hindering their social development. In conclusion, although smartphones are useful educational tools, the risks associated with early usage far outweigh the benefits. Parents and guardians should carefully monitor and limit screen time to ensure the healthy growth of children."
+   },
+   "id": "w07"
+  },
+  {
+   "title": "Email: Reminder: Q3 Budget Review",
+   "tasks": [
+    {
+     "q": 1,
+     "type": "sentence",
+     "words": [
+      "shelf",
+      "arrange"
+     ],
+     "scene": "A store employee is standing near a wooden display fixture. He is working inside a retail shop."
+    },
+    {
+     "q": 2,
+     "type": "sentence",
+     "words": [
+      "counter",
+      "wipe"
+     ],
+     "scene": "A restaurant staff member is cleaning a food preparation area. Kitchen utensils are visible in the background."
+    },
+    {
+     "q": 3,
+     "type": "sentence",
+     "words": [
+      "bench",
+      "jog"
+     ],
+     "scene": "People are exercising outdoors on a sunny day. Green trees and a walking path surround the park setting."
+    },
+    {
+     "q": 4,
+     "type": "sentence",
+     "words": [
+      "document",
+      "review"
+     ],
+     "scene": "Several colleagues are sitting at a long table in a corporate room. They are looking at papers together during a meeting."
+    },
+    {
+     "q": 5,
+     "type": "sentence",
+     "words": [
+      "luggage",
+      "wait"
+     ],
+     "scene": "Passengers are standing near the boarding gates inside a busy terminal. Many bags and suitcases are placed on the floor."
+    },
+    {
+     "q": 6,
+     "type": "email",
+     "email": {
+      "from": "Human Resources Department",
+      "to": "All Department Managers",
+      "subject": "Reminder: Q3 Budget Review Meeting",
+      "body": "Dear Managers, This is a gentle reminder that our quarterly budget review meeting is scheduled for this coming Friday at 10:00 A.M. in Conference Room B. Please ensure that you bring your updated financial reports and departmental expense forecasts with you. We will discuss cost-saving initiatives and resource allocation for the upcoming quarter. Kindly confirm your attendance by tomorrow afternoon so we can finalize the participant list."
+     },
+     "directions": "Respond to the e-mail. In your response, ask TWO questions and make ONE request."
+    },
+    {
+     "q": 7,
+     "type": "email",
+     "email": {
+      "from": "Event Planning Committee",
+      "to": "All Employees",
+      "subject": "Invitation: Annual Company Anniversary Gala",
+      "body": "Dear Staff, We are thrilled to invite you and a guest to our annual company anniversary gala, which will be held on Saturday, November 15th, at the Grand Plaza Hotel starting at 6:00 P.M. The evening will feature a buffet dinner, live music, and our annual employee recognition awards ceremony. Please let us know if you have any dietary restrictions so we can inform the catering staff in advance."
+     },
+     "directions": "Respond to the e-mail. In your response, give TWO pieces of information and ask ONE question."
+    },
+    {
+     "q": 8,
+     "type": "essay",
+     "question": "Do you agree or disagree with the following statement? Children should be allowed to use smartphones at an early age. Use specific reasons and examples to support your opinion."
+    }
+   ],
+   "models": {
+    "1": "The employee is arranging items on the wooden shelf.",
+    "2": "A worker is wiping the kitchen counter with a clean cloth.",
+    "3": "A man is jogging past a park bench on a sunny morning.",
+    "4": "The colleagues are reviewing the business document together.",
+    "5": "The travelers are waiting near their luggage at the airport.",
+    "6": "Dear Human Resources, Thank you for the reminder about the Q3 budget review meeting this Friday. Will we be discussing the marketing expenses during the first half of the meeting? Also, could you please send me a digital copy of the agenda in advance? I would like to request that our department presentation be moved to the end of the session if possible. Best regards, Manager.",
+    "7": "Dear Event Planning Committee, Thank you very much for the invitation to the annual company anniversary gala. I am delighted to inform you that I will be attending the event, and I will be bringing my spouse as my guest. Furthermore, I would like to let you know that neither of us has any dietary restrictions. Could you please let me know what the recommended dress code is for this special evening? Sincerely, Employee.",
+    "8": "In the modern digital era, the widespread availability of technology has sparked a major debate regarding whether children should be permitted to use smartphones at an early age. While some argue that early exposure to digital devices fosters technical literacy, I firmly believe that children should be restricted from using smartphones until they are older. This essay will discuss two primary reasons: the negative impact on physical health and the hindrance of social skill development.\n\nFirst and foremost, excessive smartphone use can lead to severe health issues among young children. Staring at small screens for prolonged periods often causes eye strain, headaches, and poor posture. Moreover, sedentary lifestyles encouraged by mobile device usage frequently contribute to childhood obesity. For instance, a recent study conducted by the National Health Institute revealed that children who spend more than three hours a day on smartphones are twice as likely to experience sleep disorders compared to those who engage in physical outdoor activities. Therefore, limiting smartphone access is crucial for safeguarding children's physical well-being.\n\nSecondly, early smartphone dependency can significantly hinder the development of essential social and interpersonal skills. When children spend their formative years interacting with virtual screens rather than real people, they miss out on crucial opportunities to learn empathy, emotional regulation, and face-to-face communication. For example, children who are constantly glued to their phones during family gatherings often struggle to maintain engaging conversations or resolve conflicts amicably with their peers. Real-world social interactions require patience and active listening, traits that cannot be cultivated through fast-paced digital applications.\n\nIn conclusion, although smartphones are undeniable tools of modern convenience, allowing children to use them at a tender age brings more harm than good. Due to the detrimental effects on physical health and the impediment to social development, parents and educators should discourage early smartphone usage and instead encourage active, screen-free engagement."
+   },
+   "id": "w08"
+  },
+  {
+   "title": "Email: Delay regarding your recen",
+   "tasks": [
+    {
+     "q": 1,
+     "type": "sentence",
+     "words": [
+      "chef",
+      "prepare"
+     ],
+     "scene": "A chef is standing near a counter in a modern kitchen, chopping fresh vegetables on a wooden cutting board."
+    },
+    {
+     "q": 2,
+     "type": "sentence",
+     "words": [
+      "vendor",
+      "display"
+     ],
+     "scene": "A vendor at a busy street market is arranging various kinds of tropical fruits on a wooden table for customers."
+    },
+    {
+     "q": 3,
+     "type": "sentence",
+     "words": [
+      "waiter",
+      "serve"
+     ],
+     "scene": "A waiter in a restaurant is holding a tray with beverages while walking between occupied dining tables."
+    },
+    {
+     "q": 4,
+     "type": "sentence",
+     "words": [
+      "worker",
+      "wear"
+     ],
+     "scene": "A construction worker wearing a yellow hard hat and a safety vest is operating heavy machinery at a building site."
+    },
+    {
+     "q": 5,
+     "type": "sentence",
+     "words": [
+      "passenger",
+      "wait"
+     ],
+     "scene": "Several passengers are standing on a platform at a train station, checking their luggage and looking down the tracks."
+    },
+    {
+     "q": 6,
+     "type": "email",
+     "email": {
+      "from": "customer.support@apexretail.com",
+      "to": "valued.customer@email.com",
+      "subject": "Delay regarding your recent order #4892",
+      "body": "Dear Customer, We are writing to sincerely apologize for the unexpected delay in shipping your recent furniture order, #4892. Due to unforeseen supply chain disruptions, your package has not been dispatched yet. We understand this is inconvenient and are working hard to resolve it."
+     },
+     "directions": "Respond to the e-mail. In your response, ask TWO questions and make ONE request."
+    },
+    {
+     "q": 7,
+     "type": "email",
+     "email": {
+      "from": "hr.department@globaltech.com",
+      "to": "project.team@globaltech.com",
+      "subject": "Reminder: Q3 Strategy Meeting Tomorrow",
+      "body": "Dear Team, This is a quick reminder that our upcoming Q3 strategy meeting is scheduled for tomorrow at 10:00 AM in Conference Room B. Please ensure that you bring your updated quarterly reports and any relevant slides for your department presentations."
+     },
+     "directions": "Respond to the e-mail. In your response, give TWO pieces of information and ask ONE question."
+    },
+    {
+     "q": 8,
+     "type": "essay",
+     "question": "Do you agree or disagree with the following statement? Job stability is more important than a high salary when choosing a career. Use specific reasons and examples to support your opinion."
+    }
+   ],
+   "models": {
+    "1": "A chef is preparing fresh vegetables in the kitchen.",
+    "2": "The vendor is displaying tropical fruits at the street market.",
+    "3": "A waiter is serving drinks while walking through the restaurant.",
+    "4": "The worker is wearing a safety vest at the construction site.",
+    "5": "Passengers are waiting for the train to arrive at the station.",
+    "6": "Dear Customer Support, Thank you for informing me about the delay with my order #4892. Could you please let me know the exact date when the package will be shipped? Also, do I need to pay any additional fees for this inconvenience? I would like to request a partial refund on the shipping charges if the item cannot arrive by this Friday. I look forward to your prompt reply. Sincerely, Customer.",
+    "7": "Dear HR Department, Thank you for sending the reminder about the Q3 strategy meeting tomorrow. I am writing to let you know that my quarterly report has already been completed and printed. Additionally, I will bring my laptop to present the marketing slides during the second half of the session. Could you please confirm if we need to prepare printed handouts for all attendees? Thank you for your continued support and guidance. Best regards, Team Member.",
+    "8": "In today's fast-paced and competitive job market, individuals are constantly faced with tough decisions when choosing a career path. One of the most significant dilemmas is whether to prioritize job stability or a high salary. While a high salary offers immediate financial rewards and luxury, I firmly believe that job stability is far more important because it provides long-term peace of mind, reduces personal stress, and allows for better financial planning.\n\nFirst and foremost, job stability ensures a steady and predictable income, which is crucial for managing essential living expenses. When workers do not have to worry about sudden layoffs or company downsizing, they can effectively budget for mortgages, healthcare, and education. For instance, an employee working in a stable government position or an established healthcare institution may earn a modest salary, but they can secure loans and plan their family's future with confidence. Conversely, high-paying jobs in volatile industries, such as startups or speculative finance, often come with the constant threat of sudden termination, leading to severe financial anxiety.\n\nFurthermore, prioritizing stability fosters a healthier work-life balance and higher job satisfaction. Employees who feel secure in their positions are more likely to invest time in building meaningful relationships with colleagues and mastering their craft, rather than constantly scanning job boards out of fear. A striking example is the stark contrast between freelance workers and tenured professionals; while freelancers might secure lucrative contracts periodically, the constant hustle to find the next gig often leads to burnout. On the other hand, stable employment environments encourage professional growth and loyalty.\n\nIn conclusion, although a high salary is undeniably attractive, it cannot replace the profound benefits of a secure and predictable livelihood. Job stability guarantees financial peace, reduces stress, and promotes sustainable personal development, making it the superior choice for long-term career fulfillment."
+   },
+   "id": "w09"
+  },
+  {
+   "title": "Email: Delayed shipment order #45",
+   "tasks": [
+    {
+     "q": 1,
+     "type": "sentence",
+     "words": [
+      "customer",
+      "browse"
+     ],
+     "scene": "A store interior with shelves full of packaged goods. A customer is looking at the merchandise."
+    },
+    {
+     "q": 2,
+     "type": "sentence",
+     "words": [
+      "student",
+      "quietly"
+     ],
+     "scene": "A library reading room where a student is sitting at a wooden table reading a textbook."
+    },
+    {
+     "q": 3,
+     "type": "sentence",
+     "words": [
+      "chef",
+      "prepare"
+     ],
+     "scene": "A busy restaurant kitchen where a chef in a white uniform is cutting vegetables on a counter."
+    },
+    {
+     "q": 4,
+     "type": "sentence",
+     "words": [
+      "vendor",
+      "display"
+     ],
+     "scene": "An outdoor street market with a vendor arranging fresh fruit on a wooden stall."
+    },
+    {
+     "q": 5,
+     "type": "sentence",
+     "words": [
+      "employee",
+      "computer"
+     ],
+     "scene": "An office workspace where an employee is typing on a desktop computer next to a window."
+    },
+    {
+     "q": 6,
+     "type": "email",
+     "email": {
+      "from": "David Miller",
+      "to": "Customer Service",
+      "subject": "Delayed shipment order #4592",
+      "body": "Dear Customer Service,\n\nI am writing to express my disappointment regarding my recent order (#4592), which was placed two weeks ago. According to your shipping policy, the package should have arrived by last Friday, but I still have not received anything. This delay is causing significant inconvenience for my upcoming event.\n\nCould you please look into this matter immediately?\n\nSincerely,\nDavid Miller"
+     },
+     "directions": "Respond to the e-mail. In your response, ask TWO questions and make ONE request."
+    },
+    {
+     "q": 7,
+     "type": "email",
+     "email": {
+      "from": "Sarah Jenkins",
+      "to": "Colleague",
+      "subject": "Help with Q3 financial report",
+      "body": "Hi,\n\nI hope you are having a productive week. I am currently working on the Q3 financial report, but I am having trouble reconciling the marketing expenses with the accounting ledger. Since you completed a similar report last quarter, I was wondering if you could share some insights with me.\n\nLet me know when you might have a few minutes to chat.\n\nBest regards,\nSarah"
+     },
+     "directions": "Respond to the e-mail. In your response, give TWO pieces of information and ask ONE question."
+    },
+    {
+     "q": 8,
+     "type": "essay",
+     "question": "Some people prefer to work in a team, while others prefer to work independently. Which do you prefer and why? Use specific reasons and examples to support your opinion."
+    }
+   ],
+   "models": {
+    "1": "A customer is browsing the shelves while shopping at a store.",
+    "2": "A student is reading quietly at a desk in the library.",
+    "3": "A chef is preparing fresh meals in the busy kitchen.",
+    "4": "A vendor is displaying colorful fruits at the street market.",
+    "5": "An employee is typing on a computer in the modern office.",
+    "6": "Dear David Miller,\n\nThank you for reaching out to us, and I sincerely apologize for the delay with your order #4592. We experienced unexpected logistical issues last week. Could you please confirm your shipping address so I can verify the details? Also, would you like me to expedite the shipping at no extra cost? Please send us your receipt number so we can process this quickly.\n\nBest regards,\nCustomer Support Team",
+    "7": "Hi Sarah,\n\nIt is great to hear from you. I would be more than happy to help you with the Q3 financial report. First, I am available this Thursday afternoon after 2 PM to meet in the conference room. Second, I have attached my old spreadsheet template to this email for your reference. Could you let me know if this template helps clarify the marketing expenses?\n\nBest,\nYour Colleague",
+    "8": "In today's fast-paced professional world, the question of whether to work in a team or independently is a subject of ongoing debate. While some individuals thrive in solitude, I firmly believe that working in a team is far more advantageous because it fosters creativity through diverse perspectives and enhances overall productivity through workload distribution.\n\nFirst, teamwork encourages the exchange of diverse ideas, which often leads to innovative solutions. When people from different backgrounds and skill sets collaborate, they bring unique insights to the table. For instance, during a marketing campaign project at my previous job, our team brainstormed a concept that no single person could have developed alone. By combining graphic design skills with data analysis, we successfully increased client engagement by thirty percent.\n\nSecond, collaborating in a team allows for a more efficient distribution of tasks. Large projects often require a vast amount of research, drafting, and editing. When these responsibilities are shared among team members based on their individual strengths, the workload becomes manageable, and deadlines are met more easily. In contrast, working independently often leads to burnout, as one person must handle every aspect of a complex assignment without immediate support or feedback.\n\nAdmittedly, working independently has its own merits, such as allowing for greater personal autonomy and eliminating the conflicts that sometimes arise in group settings. Individuals do not need to compromise on their vision or schedule meetings to make decisions.\n\nIn conclusion, although independent work offers flexibility, the benefits of teamwork far outweigh the drawbacks. By combining various perspectives and distributing tasks effectively, teams consistently achieve superior results. Therefore, I strongly prefer collaborative work environments in both academic and professional settings."
+   },
+   "id": "w10"
+  }
+ ]
+}
