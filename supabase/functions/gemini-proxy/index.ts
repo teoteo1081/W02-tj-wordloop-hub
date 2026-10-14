@@ -34,6 +34,7 @@
 // recordUsage() bên dưới.
 
 const GEMINI_KEY = Deno.env.get("GEMINI_API_KEY");
+const GEMINI_KEY_2 = Deno.env.get("GEMINI_API_KEY_2");   // key phụ (tài khoản Google khác): dùng khi key chính hết hạn mức (429)
 // SUPABASE_URL/SUPABASE_SERVICE_ROLE_KEY được Supabase TỰ ĐỘNG bơm sẵn vào
 // mọi Edge Function (không cần `supabase secrets set` tay) — service role
 // bỏ qua RLS, dùng để tự đọc profiles.is_admin + đọc/ghi bảng ai_usage_daily
@@ -161,9 +162,9 @@ Deno.serve(async (req: Request) => {
   const quota = await checkQuota(userId, blockId);
   if (quota.blocked) return json({ error: quota.message, kind: "quota_user" }, 403);
 
-  const upstreamUrl =
+  const upstreamUrlFor = (k: string) =>
     `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}` +
-    `:generateContent?key=${encodeURIComponent(GEMINI_KEY)}`;
+    `:generateContent?key=${encodeURIComponent(k)}`;
 
   const upstreamBody = JSON.stringify({
     systemInstruction: { parts: [{ text: sys }] },
@@ -172,11 +173,19 @@ Deno.serve(async (req: Request) => {
   });
 
   try {
-    const res = await fetch(upstreamUrl, {
+    let res = await fetch(upstreamUrlFor(GEMINI_KEY), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: upstreamBody,
     });
+    if (res.status === 429 && GEMINI_KEY_2) {   // key chính hết hạn mức -> thử key phụ (cùng yêu cầu)
+      await res.body?.cancel();
+      res = await fetch(upstreamUrlFor(GEMINI_KEY_2), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: upstreamBody,
+      });
+    }
     const text = await res.text();
     if (res.ok) {   // chỉ ghi nhận khi Google trả OK thật sự, không tính lượt lỗi
       let usage: { promptTokenCount?: number; candidatesTokenCount?: number; totalTokenCount?: number } | undefined;
