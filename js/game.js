@@ -3029,7 +3029,7 @@
         $(optsEl).innerHTML = q.subs.map(function (sq, i) {
           return '<div class="g-tsub"><div class="g-tstem"><b class="g-tnum">' + sq.num + ".</b> " + esc(sq.sent) + '</div><div class="g-tsubopts">' +
             sq.opts.map(function (o) { return '<button class="g-opt g-topt" data-sub="' + i + '" data-opt="' + esc(o) + '"><span class="g-otext">' + esc(o) + "</span></button>"; }).join("") + "</div></div>";
-        }).join("") + (optsEl === "#p-opts" && ((q.nxt || []).length || (G.st && G.st.mode === "free")) ? '<div class="g-row g-center"><button type="button" class="g-btn g-btn-soft g-btn-sm" id="p-tskip">' + ((q.nxt || []).length ? "⏭ " + esc(T("t_skipg")) : "✓ " + esc(T("t_doneg"))) + "</button></div>" : "") + ((q.nxt || []).length ? '<div class="g-tnext" hidden><div class="g-sub">👀 ' + esc(T("t_next")) + "</div>" +
+        }).join("") + (optsEl === "#p-opts" && !(G.st && G.st.mode === "kahoot" && !G.st.hostpace) && ((q.nxt || []).length || (G.st && G.st.mode === "free")) ? '<div class="g-row g-center"><button type="button" class="g-btn g-btn-soft g-btn-sm" id="p-tskip">' + ((q.nxt || []).length ? "⏭ " + esc(T("t_skipg")) : "✓ " + esc(T("t_doneg"))) + "</button></div>" : "") + ((q.nxt || []).length ? '<div class="g-tnext" hidden><div class="g-sub">👀 ' + esc(T("t_next")) + "</div>" +
           q.nxt.map(function (x) { return '<div class="g-tnq"><b>' + x.num + ".</b> " + esc(x.sent) + "<small>" + x.opts.map(esc).join(" · ") + "</small></div>"; }).join("") + "</div>" : "");
         if (optsEl === "#p-opts") tSkipInline();
         var pk0 = q.picks || (optsEl === "#p-opts" ? G.myPicks : null) || [];
