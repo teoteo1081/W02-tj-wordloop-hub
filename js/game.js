@@ -2987,8 +2987,14 @@
     Object.keys(M).forEach(function (k) { var p = k.split(":"); if (p[1] !== String(test) || parts.indexOf(+p[2]) < 0) return; var r = p[3].split("-").map(Number); for (var n = r[0]; n <= (r[1] || r[0]); n++) out[n] = 1; });
     return Object.keys(out).map(Number).sort(function (a, b) { return a - b; });
   }
-  function tPassHTML(p, num) {
-    if (!p) return "";
+  /* 🧭 đường dẫn của câu đang làm, hiện đầu ô đen (TJ 2026-10-13): "ETS 2023 › Test 5 › Listening › Part 4 · Short Talks" */
+  var T_PARTNAME = { 1: "Photographs", 2: "Question-Response", 3: "Conversations", 4: "Short Talks", 5: "Incomplete Sentences", 6: "Text Completion", 7: "Reading Comprehension" };
+  function tCrumb(q) {
+    var t = q && (q.test || (G.st && G.st.test && G.st.test.test)), pt = q && (q.part || (G.st && G.st.test && G.st.test.part)); if (!t || !pt) return "";
+    return '<div class="g-tcrumb">' + esc(tName(t)) + " › " + (+pt <= 4 ? "Listening" : "Reading") + " › Part " + pt + " · " + esc(T_PARTNAME[pt] || "") + "</div>";
+  }
+  function tPassHTML(p, num, crumb) {
+    if (!p) return crumb ? '<div class="g-tpass">' + crumb + "</div>" : "";
     var img = [], txt = String(p).split("\n").filter(function (l) { if (/^\[aud\]/.test(l)) return false; var m = l.match(/^\[img\]\s*(https:\/\/\S+)$/); if (m) img.push(m[1]); return !m; }).join("\n").trim();
     /* chỗ trống Part 6 "-------(131)" -> ô không xuống dòng giữa chừng, tô ô của CÂU ĐANG LÀM (QA v107) */
     var body = esc(txt).replace(/-{3,}\((\d+)\)/g, function (m, n) { return '<mark class="g-tblank' + (+n === +num ? " cur" : "") + '">(' + n + ")</mark>"; });
@@ -2996,7 +3002,7 @@
     body = body.replace(/^\[([^\]\n]{2,40})\]\n?/gm, '<span class="g-tdoc">$1</span>');
     /* OCR ghi chú định dạng bằng chữ "7:00 A.M. (underlined)" -> gạch chân thật (TJ 2026-10-04: thấy lạ) */
     body = body.replace(/([^\n—–]*?\S)\s*\((underlined|bold|bolded|in bold|italic|italics|circled|highlighted)\)/gi, function (m, t, k) { k = k.toLowerCase(); return /under/.test(k) ? "<u>" + t + "</u>" : /ital/.test(k) ? "<i>" + t + "</i>" : "<b>" + t + "</b>"; });
-    return (txt ? '<div class="g-tpass">' + body + "</div>" : "") + img.map(function (u) { return '<img class="g-timg" alt="" src="' + esc(u) + '">'; }).join("");
+    return (txt ? '<div class="g-tpass">' + (crumb || "") + body + "</div>" : crumb ? '<div class="g-tpass">' + crumb + "</div>" : "") + img.map(function (u) { return '<img class="g-timg" alt="" src="' + esc(u) + '">'; }).join("");
   }
   /* 📐 ảnh đề vừa KHÍT màn hình đang dùng (TJ 2026-10-04: "tuỳ kích cỡ màn hình mà phải phù hợp"): đo chỗ trống thật
      = cao màn hình − phần phía trên ảnh − câu hỏi + 4 nút bên dưới. Không đủ chỗ (điện thoại, bảng vẽ đang mở) thì tính
@@ -3038,7 +3044,7 @@
       var tc = tCue(q);
       if (q.subs) {   /* 🎧 nhóm 3 câu Part 3–4 */
         document.body.classList.remove("g-tahead");
-        $(textEl).innerHTML = tPassHTML(q.passage, q.num) +
+        $(textEl).innerHTML = tPassHTML(q.passage, q.num, tCrumb(q)) +
           (tc ? '<div class="g-row g-center"><button type="button" class="g-btn g-btn-soft g-btn-sm g-taud" data-tcue="' + esc(tc.url + "|" + tc.q.join("-") + "|" + (tc.g ? tc.g.join("-") : "")) + '">🔊 ' + esc(T("t_listen")) + "</button></div>" : "");
         if (mine) $("#p-type").hidden = true;
         $(optsEl).innerHTML = q.subs.map(function (sq, i) {
@@ -3057,7 +3063,7 @@
         else if (mine && !(tc && G.st && G.st.tplay)) { setTimeout(tShowNext, 0); if (G.st && G.st.mode === "free" && !G.st.race) G.tQEnd = Date.now() + ((T_SEC[q.part] || 30) * q.subs.length + 45) * 1000; }
         return;
       }
-      $(textEl).innerHTML = tPassHTML(q.passage, q.num) +
+      $(textEl).innerHTML = tPassHTML(q.passage, q.num, tCrumb(q)) +
         (tc ? '<div class="g-row g-center"><button type="button" class="g-btn g-btn-soft g-btn-sm g-taud" data-tcue="' + esc(tc.url + "|" + tc.q.join("-") + "|" + (tc.g ? tc.g.join("-") : "")) + '">🔊 ' + esc(T("t_listen")) + "</button></div>" : "") +
         '<span class="g-gapline g-tstem"><b class="g-tnum">' + esc(q.num) + ".</b> " + esc(q.sent).replace("_______", '<span class="g-blank" style="width:4em"></span>') + "</span>";
       if (mine) $("#p-type").hidden = true;

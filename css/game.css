@@ -2176,3 +2176,5 @@ body.g-playing.g-adm #g-righthandle{top:2px;right:8px;width:30px;height:30px;fon
 .g-tnext > .g-tnx-hd,.g-tnext > .g-row{grid-column:1/-1}
 .g-tnext > .g-tnx-hd{margin:0 0 6px}
 .g-tnext > .g-tsub{margin:6px 0 10px}
+/* 🧭 đường dẫn đề trong ô đen */
+.g-tcrumb{font-size:12px;line-height:1.3;opacity:.65;margin-bottom:6px;letter-spacing:.2px}
