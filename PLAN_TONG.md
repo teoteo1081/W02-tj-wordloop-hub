@@ -26,7 +26,7 @@
 - Điểm Nói/Viết là ƯỚC TÍNH do AI; phát âm/ngữ điệu không chấm thật được (Web Speech chỉ cho chữ). Quyết sớm: Nói chỉ hỗ trợ Chrome máy tính/Android, hay ghi âm gửi Gemini (cần sửa proxy nhận âm thanh).
 - **IELTS**: một thẻ có Nghe | Đọc | Viết | Nói bên trong; Viết/Nói dùng lại bộ chấm TOEIC (4 tiêu chí, band 0–9; Writing Task1 1/3 – Task2 2/3); Nghe–Đọc (dạng câu mới: điền chỗ trống, nối tiêu đề, T/F/NG…) làm sau cùng hoặc bỏ. Cần chốt Academic hay General.
 - Dự trù token Claude: TOEIC S&W ≈ 250–350k, IELTS thêm ≈ 200–250k.
-- Nguồn tham khảo TJ chỉ định: study4 (TOEIC Writing có đáp án; cấu trúc đề IELTS) — đọc bằng Python (curl + OCR ảnh), không để Claude đọc ảnh.
+- Nguồn tham khảo TJ chỉ định (study4 + prepedu: 10 đề mẫu Speaking, 3 đề Writing, chủ đề IELTS): đã khảo sát, xem **`NGUON_THAM_KHAO_SW_IELTS.md`** (lấy được gì, giới hạn bản quyền, cách lấy bằng Python `tools/sw-research/fetch_page.py`). Đọc bằng Python (curl + OCR ảnh), không để Claude đọc ảnh.
 
 ## 5. Phòng và Bảng (README, theo thứ tự nên làm)
 1. Tab "🖍 Bảng trắng" riêng (bút + ô chữ). 2. Phòng học 24/24 không cần host. 3. Nút "Theo mọi người" cho bài đọc. 4. Chia sẻ ảnh/file trên iPhone. 5. Sửa lỗi Nói/Đọc kiểu HelloTalk. 6. Kiểm trên máy thật (voice iPhone, ghi âm, thanh bút, CC, file lớn).
