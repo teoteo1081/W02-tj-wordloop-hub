@@ -157,7 +157,7 @@
     document.body.classList.toggle("g-playing", on);
     document.body.classList.toggle("g-adm", on && !!G.isHost);
     if (on && !G.tFocus && G.topPin) topPin(false);   /* vào ván mới: mặc định ẩn (không ghim) */
-    if (!on) { document.body.classList.remove("g-topshow", "g-admopen", "g-toppin"); G.topPin = false; $("#g-admin").hidden = true; }
+    if (!on) { document.body.classList.remove("g-topshow", "g-admopen", "g-toppin", "g-admpin"); G.topPin = false; G.admPin = false; $("#g-admin").hidden = true; var rh = $("#g-righthandle"); if (rh) rh.classList.remove("on"); }
     admMove();
     if (on === !!G.tFocus) return; G.tFocus = on;
     focusParent(on);
@@ -187,19 +187,26 @@
     setTimeout(fitTImg, 120);
   }
   function topArm(ms) { PK.top = setTimeout(function () { if (PK.hov) topArm(800); else topShow(false); }, ms); }
-  function admShow(v, touch) {
+  function admShow(v, touch, force) {
     var b = document.body; if (v && !(playing() && b.classList.contains("g-adm"))) return;
+    if (!v && G.admPin && !force) return;   /* đang 📌 ghim: không tự đóng */
     b.classList.toggle("g-admopen", !!v); $("#g-admin").hidden = !v; clearTimeout(PK.adm);
     if (v) { paintAdmin(); if (!touch) PK.adm = 0; }
+  }
+  /* 📌 GHIM bảng Quản trị (TJ 2026-10-13): ghim = bảng nằm yên bên phải, nội dung dịch sang trái (không bị đè), không tự đóng; bấm lại 📌 hoặc ✕ để bỏ ghim */
+  function admPin(v) {
+    G.admPin = !!v; var b = document.body, rh = $("#g-righthandle");
+    b.classList.toggle("g-admpin", G.admPin); if (rh) { rh.classList.toggle("on", G.admPin); rh.title = G.admPin ? "Bỏ ghim bảng Quản trị" : "Ghim bảng Quản trị"; }
+    admShow(G.admPin, true, true); setTimeout(fitTImg, 150);
   }
   function admArm() { clearTimeout(PK.adm); PK.adm = setTimeout(function () { if (!PK.admIn) admShow(false); }, 1500); }
   document.addEventListener("click", function (e) {
     if (e.target.closest("#g-toppin")) topPin(!G.topPin);
     else if (e.target.closest("#g-tophandle")) topShow(!document.body.classList.contains("g-topshow"), true);
-    else if (e.target.closest("#g-righthandle")) admShow(!document.body.classList.contains("g-admopen"), true);
-    else if (e.target.closest("#ga-x")) admShow(false);
+    else if (e.target.closest("#g-righthandle")) admPin(!G.admPin);
+    else if (e.target.closest("#ga-x")) { if (G.admPin) admPin(false); else admShow(false); }
     else if (e.target.closest("#g-admin")) { var a = e.target.closest("[data-ga]"); if (a) admAct(a.dataset.ga); }
-    else if (document.body.classList.contains("g-admopen") && !e.target.closest(".g-top")) admShow(false);   /* chạm ngoài ngăn kéo = đóng */
+    else if (document.body.classList.contains("g-admopen") && !G.admPin && !e.target.closest(".g-top")) admShow(false);   /* chạm ngoài ngăn kéo = đóng */
   });
   document.addEventListener("pointerdown", function (e) {   /* chạm ngoài thanh trên (cảm ứng) = ẩn lại, không chặn thao tác */
     if (e.pointerType === "mouse" || !document.body.classList.contains("g-topshow")) return;
@@ -214,7 +221,7 @@
     else if (nearTop) { if (!PK.dw) PK.dw = setTimeout(function () { PK.dw = 0; if (PK.hov) topShow(true); }, 800); }   /* chờ 0,3s mới hiện: rê ngang qua mép không bật menu */
     else { clearTimeout(PK.dw); PK.dw = 0; if (b.classList.contains("g-topshow") && !PK.top) topShow(true); }
     if (nearR && !b.classList.contains("g-admopen")) admShow(true);   /* bảng Quản trị: hất chuột qua mép phải là hiện liền (TJ 2026-10-13); không thì bấm nút 📌 đỏ */
-    if (b.classList.contains("g-admopen") && !PK.admIn) admArm(); else clearTimeout(PK.adm);
+    if (b.classList.contains("g-admopen") && !PK.admIn && !G.admPin) admArm(); else clearTimeout(PK.adm);
   });
   var TS = null;
   document.addEventListener("touchstart", function (e) { var t = e.touches[0]; TS = t && e.touches.length === 1 ? { x: t.clientX, y: t.clientY, top: t.clientY <= 28, right: t.clientX >= innerWidth - 24 } : null; }, { passive: true });
@@ -225,7 +232,7 @@
   }, { passive: true });
   document.addEventListener("keydown", function (e) {
     if (!playing()) return;
-    if (e.key === "Escape") { if (document.body.classList.contains("g-admopen")) admShow(false); else topShow(!document.body.classList.contains("g-topshow"), true); }
+    if (e.key === "Escape") { if (G.admPin) admPin(false); else if (document.body.classList.contains("g-admopen")) admShow(false); else topShow(!document.body.classList.contains("g-topshow"), true); }
     else if (e.altKey && e.key === "ArrowUp") { e.preventDefault(); topShow(!document.body.classList.contains("g-topshow"), true); }
   });
   window.addEventListener("message", function (e) {   /* khung WordLoop báo chuột đang ở trên thanh của nó -> chưa tự ẩn */
