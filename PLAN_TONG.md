@@ -28,6 +28,11 @@
 - Dự trù token Claude: TOEIC S&W ≈ 250–350k, IELTS thêm ≈ 200–250k.
 - Nguồn tham khảo TJ chỉ định (study4 + prepedu: 10 đề mẫu Speaking, 3 đề Writing, chủ đề IELTS): đã khảo sát, xem **`NGUON_THAM_KHAO_SW_IELTS.md`** (lấy được gì, giới hạn bản quyền, cách lấy bằng Python `tools/sw-research/fetch_page.py`). Đọc bằng Python (curl + OCR ảnh), không để Claude đọc ảnh.
 
+## 4b. Tiến độ thực tế S&W (cập nhật 2026-10-14 tối)
+- **ĐÃ LÀM (main, commit 9214370):** 2 nút "🎤 Speaking" / "✍️ Writing" trong thanh "Góc tự học" → app một người `learn/sw/` (đếm giờ chuẩn ETS, Web Speech nhận giọng, AI chấm qua gemini-proxy, điểm ước tính, tiến độ localStorage `sw-quest-v1`, `?mock=1` giả giọng để test). 10 đề Speaking + 10 đề Writing do Python sinh (`tools/sw/gen_sets.py`; Q3 Speaking và Q1–5 Writing dùng mô tả ảnh bằng chữ). Đã chạy thử trên web thật bằng Playwright (Python + chromium có sẵn, `executable_path`); CHƯA thử micro thật.
+- **ĐANG LÀM / TIẾP THEO — Chế độ lớp:** host chọn đề + dạng bài trong phòng, bấm Bắt đầu → mọi máy vào Speaking/Writing chạy cùng câu → điểm từng người phát lại qua kênh phòng → bảng xếp hạng chung. Nhánh `feat/sw-class` (xem commit gần nhất để biết làm tới đâu). Cần: tin `sw` trong `js/game.js` (G.ch), cầu nối trong `js/learn.js`, phần lớp trong `learn/sw/sw.js`.
+- **CHƯA LÀM:** nạp đề prepedu nguyên văn vào máy TJ (`tools/sw/parse_prepedu.py` → file .json → nút "Nạp đề riêng"; KHÔNG commit nội dung có bản quyền); ảnh thật cho Speaking Q3 / Writing Q1–5; IELTS Viết/Nói dùng lại bộ máy này.
+
 ## 5. Phòng và Bảng (README, theo thứ tự nên làm)
 1. Tab "🖍 Bảng trắng" riêng (bút + ô chữ). 2. Phòng học 24/24 không cần host. 3. Nút "Theo mọi người" cho bài đọc. 4. Chia sẻ ảnh/file trên iPhone. 5. Sửa lỗi Nói/Đọc kiểu HelloTalk. 6. Kiểm trên máy thật (voice iPhone, ghi âm, thanh bút, CC, file lớn).
 - Đã chốt: KHÔNG bật TURN Cloudflare (có phí).
