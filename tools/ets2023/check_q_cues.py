@@ -2,6 +2,9 @@
 import json, re, sys
 N = int(sys.argv[1]); FIX = '--fix' in sys.argv
 cues = json.load(open('cues_%d.json' % N)); lc = {x['num']: x for x in json.load(open('lc_%d.json' % N, encoding='utf-8'))}
+try:
+    for x in json.load(open('lc34_%d.json' % N, encoding='utf-8'))['items']: lc.setdefault(x['num'], x)
+except Exception: pass
 W = json.load(open('audio/t%d_whisper_w.json' % N, encoding='utf-8'))['segs']
 ws = [(a, b, re.sub(r"[^a-z0-9']", '', t.lower())) for sg in W for a, b, t in sg['w']]; ws = [w for w in ws if w[2]]
 tkz = lambda st: [t for t in (re.sub(r"[^a-z0-9']", '', x.lower()) for x in st.split()) if t]
@@ -18,7 +21,7 @@ for n in range(32, 101):
 chg = []
 for n, (qs, qe) in found.items():
     c = cues[str(n)]; s0, e0 = c['q']; ns = max(0, round(qs - 2.2, 2)); ne = round(qe + 0.3, 2)
-    badS = not (qs - 4.0 <= s0 <= qs - 0.3 + 0.01) ; badE = e0 < qe - 0.05
+    badS = not (qs - 4.0 <= s0 <= qs - 0.3 + 0.01) ; badE = e0 < qe - 0.05 or e0 > qe + 2.5   # cụt, hoặc dư khoảng lặng > 2.5s
     if badS or badE:
         chg.append((n, s0, e0, '->', ns if badS else s0, ne if badE else e0))
 print('N', N, 'câu cần chỉnh:', len(chg)); [print('  ', x) for x in chg]
