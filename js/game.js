@@ -207,14 +207,13 @@
   }, true);
   document.addEventListener("mousemove", function (e) {
     if (!playing() || (e.sourceCapabilities && e.sourceCapabilities.firesTouchEvents)) return;
-    var b = document.body, nearTop = e.clientY <= 8, nearR = e.clientX >= innerWidth - 8 && b.classList.contains("g-adm");
+    var b = document.body, nearTop = e.clientY <= 8, nearR = e.clientX >= innerWidth - 16 && b.classList.contains("g-adm");
     var inTop = !!e.target.closest(".g-top"), inAdm = !!e.target.closest("#g-admin");
     PK.hov = inTop || nearTop; PK.admIn = inAdm || nearR;
     if (inTop) { clearTimeout(PK.dw); topShow(true); }
     else if (nearTop) { if (!PK.dw) PK.dw = setTimeout(function () { PK.dw = 0; if (PK.hov) topShow(true); }, 800); }   /* chờ 0,3s mới hiện: rê ngang qua mép không bật menu */
     else { clearTimeout(PK.dw); PK.dw = 0; if (b.classList.contains("g-topshow") && !PK.top) topShow(true); }
-    if (nearR && !b.classList.contains("g-admopen")) { if (!PK.dwR) PK.dwR = setTimeout(function () { PK.dwR = 0; if (PK.admIn) admShow(true); }, 800); }   /* chờ 0,8s mới hiện: rê chuột nhẹ qua mép phải không bật bảng Quản trị (TJ 2026-10-13) */
-    else if (!nearR && PK.dwR) { clearTimeout(PK.dwR); PK.dwR = 0; }
+    if (nearR && !b.classList.contains("g-admopen")) admShow(true);   /* bảng Quản trị: hất chuột qua mép phải là hiện liền (TJ 2026-10-13); không thì bấm nút 📌 đỏ */
     if (b.classList.contains("g-admopen") && !PK.admIn) admArm(); else clearTimeout(PK.adm);
   });
   var TS = null;
