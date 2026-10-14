@@ -160,6 +160,7 @@
     if (!on) { document.body.classList.remove("g-topshow", "g-admopen", "g-toppin", "g-admpin"); G.topPin = false; G.admPin = false; $("#g-admin").hidden = true; var rh = $("#g-righthandle"); if (rh) rh.classList.remove("on"); }
     admMove();
     if (on === !!G.tFocus) return; G.tFocus = on;
+    if (on) { try { window.scrollTo(0, 0); } catch (e) {} } else { var sk0 = $("#p-tskip"); if (sk0) sk0.remove(); }   /* vào ván: luôn ở đầu trang để thấy chỉ số + cả đề (TJ 2026-10-13) */
     focusParent(on);
     setTimeout(fitTImg, 60);
   }
@@ -2990,8 +2991,8 @@
       var box = img.closest(".g-qvi") || img.parentNode, card = box.parentNode;
       var below = 0, sib = img.nextElementSibling; while (sib) { below += sib.offsetHeight; sib = sib.nextElementSibling; }
       var ops = card && card.querySelector(".g-opts"), rv = card && card.querySelector("#p-reveal");
-      var sub1 = card && card.querySelector(".g-tsub");   /* nhóm 3 câu (hình "Look at the graphic"): chỉ chừa chỗ cho câu đầu, không ép hình còn 120px (QA thiết kế) */
-      var after = sub1 ? sub1.offsetHeight + 28 : ops ? ops.getBoundingClientRect().bottom - box.getBoundingClientRect().bottom + 28 : 0;   /* tới hết 4 nút + 1 dòng thông báo (Xem lại: không tính lời giải dài bên dưới) */
+      var sub1 = card && card.querySelector(".g-tsub");   /* nhóm 3 câu (hình "Look at the graphic"): chừa chỗ cho CẢ 3 câu + nút + bảng điểm dưới để cả nhóm vừa 1 màn hình (TJ 2026-10-13); hình không nhỏ hơn 120px */
+      var after = sub1 && ops ? ops.getBoundingClientRect().bottom - box.getBoundingClientRect().bottom + 28 + (function () { var t = 0, n = ops.nextElementSibling; while (n) { t += n.offsetHeight; n = n.nextElementSibling; } return t; })() + 60 : sub1 ? sub1.offsetHeight + 28 : ops ? ops.getBoundingClientRect().bottom - box.getBoundingClientRect().bottom + 28 : 0;   /* tới hết 4 nút + 1 dòng thông báo (Xem lại: không tính lời giải dài bên dưới) */
       if (rv && !rv.hidden) after += rv.offsetHeight + 8;   /* host 🎧 theo audio: nút "Câu tiếp ▶" */
       var docTop = img.getBoundingClientRect().top + window.scrollY, boxTop = box.getBoundingClientRect().top + window.scrollY;
       var need = below + after + 24, vh = window.innerHeight;
@@ -3017,6 +3018,7 @@
     if (mine) { $("#p-saywrap").hidden = q.type !== "dict" && q.type !== "listen"; $("#p-res").innerHTML = ""; paintSoundBtn(); paintReplay(q); }
     var oe0 = $(optsEl); if (oe0) oe0.classList.toggle("g-tbook", q.type === "toeic");   /* 📖 đề thi: đáp án xếp dọc như sách (TJ 2026-10-04) */
     if (q.type === "toeic") {
+      var stale = $("#p-tskip"); if (stale && optsEl === "#p-opts" && !$("#p-opts").contains(stale)) stale.remove();
       var tc = tCue(q);
       if (q.subs) {   /* 🎧 nhóm 3 câu Part 3–4 */
         document.body.classList.remove("g-tahead");
@@ -3028,9 +3030,10 @@
             sq.opts.map(function (o) { return '<button class="g-opt g-topt" data-sub="' + i + '" data-opt="' + esc(o) + '"><span class="g-otext">' + esc(o) + "</span></button>"; }).join("") + "</div></div>";
         }).join("") + (optsEl === "#p-opts" && ((q.nxt || []).length || (G.st && G.st.mode === "free")) ? '<div class="g-row g-center"><button type="button" class="g-btn g-btn-soft g-btn-sm" id="p-tskip">' + ((q.nxt || []).length ? "⏭ " + esc(T("t_skipg")) : "✓ " + esc(T("t_doneg"))) + "</button></div>" : "") + ((q.nxt || []).length ? '<div class="g-tnext" hidden><div class="g-sub">👀 ' + esc(T("t_next")) + "</div>" +
           q.nxt.map(function (x) { return '<div class="g-tnq"><b>' + x.num + ".</b> " + esc(x.sent) + "<small>" + x.opts.map(esc).join(" · ") + "</small></div>"; }).join("") + "</div>" : "");
+        if (optsEl === "#p-opts") tSkipInline();
         var pk0 = q.picks || (optsEl === "#p-opts" ? G.myPicks : null) || [];
         pk0.forEach(function (c, i) { if (c != null) $$(optsEl + ' .g-opt[data-sub="' + i + '"]').forEach(function (x) { x.classList.toggle("g-picked", norm(x.dataset.opt) === norm(c)); }); });
-        var pk = (G.st && G.st.matchId || "") + ":" + q.num + ":" + (q.qn || "");
+        var pk = (G.st && G.st.matchId || "") + ":" + q.num + ":" + (q.qn || ""); if (mine && optsEl === "#p-opts") tTop(pk);
         if (mine && tc && G.st && G.st.tplay && pk !== G.tPlayedQn) { G.tPlayedQn = pk; tAutoPlay(q); }
         else if (mine && !(tc && G.st && G.st.tplay)) { setTimeout(tShowNext, 0); if (G.st && G.st.mode === "free" && !G.st.race) G.tQEnd = Date.now() + ((T_SEC[q.part] || 30) * q.subs.length + 45) * 1000; }
         return;
@@ -3039,9 +3042,9 @@
         (tc ? '<div class="g-row g-center"><button type="button" class="g-btn g-btn-soft g-btn-sm g-taud" data-tcue="' + esc(tc.url + "|" + tc.q.join("-") + "|" + (tc.g ? tc.g.join("-") : "")) + '">🔊 ' + esc(T("t_listen")) + "</button></div>" : "") +
         '<span class="g-gapline g-tstem"><b class="g-tnum">' + esc(q.num) + ".</b> " + esc(q.sent).replace("_______", '<span class="g-blank" style="width:4em"></span>') + "</span>";
       if (mine) $("#p-type").hidden = true;
-      if (mine && window.innerWidth < 1100) { var qv = $(textEl); setTimeout(function () { qv.scrollIntoView({ block: "start", behavior: "smooth" }); }, 50); }   /* điện thoại: bảng điểm chiếm ~410px -> cuộn tới đề để thấy A–D (QA v109) */
+      if (mine && window.innerWidth < 1100 && !document.body.classList.contains("g-playing")) { var qv = $(textEl); setTimeout(function () { qv.scrollIntoView({ block: "start", behavior: "smooth" }); }, 50); }   /* điện thoại: bảng điểm chiếm ~410px -> cuộn tới đề để thấy A–D (QA v109) */
       setTimeout(fitTImg, 0);
-      var pk = (G.st && G.st.matchId || "") + ":" + q.num + ":" + (q.qn || ""); if (mine && tc && G.st && G.st.tplay && pk !== G.tPlayedQn) { G.tPlayedQn = pk; tAutoPlay(q); }
+      var pk = (G.st && G.st.matchId || "") + ":" + q.num + ":" + (q.qn || ""); if (mine && optsEl === "#p-opts" && document.body.classList.contains("g-playing")) tTop(pk); if (mine && tc && G.st && G.st.tplay && pk !== G.tPlayedQn) { G.tPlayedQn = pk; tAutoPlay(q); }
       $(optsEl).innerHTML = (q.opts || []).map(function (o) { return '<button class="g-opt g-topt" data-opt="' + esc(o) + '"><span class="g-otext">' + esc(o) + '</span><span class="g-pickers"></span></button>'; }).join(""); markLongOpts(optsEl);
       return;
     }
@@ -4667,6 +4670,14 @@
   function tSub(it) {
     var ai = "ABCD".indexOf(String(it.answer || "").trim().toUpperCase());
     return { num: it.num, part: it.part, test: G.st && G.st.test ? G.st.test.test : null, sent: tStemOf(it), opts: (it.opts || []).slice(), ans: ai >= 0 ? it.opts[ai] : "" };
+  }
+  /* sang câu / nhóm mới -> về đầu trang (không cuộn lại khi chỉ vẽ lại cùng câu) */
+  function tTop(key) { if (G.tTopKey === key) return; G.tTopKey = key; try { window.scrollTo(0, 0); } catch (e) {} }
+  /* "⏭ Qua nhóm sau" nằm CHUNG HÀNG với "Câu tiếp ▶" (trước: 2 hàng chiếm ~90px) */
+  function tSkipInline() {
+    var sk = $("#p-opts #p-tskip"), nx = $("#p-next"); if (!sk || !nx || !nx.parentNode) return;
+    [].slice.call(nx.parentNode.querySelectorAll("#p-tskip")).forEach(function (o) { o.remove(); });   /* vẽ lại -> không để lại nút cũ */
+    var row = sk.closest(".g-row"); nx.parentNode.insertBefore(sk, nx); if (row && !row.children.length) row.remove();
   }
   function tGraphic(q) { return /look at the graphic/i.test(q.sent || "") || (q.subs || []).some(function (x) { return /look at the graphic/i.test(x.sent); }); }
   function tKey(q) { return "toeic:" + (q.test || (G.st && G.st.test && G.st.test.test)) + ":" + (q.part || (G.st && G.st.test && G.st.test.part)) + ":" + q.num; }   /* game_answers.term của câu đề thi -> 📊 điểm từng Part / câu hay sai */
