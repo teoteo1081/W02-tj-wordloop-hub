@@ -3029,8 +3029,11 @@
         $(optsEl).innerHTML = q.subs.map(function (sq, i) {
           return '<div class="g-tsub"><div class="g-tstem"><b class="g-tnum">' + sq.num + ".</b> " + esc(sq.sent) + '</div><div class="g-tsubopts">' +
             sq.opts.map(function (o) { return '<button class="g-opt g-topt" data-sub="' + i + '" data-opt="' + esc(o) + '"><span class="g-otext">' + esc(o) + "</span></button>"; }).join("") + "</div></div>";
-        }).join("") + (optsEl === "#p-opts" && ((q.nxt || []).length || (G.st && G.st.mode === "free")) ? '<div class="g-row g-center"><button type="button" class="g-btn g-btn-soft g-btn-sm" id="p-tskip">' + ((q.nxt || []).length ? "⏭ " + esc(T("t_skipg")) : "✓ " + esc(T("t_doneg"))) + "</button></div>" : "") + ((q.nxt || []).length ? '<div class="g-tnext" hidden><div class="g-sub">👀 ' + esc(T("t_next")) + "</div>" +
-          q.nxt.map(function (x) { return '<div class="g-tnq"><b>' + x.num + ".</b> " + esc(x.sent) + "<small>" + x.opts.map(esc).join(" · ") + "</small></div>"; }).join("") + "</div>" : "");
+        }).join("") + (optsEl === "#p-opts" && ((q.nxt || []).length || (G.st && G.st.mode === "free")) ? '<div class="g-row g-center"><button type="button" class="g-btn g-btn-soft g-btn-sm" id="p-tskip">' + ((q.nxt || []).length ? "⏭ " + esc(T("t_skipg")) : "✓ " + esc(T("t_doneg"))) + "</button></div>" : "") + ((q.nxt || []).length ? '<div class="g-tnext" hidden><div class="g-tpass g-tnx-hd">🎧 ' + esc(T("t_next")) + " · questions " + q.nxt[0].num + "–" + q.nxt[q.nxt.length - 1].num + '</div>' +
+          q.nxt.map(function (x) {   /* xem trước = ĐÚNG khối câu hỏi thật (cùng giao diện); chọn trước được, chuyển nhóm thì tự áp (TJ 2026-10-13) */
+            return '<div class="g-tsub"><div class="g-tstem"><b class="g-tnum">' + x.num + ".</b> " + esc(x.sent) + '</div><div class="g-tsubopts">' +
+              x.opts.map(function (o) { return '<button class="g-opt g-topt' + ((G.preNext || {})[x.num] === o ? " g-picked" : "") + '" data-pre="' + x.num + '" data-opt="' + esc(o) + '"><span class="g-otext">' + esc(o) + "</span></button>"; }).join("") + "</div></div>";
+          }).join("") + '<div class="g-row g-center"><button type="button" class="g-btn g-btn-soft g-btn-sm" id="p-tback">◀ ' + esc(T("t_backg")) + "</button></div></div>" : "");
         if (optsEl === "#p-opts") tSkipInline();
         var pk0 = q.picks || (optsEl === "#p-opts" ? G.myPicks : null) || [];
         pk0.forEach(function (c, i) { if (c != null) $$(optsEl + ' .g-opt[data-sub="' + i + '"]').forEach(function (x) { x.classList.toggle("g-picked", norm(x.dataset.opt) === norm(c)); }); });
@@ -4060,6 +4063,11 @@
     $("#p-next").hidden = true;   /* tự sang câu, không cần bấm */
     if (q.qn !== G.lastN) {
       G.lastN = q.qn; G.myChoice = null; G.myPicks = []; G.myQStart = Date.now();
+      if (q.qn === 1) G.preNext = {};
+      if (q.subs && G.preNext && iPlay()) {   /* đã chọn trước ở bản xem trước -> áp luôn, gửi host (ms trung tính để không ăn điểm tốc độ oan) */
+        var any = false; q.subs.forEach(function (sq, i) { if (G.preNext[sq.num] != null) { G.myPicks[i] = G.preNext[sq.num]; delete G.preNext[sq.num]; any = true; } });
+        if (any) sendAns({ pid: G.me.id, qn: q.qn, choice: G.myPicks.slice(), ms: Math.round((q.limit || 30) * 500) });
+      }
       G.qUntilLocal = s.qLeft != null ? Date.now() + s.qLeft : 0; G.qLimit = q.limit || s.qs;
       paintQuestion(q, "#p-hint", "#p-vi", "#p-opts");
       if (!iPlay()) lockAll();
@@ -4284,7 +4292,7 @@
     if (((s.mode === "kahoot" ? G.myPicks : G.myQ.picks) || []).filter(function (x) { return x != null; }).length >= (s.q || G.myQ).subs.length) tShowNext();
   }
   /* 👀 3 câu của nhóm sau (chỉ đọc) — như đề thật: đọc trước câu hỏi trong lúc máy đọc câu hỏi nhóm hiện tại */
-  function tShowNext() { var el = $("#p-opts .g-tnext"); if (el) el.hidden = false; }
+  function tShowNext() { var el = $("#p-opts .g-tnext"); if (el) el.hidden = !document.body.classList.contains("g-tahead"); }
   /* ⏭ Qua nhóm sau (TJ 2026-10-04: "ai muốn thì tự bấm qua; hết giờ 3 câu thì bắt buộc chuyển, ai qua rồi thì ở yên đó"):
      Cùng 1 câu/theo audio: chuyển MÀN của mình sang 3 câu nhóm sau (đọc trước) — lựa chọn nhóm này đã gửi host; hết giờ nhóm thì cả phòng sang, người đã qua thấy y chỗ đang đứng.
      Tự do/Thi thật: chốt nhóm này rồi sang nhóm sau ngay (audio nhóm sau phát luôn). */
@@ -4309,7 +4317,13 @@
     sendAns({ pid: G.me.id, qn: s.q.qn, choice: choice, ms: Date.now() - G.myQStart });
   }
   $("#p-opts").addEventListener("click", function (e) {
+    if (e.target.closest("#p-tback")) { document.body.classList.remove("g-tahead"); tShowNext(); var sk = $("#p-tskip"); if (sk) sk.textContent = "⏭ " + T("t_skipg"); return; }
     var b = e.target.closest(".g-opt"); if (!b || b.disabled) return;
+    if (b.dataset.pre != null) {   /* chọn trước đáp án nhóm sau: lưu trên máy, tới nhóm đó sẽ tự áp + gửi host */
+      G.preNext = G.preNext || {}; G.preNext[b.dataset.pre] = b.dataset.opt;
+      $$('#p-opts .g-opt[data-pre="' + b.dataset.pre + '"]').forEach(function (x) { x.classList.toggle("g-picked", x === b); });
+      return;
+    }
     var s = G.st; if (!s || s.phase !== "play" || !iPlay()) return;
     if (b.dataset.sub != null) return tSubPick(b);   /* nhóm 3 câu Part 3–4 */
     if (s.mode === "kahoot") {

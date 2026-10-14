@@ -589,7 +589,7 @@ body.embed .g-brand{display:none}
 .g-tsubopts{display:grid;grid-template-columns:1fr 1fr;gap:6px}@media (max-width:600px){.g-tsubopts{grid-template-columns:1fr}}
 .g-tnext{margin-top:12px;padding:8px 10px;border:1px dashed var(--line,#3335);border-radius:10px;text-align:left;opacity:.85}
 .g-tnq{margin:6px 0}.g-tnq small{display:block;opacity:.75;margin-top:2px}
-body.g-tahead #p-opts .g-tsub{display:none}body.g-tahead #p-opts .g-tnext{opacity:1;border-style:solid}
+body.g-tahead #p-opts > .g-tsub,body.g-tahead #p-vi{display:none}
 /* 🎚 thanh nghe lại + 🔖 đoạn khó (Xem lại câu Listening) */
 .g-apwrap{margin:0 0 12px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--deep)}
 .g-ap{display:flex;flex-direction:column;gap:8px}
@@ -2171,3 +2171,8 @@ body.g-playing .g-clock .g-mute{height:30px;padding:0 12px;border-radius:999px;f
 body.g-playing .g-clock .g-vol{width:88px;height:30px;margin:0}
 body.g-playing.g-adm #g-righthandle{top:2px;right:8px;width:30px;height:30px;font-size:14px;border-width:2px}
 @media (max-width:560px){ body.g-playing .g-clock{flex-wrap:nowrap} body.g-playing .g-clock .g-vol{width:64px} body.g-playing .g-clock #p-mode{flex:1 1 0} body.g-playing .g-clock .g-qtools{margin-left:auto} }
+/* 👀 xem trước nhóm sau = cùng giao diện khối câu hỏi thật: các câu là phần tử lưới của #p-opts (3 cột khi khung rộng), tiêu đề + nút quay lại chiếm cả hàng */
+.g-tnext{display:contents}.g-tnext[hidden]{display:none}
+.g-tnext > .g-tnx-hd,.g-tnext > .g-row{grid-column:1/-1}
+.g-tnext > .g-tnx-hd{margin:0 0 6px}
+.g-tnext > .g-tsub{margin:6px 0 10px}
