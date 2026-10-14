@@ -5162,11 +5162,48 @@
     } catch (e) { $("#hi-body").innerHTML = '<p class="g-err">' + T("err") + ": " + esc(e.message || e) + "</p>"; }
   }
   /* 🎮 CHƠI GAME LẠI 1 ván cũ (TJ 2026-10-05): lấy lại chủ đề + kiểu chơi của ván đó, về phòng chờ rồi bắt đầu ván mới. Hiện chỉ host (người chơi tự chơi lại một mình: làm sau). */
+  /* 🎮 CHƠI LẠI ván ĐỀ THI TOEIC (TJ 2026-10-14: "nút Chơi lại ván này hong hoạt động"): ván TOEIC không lưu chủ đề ở game_matches.scope -> lấy đề / Part / khoảng câu
+     từ chính các đáp án đã lưu của ván (game_answers.term = "toeic:<đề>:<part>:<số câu>"), điền lại các ô thiết lập của thẻ TOEIC; host tự bấm "Bắt đầu làm bài". */
+  async function replayToeic(mid, m) {
+    var all = [];
+    for (var from = 0; ; from += 1000) {
+      var rr = await sb.from("game_answers").select("term").eq("match_id", mid).like("term", "toeic:%").range(from, from + 999);
+      if (rr.error) return false;
+      all = all.concat(rr.data || []); if (!rr.data || rr.data.length < 1000) break;
+    }
+    var tc = {}; all.forEach(function (x) { var p = String(x.term).split(":"); if (p[1] && +p[3]) tc[p[1]] = (tc[p[1]] || 0) + 1; });
+    var test = Object.keys(tc).sort(function (a, b) { return tc[b] - tc[a]; })[0]; if (!test) return false;
+    var byPart = {}; all.forEach(function (x) {
+      var p = String(x.term).split(":"); if (p[1] !== test) return; var pt = +p[2], n = +p[3]; if (!pt || !n) return;
+      var o = byPart[pt] = byPart[pt] || { min: 999, max: 0 }; o.min = Math.min(o.min, n); o.max = Math.max(o.max, n);
+    });
+    var parts = Object.keys(byPart).map(Number).sort(function (a, b) { return a - b; });
+    G.inHist = false; renderLobby(); setHub("test");
+    for (var i = 0; i < 60 && !(G.tKeys && G.tKeys.length && $("#t-book") && $("#t-book").value && $("#t-tnum") && $("#t-tnum").options.length); i++) await new Promise(function (r) { setTimeout(r, 100); });
+    if (!$("#t-book") || !(G.tKeys || []).length) return false;
+    $("#t-book").value = tBook(test); paintTests();
+    $("#t-tnum").value = test; paintParts();
+    var allP = tPartsOf(test), cover = function (arr) { return arr.length && arr.every(function (p) { return parts.indexOf(p) >= 0; }) && parts.every(function (p) { return arr.indexOf(p) >= 0; }); };
+    var sc = parts.length === 1 ? "part" : cover(allP) ? "full" : cover(allP.filter(function (p) { return p <= 4; })) ? "lc" : cover(allP.filter(function (p) { return p >= 5; })) ? "rc" : "custom";
+    $("#t-scope").value = sc;
+    if (sc === "part") { $("#t-test").value = test + "|" + parts[0]; $("#t-test").dispatchEvent(new Event("change", { bubbles: true })); }
+    if (sc === "custom") $$(".t-pck").forEach(function (c) { c.checked = parts.indexOf(+c.value) >= 0; });
+    $("#t-scope").dispatchEvent(new Event("change", { bubbles: true }));
+    if (sc === "part") {   /* chỉ ghi "từ câu / đến câu" khi ván đã chơi 1 đoạn hẹp hơn cả Part */
+      var meta = (G.tMeta || {})[test + "|" + parts[0]], o = byPart[parts[0]];
+      if (meta && (o.min > meta.min || o.max < meta.max)) { $("#t-from").value = o.min; $("#t-to").value = o.max; $("#t-from").dataset.user = "1"; $("#t-to").dataset.user = "1"; }
+    }
+    var tm = $("#t-mode"); if (tm && (m.mode === "kahoot" || m.mode === "free") && tm.querySelector('option[value="' + m.mode + '"]')) { tm.value = m.mode; tm.dataset.user = "1"; }
+    if (m.q_seconds && $("#t-qs") && !$("#t-qs").disabled) $("#t-qs").value = m.q_seconds;
+    var info = $("#t-info"); if (info) info.textContent = "Đã lấy lại thiết lập của ván cũ — bấm ▶ Bắt đầu làm bài.";
+    return true;
+  }
   async function replayMatch(mid) {
     if (!G.isHost || !G.st) { alert("Chỉ host mới bắt đầu được ván mới."); return; }
     if (!(await hostPrepLobby())) return;   /* TJ 2026-10-06: đang chơi dở -> tự kết thúc ván rồi sang phòng chờ, không bắt bấm lại */
     var r = await sb.from("game_matches").select("scope,title,mode,qtype,meaning_lang,q_seconds").eq("id", mid).maybeSingle();
     var m = r.data;
+    if (m && m.qtype === "toeic") { if (!(await replayToeic(mid, m))) alert("Ván này không còn dữ liệu đề để chơi lại."); return; }
     if (!m || !m.scope || !m.scope.length) { alert("Ván này không còn thông tin chủ đề để chơi lại."); return; }
     picked = m.scope.map(function (p) { return { table: p.table, id: p.id, title: p.title }; });
     if (m.mode) G.st.mode = m.mode;
