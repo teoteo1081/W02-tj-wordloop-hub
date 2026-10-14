@@ -2132,3 +2132,10 @@ body.g-playing #g-toppin:hover{opacity:1}
 body.g-playing #g-toppin.on{opacity:1;background:var(--accent);border-color:var(--accent);color:#fff;transform:rotate(-20deg)}
 body.g-playing.g-toppin .g-top{position:static;transform:none;box-shadow:none}
 body.g-playing.g-toppin #g-tophandle{display:none}
+
+/* 🎧 nhóm 3 câu Part 3–4 vừa 1 màn hình (TJ 2026-10-13): đáp án 2 cột khi khung đủ rộng (không thì 1 cột), nén khoảng cách + cỡ chữ */
+.g-tbook .g-tsub{margin:2px 0 8px}
+.g-tbook .g-tsub .g-tstem{font-size:15.5px;line-height:1.35;margin-bottom:4px}
+.g-tbook .g-tsubopts{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:4px}
+.g-tbook .g-tsubopts .g-opt{min-height:34px;padding:4px 10px;font-size:15px;line-height:1.3}
+@media (max-width:600px){ .g-tbook .g-tsubopts{grid-template-columns:1fr} .g-tbook .g-tsubopts .g-opt{font-size:16px} }
