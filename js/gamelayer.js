@@ -118,6 +118,12 @@
     if (over === hovLast) return; hovLast = over;
     try { if (layer.firstChild && layer.firstChild.contentWindow) layer.firstChild.contentWindow.postMessage({ type: "tjwl-parent-hover", on: over }, location.origin); } catch (er) {}
   });
+  /* "Game →" trên Bảng (game.js playBlock): rời chế độ Bảng rồi hiện thẻ Game (phòng chờ đã chọn sẵn Block). Trước đây không ai nhận tin này nên nút không làm gì. */
+  w.addEventListener("message", function (e) {
+    if (e.origin !== location.origin || !e.data || e.data.type !== "tjwl-game-show") return;
+    if (boardMode) leaveBoard();
+    if (!isOpen()) open();
+  });
   w.addEventListener("message", function (e) {
     if (e.origin !== location.origin || !e.data || e.data.type !== "tjwl-board-on") return;
     var on = !!e.data.on, doc = !!e.data.doc;
