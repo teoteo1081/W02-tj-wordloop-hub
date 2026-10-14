@@ -244,7 +244,7 @@
   function admMove() {   /* nút/ô thật được dời nguyên (giữ nguyên xử lý sự kiện) vào ngăn kéo; hết quyền host thì trả về chỗ cũ */
     var h = G.isHost, st = $("#p-stop"), qt = document.querySelector(".g-qtools");
     if (st) { if (h && st.parentNode.id !== "ga-end") $("#ga-end").appendChild(st); else if (!h && st.parentNode.id === "ga-end") $(".g-clock").appendChild(st); }
-    if (qt) { if (h && qt.parentNode.id !== "ga-snd") $("#ga-snd").appendChild(qt); else if (!h && qt.parentNode.id === "ga-snd") $("#p-mode").after(qt); }
+    if (qt && qt.parentNode.id === "ga-snd") $("#p-mode").after(qt);   /* nút 🔊 bật/tắt tiếng + thanh âm lượng ở lại hàng đồng hồ cho host, giống người chơi (TJ 2026-10-13) */
   }
   function paintAdmin() {
     var s = G.st; if (!s || $("#g-admin").hidden) return; admMove();
@@ -2569,6 +2569,7 @@
       if (tq) bar.style.width = mq.done ? "0%" : Math.max(0, Math.min(100, (G.tQEnd - Date.now()) / ((G.st.qs || 20) * 1000) * 100)) + "%";
       else if (G.st && G.st.mode === "kahoot" && G.qUntilLocal) bar.style.width = Math.max(0, Math.min(100, (G.qUntilLocal - Date.now()) / ((G.qLimit || G.st.qs || 15) * 1000) * 100)) + "%";
       else bar.style.width = "0%";
+      bar.parentNode.hidden = !(tq || (G.st && G.st.mode === "kahoot" && G.qUntilLocal));   /* thanh giờ từng câu: không có giờ câu thì ẩn (trước: vạch rỗng chiếm ~17px) */
       if (G.st && G.st.mode === "free" && Date.now() >= G.endAt) { $("#p-next").hidden = true; lockAll(T("time_up")); }
       if (!G.isHost) {
         var hostHere = G.online.some(isRoomHost);
