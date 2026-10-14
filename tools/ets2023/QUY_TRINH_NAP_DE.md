@@ -13,6 +13,9 @@
 - Nguồn đề (ngoài repo): `Desktop\TJ\_staging\ETS 2023\TEST N\{TEST N.pdf, Test NN AUDIO.mp3, dap-an-*.jpg}`, file lớn `ETS 2023 LC.pdf / RC.pdf`,
   sách chữa `Project\L07-toeic\2023\Chữa Listening|Reading test bản full.pdf`.
 
+> **Bố cục thư mục làm việc:** copy `tools/ets2023/*` vào `Desktop\TJ\_work\ets2023\`; các file trong `tools/ets2023/book/` (finalize.py, lc_/rc_ extract+build, fixen.py, vnfix*.py, rc_upload_lib.py) vào `_work\ets2023ook\` (chạy `finalize.py` ở đó, `lc_raw.json` cũng nằm ở đó). Sách chữa: biến môi trường `ETS_BOOK_DIR`. Các script đọc `key_N.json` (đáp án chính thức, tự chép từ ảnh bằng `keys_data.py` — file dữ liệu này KHÔNG commit).
+> Hướng dẫn kéo repo/làm ở máy khác: `HUONG_DAN_LAM_O_NHA.md`. Kế hoạch tổng: `PLAN_TONG.md`.
+
 ## 1. Thứ tự các bước cho đề N (mỗi bước chạy lại được)
 | # | Việc | Lệnh | Ra file |
 |---|------|------|---------|
