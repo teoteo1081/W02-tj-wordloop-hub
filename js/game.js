@@ -1884,7 +1884,7 @@
     var s = Object.assign({}, G.st, { hid: G.me && G.me.id, htab: G.tab, hsince: G.since, on: onlineIds(), left: G.endAt ? G.endAt - Date.now() : null, qLeft: G.qUntil ? G.qUntil - Date.now() : null });
     if (s.q) {
       var q = s.q, rev = !!q.revealed;
-      s.q = { qn: q.qn, n: q.n, wids: q.wids, word: q.word, lv: q.lv, aud: q.aud, tiles: q.tiles, sep: q.sep, reg: q.reg, ctx: q.ctx, full: q.full, optTexts: q.optTexts, type: q.type, texts: q.texts, sent: q.sent, opts: q.opts, len: q.len, wid: q.wid, term: q.term, text: q.text, bank: q.bank, say: q.say, limit: q.limit, grading: !!q.grading, num: q.num, passage: q.passage, tag: rev ? q.tag : null, expl: rev ? q.expl : null, vi: rev ? q.vi : null, i18n: rev ? q.i18n : null, vocab: rev ? q.vocab : null, test: q.test, part: q.part, asrc: q.asrc, pend: q.pend, gEnd: q.gEnd, nxt: q.nxt,
+      s.q = { qn: q.qn, n: q.n, wids: q.wids, word: q.word, lv: q.lv, aud: q.aud, tiles: q.tiles, sep: q.sep, reg: q.reg, ctx: q.ctx, full: q.full, optTexts: q.optTexts, type: q.type, texts: q.texts, sent: q.sent, opts: q.opts, len: q.len, wid: q.wid, term: q.term, text: q.text, bank: q.bank, say: q.say, limit: q.limit, lead: q.lead || 0, grading: !!q.grading, num: q.num, passage: q.passage, tag: rev ? q.tag : null, expl: rev ? q.expl : null, vi: rev ? q.vi : null, i18n: rev ? q.i18n : null, vocab: rev ? q.vocab : null, test: q.test, part: q.part, asrc: q.asrc, pend: q.pend, gEnd: q.gEnd, nxt: q.nxt,
               subs: q.subs ? q.subs.map(function (x) { return { num: x.num, part: x.part, test: x.test, sent: x.sent, opts: x.opts, ans: rev ? x.ans : null }; }) : null,
               res: rev ? q.res : null, traps: rev ? q.traps : null, revealed: rev, ans: rev ? q.ans : null, cnt: Object.keys(q.got).length,
               picks: rev ? Object.keys(q.got).reduce(function (o, pid) { o[pid] = q.got[pid].c; return o; }, {}) : null,
@@ -2143,11 +2143,16 @@
     if (G.st.q.subs && !(G.st.tplay && tCue(G.st.q))) G.st.q.limit = (T_SEC[G.st.q.part] || 30) * G.st.q.subs.length + 45;   /* nhóm không có audio: đủ giờ đọc 3 câu + hội thoại */
     var ac = G.st.qtype === "toeic" && G.st.tplay ? tCue(G.st.q) : null;
     if (ac) {   /* 🎧 audio DẪN NHỊP (TJ 2026-10-04: "phần nghe phải tự canh chạy"): giờ của câu = đoạn audio (câu đầu nhóm có cả hội thoại) + khoảng chờ như đề thật */
-      if (G.st.q.qn === 1) G.hLastG = "";
+      if (G.st.q.qn === 1) { G.hLastG = ""; G.hLastPart = 0; }
       var gk = ac.g ? ac.g.join("-") : "", dur = ac.q[1] - ac.q[0] + (ac.g && G.hLastG !== gk ? ac.g[1] - ac.g[0] : 0);
       G.hLastG = gk;
       G.st.q.limit = Math.ceil(dur + (+(G.st.q.part || G.st.test.part) <= 2 ? 5 : tGraphic(G.st.q) ? 12 : 8) + 1);
       G.st.q.audLed = true;
+      /* 📖 ĐỌC TRƯỚC (chiến thuật TOEIC): đề thật có ~30s lời hướng dẫn trước Part 3 và Part 4 — thí sinh dùng lúc đó đọc trước 3 câu của nhóm đầu rồi mới nghe.
+         Nhóm ĐẦU của Part 3 / Part 4: chừa LEAD_S giây đọc trước, audio mới bắt đầu (TJ 2026-10-13). */
+      var pt = +(G.st.q.part || G.st.test.part);
+      if (G.st.q.subs && (pt === 3 || pt === 4) && G.hLastPart !== pt) { G.st.q.lead = LEAD_S; G.st.q.limit += LEAD_S; }
+      G.hLastPart = pt;
     }
     G.qUntil = untimed(G.st) ? 0 : Date.now() + G.st.q.limit * 1000;
     push();
@@ -2697,8 +2702,14 @@
   }
   /* câu mới: phát đúng đoạn của câu; câu đầu nhóm Part 3–4 phát cả hội thoại trước. Host 🎧 theo audio: hết đoạn + khoảng chờ như đề thật
      (5s Part 1–2, 8s Part 3–4, 12s câu "Look at the graphic") thì tự sang câu. */
+  var LEAD_S = 25;   /* giây đọc trước nhóm đầu Part 3 / 4 (≈ lời hướng dẫn đề thật) */
   function tAutoPlay(q) {
     var c = tCue(q); if (!c || !G.st || !G.st.tplay) return;
+    var lead = +q.lead || 0, leadTok = ++G.tLeadTok || (G.tLeadTok = 1); clearInterval(G.tLeadI);
+    if (lead) {   /* đếm ngược "đọc trước" trên mọi máy; audio (máy host) bắt đầu sau đó */
+      var t0 = Date.now() + lead * 1000, tickL = function () { var r = Math.ceil((t0 - Date.now()) / 1000); if (r <= 0 || leadTok !== G.tLeadTok) { clearInterval(G.tLeadI); if (leadTok === G.tLeadTok && $("#p-msg")) $("#p-msg").textContent = ""; return; } $("#p-msg").textContent = "📖 Đọc trước câu hỏi — audio bắt đầu sau " + r + "s"; };
+      tickL(); G.tLeadI = setInterval(tickL, 500);
+    }
     /* 📢 "chỉ máy host phát" (TJ 2026-10-04: nhiều người chơi chung mà máy nào cũng phát là loạn): kiểu Cùng 1 câu / theo audio -> máy người chơi im;
        Tự do / ⚡ Đua mỗi người 1 nhịp nên vẫn phát trên từng máy */
     if (G.st.taud === "host" && !G.isHost && G.st.mode === "kahoot") return;
@@ -2711,13 +2722,17 @@
       var tot = seq.reduce(function (t, r) { return t + r[1] - r[0]; }, 0);
       G.tQEnd = Math.max(G.tQEnd || 0, Date.now() + (tot + gapS + 2) * 1000);
     }
-    clearTimeout(G.tNextT);
-    if (q.subs) G.tNextT = setTimeout(tShowNext, (c.g && seq.length > 1 ? c.g[1] - c.g[0] : 0) * 1000);   /* hội thoại xong -> hiện trước 3 câu nhóm sau */
-    tPlaySeq(c.url, seq, function () {
-      if (!G.isHost || !G.st || !G.st.hostpace) return;
-      var gap = gapS * 1000;
-      setTimeout(function () { var cq = G.st && G.st.q; if (cq && cq.qn === qn && !cq.revealed && G.st.phase === "play") hostReveal(); }, gap);
-    });
+    clearTimeout(G.tNextT); clearTimeout(G.tLeadT);
+    var go = function () {
+      if (leadTok !== G.tLeadTok) return;
+      if (q.subs) G.tNextT = setTimeout(tShowNext, (c.g && seq.length > 1 ? c.g[1] - c.g[0] : 0) * 1000);   /* hội thoại xong -> hiện trước 3 câu nhóm sau */
+      tPlaySeq(c.url, seq, function () {
+        if (!G.isHost || !G.st || !G.st.hostpace) return;
+        var gap = gapS * 1000;
+        setTimeout(function () { var cq = G.st && G.st.q; if (cq && cq.qn === qn && !cq.revealed && G.st.phase === "play") hostReveal(); }, gap);
+      });
+    };
+    if (lead) G.tLeadT = setTimeout(go, lead * 1000); else go();
   }
   document.addEventListener("click", function (e) {
     var b = e.target.closest && e.target.closest("[data-tcue]"); if (!b) return;
@@ -3033,7 +3048,7 @@
           q.nxt.map(function (x) {   /* xem trước = ĐÚNG khối câu hỏi thật (cùng giao diện); chọn trước được, chuyển nhóm thì tự áp (TJ 2026-10-13) */
             return '<div class="g-tsub"><div class="g-tstem"><b class="g-tnum">' + x.num + ".</b> " + esc(x.sent) + '</div><div class="g-tsubopts">' +
               x.opts.map(function (o) { return '<button class="g-opt g-topt' + ((G.preNext || {})[x.num] === o ? " g-picked" : "") + '" data-pre="' + x.num + '" data-opt="' + esc(o) + '"><span class="g-otext">' + esc(o) + "</span></button>"; }).join("") + "</div></div>";
-          }).join("") + '<div class="g-row g-center"><button type="button" class="g-btn g-btn-soft g-btn-sm" id="p-tback">◀ ' + esc(T("t_backg")) + "</button></div></div>" : "");
+          }).join("") + "</div>" : "");
         if (optsEl === "#p-opts") tSkipInline();
         var pk0 = q.picks || (optsEl === "#p-opts" ? G.myPicks : null) || [];
         pk0.forEach(function (c, i) { if (c != null) $$(optsEl + ' .g-opt[data-sub="' + i + '"]').forEach(function (x) { x.classList.toggle("g-picked", norm(x.dataset.opt) === norm(c)); }); });
@@ -4317,7 +4332,6 @@
     sendAns({ pid: G.me.id, qn: s.q.qn, choice: choice, ms: Date.now() - G.myQStart });
   }
   $("#p-opts").addEventListener("click", function (e) {
-    if (e.target.closest("#p-tback")) { document.body.classList.remove("g-tahead"); tShowNext(); var sk = $("#p-tskip"); if (sk) sk.textContent = "⏭ " + T("t_skipg"); return; }
     var b = e.target.closest(".g-opt"); if (!b || b.disabled) return;
     if (b.dataset.pre != null) {   /* chọn trước đáp án nhóm sau: lưu trên máy, tới nhóm đó sẽ tự áp + gửi host */
       G.preNext = G.preNext || {}; G.preNext[b.dataset.pre] = b.dataset.opt;
