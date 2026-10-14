@@ -3860,7 +3860,10 @@
     $$(".t-onlycustom").forEach(function (x) { x.hidden = sc !== "custom"; });
     var multi = !one;
     $("#t-qs").disabled = multi || (ps[0] <= 4); $("#t-qs").title = multi ? "Nhiều Part: giờ TỰ TÍNH theo từng Part (Listening theo audio, Reading theo nhịp đề thật)" : $("#t-qs").title;
-    var tmo = $("#t-mode"); if (tmo && multi && (sc === "full" || sc === "lc" || sc === "rc") && tmo.value !== "exam" && !tmo.dataset.user) tmo.value = "exam";
+    var tmo = $("#t-mode");
+    /* TJ 2026-10-13: "refresh trả lại mặc định chơi theo host... mặc định là Kahoot": kiểu chơi đề thi mặc định = Cùng 1 câu (Kahoot), nhớ lựa chọn của host, KHÔNG tự đổi theo phạm vi nữa */
+    if (tmo && !tmo.dataset.pref) { tmo.dataset.pref = "1"; var sv = ""; try { sv = localStorage.getItem("tjwl_game_tmode_v1") || ""; } catch (e) {} tmo.value = sv && tmo.querySelector('option[value="' + sv + '"]') ? sv : "kahoot"; tmo.dataset.user = "1"; }
+    if (tmo && multi && (sc === "full" || sc === "lc" || sc === "rc") && tmo.value !== "exam" && !tmo.dataset.user) tmo.value = "exam";
     if (tmo && one && tmo.value === "exam" && !tmo.dataset.user) tmo.value = ps[0] <= 4 ? "audio" : "free";   /* QA v127 #4: về Từng Part thì bỏ Thi thật */
     var all = tPartsOf($("#t-tnum").value), hasL = all.some(function (p) { return p <= 4; }), hasR = all.some(function (p) { return p >= 5; });
     $$("#t-scope option").forEach(function (o) { o.disabled = (o.value === "lc" && !hasL) || (o.value === "rc" && !hasR) || (o.value === "full" && !(hasL && hasR)); });
@@ -3870,7 +3873,7 @@
     if (id === "t-book") paintTests();
     else if (id === "t-tnum") paintParts();
     else if (id === "t-scope" || (e.target.classList && e.target.classList.contains("t-pck"))) paintScope();
-    else if (id === "t-mode" && e.isTrusted) e.target.dataset.user = "1";
+    else if (id === "t-mode" && e.isTrusted) { e.target.dataset.user = "1"; try { localStorage.setItem("tjwl_game_tmode_v1", e.target.value); } catch (x) {} }
   });
   document.addEventListener("input", function (e) { if (e.target && (e.target.id === "t-from" || e.target.id === "t-to")) e.target.dataset.user = "1"; });
   document.addEventListener("change", function (e) {

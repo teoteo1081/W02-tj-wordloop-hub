@@ -2123,7 +2123,7 @@ body.g-playing.g-adm #g-admin:not([hidden]){display:flex;flex-direction:column;p
   @keyframes gaUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
 }
 /* host đang chơi: không rải nút quản trị ngoài ngăn kéo */
-body.g-adm #p-mode{display:none}
+/* (host cũng thấy dòng chế độ giống người chơi — TJ 2026-10-13) */
 
 /* TJ 2026-10-13: đang thi thì bỏ nút 🔊 tròn trong khung câu hỏi (phát lại audio không hợp phòng thi; âm lượng/tắt tiếng nằm ở ⚙ Quản trị hoặc dòng đồng hồ) */
 body.g-playing .g-qvi .g-taud, body.g-playing .g-qvi > .g-row:has(.g-taud){display:none !important}
@@ -2162,3 +2162,12 @@ body.g-playing .g-top3{margin:2px 0}
   body.g-playing .g-play > .g-clock{grid-column:1}
   body.g-playing .g-play > .g-statbar{grid-column:2;margin:2px 0}
 }
+/* 🎛 hàng điều khiển trên cùng khi đang chơi: cùng chiều cao 30px, nút 📌 cùng cỡ và nằm gọn góc phải; host chừa chỗ cho nút ghim (TJ 2026-10-13: "thiết kế các nút hài hoà") */
+body.g-playing .g-clock{min-height:34px;gap:8px;align-items:center}
+body.g-playing.g-adm .g-clock{padding-right:42px}
+body.g-playing .g-clock #p-mode{font-size:12px;opacity:.8;min-width:0;overflow:hidden;text-overflow:ellipsis}
+body.g-playing .g-clock .g-qtools{gap:8px}
+body.g-playing .g-clock .g-mute{height:30px;padding:0 12px;border-radius:999px;font-size:12px;display:inline-flex;align-items:center}
+body.g-playing .g-clock .g-vol{width:88px;height:30px;margin:0}
+body.g-playing.g-adm #g-righthandle{top:2px;right:8px;width:30px;height:30px;font-size:14px;border-width:2px}
+@media (max-width:560px){ body.g-playing .g-clock{flex-wrap:nowrap} body.g-playing .g-clock .g-vol{width:64px} body.g-playing .g-clock #p-mode{flex:1 1 0} body.g-playing .g-clock .g-qtools{margin-left:auto} }
