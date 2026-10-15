@@ -47,6 +47,7 @@
   }
   function home() {
     var sets = SETS[S.kind], set = curSet(), g = GROUPS[S.kind];
+    if (!g.some(function (x) { return x.k === S.group; })) S.group = "all";
     var fixed = !!QS.get("kind");
     var h = '<h1>' + (S.kind === "speaking" ? "🎤 TOEIC Speaking" : "✍️ TOEIC Writing") + '</h1><p class="sub">Luyện theo dạng ETS: đếm giờ chuẩn, ' + (S.kind === "speaking" ? "nói vào micro" : "gõ bài") + ', AI chấm điểm <b>ước tính</b> (không phải điểm chính thức).</p>' +
       '<div class="tabs"' + (fixed ? " hidden" : "") + '><button class="' + (S.kind === "speaking" ? "on" : "") + '" data-act="kind" data-v="speaking">🎤 Nói (Speaking)</button><button class="' + (S.kind === "writing" ? "on" : "") + '" data-act="kind" data-v="writing">✍️ Viết (Writing)</button></div>';
@@ -54,7 +55,8 @@
     h += classBanner() + '<h2>① Chọn đề</h2><div class="setgrid">' + sets.map(function (s, i) { var b = best(S.kind, s.id); return '<button class="' + (s.id === S.setId ? "on" : "") + '" data-act="set" data-v="' + esc(s.id) + '">' + (s.mine ? "📥 " : "") + "Đề " + (i + 1) + "<small>" + (b ? "tốt nhất ~" + b : esc(String(s.title || "").replace(/^Phỏng vấn:\s*/i, "").slice(0, 46))) + "</small></button>"; }).join("") + "</div>";
     if (!sets.length) h += '<p class="sub">Chưa có đề.</p>';
     if (set) {
-      h += "<h2>② Chọn phần luyện</h2><div class=\"parts\">" + g.map(function (x, i) { var miss = S.kind === "speaking" && x.qs.indexOf(3) >= 0 && x.k === "desc" && !(set.tasks.filter(function (t) { return t.q === 3; })[0] || {}).scene && !(set.tasks.filter(function (t) { return t.q === 3; })[0] || {}).image; return (i === 1 ? '<p class="sub full" style="grid-column:1/-1;margin:6px 0 0">Hoặc luyện riêng từng phần:</p>' : "") + '<button class="' + (i === 0 ? "pri full" : "") + '" data-act="start" data-v="' + x.k + '"' + (miss ? " disabled" : "") + ">" + (i === 0 ? "▶ " : "") + esc(x.t) + "</button>"; }).join("") + "</div>";
+      h += "<h2>② Chọn phần luyện</h2><div class=\"parts\">" + g.map(function (x, i) { var miss = S.kind === "speaking" && x.qs.indexOf(3) >= 0 && x.k === "desc" && !(set.tasks.filter(function (t) { return t.q === 3; })[0] || {}).scene && !(set.tasks.filter(function (t) { return t.q === 3; })[0] || {}).image; return (i === 1 ? '<p class="sub full" style="grid-column:1/-1;margin:6px 0 0">Hoặc luyện riêng từng phần:</p>' : "") + '<button class="' + (x.k === S.group ? "pri" : "") + (i === 0 ? " full" : "") + '" data-act="part" data-v="' + x.k + '"' + (miss ? " disabled" : "") + ">" + (x.k === S.group ? "✓ " : "") + esc(x.t) + "</button>"; }).join("") + "</div>" +
+        '<button class="pri big" data-act="start" data-v="' + esc(S.group) + '" style="width:100%;margin-top:14px;font-size:18px">▶ ' + (S.classMode && CTX.isHost ? "Bắt đầu cho cả phòng" : "Bắt đầu làm bài") + "</button>";
       var hist = ST.hist.filter(function (h2) { return h2.kind === S.kind && h2.set === set.id; }).slice(-3).reverse();
       if (hist.length) h += '<h2>Lần làm gần đây</h2><div class="card">' + hist.map(function (x) { return '<div class="row"><span class="sub">' + new Date(x.ts).toLocaleDateString() + " · " + esc(x.gt) + '</span><span style="margin-left:auto"><b>' + x.raw + "/" + x.max + "</b> ≈ " + x.est + "</span></div>"; }).join("") + "</div>";
     }
@@ -479,6 +481,7 @@
     if (a === "kind") { S.kind = v; S.setId = (SETS[v][0] || {}).id || ""; render(); }
     else if (a === "set") { S.setId = v; render(); }
     else if (a === "start") { if (S.classMode && CTX.isHost) toParent({ type: "sw-host-start", kind: S.kind, set: S.setId, group: v }); else { S.class = null; S.saved = 0; begin(S.kind, v); } }
+    else if (a === "part") { S.group = v; render(); }
     else if (a === "rev") { S.screen = "rev"; render(); }
     else if (a === "revf") { S.revAll = !S.revAll; render(); }
     else if (a === "revclr") { if (confirm("Xoá toàn bộ lịch sử bài " + (S.kind === "speaking" ? "nói" : "viết") + " trên máy này?")) { ST.rev = (ST.rev || []).filter(function (r) { return r.kind !== S.kind; }); save(); render(); } }
