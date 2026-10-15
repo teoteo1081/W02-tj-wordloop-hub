@@ -256,7 +256,8 @@
     pg.style.transition = "none"; pg.style.width = Math.min(100, 100 * (1 - left / Math.max(.001, L.tot))) + "%";
     void pg.offsetWidth; pg.style.transition = "width " + left.toFixed(2) + "s linear"; pg.style.width = "100%";
   }
-  function needPrep() { var L = LIVE; return !!L && S.kind === "speaking" && liveTimes()[0] > 0 && !L.pd; }
+  function shortPrep() { return liveTimes()[0] <= 5; }   /* chuẩn bị chỉ ~3s (Q4–9): không có pha chuẩn bị chung — chạm tên là người đó nói luôn (3-2-1 chính là 3 giây đó) */
+  function needPrep() { var L = LIVE; return !!L && S.kind === "speaking" && !shortPrep() && !L.pd; }
   function liveTimes() { var t = curTask(); return TIME[S.kind][t.q] || [0, 60]; }
   function liveNext() {   /* host: hết giờ (hoặc bấm Dừng / Bỏ qua) pha hiện tại.
      Luồng mỗi câu Speaking: 3-2-1 -> CHUẨN BỊ CHUNG cả phòng (1 lần) -> chọn từng người: 3-2-1 -> người đó NÓI (không chuẩn bị riêng) -> ... -> Câu tiếp */
@@ -311,13 +312,13 @@
       h += '<div class="row" style="justify-content:center"><span class="badge ' + (L.phase === "resp" ? "resp" : "prep") + '">' + (L.phase === "prep" ? "Chuẩn bị" : spk ? "Đang nói" : "Đang viết") + "</span> " + who + "</div>" + (mine ? "<p><b>🎤 Đến lượt bạn!</b></p>" : "") + '<div class="timer ' + (L.phase === "resp" ? "resp" : "prep") + '" id="tm">0:00</div><div class="bar ' + (L.phase === "resp" ? "resp" : "") + '"><i id="pg"></i></div>' + mybox + (L.ai ? "" : '<p class="sub">🎧 Nói trên HelloTalk · web chỉ đếm giờ (không ghi âm, không chấm)</p>');
     } else {
       var nd = Object.keys(L.done).length;
-      h += (spk ? rosterHtml(host) : "") + (spk ? '<p class="sub">' + (nd ? "Đã nói: <b>" + nd + "</b> người. " : "") + (L.pd || !tm[0] ? "✓ Chuẩn bị xong — chọn người nói, mỗi người <b>" + tm[1] + "s</b>" : "Chuẩn bị chung cả phòng <b>" + tm[0] + "s</b>, rồi từng người nói <b>" + tm[1] + "s</b>") + "</p>" : '<p class="sub">Thời gian viết: <b>' + mmss(tm[1]) + "</b></p>");
+      h += (spk ? rosterHtml(host) : "") + (spk ? '<p class="sub">' + (nd ? "Đã nói: <b>" + nd + "</b> người. " : "") + (tm[0] <= 5 ? "Chạm tên = người đó nói luôn · mỗi người <b>" + tm[1] + "s</b>" : L.pd ? "✓ Chuẩn bị xong — chọn người nói, mỗi người <b>" + tm[1] + "s</b>" : "Chuẩn bị chung cả phòng <b>" + tm[0] + "s</b>, rồi từng người nói <b>" + tm[1] + "s</b>") + "</p>" : '<p class="sub">Thời gian viết: <b>' + mmss(tm[1]) + "</b></p>");
       if (!host) h += "<p><i>Đợi host bấm Bắt đầu…</i></p>";
     }
     h += "</div>";
     var hostbar = "";
     if (host) {
-      var ps = plist().filter(function (p) { return !L.done[p.id]; }), needP = spk && tm[0] > 0 && !L.pd, prim = "", more = "";
+      var ps = plist().filter(function (p) { return !L.done[p.id]; }), needP = spk && tm[0] > 5 && !L.pd, prim = "", more = "";
       var nxb = last ? "" : '<button class="big" data-act="lnext">Câu tiếp ›</button>',
           endB = '<button class="big danger" data-act="lend">⏹ Kết thúc lớp</button>',
           aiB = '<label class="aisw" title="AI chấm điểm cho cả phòng (áp dụng từ lượt kế tiếp)"><span>🤖 AI chấm điểm</span><input type="checkbox" id="aimode"' + (aiOn() ? " checked" : "") + "></label>",
@@ -426,7 +427,7 @@
         if (S.kind === "speaking") { sp = pickOf(plist().filter(function (p) { return !L.done[p.id]; })); if (!sp) return true; sp = { id: sp.id, name: sp.name, avatar: sp.avatar }; }
         liveSend({ i: S.i, phase: "ready", sp: sp, sec: 3, done: L.done, pd: 1, nx: "resp" });
       }
-    } else if (a === "lpick") { L.pick = v; if (S.kind === "speaking" && L.pd && !L.sp && (L.phase === "idle" || L.phase === "show")) return liveAct("lstart"); liveRender(); }   /* cả phòng đã chuẩn bị xong -> chạm tên là người đó vào nói luôn (3-2-1 rồi nói) */
+    } else if (a === "lpick") { L.pick = v; if (S.kind === "speaking" && (L.pd || shortPrep()) && !L.sp && (L.phase === "idle" || L.phase === "show")) return liveAct("lstart"); liveRender(); }   /* cả phòng đã chuẩn bị xong -> chạm tên là người đó vào nói luôn (3-2-1 rồi nói) */
     else if (a === "lall") liveSend(needPrep() ? { i: S.i, phase: "ready", sp: null, sec: 3, done: L.done, pd: 0, nx: "prep+all" } : { i: S.i, phase: "ready", sp: null, sec: 3, done: L.done, pd: 1, nx: "resp" });
     else if (a === "lskip") { L.adv = 1; liveNext(); }
     else if (a === "lstop") { L.adv = 1; liveNext(); }
