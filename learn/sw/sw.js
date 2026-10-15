@@ -318,14 +318,15 @@
     var hostbar = "";
     if (host) {
       var ps = plist().filter(function (p) { return !L.done[p.id]; }), needP = spk && tm[0] > 5 && !L.pd, prim = "", more = "";
-      var nxb = last ? "" : '<button class="big" data-act="lnext">Câu tiếp ›</button>',
+      var prvB = S.i > 0 ? '<button class="big" data-act="lprev">‹ Câu trước</button>' : "",
+          nxb = prvB + (last ? "" : '<button class="big" data-act="lnext">Câu tiếp ›</button>'),
           endB = '<button class="big danger" data-act="lend">⏹ Kết thúc lớp</button>',
           aiB = '<label class="aisw" title="AI chấm điểm cho cả phòng (áp dụng từ lượt kế tiếp)"><span>🤖 AI chấm điểm</span><input type="checkbox" id="aimode"' + (aiOn() ? " checked" : "") + "></label>",
           allB = '<button class="big" data-act="lall" title="Cả phòng nói cùng lúc, mỗi máy tự chấm">👥 Cả lớp nói cùng lúc</button>',
           pk = pickOf(ps), nm = pk ? " · " + esc(pk.name || "") : "";
-      if (L.phase === "ready") { prim = '<button class="big" data-act="lstop">⏭ Bỏ qua đếm ngược</button>'; more = aiB + endB; }
-      else if (L.phase === "prep") { prim = '<button class="pri big" data-act="lskip">⏭ Kết thúc chuẩn bị</button>'; more = aiB + endB; }
-      else if (run) { prim = '<button class="big" data-act="lstop">⏹ Dừng lượt này</button>'; more = aiB + endB; }
+      if (L.phase === "ready") { prim = '<button class="big" data-act="lstop">⏭ Bỏ qua đếm ngược</button>'; more = prvB + aiB + endB; }
+      else if (L.phase === "prep") { prim = '<button class="pri big" data-act="lskip">⏭ Kết thúc chuẩn bị</button>'; more = prvB + aiB + endB; }
+      else if (run) { prim = '<button class="big" data-act="lstop">⏹ Dừng lượt này</button>'; more = prvB + aiB + endB; }
       else if (needP) { prim = nxb; more = allB + aiB + endB; }   /* chuẩn bị chung = nút NHỎ ở khu danh sách người chơi */
       else if (spk) { prim = nxb; more = allB + aiB + endB; if (last && !ps.length) prim += endB; }   /* nút "Bắt đầu nói" nằm ngay dưới danh sách người chơi (rosterHtml) */
       else { prim = (L.phase === "idle" ? "" : '<button class="pri big" data-act="lstart">▶ Bắt đầu viết</button>') + nxb; more = aiB + endB; if (last && L.phase === "idle") prim += endB; }
@@ -444,6 +445,7 @@
     else if (a === "lstop") { L.adv = 1; liveNext(); }
     else if (a === "lend") liveSend({ i: S.i, phase: "end", done: {} });
     else if (a === "hmore") { var hm = $(".hmore"); if (hm) hm.classList.toggle("open"); }
+    else if (a === "lprev") { if (S.i > 0) { liveSend({ i: S.i - 1, phase: "show", sp: null, done: {}, sec: 0, pd: 0 }); toParent({ type: "sw-hello", kind: S.kind }); } }
     else if (a === "lnext") {
       if (S.i >= S.tasks.length - 1) liveSend({ i: S.i, phase: "end", done: {} });
       else { liveSend({ i: S.i + 1, phase: "show", sp: null, done: {}, sec: 0, pd: 0 }); toParent({ type: "sw-hello", kind: S.kind }); }
