@@ -216,9 +216,27 @@ body.one #app > .top + .card .prompt, body.one #app > .top + .card .prompt.read 
 body.one #app > .top + .card + .card p { margin:2px 0; }
 body.one #app > .top + .card + .card .row { margin:0; }
 body.one #app > .top + .card img { max-height:24vh !important; }
-body.one #app > .top + .card + .card { padding:8px 12px; }
-body.one #app > .top + .card + .card .timer { font-size:clamp(28px,6vh,44px) !important; line-height:1.1; margin:2px 0; }
-body.one #app > .top + .card + .card .live { min-height:40px; padding:6px 10px; max-height:16vh; overflow:auto; }
-body.one #app > .top + .card + .card textarea { min-height:70px; max-height:24vh; }
+body.one #app > .top + .card img { max-height:34vh !important; cursor:zoom-in; }
+body.one #app > .top { min-height:36px; } body.one #app > .top .soft { width:34px; height:34px; min-height:0; padding:0; }
+body.one #app > .top .t { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+body.one #app:has(> .hostbar.below) > .top .t { padding-right:112px; }
+/* thẻ đồng hồ GỌN: [huy hiệu + tên]  [đồng hồ] cùng 1 hàng, thanh, ô mic/nhập, nút Xong */
+body.one #app > .top + .card + .card:has(> .timer) { display:grid; grid-template-columns:1fr auto; align-items:center; gap:4px 8px; padding:8px 12px; text-align:left; }
+body.one #app > .top + .card + .card:has(> .timer) > * { grid-column:1 / -1; }
+body.one #app > .top + .card + .card:has(> .timer) > .row { grid-column:1; grid-row:1; justify-content:flex-start; margin:0; }
+body.one #app > .top + .card + .card:has(> .timer) > .timer { grid-column:2; grid-row:1; margin:0; font-size:clamp(26px,5.2vh,36px) !important; line-height:1.1; }
+body.one #app > .top + .card + .card:has(> .timer) > p:not(.sub) { display:none; }
+body.one #app > .top + .card + .card:has(> .timer) > .bar { margin:2px 0; }
+body.one #app > .top + .card + .card .live { min-height:30px; padding:4px 8px; font-size:13px; max-height:9vh; overflow:auto; }
+body.one #app > .top + .card + .card textarea { min-height:64px; max-height:22vh; }
+body.one #app > .top + .card + .card button.big { min-height:42px; margin-top:4px !important; }
+/* nút "Dừng lượt này" của host: lên góc phải thanh tiêu đề cho đỡ tốn 1 hàng */
+body.one #app { position:relative; }
+body.one #app > .hostbar.below { position:absolute; top:4px; right:8px; margin:0; padding:0; background:none; border:0; box-shadow:none; width:auto; z-index:5; }
+body.one #app > .hostbar.below .big { min-height:34px; font-size:13px; padding:4px 12px; width:auto; flex:none; }
 body.one #app > :nth-child(n+4):not(.hostbar):not(.bottom) { display:none; }
-body.one .big { min-height:46px; }
+/* chạm ảnh đề để phóng to / chạm lại để thu nhỏ */
+body.one img.zoom { position:fixed !important; inset:0; width:100vw !important; height:100dvh !important; max-height:none !important; object-fit:contain; background:#000; z-index:60; border-radius:0 !important; margin:0 !important; cursor:zoom-out; }
+
+/* điện thoại: 2 nút chính của host (vd "Bắt đầu viết" + "Câu tiếp ›") cùng 1 hàng thay vì xếp 2 hàng (TJ 2026-10-15) */
+@media (max-width:480px) { .hostbar .hb-main .big { flex:1 1 120px; min-height:42px; font-size:15px; } .hostbar { padding:6px 8px; } }

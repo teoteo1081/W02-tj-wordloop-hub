@@ -66,6 +66,10 @@
     clearTimeout(S.leaveT);
     S.leaveT = setTimeout(function () { if (S.screen === "home" && !LIVE && !PENDING && CTX.inRoom && !CTX.isHost) toParent({ type: "sw-leave" }); }, 15000);   /* 15s: đủ để nhận nhịp trạng thái của host (4s/lần) nếu lớp đã bắt đầu; lớp mở thì không rời */
   }
+  function setOne(on) {   /* bật/tắt chế độ 1 màn hình; bật thì về đầu trang (trang đang cuộn dở sẽ lệch khi khoá cuộn) */
+    var was = document.body.classList.contains("one"); document.body.classList.toggle("one", !!on);
+    if (on && !was) { try { window.scrollTo(0, 0); } catch (e) {} }
+  }
   function render() {
     document.body.classList.toggle("live", S.screen === "live");
     if (S.screen !== "live" && S.screen !== "task") document.body.classList.remove("one");
@@ -316,7 +320,8 @@
   }
   function liveRender() {
     var L = LIVE; if (!L) return; var host = CTX.isHost, spk = S.kind === "speaking", me = CTX.me || {};
-    document.body.classList.toggle("one", L.phase === "ready" || L.phase === "prep" || L.phase === "resp");   /* TJ 2026-10-15: đang đếm giờ/nói/viết -> MỌI THỨ vừa 1 màn hình, không cuộn */
+    setOne(L.phase === "ready" || L.phase === "prep" || L.phase === "resp");   /* TJ 2026-10-15: đang đếm giờ/nói/viết -> MỌI THỨ vừa 1 màn hình, không cuộn */
+    if (S.i !== liveRender.lastI) { liveRender.lastI = S.i; try { window.scrollTo(0, 0); } catch (e) {} }   /* sang câu mới: luôn về đầu trang (không bị lệch khuất đề) */
     if (L.phase === "end") { app.innerHTML = '<div class="top"><button class="soft" data-act="quit" title="Thoát">✕</button><div class="t"><b>Hết bài</b></div></div><div class="card" style="text-align:center"><h2>🎉 Cả lớp đã xong</h2></div><div class="bottom"><div class="in"><button class="pri big" data-act="home">Về chọn đề</button></div></div>'; return; }
     var t = curTask(), tm = liveTimes(), run = L.phase === "prep" || L.phase === "resp", last = S.i >= S.tasks.length - 1, act = meActive(L), mybox = "";
     var fin = '<button class="rec big" data-act="lfin" style="width:100%;margin-top:8px">⏹ Xong</button>';
@@ -505,7 +510,7 @@
   }
   function dots() { return '<span class="dots">' + S.tasks.map(function (t, i) { return "<i class=\"" + (i < S.i || (S.results[t.q] && i !== S.i) ? "d" : i === S.i ? "c" : "") + '"></i>'; }).join("") + "</span>"; }
   function task() {
-    document.body.classList.toggle("one", S.phase === "read" || S.phase === "prep" || S.phase === "resp");   /* như lớp: đang đếm giờ/nói/viết -> vừa 1 màn hình */
+    setOne(S.phase === "read" || S.phase === "prep" || S.phase === "resp");   /* như lớp: đang đếm giờ/nói/viết -> vừa 1 màn hình */
     var t = curTask(), set = curSet(), tm = TMT(S.kind)[t.q] || [0, 60], lab = { read_aloud: "Đọc to", describe: "Tả ảnh", respond: "Trả lời câu hỏi", info: "Dựa vào thông tin", solution: "Đề xuất giải pháp", opinion: "Nêu ý kiến", sentence: "Viết câu theo ảnh", email: "Trả lời email", essay: "Bài luận ý kiến", cue: "Part 2 · Thẻ nói", task1: "Task 1 · Mô tả biểu đồ", task2: "Task 2 · Bài luận" }[t.type] || "";
     var h = '<div class="top"><button class="soft" data-act="quit" title="Thoát">✕</button><div class="t"><b>Câu ' + t.q + "</b> · " + esc(lab) + '</div>' + dots() + "</div>";
     if (S.phase === "grading") { h += '<div class="card" style="text-align:center"><p><span class="spin"></span> AI đang chấm…</p><p class="sub">Thường mất 5–15 giây.</p></div>'; app.innerHTML = h; return; }
@@ -819,6 +824,10 @@
   window.addEventListener("pagehide", function () { stopSpeech(); try { speechSynthesis.cancel(); } catch (e) {} });
   /* TJ 2026-10-15: "khi vào test thì tất cả chỉ có bài test, vừa gọn màn hình" — đang làm bài (lớp đang chạy hoặc tự luyện 1 câu) -> báo trang game thu gọn
      thanh trên/dưới của WordLoop + thanh game (như ván Từ vựng); xong/thoát thì trả lại. Áp cho cả 4 lớp: Speaking, Writing, IELTS Speaking, IELTS Writing. */
+  document.addEventListener("click", function (e) {   /* chạm ảnh đề (đang làm bài 1 màn hình) -> phóng to; chạm lại -> thu nhỏ */
+    var im = e.target && e.target.tagName === "IMG" ? e.target : null;
+    if (im && document.body.classList.contains("one") && im.closest("#app > .top + .card")) im.classList.toggle("zoom");
+  });
   var focusOn = false;
   setInterval(function () {
     var on = (S.screen === "live" && !!LIVE && LIVE.phase !== "end") || S.screen === "task";
