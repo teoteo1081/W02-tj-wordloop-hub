@@ -911,7 +911,7 @@
         '.bp-batchrow{margin:12px 0 2px} .bp-batch{border:0;border-radius:999px;padding:6px 14px;background:#d9684b;color:#fff;font:700 14px/1 system-ui,sans-serif;cursor:pointer;opacity:.75} .bp-batch.on{opacity:1;box-shadow:0 0 0 2px rgba(217,104,75,.45)}</style></head><body class="' + esc(d.body.className) + '">' + body +
         '<script>document.addEventListener("click",function(e){var t=e.target.closest("[data-bt]"),k=e.target.closest(".block-card[data-block]");if(t)parent.__tjBp("bt",t.dataset.bt);else if(k)parent.__tjBp("bk",k.dataset.block);});' +
         'function rep(){parent.__tjBpH&&parent.__tjBpH(document.documentElement.scrollHeight);}new ResizeObserver(rep).observe(document.body);setTimeout(rep,300);setTimeout(rep,1200);<\/script></body></html>';
-      box.innerHTML = '<h3 class="g-bph">📦 Chọn Batch / Block <span class="g-sub">(chạm thẻ để chọn / bỏ)</span></h3><iframe id="l-bpframe" class="g-bpframe" title="Chọn Batch / Block" scrolling="no"></iframe>';
+      box.innerHTML = '<h3 class="g-bph">📦 Chọn Batch / Block <span class="g-sub">(chạm Block = vào chơi ngay với thiết lập ở trên)</span></h3><iframe id="l-bpframe" class="g-bpframe" title="Chọn Batch / Block" scrolling="no"></iframe>';
       var fr = $("#l-bpframe"); fr.srcdoc = doc; box.hidden = false;
       return true;
     } catch (e) { return false; }
@@ -923,7 +923,7 @@
     var R = bpGroups(); if (!R || !R.groups.length) { box.hidden = true; box.innerHTML = ""; return; }
     var sel = bpSel();
     if (bpLearningCards(box, R, sel)) return;   /* thẻ Block y hệt Learning (khung riêng, CSS của app) */
-    var h = '<h3 class="g-bph">📦 Chọn Batch / Block <span class="g-sub">(chạm thẻ để chọn / bỏ)</span></h3>', ids = [];
+    var h = '<h3 class="g-bph">📦 Chọn Batch / Block <span class="g-sub">(chạm Block = vào chơi ngay với thiết lập ở trên)</span></h3>', ids = [];
     R.groups.forEach(function (g) {
       var all = g.blocks.every(function (b) { return sel[b.id]; });
       h += '<div class="g-bpb"><button type="button" class="g-bpbatch' + (all ? " on" : "") + '" data-bt="' + esc(g.batch.id) + '">' + esc(g.batch.name) + "</button>";
@@ -941,13 +941,12 @@
     bpLoad(ids.slice(0, 60));
   }
   function bpPick(kind, id) {
-    if (!G.isHost || !TREE) return;
+    if (!G.isHost || !TREE || !G.st || G.st.phase !== "lobby") return;
     if (kind === "bt") { var bt = bpById(TREE.batches, id); if (!bt) return; picked = [{ table: "batches", id: bt.id, title: bt.name }]; }
-    else if (kind === "bk") {
-      var blk = bpById(TREE.blocks, id); if (!blk) return;
-      var cur = picked.every(function (p) { return p.table === "blocks"; }) ? picked.slice() : [], i = cur.findIndex(function (p) { return p.id === id; });
-      if (i >= 0) { if (cur.length > 1) cur.splice(i, 1); } else cur.push({ table: "blocks", id: id, title: blk.name });
-      picked = cur;
+    else if (kind === "bk") {   /* TJ 2026-10-15: "chọn Block là vào thẳng game luôn với các thiết lập ở trên" */
+      var blk = bpById(TREE.blocks, id); if (!blk || G.bpStarting) return;
+      picked = [{ table: "blocks", id: id, title: blk.name }]; G.bpStarting = true;
+      setTimeout(function () { G.bpStarting = false; if (G.st && G.st.phase === "lobby") $("#l-start").click(); }, 600);
     } else return;
     G.bpInternal = true; paintTree(); hostSetScope(); G.bpInternal = true; paintBlockPicker();
   }
