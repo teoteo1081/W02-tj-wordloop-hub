@@ -199,9 +199,31 @@
   }
   function saveRev(t, res) {
     var fb = res.fb || {}; ST.rev = ST.rev || [];
-    ST.rev.push({ ts: Date.now(), kind: S.kind, set: S.setId, q: res.q, type: t.type, pm: promptShort(t), ans: String(res.ans || "").slice(0, 900), score: res.score, max: res.max, s: (fb.strengths || []).slice(0, 3), f: (fb.fixes || []).slice(0, 5), better: String(fb.better || "").slice(0, 900), live: LIVE ? 1 : 0 });
+    var rec = { ts: Date.now(), kind: S.kind, set: S.setId, q: res.q, type: t.type, pm: promptShort(t), ans: String(res.ans || "").slice(0, 900), score: res.score, max: res.max, s: (fb.strengths || []).slice(0, 3), f: (fb.fixes || []).slice(0, 5), better: String(fb.better || "").slice(0, 900), live: LIVE ? 1 : 0 };
+    ST.rev.push(rec); revCloudSave(rec);
     if (ST.rev.length > 200) ST.rev.splice(0, ST.rev.length - 200);
     save();
+  }
+  /* đồng bộ Supabase (bảng sw_history, xem tools/sw_history.sql): chỉ lưu câu chưa đạt tối đa, giữ 50 bài gần nhất/người, xoá >90 ngày; chưa có bảng/mạng lỗi thì im lặng dùng bản trên máy */
+  function sbRest(path, opt) {
+    opt = opt || {};
+    return fetch(String(CFG.SUPABASE_URL || "").replace(/\/$/, "") + "/rest/v1/" + path, { method: opt.method || "GET", headers: Object.assign({ apikey: CFG.SUPABASE_ANON_KEY, Authorization: "Bearer " + CFG.SUPABASE_ANON_KEY, "Content-Type": "application/json" }, opt.headers || {}), body: opt.body });
+  }
+  function revCloudSave(r) {
+    var me = CTX.me; if (!me || !me.id || r.score == null || r.score >= r.max) return;
+    try { sbRest("sw_history?on_conflict=player_id,ts", { method: "POST", headers: { Prefer: "resolution=ignore-duplicates,return=minimal" }, body: JSON.stringify({ player_id: me.id, ts: r.ts, kind: r.kind, set_id: r.set, q: r.q, type: r.type, pm: r.pm, score: r.score, max: r.max, ans: r.ans, s: r.s, f: r.f, better: r.better, live: !!r.live }) }).catch(function () {}); } catch (e) {}
+  }
+  async function revCloudLoad() {
+    var me = CTX.me; if (!me || !me.id || S.revLoaded === me.id) return; S.revLoaded = me.id;
+    try {
+      var r = await sbRest("sw_history?player_id=eq." + encodeURIComponent(me.id) + "&order=ts.desc&limit=80"); if (!r.ok) return;
+      var rows = await r.json(); if (!Array.isArray(rows)) return;
+      ST.rev = ST.rev || []; var have = {}, add = 0; ST.rev.forEach(function (x) { have[x.ts] = 1; });
+      rows.forEach(function (x) { if (have[x.ts]) return; ST.rev.push({ ts: +x.ts, kind: x.kind, set: x.set_id, q: x.q, type: x.type, pm: x.pm || "", ans: x.ans || "", score: x.score, max: x.max, s: x.s || [], f: x.f || [], better: x.better || "", live: x.live ? 1 : 0 }); add++; });
+      if (add) { ST.rev.sort(function (a, b) { return a.ts - b.ts; }); if (ST.rev.length > 200) ST.rev.splice(0, ST.rev.length - 200); save(); if (S.screen === "rev" || S.screen === "home") render(); }
+      var lim = Math.max(rows.length > 50 ? rows[49].ts : 0, Date.now() - 90 * 86400000);
+      sbRest("sw_history?player_id=eq." + encodeURIComponent(me.id) + "&ts=lt." + lim, { method: "DELETE" }).catch(function () {});
+    } catch (e) {}
   }
   function revView() {
     var all = (ST.rev || []).filter(function (r) { return r.kind === S.kind; }).slice().reverse(), list = S.revAll ? all : all.filter(function (r) { return r.score < r.max; });
@@ -476,7 +498,7 @@
   });
   window.addEventListener("message", function (e) {
     var d = e.data; if (e.origin !== location.origin || !d || typeof d.type !== "string" || d.type.indexOf("sw-") !== 0) return;
-    if (d.type === "sw-ctx") { CTX = { inRoom: !!d.inRoom, isHost: !!d.isHost, me: d.me || null, players: d.players || [] }; if (S.classMode === undefined && CTX.isHost && CTX.players.length > 1) S.classMode = true; if (S.screen === "home" || (S.screen === "live" && LIVE && LIVE.phase !== "prep" && LIVE.phase !== "resp")) render(); }
+    if (d.type === "sw-ctx") { CTX = { inRoom: !!d.inRoom, isHost: !!d.isHost, me: d.me || null, players: d.players || [] }; revCloudLoad(); if (S.classMode === undefined && CTX.isHost && CTX.players.length > 1) S.classMode = true; if (S.screen === "home" || (S.screen === "live" && LIVE && LIVE.phase !== "prep" && LIVE.phase !== "resp")) render(); }
     else if (d.type === "sw-class-start") applyStart(d);
     else if (d.type === "sw-class-live") liveApply(d.p);
     else if (d.type === "sw-class-fin" && d.p) liveFin(d.p.pid);
