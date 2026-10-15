@@ -941,10 +941,13 @@
     bpLoad(ids.slice(0, 60));
   }
   function bpPick(kind, id) {
-    if (!G.isHost || !TREE || !G.st) return;
-    if (kind === "board") {   /* 🖤 Mở bảng với Block này (giống nút trên thẻ Learning) */
-      var bb = bpById(TREE.blocks, id); if (bb) openBoardScope([{ table: "blocks", id: id, title: bb.name }]); return;
+    if (kind === "board") {   /* 🖤 Mở bảng với Block này — chạy ở MỌI nơi: máy host trong phòng -> mở thẳng; chưa sẵn sàng thì nhờ trang cha (WordLoop) mở bảng như nút ở màn Learning */
+      var bn = TREE && bpById(TREE.blocks, id), bt0 = bn ? bn.name : "";
+      if (G.isHost && G.st) { Promise.resolve(openBoardScope([{ table: "blocks", id: id, title: bt0 }])).catch(function (e) { console.warn("mở bảng", e); }); return; }
+      try { if (window.parent && window.parent !== window && window.parent.GameLayer) window.parent.GameLayer.openBoard("blocks", id, bt0); } catch (e) {}
+      return;
     }
+    if (!G.isHost || !TREE || !G.st) return;
     if (G.st.phase !== "lobby") return;
     if (kind === "bt") { var bt = bpById(TREE.batches, id); if (!bt) return; picked = [{ table: "batches", id: bt.id, title: bt.name }]; }
     else if (kind === "play") {   /* 🎮 Chơi game → : vào chơi ngay với Block này + thiết lập ở trên (TJ 2026-10-15) */
