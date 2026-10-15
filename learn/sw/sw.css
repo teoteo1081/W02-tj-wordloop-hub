@@ -257,3 +257,9 @@ body.one img.zoom { position:fixed !important; inset:0; width:100vw !important; 
   .hubpanel select, .hubpanel input[type=text], .hubpanel input[type=number], .lobby select { font-size:17px !important; padding:12px 10px !important; min-height:48px; }
 }
 @media (max-width:560px) { .hp-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .hp-grid > * { min-width:0; } }   /* ô chọn chữ dài không làm cả trang rộng hơn màn hình */
+
+/* ===== chữ đề nhỏ lại cho vừa màn hình điện thoại (TJ 2026-10-15: "chữ bự quá, cho nhỏ lại xíu") =====
+   Luật theo "body.live" không áp dụng ở màn chờ (lớp live chỉ gắn khi vẽ lại cả trang) nên chữ vẫn 21–23px: đặt luật riêng theo cấu trúc, chỉ điện thoại. */
+@media (max-width:520px) {
+  #app .prompt, #app .prompt.read { font-size:clamp(14px,2.6vh,17px) !important; line-height:1.45 !important; }   /* không dựa vị trí thẻ: màn chờ của host có thanh "Câu tiếp" đứng trước thẻ đề */
+}
