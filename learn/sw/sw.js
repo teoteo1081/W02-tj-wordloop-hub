@@ -140,28 +140,42 @@
       h += '<div class="row" style="justify-content:center"><span class="badge ' + (L.phase === "resp" ? "resp" : "prep") + '">' + (L.phase === "prep" ? "Chuẩn bị" : spk ? "Đang nói" : "Đang viết") + "</span> " + who + "</div>" + (mine ? "<p><b>🎤 Đến lượt bạn!</b></p>" : "") + '<div class="timer ' + (L.phase === "resp" ? "resp" : "prep") + '" id="tm">0:00</div><div class="bar ' + (L.phase === "resp" ? "resp" : "") + '"><i id="pg"></i></div>';
     } else {
       var nd = Object.keys(L.done).length;
-      h += spk ? '<p class="sub">' + (nd ? "Đã nói: <b>" + nd + "</b> người. " : "") + "Chuẩn bị <b>" + tm[0] + "s</b> · trả lời <b>" + tm[1] + "s</b></p>" : '<p class="sub">Thời gian viết: <b>' + mmss(tm[1]) + "</b></p>";
+      h += (spk ? rosterHtml(host) : "") + (spk ? '<p class="sub">' + (nd ? "Đã nói: <b>" + nd + "</b> người. " : "") + "Chuẩn bị <b>" + tm[0] + "s</b> · trả lời <b>" + tm[1] + "s</b></p>" : '<p class="sub">Thời gian viết: <b>' + mmss(tm[1]) + "</b></p>");
       if (!host) h += "<p><i>Đợi host bấm…</i></p>";
     }
     h += "</div>";
+    if (run && spk) h += rosterHtml(false);
+    if (!run && L.phase !== "end") h += '<div class="card"><button class="soft" data-act="lsolo" title="Tự luyện câu này một mình, có AI chấm khi còn lượt">🎯 Luyện riêng câu này (có AI chấm)</button></div>';
     if (host) {
       var ps = (CTX.players || []).filter(function (p) { return !L.done[p.id]; }), b = "", nx = '<button class="big" data-act="lnext">' + (last ? "Kết thúc" : "Câu tiếp ›") + "</button>";
       if (run) b = (L.phase === "prep" ? '<button class="big" data-act="lskip">⏭ Vào phần nói</button>' : "") + '<button class="big" data-act="lstop">⏹ Dừng</button>';
-      else if (spk && ps.length) b = '<select id="lsp" class="big">' + ps.map(function (p) { return '<option value="' + esc(p.id) + '">' + esc(p.name || "?") + "</option>"; }).join("") + '</select><button class="pri big" data-act="lstart">▶ Bắt đầu</button>' + nx;
+      else if (spk && ps.length) b = '<button class="pri big" data-act="lstart">▶ Bắt đầu' + (pickOf(ps) ? " · " + esc(pickOf(ps).name || "") : "") + "</button>" + nx;
       else if (spk) b = nx.replace('class="big"', 'class="pri big"');
       else b = (L.phase === "idle" ? "" : '<button class="pri big" data-act="lstart">▶ Bắt đầu viết</button>') + (L.phase === "idle" ? nx.replace('class="big"', 'class="pri big"') : nx);
       h += '<div class="bottom"><div class="in">' + b + "</div></div>";
     }
     h += '<div class="cd" id="cd" hidden></div>'; app.innerHTML = h; liveTick();
   }
+  function pickOf(ps) { var L = LIVE; return ps.filter(function (p) { return p.id === L.pick; })[0] || ps[0]; }
+  function rosterHtml(host) {
+    var L = LIVE, ps = CTX.players || [], rest = ps.filter(function (p) { return !L.done[p.id]; }), cur = L.sp ? L.sp.id : (host ? (pickOf(rest) || {}).id : "");
+    if (!ps.length) return "";
+    return '<div class="card roster"><div class="sub">' + (host ? "Chạm tên để chọn người nói tiếp" : "Thứ tự trong phòng") + '</div>' + ps.map(function (p) {
+      var dn = L.done[p.id], on = p.id === cur; return '<button class="chip' + (dn ? " done" : "") + (on ? " on" : "") + '"' + (host && !dn && !L.sp ? ' data-act="lpick" data-v="' + esc(p.id) + '"' : " disabled") + ">" + (dn ? "✓ " : "") + avatarHtml(p.avatar) + " " + esc(p.name || "?") + "</button>";
+    }).join("") + "</div>";
+  }
   function liveAct(a, v) {
+    if (a === "lsolo" && LIVE) {   /* rời lớp, tự luyện đúng câu này (AI chấm như bình thường) */
+      var t = curTask(); S.leftRun = LIVE.run; LIVE = null; clearTimer(); S.class = null; S.saved = 1; S.tasks = [t]; S.i = 0; S.results = {}; S.group = "one"; S.gt = "Câu " + t.q; S.screen = "task"; question(); return true;
+    }
     if (!LIVE || S.screen !== "live" || !CTX.isHost) return false;
     var tm = liveTimes(), L = LIVE;
     if (a === "lstart") {
-      var sel = $("#lsp"), sp = null;
-      if (S.kind === "speaking") { var id = sel && sel.value; sp = (CTX.players || []).filter(function (p) { return p.id === id; })[0]; if (!sp) return true; sp = { id: sp.id, name: sp.name, avatar: sp.avatar }; }
+      var sp = null;
+      if (S.kind === "speaking") { sp = pickOf((CTX.players || []).filter(function (p) { return !L.done[p.id]; })); if (!sp) return true; sp = { id: sp.id, name: sp.name, avatar: sp.avatar }; }
       liveSend({ i: S.i, phase: S.kind === "speaking" ? "prep" : "resp", sp: sp, sec: S.kind === "speaking" ? tm[0] : tm[1], done: L.done });
-    } else if (a === "lskip") liveSend({ i: S.i, phase: "resp", sp: L.sp, sec: tm[1], done: L.done });
+    } else if (a === "lpick") { L.pick = v; liveRender(); }
+    else if (a === "lskip") liveSend({ i: S.i, phase: "resp", sp: L.sp, sec: tm[1], done: L.done });
     else if (a === "lstop") { L.adv = 1; liveNext(); }
     else if (a === "lnext") {
       if (S.i >= S.tasks.length - 1) liveSend({ i: S.i, phase: "end", done: {} });

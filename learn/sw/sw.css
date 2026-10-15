@@ -51,3 +51,7 @@ details { margin:6px 0; } summary { cursor:pointer; color:var(--acc); font-size:
 .cd[hidden] { display:none; } .cd.pop { animation:cdpop .9s ease-out; }
 @keyframes cdpop { 0% { transform:scale(1.5); opacity:0; } 25% { opacity:.9; } 100% { transform:scale(.85); opacity:.5; } }
 select.big { max-width:46%; }
+
+.roster { text-align:left; } .chip { margin:4px 6px 0 0; padding:7px 12px; border-radius:99px; border:1px solid var(--line); background:var(--card); font:inherit; font-size:15px; color:inherit; }
+.chip.on { background:var(--pri,#5b4a96); color:#fff; border-color:transparent; } .chip.done { opacity:.55; } .chip:disabled { cursor:default; }
+.card .roster { border:0; box-shadow:none; margin:0 0 8px; padding:0; }
