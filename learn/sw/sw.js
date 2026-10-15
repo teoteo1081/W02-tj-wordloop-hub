@@ -51,10 +51,10 @@
     var h = '<h1>' + (S.kind === "speaking" ? "🎤 TOEIC Speaking" : "✍️ TOEIC Writing") + '</h1><p class="sub">Luyện theo dạng ETS: đếm giờ chuẩn, ' + (S.kind === "speaking" ? "nói vào micro" : "gõ bài") + ', AI chấm điểm <b>ước tính</b> (không phải điểm chính thức).</p>' +
       '<div class="tabs"' + (fixed ? " hidden" : "") + '><button class="' + (S.kind === "speaking" ? "on" : "") + '" data-act="kind" data-v="speaking">🎤 Nói (Speaking)</button><button class="' + (S.kind === "writing" ? "on" : "") + '" data-act="kind" data-v="writing">✍️ Viết (Writing)</button></div>';
     if (S.kind === "speaking" && !SR && !MOCK) h += '<div class="warn">Trình duyệt này không nhận giọng nói (Web Speech). Dùng Chrome/Edge trên máy tính hoặc Android để nói; ở đây bạn vẫn gõ lại lời mình nói được.</div>';
-    h += classBanner() + '<h2>Chọn đề</h2><div class="setgrid">' + sets.map(function (s, i) { var b = best(S.kind, s.id); return '<button class="' + (s.id === S.setId ? "on" : "") + '" data-act="set" data-v="' + esc(s.id) + '">' + (s.mine ? "📥 " : "") + "Đề " + (i + 1) + "<small>" + (b ? "tốt nhất ~" + b : esc(s.title || "")).slice(0, 34) + "</small></button>"; }).join("") + "</div>";
+    h += classBanner() + '<h2>① Chọn đề</h2><div class="setgrid">' + sets.map(function (s, i) { var b = best(S.kind, s.id); return '<button class="' + (s.id === S.setId ? "on" : "") + '" data-act="set" data-v="' + esc(s.id) + '">' + (s.mine ? "📥 " : "") + "Đề " + (i + 1) + "<small>" + (b ? "tốt nhất ~" + b : esc(String(s.title || "").replace(/^Phỏng vấn:\s*/i, "").slice(0, 46))) + "</small></button>"; }).join("") + "</div>";
     if (!sets.length) h += '<p class="sub">Chưa có đề.</p>';
     if (set) {
-      h += "<h2>Luyện</h2><div class=\"parts\">" + g.map(function (x, i) { var miss = S.kind === "speaking" && x.qs.indexOf(3) >= 0 && x.k === "desc" && !(set.tasks.filter(function (t) { return t.q === 3; })[0] || {}).scene && !(set.tasks.filter(function (t) { return t.q === 3; })[0] || {}).image; return '<button class="' + (i === 0 ? "pri full" : "") + '" data-act="start" data-v="' + x.k + '"' + (miss ? " disabled" : "") + ">" + (i === 0 ? "▶ " : "") + esc(x.t) + "</button>"; }).join("") + "</div>";
+      h += "<h2>② Chọn phần luyện</h2><div class=\"parts\">" + g.map(function (x, i) { var miss = S.kind === "speaking" && x.qs.indexOf(3) >= 0 && x.k === "desc" && !(set.tasks.filter(function (t) { return t.q === 3; })[0] || {}).scene && !(set.tasks.filter(function (t) { return t.q === 3; })[0] || {}).image; return (i === 1 ? '<p class="sub full" style="grid-column:1/-1;margin:6px 0 0">Hoặc luyện riêng từng phần:</p>' : "") + '<button class="' + (i === 0 ? "pri full" : "") + '" data-act="start" data-v="' + x.k + '"' + (miss ? " disabled" : "") + ">" + (i === 0 ? "▶ " : "") + esc(x.t) + "</button>"; }).join("") + "</div>";
       var hist = ST.hist.filter(function (h2) { return h2.kind === S.kind && h2.set === set.id; }).slice(-3).reverse();
       if (hist.length) h += '<h2>Lần làm gần đây</h2><div class="card">' + hist.map(function (x) { return '<div class="row"><span class="sub">' + new Date(x.ts).toLocaleDateString() + " · " + esc(x.gt) + '</span><span style="margin-left:auto"><b>' + x.raw + "/" + x.max + "</b> ≈ " + x.est + "</span></div>"; }).join("") + "</div>";
     }
@@ -272,7 +272,7 @@
     if (S.phase === "result") return result(h, t);
     h += '<div class="card">' + promptHtml(t) + "</div>";
     if (S.phase === "intro") {
-      h += '<div class="card"><p class="sub">' + intro(t, tm) + '</p><button class="pri big" data-act="go" style="width:100%;margin-top:6px">' + (S.kind === "speaking" ? "▶ Bắt đầu" : "▶ Bắt đầu viết") + "</button></div>";
+      h += '<div class="card"><p class="sub">' + intro(t, tm) + '</p><button class="pri big" data-act="go" style="width:100%;margin-top:6px">' + (S.kind === "speaking" ? "▶ Bắt đầu" : "▶ Bắt đầu viết") + '</button><div class="row" style="justify-content:space-between;margin-top:8px">' + (S.i > 0 ? '<button class="soft" data-act="skipq" data-v="-1">‹ Câu trước</button>' : "<span></span>") + '<button class="soft" data-act="skipq" data-v="1">' + (S.i >= S.tasks.length - 1 ? "Kết thúc ›" : "Bỏ qua câu này ›") + "</button></div></div>";
     } else {
       var ph = S.phase, badge = ph === "read" ? "Đọc thông tin" : ph === "prep" ? "Chuẩn bị" : "Đang " + (S.kind === "speaking" ? "nói" : "viết");
       h += '<div class="card"><div class="row"><span class="badge ' + (ph === "resp" ? "resp" : "prep") + '">' + badge + '</span></div><div class="timer ' + (ph === "resp" ? "resp" : "prep") + '" id="tm">0:00</div><div class="bar ' + (ph === "resp" ? "resp" : "") + '"><i id="pg"></i></div>';
@@ -467,6 +467,7 @@
     else if (a === "say") say(v);
     else if (a === "retry") { question(); }
     else if (a === "regrade") { S.phase = "grading"; render(); grade(); }
+    else if (a === "skipq") { var n = S.i + (+v || 0); if (n < 0) return; clearTimer(); stopSpeech(); if (n >= S.tasks.length) { S.screen = "sum"; render(); } else { S.i = n; question(); } }
     else if (a === "next") { if (S.i >= S.tasks.length - 1) { S.screen = "sum"; render(); } else { S.i++; question(); } }
     else if (a === "quit") { if (LIVE) { S.leftRun = LIVE.run; LIVE = null; } clearTimer(); stopSpeech(); try { speechSynthesis.cancel(); } catch (x) {} S.screen = "home"; render(); }
     else if (a === "home") { S.screen = "home"; render(); }
