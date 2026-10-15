@@ -30,7 +30,7 @@
     "#qc .qex{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0;font-size:16px}" +
     "#qc .qbd{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 12px;margin:10px 0}#qc .qbd div{display:flex;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}#qc .qbd div:last-child{border:0}#qc .qbd .pts{margin-left:auto;font-weight:800}#qc .qbd .d{color:#4fb985;font-size:13px}" +
     "#qc .qb{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 20px;border-radius:10px;border:1px solid transparent;background:#d97757;color:#fff;font:inherit;font-size:16px;font-weight:700;cursor:pointer}#qc .qb.soft{background:var(--card);color:var(--ink);border-color:var(--line)}" +
-    "#qc .qfoot{position:fixed;left:0;right:0;bottom:0;padding:10px 14px;background:var(--bg);border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}" +
+    "#qc .qb.sm{padding:10px 14px}#qc .mg{margin-top:18px}#qc .qfoot{position:fixed;left:0;right:0;bottom:0;padding:10px 14px;background:var(--bg);border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}#qc .qfoot .sm:first-child{margin-right:auto}" +
     "#qc .qs label{display:block;margin:12px 0 4px;color:var(--muted);font-size:14px}#qc .qch{display:flex;flex-wrap:wrap;gap:6px}#qc .qch button{padding:8px 12px;border-radius:99px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:14px;cursor:pointer}#qc .qch button.on{background:#d97757;border-color:#d97757;color:#fff}" +
     "#qc .av{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:var(--card);border:3px solid var(--line);font-size:20px;overflow:hidden;flex:none}#qc .av img{width:100%;height:100%;object-fit:cover}" +
     "#qc .av.dim{opacity:.35;filter:grayscale(1)}#qc .av.lit{border-color:#d97757}#qc .av.ok{border-color:#4fb985;box-shadow:0 0 0 2px rgba(79,185,133,.35)}#qc .av.bad{border-color:#e0607a;box-shadow:0 0 0 2px rgba(224,96,122,.3)}" +
@@ -71,7 +71,7 @@
       }
     }
     h += "</div>";
-    if (host) h += '<div class="qfoot">' + (Z.ph === "q" ? '<button class="qb soft" data-q="lock">⏭ Chốt câu</button>' : Z.ph === "rev" ? '<button class="qb" data-q="next">' + (Z.i + 1 >= Z.n ? "🏆 Xem kết quả" : "Câu tiếp ›") + "</button>" : '<button class="qb" data-q="close">Đóng lớp</button>') + "</div>";
+    if (host) h += '<div class="qfoot"><button class="qb soft sm" data-q="users" title="Quản lý người chơi">👥</button><button class="qb soft sm" data-q="copy" title="Copy link mời">🔗</button>' + (Z.ph === "q" ? '<button class="qb soft" data-q="lock">⏭ Chốt câu</button>' : Z.ph === "rev" ? '<button class="qb" data-q="next">' + (Z.i + 1 >= Z.n ? "🏆 Xem kết quả" : "Câu tiếp ›") + "</button>" : '<button class="qb" data-q="close">Đóng lớp</button>') + "</div>";
     ov.innerHTML = h;
   }
   function tick() {
@@ -89,7 +89,7 @@
     lessonsList().forEach(function (l) { h += '<button class="' + (setup.mods.indexOf(l.id) >= 0 ? "on" : "") + '" data-q="mod" data-id="' + esc(l.id) + '">' + esc(String(l.title || l.id).slice(0, 34)) + "</button>"; });
     h += '</div><label>Số câu</label><div class="qch">' + [5, 10, 15, 20, 30].map(function (n) { return '<button class="' + (setup.n === n ? "on" : "") + '" data-q="n" data-v="' + n + '">' + n + "</button>"; }).join("") +
       '</div><label>Giây mỗi câu</label><div class="qch">' + [10, 15, 20, 30, 45].map(function (n) { return '<button class="' + (setup.sec === n ? "on" : "") + '" data-q="sec" data-v="' + n + '">' + n + "s</button>"; }).join("") +
-      '</div><label><input type="checkbox" id="qhp"' + (setup.hp ? " checked" : "") + '> Host cũng chơi (tính điểm)</label><p style="margin-top:16px"><button class="qb" data-q="go"' + (cnt ? "" : " disabled") + '>▶ Bắt đầu</button></p></div></div>';
+      '</div><label><input type="checkbox" id="qhp"' + (setup.hp ? " checked" : "") + '> Host cũng chơi (tính điểm)</label><p style="margin-top:16px"><button class="qb" data-q="go"' + (cnt ? "" : " disabled") + '>▶ Bắt đầu</button></p><p class="mg"><button class="qb soft" data-q="users">👥 Quản lý người chơi</button> <button class="qb soft" data-q="copy">🔗 Copy link mời</button></p></div></div>';
     ov.hidden = false; fab.hidden = true; ov.innerHTML = h;
   }
   function expectIds() { return (CTX.players || []).filter(function (p) { return setup.hp !== false || !(CTX.me && p.id === CTX.me.id); }).map(function (p) { return p.id; }); }
@@ -138,6 +138,7 @@
     else if (a === "mod") { var i = setup.mods.indexOf(b.dataset.id); if (i >= 0) setup.mods.splice(i, 1); else setup.mods.push(b.dataset.id); showSetup(); }
     else if (a === "n") { setup.n = +b.dataset.v; showSetup(); } else if (a === "sec") { setup.sec = +b.dataset.v; showSetup(); }
     else if (a === "go") { var hp = $("#qhp"); setup.hp = hp ? hp.checked : true; startRun(); }
+    else if (a === "users" || a === "copy") toParent({ type: "sw-do", a: a });
     else if (a === "lock") reveal(); else if (a === "next") nextQ(); else if (a === "close") closeRun();
     else if (a === "pick" && Z && Z.ph === "q" && Z.my == null) {
       var k = +b.dataset.k, used = Math.max(0, (Z.tot || 0) * 1000 - rem() * 1000); Z.my = k;

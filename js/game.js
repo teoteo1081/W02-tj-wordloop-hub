@@ -263,7 +263,10 @@
   }
   /* 🎤 Lớp Speaking / Writing trong thẻ Quản trị (khung lớp báo trạng thái qua "tjwl-sw-admin"; lệnh gửi lại bằng SWClass.cmd) */
   var SWA = null;
-  document.addEventListener("tjwl-sw-do", function (e) { var b = $(e.detail === "users" ? "#l-users" : "#l-copy"); if (b) b.click(); });   /* nút ⋯ của lớp: Quản lý người chơi / Copy link mời */
+  document.addEventListener("tjwl-sw-do", function (e) {
+    if (e.detail === "users") { try { if (window.parent !== window && window.parent.GameLayer && window.parent.GameLayer.openUsers) { window.parent.GameLayer.openUsers(); return; } } catch (x) {} }   /* pop-up của trang WordLoop (nằm TRÊN lớp phủ thẻ học) */
+    var b = $(e.detail === "users" ? "#l-users" : "#l-copy"); if (b) b.click();
+  });   /* nút ⋯ của lớp: Quản lý người chơi / Copy link mời */
   document.addEventListener("tjwl-sw-admin", function (e) { SWA = e.detail && e.detail.on ? e.detail : null; paintSwAdmin(); });
   function paintSwAdmin() {
     var box = $("#ga-swbox"), el = $("#ga-sw"), gm = $("#ga-game"); if (!box || !el) return;
