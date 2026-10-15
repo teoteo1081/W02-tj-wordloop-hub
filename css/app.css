@@ -2387,6 +2387,9 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
   background:var(--bg-main,#262624);
 }
 .game-layer[hidden]{display:none;}
+/* TJ 2026-10-15: điện thoại vuốt trong khung game bị giật/lệch — trang nền vẫn cuộn theo (cuộn lan ra ngoài). Mở game thì khoá cuộn nền, khung game tự chứa cuộn. */
+body.game-on{overflow:hidden;overscroll-behavior:none;}
+.game-layer{overscroll-behavior:contain;}
 /* nút 🎮 tím trên Block card — cùng khuôn với nút vàng "Bắt đầu học →" (.btn-warn), đứng sát phải hàng icon */
 .btn-game-block{
   margin-left:auto;background:#8b5cf6;color:#fff;border:none;padding:.42rem .95rem;border-radius:7px;

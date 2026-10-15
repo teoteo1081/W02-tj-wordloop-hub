@@ -198,3 +198,8 @@ body.live .hostbar .hb-main .pri { flex:1.4 1 0 !important; }
 .wordrow { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:8px; margin:0 0 12px; } .wordrow .sub { flex:1 1 100%; text-align:center; margin:0; }
 .wchip { padding:8px 18px; border-radius:999px; background:#d97757; color:#fff; font-weight:800; font-size:20px; box-shadow:0 4px 14px rgba(217,119,87,.3); } .wplus { font-size:20px; color:var(--muted); font-weight:700; }
 .prompt.cue ul { margin:6px 0 0 20px; padding:0; } .prompt.cue li { margin:4px 0; }
+
+/* TJ 2026-10-15: điện thoại — vuốt lên xuống bị giật + lệch ngang. html cắt phần tràn ngang (không dùng overflow ở body: làm hỏng sticky), body chỉ cho vuốt dọc + zoom, không cuộn lan ra trang cha. */
+html { overflow-x:hidden; overscroll-behavior:contain; }
+body { overflow-x:clip; touch-action:pan-y pinch-zoom; }
+#app { overflow-wrap:break-word; }
