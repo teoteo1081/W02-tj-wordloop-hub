@@ -213,28 +213,28 @@ body.one #app > * { flex:none; margin-top:6px; margin-bottom:0; }
 body.one #app > .top { position:static; padding:2px 0; }
 body.one #app > .top + .card { flex:1 1 0; min-height:76px; overflow:auto; -webkit-overflow-scrolling:touch; padding:8px 12px; }
 body.one #app > .top + .card .prompt, body.one #app > .top + .card .prompt.read { font-size:var(--pfs, clamp(14px,2.6vh,17px)) !important; line-height:1.45 !important; }   /* đề nhỏ vừa đủ đọc để thấy NHIỀU chữ hơn (ghi đè cỡ to của chế độ bình thường) */
-body.one #app > .top + .card + .card p { margin:2px 0; }
-body.one #app > .top + .card + .card .row { margin:0; }
+body.one #app > .card:has(> .timer) p { margin:2px 0; }
+body.one #app > .card:has(> .timer) .row { margin:0; }
 body.one #app > .top + .card img { max-height:24vh !important; }
 body.one #app > .top + .card img { max-height:34vh !important; cursor:zoom-in; }
 body.one #app > .top { min-height:36px; } body.one #app > .top .soft { width:34px; height:34px; min-height:0; padding:0; }
 body.one #app > .top .t { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 body.one #app:has(> .hostbar.below) > .top .t { padding-right:112px; }
 /* thẻ đồng hồ GỌN: [huy hiệu + tên]  [đồng hồ] cùng 1 hàng, thanh, ô mic/nhập, nút Xong */
-body.one #app > .top + .card + .card:has(> .timer) { display:grid; grid-template-columns:1fr auto; align-items:center; gap:4px 8px; padding:8px 12px; text-align:left; }
-body.one #app > .top + .card + .card:has(> .timer) > * { grid-column:1 / -1; }
-body.one #app > .top + .card + .card:has(> .timer) > .row { grid-column:1; grid-row:1; justify-content:flex-start; margin:0; }
-body.one #app > .top + .card + .card:has(> .timer) > .timer { grid-column:2; grid-row:1; margin:0; font-size:clamp(26px,5.2vh,36px) !important; line-height:1.1; }
-body.one #app > .top + .card + .card:has(> .timer) > p:not(.sub) { display:none; }
-body.one #app > .top + .card + .card:has(> .timer) > .bar { margin:2px 0; }
-body.one #app > .top + .card + .card .live { min-height:30px; padding:4px 8px; font-size:13px; max-height:9vh; overflow:auto; }
-body.one #app > .top + .card + .card textarea { min-height:64px; max-height:22vh; }
-body.one #app > .top + .card + .card button.big { min-height:42px; margin-top:4px !important; }
+body.one #app > .card:has(> .timer) { display:grid; grid-template-columns:1fr auto; align-items:center; gap:4px 8px; padding:8px 12px; text-align:left; }
+body.one #app > .card:has(> .timer) > * { grid-column:1 / -1; }
+body.one #app > .card:has(> .timer) > .row { grid-column:1; grid-row:1; justify-content:flex-start; margin:0; }
+body.one #app > .card:has(> .timer) > .timer { grid-column:2; grid-row:1; margin:0; font-size:clamp(26px,5.2vh,36px) !important; line-height:1.1; }
+body.one #app > .card:has(> .timer) > p:not(.sub) { display:none; }
+body.one #app > .card:has(> .timer) > .bar { margin:2px 0; }
+body.one #app > .card:has(> .timer) .live { min-height:30px; padding:4px 8px; font-size:13px; max-height:9vh; overflow:auto; }
+body.one #app > .card:has(> .timer) textarea { min-height:64px; max-height:22vh; }
+body.one #app > .card:has(> .timer) button.big { min-height:42px; margin-top:4px !important; }
 /* nút "Dừng lượt này" của host: lên góc phải thanh tiêu đề cho đỡ tốn 1 hàng */
 body.one #app { position:relative; }
 body.one #app > .hostbar.below { position:absolute; top:4px; right:8px; margin:0; padding:0; background:none; border:0; box-shadow:none; width:auto; z-index:5; }
 body.one #app > .hostbar.below .big { min-height:34px; font-size:13px; padding:4px 12px; width:auto; flex:none; }
-body.one #app > :nth-child(n+4):not(.hostbar):not(.bottom) { display:none; }
+body.one:not(.has-live) #app > :nth-child(n+4):not(.hostbar):not(.bottom) { display:none; }
 /* chạm ảnh đề để phóng to / chạm lại để thu nhỏ */
 body.one img.zoom { position:fixed !important; inset:0; width:100vw !important; height:100dvh !important; max-height:none !important; object-fit:contain; background:#000; z-index:60; border-radius:0 !important; margin:0 !important; cursor:zoom-out; }
 
@@ -291,8 +291,7 @@ body.one img.zoom { position:fixed !important; inset:0; width:100vw !important; 
 .lw { border-radius:4px; transition:background .15s, color .15s; }
 .lw-ok { color:var(--ok); } .lw-bad { color:var(--bad); background:var(--badbg); } .lw-skip { color:var(--warn); background:var(--warnbg,rgba(201,130,47,.15)); }
 .lw-cur { background:rgba(255,255,255,.14); box-shadow:0 2px 0 var(--acc); }
-/* nói tự do (body.txfree): thẻ đề co theo nội dung, khung phụ đề chiếm hết chỗ còn lại; đọc to: khung phụ đề nhỏ 2 dòng (đã có tô màu trên đề) */
-body.one.txfree #app > .top + .card { flex:0 1 auto; max-height:46%; }
-body.one.txfree #app > .top + .card + .card:has(> .timer) { flex:1 1 0; min-height:0; grid-template-rows:auto auto minmax(0,1fr) auto; }
-body.one.txfree #app > .top + .card + .card .live { min-height:0; max-height:none; font-size:17px; line-height:1.5; height:100%; padding:8px 10px; }
-body.one:not(.txfree) #app > .top + .card + .card .live { max-height:10vh; font-size:14px; }
+/* phụ đề chạy (#live) đã được dockLive() đặt NGAY DƯỚI thẻ đề: chiếm hết chỗ trống; thẻ đề co theo nội dung (tối đa ~50%), thẻ đồng hồ + nút Xong gọn ở đáy */
+body.one.has-live #app > .top + .card { flex:0 1 auto; max-height:50%; }
+body.one #app > .live { flex:1 1 0; min-height:72px; max-height:none; margin:6px 0 0; padding:8px 10px; font-size:17px; line-height:1.5; background:var(--card); overflow:auto; }
+body.one.has-live #app > :nth-child(n+5):not(.hostbar):not(.bottom) { display:none; }

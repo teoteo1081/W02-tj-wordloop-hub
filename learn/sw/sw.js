@@ -81,6 +81,11 @@
     var fs = 18; for (; fs > 14; fs--) { probe.style.setProperty("font-size", fs + "px", "important"); probe.style.setProperty("line-height", "1.45", "important"); if (probe.scrollHeight <= avail) break; }
     document.body.removeChild(probe); root.style.setProperty("--pfs", fs + "px");
   }
+  function dockLive() {   /* TJ 2026-10-15: phụ đề chạy nằm NGAY DƯỚI ĐỀ (chiếm chỗ trống), đồng hồ + nút Xong gọn ở đáy */
+    var l = document.getElementById("live"), docked = false;
+    if (l && document.body.classList.contains("one")) { var card = l.closest(".card"); if (card && l.parentNode === card) card.parentNode.insertBefore(l, card); docked = l.parentNode === app; }
+    document.body.classList.toggle("has-live", docked);
+  }
   function setOne(on) {   /* bật/tắt chế độ 1 màn hình; bật thì về đầu trang (trang đang cuộn dở sẽ lệch khi khoá cuộn) */
     var was = document.body.classList.contains("one"); document.body.classList.toggle("one", !!on);
     var ct = curTask(); document.body.classList.toggle("txfree", !!on && S.kind === "speaking" && !!ct && ct.type !== "read_aloud");   /* nói tự do: khung phụ đề chạy được nới rộng */
@@ -388,7 +393,7 @@
     if (L.phase !== "ready") h += othersHtml(t.q) + (run ? "" : boardHtml());
     if (run && spk) h += rosterHtml(false);
     if (hostbar && !below) { var ti = h.indexOf("</div></div>") + 12; h = h.slice(0, ti) + hostbar + h.slice(ti); }   /* thanh điều khiển của host DÍNH Ở ĐẦU màn (cuộn đâu cũng thấy; ảnh to không đẩy nút xuống khuất) */
-    app.innerHTML = h; fitPrompt(); smoothBar(); liveTick(); adminSync();
+    app.innerHTML = h; dockLive(); fitPrompt(); smoothBar(); liveTick(); adminSync();
     if (S.kind === "speaking" && L.phase === "resp" && $("#live")) liveUpd();   /* vẽ lại giữa chừng không làm mất phụ đề + tô màu đề */
   }
   /* ---------- LỊCH SỬ: xem lại bài cũ + lỗi sai (lưu ở máy này) ---------- */
@@ -545,7 +550,7 @@
       h += "</div>";
       h += '<div class="bottom"><div class="in">' + (ph === "resp" ? '<button class="' + (S.kind === "speaking" ? "rec" : "pri") + ' big" data-act="stop">' + (S.kind === "speaking" ? "⏹ Xong, nộp bài" : "✔ Nộp bài") + "</button>" : '<button class="big" data-act="skipprep">Bắt đầu nói ngay ▶</button>') + "</div></div>";
     }
-    app.innerHTML = h; fitPrompt(); updTimer();
+    app.innerHTML = h; dockLive(); fitPrompt(); updTimer();
     if (S.phase === "resp" && S.kind === "writing") { var a = $("#ans"); a.oninput = function () { S.text = a.value; $("#wc").textContent = nWords(a.value) + " từ" + (fmtN() === 3 ? " (mục tiêu ≥ " + (S.tasks[S.i].min || 150) + ")" : S.tasks[S.i].q === 8 ? " (mục tiêu ≥ 300)" : ""); }; a.dispatchEvent(new Event("input")); try { a.focus(); } catch (e) {} }
     if (S.phase === "resp" && S.kind === "speaking") { liveUpd(); var m = $("#manual"); if (m) m.oninput = function () { S.tr = m.value; }; }
   }
@@ -685,7 +690,7 @@
     var tx = (S.tr || "").trim(), ip = (S.interim || "").trim();
     el.innerHTML = '<div class="lv-in">' + (tx || ip ? esc(tx) + (ip ? " <i>" + esc(ip) + "</i>" : "") : "<i>🎤 Hãy nói… lời bạn nói sẽ hiện ở đây</i>") + "</div>";
     if (stick) el.scrollTop = el.scrollHeight;
-    try { hlRead(); } catch (e) {}
+    try { if (S.liveHL) hlRead(); } catch (e) {}   /* TJ 2026-10-15: LÚC THI không tô màu (thi thật không có phản hồi giữa chừng) — chỉ khi bật chế độ luyện (S.liveHL) */
   }
   function hlRead() {
     var t = curTask(); if (!t || S.kind !== "speaking" || t.type !== "read_aloud") return;
