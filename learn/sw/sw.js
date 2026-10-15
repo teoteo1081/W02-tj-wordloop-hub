@@ -12,6 +12,14 @@
     speaking: { 1: [45, 45], 2: [45, 45], 3: [45, 30], 4: [3, 15], 5: [3, 15], 6: [3, 30], 7: [3, 15], 8: [3, 15], 9: [3, 30], 10: [30, 60], 11: [45, 60] },   /* [chuẩn bị, trả lời] giây */
     writing: { 1: [0, 96], 2: [0, 96], 3: [0, 96], 4: [0, 96], 5: [0, 96], 6: [0, 600], 7: [0, 600], 8: [0, 1800] }
   };
+  /* FORMAT 2 (đề prepedu / cấu trúc chuẩn ETS theo ZIM): Q1–2 đọc to · Q3–4 tả ảnh · Q5–7 trả lời · Q8–10 dựa vào thông tin · Q11 nêu ý kiến. Đề có "fmt":2 dùng bảng này, đề cũ (AI sinh) giữ nguyên */
+  var TIME2 = { 1: [45, 45], 2: [45, 45], 3: [45, 30], 4: [45, 30], 5: [3, 15], 6: [3, 15], 7: [3, 30], 8: [3, 15], 9: [3, 15], 10: [3, 30], 11: [45, 60] };
+  var MAXS2 = { 1: 3, 2: 3, 3: 3, 4: 3, 5: 3, 6: 3, 7: 3, 8: 3, 9: 3, 10: 3, 11: 5 };
+  var GROUPS2 = [{ k: "all", t: "Cả bộ (~17 phút)", qs: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] }, { k: "read", t: "Q1–2 Đọc to", qs: [1, 2] }, { k: "desc", t: "Q3–4 Tả ảnh", qs: [3, 4] }, { k: "resp", t: "Q5–7 Trả lời câu hỏi", qs: [5, 6, 7] }, { k: "info", t: "Q8–10 Dựa vào thông tin", qs: [8, 9, 10] }, { k: "opin", t: "Q11 Nêu ý kiến", qs: [11] }];
+  function fmt2() { var st = curSet(); return !!(st && st.fmt === 2); }
+  function TMT(kind) { return kind === "speaking" && fmt2() ? TIME2 : TIME[kind]; }
+  function MXS(kind) { return kind === "speaking" && fmt2() ? MAXS2 : MAXS[kind]; }
+  function GRP(kind) { return kind === "speaking" && fmt2() ? GROUPS2 : GROUPS[kind]; }
   var MAXS = { speaking: { 1: 3, 2: 3, 3: 3, 4: 3, 5: 3, 6: 3, 7: 3, 8: 3, 9: 3, 10: 5, 11: 5 }, writing: { 1: 3, 2: 3, 3: 3, 4: 3, 5: 3, 6: 4, 7: 4, 8: 5 } };
   var GROUPS = {
     speaking: [{ k: "all", t: "Cả bộ 11 câu (~17 phút)", qs: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] }, { k: "read", t: "Q1–2 Đọc to", qs: [1, 2] }, { k: "desc", t: "Q3 Tả ảnh", qs: [3] }, { k: "resp", t: "Q4–6 Trả lời câu hỏi", qs: [4, 5, 6] }, { k: "info", t: "Q7–9 Dựa vào thông tin", qs: [7, 8, 9] }, { k: "sol", t: "Q10 Đề xuất giải pháp", qs: [10] }, { k: "opin", t: "Q11 Nêu ý kiến", qs: [11] }],
@@ -60,7 +68,7 @@
     writing: [["Q1–5 Viết câu theo ảnh", "Dùng ĐÚNG cả hai từ cho sẵn, viết 1 câu hoàn chỉnh, đúng ngữ pháp, soát chính tả."], ["Q6–7 Trả lời email", "Chào + nêu lý do viết, trả lời đủ TỪNG yêu cầu trong email, giữ giọng lịch sự, kết + tên."], ["Q8 Bài luận ý kiến", "Từ 300 từ: nêu ý kiến + 2–3 lý do + ví dụ + kết; chia đoạn rõ ràng."], ["Chung", "Chừa 1–2 phút cuối để đọc lại và soát lỗi."]]
   };
   function guideHtml() {
-    var tm = TIME[S.kind], gs = GROUPS[S.kind], tot = 0, rows = gs.filter(function (g) { return g.k !== "all"; }).map(function (g) {
+    var tm = TMT(S.kind), gs = GRP(S.kind), tot = 0, rows = gs.filter(function (g) { return g.k !== "all"; }).map(function (g) {
       var sec = 0; g.qs.forEach(function (q) { sec += (tm[q] || [0, 0])[0] + (tm[q] || [0, 0])[1]; }); tot += sec;
       return '<div class="gd-row"><span>' + esc(g.t) + "</span><span>" + g.qs.length + " câu</span><span>" + mmss(sec) + "</span></div>";
     }).join("");
@@ -80,7 +88,7 @@
     if (S.src === "mine" && !hasMine) S.src = "std";
     var sets = all.filter(function (x) { return S.src === "mine" ? x.mine : !x.mine; }), set = curSet();
     if (!set || sets.indexOf(set) < 0) { set = sets[0]; if (set) S.setId = set.id; }
-    var g = GROUPS[S.kind], parts = g.filter(function (x) { return x.k !== "all"; });
+    var g = GRP(S.kind), parts = g.filter(function (x) { return x.k !== "all"; });
     if (!g.some(function (x) { return x.k === S.group; })) S.group = "all";
     var gsel = g.filter(function (x) { return x.k === S.group; })[0], scopeAll = S.group === "all", inRoom = classOn();
     var qmin = Math.min.apply(null, gsel.qs), qmax = Math.max.apply(null, gsel.qs);
@@ -158,7 +166,7 @@
   }
   /* ---------- LỚP TRỰC TIẾP: host điều khiển, cả phòng thấy đề + đồng hồ ngược, không chấm điểm, không âm thanh ---------- */
   function liveInit(d) {
-    var g = GROUPS[d.kind].filter(function (x) { return x.k === d.group; })[0] || GROUPS[d.kind][0], set = curSet();
+    var g = GRP(d.kind).filter(function (x) { return x.k === d.group; })[0] || GRP(d.kind)[0], set = curSet();
     clearTimer(); stopSpeech();
     S.kind = d.kind; S.group = g.k; S.gt = g.t; S.qFrom = d.from || null; S.qTo = d.to || null; S.tasks = set.tasks.filter(function (t) { return g.qs.indexOf(t.q) >= 0 && (!S.qFrom || t.q >= S.qFrom) && (!S.qTo || t.q <= S.qTo) && (d.kind === "writing" || t.type !== "describe" || t.scene || t.image); });
     S.i = 0; S.screen = "live"; S.class = { run: d.run, board: {}, rq: {} }; S.saved = 1; S.results = {}; LIVE = { run: d.run, phase: "show", sp: null, done: {}, tEnd: 0, tot: 0 };
@@ -257,7 +265,7 @@
   }
   function shortPrep() { return liveTimes()[0] <= 5; }   /* chuẩn bị chỉ ~3s (Q4–9): không có pha chuẩn bị chung — chạm tên là người đó nói luôn (3-2-1 chính là 3 giây đó) */
   function needPrep() { var L = LIVE; return !!L && S.kind === "speaking" && !shortPrep() && !L.pd; }
-  function liveTimes() { var t = curTask(); return TIME[S.kind][t.q] || [0, 60]; }
+  function liveTimes() { var t = curTask(); return TMT(S.kind)[t.q] || [0, 60]; }
   function liveNext() {   /* host: hết giờ (hoặc bấm Dừng / Bỏ qua) pha hiện tại.
      Luồng mỗi câu Speaking: 3-2-1 -> CHUẨN BỊ CHUNG cả phòng (1 lần) -> chọn từng người: 3-2-1 -> người đó NÓI (không chuẩn bị riêng) -> ... -> Câu tiếp */
     var L = LIVE, tm = liveTimes(), st = { i: S.i, sp: L.sp, done: L.done, pd: L.pd ? 1 : 0 };
@@ -462,7 +470,7 @@
   }
   function dots() { return '<span class="dots">' + S.tasks.map(function (t, i) { return "<i class=\"" + (i < S.i || (S.results[t.q] && i !== S.i) ? "d" : i === S.i ? "c" : "") + '"></i>'; }).join("") + "</span>"; }
   function task() {
-    var t = curTask(), set = curSet(), tm = TIME[S.kind][t.q] || [0, 60], lab = { read_aloud: "Đọc to", describe: "Tả ảnh", respond: "Trả lời câu hỏi", info: "Dựa vào thông tin", solution: "Đề xuất giải pháp", opinion: "Nêu ý kiến", sentence: "Viết câu theo ảnh", email: "Trả lời email", essay: "Bài luận ý kiến" }[t.type] || "";
+    var t = curTask(), set = curSet(), tm = TMT(S.kind)[t.q] || [0, 60], lab = { read_aloud: "Đọc to", describe: "Tả ảnh", respond: "Trả lời câu hỏi", info: "Dựa vào thông tin", solution: "Đề xuất giải pháp", opinion: "Nêu ý kiến", sentence: "Viết câu theo ảnh", email: "Trả lời email", essay: "Bài luận ý kiến" }[t.type] || "";
     var h = '<div class="top"><button class="soft" data-act="quit" title="Thoát">✕</button><div class="t"><b>Câu ' + t.q + "</b> · " + esc(lab) + '</div>' + dots() + "</div>";
     if (S.phase === "grading") { h += '<div class="card" style="text-align:center"><p><span class="spin"></span> AI đang chấm…</p><p class="sub">Thường mất 5–15 giây.</p></div>'; app.innerHTML = h; return; }
     if (S.phase === "result") return result(h + (t.image ? '<div class="card">' + promptHtml(t) + "</div>" : ""), t);   /* kết quả vẫn hiện ảnh đề để đối chiếu */
@@ -513,7 +521,7 @@
 
   /* ---------- luồng 1 câu ---------- */
   function begin(kind, group) {
-    var set = curSet(), g = GROUPS[kind].filter(function (x) { return x.k === group; })[0];
+    var set = curSet(), g = GRP(kind).filter(function (x) { return x.k === group; })[0];
     S.kind = kind; S.group = group; S.gt = g.t; S.tasks = set.tasks.filter(function (t) { return g.qs.indexOf(t.q) >= 0 && (!S.qFrom || t.q >= S.qFrom) && (!S.qTo || t.q <= S.qTo) && (kind === "writing" || t.type !== "describe" || t.scene || t.image); });
     S.i = 0; S.results = {}; S.screen = "task"; question();
   }
@@ -524,9 +532,9 @@
     if (t.type === "info" && t.info && S.tasks.indexOf(t) === S.tasks.indexOf(S.tasks.filter(function (x) { return x.info; })[0])) { S.phase = "read"; render(); return startTimer(45, startPrep); }
     startPrep();
   }
-  function startPrep() { var t = curTask(), tm = TIME[S.kind][t.q]; S.phase = "prep"; render(); if (!MOCK) { if (t.type === "respond" || t.type === "info" || t.type === "opinion") say(t.question); else if (t.type === "solution") say(t.message); } startTimer(tm[0], startResp); }
+  function startPrep() { var t = curTask(), tm = TMT(S.kind)[t.q]; S.phase = "prep"; render(); if (!MOCK) { if (t.type === "respond" || t.type === "info" || t.type === "opinion") say(t.question); else if (t.type === "solution") say(t.message); } startTimer(tm[0], startResp); }
   function startResp() {
-    var t = curTask(), tm = TIME[S.kind][t.q]; try { speechSynthesis.cancel(); } catch (e) {}
+    var t = curTask(), tm = TMT(S.kind)[t.q]; try { speechSynthesis.cancel(); } catch (e) {}
     if (S.kind === "speaking") beep(880); S.phase = "resp"; render();
     if (S.kind === "speaking") startSpeech(t);
     startTimer(tm[1], function () { finish(true); });
@@ -636,7 +644,7 @@
     return Object.keys(x).map(function (k) { return x[k]; }).filter(function (v) { return typeof v === "string"; }).join(" — ");
   }
   async function grade(aP) {
-    var t = curTask(), q = t.q, max = MAXS[S.kind][q], res = { q: q, max: max }, ans = S.kind === "writing" ? (S.text || "") : (S.tr || "");
+    var t = curTask(), q = t.q, max = MXS(S.kind)[q], res = { q: q, max: max }, ans = S.kind === "writing" ? (S.text || "") : (S.tr || "");
     try {
       if (S.kind === "speaking" && t.type === "read_aloud") {
         var g = gradeRead(t.text, ans); res.score = g.score; res.read = g; res.fb = { strengths: [], fixes: ["Điểm đọc to ở đây ước tính theo độ khớp chữ nhận được (" + Math.round(g.pct * 100) + "%). Phát âm/ngữ điệu thật chưa chấm được."] };
@@ -655,7 +663,7 @@
       : "You are a strict but fair TOEIC Writing rater. Typical learner answers deserve 1-2 on a 0-3 scale (0-4 for emails, 0-5 for the essay). Reply JSON only.";
   }
   function userPrompt(t, ans) {
-    var max = MAXS[S.kind][t.q], base = 'Return JSON: {"score":<integer 0-' + max + '>,"strengths":["<1-2 short Vietnamese points>"],"fixes":["<up to 3 Vietnamese points, each with a short English example of the correction>"],"better":"<an improved English version of the learner answer, similar length>"}.\n';
+    var max = MXS(S.kind)[t.q], base = 'Return JSON: {"score":<integer 0-' + max + '>,"strengths":["<1-2 short Vietnamese points>"],"fixes":["<up to 3 Vietnamese points, each with a short English example of the correction>"],"better":"<an improved English version of the learner answer, similar length>"}.\n';
     if (S.kind === "speaking") {
       var d = t.type === "describe" ? "Photo description (the learner sees a photo described as): " + t.scene : t.type === "solution" ? "Voicemail the learner heard: " + t.message : t.type === "info" ? "Info table: " + JSON.stringify((S.tasks.filter(function (x) { return x.info; })[0] || {}).info) + "\nQuestion: " + t.question : "Question: " + t.question + (t.scenario ? "\nContext: " + t.scenario : "");
       return base + "Task rubric: " + SP_RUBRIC[t.type] + "\n" + d + "\nLearner transcript (" + nWords(ans) + " words): " + ans;
@@ -686,7 +694,7 @@
   }
   function summary() {
     var raw = 0, max = 0, rows = "";
-    S.tasks.forEach(function (t) { var r = S.results[t.q]; max += MAXS[S.kind][t.q]; if (r && r.score != null) raw += r.score; rows += "<tr><td>Câu " + t.q + "</td><td>" + esc(t.type.replace("_", " ")) + '</td><td class="n">' + (r && r.score != null ? r.score : "—") + "/" + MAXS[S.kind][t.q] + "</td></tr>"; });
+    S.tasks.forEach(function (t) { var r = S.results[t.q]; max += MXS(S.kind)[t.q]; if (r && r.score != null) raw += r.score; rows += "<tr><td>Câu " + t.q + "</td><td>" + esc(t.type.replace("_", " ")) + '</td><td class="n">' + (r && r.score != null ? r.score : "—") + "/" + MXS(S.kind)[t.q] + "</td></tr>"; });
     var est = Math.round(raw / max * 200 / 5) * 5, lo = Math.max(0, est - 15), hi = Math.min(200, est + 15);
     var h = '<h1>Kết quả</h1><div class="card"><div class="sub">' + esc(S.gt) + ' · ' + (S.kind === "speaking" ? "Speaking" : "Writing") + '</div><div class="est">' + (S.group === "all" ? lo + "–" + hi : raw + "/" + max) + '</div><div class="sub">' + (S.group === "all" ? "Điểm ước tính thang 0–200 (AI, chỉ để tham khảo)" : "Điểm thô của phần đã làm") + '</div><table class="sum">' + rows + '</table><p class="sub">Thang 0–200 quy đổi gần đúng từ điểm thô; điểm thật do ETS chấm có thể khác.</p></div>' +
       '<div class="bottom"><div class="in"><button class="big" data-act="home">Chọn đề khác</button><button class="pri big" data-act="again">↻ Làm lại</button></div></div>';
@@ -741,10 +749,10 @@
     var id = e.target.id;
     if (id === "sel-src") { S.src = e.target.value; S.setId = ""; render(); return; }
     if (id === "sel-set") { S.setId = e.target.value; render(); return; }
-    if (id === "sel-scope") { S.group = e.target.value === "all" ? "all" : GROUPS[S.kind][1].k; S.qFrom = S.qTo = null; render(); return; }
+    if (id === "sel-scope") { S.group = e.target.value === "all" ? "all" : GRP(S.kind)[1].k; S.qFrom = S.qTo = null; render(); return; }
     if (id === "sel-grp") { S.group = e.target.value; S.qFrom = S.qTo = null; render(); return; }
     if (id === "q-from" || id === "q-to") {
-      var g0 = GROUPS[S.kind].filter(function (x) { return x.k === S.group; })[0], lo = Math.min.apply(null, g0.qs), hi = Math.max.apply(null, g0.qs), v0 = parseInt(e.target.value, 10);
+      var g0 = GRP(S.kind).filter(function (x) { return x.k === S.group; })[0], lo = Math.min.apply(null, g0.qs), hi = Math.max.apply(null, g0.qs), v0 = parseInt(e.target.value, 10);
       var f = id === "q-from" ? (isNaN(v0) ? lo : v0) : (S.qFrom || lo), t = id === "q-to" ? (isNaN(v0) ? hi : v0) : (S.qTo || hi);
       f = Math.max(lo, Math.min(hi, f)); t = Math.max(lo, Math.min(hi, t)); if (f > t) { if (id === "q-from") t = f; else f = t; }
       S.qFrom = f === lo ? null : f; S.qTo = t === hi ? null : t; render(); return;
