@@ -33,6 +33,8 @@
     } catch (e) {}
   }
   function readSel() {
+    /* ?sel=hub,notebook,section,page,batch (tab mới mở từ menu "↗ Mở ở tab mới"): vào thẳng mục đó, không đụng lựa chọn đang lưu của tab khác */
+    try { var qs = new URLSearchParams(location.search).get("sel"); if (qs) { var a = qs.split(","); return { hubId: a[0] || null, notebookId: a[1] || null, sectionId: a[2] || null, pageId: a[3] || null, batchId: a[4] || null }; } } catch (e) {}
     try { return JSON.parse(localStorage.getItem(LS_SEL)) || {}; } catch (e) { return {}; }
   }
 
@@ -2525,6 +2527,7 @@
     if (w.DB.mode === "cloud") items.push({ act: "leaderboard", icon: "🏆", text: "Xem xếp hạng" });
     /* 🎮 Phòng game chơi chung (2026-09-30) — tạm thời CHỈ admin mở phòng (TJ chốt),
        mở game.html ở tab mới với phạm vi = đúng mục đang bấm. Xem js/game.js. */
+    if (table !== "words") items.push({ act: "newtab", icon: "↗", text: "Mở ở tab mới" });   /* TJ 2026-10-14: dò bài ở tab khác, không ảnh hưởng tab Game đang mở */
     if (w.DB.mode === "cloud" && w.Auth.user && w.Auth.user.id === "f3fd95c9-06e8-4d39-b6f2-efc113d436cf" && !w.Auth.viewAsUserId) items.push({ act: "game", icon: "🎮", text: "Mở phòng game" });   /* CHỈ hồ sơ TJ (không phải mọi admin) — khớp HOST_PROFILE_ID trong js/game.js */
     if (w.DB.mode === "cloud" && w.Auth.user && w.Auth.user.id === "f3fd95c9-06e8-4d39-b6f2-efc113d436cf" && !w.Auth.viewAsUserId) items.push({ act: "board", icon: "🖤", text: "Mở bảng" });   /* TJ 2026-10-05: mở bảng chung (bài đọc + bảng từ) cho mọi Block trong mục này */
     /* "🧪 Kiểm tra tất cả" (2026-09-27, TJ yêu cầu) — ôn liên tiếp MỌI Block
@@ -2590,6 +2593,19 @@
   }
   App.closeMenu = closeMenu;
 
+  /* [hubId, notebookId, sectionId, pageId, batchId] của 1 mục (suy từ dữ liệu đang tải: Hub/Notebook của Hub hiện tại, Section/Page/Batch của Notebook hiện tại) */
+  function selFor(table, id) {
+    var hub = S.hubId || "", nb = S.notebookId || "", sec = "", pg = "", bt = "";
+    if (table === "hubs") return [id, "", "", "", ""];
+    if (table === "notebooks") return [hub, id, "", "", ""];
+    if (table === "sections") return [hub, nb, id, "", ""];
+    var page = null, batch = null;
+    if (table === "pages") page = S.pages.find(function (x) { return x.id === id; });
+    else if (table === "batches") { batch = S.batches.find(function (x) { return x.id === id; }); page = batch && S.pages.find(function (x) { return x.id === batch.page_id; }); }
+    else if (table === "blocks") { var bl = S.blocks.find(function (x) { return x.id === id; }); batch = bl && S.batches.find(function (x) { return x.id === bl.batch_id; }); page = batch && S.pages.find(function (x) { return x.id === batch.page_id; }); }
+    if (!page) return [hub, nb, "", "", ""];
+    return [hub, nb, page.section_id, page.id, batch ? batch.id : ""];
+  }
   App.doAction = async function (table, id, act) {
     var meta = MENU[table];
     var row = rowOf(table, id);
@@ -2859,6 +2875,11 @@
         w.toast('Đã tạo "' + newNb.name + '" — bản sao Section/Page/Batch/Block/Từ vựng' + (progressScope ? ", kèm tiến trình học" : ""), "ok");
       }
 
+      else if (act === "newtab") {
+        var sel = selFor(table, id);
+        w.open(location.origin + location.pathname + (sel ? "?sel=" + sel.join(",") : ""), "_blank", "noopener");   /* noopener: tab mới không thừa kế phiên Game */
+        return;
+      }
       else if (act === "board") {
         if (w.GameLayer) w.GameLayer.openBoard(table, id, row.name || "");
         return;
