@@ -20,6 +20,7 @@
     if (!p) return;
     if (p.t === "start") { openedRun = p.run; document.dispatchEvent(new CustomEvent("tjwl-sw-open", { detail: p.kind })); setTimeout(function () { deliverStart(p); }, 250); }
     else if (p.t === "live") { if (p.run !== openedRun) { openedRun = p.run; document.dispatchEvent(new CustomEvent("tjwl-sw-open", { detail: p.kind })); setTimeout(function () { liveFwd(p); }, 400); } else liveFwd(p); }
+    else if (p.t === "fin") frames().forEach(function (f) { post(f.contentWindow, { type: "sw-class-fin", p: p }); });
     else if (false) frames().forEach(function (f) { post(f.contentWindow, { type: "sw-class-live", p: p }); });
     else if (p.t === "res") frames().forEach(function (f) { post(f.contentWindow, { type: "sw-class-res", p: p }); });
   }

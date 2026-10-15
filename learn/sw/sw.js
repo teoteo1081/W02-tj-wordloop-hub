@@ -38,6 +38,7 @@
 
   /* ---------- màn hình ---------- */
   function render() {
+    document.body.classList.toggle("live", S.screen === "live");
     if (S.screen === "rev") return revView();
     if (S.screen === "live") return liveRender();
     if (S.screen === "home") return home();
@@ -112,18 +113,24 @@
     LIVE.sig = sig;
     var wasR = LIVE.mineOn, nowR = meActive(st) && st.phase === "resp", oldI = S.i;
     if (wasR && !nowR) finishMine();
-    LIVE.phase = st.phase; LIVE.sp = st.sp || null; LIVE.done = st.done || {}; S.i = st.i || 0; LIVE.adv = 0;
+    LIVE.fins = {}; LIVE.phase = st.phase; LIVE.sp = st.sp || null; LIVE.done = st.done || {}; S.i = st.i || 0; LIVE.adv = 0;
     LIVE.tot = (st.sec || 0) * SCALE; LIVE.tEnd = st.sec ? Date.now() + LIVE.tot * 1000 : 0;
     if ((st.i || 0) !== oldI) LIVE.my = null;
     liveRender();
     if (!wasR && nowR) startMine();
+  }
+  function liveFin(pid) {   /* host: có người bấm Xong -> hết lượt sớm khi người nói xong, hoặc khi cả lớp đã nộp */
+    var L = LIVE; if (!L || !CTX.isHost || L.adv || L.phase !== "resp") return;
+    if (L.sp) { if (L.sp.id === pid) { L.adv = 1; liveNext(); } return; }
+    L.fins = L.fins || {}; L.fins[pid] = 1;
+    if (Object.keys(L.fins).length >= Math.max(1, (CTX.players || []).length)) { L.adv = 1; liveNext(); }
   }
   function meActive(st) {   /* tới lượt máy này: host chọn mình, hoặc "cả lớp" (sp rỗng) */
     if (!st || (st.phase !== "prep" && st.phase !== "resp")) return false;
     return !st.sp || !!(CTX.me && st.sp.id === CTX.me.id);
   }
   function startMine() {
-    var L = LIVE, t = curTask(); L.mineOn = true; L.my = null; S.tr = ""; S.interim = ""; S.text = "";
+    var L = LIVE, t = curTask(); L.mineOn = true; L.my = null; S.tr = ""; S.interim = ""; S.text = ""; liveRender();
     if (S.kind === "speaking") startSpeech(t);
   }
   function finishMine() {
@@ -154,10 +161,13 @@
     var L = LIVE; if (!L) return; var host = CTX.isHost, spk = S.kind === "speaking", me = CTX.me || {};
     if (L.phase === "end") { app.innerHTML = '<div class="top"><button class="soft" data-act="quit" title="Thoát">✕</button><div class="t"><b>Hết bài</b></div></div><div class="card" style="text-align:center"><h2>🎉 Cả lớp đã xong</h2></div><div class="bottom"><div class="in"><button class="pri big" data-act="home">Về chọn đề</button></div></div>'; return; }
     var t = curTask(), tm = liveTimes(), run = L.phase === "prep" || L.phase === "resp", last = S.i >= S.tasks.length - 1, act = meActive(L), mybox = "";
-    if (act && L.phase === "resp") mybox = spk ? '<div class="live" id="live"><i>🎤 Mic của bạn đang bật — hãy nói…</i></div>' + (SR || MOCK ? "" : '<textarea id="manual" placeholder="Trình duyệt không nhận giọng: gõ lại điều bạn nói"></textarea>') : '<textarea id="ans" placeholder="Gõ bài viết của bạn…"></textarea>';
+    var fin = '<button class="rec big" data-act="lfin" style="width:100%;margin-top:8px">⏹ Xong</button>';
+    if (act && L.phase === "resp" && !L.mineOn) mybox = '<p class="sub" style="margin-top:8px">' + (L.my === "grading" ? "✓ Đã nộp — AI đang chấm…" : "✓ Đã nộp") + "</p>";
+    else if (act && L.phase === "resp") mybox = spk ? '<div class="live" id="live"><i>🎤 Mic của bạn đang bật — hãy nói…</i></div>' + (SR || MOCK ? "" : '<textarea id="manual" placeholder="Trình duyệt không nhận giọng: gõ lại điều bạn nói"></textarea>') + fin : '<textarea id="ans" placeholder="Gõ bài viết của bạn…"></textarea>' + fin;
     else if (act) mybox = '<p class="sub">' + (spk ? "Đến lượt bạn — hết giờ chuẩn bị máy tự bật mic." : "Chuẩn bị viết…") + "</p>";
     var h = '<div class="top"><button class="soft" data-act="quit" title="Thoát">✕</button><div class="t"><b>Câu ' + t.q + "</b> · " + esc(t.type.replace("_", " ")) + ' <span class="sub">(' + (S.i + 1) + "/" + S.tasks.length + ")</span></div></div>";
-    h += '<div class="card">' + promptHtml(t) + "</div>";
+    if (!host && L.phase === "show") h += '<div class="card" style="text-align:center"><div class="bignum">Câu ' + t.q + '</div><p class="sub">' + esc(t.type.replace("_", " ")) + '</p><p><i>Đợi host bấm Bắt đầu…</i></p></div>';
+    else h += '<div class="card">' + promptHtml(t) + "</div>";
     h += '<div class="card" style="text-align:center">';
     if (run) {
       var who = L.sp ? avatarHtml(L.sp.avatar) + " <b>" + esc(L.sp.name) + "</b>" : "Cả lớp", mine = L.sp && me.id && L.sp.id === me.id;
@@ -165,7 +175,7 @@
     } else {
       var nd = Object.keys(L.done).length;
       h += (spk ? rosterHtml(host) : "") + (spk ? '<p class="sub">' + (nd ? "Đã nói: <b>" + nd + "</b> người. " : "") + "Chuẩn bị <b>" + tm[0] + "s</b> · trả lời <b>" + tm[1] + "s</b></p>" : '<p class="sub">Thời gian viết: <b>' + mmss(tm[1]) + "</b></p>");
-      if (!host) h += "<p><i>Đợi host bấm…</i></p>";
+      if (!host && L.phase !== "show") h += "<p><i>Đợi host bấm…</i></p>";
     }
     h += "</div>";
     if (!run && L.my && L.myQ === t.q) h += L.my === "grading" ? '<div class="card" style="text-align:center"><span class="spin"></span> AI đang chấm bài của bạn…</div>' : (S.results[t.q] ? result("", t, true) : "");
@@ -225,6 +235,12 @@
   function liveAct(a, v) {
     if (a === "lsolo" && LIVE) {   /* rời lớp, tự luyện đúng câu này (AI chấm như bình thường) */
       var t = curTask(); S.leftRun = LIVE.run; LIVE = null; clearTimer(); S.class = null; S.saved = 1; S.tasks = [t]; S.i = 0; S.results = {}; S.group = "one"; S.gt = "Câu " + t.q; S.screen = "task"; question(); return true;
+    }
+    if (a === "lfin" && LIVE && LIVE.mineOn) {
+      var me0 = CTX.me || {};
+      if (!LIVE.sp) { finishMine(); liveRender(); }
+      if (CTX.isHost) liveFin(me0.id); else toParent({ type: "sw-class-send", p: { t: "fin", run: LIVE.run, pid: me0.id } });
+      return true;
     }
     if (a === "lregrade" && LIVE) { LIVE.my = "grading"; liveRender(); grade(); return true; }
     if (!LIVE || S.screen !== "live" || !CTX.isHost) return false;
@@ -462,6 +478,7 @@
     if (d.type === "sw-ctx") { CTX = { inRoom: !!d.inRoom, isHost: !!d.isHost, me: d.me || null, players: d.players || [] }; if (S.classMode === undefined && CTX.isHost && CTX.players.length > 1) S.classMode = true; if (S.screen === "home" || (S.screen === "live" && LIVE && LIVE.phase !== "prep" && LIVE.phase !== "resp")) render(); }
     else if (d.type === "sw-class-start") applyStart(d);
     else if (d.type === "sw-class-live") liveApply(d.p);
+    else if (d.type === "sw-class-fin" && d.p) liveFin(d.p.pid);
     else if (d.type === "sw-class-res" && S.class && d.p && d.p.run === S.class.run && !(CTX.me && d.p.pid === CTX.me.id)) { var b = S.class.board, p = d.p, e2 = b[p.pid] || (b[p.pid] = { name: p.name || "Bạn học", avatar: p.avatar || "", total: 0, n: 0 }); e2.total = p.total; e2.n = p.n || e2.n; ((S.class.rq = S.class.rq || {})[p.q] = S.class.rq[p.q] || {})[p.pid] = p; if (S.screen === "live" && LIVE && LIVE.phase !== "prep" && LIVE.phase !== "resp") liveRender(); else updBoard(); }
   });
   document.addEventListener("change", function (e) { if (e.target && e.target.id === "clsmode") S.classMode = e.target.checked; });
