@@ -804,18 +804,17 @@
     try { rec.start(); } catch (e) { toast("Không mở được nhận giọng"); }
   }
   /* ghi âm lượt nói (MediaRecorder) để NGHE LẠI sau: lưu Supabase Storage (toeic/sw-audio/…) + đường dẫn trong sw_history.audio */
-  /* 🎤 XIN QUYỀN MIC SỚM + DÙNG LẠI 1 LUỒNG (TJ 2026-10-15: "mới vô bài speaking phải accept cái loa mất mấy giây"):
-     trước đây mỗi lượt nói gọi getUserMedia mới -> hộp xin quyền hiện NGAY LÚC BẮT ĐẦU NÓI, ăn mất giờ. Nay xin ngay lần chạm đầu / lúc đếm 3-2-1 / lúc chuẩn bị, giữ luồng (tắt tiếng khi không ghi),
-     nhả khi thoát bài. Nhận giọng (SpeechRecognition) cũng được "mồi" 1 lần để hộp xin quyền của nó hiện sớm. */
-  var MIC = { st: null, busy: null, sr: false, asked: false };
+  /* 🎤 XIN QUYỀN MIC SỚM, NHẢ NGAY (TJ 2026-10-15: "mới vô bài speaking phải accept cái loa mất mấy giây"; và "chơi game xong không đọc đáp án"):
+     hộp xin quyền hiện NGAY lần chạm đầu / lúc đếm 3-2-1, chứ không đợi tới lúc bắt đầu nói. Xin xong là DỪNG luồng ngay (quyền vẫn được nhớ cho cả phiên) — KHÔNG giữ micro mở:
+     trên iPhone micro đang mở làm hệ thống chuyển sang chế độ thu âm và TẮT TIẾNG giọng đọc ở các thẻ khác (lỗi game không đọc đáp án). Tới lượt nói mới mở lại (không hỏi lại). */
+  var MIC = { busy: null, sr: false, asked: false, ok: false };
   function primeMic() {
-    if (MOCK || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return Promise.resolve(null);
-    if (MIC.st && MIC.st.active) return Promise.resolve(MIC.st);
-    if (!MIC.busy) MIC.busy = navigator.mediaDevices.getUserMedia({ audio: true }).then(function (st) { MIC.st = st; MIC.busy = null; st.getAudioTracks().forEach(function (t) { t.enabled = false; }); return st; }).catch(function () { MIC.busy = null; return null; });
+    if (MOCK || MIC.ok || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return Promise.resolve(null);
+    if (!MIC.busy) MIC.busy = navigator.mediaDevices.getUserMedia({ audio: true }).then(function (st) { MIC.ok = true; MIC.busy = null; try { st.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {} return true; }).catch(function () { MIC.busy = null; return null; });
     if (SR && !MIC.sr) { MIC.sr = true; try { var pr = new SR(); pr.lang = "en-US"; pr.onerror = pr.onend = function () {}; pr.start(); setTimeout(function () { try { pr.abort(); } catch (e) {} }, 700); } catch (e) {} }
     return MIC.busy;
   }
-  function micRelease() { if (MIC.st) { try { MIC.st.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {} } MIC.st = null; MIC.sr = false; MIC.asked = false; }
+  function micRelease() { MIC.asked = false; }   /* không còn luồng nào để nhả; chỉ cho phép "mồi" lại lần sau */
   var RECD = null;
   function recAudioStart() {
     RECD = null;
@@ -823,9 +822,8 @@
     var r = RECD = { stopped: false, chunks: [], blob: null, done: false, cbs: [], mr: null };
     function done(blob) { r.blob = blob; r.done = true; var cbs = r.cbs; r.cbs = []; cbs.forEach(function (cb) { cb(blob); }); }
     r.fin = done;
-    var shared = !!(MIC.st && MIC.st.active), rel = function (st) { if (st === MIC.st) st.getAudioTracks().forEach(function (t) { t.enabled = false; }); else st.getTracks().forEach(function (t) { t.stop(); }); };
-    (shared ? Promise.resolve(MIC.st) : navigator.mediaDevices.getUserMedia({ audio: true })).then(function (st) {
-      st.getAudioTracks().forEach(function (t) { t.enabled = true; });
+    var rel = function (st) { st.getTracks().forEach(function (t) { t.stop(); }); };
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(function (st) {
       if (r.stopped) { rel(st); return done(null); }
       var mr; try { mr = new MediaRecorder(st); } catch (e) { rel(st); return done(null); }
       r.mr = mr; mr.ondataavailable = function (e) { if (e.data && e.data.size) r.chunks.push(e.data); };
