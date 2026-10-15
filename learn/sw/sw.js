@@ -331,10 +331,10 @@
       else if (needP) { prim = nxb; more = allB + aiB + endB; }   /* chuẩn bị chung = nút NHỎ ở khu danh sách người chơi */
       else if (spk) { prim = nxb; more = allB + aiB + endB; if (last && !ps.length) prim += endB; }   /* nút "Bắt đầu nói" nằm ngay dưới danh sách người chơi (rosterHtml) */
       else { prim = (L.phase === "idle" ? "" : '<button class="pri big" data-act="lstart">▶ Bắt đầu viết</button>') + nxb; more = aiB + endB; if (last && L.phase === "idle") prim += endB; }
-      hostbar = '<div class="card hostbar"><div class="hb-main">' + prim + '</div><div class="hmore" tabindex="0"><button type="button" class="hmore-h" data-act="hmore" title="Thêm: AI chấm, Kết thúc lớp… (rê chuột vào)">⋯</button><div class="hmore-p">' + mgB + more + "</div></div></div>";
+      hostbar = '<div class="card hostbar"><div class="hb-main">' + prim + '</div><div class="hmore" tabindex="0"><button type="button" class="hmore-h" data-act="hmore" title="Thêm: AI chấm, Kết thúc lớp… (rê chuột vào)">⋯</button><div class="hmore-p"><button type="button" class="hmore-x" data-act="hclose" title="Đóng">✕</button>' + mgB + more + "</div></div></div>";
     }
     var below = !!hostbar && (L.phase === "ready" || run);   /* đang đếm giờ: nút host nằm NGAY DƯỚI đồng hồ */
-    if (below) h += hostbar.replace('class="card hostbar"', 'class="card hostbar below"');
+    if (below) h += hostbar.replace('class="card hostbar"', 'class="card hostbar below"').replace(/<div class="hmore"[\s\S]*<\/div><\/div><\/div>$/, "</div>");   /* đang đếm giờ: chỉ 1 nút; AI chấm / Kết thúc lớp nằm ở thẻ ⚙ Quản trị */
     if (!L.mineOn && L.phase !== "ready" && L.my && L.myQ === t.q) h += L.my === "grading" ? '<div class="card" style="text-align:center"><span class="spin"></span> AI đang chấm bài của bạn…</div>' : (S.results[t.q] ? result("", t, true) : "");
     if (L.phase !== "ready") h += othersHtml(t.q) + (run ? "" : boardHtml());
     if (run && spk) h += rosterHtml(false);
@@ -446,6 +446,7 @@
     else if (a === "lstop") { L.adv = 1; liveNext(); }
     else if (a === "lend") liveSend({ i: S.i, phase: "end", done: {} });
     else if (a === "hdo") { toParent({ type: "sw-do", a: v }); }
+    else if (a === "hclose") { var hm0 = $(".hmore"); if (hm0) { hm0.classList.remove("open"); hm0.classList.add("shut"); setTimeout(function () { hm0.classList.remove("shut"); }, 600); var ae = document.activeElement; if (ae && ae.blur) ae.blur(); } }
     else if (a === "hmore") { var hm = $(".hmore"); if (hm) hm.classList.toggle("open"); }
     else if (a === "lprev") { if (S.i > 0) { liveSend({ i: S.i - 1, phase: "show", sp: null, done: {}, sec: 0, pd: 0 }); toParent({ type: "sw-hello", kind: S.kind }); } }
     else if (a === "lnext") {
