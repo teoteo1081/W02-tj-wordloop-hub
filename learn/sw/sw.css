@@ -268,3 +268,7 @@ body.one img.zoom { position:fixed !important; inset:0; width:100vw !important; 
 .rc-btns { display:flex; flex-direction:column; gap:6px; min-width:0; flex:0 1 auto; }
 .rc-btns button { min-height:38px; padding:6px 12px; font-size:13px; white-space:nowrap; }
 @media (min-width:521px) { .rc-btns { flex-direction:row; flex-wrap:wrap; justify-content:flex-end; } }
+
+/* chữ trong kết quả đọc to bấm được để nghe đọc mẫu (TJ 2026-10-15) */
+.tapw { cursor:pointer; padding:2px 3px; border-radius:6px; -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
+.tapw:active { outline:2px solid var(--acc); }

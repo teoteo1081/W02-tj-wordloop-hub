@@ -709,7 +709,7 @@
     try {
       if (S.kind === "speaking" && t.type === "read_aloud") {
         var g = gradeRead(t.text, ans); res.score = g.score; res.read = g; res.fb = { strengths: [], fixes: ["Điểm đọc to ở đây ước tính theo độ khớp chữ nhận được (" + Math.round(g.pct * 100) + "%). Phát âm/ngữ điệu thật chưa chấm được."] };
-        if (g.pct < .9) res.fb.fixes.push("Đọc chậm, rõ từng chữ; nhấn từ nội dung; ngắt nghỉ ở dấu câu. Bấm vào chữ đỏ/vàng để luyện lại.");
+        if (g.pct < .9) res.fb.fixes.push("Đọc chậm, rõ từng chữ; nhấn từ nội dung; ngắt nghỉ ở dấu câu. Chạm vào chữ đỏ/vàng để nghe đọc mẫu rồi nói lại.");
         else res.fb.strengths.push("Đọc khớp bài rất tốt.");
       } else if (nWords(ans) < (S.kind === "speaking" ? 3 : 2)) {
         res.score = 0; res.fb = { strengths: [], fixes: [S.kind === "speaking" ? "Không nghe được lời nói (hoặc quá ngắn). Kiểm tra micro/quyền truy cập, nói to và rõ hơn." : "Bài viết trống hoặc quá ngắn."] };
@@ -751,7 +751,7 @@
     else {
       var cls = r.score === r.max ? "top" : "s" + r.score, fb = r.fb || {};
       h += '<div class="card"><div class="score"><div class="ring ' + cls + '">' + r.score + "<small>/" + r.max + '</small></div><div><b>' + (r.score >= r.max - 0 ? "Rất tốt!" : r.score >= Math.ceil(r.max / 2) ? "Khá ổn" : "Cần cải thiện") + '</b><div class="sub">Điểm ước tính cho câu này</div></div></div>';
-      if (r.read && r.read.pct >= .05) h += '<p class="prompt read" style="margin-top:8px">' + r.read.words.map(function (w, i) { return '<span class="w-' + (r.read.st[i] || "miss") + '">' + esc(w) + "</span>"; }).join(" ") + '</p><p class="sub"><span class="w-ok">xanh = đúng</span> · <span class="w-bad">đỏ = sai/chưa rõ</span> · <span class="w-miss">vàng = bỏ sót</span></p>';
+      if (r.read && r.read.pct >= .05) h += '<p class="prompt read" style="margin-top:8px">' + r.read.words.map(function (w, i) { var cw = String(w).replace(/^[^A-Za-z0-9']+|[^A-Za-z0-9']+$/g, ""); return '<span class="w-' + (r.read.st[i] || "miss") + (cw ? " tapw" : "") + '"' + (cw ? ' role="button" tabindex="0" data-act="say" data-v="' + esc(cw) + '" title="Chạm để nghe đọc mẫu"' : "") + ">" + esc(w) + "</span>"; }).join(" ") + '</p><p class="sub"><span class="w-ok">xanh = đúng</span> · <span class="w-bad">đỏ = sai/chưa rõ</span> · <span class="w-miss">vàng = bỏ sót</span> · 👆 chạm vào chữ để nghe đọc mẫu</p>';   /* TJ 2026-10-15: câu hướng dẫn hứa "bấm chữ đỏ/vàng" nhưng chữ không bấm được -> gắn data-act="say" (đọc mẫu bằng giọng máy) */
       if ((fb.strengths || []).length) h += '<ul class="fb ok">' + fb.strengths.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>";
       if ((fb.fixes || []).length) h += '<p><b>Cần sửa</b></p><ul class="fb">' + fb.fixes.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>";
       h += "</div>";
