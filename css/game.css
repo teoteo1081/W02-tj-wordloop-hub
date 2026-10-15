@@ -2204,8 +2204,22 @@ body.g-playing.g-adm #g-righthandle{top:2px;right:8px;width:30px;height:30px;fon
    Nút "đang chọn ▾" (js/learn.js #g-learn-cur) thay cho hàng 8 thẻ; bấm để mở, chọn thẻ khác thì tự thu. Avatar lên cùng hàng với nút này. */
 .g-learn-cur{display:none}
 @media (max-width:640px){
-  body.g-host .g-learn-cur{display:flex;align-items:center;justify-content:space-between;order:9;flex:1 1 0;min-width:0;background:var(--accent);border:1px solid var(--accent);color:#fff;font:700 14px/1.2 inherit;font-family:inherit;border-radius:999px;padding:9px 16px;cursor:pointer;white-space:nowrap}
+  body.g-host .g-learn-cur{display:flex;align-items:center;justify-content:space-between;order:8;flex:1 1 150px;min-width:150px;background:var(--accent);border:1px solid var(--accent);color:#fff;font:700 14px/1.2 inherit;font-family:inherit;border-radius:999px;padding:9px 16px;cursor:pointer;white-space:nowrap}
   body.g-host .g-learn:not(.open){display:none}
   body.g-host .g-learn.open{display:flex} body.g-host .g-learn.open button{flex:1 1 calc(50% - 6px);min-height:40px}   /* mở ra: 2 cột cho khỏi đè chữ */
-  .g-top .g-me{order:8}
+  .g-top .g-me{order:7}
+}
+
+/* ===== 📱 MENU TỰ ẨN Ở PHÒNG CHỜ / CÀI ĐẶT (js/game.js body.g-tidy) — y hệt lúc làm bài: tay nắm nhỏ ở mép trên, vuốt xuống / chạm để hiện, 📌 để ghim (TJ 2026-10-15) ===== */
+body.g-tidy #g-tophandle{display:block;position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:73;width:64px;height:8px;padding:0;border:0;border-radius:0 0 6px 6px;background:rgba(255,255,255,.28);cursor:pointer;-webkit-tap-highlight-color:transparent}
+body.g-tidy .g-top{position:fixed;left:0;right:0;top:0;z-index:72;transform:translateY(-120%);transition:transform .18s ease;box-shadow:0 6px 16px rgba(0,0,0,.45)}
+body.g-tidy.g-topshow .g-top{transform:none}
+@media (prefers-reduced-motion:reduce){body.g-tidy .g-top{transition:none}}
+body.g-tidyok #g-toppin{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;order:9;margin-left:auto;padding:0;border:1px solid var(--line);border-radius:50%;background:transparent;color:var(--text-2);font-size:16px;cursor:pointer;opacity:.75}
+body.g-tidyok #g-toppin.on{opacity:1;background:var(--accent);border-color:var(--accent);color:#fff;transform:rotate(-20deg)}
+/* cài đặt phòng chờ to rõ trên điện thoại: 1 cột, chữ 17px, ô chọn cao 50px (trước: 2 cột, chữ bị cắt "TOEIC Speaking (đ") */
+@media (max-width:520px){
+  .g-settings{grid-template-columns:1fr;gap:14px}
+  .g-settings label{font-size:15px;gap:6px}
+  .g-settings select,.g-settings input:not([type=checkbox]):not([type=radio]){font-size:17px;padding:12px;min-height:50px;border-radius:12px}
 }

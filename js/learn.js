@@ -4,7 +4,7 @@
    iframe tạo 1 lần rồi GIỮ SỐNG (ẩn chứ không xoá) để chuyển qua lại không mất lượt đang chơi, và phòng TOEIC bên dưới vẫn chạy. */
 (function () {
   "use strict";
-  var PAGES = { ea: "learn/ea/index.html?v=31", dm: "learn/dm/index.html?v=31", sp: "learn/sw/index.html?v=79&kind=speaking", wr: "learn/sw/index.html?v=79&kind=writing", ielts: "learn/sw/index.html?v=79&kind=speaking&exam=ielts", ielw: "learn/sw/index.html?v=79&kind=writing&exam=ielts" };
+  var PAGES = { ea: "learn/ea/index.html?v=31", dm: "learn/dm/index.html?v=31", sp: "learn/sw/index.html?v=80&kind=speaking", wr: "learn/sw/index.html?v=80&kind=writing", ielts: "learn/sw/index.html?v=80&kind=speaking&exam=ielts", ielw: "learn/sw/index.html?v=80&kind=writing&exam=ielts" };
   var TITLES = { ea: "EA Quest", dm: "Marketing Quest", sp: "TOEIC Speaking", wr: "TOEIC Writing", ielts: "IELTS Speaking", ielw: "IELTS Writing" };
   var nav = document.getElementById("g-learn"), top = document.querySelector(".g-top");
   if (!nav || !top) return;
@@ -33,7 +33,8 @@
   document.addEventListener("tjwl-hubchanged", function (e) { hub = e.detail === "test" ? "test" : "vocab"; paintHub(); });
   /* TJ 2026-10-15: lúc làm bài thanh trên bị đẩy khỏi màn hình -> mép dưới của nó ÂM, khung lớp bị đặt lên trên, mất khúc đầu.
      Nay: đang chơi (body.g-playing) hoặc mép âm -> khung bắt đầu từ mép trên màn hình (0). */
-  function place() { var b = top.getBoundingClientRect().bottom; layer.style.top = (document.body.classList.contains("g-playing") ? 0 : Math.max(0, Math.round(b))) + "px"; }
+  function place() { var b = top.getBoundingClientRect().bottom, bc = document.body.classList; layer.style.top = (bc.contains("g-playing") || bc.contains("g-tidy") ? 0 : Math.max(0, Math.round(b))) + "px"; }
+  document.addEventListener("tjwl-top-layout", function () { place(); setTimeout(place, 250); });   /* menu ẩn/hiện/ghim -> đặt lại mép trên khung lớp */
   document.addEventListener("tjwl-sw-focus", function () { place(); setTimeout(place, 250); });   /* sau hiệu ứng trượt thanh trên (.18s) */
   function show(key) {
     if (!PAGES[key]) key = "";
@@ -58,6 +59,7 @@
     try { if (k === "sp" || k === "wr" || k === "ielts" || k === "ielw" || k === "dm" || k === "ea") sessionStorage.setItem("tjwl_sw_keep", k); else sessionStorage.removeItem("tjwl_sw_keep"); } catch (e) {}   /* chỉ host bấm thẻ (thanh thẻ chỉ có ở host) -> F5 quay lại đúng Speaking/Writing; người chơi bị lớp tự mở thì KHÔNG nhớ */
     if (k === "" || k === "toeic") { show(""); document.dispatchEvent(new CustomEvent("tjwl-sethub", { detail: k === "toeic" ? "test" : "vocab" })); }
     else show(k);
+    try { document.dispatchEvent(new CustomEvent("tjwl-tidy")); } catch (e) {}   /* chọn thẻ xong -> menu tự ẩn (điện thoại) */
   });
   document.addEventListener("tjwl-sw-open", function (e) { show(e.detail === "writing" ? "wr" : e.detail === "ielts" ? "ielts" : e.detail === "ielw" ? "ielw" : e.detail === "dm" ? "dm" : e.detail === "ea" ? "ea" : "sp"); });   /* swclass.js: host bắt đầu lớp -> mở đúng thẻ */
   document.addEventListener("tjwl-learn-home", function () { show(""); });   /* game.js: mở từ bài học -> bỏ lớp phủ EA/Marketing, về thẻ Phòng game */

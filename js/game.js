@@ -157,16 +157,33 @@
      thu gọn để câu hỏi + ảnh + 4 đáp án + chỉ số vừa trọn 1 khung nhìn, KHÔNG phải cuộn. Rê chuột lên mép trên (máy tính) hoặc chạm tay nắm nhỏ ở mép trên (điện thoại) để hiện lại. */
   var swFocus = false;   /* lớp Speaking/Marketing/EA đang làm bài (learn/qclass.js báo "sw-focus") — cũng thu gọn thanh như ván thường (TJ 2026-10-15) */
   document.addEventListener("tjwl-sw-focus", function (e) { swFocus = !!e.detail; syncTestFocus(); });
+  /* 📱 MENU TỰ ẨN Ở PHÒNG CHỜ / CÀI ĐẶT (TJ 2026-10-15: "chọn xong hide đi, cư xử như trong test, để nút ghim 📌 giống Notebook và Pages"):
+     điện thoại (<=640px, game nằm trong khung WordLoop): chọn thẻ chủ đề xong (js/learn.js bắn "tjwl-tidy") -> thanh trên của game + thanh app WordLoop ẩn như lúc làm bài,
+     chạm tay nắm / vuốt xuống mép trên để hiện tạm; 📌 = ghim giữ menu luôn hiện (nhớ theo máy), bỏ ghim = lại tự ẩn. body.g-tidy = đang ẩn, g-tidyok = máy này dùng được tính năng. */
+  function tidyOk() { return !!G.embed && window.innerWidth <= 640; }
+  document.addEventListener("tjwl-tidy", function () { G.tidyOn = true; syncTestFocus(); });
   function syncTestFocus() {
     var on = !!(swFocus || (G.st && G.st.phase === "play" && $("#s-play") && !$("#s-play").hidden && G.view !== "screen" && !G.spectating));   /* MỌI loại ván đang chơi (từ vựng, Kahoot, test…) + lớp đang làm bài */
+    var okT = tidyOk();
+    if (okT && !G.pinInit) { G.pinInit = true; if (readLS("tjwl_menu_pin_v1")) { G.topPin = true; document.body.classList.add("g-toppin"); var pb0 = $("#g-toppin"); if (pb0) { pb0.classList.add("on"); pb0.setAttribute("aria-pressed", "true"); } } }   /* nhớ ghim theo máy */
+    var tidy = !on && okT && !!G.tidyOn && !G.topPin, wasTidy = document.body.classList.contains("g-tidy");
+    document.body.classList.toggle("g-tidyok", okT);
+    document.body.classList.toggle("g-tidy", tidy);
+    if (tidy && !wasTidy) document.body.classList.remove("g-topshow");
     document.body.classList.toggle("g-playing", on);
     document.body.classList.toggle("g-adm", on && !!G.isHost);
     if (on && !G.tFocus && G.topPin) topPin(false);   /* vào ván mới: mặc định ẩn (không ghim) */
-    if (!on) { document.body.classList.remove("g-topshow", "g-admopen", "g-toppin", "g-admpin"); G.topPin = false; G.admPin = false; $("#g-admin").hidden = true; var rh = $("#g-righthandle"); if (rh) rh.classList.remove("on"); }
+    if (!on) {
+      document.body.classList.remove("g-admopen", "g-admpin");
+      if (!okT) { document.body.classList.remove("g-topshow", "g-toppin"); G.topPin = false; }   /* điện thoại: giữ ghim/hiện menu ở phòng chờ */
+      G.admPin = false; $("#g-admin").hidden = true; var rh = $("#g-righthandle"); if (rh) rh.classList.remove("on");
+    }
     admMove();
-    if (on === !!G.tFocus) return; G.tFocus = on;
+    var want = on || tidy;
+    if (want === !!G.tFocus) return; G.tFocus = want;
     if (on) { try { window.scrollTo(0, 0); } catch (e) {} } else { var sk0 = $("#p-tskip"); if (sk0) sk0.remove(); }   /* vào ván: luôn ở đầu trang để thấy chỉ số + cả đề (TJ 2026-10-13) */
-    focusParent(on);
+    focusParent(want);
+    try { document.dispatchEvent(new CustomEvent("tjwl-top-layout")); } catch (e) {}   /* js/learn.js đặt lại mép trên khung lớp */
     setTimeout(fitTImg, 60);
   }
   function focusParent(on) { if (G.embed) { try { window.parent.postMessage({ type: "tjwl-game-focus", on: !!on }, location.origin); } catch (e) {} } }
@@ -174,7 +191,7 @@
      Máy tính: rê vào dải mép trên (48px) = thanh trên; mép phải (40px) = ⚙ Quản trị (chỉ host); rời chuột ~1.5s tự ẩn.
      Cảm ứng: vuốt xuống từ mép trên / vuốt từ mép phải vào, hoặc chạm vạch mỏng; chạm ngoài hoặc ~4s tự ẩn. Bàn phím: Esc / Alt+↑. */
   var PK = { top: 0, adm: 0, hov: false };
-  function playing() { return document.body.classList.contains("g-playing"); }
+  function playing() { return document.body.classList.contains("g-playing") || document.body.classList.contains("g-tidy"); }   /* g-tidy: menu tự ẩn ở phòng chờ (điện thoại) cũng dùng tay nắm / vuốt / Esc để hiện */
   function topShow(v, touch) {
     if (v && !playing()) return; if (!v && G.topPin) return;   /* đang 📌 ghim: không tự ẩn */
     var b = document.body, was = b.classList.contains("g-topshow");
@@ -191,6 +208,7 @@
     if (G.topPin) { if (!b.classList.contains("g-topshow")) { b.classList.add("g-topshow"); focusParent(false); } }
     else if (b.classList.contains("g-topshow")) topArm(1500);
     setTimeout(fitTImg, 120);
+    syncTestFocus();   /* phòng chờ (điện thoại): ghim = menu hiện lại bình thường, bỏ ghim = tự ẩn */
   }
   function topArm(ms) { PK.top = setTimeout(function () { if (PK.hov) topArm(800); else topShow(false); }, ms); }
   function admShow(v, touch, force) {
@@ -207,7 +225,7 @@
   }
   function admArm() { clearTimeout(PK.adm); PK.adm = setTimeout(function () { if (!PK.admIn) admShow(false); }, 1500); }
   document.addEventListener("click", function (e) {
-    if (e.target.closest("#g-toppin")) topPin(!G.topPin);
+    if (e.target.closest("#g-toppin")) { var np = !G.topPin; topPin(np); if (tidyOk() && !document.body.classList.contains("g-playing")) writeLS("tjwl_menu_pin_v1", np ? 1 : null); }
     else if (e.target.closest("#g-tophandle")) topShow(!document.body.classList.contains("g-topshow"), true);
     else if (e.target.closest("#g-righthandle")) admPin(!G.admPin);
     else if (e.target.closest("#ga-x")) { if (G.admPin) admPin(false); else admShow(false); }

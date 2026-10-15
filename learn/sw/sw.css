@@ -249,3 +249,10 @@ body.one img.zoom { position:fixed !important; inset:0; width:100vw !important; 
   .gorow .big, .gorow .gobtn, .gorow .prepbtn, body.live .gorow .big { flex:1 1 0 !important; min-width:0 !important; width:auto !important; padding:10px 8px !important; font-size:14px !important; line-height:1.25 !important; white-space:normal !important; min-height:50px !important; text-align:center; justify-content:center; }
   body:not(.one) .gorow { position:fixed; left:0; right:0; bottom:0; z-index:30; margin:0 !important; padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px)); background:var(--card); border-top:1px solid var(--line); box-shadow:0 -8px 16px -8px rgba(0,0,0,.5); }   /* thanh hành động chính dính đáy khung (#app đã chừa 90px đáy) */
 }
+
+/* cài đặt Speaking/Writing to rõ trên điện thoại: ô chọn dài chiếm cả hàng (không bị cắt chữ), chữ 17px, ô cao 48px (TJ 2026-10-15: "phần setting bị nhỏ xíu") */
+@media (max-width:560px) {
+  .hp-grid > label:has(select) { grid-column:1 / -1; }
+  .hubpanel label, .lobby label { font-size:14px; }
+  .hubpanel select, .hubpanel input[type=text], .hubpanel input[type=number], .lobby select { font-size:17px !important; padding:12px 10px !important; min-height:48px; }
+}
