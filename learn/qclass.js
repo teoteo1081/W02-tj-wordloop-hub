@@ -96,21 +96,20 @@
     var done = Z.ph === "q" ? Z.i : Z.i + 1, left = Math.max(0, Z.n - done), tot = (meR.c || 0) + (meR.w || 0), acc = tot ? Math.round(100 * (meR.c || 0) / tot) + "%" : "—";
     var h = '<div class="qw gq g-play">';
     /* 1) đồng hồ: số giây to + nhãn + nút tiếng + ✕ */
-    h += '<div class="g-clock"><span id="p-left">' + (Z.ph === "q" ? fmtS(rem()) : Z.nxEnd ? "⏭ " + fmtS((Z.nxEnd - Date.now()) / 1000) : "✓") + '</span><span class="g-sub" id="p-mode" style="min-width:0;max-width:92px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Cùng 1 câu</span>' +
-      '<span class="g-qtools"><button class="g-mute' + (SND.mute ? " off" : "") + '" data-q="mute" type="button">' + (SND.mute ? "🔇 Đã tắt tiếng" : "🔊 Có tiếng") + '</button>' +
-      '<input type="range" class="g-vol" id="qvol" min="0" max="100" step="5" value="' + SND.vol + '" aria-label="Âm lượng đọc từ" style="width:56px">' +
-      (q.say ? '<button class="g-replay" data-q="say" type="button" title="Nghe lại">🔁</button>' : "") + "</span>" +
-      '<button class="qx sm" data-q="quit" title="' + (host ? "Đóng lớp" : "Thoát") + '">✕</button>' +
+    h += '<div class="g-clock" style="position:relative;padding-right:36px"><span id="p-left">' + (Z.ph === "q" ? fmtS(rem()) : Z.nxEnd ? "⏭ " + fmtS((Z.nxEnd - Date.now()) / 1000) : "✓") + '</span><span class="g-sub" id="p-mode" style="min-width:0;max-width:58px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Cùng 1 câu</span>' +
+      '<span class="g-qtools"><button class="g-replay" data-q="say" type="button" title="Nghe lại"' + (q.say ? "" : " disabled") + '>🔊</button><button class="g-mute' + (SND.mute ? " off" : "") + '" data-q="mute" type="button">' + (SND.mute ? "🔇 Đã tắt tiếng" : "🔊 Có tiếng") + '</button>' +
+      '<input type="range" class="g-vol" id="qvol" min="0" max="100" step="5" value="' + SND.vol + '" aria-label="Âm lượng đọc từ" style="width:40px">' +
+      "</span>" +
+      '<button class="qx sm" data-q="quit" title="' + (host ? "Đóng lớp" : "Thoát") + '" style="position:absolute;right:4px;top:4px;z-index:2;width:30px;height:30px;padding:0">✕</button>' +
       (host ? '<button class="g-btn g-btn-soft g-btn-sm" data-q="close" type="button">⏹ Kết thúc</button>' : "") + "</div>";
     /* 2) dải thống kê của mình */
-    h += '<div class="g-statbar">' + gstat(meR.c || 0, "Đúng", "ok") + gstat(meR.w || 0, "Sai", "bad") + gstat(done + "/" + Z.n, "Đã làm") + gstat(left, "Còn lại") + gstat(acc, "Chính xác") + "</div>";
+    h += '<div class="g-statbar">' + gstat(meR.c || 0, "Đúng", "ok") + gstat(meR.w || 0, "Sai", "bad") + gstat(done + "/" + Z.n, "Đã làm") + gstat(left, "Còn lại") + gstat(acc, "Chính xác") + gstat("—", "TB/câu") + "</div>";
     /* 3) top 3 (huy chương + avatar) */
     h += '<div class="g-top3">' + rows.slice(0, 3).map(function (r, i) {
       return '<span class="g-t3 g-t3-' + (i + 1) + (r.id === me.id ? " me" : "") + '" title="' + esc(r.name || "") + '"><i class="g-t3m">' + ["🥇", "🥈", "🥉"][i] + "</i>" + gav(r.avatar, "g-av-md") + '<em class="g-t3n">' + esc(r.name || "") + "</em><b>✓" + (r.c || 0) + "</b></span>";
     }).join("") + "</div>";
     /* 4) câu hỏi */
     h += '<div class="g-q"><div class="g-qbar"><div id="p-qbar" style="width:' + (Z.ph === "q" && Z.tot ? Math.min(100, 100 * rem() / Z.tot) : 0) + '%"></div></div>';
-    h += '<div class="g-qhint g-sub">' + esc(HINT[q.k] || "") + "</div>";
     h += '<div class="g-qvi">' + (q.hide ? '<span style="font-size:44px">🎧</span>' : esc(q.t)) + "</div>";
     var longOpt = q.o.some(function (o) { return String(o).length > 26; });   /* giống màn Từ vựng: đáp án dài -> 1 cột, còn lại 2 cột (game.css ép 1 cột dưới 420px nên ghi đè inline) */
     h += '<div class="g-opts' + (longOpt ? ' g-opts-1"' : '" style="grid-template-columns:1fr 1fr"') + '>';
