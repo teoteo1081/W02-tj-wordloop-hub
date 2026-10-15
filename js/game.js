@@ -2736,7 +2736,7 @@
   }
   /* câu mới: phát đúng đoạn của câu; câu đầu nhóm Part 3–4 phát cả hội thoại trước. Host 🎧 theo audio: hết đoạn + khoảng chờ như đề thật
      (5s Part 1–2, 8s Part 3–4, 12s câu "Look at the graphic") thì tự sang câu. */
-  var LEAD_S = 25;   /* giây đọc trước nhóm đầu Part 3 / 4 (≈ lời hướng dẫn đề thật) */
+  var LEAD_S = 0;   /* giây đọc trước nhóm đầu Part 3 / 4. TJ 2026-10-14: "vào part nào là begin luôn khỏi đọc lại hướng dẫn / mới vô im lặng quá lâu" -> 0 = vào Part là nghe ngay (đặt >0 để chừa lại giờ đọc trước) */
   function tAutoPlay(q) {
     var c = tCue(q); if (!c || !G.st || !G.st.tplay) return;
     var lead = +q.lead || 0, leadTok = ++G.tLeadTok || (G.tLeadTok = 1); clearInterval(G.tLeadI);
