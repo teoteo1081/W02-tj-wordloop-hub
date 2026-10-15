@@ -907,11 +907,11 @@
       }).join("");
       var link = pw.document.querySelector('link[href*="app.css"]'), href = link ? link.href : "css/app.css", d = pw.document;
       var doc = '<!doctype html><html class="' + esc(d.documentElement.className) + '" data-theme="' + esc(d.documentElement.getAttribute("data-theme") || "") + '"><head><meta charset="utf-8"><link rel="stylesheet" href="' + esc(href) + '"><style>' +
-        'html,body{margin:0;background:transparent!important;min-height:0!important;height:auto!important;overflow:hidden} body{padding:4px} .block-tabs-row,.dots,.vchip-del,.fw-preview,.block-right .done-badge .btn{display:none!important} .block-card{margin:8px 0;cursor:pointer;opacity:.78} .block-card.sel{opacity:1;box-shadow:0 0 0 2px #d9776a} ' +
+        'html,body{margin:0;background:transparent!important;min-height:0!important;height:auto!important;overflow:hidden} body{padding:4px} .block-quick-tabs,.dots,.vchip-del,.fw-preview{display:none!important} .block-bottom .progress-bar{display:none!important} .block-card{margin:8px 0;cursor:pointer;opacity:.78} .block-card.sel{opacity:1;box-shadow:0 0 0 2px #d9776a} ' +
         '.bp-batchrow{margin:12px 0 2px} .bp-batch{border:0;border-radius:999px;padding:6px 14px;background:#d9684b;color:#fff;font:700 14px/1 system-ui,sans-serif;cursor:pointer;opacity:.75} .bp-batch.on{opacity:1;box-shadow:0 0 0 2px rgba(217,104,75,.45)}</style></head><body class="' + esc(d.body.className) + '">' + body +
-        '<script>document.addEventListener("click",function(e){var t=e.target.closest("[data-bt]"),k=e.target.closest(".block-card[data-block]");if(t)parent.__tjBp("bt",t.dataset.bt);else if(k)parent.__tjBp("bk",k.dataset.block);});' +
+        '<script>document.addEventListener("click",function(e){var g=e.target.closest("[data-gameblock]"),m=e.target.closest("[data-boardblock]"),t=e.target.closest("[data-bt]"),k=e.target.closest(".block-card[data-block]");if(g)parent.__tjBp("play",g.dataset.gameblock);else if(m)parent.__tjBp("board",m.dataset.boardblock);else if(t)parent.__tjBp("bt",t.dataset.bt);else if(k)parent.__tjBp("bk",k.dataset.block);});' +
         'function rep(){parent.__tjBpH&&parent.__tjBpH(document.documentElement.scrollHeight);}new ResizeObserver(rep).observe(document.body);setTimeout(rep,300);setTimeout(rep,1200);<\/script></body></html>';
-      box.innerHTML = '<h3 class="g-bph">📦 Chọn Batch / Block <span class="g-sub">(chạm Block = vào chơi ngay với thiết lập ở trên)</span></h3><iframe id="l-bpframe" class="g-bpframe" title="Chọn Batch / Block" scrolling="no"></iframe>';
+      box.innerHTML = '<h3 class="g-bph">📦 Chọn Batch / Block <span class="g-sub">(nút 🎮 Chơi game → trên thẻ = vào chơi ngay với thiết lập ở trên)</span></h3><iframe id="l-bpframe" class="g-bpframe" title="Chọn Batch / Block" scrolling="no"></iframe>';
       var fr = $("#l-bpframe"); fr.srcdoc = doc; box.hidden = false;
       return true;
     } catch (e) { return false; }
@@ -923,7 +923,7 @@
     var R = bpGroups(); if (!R || !R.groups.length) { box.hidden = true; box.innerHTML = ""; return; }
     var sel = bpSel();
     if (bpLearningCards(box, R, sel)) return;   /* thẻ Block y hệt Learning (khung riêng, CSS của app) */
-    var h = '<h3 class="g-bph">📦 Chọn Batch / Block <span class="g-sub">(chạm Block = vào chơi ngay với thiết lập ở trên)</span></h3>', ids = [];
+    var h = '<h3 class="g-bph">📦 Chọn Batch / Block <span class="g-sub">(nút 🎮 Chơi game → trên thẻ = vào chơi ngay với thiết lập ở trên)</span></h3>', ids = [];
     R.groups.forEach(function (g) {
       var all = g.blocks.every(function (b) { return sel[b.id]; });
       h += '<div class="g-bpb"><button type="button" class="g-bpbatch' + (all ? " on" : "") + '" data-bt="' + esc(g.batch.id) + '">' + esc(g.batch.name) + "</button>";
@@ -941,12 +941,21 @@
     bpLoad(ids.slice(0, 60));
   }
   function bpPick(kind, id) {
-    if (!G.isHost || !TREE || !G.st || G.st.phase !== "lobby") return;
+    if (!G.isHost || !TREE || !G.st) return;
+    if (kind === "board") {   /* 🖤 Mở bảng với Block này (giống nút trên thẻ Learning) */
+      var bb = bpById(TREE.blocks, id); if (bb) openBoardScope([{ table: "blocks", id: id, title: bb.name }]); return;
+    }
+    if (G.st.phase !== "lobby") return;
     if (kind === "bt") { var bt = bpById(TREE.batches, id); if (!bt) return; picked = [{ table: "batches", id: bt.id, title: bt.name }]; }
-    else if (kind === "bk") {   /* TJ 2026-10-15: "chọn Block là vào thẳng game luôn với các thiết lập ở trên" */
+    else if (kind === "play") {   /* 🎮 Chơi game → : vào chơi ngay với Block này + thiết lập ở trên (TJ 2026-10-15) */
       var blk = bpById(TREE.blocks, id); if (!blk || G.bpStarting) return;
       picked = [{ table: "blocks", id: id, title: blk.name }]; G.bpStarting = true;
       setTimeout(function () { G.bpStarting = false; if (G.st && G.st.phase === "lobby") $("#l-start").click(); }, 600);
+    } else if (kind === "bk") {   /* chạm thân thẻ = chọn / bỏ (chọn nhiều Block), chưa chơi */
+      var blk2 = bpById(TREE.blocks, id); if (!blk2) return;
+      var cur = picked.every(function (p) { return p.table === "blocks"; }) ? picked.slice() : [], i = cur.findIndex(function (p) { return p.id === id; });
+      if (i >= 0) { if (cur.length > 1) cur.splice(i, 1); } else cur.push({ table: "blocks", id: id, title: blk2.name });
+      picked = cur;
     } else return;
     G.bpInternal = true; paintTree(); hostSetScope(); G.bpInternal = true; paintBlockPicker();
   }
