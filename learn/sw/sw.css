@@ -240,3 +240,12 @@ body.one img.zoom { position:fixed !important; inset:0; width:100vw !important; 
 
 /* điện thoại: 2 nút chính của host (vd "Bắt đầu viết" + "Câu tiếp ›") cùng 1 hàng thay vì xếp 2 hàng (TJ 2026-10-15) */
 @media (max-width:480px) { .hostbar .hb-main .big { flex:1 1 120px; min-height:42px; font-size:15px; } .hostbar { padding:6px 8px; } }
+
+/* ===== 2 nút cam của host (Chuẩn bị chung / Bắt đầu nói) CÙNG 1 HÀNG trên điện thoại (TJ 2026-10-15) =====
+   Các luật cũ đặt nút rộng theo chữ (~260px mỗi nút) nên không bao giờ vừa 1 hàng ở 390px -> chia đều, cho chữ xuống 2 dòng nếu cần.
+   Hàng nút CỐ ĐỊNH sát đáy khung: đề dài đẩy nút xuống khuất thì host vẫn bấm được ngay, khỏi cuộn. */
+@media (max-width:520px) {
+  .gorow { flex-wrap:nowrap !important; gap:8px !important; justify-content:stretch !important; }
+  .gorow .big, .gorow .gobtn, .gorow .prepbtn, body.live .gorow .big { flex:1 1 0 !important; min-width:0 !important; width:auto !important; padding:10px 8px !important; font-size:14px !important; line-height:1.25 !important; white-space:normal !important; min-height:50px !important; text-align:center; justify-content:center; }
+  body:not(.one) .gorow { position:fixed; left:0; right:0; bottom:0; z-index:30; margin:0 !important; padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px)); background:var(--card); border-top:1px solid var(--line); box-shadow:0 -8px 16px -8px rgba(0,0,0,.5); }   /* thanh hành động chính dính đáy khung (#app đã chừa 90px đáy) */
+}
