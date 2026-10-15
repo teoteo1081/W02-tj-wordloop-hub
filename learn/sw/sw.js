@@ -56,7 +56,7 @@
     if (!sets.length) h += '<p class="sub">Chưa có đề.</p>';
     if (set) {
       h += "<h2>② Chọn phần luyện</h2><div class=\"parts\">" + g.map(function (x, i) { var miss = S.kind === "speaking" && x.qs.indexOf(3) >= 0 && x.k === "desc" && !(set.tasks.filter(function (t) { return t.q === 3; })[0] || {}).scene && !(set.tasks.filter(function (t) { return t.q === 3; })[0] || {}).image; return (i === 1 ? '<p class="sub full" style="grid-column:1/-1;margin:6px 0 0">Hoặc luyện riêng từng phần:</p>' : "") + '<button class="' + (x.k === S.group ? "pri" : "") + (i === 0 ? " full" : "") + '" data-act="part" data-v="' + x.k + '"' + (miss ? " disabled" : "") + ">" + (x.k === S.group ? "✓ " : "") + esc(x.t) + "</button>"; }).join("") + "</div>" +
-        '<button class="pri big" data-act="start" data-v="' + esc(S.group) + '" style="width:100%;margin-top:14px;font-size:18px">▶ ' + (S.classMode && CTX.isHost ? "Bắt đầu cho cả phòng" : "Bắt đầu làm bài") + "</button>";
+        '<button class="pri big" data-act="start" data-v="' + esc(S.group) + '" style="width:100%;margin-top:14px;font-size:18px">▶ ' + (classOn() ? "Bắt đầu cho cả phòng" : "Bắt đầu làm bài") + "</button>";
       var hist = ST.hist.filter(function (h2) { return h2.kind === S.kind && h2.set === set.id; }).slice(-3).reverse();
       if (hist.length) h += '<h2>Lần làm gần đây</h2><div class="card">' + hist.map(function (x) { return '<div class="row"><span class="sub">' + new Date(x.ts).toLocaleDateString() + " · " + esc(x.gt) + '</span><span style="margin-left:auto"><b>' + x.raw + "/" + x.max + "</b> ≈ " + x.est + "</span></div>"; }).join("") + "</div>";
     }
@@ -67,9 +67,12 @@
     var imp = $("#imp"); if (imp) imp.onchange = importFile;
   }
   /* ---------- CHẾ ĐỘ LỚP (js/swclass.js ở trang game lo kênh phòng) ---------- */
+  /* host trong phòng: Chế độ lớp BẬT sẵn (chỉ tắt khi tự bỏ tick) — trước: chỉ bật khi lúc mở thẻ đã có >=2 người, người vào sau thì host bấm Bắt đầu thành luyện riêng và người chơi không thấy gì */
+  function classOn() { return !!(CTX.inRoom && CTX.isHost && S.classMode !== false); }
+  setInterval(function () { if (CTX.inRoom && S.screen !== "task") toParent({ type: "sw-hello", kind: S.kind }); }, 5000);   /* cập nhật danh sách người trong phòng (người vào sau) */
   function classBanner() {
     if (!CTX.inRoom) return "";
-    if (CTX.isHost) return '<label class="card clsrow"><input type="checkbox" id="clsmode"' + (S.classMode ? " checked" : "") + '><span>👥 <b>Chế độ lớp</b><br><span class="sub">Bật rồi chọn đề: cả phòng cùng xem, bạn bấm giờ từng người</span></span></label>';
+    if (CTX.isHost) return '<label class="card clsrow"><input type="checkbox" id="clsmode"' + (classOn() ? " checked" : "") + '><span>👥 <b>Chế độ lớp</b><br><span class="sub">Bật rồi chọn đề: cả phòng cùng xem, bạn bấm giờ từng người</span></span></label>';
     return '<div class="warn">👥 Bạn đang trong phòng. Khi host bấm bắt đầu, bài sẽ tự mở ra. Bạn vẫn luyện riêng được.</div>';
   }
   function toParent(m) { try { if (window.parent !== window) window.parent.postMessage(m, location.origin); } catch (e) {} }
@@ -479,7 +482,7 @@
     var b = e.target.closest("[data-act]"); if (!b || b.disabled) return; var a = b.dataset.act, v = b.dataset.v;
     if (a === "kind") { S.kind = v; S.setId = (SETS[v][0] || {}).id || ""; render(); }
     else if (a === "set") { S.setId = v; render(); }
-    else if (a === "start") { if (S.classMode && CTX.isHost) toParent({ type: "sw-host-start", kind: S.kind, set: S.setId, group: v }); else { S.class = null; S.saved = 0; begin(S.kind, v); } }
+    else if (a === "start") { if (classOn()) toParent({ type: "sw-host-start", kind: S.kind, set: S.setId, group: v }); else { S.class = null; S.saved = 0; begin(S.kind, v); } }
     else if (a === "part") { S.group = v; render(); }
     else if (a === "rev") { S.screen = "rev"; render(); }
     else if (a === "revf") { S.revAll = !S.revAll; render(); }
@@ -500,7 +503,7 @@
   });
   window.addEventListener("message", function (e) {
     var d = e.data; if (e.origin !== location.origin || !d || typeof d.type !== "string" || d.type.indexOf("sw-") !== 0) return;
-    if (d.type === "sw-ctx") { CTX = { inRoom: !!d.inRoom, isHost: !!d.isHost, me: d.me || null, players: d.players || [] }; revCloudLoad(); if (S.classMode === undefined && CTX.isHost && CTX.players.length > 1) S.classMode = true; if (S.screen === "home" || (S.screen === "live" && LIVE && LIVE.phase !== "prep" && LIVE.phase !== "resp")) render(); }
+    if (d.type === "sw-ctx") { var np = d.players || [], sig = JSON.stringify([!!d.inRoom, !!d.isHost, np.map(function (p) { return p.id; })]), changed = sig !== CTX.sig; CTX = { inRoom: !!d.inRoom, isHost: !!d.isHost, me: d.me || null, players: np, sig: sig }; revCloudLoad(); if (changed && (S.screen === "home" || (S.screen === "live" && LIVE && LIVE.phase !== "prep" && LIVE.phase !== "resp"))) render(); }
     else if (d.type === "sw-class-start") applyStart(d);
     else if (d.type === "sw-class-live") liveApply(d.p);
     else if (d.type === "sw-class-fin" && d.p) liveFin(d.p.pid);
