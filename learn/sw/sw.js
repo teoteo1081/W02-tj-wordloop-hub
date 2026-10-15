@@ -112,7 +112,9 @@
   }
   function roomCard() {
     var pl = (CTX.players || []).map(function (p) { return '<div class="rc-p" title="' + esc(p.name || "") + '"><span class="rc-av">' + avatarHtml(p.avatar) + "</span><b>" + esc(p.name || "?") + "</b></div>"; }).join("");
-    return '<div class="roomcard"><div class="sub">Mã phòng</div><div class="rc-code">' + esc(CTX.room || "") + '</div><div class="rc-ps">' + pl + "</div></div>";
+    /* TJ 2026-10-15: "Quản lý người chơi" + "Copy link mời" cũng nằm ở ô phòng của Speaking/Writing (như phòng Từ vựng) — chỉ host */
+    var hb = CTX.isHost ? '<div class="rc-btns"><button type="button" class="soft" data-act="hdo" data-v="users">👥 Quản lý người chơi</button><button type="button" class="soft" data-act="hdo" data-v="copy">🔗 Copy link mời</button></div>' : "";
+    return '<div class="roomcard"><div class="rc-head"><div><div class="sub">Mã phòng</div><div class="rc-code">' + esc(CTX.room || "") + "</div></div>" + hb + '</div><div class="rc-ps">' + pl + "</div></div>";
   }
   function home() {
     savePref();
@@ -787,6 +789,7 @@
     else if (a === "rev") { S.screen = "rev"; render(); }
     else if (a === "revf") { S.revAll = !S.revAll; render(); }
     else if (a === "revclr") { if (confirm("Xoá toàn bộ lịch sử bài " + (S.kind === "speaking" ? "nói" : "viết") + " trên máy này?")) { ST.rev = (ST.rev || []).filter(function (r) { return r.kind !== S.kind; }); save(); render(); } }
+    else if (a === "hdo") { toParent({ type: "sw-do", a: v }); return; }   /* nút ở ô phòng (màn chờ, chưa có lớp đang chạy) */
     else if (liveAct(a, v)) return;
     else if (a === "go") go();
     else if (a === "skipprep") { clearTimer(); startResp(); }

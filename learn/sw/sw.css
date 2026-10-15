@@ -263,3 +263,8 @@ body.one img.zoom { position:fixed !important; inset:0; width:100vw !important; 
 @media (max-width:520px) {
   #app .prompt, #app .prompt.read { font-size:var(--pfs, clamp(14px,2.6vh,17px)) !important; line-height:1.45 !important; }   /* không dựa vị trí thẻ: màn chờ của host có thanh "Câu tiếp" đứng trước thẻ đề */
 }
+/* ô phòng: mã phòng bên trái, 2 nút của host (Quản lý người chơi · Copy link mời) bên phải — điện thoại xếp dọc (TJ 2026-10-15) */
+.rc-head { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+.rc-btns { display:flex; flex-direction:column; gap:6px; min-width:0; flex:0 1 auto; }
+.rc-btns button { min-height:38px; padding:6px 12px; font-size:13px; white-space:nowrap; }
+@media (min-width:521px) { .rc-btns { flex-direction:row; flex-wrap:wrap; justify-content:flex-end; } }
