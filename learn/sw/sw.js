@@ -66,6 +66,20 @@
     clearTimeout(S.leaveT);
     S.leaveT = setTimeout(function () { if (S.screen === "home" && !LIVE && !PENDING && CTX.inRoom && !CTX.isHost) toParent({ type: "sw-leave" }); }, 15000);   /* 15s: đủ để nhận nhịp trạng thái của host (4s/lần) nếu lớp đã bắt đầu; lớp mở thì không rời */
   }
+  /* TJ 2026-10-15: "chữ lúc chờ bắt đầu với lúc nói to nhỏ bất thường" — chữ đề phải CÙNG CỠ ở mọi trạng thái (chờ · 3-2-1 · chuẩn bị · nói · kết quả) và to nhất có thể mà vẫn vừa màn hình.
+     Chọn cỡ MỘT LẦN theo độ dài đề + cỡ màn (không theo bố cục từng trạng thái) rồi đặt vào --pfs (sw.css). Chỉ điện thoại. */
+  function fitPrompt() {
+    var root = document.documentElement, p = document.querySelector("#app .prompt");
+    if (!p || window.innerWidth > 520) { root.style.removeProperty("--pfs"); fitPrompt.k = ""; return; }
+    var txt = p.textContent || "", w = Math.max(200, p.clientWidth || (window.innerWidth - 56)), key = txt.length + ":" + w + ":" + window.innerHeight;
+    if (fitPrompt.k === key) return; fitPrompt.k = key;
+    var avail = Math.max(120, window.innerHeight - 300);   /* chừa chỗ: tiêu đề + thẻ đồng hồ/danh sách + nút */
+    var probe = document.createElement("div"); probe.className = p.className;
+    probe.style.cssText = "position:absolute;visibility:hidden;left:-9999px;top:0;padding:0;margin:0;white-space:pre-wrap;width:" + w + "px";
+    probe.textContent = txt; document.body.appendChild(probe);
+    var fs = 18; for (; fs > 14; fs--) { probe.style.setProperty("font-size", fs + "px", "important"); probe.style.setProperty("line-height", "1.45", "important"); if (probe.scrollHeight <= avail) break; }
+    document.body.removeChild(probe); root.style.setProperty("--pfs", fs + "px");
+  }
   function setOne(on) {   /* bật/tắt chế độ 1 màn hình; bật thì về đầu trang (trang đang cuộn dở sẽ lệch khi khoá cuộn) */
     var was = document.body.classList.contains("one"); document.body.classList.toggle("one", !!on);
     if (on && !was) { try { window.scrollTo(0, 0); } catch (e) {} }
@@ -370,7 +384,7 @@
     if (L.phase !== "ready") h += othersHtml(t.q) + (run ? "" : boardHtml());
     if (run && spk) h += rosterHtml(false);
     if (hostbar && !below) { var ti = h.indexOf("</div></div>") + 12; h = h.slice(0, ti) + hostbar + h.slice(ti); }   /* thanh điều khiển của host DÍNH Ở ĐẦU màn (cuộn đâu cũng thấy; ảnh to không đẩy nút xuống khuất) */
-    app.innerHTML = h; smoothBar(); liveTick(); adminSync();
+    app.innerHTML = h; fitPrompt(); smoothBar(); liveTick(); adminSync();
   }
   /* ---------- LỊCH SỬ: xem lại bài cũ + lỗi sai (lưu ở máy này) ---------- */
   function promptShort(t) {
@@ -526,7 +540,7 @@
       h += "</div>";
       h += '<div class="bottom"><div class="in">' + (ph === "resp" ? '<button class="' + (S.kind === "speaking" ? "rec" : "pri") + ' big" data-act="stop">' + (S.kind === "speaking" ? "⏹ Xong, nộp bài" : "✔ Nộp bài") + "</button>" : '<button class="big" data-act="skipprep">Bắt đầu nói ngay ▶</button>') + "</div></div>";
     }
-    app.innerHTML = h; updTimer();
+    app.innerHTML = h; fitPrompt(); updTimer();
     if (S.phase === "resp" && S.kind === "writing") { var a = $("#ans"); a.oninput = function () { S.text = a.value; $("#wc").textContent = nWords(a.value) + " từ" + (fmtN() === 3 ? " (mục tiêu ≥ " + (S.tasks[S.i].min || 150) + ")" : S.tasks[S.i].q === 8 ? " (mục tiêu ≥ 300)" : ""); }; a.dispatchEvent(new Event("input")); try { a.focus(); } catch (e) {} }
     if (S.phase === "resp" && S.kind === "speaking") { liveUpd(); var m = $("#manual"); if (m) m.oninput = function () { S.tr = m.value; }; }
   }

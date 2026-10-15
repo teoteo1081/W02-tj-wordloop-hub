@@ -212,7 +212,7 @@ body.one:has(.bottom) #app { padding-bottom:78px; }
 body.one #app > * { flex:none; margin-top:6px; margin-bottom:0; }
 body.one #app > .top { position:static; padding:2px 0; }
 body.one #app > .top + .card { flex:1 1 0; min-height:76px; overflow:auto; -webkit-overflow-scrolling:touch; padding:8px 12px; }
-body.one #app > .top + .card .prompt, body.one #app > .top + .card .prompt.read { font-size:clamp(14px,2.6vh,17px) !important; line-height:1.4 !important; }   /* đề nhỏ vừa đủ đọc để thấy NHIỀU chữ hơn (ghi đè cỡ to của chế độ bình thường) */
+body.one #app > .top + .card .prompt, body.one #app > .top + .card .prompt.read { font-size:var(--pfs, clamp(14px,2.6vh,17px)) !important; line-height:1.45 !important; }   /* đề nhỏ vừa đủ đọc để thấy NHIỀU chữ hơn (ghi đè cỡ to của chế độ bình thường) */
 body.one #app > .top + .card + .card p { margin:2px 0; }
 body.one #app > .top + .card + .card .row { margin:0; }
 body.one #app > .top + .card img { max-height:24vh !important; }
@@ -261,5 +261,5 @@ body.one img.zoom { position:fixed !important; inset:0; width:100vw !important; 
 /* ===== chữ đề nhỏ lại cho vừa màn hình điện thoại (TJ 2026-10-15: "chữ bự quá, cho nhỏ lại xíu") =====
    Luật theo "body.live" không áp dụng ở màn chờ (lớp live chỉ gắn khi vẽ lại cả trang) nên chữ vẫn 21–23px: đặt luật riêng theo cấu trúc, chỉ điện thoại. */
 @media (max-width:520px) {
-  #app .prompt, #app .prompt.read { font-size:clamp(14px,2.6vh,17px) !important; line-height:1.45 !important; }   /* không dựa vị trí thẻ: màn chờ của host có thanh "Câu tiếp" đứng trước thẻ đề */
+  #app .prompt, #app .prompt.read { font-size:var(--pfs, clamp(14px,2.6vh,17px)) !important; line-height:1.45 !important; }   /* không dựa vị trí thẻ: màn chờ của host có thanh "Câu tiếp" đứng trước thẻ đề */
 }
