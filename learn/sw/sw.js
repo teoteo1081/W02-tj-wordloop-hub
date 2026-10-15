@@ -241,14 +241,14 @@
   function meActive(st) { return !!(st && st.ai) && myTurn(st); }
   function startMine() {
     var L = LIVE, t = curTask(); L.mineOn = true; L.my = null; S.tr = ""; S.interim = ""; S.text = ""; liveRender();
-    if (S.kind === "speaking") startSpeech(t);
+    if (S.kind === "speaking") { recAudioStart(); startSpeech(t); }
   }
   function finishMine() {
     var L = LIVE, t = curTask(); L.mineOn = false; stopSpeech();
     if (S.kind === "writing") { var a = $("#ans"); if (a) S.text = a.value; } else { var m = $("#manual"); if (m && m.value) S.tr = m.value; }
-    L.my = "grading"; L.myQ = t.q;
+    var aP = S.kind === "speaking" ? recAudioStop() : null; L.my = "grading"; L.myQ = t.q;
     if (S.class && CTX.me) toParent({ type: "sw-class-send", p: { t: "res", pending: 1, run: S.class.run, pid: CTX.me.id, name: CTX.me.name || "", avatar: CTX.me.avatar || "", q: t.q } });   /* cả phòng thấy "AI đang chấm bạn này" */
-    grade();
+    grade(aP);
   }
   function smoothBar() {   /* thanh chạy liền mạch từ vị trí hiện tại tới hết giờ (không nhảy từng khúc theo nhịp 200ms) */
     var pg = $("#pg"), L = LIVE; if (!pg || !L || !L.tEnd) return;
@@ -343,10 +343,11 @@
     if (t.words) x += " [" + t.words.join(" + ") + "]";
     return String(x).slice(0, 400);
   }
-  function saveRev(t, res) {
+  function saveRev(t, res, aP) {
     var fb = res.fb || {}; ST.rev = ST.rev || [];
     var rec = { ts: Date.now(), kind: S.kind, set: S.setId, q: res.q, type: t.type, pm: promptShort(t), ans: String(res.ans || "").slice(0, 900), score: res.score, max: res.max, s: (fb.strengths || []).slice(0, 3), f: (fb.fixes || []).slice(0, 5), better: String(fb.better || "").slice(0, 900), live: LIVE ? 1 : 0 };
     ST.rev.push(rec); revCloudSave(rec);
+    if (aP) aP.then(function (blob) { uploadAudio(rec, blob); });   /* ghi âm xong -> tải lên rồi gắn đường dẫn vào bài này */
     if (ST.rev.length > 200) ST.rev.splice(0, ST.rev.length - 200);
     save();
   }
@@ -356,8 +357,8 @@
     return fetch(String(CFG.SUPABASE_URL || "").replace(/\/$/, "") + "/rest/v1/" + path, { method: opt.method || "GET", headers: Object.assign({ apikey: CFG.SUPABASE_ANON_KEY, Authorization: "Bearer " + CFG.SUPABASE_ANON_KEY, "Content-Type": "application/json" }, opt.headers || {}), body: opt.body });
   }
   function revCloudSave(r) {
-    var me = CTX.me; if (!me || !me.id || r.score == null || r.score >= r.max) return;
-    try { sbRest("sw_history?on_conflict=player_id,ts", { method: "POST", headers: { Prefer: "resolution=ignore-duplicates,return=minimal" }, body: JSON.stringify({ player_id: me.id, ts: r.ts, kind: r.kind, set_id: r.set, q: r.q, type: r.type, pm: r.pm, score: r.score, max: r.max, ans: r.ans, s: r.s, f: r.f, better: r.better, live: !!r.live }) }).catch(function () {}); } catch (e) {}
+    var me = CTX.me; if (!me || !me.id || r.score == null) return;
+    try { sbRest("sw_history?on_conflict=player_id,ts", { method: "POST", headers: { Prefer: "resolution=ignore-duplicates,return=minimal" }, body: JSON.stringify({ player_id: me.id, ts: r.ts, kind: r.kind, set_id: r.set, q: r.q, type: r.type, pm: r.pm, score: r.score, max: r.max, ans: r.ans, s: r.s, f: r.f, better: r.better, live: !!r.live, audio: r.audio || null }) }).catch(function () {}); } catch (e) {}
   }
   async function revCloudLoad() {
     var me = CTX.me; if (!me || !me.id || S.revLoaded === me.id) return; S.revLoaded = me.id;
@@ -365,7 +366,7 @@
       var r = await sbRest("sw_history?player_id=eq." + encodeURIComponent(me.id) + "&order=ts.desc&limit=80"); if (!r.ok) return;
       var rows = await r.json(); if (!Array.isArray(rows)) return;
       ST.rev = ST.rev || []; var have = {}, add = 0; ST.rev.forEach(function (x) { have[x.ts] = 1; });
-      rows.forEach(function (x) { if (have[x.ts]) return; ST.rev.push({ ts: +x.ts, kind: x.kind, set: x.set_id, q: x.q, type: x.type, pm: x.pm || "", ans: x.ans || "", score: x.score, max: x.max, s: x.s || [], f: x.f || [], better: x.better || "", live: x.live ? 1 : 0 }); add++; });
+      rows.forEach(function (x) { if (have[x.ts]) return; ST.rev.push({ ts: +x.ts, kind: x.kind, set: x.set_id, q: x.q, type: x.type, pm: x.pm || "", ans: x.ans || "", score: x.score, max: x.max, s: x.s || [], f: x.f || [], better: x.better || "", live: x.live ? 1 : 0, audio: x.audio || "" }); add++; });
       if (add) { ST.rev.sort(function (a, b) { return a.ts - b.ts; }); if (ST.rev.length > 200) ST.rev.splice(0, ST.rev.length - 200); save(); if (S.screen === "rev" || S.screen === "home") render(); }
       var lim = Math.max(rows.length > 50 ? rows[49].ts : 0, Date.now() - 90 * 86400000);
       sbRest("sw_history?player_id=eq." + encodeURIComponent(me.id) + "&ts=lt." + lim, { method: "DELETE" }).catch(function () {});
@@ -379,7 +380,7 @@
     if (!list.length) h += '<div class="card"><p class="sub">' + (all.length ? "Không có câu nào cần xem lại 🎉" : "Chưa có bài nào. Chấm xong câu nào thì câu đó tự lưu ở đây.") + "</p></div>";
     list.forEach(function (r) {
       h += '<details class="card"><summary><span class="sub">' + new Date(r.ts).toLocaleDateString() + " " + new Date(r.ts).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + (r.live ? " · 👥 lớp" : "") + "</span> · <b>Câu " + r.q + "</b> · " + esc(String(r.type).replace("_", " ")) + ' <b style="float:right">' + r.score + "/" + r.max + "</b></summary>" +
-        '<p class="sub">Đề:</p><div class="prompt">' + esc(r.pm) + '</div><p class="sub">Bài bạn:</p><div class="live">' + esc(r.ans || "(trống)") + "</div>" + li(r.s, "ok") + (r.f && r.f.length ? "<p><b>Cần sửa</b></p>" : "") + li(r.f, "") + (r.better ? '<details><summary>✨ Bản gợi ý cải thiện</summary><div class="model">' + esc(r.better) + "</div></details>" : "") + "</details>";
+        '<p class="sub">Đề:</p><div class="prompt">' + esc(r.pm) + '</div><p class="sub">Bài bạn:</p>' + (r.audio ? '<audio controls preload="none" src="' + esc(r.audio) + '" style="width:100%;margin:4px 0"></audio>' : "") + '<div class="live">' + esc(r.ans || "(trống)") + "</div>" + li(r.s, "ok") + (r.f && r.f.length ? "<p><b>Cần sửa</b></p>" : "") + li(r.f, "") + (r.better ? '<details><summary>✨ Bản gợi ý cải thiện</summary><div class="model">' + esc(r.better) + "</div></details>" : "") + "</details>";
     });
     if (all.length) h += '<p style="text-align:center"><button class="soft" data-act="revclr">🗑 Xoá lịch sử</button></p>';
     app.innerHTML = h;
@@ -425,7 +426,7 @@
         if (S.kind === "speaking") { sp = pickOf(plist().filter(function (p) { return !L.done[p.id]; })); if (!sp) return true; sp = { id: sp.id, name: sp.name, avatar: sp.avatar }; }
         liveSend({ i: S.i, phase: "ready", sp: sp, sec: 3, done: L.done, pd: 1, nx: "resp" });
       }
-    } else if (a === "lpick") { L.pick = v; liveRender(); }
+    } else if (a === "lpick") { L.pick = v; if (S.kind === "speaking" && L.pd && !L.sp && (L.phase === "idle" || L.phase === "show")) return liveAct("lstart"); liveRender(); }   /* cả phòng đã chuẩn bị xong -> chạm tên là người đó vào nói luôn (3-2-1 rồi nói) */
     else if (a === "lall") liveSend(needPrep() ? { i: S.i, phase: "ready", sp: null, sec: 3, done: L.done, pd: 0, nx: "prep+all" } : { i: S.i, phase: "ready", sp: null, sec: 3, done: L.done, pd: 1, nx: "resp" });
     else if (a === "lskip") { L.adv = 1; liveNext(); }
     else if (a === "lstop") { L.adv = 1; liveNext(); }
@@ -523,9 +524,46 @@
     if (!SR) return;
     recOn = true; rec = new SR(); rec.lang = "en-US"; rec.continuous = true; rec.interimResults = true; rec.maxAlternatives = 1;
     rec.onresult = function (e) { var interim = ""; for (var i = e.resultIndex; i < e.results.length; i++) { var r = e.results[i]; if (r.isFinal) S.tr = (S.tr + " " + r[0].transcript).trim(); else interim += r[0].transcript; } S.interim = interim; liveUpd(); };
-    rec.onerror = function (e) { if (e && (e.error === "not-allowed" || e.error === "service-not-allowed")) { recOn = false; toast("Chưa cho dùng micro — bấm ổ khoá cạnh thanh địa chỉ để cho phép"); } };
+    rec.onerror = function (e) { if (e && e.error === "audio-capture" && RECD) recAudioStop();   /* mic bị tranh với ghi âm trên máy này -> bỏ ghi âm, giữ nhận giọng */
+      if (e && (e.error === "not-allowed" || e.error === "service-not-allowed")) { recOn = false; toast("Chưa cho dùng micro — bấm ổ khoá cạnh thanh địa chỉ để cho phép"); } };
     rec.onend = function () { if (recOn) { try { rec.start(); } catch (e) {} } };
     try { rec.start(); } catch (e) { toast("Không mở được nhận giọng"); }
+  }
+  /* ghi âm lượt nói (MediaRecorder) để NGHE LẠI sau: lưu Supabase Storage (toeic/sw-audio/…) + đường dẫn trong sw_history.audio */
+  var RECD = null;
+  function recAudioStart() {
+    RECD = null;
+    if (MOCK || !window.MediaRecorder || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+    var r = RECD = { stopped: false, chunks: [], blob: null, done: false, cbs: [], mr: null };
+    function done(blob) { r.blob = blob; r.done = true; var cbs = r.cbs; r.cbs = []; cbs.forEach(function (cb) { cb(blob); }); }
+    r.fin = done;
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(function (st) {
+      if (r.stopped) { st.getTracks().forEach(function (t) { t.stop(); }); return done(null); }
+      var mr; try { mr = new MediaRecorder(st); } catch (e) { st.getTracks().forEach(function (t) { t.stop(); }); return done(null); }
+      r.mr = mr; mr.ondataavailable = function (e) { if (e.data && e.data.size) r.chunks.push(e.data); };
+      mr.onstop = function () { st.getTracks().forEach(function (t) { t.stop(); }); done(r.chunks.length ? new Blob(r.chunks, { type: mr.mimeType || "audio/webm" }) : null); };
+      try { mr.start(1000); } catch (e) { done(null); }
+    }).catch(function () { done(null); });
+  }
+  function recAudioStop() {
+    var r = RECD; RECD = null; if (!r) return Promise.resolve(null);
+    return new Promise(function (res) {
+      if (r.done) return res(r.blob);
+      r.cbs.push(res); r.stopped = true;
+      try { if (r.mr && r.mr.state !== "inactive") r.mr.stop(); else if (!r.mr) setTimeout(function () { if (!r.done) r.fin(null); }, 4000); } catch (e) { r.fin(null); }
+    });
+  }
+  function uploadAudio(r, blob) {
+    var me = CTX.me; if (!me || !me.id || !blob || blob.size < 3000) return;
+    var base = String(CFG.SUPABASE_URL || "").replace(/\/$/, ""), key = CFG.SUPABASE_ANON_KEY, mime = (blob.type || "audio/webm").split(";")[0], ext = /mp4|aac|m4a/.test(mime) ? "mp4" : /ogg/.test(mime) ? "ogg" : "webm";
+    var path = "sw-audio/" + me.id + "/" + r.ts + "-" + Math.random().toString(36).slice(2, 8) + "." + ext;
+    fetch(base + "/storage/v1/object/toeic/" + path, { method: "POST", headers: { apikey: key, Authorization: "Bearer " + key, "Content-Type": mime, "x-upsert": "true" }, body: blob }).then(function (res) {
+      if (!res.ok) throw new Error("upload " + res.status);
+      r.audio = base + "/storage/v1/object/public/toeic/" + path; save();
+      var patch = function () { return sbRest("sw_history?player_id=eq." + encodeURIComponent(me.id) + "&ts=eq." + r.ts, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ audio: r.audio }) }); };
+      setTimeout(function () { patch().catch(function () {}); }, 5000);   /* dòng lịch sử có thể chưa kịp tạo lúc này -> gắn lại lần nữa sau 5s */
+      return patch();
+    }).catch(function (e) { console.warn("ghi âm:", e && e.message || e); });
   }
   function stopSpeech() { recOn = false; try { if (rec) rec.stop(); } catch (e) {} rec = null; S.interim = ""; }
   function mockSpeech(t) {
@@ -580,7 +618,7 @@
     if (main) return String(main) + (why ? " — " + why : "");
     return Object.keys(x).map(function (k) { return x[k]; }).filter(function (v) { return typeof v === "string"; }).join(" — ");
   }
-  async function grade() {
+  async function grade(aP) {
     var t = curTask(), q = t.q, max = MAXS[S.kind][q], res = { q: q, max: max }, ans = S.kind === "writing" ? (S.text || "") : (S.tr || "");
     try {
       if (S.kind === "speaking" && t.type === "read_aloud") {
@@ -593,7 +631,7 @@
         var out = await ai(sysPrompt(), userPrompt(t, ans)); res.score = Math.max(0, Math.min(max, Math.round(+out.score || 0))); out.strengths = (out.strengths || []).map(fbText); out.fixes = (out.fixes || []).map(fbText); res.fb = out; res.words = nWords(ans);
       }
     } catch (e) { res.err = String(e.message || e); res.score = null; }
-    res.ans = ans; S.results[q] = res; if (res.score != null) saveRev(t, res); classReport(res); if (LIVE && LIVE.myQ === q) LIVE.my = "result"; S.phase = "result"; render();
+    res.ans = ans; S.results[q] = res; if (res.score != null) saveRev(t, res, aP); classReport(res); if (LIVE && LIVE.myQ === q) LIVE.my = "result"; S.phase = "result"; render();
   }
   function sysPrompt() {
     return S.kind === "speaking" ? "You are a strict but fair TOEIC Speaking rater. The learner's speech was transcribed automatically (punctuation may be missing, small recognition errors are possible: do NOT penalise recognition glitches). You can only judge content, organisation, grammar, vocabulary and fluency signals from the text; do not claim to judge pronunciation. Typical learner answers deserve 1-2 on a 0-3 scale. Reply JSON only."
