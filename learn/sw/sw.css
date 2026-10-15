@@ -105,3 +105,6 @@ select.big { max-width:46%; }
 .timer.last5 { animation:softpulse 1s ease-in-out infinite; } .bar.last5 i { background:var(--bad); }
 @keyframes softpulse { 0%,100% { opacity:1; } 50% { opacity:.55; } }
 .hostbar { position:sticky; top:0; z-index:20; box-shadow:0 4px 14px rgba(0,0,0,.28); }
+
+.hostbar .aisw { flex:1 1 100%; display:flex; align-items:center; justify-content:flex-end; gap:6px; font-size:13px; color:var(--muted); cursor:pointer; } .hostbar .aisw input { width:18px; height:18px; accent-color:var(--acc); }
+.oth.pend { padding:8px 10px; margin:6px 0; border:1px dashed var(--line); border-radius:10px; color:var(--muted); }
