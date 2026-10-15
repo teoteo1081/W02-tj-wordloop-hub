@@ -176,3 +176,6 @@ body.live #app { padding:6px 10px 80px; }
 .hmore-p .big { min-height:44px !important; font-size:15px !important; font-weight:600; border-radius:10px; background:var(--line); border:0; text-align:left; padding:8px 14px; }
 .hmore-p .endb { background:transparent !important; border:1px solid #b7a4f0 !important; color:#b7a4f0 !important; text-align:center; }
 .hmore-p .aisw { border-radius:10px; }
+.hostbar.below .hb-main { justify-content:flex-end; }
+body.live .hostbar.below .hb-main .big { flex:0 0 auto; min-height:36px; padding:6px 16px; font-size:14px; }
+body.live .hostbar.below .hmore-h { width:36px; height:36px; }
