@@ -7,9 +7,9 @@
   "use strict";
   var api = null, pending = null, openedRun = "";
   function exOk(f, ex) { return (f.src.indexOf("exam=ielts") >= 0) === (ex === "ielts"); }
-  function liveFwd(p) { frames().forEach(function (f) { if (p.kind && f.src.indexOf(p.kind === "writing" ? "kind=writing" : "kind=speaking") < 0) return; if (p.kind !== "writing" && !exOk(f, p.exam)) return; post(f.contentWindow, { type: "sw-class-live", p: p }); }); }
+  function liveFwd(p) { frames().forEach(function (f) { if (p.kind && f.src.indexOf(p.kind === "writing" ? "kind=writing" : "kind=speaking") < 0) return; if (!exOk(f, p.exam)) return; post(f.contentWindow, { type: "sw-class-live", p: p }); }); }
   function frames() { return [].slice.call(document.querySelectorAll(".g-learnlayer iframe")); }
-  function frameFor(kind, ex) { var k = kind === "writing" ? "kind=writing" : "kind=speaking"; return frames().filter(function (f) { return f.src.indexOf(k) >= 0 && (kind === "writing" || exOk(f, ex)); })[0]; }
+  function frameFor(kind, ex) { var k = kind === "writing" ? "kind=writing" : "kind=speaking"; return frames().filter(function (f) { return f.src.indexOf(k) >= 0 && exOk(f, ex); })[0]; }
   function post(w, msg) { try { w.postMessage(msg, location.origin); } catch (e) {} }
   function ctx() { var ch = api && api.ch && api.ch(); return { inRoom: !!ch, isHost: !!(api && api.isHost && api.isHost()), me: api && api.me ? api.me() : null, players: api && api.players ? api.players() : [], room: api && api.room ? api.room() : "" }; }
   function send(p) { var ch = api && api.ch && api.ch(); if (ch) ch.send({ type: "broadcast", event: "sw", payload: p }); }
@@ -19,9 +19,9 @@
   }
   function onMsg(p) {
     if (!p) return;
-    if (p.t === "start") { openedRun = p.run; document.dispatchEvent(new CustomEvent("tjwl-sw-open", { detail: p.kind === "writing" ? "writing" : p.exam === "ielts" ? "ielts" : "speaking" })); setTimeout(function () { deliverStart(p); }, 250); }
+    if (p.t === "start") { openedRun = p.run; document.dispatchEvent(new CustomEvent("tjwl-sw-open", { detail: p.kind === "writing" ? (p.exam === "ielts" ? "ielw" : "writing") : p.exam === "ielts" ? "ielts" : "speaking" })); setTimeout(function () { deliverStart(p); }, 250); }
     else if (p.t === "live" && p.phase === "close") { liveFwd(p); if (p.run === openedRun) openedRun = ""; }
-    else if (p.t === "live") { if (p.run !== openedRun) { openedRun = p.run; document.dispatchEvent(new CustomEvent("tjwl-sw-open", { detail: p.kind === "writing" ? "writing" : p.exam === "ielts" ? "ielts" : "speaking" })); setTimeout(function () { liveFwd(p); }, 400); } else liveFwd(p); }
+    else if (p.t === "live") { if (p.run !== openedRun) { openedRun = p.run; document.dispatchEvent(new CustomEvent("tjwl-sw-open", { detail: p.kind === "writing" ? (p.exam === "ielts" ? "ielw" : "writing") : p.exam === "ielts" ? "ielts" : "speaking" })); setTimeout(function () { liveFwd(p); }, 400); } else liveFwd(p); }
     else if (p.t === "fin") frames().forEach(function (f) { post(f.contentWindow, { type: "sw-class-fin", p: p }); });
     else if (p.t === "rdy") frames().forEach(function (f) { post(f.contentWindow, { type: "sw-class-rdy", p: p }); });
     else if (false) frames().forEach(function (f) { post(f.contentWindow, { type: "sw-class-live", p: p }); });
@@ -40,11 +40,11 @@
     else if (d.type === "sw-do") document.dispatchEvent(new CustomEvent("tjwl-sw-do", { detail: d.a }));
     else if (d.type === "sw-leave") document.dispatchEvent(new CustomEvent("tjwl-learn-home"));
     else if (d.type === "sw-admin") document.dispatchEvent(new CustomEvent("tjwl-sw-admin", { detail: d.p }));   /* thẻ Quản trị của game vẽ phần lớp */
-    else if (d.type === "sw-want-open") document.dispatchEvent(new CustomEvent("tjwl-sw-open", { detail: d.kind === "writing" ? "writing" : d.exam === "ielts" ? "ielts" : "speaking" }));   /* người chơi thoát lớp -> về trang game */
+    else if (d.type === "sw-want-open") document.dispatchEvent(new CustomEvent("tjwl-sw-open", { detail: d.kind === "writing" ? (d.exam === "ielts" ? "ielw" : "writing") : d.exam === "ielts" ? "ielts" : "speaking" }));   /* người chơi thoát lớp -> về trang game */
   });
   /* host chuyển sang thẻ khác (Từ vựng / TOEIC / EA / Marketing / về trang game) khi lớp đang chạy -> báo cả phòng thoát lớp */
   document.addEventListener("tjwl-learn-shown", function (e) {
-    var k = e.detail; if (!openedRun || !ctx().isHost || k === "sp" || k === "wr" || k === "ielts") return;
+    var k = e.detail; if (!openedRun || !ctx().isHost || k === "sp" || k === "wr" || k === "ielts" || k === "ielw") return;
     send({ t: "live", run: openedRun, phase: "close" }); openedRun = "";
   });
   function cmd(kind, c, v) { frames().forEach(function (f) { if (kind && f.src.indexOf(kind === "writing" ? "kind=writing" : "kind=speaking") < 0) return; post(f.contentWindow, { type: "sw-cmd", cmd: c, v: v }); }); }
