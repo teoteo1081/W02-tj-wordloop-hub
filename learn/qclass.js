@@ -123,7 +123,7 @@
         vs.slice(0, 16).map(function (v) { return "<span>" + esc(v.en) + "</span>"; }).join("") + (vs.length > 16 ? "<span>+" + (vs.length - 16) + "</span>" : "") + '</div><div class="bkf"><button class="tg' + (inSel(l.id) ? " on" : "") + '" data-q="mod" data-id="' + esc(l.id) + '">' + (inSel(l.id) ? "☑ Đã chọn" : "☐ Chọn") + '</button><button class="pl" data-q="one" data-id="' + esc(l.id) + '">🎮 Chơi game →</button></div></div>';
     });
     h += "</div>";
-    ov.hidden = false; fab.hidden = true; var st = ov.scrollTop; ov.innerHTML = h; ov.scrollTop = st;
+    ov.hidden = false; fab.hidden = true; var st = ov.scrollTop; ov.innerHTML = h; ov.scrollTop = st; saveH();
   }
   function expectIds() { return (CTX.players || []).filter(function (p) { return setup.hp !== false || !(CTX.me && p.id === CTX.me.id); }).map(function (p) { return p.id; }); }
   function startRun() {
@@ -156,7 +156,20 @@
     if (H.ph === "rev" || H.ph === "end") { base.ans = q.a; base.exp = q.exp; base.cnt = H.cnt; base.board = H.board; base.picks = {}; Object.keys(base.pl).forEach(function (id) { base.picks[id] = H.ans[id] ? H.ans[id].c : null; }); }
     return base;
   }
-  function pushState() { if (!H) return; var s = snap(); send(s); Z = Object.assign({}, s, { tEnd: H.tEnd, my: H.my }); render(); }
+  var SKEY = "qz-host-v1-" + GID;
+  function saveH() { try { if (H) sessionStorage.setItem(SKEY, JSON.stringify({ at: Date.now(), H: H, ui: "run" })); else if (setup && !ov.hidden) sessionStorage.setItem(SKEY, JSON.stringify({ at: Date.now(), ui: "setup", setup: setup })); } catch (e) {} }
+  function clearSaved() { try { sessionStorage.removeItem(SKEY); } catch (e) {} }
+  var restored = false;
+  function tryRestore() {
+    if (restored || H || !CTX.isHost || !CTX.inRoom) return; restored = true;
+    var o; try { o = JSON.parse(sessionStorage.getItem(SKEY) || "null"); } catch (e) { o = null; } if (!o || Date.now() - o.at > 3 * 3600 * 1000) return;
+    if (o.ui === "setup") { setup = o.setup; showSetup(); return; }
+    if (o.ui === "run" && o.H) {
+      H = o.H; setup = setup || { mods: [], n: 10, sec: 20, secV: 10, hp: H.hp !== false, say: H.say !== false, type: "mix" };
+      if (H.ph === "q") { if (Date.now() >= H.tEnd) { reveal(); } else { pushState(); clearInterval(hbT); hbT = setInterval(pushState, 2000); } } else pushState();
+    }
+  }
+  function pushState() { if (!H) return; var s = snap(); send(s); Z = Object.assign({}, s, { tEnd: H.tEnd, my: H.my }); saveH(); render(); }
   function nextQ() {
     H.i++; if (H.i >= H.qs.length) return finish();
     H.sec = H.qs[H.i].sec || H.sec; H.ph = "q"; H.ans = {}; H.my = null; H.tEnd = Date.now() + H.sec * 1000; H.t0 = Date.now(); H.expect = expectIds().length; H.last = {};
@@ -172,7 +185,7 @@
     H.board = board(); pushState();
   }
   function finish() { H.ph = "end"; H.board = board(); H.last = {}; H.board.forEach(function (r) { r.last = 0; }); pushState(); }
-  function closeRun() { clearInterval(hbT); if (H) send({ run: H.run, ph: "close" }); H = null; Z = null; ov.hidden = true; fab.hidden = !(CTX.isHost && CTX.inRoom); }
+  function closeRun() { clearInterval(hbT); clearSaved(); if (H) send({ run: H.run, ph: "close" }); H = null; Z = null; ov.hidden = true; fab.hidden = !(CTX.isHost && CTX.inRoom); }
   function hostGot(a) {   /* người chơi gửi đáp án */
     if (!H || H.ph !== "q" || a.run !== H.run || a.i !== H.i || H.ans[a.pid]) return;
     H.names[a.pid] = { name: a.name, avatar: a.avatar }; if (H.score[a.pid] == null) H.score[a.pid] = 0;
@@ -184,7 +197,7 @@
   ov.addEventListener("click", function (e) {
     var b = e.target.closest("[data-q]"); if (!b || b.disabled) return; var a = b.dataset.q, me = CTX.me || {};
     if (a === "quit") { if (H) { if (confirm("Đóng lớp cho cả phòng?")) closeRun(); } else { ov.hidden = true; toParent({ type: "sw-leave" }); } }
-    else if (a === "setupx") { ov.hidden = true; fab.hidden = false; }
+    else if (a === "setupx") { ov.hidden = true; fab.hidden = false; clearSaved(); }
     else if (a === "all") { setup.mods = lessonsList().map(function (l) { return l.id; }); showSetup(); }
     else if (a === "none") { setup.mods = []; showSetup(); }
     else if (a === "one") { e.stopPropagation(); setup.mods = [b.dataset.id]; var hp0 = $("#qhp"); setup.hp = hp0 ? hp0.checked : setup.hp; startRun(); }
@@ -204,13 +217,13 @@
   ov.addEventListener("change", function (e) {
     var t = e.target, v = +t.value;
     if (t.id === "qhp") setup.hp = t.checked; else if (t.id === "qsay") setup.say = t.checked;
-    else if (t.id === "qn") { setup.n = Math.max(1, Math.min(60, v || 10)); showSetup(); } else if (t.id === "qsec") { setup.sec = Math.max(5, Math.min(120, v || 20)); showSetup(); } else if (t.id === "qsecv") { setup.secV = Math.max(3, Math.min(60, v || 10)); showSetup(); }
-    else if (t.id === "qtype") { setup.type = t.value; showSetup(); }
+    else if (t.id === "qn") { setup.n = Math.max(1, Math.min(60, v || 10)); setTimeout(showSetup, 0); } else if (t.id === "qsec") { setup.sec = Math.max(5, Math.min(120, v || 20)); setTimeout(showSetup, 0); } else if (t.id === "qsecv") { setup.secV = Math.max(3, Math.min(60, v || 10)); setTimeout(showSetup, 0); }
+    else if (t.id === "qtype") { setup.type = t.value; setTimeout(showSetup, 0); }
   });
   fab.addEventListener("click", showSetup);
   window.addEventListener("message", function (e) {
     var d = e.data; if (e.origin !== location.origin || !d || typeof d.type !== "string") return;
-    if (d.type === "sw-ctx") { CTX = { inRoom: !!d.inRoom, isHost: !!d.isHost, me: d.me || null, players: d.players || [], room: d.room || "" }; if (!Z && !H) fab.hidden = !(CTX.isHost && CTX.inRoom) || !ov.hidden; }
+    if (d.type === "sw-ctx") { CTX = { inRoom: !!d.inRoom, isHost: !!d.isHost, me: d.me || null, players: d.players || [], room: d.room || "" }; if (!Z && !H) fab.hidden = !(CTX.isHost && CTX.inRoom) || !ov.hidden; tryRestore(); }
     else if (d.type === "sw-qz" && d.p) {
       var p = d.p; if (p.game !== GID) return;
       if (p.t === "qa") { if (H) hostGot(p); return; }
