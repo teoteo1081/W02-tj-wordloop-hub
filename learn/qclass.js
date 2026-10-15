@@ -97,7 +97,7 @@
         h += '<button class="' + cls + '" data-q="pick" data-k="' + k + '"' + dis + '><span class="otext">' + esc(o) + "</span>" + (rev && Z.picks ? '<span class="pk">' + Object.keys(Z.picks).filter(function (id) { return Z.picks[id] === k; }).map(function (id) { return av(id, k === Z.ans ? "ok" : "bad"); }).join("") + "</span>" : "") + "</button>";
       });
       h += "</div>";
-      if (rev) {
+      if (rev && mine !== Z.ans) {   /* TJ 2026-10-15: đúng thì không cần khung giải thích — ô xanh + bảng điểm đã đủ; sai/chưa trả lời mới hiện lời giải */
         var my = (Z.board || []).filter(function (r) { return r.id === me.id; })[0], no = Object.keys(Z.pl || {}).filter(function (id) { return Z.picks && Z.picks[id] == null; });
         h += '<div class="gres ' + (mine === Z.ans ? "ok" : "bad") + '"><b>' + (mine === Z.ans ? "✅ Đúng rồi!" : mine == null ? "⏰ Chưa trả lời" : "❌ Chưa đúng") + (my && my.last ? " +" + my.last : "") + "</b><br>" + esc(Z.exp || "") + "</div>" ;
       }
