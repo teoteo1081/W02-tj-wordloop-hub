@@ -328,8 +328,8 @@
       if (L.phase === "ready") { prim = '<button class="big" data-act="lstop">⏭ Bỏ qua đếm ngược</button>'; more = prvB + aiB + endB; }
       else if (L.phase === "prep") { prim = '<button class="pri big" data-act="lskip">⏭ Kết thúc chuẩn bị</button>'; more = prvB + aiB + endB; }
       else if (run) { prim = '<button class="big" data-act="lstop">⏹ Dừng lượt này</button>'; more = prvB + aiB + endB; }
-      else if (needP) { prim = nxb; more = allB + aiB + endB; }   /* chuẩn bị chung = nút NHỎ ở khu danh sách người chơi */
-      else if (spk) { prim = nxb; more = allB + aiB + endB; if (last && !ps.length) prim += endB; }   /* nút "Bắt đầu nói" nằm ngay dưới danh sách người chơi (rosterHtml) */
+      else if (needP) { prim = nxb; more = allB + aiB + endB; if (last) prim += endB; }   /* chuẩn bị chung = nút NHỎ ở khu danh sách người chơi */
+      else if (spk) { prim = nxb; more = allB + aiB + endB; if (last) prim += endB; }   /* nút "Bắt đầu nói" nằm ngay dưới danh sách người chơi (rosterHtml) */
       else { prim = (L.phase === "idle" ? "" : '<button class="pri big" data-act="lstart">▶ Bắt đầu viết</button>') + nxb; more = aiB + endB; if (last && L.phase === "idle") prim += endB; }
       hostbar = '<div class="card hostbar"><div class="hb-main">' + prim + '</div><div class="hmore" tabindex="0"><button type="button" class="hmore-h" data-act="hmore" title="Thêm: AI chấm, Kết thúc lớp… (rê chuột vào)">⋯</button><div class="hmore-p"><button type="button" class="hmore-x" data-act="hclose" title="Đóng">✕</button>' + mgB + more + "</div></div></div>";
     }

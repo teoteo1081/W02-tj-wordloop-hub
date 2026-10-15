@@ -189,3 +189,4 @@ button.rec, button.rec.big { background:var(--ink) !important; border-color:var(
 /* y hệt nút "▶ Bắt đầu" của hub game: cam, chữ 16px đậm, bo 10px, nằm trái */
 .gorow { justify-content:flex-start !important; gap:10px; }
 .gorow .big, .gorow .gobtn, .gorow .prepbtn, body.live .gorow .big { padding:12px 22px !important; font-size:16px !important; font-weight:700 !important; border-radius:10px !important; min-height:0 !important; }
+.hb-main .endb { background:transparent !important; border:1px solid #b7a4f0 !important; color:#b7a4f0 !important; }
