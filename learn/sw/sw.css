@@ -303,5 +303,5 @@ body.one.has-live #app > :nth-child(n+5):not(.hostbar):not(.bottom) { display:no
 .dr-actions { margin:10px 0 4px; } .dr-actions button { width:100%; min-height:48px; font-size:16px; }
 
 /* nút tick 🎨 bật tô màu đề lúc đọc (TJ 2026-10-15) */
-.top .hlt { flex:none; min-height:0; height:34px; padding:0 10px; border-radius:999px; font-size:13px; line-height:1; white-space:nowrap; background:transparent; }
-.top .hlt.on { background:var(--acc); border-color:var(--acc); color:#fff; font-weight:700; }
+.card .hlt { position:sticky; bottom:2px; display:block; margin:6px 0 0 auto; min-height:0; height:36px; padding:0 12px; border-radius:999px; font-size:14px; line-height:1; white-space:nowrap; background:var(--card); box-shadow:0 2px 8px rgba(0,0,0,.35); }
+.card .hlt.on { background:var(--acc); border-color:var(--acc); color:#fff; font-weight:700; }

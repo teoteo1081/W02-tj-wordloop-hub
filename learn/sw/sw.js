@@ -92,8 +92,10 @@
   function hlOn() { try { return localStorage.getItem(HL_KEY) === "1"; } catch (e) { return false; } }
   function hlPaint(b) { var on = hlOn(); b.className = "hlt" + (on ? " on" : ""); b.setAttribute("aria-pressed", on ? "true" : "false"); b.textContent = (on ? "☑" : "☐") + " 🎨"; }
   function addHlToggle() {
-    var top = document.querySelector("#app > .top"), t = curTask(); if (!top || S.kind !== "speaking" || !t || t.type !== "read_aloud" || top.querySelector(".hlt")) return;
-    var b = document.createElement("button"); b.type = "button"; b.setAttribute("data-act", "hl"); b.title = "Tô màu đề trực tiếp lúc đọc (mặc định TẮT — thi thật không có phản hồi giữa chừng)"; hlPaint(b); top.insertBefore(b, top.children[1] || null);
+    /* TJ 2026-10-15: trước nằm ở thanh trên cùng -> hộp "Đã cho phép truy cập Micrô" của iPhone phủ lên vài giây, không bấm được. Nay ở GÓC DƯỚI PHẢI thẻ đề (dính đáy thẻ khi đề cuộn). */
+    var p = document.querySelector("#app .prompt.read"), t = curTask(); if (!p || S.kind !== "speaking" || !t || t.type !== "read_aloud") return;
+    var card = p.closest(".card"); if (!card || card.querySelector(".hlt")) return;
+    var b = document.createElement("button"); b.type = "button"; b.setAttribute("data-act", "hl"); b.title = "Tô màu đề trực tiếp lúc đọc (mặc định TẮT — thi thật không có phản hồi giữa chừng)"; hlPaint(b); card.appendChild(b);
   }
   function hlClear() { document.querySelectorAll("#app .prompt .lw").forEach(function (s) { if (s.className !== "lw") s.className = "lw"; }); }
   function dockLive() {
