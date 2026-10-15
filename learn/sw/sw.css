@@ -190,3 +190,8 @@ button.rec, button.rec.big { background:var(--ink) !important; border-color:var(
 .gorow { justify-content:flex-start !important; gap:10px; }
 .gorow .big, .gorow .gobtn, .gorow .prepbtn, body.live .gorow .big { padding:12px 22px !important; font-size:16px !important; font-weight:700 !important; border-radius:10px !important; min-height:0 !important; }
 .hb-main .endb { background:transparent !important; border:1px solid #b7a4f0 !important; color:#b7a4f0 !important; }
+/* thanh host 1 hàng, không xuống dòng ở màn hẹp */
+body.live .hostbar { flex-wrap:nowrap; align-items:center; }
+body.live .hostbar .hb-main { flex-wrap:nowrap; gap:6px; min-width:0; }
+body.live .hostbar .hb-main .big { flex:1 1 0 !important; min-width:0; white-space:nowrap; padding:6px 8px; font-size:14px; overflow:hidden; text-overflow:ellipsis; }
+body.live .hostbar .hb-main .pri { flex:1.4 1 0 !important; }
