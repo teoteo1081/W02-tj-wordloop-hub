@@ -2389,6 +2389,11 @@ button,a,input,select,textarea,.jrow,.home-card,.g-row,[role="button"]{
 .game-layer[hidden]{display:none;}
 /* TJ 2026-10-15: điện thoại vuốt trong khung game bị giật/lệch — trang nền vẫn cuộn theo (cuộn lan ra ngoài). Mở game thì khoá cuộn nền, khung game tự chứa cuộn. */
 body.game-on{overflow:hidden;overscroll-behavior:none;}
+/* TJ 2026-10-15: điện thoại — mở game thì thanh trên CHỈ CÒN 1 hàng nút (Trang chủ/Journey/Learning/Game…): bỏ hàng ☰ + logo + tab Hub (không dùng trong game), khung game bắt đầu ngay dưới. */
+@media (max-width:860px){
+  body.game-on:not(.game-focus){--topbar-h:50px;}
+  body.game-on .topbar > :not(.topbar-right){display:none !important;}
+}
 .game-layer{overscroll-behavior:contain;}
 /* nút 🎮 tím trên Block card — cùng khuôn với nút vàng "Bắt đầu học →" (.btn-warn), đứng sát phải hàng icon */
 .btn-game-block{

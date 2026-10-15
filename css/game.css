@@ -2199,3 +2199,13 @@ body.g-playing.g-adm #g-righthandle{top:2px;right:8px;width:30px;height:30px;fon
 .g-bpframe{width:100%;border:0;display:block;background:transparent;min-height:80px}
 .ga-swp{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0} #ga-sw .g-check{display:flex;gap:8px;align-items:center;margin:6px 0}
 .ga-swli{cursor:pointer} .ga-swli.cur{background:rgba(124,77,255,.18)} .ga-swli .ga-st{margin-left:auto;font-size:12px;color:var(--text-2,#9a9aa3)}
+
+/* ===== ĐIỆN THOẠI: thu gọn hàng thẻ chủ đề (TJ 2026-10-15: "chọn xong cho nó hide bớt trên điện thoại") =====
+   Nút "đang chọn ▾" (js/learn.js #g-learn-cur) thay cho hàng 8 thẻ; bấm để mở, chọn thẻ khác thì tự thu. Avatar lên cùng hàng với nút này. */
+.g-learn-cur{display:none}
+@media (max-width:640px){
+  body.g-host .g-learn-cur{display:flex;align-items:center;justify-content:space-between;order:9;flex:1 1 0;min-width:0;background:var(--accent);border:1px solid var(--accent);color:#fff;font:700 14px/1.2 inherit;font-family:inherit;border-radius:999px;padding:9px 16px;cursor:pointer;white-space:nowrap}
+  body.g-host .g-learn:not(.open){display:none}
+  body.g-host .g-learn.open{display:flex} body.g-host .g-learn.open button{flex:1 1 calc(50% - 6px);min-height:40px}   /* mở ra: 2 cột cho khỏi đè chữ */
+  .g-top .g-me{order:8}
+}

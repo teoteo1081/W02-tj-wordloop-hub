@@ -29,6 +29,7 @@
   var fitPoll = 0;
   function fitRect() {
     var ws = w.$("#workspace"); if (!ws || !fitOn) return;
+    if (w.innerWidth <= 860) { layer.style.top = layer.style.left = layer.style.width = layer.style.right = ""; return; }   /* điện thoại: khung game phủ từ ngay dưới thanh trên (bỏ thanh Section / đường dẫn phía trên) — CSS .game-layer lo vị trí */
     var r = ws.getBoundingClientRect(); if (r.width < 50 || r.height < 50) return;
     layer.style.top = Math.round(r.top) + "px"; layer.style.left = Math.round(r.left) + "px";
     layer.style.width = Math.round(r.width) + "px"; layer.style.right = "auto";

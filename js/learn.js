@@ -12,12 +12,23 @@
   layer.className = "g-learnlayer"; layer.hidden = true;
   document.body.appendChild(layer);
   var frames = {};
+  /* TJ 2026-10-15: điện thoại — hàng 8 thẻ chủ đề (Từ vựng/TOEIC/Speaking…) chiếm ~4 dòng. Chọn xong thì THU GỌN còn 1 nút "đang chọn ▾"; bấm nút để mở lại, chọn thẻ khác thì tự thu. */
+  var cur = document.createElement("button");
+  cur.type = "button"; cur.id = "g-learn-cur"; cur.className = "g-learn-cur"; cur.setAttribute("aria-expanded", "false");
+  nav.parentNode.insertBefore(cur, nav);
+  function paintCur() {
+    var on = nav.querySelector("[data-learn].on"), op = nav.classList.contains("open"), t = document.createElement("span"), a = document.createElement("b");
+    t.textContent = on ? on.textContent.trim() : "🎮 Từ vựng"; a.textContent = op ? "▴" : "▾";
+    cur.textContent = ""; cur.appendChild(t); cur.appendChild(a); cur.setAttribute("aria-expanded", op ? "true" : "false");
+  }
+  cur.addEventListener("click", function () { nav.classList.toggle("open"); paintCur(); });
 
   /* thẻ 🎮 Phòng game / 🎯 TOEIC = 2 hub của phòng game (game.js lắng nghe "tjwl-sethub"); IELTS chưa có (nút mờ); EA / Digital Marketing = lớp phủ iframe */
   var hub = window.TJ_HUB || "vocab";
   function paintHub() {
     if (!layer.hidden) return;   /* đang ở EA / Marketing: giữ tô sáng của chúng */
     nav.querySelectorAll("[data-learn]").forEach(function (b) { var k = b.dataset.learn; b.classList.toggle("on", (k === "" && hub !== "test") || (k === "toeic" && hub === "test")); });
+    paintCur();
   }
   document.addEventListener("tjwl-hubchanged", function (e) { hub = e.detail === "test" ? "test" : "vocab"; paintHub(); });
   /* TJ 2026-10-15: lúc làm bài thanh trên bị đẩy khỏi màn hình -> mép dưới của nó ÂM, khung lớp bị đặt lên trên, mất khúc đầu.
@@ -39,6 +50,7 @@
     try { sessionStorage.setItem("tjwl_learn_tab", key); } catch (e) {}
     try { document.dispatchEvent(new CustomEvent("tjwl-learn-shown", { detail: key })); } catch (e) {}   /* swclass.js: host rời thẻ Speaking/Writing -> đóng lớp cho cả phòng */
     if (!key) paintHub();
+    nav.classList.remove("open"); paintCur();   /* chọn xong -> thu gọn hàng thẻ (điện thoại) */
   }
   nav.addEventListener("click", function (e) {
     var b = e.target.closest("[data-learn]"); if (!b || b.disabled) return;
@@ -54,5 +66,5 @@
   try { if (window.ResizeObserver) new ResizeObserver(function () { if (!layer.hidden) place(); }).observe(top); } catch (e) {}
   setInterval(function () { if (!layer.hidden) place(); }, 1500);
   try { var last = sessionStorage.getItem("tjwl_learn_tab"); if (last && ((last !== "sp" && last !== "wr" && last !== "ielts" && last !== "ielw" && last !== "dm" && last !== "ea") || sessionStorage.getItem("tjwl_sw_keep"))) show(last); } catch (e) {}   /* sp/wr chỉ mở khi host bắt đầu lớp (người chơi F5 không bị kẹt ở Speaking) */
-  paintHub();
+  paintHub(); paintCur();
 })();
