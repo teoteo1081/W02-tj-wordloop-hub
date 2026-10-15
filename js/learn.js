@@ -4,7 +4,7 @@
    iframe tạo 1 lần rồi GIỮ SỐNG (ẩn chứ không xoá) để chuyển qua lại không mất lượt đang chơi, và phòng TOEIC bên dưới vẫn chạy. */
 (function () {
   "use strict";
-  var PAGES = { ea: "learn/ea/index.html?v=1", dm: "learn/dm/index.html?v=1", sp: "learn/sw/index.html?v=18&kind=speaking", wr: "learn/sw/index.html?v=18&kind=writing" };
+  var PAGES = { ea: "learn/ea/index.html?v=1", dm: "learn/dm/index.html?v=1", sp: "learn/sw/index.html?v=19&kind=speaking", wr: "learn/sw/index.html?v=19&kind=writing" };
   var TITLES = { ea: "EA Quest", dm: "Marketing Quest", sp: "TOEIC Speaking", wr: "TOEIC Writing" };
   var nav = document.getElementById("g-learn"), top = document.querySelector(".g-top");
   if (!nav || !top) return;
@@ -34,6 +34,7 @@
     document.body.classList.toggle("learn-on", !!key);
     if (key) place();
     try { sessionStorage.setItem("tjwl_learn_tab", key); } catch (e) {}
+    try { document.dispatchEvent(new CustomEvent("tjwl-learn-shown", { detail: key })); } catch (e) {}   /* swclass.js: host rời thẻ Speaking/Writing -> đóng lớp cho cả phòng */
     if (!key) paintHub();
   }
   nav.addEventListener("click", function (e) {

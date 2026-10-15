@@ -113,6 +113,10 @@
   function liveSend(st) { st.t = "live"; st.run = LIVE.run; st.ai = S.aiGrade ? 1 : 0; st.kind = S.kind; st.set = S.setId; st.group = S.group; toParent({ type: "sw-class-send", p: st }); liveApply(st); }
   function liveApply(st) {
     if (!st || st.run === S.leftRun) return;
+    if (st.phase === "close") {   /* host rời lớp / chuyển sang game khác -> người chơi tự thoát khỏi màn lớp, về game */
+      if (LIVE && st.run === LIVE.run && !CTX.isHost) { S.leftRun = st.run; LIVE = null; clearTimer(); stopSpeech(); S.screen = "home"; render(); toParent({ type: "sw-leave" }); }
+      return;
+    }
     if (!LIVE || st.run !== LIVE.run) {   /* vào phòng sau: dựng màn hình theo trạng thái host đang phát */
       if (!st.kind || !st.set || !SETS[st.kind].some(function (x) { return x.id === st.set; })) return;
       S.setId = st.set; liveInit({ kind: st.kind, group: st.group, run: st.run });
@@ -503,7 +507,7 @@
     else if (a === "regrade") { S.phase = "grading"; render(); grade(); }
     else if (a === "skipq") { var n = S.i + (+v || 0); if (n < 0) return; clearTimer(); stopSpeech(); if (n >= S.tasks.length) { S.screen = "sum"; render(); } else { S.i = n; question(); } }
     else if (a === "next") { if (S.i >= S.tasks.length - 1) { S.screen = "sum"; render(); } else { S.i++; question(); } }
-    else if (a === "quit") { if (LIVE) { S.leftRun = LIVE.run; LIVE = null; } clearTimer(); stopSpeech(); try { speechSynthesis.cancel(); } catch (x) {} S.screen = "home"; render(); }
+    else if (a === "quit") { if (LIVE) { if (CTX.isHost) toParent({ type: "sw-class-send", p: { t: "live", run: LIVE.run, phase: "close" } }); S.leftRun = LIVE.run; LIVE = null; } clearTimer(); stopSpeech(); try { speechSynthesis.cancel(); } catch (x) {} S.screen = "home"; render(); }
     else if (a === "home") { S.screen = "home"; render(); }
     else if (a === "again") { S.saved = 0; begin(S.kind, S.group); }
     else if (a === "delextra") { try { localStorage.removeItem(EXTRA); } catch (x) {} toast("Đã xoá đề riêng"); setTimeout(function () { location.reload(); }, 700); }

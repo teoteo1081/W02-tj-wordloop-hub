@@ -19,6 +19,7 @@
   function onMsg(p) {
     if (!p) return;
     if (p.t === "start") { openedRun = p.run; document.dispatchEvent(new CustomEvent("tjwl-sw-open", { detail: p.kind })); setTimeout(function () { deliverStart(p); }, 250); }
+    else if (p.t === "live" && p.phase === "close") { liveFwd(p); if (p.run === openedRun) openedRun = ""; }
     else if (p.t === "live") { if (p.run !== openedRun) { openedRun = p.run; document.dispatchEvent(new CustomEvent("tjwl-sw-open", { detail: p.kind })); setTimeout(function () { liveFwd(p); }, 400); } else liveFwd(p); }
     else if (p.t === "fin") frames().forEach(function (f) { post(f.contentWindow, { type: "sw-class-fin", p: p }); });
     else if (false) frames().forEach(function (f) { post(f.contentWindow, { type: "sw-class-live", p: p }); });
@@ -34,6 +35,12 @@
       var p = { t: "start", kind: d.kind === "writing" ? "writing" : "speaking", set: String(d.set || ""), group: String(d.group || "all"), run: Date.now() + "-" + Math.random().toString(36).slice(2, 6), by: c.me && c.me.id };
       send(p); onMsg(p);   /* broadcast không gửi lại cho chính mình -> host tự xử lý */
     } else if (d.type === "sw-class-send" && d.p) send(d.p);
+    else if (d.type === "sw-leave") document.dispatchEvent(new CustomEvent("tjwl-learn-home"));   /* người chơi thoát lớp -> về trang game */
+  });
+  /* host chuyển sang thẻ khác (Từ vựng / TOEIC / EA / Marketing / về trang game) khi lớp đang chạy -> báo cả phòng thoát lớp */
+  document.addEventListener("tjwl-learn-shown", function (e) {
+    var k = e.detail; if (!openedRun || !ctx().isHost || k === "sp" || k === "wr") return;
+    send({ t: "live", run: openedRun, phase: "close" }); openedRun = "";
   });
   window.SWClass = { attach: function (a) { api = a; }, onMsg: onMsg };
 })();
