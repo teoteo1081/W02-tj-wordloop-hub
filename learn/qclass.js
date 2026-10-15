@@ -31,8 +31,12 @@
     "#qc .qbd{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 12px;margin:10px 0}#qc .qbd div{display:flex;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}#qc .qbd div:last-child{border:0}#qc .qbd .pts{margin-left:auto;font-weight:800}#qc .qbd .d{color:#4fb985;font-size:13px}" +
     "#qc .qb{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 20px;border-radius:10px;border:1px solid transparent;background:#d97757;color:#fff;font:inherit;font-size:16px;font-weight:700;cursor:pointer}#qc .qb.soft{background:var(--card);color:var(--ink);border-color:var(--line)}" +
     "#qc .rcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:6px 0 10px}#qc .rtop{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}#qc .rcode{font-size:34px;font-weight:800;letter-spacing:3px;color:#d97757;line-height:1.1}#qc .rcard .sub{font-size:13px;color:var(--muted)}#qc .rbtn{display:flex;gap:8px;flex-wrap:wrap}#qc .rps{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}#qc .rp{display:flex;flex-direction:column;align-items:center;font-size:12px;gap:3px}#qc .rp .av{width:44px;height:44px;font-size:26px}" +
-    "#qc .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:6px 0 12px}#qc .panel .grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px}#qc .panel .wide{grid-column:1/-1}#qc .panel label{display:block;margin:10px 0 4px;color:var(--muted);font-size:13px}#qc .panel label.chk{color:var(--ink);font-size:15px}#qc .fix{padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);font-size:14px}#qc .act{display:flex;gap:12px;align-items:center;margin:14px 0 2px}#qc .act .sub{color:var(--muted);font-size:13px}" +
-    "#qc .lhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0}#qc .lhead h2{margin:0;font-size:19px}#qc .lcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}#qc .lc{background:var(--card);border:2px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;display:flex;flex-direction:column;gap:6px}#qc .lc.on{border-color:#d97757;background:rgba(217,119,87,.1)}#qc .lc .lt{font-weight:700;font-size:15px}#qc .lc .sub{font-size:13px;color:var(--muted)}#qc .lc .qb{align-self:flex-start;margin-top:2px}" +
+    "#qc .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:6px 0 14px}#qc .panel .ph{font-weight:800;font-size:18px;margin-bottom:6px}#qc .pchips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}#qc .pchips span{padding:3px 12px;border-radius:99px;border:1px solid var(--line);background:var(--bg);font-size:13px}" +
+    "#qc .panel .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px 14px;margin-top:8px}#qc .panel label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted)}#qc .panel select,#qc .panel input[type=number]{padding:10px 8px;border-radius:10px;background:var(--bg);color:var(--ink);border:1px solid var(--line);font:inherit;font-size:14px;width:100%;box-sizing:border-box}" +
+    "#qc .panel .rowchk{display:flex;gap:18px;flex-wrap:wrap;margin:12px 0 2px}#qc .panel label.chk{flex-direction:row;align-items:center;gap:8px;color:var(--ink);font-size:14px}#qc .panel .chk input{width:20px;height:20px;accent-color:#d97757}#qc .pinfo{margin:10px 0;font-size:13px;color:var(--muted)}#qc .qb.big{padding:12px 26px;font-size:16px;border-radius:10px}" +
+    "#qc .lhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0}#qc .lhead h2{margin:0;font-size:19px}" +
+    "#qc .bk{background:var(--card);border:1px solid var(--line);border-left:4px solid #5aa9d6;border-radius:12px;padding:12px 14px;margin:10px 0}#qc .bkh{display:flex;gap:6px;align-items:center;flex-wrap:wrap}#qc .bkh b{font-size:17px;margin-right:4px}#qc .bkh .c{font-size:12px;padding:2px 9px;border-radius:99px;border:1px solid var(--line);background:var(--bg)}#qc .bkh .part{color:var(--muted)}#qc .bkt{margin:4px 0 8px;color:var(--muted);font-size:14px}" +
+    "#qc .bkw{display:flex;flex-wrap:wrap;gap:6px}#qc .bkw span{padding:4px 11px;border-radius:99px;border:1px solid var(--line);background:var(--bg);font-size:14px}#qc .bkf{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px}#qc .bkf button{font:inherit;font-size:14px;font-weight:700;border-radius:10px;padding:8px 16px;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:var(--ink)}#qc .bkf .tg.on{border-color:#4fb985;color:#4fb985}#qc .bkf .pl{background:#8b5cf6;border-color:#8b5cf6;color:#fff}" +
     "#qc .qb.sm{padding:10px 14px}#qc .mg{margin-top:18px}#qc .qfoot{position:fixed;left:0;right:0;bottom:0;padding:10px 14px;background:var(--bg);border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}#qc .qfoot .sm:first-child{margin-right:auto}" +
     "#qc .qs label{display:block;margin:12px 0 4px;color:var(--muted);font-size:14px}#qc .qch{display:flex;flex-wrap:wrap;gap:6px}#qc .qch button{padding:8px 12px;border-radius:99px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:14px;cursor:pointer}#qc .qch button.on{background:#d97757;border-color:#d97757;color:#fff}" +
     "#qc .av{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:var(--card);border:3px solid var(--line);font-size:20px;overflow:hidden;flex:none}#qc .av img{width:100%;height:100%;object-fit:cover}" +
@@ -48,7 +52,7 @@
   function av(id, cls) { var n = (Z && Z.pl && Z.pl[id]) || {}; return '<span class="av ' + (cls || "") + '" title="' + esc(n.name || "") + '">' + ava(n.avatar) + "</span>"; }
   var lastSay = "";
   function speak(t) { try { speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(t); u.lang = "en-US"; u.rate = 0.9; speechSynthesis.speak(u); } catch (e) {} }
-  function autoSay() { if (Z && Z.ph === "q" && Z.q && Z.q.say && Z.q.k !== "m2en") { var key = Z.run + ":" + Z.i; if (key !== lastSay) { lastSay = key; speak(Z.q.say); } } }
+  function autoSay() { if (Z && Z.ph === "q" && Z.q && Z.q.say && Z.q.auto !== 0 && Z.q.k !== "m2en") { var key = Z.run + ":" + Z.i; if (key !== lastSay) { lastSay = key; speak(Z.q.say); } } }
   function rem() { return Z && Z.tEnd ? Math.max(0, (Z.tEnd - Date.now()) / 1000) : 0; }
   function paintBoard(b, meId) { var pk = Z && Z.ph === "rev" ? Z.picks || null : null; return '<div class="qbd">' + (b || []).slice(0, 8).map(function (r, k) { var c = pk ? pk[r.id] : null, mk = pk ? (c == null ? "⏰" : c === Z.ans ? "✅" : "❌") : ""; return "<div><b>" + (k + 1) + "</b>" + '<span class="av ' + (pk ? (c == null ? "dim" : c === Z.ans ? "ok" : "bad") : "") + '">' + ava(r.avatar) + "</span><span>" + esc(r.name) + (r.id === meId ? " (bạn)" : "") + '</span><span class="pts">' + mk + " " + r.pts + "</span>" + (r.last ? '<span class="d">+' + r.last + "</span>" : "") + "</div>"; }).join("") + "</div>"; }
   function podium(b) {
@@ -93,28 +97,37 @@
     return '<div class="rcard"><div class="rtop"><div><div class="sub">Mã phòng</div><div class="rcode">' + esc(CTX.room || "") + '</div></div><div class="rbtn"><button class="qb soft sm" data-q="users">👥 Quản lý người chơi</button><button class="qb soft sm" data-q="copy">🔗 Copy link mời</button></div></div><div class="rps">' +
       (CTX.players || []).map(function (p) { return '<span class="rp" title="' + esc(p.name || "") + '"><span class="av lit">' + ava(p.avatar) + "</span><b>" + esc(p.name || "?") + "</b></span>"; }).join("") + "</div></div>";
   }
-  function showSetup() {   /* giống hub Từ vựng: thiết lập ván Ở TRÊN, các bài học (thẻ) Ở DƯỚI */
-    if (!setup) setup = { mods: lessonsList().map(function (l) { return l.id; }), n: 10, sec: 20, secV: 10, hp: true, types: { quiz: true, en2m: true, m2en: true, listen: false } };
-    var T = setup.types, V = DATA.vocab || [], Qs = DATA.questions || [], inSel = function (id) { return setup.mods.indexOf(id) >= 0; };
+  var TYPES = [["mix", "🔀 Trộn tất cả dạng"], ["quiz", "📝 Trắc nghiệm bài học"], ["en2m", "🔤 Thuật ngữ → nghĩa (tiếng mẹ đẻ)"], ["m2en", "🈯 Nghĩa → thuật ngữ"], ["listen", "🎧 Nghe → chọn nghĩa"]];
+  function typesOf(t) { return t === "mix" ? { quiz: true, en2m: true, m2en: true, listen: true } : (function (o) { o[t] = true; return o; })({}); }
+  function showSetup() {   /* giống hub Từ vựng của game: thẻ phòng · bảng "Chủ đề ván này" · các thẻ Block bên dưới (bài học Marketing) */
+    if (!setup) setup = { mods: lessonsList().map(function (l) { return l.id; }), n: 10, sec: 20, secV: 10, hp: true, say: true, type: "mix" };
+    var T = typesOf(setup.type), V = DATA.vocab || [], Qs = DATA.questions || [], inSel = function (id) { return setup.mods.indexOf(id) >= 0; };
     var nQ = Qs.filter(function (q) { return inSel(q.lesson); }).length, nV = V.filter(function (v) { return inSel(v.lesson); }).length, cnt = (T.quiz ? nQ : 0) + (T.en2m || T.m2en || T.listen ? nV : 0);
-    var chips = function (key, arr, cur, fmt) { return '<div class="qch">' + arr.map(function (n) { return '<button class="' + (cur === n ? "on" : "") + '" data-q="' + key + '" data-v="' + n + '">' + (fmt ? fmt(n) : n) + "</button>"; }).join("") + "</div>"; };
+    var mins = Math.max(1, Math.round(setup.n * ((T.quiz && (T.en2m || T.m2en || T.listen) ? (setup.sec + setup.secV) / 2 : T.quiz ? setup.sec : setup.secV) + 6) / 60));
+    var sel = function (id, opts, cur) { return '<select id="' + id + '">' + opts.map(function (o) { return '<option value="' + o[0] + '"' + (o[0] === cur ? " selected" : "") + ">" + esc(o[1]) + "</option>"; }).join("") + "</select>"; };
     var h = '<div class="qw"><div class="qtop"><button class="qx" data-q="setupx">✕</button><span class="qn">👥 Chơi cả phòng</span></div>' + roomCard() +
-      '<div class="qs panel"><div class="grid"><div><label>Kiểu chơi</label><div class="fix">⚡ Kahoot · cả phòng cùng trả lời</div></div><div><label>Số câu</label>' + chips("n", [5, 10, 15, 20, 30], setup.n) + '</div>' +
-      '<div class="wide"><label>Dạng câu hỏi (chọn nhiều = trộn)</label><div class="qch">' + [["quiz", "📝 Trắc nghiệm bài học"], ["en2m", "🔤 Thuật ngữ → nghĩa"], ["m2en", "🈯 Nghĩa → thuật ngữ"], ["listen", "🎧 Nghe → chọn nghĩa"]].map(function (t) { return '<button class="' + (T[t[0]] ? "on" : "") + '" data-q="type" data-v="' + t[0] + '">' + t[1] + "</button>"; }).join("") + "</div></div>" +
-      '<div><label>Giây / câu trắc nghiệm</label>' + chips("sec", [15, 20, 30, 45], setup.sec, function (n) { return n + "s"; }) + '</div><div><label>Giây / câu từ vựng</label>' + chips("secv", [6, 8, 10, 15], setup.secV, function (n) { return n + "s"; }) + "</div></div>" +
-      '<label class="chk"><input type="checkbox" id="qhp"' + (setup.hp ? " checked" : "") + '> Host cũng chơi (tính điểm)</label>' +
-      '<p class="act"><button class="qb" data-q="go"' + (cnt ? "" : " disabled") + '>▶ Bắt đầu</button><span class="sub">' + setup.mods.length + " bài · " + (T.quiz ? nQ + " trắc nghiệm" : "") + (T.quiz && (T.en2m || T.m2en || T.listen) ? " · " : "") + (T.en2m || T.m2en || T.listen ? nV + " thuật ngữ" : "") + "</span></p></div>" +
-      '<div class="lhead"><h2>📚 Các bài học</h2><span><button class="qb soft sm" data-q="all">Chọn hết</button> <button class="qb soft sm" data-q="none">Bỏ hết</button></span></div><div class="lcards">';
-    lessonsList().forEach(function (l, k) {
-      var lv = V.filter(function (v) { return v.lesson === l.id; }).length, lq = Qs.filter(function (q) { return q.lesson === l.id; }).length;
-      h += '<div class="lc' + (inSel(l.id) ? " on" : "") + '" data-q="mod" data-id="' + esc(l.id) + '"><div class="lt">' + esc(String(l.title || l.id)) + '</div><div class="sub">' + lv + " thuật ngữ · " + lq + ' câu trắc nghiệm</div><button class="qb soft sm" data-q="one" data-id="' + esc(l.id) + '">▶ Chơi riêng bài này</button></div>';
+      '<div class="panel"><div class="ph">📚 Chủ đề ván này</div><div class="pchips">' + (setup.mods.length ? lessonsList().filter(function (l) { return inSel(l.id); }).map(function (l) { return "<span>" + esc(String(l.title || l.id).replace(/^\d+ · /, "")) + "</span>"; }).join("") : "<span>(chưa chọn bài nào — chọn ở các thẻ bên dưới)</span>") + "</div>" +
+      '<div class="grid"><label>Kiểu chơi<select disabled><option>Cùng 1 câu (kiểu Kahoot)</option></select></label>' +
+      '<label>Dạng câu hỏi' + sel("qtype", TYPES, setup.type) + "</label>" +
+      '<label>Số câu<input type="number" id="qn" min="1" max="60" value="' + setup.n + '"></label>' +
+      '<label>Giây / câu trắc nghiệm<input type="number" id="qsec" min="5" max="120" value="' + setup.sec + '"></label>' +
+      '<label>Giây / câu từ vựng<input type="number" id="qsecv" min="3" max="60" value="' + setup.secV + '"></label>' +
+      '<label>Cách tính điểm<select disabled><option>Theo tốc độ: đúng +500…1000</option></select></label></div>' +
+      '<div class="rowchk"><label class="chk"><input type="checkbox" id="qhp"' + (setup.hp ? " checked" : "") + '> Host cũng chơi</label><label class="chk"><input type="checkbox" id="qsay"' + (setup.say ? " checked" : "") + '> 🔊 Tự đọc thuật ngữ tiếng Anh</label></div>' +
+      '<div class="pinfo">' + setup.mods.length + " bài · " + nQ + " câu trắc nghiệm · " + nV + " thuật ngữ · ván ≈ " + mins + " phút</div>" +
+      '<button class="qb big" data-q="go"' + (cnt ? "" : " disabled") + '>▶ Bắt đầu</button></div>' +
+      '<div class="lhead"><h2>📚 Các bài học</h2><span><button class="qb soft sm" data-q="all">Chọn hết</button> <button class="qb soft sm" data-q="none">Bỏ hết</button></span></div>';
+    lessonsList().forEach(function (l) {
+      var vs = V.filter(function (v) { return v.lesson === l.id; }), lq = Qs.filter(function (q) { return q.lesson === l.id; }).length, no = String(l.title || l.id).match(/^\d+/);
+      h += '<div class="bk"><div class="bkh"><b>Module ' + esc(no ? no[0] : l.id) + "</b><span class=\"c\">" + vs.length + ' thuật ngữ</span><span class="c">' + lq + ' trắc nghiệm</span><span class="c part">Phần ' + esc(l.part || "") + '</span></div><div class="bkt">' + esc(String(l.title || l.id).replace(/^\d+ · /, "")) + '</div><div class="bkw">' +
+        vs.slice(0, 16).map(function (v) { return "<span>" + esc(v.en) + "</span>"; }).join("") + (vs.length > 16 ? "<span>+" + (vs.length - 16) + "</span>" : "") + '</div><div class="bkf"><button class="tg' + (inSel(l.id) ? " on" : "") + '" data-q="mod" data-id="' + esc(l.id) + '">' + (inSel(l.id) ? "☑ Đã chọn" : "☐ Chọn") + '</button><button class="pl" data-q="one" data-id="' + esc(l.id) + '">🎮 Chơi game →</button></div></div>';
     });
-    h += "</div></div>";
+    h += "</div>";
     ov.hidden = false; fab.hidden = true; var st = ov.scrollTop; ov.innerHTML = h; ov.scrollTop = st;
   }
   function expectIds() { return (CTX.players || []).filter(function (p) { return setup.hp !== false || !(CTX.me && p.id === CTX.me.id); }).map(function (p) { return p.id; }); }
   function startRun() {
-    var T = setup.types, kinds = ["quiz", "en2m", "m2en", "listen"].filter(function (k) { return T[k]; }), V = shuffle((DATA.vocab || []).filter(function (v) { return setup.mods.indexOf(v.lesson) >= 0; })), Q = shuffle(DATA.questions.filter(function (q) { return setup.mods.indexOf(q.lesson) >= 0; })), qs = [], vi = 0, qi = 0, guard = 0;
+    var T = typesOf(setup.type), kinds = ["quiz", "en2m", "m2en", "listen"].filter(function (k) { return T[k]; }), V = shuffle((DATA.vocab || []).filter(function (v) { return setup.mods.indexOf(v.lesson) >= 0; })), Q = shuffle(DATA.questions.filter(function (q) { return setup.mods.indexOf(q.lesson) >= 0; })), qs = [], vi = 0, qi = 0, guard = 0;
     function pick4(v, key) {   /* 3 đáp án nhiễu: ưu tiên cùng module, không trùng nghĩa */
       var same = V.filter(function (x) { return x !== v && x.lesson === v.lesson && x[key] !== v[key]; }), rest = V.filter(function (x) { return x !== v && x.lesson !== v.lesson && x[key] !== v[key]; }), o = [v[key]];
       shuffle(same).concat(shuffle(rest)).forEach(function (x) { if (o.length < 4 && o.indexOf(x[key]) < 0) o.push(x[key]); });
@@ -133,13 +146,13 @@
       else { var o2 = pick4(v, "vi"); qs.push({ t: k === "listen" ? "Nghe thuật ngữ rồi chọn nghĩa đúng" : v.en, o: o2, a: o2.indexOf(v.vi), exp: exp, sec: setup.secV, k: k, say: v.en, hide: k === "listen" }); }
     }
     if (!qs.length) return;
-    H = { hp: setup.hp !== false, run: Date.now() + "-" + Math.random().toString(36).slice(2, 6), qs: qs, i: -1, sec: setup.sec, ans: {}, score: {}, last: {}, expect: 0, names: {} };
+    H = { say: setup.say !== false, hp: setup.hp !== false, run: Date.now() + "-" + Math.random().toString(36).slice(2, 6), qs: qs, i: -1, sec: setup.sec, ans: {}, score: {}, last: {}, expect: 0, names: {} };
     (CTX.players || []).forEach(function (p) { H.names[p.id] = { name: p.name, avatar: p.avatar }; H.score[p.id] = 0; });
     nextQ();
   }
   function playersMap() { var m = {}; (CTX.players || []).forEach(function (p) { if (H.hp !== false || !(CTX.me && p.id === CTX.me.id)) m[p.id] = { name: p.name, avatar: p.avatar }; }); Object.keys(H.ans).forEach(function (id) { if (!m[id]) m[id] = H.names[id] || {}; }); return m; }
   function snap() {
-    var q = H.qs[H.i] || { t: "", o: [], a: 0, exp: "" }, base = { run: H.run, ph: H.ph, i: H.i, n: H.qs.length, q: { t: q.t, o: q.o, say: q.say || "", hide: q.hide ? 1 : 0, k: q.k || "quiz" }, tot: H.sec, rem: H.ph === "q" ? rem() : 0, got: Object.keys(H.ans).length, ids: Object.keys(H.ans), pl: playersMap() };
+    var q = H.qs[H.i] || { t: "", o: [], a: 0, exp: "" }, base = { run: H.run, ph: H.ph, i: H.i, n: H.qs.length, q: { t: q.t, o: q.o, say: q.say || "", hide: q.hide ? 1 : 0, k: q.k || "quiz", auto: H.say === false ? 0 : 1 }, tot: H.sec, rem: H.ph === "q" ? rem() : 0, got: Object.keys(H.ans).length, ids: Object.keys(H.ans), pl: playersMap() };
     if (H.ph === "rev" || H.ph === "end") { base.ans = q.a; base.exp = q.exp; base.cnt = H.cnt; base.board = H.board; base.picks = {}; Object.keys(base.pl).forEach(function (id) { base.picks[id] = H.ans[id] ? H.ans[id].c : null; }); }
     return base;
   }
@@ -188,7 +201,12 @@
       render();
     }
   });
-  ov.addEventListener("change", function (e) { if (e.target.id === "qhp") setup.hp = e.target.checked; });
+  ov.addEventListener("change", function (e) {
+    var t = e.target, v = +t.value;
+    if (t.id === "qhp") setup.hp = t.checked; else if (t.id === "qsay") setup.say = t.checked;
+    else if (t.id === "qn") { setup.n = Math.max(1, Math.min(60, v || 10)); showSetup(); } else if (t.id === "qsec") { setup.sec = Math.max(5, Math.min(120, v || 20)); showSetup(); } else if (t.id === "qsecv") { setup.secV = Math.max(3, Math.min(60, v || 10)); showSetup(); }
+    else if (t.id === "qtype") { setup.type = t.value; showSetup(); }
+  });
   fab.addEventListener("click", showSetup);
   window.addEventListener("message", function (e) {
     var d = e.data; if (e.origin !== location.origin || !d || typeof d.type !== "string") return;
