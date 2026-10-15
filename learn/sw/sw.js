@@ -327,7 +327,7 @@
       if (L.phase === "ready") { prim = '<button class="big" data-act="lstop">⏭ Bỏ qua đếm ngược</button>'; more = aiB + endB; }
       else if (L.phase === "prep") { prim = '<button class="pri big" data-act="lskip">⏭ Kết thúc chuẩn bị</button>'; more = aiB + endB; }
       else if (run) { prim = '<button class="big" data-act="lstop">⏹ Dừng lượt này</button>'; more = aiB + endB; }
-      else if (needP) { prim = '<button class="pri big" data-act="lstart">▶ Bắt đầu chuẩn bị (cả phòng)</button>' + nxb; more = allB + aiB + endB; }
+      else if (needP) { prim = nxb; more = allB + aiB + endB; }   /* chuẩn bị chung = nút NHỎ ở khu danh sách người chơi */
       else if (spk) { prim = nxb; more = allB + aiB + endB; if (last && !ps.length) prim += endB; }   /* nút "Bắt đầu nói" nằm ngay dưới danh sách người chơi (rosterHtml) */
       else { prim = (L.phase === "idle" ? "" : '<button class="pri big" data-act="lstart">▶ Bắt đầu viết</button>') + nxb; more = aiB + endB; if (last && L.phase === "idle") prim += endB; }
       hostbar = '<div class="card hostbar"><div class="hb-main">' + prim + '</div><div class="hmore" tabindex="0"><button type="button" class="hmore-h" data-act="hmore" title="Thêm: AI chấm, Kết thúc lớp… (rê chuột vào)">⋯</button><div class="hmore-p">' + more + "</div></div></div>";
@@ -397,9 +397,10 @@
   }
   function pickOf(ps) { var L = LIVE, all = plist(); return all.filter(function (p) { return p.id === L.pick; })[0] || ps[0] || all[0]; }   /* host chọn được cả người đã nói (nói lại, chấm lại) */
   function rosterGo(host) {   /* nút "Bắt đầu nói · tên" sát danh sách người chơi (chạm tên để chọn, rồi bấm ngay bên dưới) */
-    var L = LIVE; if (!host || !L || S.kind !== "speaking" || L.sp || L.phase === "ready" || L.phase === "prep" || L.phase === "resp" || needPrep()) return "";
-    var ps = plist().filter(function (p) { return !L.done[p.id]; }), pk = pickOf(ps);
-    return pk ? '<button class="pri big" data-act="lstart" style="width:100%;margin-top:10px">' + (ps.length ? "▶ Bắt đầu nói" : "↻ Nói lại") + " · " + esc(pk.name || "") + "</button>" : "";
+    var L = LIVE; if (!host || !L || S.kind !== "speaking" || L.sp || L.phase === "ready" || L.phase === "prep" || L.phase === "resp") return "";
+    var ps = plist().filter(function (p) { return !L.done[p.id]; }), pk = pickOf(ps), tm = liveTimes();
+    var prepB = needPrep() ? '<button type="button" class="soft prepbtn" data-act="lprep">⏱ Chuẩn bị chung cả phòng · ' + tm[0] + "s</button>" : "";
+    return prepB + (pk ? '<button class="pri big gobtn" data-act="lspeak">' + (ps.length ? "▶ Bắt đầu nói" : "↻ Nói lại") + " · " + esc(pk.name || "") + "</button>" : "");
   }
   function rosterHtml(host) {
     var L = LIVE, ps = plist(), rest = ps.filter(function (p) { return !L.done[p.id]; }), cur = L.sp ? L.sp.id : (host ? (pickOf(rest) || {}).id : "");
@@ -432,6 +433,10 @@
         if (S.kind === "speaking") { sp = pickOf(plist().filter(function (p) { return !L.done[p.id]; })); if (!sp) return true; sp = { id: sp.id, name: sp.name, avatar: sp.avatar }; }
         liveSend({ i: S.i, phase: "ready", sp: sp, sec: 3, done: L.done, pd: 1, nx: "resp" });
       }
+    } else if (a === "lprep") { liveSend({ i: S.i, phase: "ready", sp: null, sec: 3, done: L.done, pd: 0, nx: "prep" }); }
+    else if (a === "lspeak") {   /* nói luôn (bỏ qua chuẩn bị chung nếu chưa làm) */
+      var sp2 = pickOf(plist().filter(function (p) { return !L.done[p.id]; })); if (!sp2) return true;
+      liveSend({ i: S.i, phase: "ready", sp: { id: sp2.id, name: sp2.name, avatar: sp2.avatar }, sec: 3, done: L.done, pd: 1, nx: "resp" });
     } else if (a === "lpick") { L.pick = v; if (S.kind === "speaking" && (L.pd || shortPrep()) && !L.sp && (L.phase === "idle" || L.phase === "show")) return liveAct("lstart"); liveRender(); }   /* cả phòng đã chuẩn bị xong -> chạm tên là người đó vào nói luôn (3-2-1 rồi nói) */
     else if (a === "lall") liveSend(needPrep() ? { i: S.i, phase: "ready", sp: null, sec: 3, done: L.done, pd: 0, nx: "prep+all" } : { i: S.i, phase: "ready", sp: null, sec: 3, done: L.done, pd: 1, nx: "resp" });
     else if (a === "lskip") { L.adv = 1; liveNext(); }

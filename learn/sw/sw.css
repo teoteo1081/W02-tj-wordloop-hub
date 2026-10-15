@@ -118,3 +118,17 @@ select.big { max-width:46%; }
 .hmore-p .big { width:100%; } .hmore-p .danger { color:var(--bad); border-color:var(--bad); }
 .hostbar .aisw { flex:none; display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 10px; border:1px solid var(--line); border-radius:10px; color:var(--ink); font-size:14px; cursor:pointer; } .hostbar .aisw input { width:20px; height:20px; accent-color:var(--acc); }
 .hmore-p > * { flex:none !important; height:auto !important; min-height:46px; font-size:15px !important; } .hmore-p .aisw { min-height:44px; }
+
+/* ===== chữ to + bắt mắt cho điện thoại (TJ 2026-10-15) ===== */
+.prepbtn { display:block; margin:12px auto 0; padding:8px 16px; font-size:15px; border-radius:999px; opacity:.9; }
+.gobtn { width:100%; margin-top:12px; font-size:20px !important; min-height:60px !important; }
+.roster .chip { font-size:18px; padding:12px 18px; margin:6px 8px 0 0; } .roster .chip.on { box-shadow:0 0 0 3px rgba(183,164,240,.4); font-weight:700; }
+.roster > .sub { font-size:15px; }
+.pri { background:linear-gradient(135deg,var(--acc2),var(--acc)); box-shadow:0 6px 18px rgba(124,99,200,.32); }
+body.live .roster { border-color:var(--acc2); box-shadow:0 0 0 1px rgba(143,120,224,.35) inset; }
+@media (max-width:700px) {
+  html, body { font-size:18px; } .sub { font-size:15px; } .badge { font-size:15px !important; padding:3px 12px; } .prompt { font-size:19px; line-height:1.55; }
+  .hostbar .hb-main .big { font-size:18px; } .timer { font-size:46px !important; } .top .t { font-size:17px; } .oth summary { font-size:16px; } .fb li { font-size:16px; }
+  select, input[type=text], input[type=number] { font-size:17px !important; }
+}
+.gobtn{color:#1a1233 !important;font-weight:800}
