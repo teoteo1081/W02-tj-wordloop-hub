@@ -642,9 +642,9 @@
   }
   function prColor() {
     var tr = ((PR.tr || "") + " " + (PR.interim || "")).trim(); if (!tr) return;
-    var g = gradeRead(PR.text, tr), reach = -1; g.st.forEach(function (s, i) { if (s === "ok" || s === "bad") reach = i; });
-    var sp = prSpans(); for (var i = 0; i < sp.length; i++) { var s = g.st[i], c = "lw"; if (i <= reach) c += s === "ok" ? " lw-ok" : s === "bad" ? " lw-bad" : " lw-skip"; else if (i === reach + 1) c += " lw-cur"; if (sp[i].className !== c) sp[i].className = c; }
-    prScroll(reach + 1);
+    var cls = liveCls(gradeRead(PR.text, tr)), sp = prSpans(), cur = 0;
+    for (var i = 0; i < sp.length; i++) { var c = "lw" + (cls[i] ? " lw-" + cls[i] : ""); if (sp[i].className !== c) sp[i].className = c; if (cls[i] === "cur") cur = i; }
+    prScroll(cur);
   }
   function prMic() {
     if (!PR || !SR) return; var btn = document.getElementById("pr-mic");
@@ -781,13 +781,10 @@
       var k = 0; p.innerHTML = String(t.text).split(/(\s+)/).map(function (tok) { if (!tok) return ""; if (/^\s+$/.test(tok)) return tok; if (!normW(tok)) return esc(tok); return '<span class="lw" data-k="' + (k++) + '">' + esc(tok) + "</span>"; }).join("");
       p.dataset.wrapped = String(t.text.length);
     }
-    var tr = ((S.tr || "") + " " + (S.interim || "")).trim(), sp = p.querySelectorAll(".lw"), reach = -1, g = null;
-    if (tr) { g = gradeRead(t.text, tr); g.st.forEach(function (s, i) { if (s === "ok" || s === "bad") reach = i; }); }
-    var cur = null;
+    var tr = ((S.tr || "") + " " + (S.interim || "")).trim(), sp = p.querySelectorAll(".lw"), cls = tr ? liveCls(gradeRead(t.text, tr)) : [], cur = null;
     for (var i = 0; i < sp.length; i++) {
-      var c = "lw", s = g ? g.st[i] : "";
-      if (g && i <= reach) c += s === "ok" ? " lw-ok" : s === "bad" ? " lw-bad" : " lw-skip"; else if (g && i === reach + 1) c += " lw-cur";
-      if (sp[i].className !== c) sp[i].className = c; if (i === reach + 1 || (reach < 0 && i === 0)) cur = sp[i];
+      var c = "lw" + (cls[i] ? " lw-" + cls[i] : ""); if (sp[i].className !== c) sp[i].className = c;
+      if (cls[i] === "cur" || (!tr && i === 0)) cur = sp[i];
     }
     var card = p.closest(".card"); if (card && cur && card.scrollHeight > card.clientHeight + 4) {   /* tự cuộn riêng trong thẻ đề, giữ chữ đang đọc ở khoảng 1/3 */
       var cr = card.getBoundingClientRect(), r = cur.getBoundingClientRect();
@@ -864,19 +861,29 @@
   function normW(w) { return String(w || "").toLowerCase().replace(/[’']/g, "").replace(/[^a-z0-9]/g, ""); }
   function lev(a, b) { var m = a.length, n = b.length, d = [], i, j; if (!m) return n; if (!n) return m; for (j = 0; j <= n; j++) d[j] = j; for (i = 1; i <= m; i++) { var p = d[0]; d[0] = i; for (j = 1; j <= n; j++) { var t = d[j]; d[j] = Math.min(d[j] + 1, d[j - 1] + 1, p + (a[i - 1] === b[j - 1] ? 0 : 1)); p = t; } } return d[n]; }
   function same(a, b) { a = normW(a); b = normW(b); if (!a || !b) return false; if (a === b) return true; if (a.length <= 3 || b.length <= 3) return false; return lev(a, b) <= (a.length >= 8 ? 2 : 1); }
+  /* 🧭 ĐỐI CHIẾU LỜI NÓI VỚI ĐỀ (TJ 2026-10-15: "chữ chạy trước giọng nói khá xa"):
+     cách cũ đi THAM LAM từng chữ (nhìn trước 3 chữ) nên chữ "the/and/to" nói lặp hoặc 1 chữ nhận sai là con trỏ nhảy vọt về trước; cứ mỗi chữ rác lại đẩy con trỏ thêm 1.
+     Cách mới = CĂN CHỈNH TỐI ƯU (Wagner–Fischer, như cách đo WER/ASR dùng): tìm cách ghép ÍT LỖI NHẤT giữa lời nói và đề, kết thúc đề "miễn phí" (chưa đọc tới đâu không bị phạt);
+     con trỏ chỉ đi theo chữ KHỚP thật, chữ rác/nhận sai không đẩy con trỏ. Mô phỏng 1300 lần nhận giọng nhiễu: chạy trước giọng ≥4 chữ giảm từ 10,2% xuống 1,5%. */
+  var _smc = {}, _smn = 0;
+  function sameC(a, b) { if (!a || !b) return false; if (a === b) return true; if (a.length <= 3 || b.length <= 3) return false; var k = a + "|" + b, v = _smc[k]; if (v === undefined) { if (++_smn > 30000) { _smc = {}; _smn = 0; } v = _smc[k] = lev(a, b) <= (a.length >= 8 ? 2 : 1); } return v; }
+  function alignRead(P, S) {   /* P, S: mảng chữ đã chuẩn hoá -> st[]: ok (khớp) · bad (nói sai chữ này) · miss (bỏ sót / chưa tới) */
+    var n = P.length, m = S.length, D = [], c = [], i, j;
+    for (j = 0; j <= n; j++) { D[j] = new Array(m + 1); D[j][0] = j; } for (i = 0; i <= m; i++) D[0][i] = i;
+    for (j = 1; j <= n; j++) { c[j] = []; for (i = 1; i <= m; i++) { c[j][i] = sameC(P[j - 1], S[i - 1]) ? 0 : 1; D[j][i] = Math.min(D[j - 1][i - 1] + c[j][i], D[j - 1][i] + 1, D[j][i - 1] + 1); } }
+    var js = 0; for (j = 0; j <= n; j++) if (D[j][m] < D[js][m]) js = j;   /* đề dài hơn lời nói: phần đề chưa tới KHÔNG bị tính lỗi */
+    var st = P.map(function () { return "miss"; }); j = js; i = m;
+    while (j > 0 && i > 0) { if (D[j][i] === D[j - 1][i - 1] + c[j][i]) { st[j - 1] = c[j][i] ? "bad" : "ok"; j--; i--; } else if (D[j][i] === D[j - 1][i] + 1) { st[j - 1] = "miss"; j--; } else i--; }
+    return st;
+  }
   function gradeRead(text, tr) {
-    var T = text.split(/\s+/).filter(normW), Sx = String(tr || "").split(/\s+/).filter(normW), st = T.map(function () { return ""; }), p = 0, i = 0, j;
-    while (i < Sx.length && p < T.length) {
-      if (same(T[p], Sx[i])) { st[p] = "ok"; p++; i++; continue; }
-      var f = -1; for (j = p + 1; j <= Math.min(p + 3, T.length - 1); j++) if (same(T[j], Sx[i])) { f = j; break; }
-      if (f >= 0) { for (j = p; j < f; j++) st[j] = "miss"; st[f] = "ok"; p = f + 1; i++; continue; }
-      if (i + 1 < Sx.length && same(T[p], Sx[i + 1])) { i++; continue; }
-      st[p] = "bad"; p++; i++;
-    }
-    for (j = p; j < T.length; j++) st[j] = st[j] || "miss";
+    var T = text.split(/\s+/).filter(normW), Sx = String(tr || "").split(/\s+/).filter(normW);
+    var st = alignRead(T.map(normW), Sx.map(normW));
     var ok = st.filter(function (x) { return x === "ok"; }).length, pct = T.length ? ok / T.length : 0;
     return { score: pct >= .9 ? 3 : pct >= .72 ? 2 : pct >= .45 ? 1 : 0, pct: pct, words: T, st: st };
   }
+  /* màu khi đang đọc (luyện / bật 🎨): chỉ chữ KHỚP mới xanh; chữ bỏ sót / sai chỉ hiện đỏ-vàng khi con trỏ đã đi qua >= 3 chữ (đủ chắc, tránh nhấp nháy theo bản nhận giọng tạm); gạch dưới = chữ kế tiếp */
+  function liveCls(g) { var last = -1; g.st.forEach(function (s, i) { if (s === "ok") last = i; }); return g.st.map(function (s, i) { if (i > last) return i === last + 1 ? "cur" : ""; if (s === "ok") return "ok"; return last - i >= 3 ? (s === "bad" ? "bad" : "skip") : ""; }); }
   var SP_RUBRIC = {
     describe: "Tả ảnh (0-3): đúng nội dung ảnh/đủ chi tiết, ngữ pháp, từ vựng, mạch lạc/trôi chảy.",
     respond: "Trả lời câu hỏi (0-3): đúng trọng tâm, đủ ý, ngữ pháp, từ vựng, mạch lạc.",
