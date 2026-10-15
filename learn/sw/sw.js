@@ -45,11 +45,17 @@
   function nWords(s) { return (String(s || "").match(/[A-Za-z0-9'’-]+/g) || []).length; }
 
   /* ---------- nạp đề ---------- */
+  /* sắp đề theo SỐ trong tên ("Đề 2" trước "Đề 10"), thay vì theo chữ (TJ 2026-10-15: "Đề 1 rồi tới 10 là sai"). Đề có sẵn giữ nguyên thứ tự và đứng trước đề nạp từ file. */
+  function natSets(arr) {
+    var key = function (s, i) { var m = /(?:đề|de|test|part)\s*0*(\d+)/i.exec(String(s.title || s.name || "")) || /(\d+)\s*$/.exec(String(s.id || "")); return [s.mine ? 1 : 0, m ? +m[1] : 1e9, i]; };
+    return arr.map(function (s, i) { return { s: s, k: key(s, i) }; }).sort(function (a, b) { return a.k[0] - b.k[0] || a.k[1] - b.k[1] || a.k[2] - b.k[2]; }).map(function (x) { return x.s; });
+  }
   async function loadSets() {
     try { var r = await fetch("sets.json?v=" + (QS.get("v") || "1")); var d = await r.json(); SETS.speaking = d.speaking || []; SETS.writing = d.writing || []; } catch (e) { toast("Không tải được bộ đề"); }
     if (EX0) { try { var ri = await fetch("ielts.json?v=" + (QS.get("v") || "1")); var di = await ri.json(); SETS.speaking = di.speaking || []; SETS.writing = di.writing || []; } catch (e) { toast("Không tải được đề IELTS"); } }
     try { var x = JSON.parse(localStorage.getItem(EXTRA) || "null"); if (x) { (x.speaking || []).forEach(function (s) { s.mine = 1; SETS.speaking.push(s); }); (x.writing || []).forEach(function (s) { s.mine = 1; SETS.writing.push(s); }); } } catch (e) {}
     if (!EX0) { SETS.speaking = SETS.speaking.filter(function (x) { return x.fmt !== 3; }); SETS.writing = SETS.writing.filter(function (x) { return x.fmt !== 3; }); }
+    SETS.speaking = natSets(SETS.speaking); SETS.writing = natSets(SETS.writing);
     S.setId = (SETS[S.kind][0] || {}).id || "";
     var pf = (ST.pref || {})[EX0 ? "ielts" : S.kind];
     if (pf && SETS[S.kind].some(function (x) { return x.id === pf.set; })) { S.setId = pf.set; S.group = pf.group || "all"; S.src = pf.src; S.qFrom = pf.from || null; S.qTo = pf.to || null; }
