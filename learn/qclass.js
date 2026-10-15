@@ -85,8 +85,8 @@
       h += "<h2>Bảng xếp hạng cuối</h2>" + podium(Z.board) + paintBoard(Z.board, me.id) + (host ? "" : '<p class="gsub">Host sẽ đóng lớp, bạn sẽ về phòng game.</p>');
     } else {
       var rows = (Z.board && Z.board.length ? Z.board : Object.keys(Z.pl || {}).map(function (id) { return { id: id, name: (Z.pl[id] || {}).name, avatar: (Z.pl[id] || {}).avatar, c: 0, w: 0 }; })), meR = rows.filter(function (r) { return r.id === me.id; })[0] || { c: 0, w: 0 };
-      h += '<div class="gtopbar">' + rows.slice(0, 8).map(function (r) { return '<span class="tp' + (r.id === me.id ? " me" : "") + '"><span class="av">' + ava(r.avatar) + '</span><b>' + esc(String(r.name || "?").slice(0, 8)) + ' <i class="g">✓' + (r.c || 0) + "</i></b></span>"; }).join("") + "</div>" +
-        '<div class="gstat"><span><b class="g">' + (meR.c || 0) + "</b>Đúng</span><span><b class=\"r\">" + (meR.w || 0) + "</b>Sai</span><span><b>" + (Z.ph === "q" ? Z.i : Z.i + 1) + "/" + Z.n + "</b>Đã làm</span><span><b>" + Math.max(0, Z.n - (Z.ph === "q" ? Z.i : Z.i + 1)) + "</b>Còn lại</span></div>";
+      h += '<div class="gstat"><span><b class="g">' + (meR.c || 0) + "</b>Đúng</span><span><b class=\"r\">" + (meR.w || 0) + "</b>Sai</span><span><b>" + (Z.ph === "q" ? Z.i : Z.i + 1) + "/" + Z.n + "</b>Đã làm</span><span><b>" + Math.max(0, Z.n - (Z.ph === "q" ? Z.i : Z.i + 1)) + "</b>Còn lại</span></div>";
+      h += '<div class="gtopbar">' + rows.slice(0, 8).map(function (r) { return '<span class="tp' + (r.id === me.id ? " me" : "") + '"><span class="av">' + ava(r.avatar) + '</span><b>' + esc(String(r.name || "?").slice(0, 8)) + ' <i class="g">✓' + (r.c || 0) + "</i></b></span>"; }).join("") + "</div>";
       h += '<div class="gcard">' + (Z.ph === "q" ? '<div class="gbar"><i id="qpg" style="width:' + (Z.tot ? Math.min(100, 100 * rem() / Z.tot) : 0) + '%"></i></div>' : "") + '<div class="ghint">' + esc(HINT[q.k] || "") + '</div><div class="gvi">' + (q.hide ? '<span style="font-size:44px">🎧</span>' : esc(q.t)) + "</div>";
       if (q.hide) h += '<div class="gsay"><button class="qb" data-q="say">🔊 Nghe</button></div>';
       h += '<div class="gopts">';
