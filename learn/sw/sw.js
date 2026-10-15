@@ -57,7 +57,8 @@
       var hist = ST.hist.filter(function (h2) { return h2.kind === S.kind && h2.set === set.id; }).slice(-3).reverse();
       if (hist.length) h += '<h2>Lần làm gần đây</h2><div class="card">' + hist.map(function (x) { return '<div class="row"><span class="sub">' + new Date(x.ts).toLocaleDateString() + " · " + esc(x.gt) + '</span><span style="margin-left:auto"><b>' + x.raw + "/" + x.max + "</b> ≈ " + x.est + "</span></div>"; }).join("") + "</div>";
     }
-    h += '<button class="big" data-act="rev" style="margin-top:10px">📒 Xem lại bài cũ (' + (ST.rev || []).filter(function (r) { return r.kind === S.kind; }).length + ")</button>";
+    var nrev = (ST.rev || []).filter(function (r) { return r.kind === S.kind; }).length;
+    if (nrev) h += '<button class="big" data-act="rev" style="margin-top:10px">📒 Xem lại bài cũ (' + nrev + ")</button>";
     h += '<details><summary>📥 Nạp đề riêng từ file .json (lưu ở máy này)</summary><p class="sub">Dùng file do <code>tools/sw/parse_prepedu.py</code> tạo. Đề nạp ở đây chỉ nằm trong trình duyệt của bạn, không đưa lên web.</p><input type="file" id="imp" accept=".json,application/json"> <button class="soft" data-act="delextra">Xoá đề đã nạp</button></details>';
     app.innerHTML = h;
     var imp = $("#imp"); if (imp) imp.onchange = importFile;
@@ -65,7 +66,7 @@
   /* ---------- CHẾ ĐỘ LỚP (js/swclass.js ở trang game lo kênh phòng) ---------- */
   function classBanner() {
     if (!CTX.inRoom) return "";
-    if (CTX.isHost) return '<div class="card"><label><input type="checkbox" id="clsmode"' + (S.classMode ? " checked" : "") + '> 👥 <b>Chế độ lớp</b>: bấm ▶ là bắt đầu cho cả phòng</label></div>';
+    if (CTX.isHost) return '<label class="card clsrow"><input type="checkbox" id="clsmode"' + (S.classMode ? " checked" : "") + '><span>👥 <b>Chế độ lớp</b><br><span class="sub">Bật rồi chọn đề: cả phòng cùng xem, bạn bấm giờ từng người</span></span></label>';
     return '<div class="warn">👥 Bạn đang trong phòng. Khi host bấm bắt đầu, bài sẽ tự mở ra. Bạn vẫn luyện riêng được.</div>';
   }
   function toParent(m) { try { if (window.parent !== window) window.parent.postMessage(m, location.origin); } catch (e) {} }
@@ -255,7 +256,7 @@
     if (S.phase === "result") return result(h, t);
     h += '<div class="card">' + promptHtml(t) + "</div>";
     if (S.phase === "intro") {
-      h += '<div class="card"><p class="sub">' + intro(t, tm) + '</p></div><div class="bottom"><div class="in"><button class="pri big" data-act="go">' + (S.kind === "speaking" ? "▶ Bắt đầu" : "▶ Bắt đầu viết") + "</button></div></div>";
+      h += '<div class="card"><p class="sub">' + intro(t, tm) + '</p><button class="pri big" data-act="go" style="width:100%;margin-top:6px">' + (S.kind === "speaking" ? "▶ Bắt đầu" : "▶ Bắt đầu viết") + "</button></div>";
     } else {
       var ph = S.phase, badge = ph === "read" ? "Đọc thông tin" : ph === "prep" ? "Chuẩn bị" : "Đang " + (S.kind === "speaking" ? "nói" : "viết");
       h += '<div class="card"><div class="row"><span class="badge ' + (ph === "resp" ? "resp" : "prep") + '">' + badge + '</span></div><div class="timer ' + (ph === "resp" ? "resp" : "prep") + '" id="tm">0:00</div><div class="bar ' + (ph === "resp" ? "resp" : "") + '"><i id="pg"></i></div>';
@@ -271,7 +272,7 @@
   function promptHtml(t) {
     var h = "";
     if (t.type === "read_aloud") h += '<div class="prompt read">' + esc(t.text) + "</div>";
-    else if (t.type === "describe") h += (t.image ? '<img src="' + esc(t.image) + '" alt="" style="max-width:100%;border-radius:10px">' : "") + (t.scene ? '<p class="prompt">📷 <i>(Tưởng tượng bức ảnh)</i> ' + esc(t.scene) + "</p>" : "");
+    else if (t.type === "describe") h += (t.image ? '<img src="' + esc(t.image) + '" alt="" style="max-width:100%;border-radius:10px">' : "") + (t.scene ? '<p class="sub">📷 Chưa có ảnh thật — đọc mô tả cảnh rồi tả lại bằng lời của bạn:</p><p class="prompt">' + esc(t.scene) + "</p>" : "");
     else if (t.type === "respond") h += (t.scenario ? '<p class="sub">' + esc(t.scenario) + "</p>" : "") + '<div class="prompt">❓ ' + esc(t.question) + "</div>";
     else if (t.type === "info") { var inf = (S.tasks.filter(function (x) { return x.info; })[0] || {}).info; if (inf) h += '<p><b>' + esc(inf.title || "") + '</b></p><table class="tbl">' + inf.rows.map(function (r, i) { return "<tr>" + r.map(function (c) { return (i === 0 ? "<th>" : "<td>") + esc(c) + (i === 0 ? "</th>" : "</td>"); }).join("") + "</tr>"; }).join("") + "</table>"; if (S.phase !== "read") h += '<div class="prompt">❓ ' + esc(t.question) + "</div>"; }
     else if (t.type === "solution") h += '<p class="sub">Nghe tin nhắn rồi đề xuất giải pháp:</p><div class="prompt">🔊 ' + esc(t.message) + '</div><button class="soft" data-act="say" data-v="' + esc(t.message) + '">🔊 Nghe lại</button>';
