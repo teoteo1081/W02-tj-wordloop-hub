@@ -179,3 +179,8 @@ body.live #app { padding:6px 10px 80px; }
 .hostbar.below .hb-main { justify-content:flex-end; }
 body.live .hostbar.below .hb-main .big { flex:0 0 auto; min-height:36px; padding:6px 16px; font-size:14px; }
 body.live .hostbar.below .hmore-h { width:36px; height:36px; }
+/* hồng -> trắng (TJ 2026-10-15): trắng ở nền tối, đậm ở nền sáng */
+button.rec, button.rec.big { background:var(--ink) !important; border-color:var(--ink) !important; color:var(--bg) !important; }
+.timer.resp, .timer.last5 { color:var(--ink) !important; }
+.bar.resp > i, .bar.last5 > i { background:var(--ink) !important; }
+.badge.resp { background:var(--ink) !important; color:var(--bg) !important; }
