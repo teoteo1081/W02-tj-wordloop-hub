@@ -46,6 +46,7 @@
     } else if (d.type === "sw-class-send" && d.p) send(d.p);
     else if (d.type === "sw-do") document.dispatchEvent(new CustomEvent("tjwl-sw-do", { detail: d.a }));
     else if (d.type === "sw-leave") document.dispatchEvent(new CustomEvent("tjwl-learn-home"));
+    else if (d.type === "sw-focus") document.dispatchEvent(new CustomEvent("tjwl-sw-focus", { detail: !!d.on }));   /* lớp đang làm bài -> thu gọn thanh (js/game.js) */
     else if (d.type === "sw-admin") document.dispatchEvent(new CustomEvent("tjwl-sw-admin", { detail: d.p }));   /* thẻ Quản trị của game vẽ phần lớp */
     else if (d.type === "sw-want-open") document.dispatchEvent(new CustomEvent("tjwl-sw-open", { detail: d.kind === "writing" ? (d.exam === "ielts" ? "ielw" : "writing") : d.exam === "ielts" ? "ielts" : "speaking" }));   /* người chơi thoát lớp -> về trang game */
   });

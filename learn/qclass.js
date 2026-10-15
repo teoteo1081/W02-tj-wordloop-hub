@@ -300,4 +300,6 @@
   }
   syncTheme(); setInterval(syncTheme, 3000);
   setInterval(function () { toParent({ type: "sw-hello", kind: "dm" }); }, 2500); toParent({ type: "sw-hello", kind: "dm" });
+  var focusOn = false;   /* đang làm bài lớp (host đang chạy ván hoặc người chơi đang ở câu hỏi) -> báo trang game thu gọn thanh trên/dưới (TJ 2026-10-15) */
+  setInterval(function () { var on = !!((H && H.ph !== "end") || (Z && Z.ph !== "end" && Z.ph !== "close")); if (on !== focusOn) { focusOn = on; toParent({ type: "sw-focus", on: on }); } }, 300);
 })();

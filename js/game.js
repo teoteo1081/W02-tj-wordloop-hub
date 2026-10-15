@@ -155,8 +155,10 @@
   /* ---------- tiện ích ---------- */
   /* 🎯 CHẾ ĐỘ LÀM BÀI TEST (TJ 2026-10-13): đang làm đề TOEIC -> mọi thanh cố định (thanh app Notebooks/tab, hàng tab Từ vựng/TOEIC/…, thanh chat dưới đáy)
      thu gọn để câu hỏi + ảnh + 4 đáp án + chỉ số vừa trọn 1 khung nhìn, KHÔNG phải cuộn. Rê chuột lên mép trên (máy tính) hoặc chạm tay nắm nhỏ ở mép trên (điện thoại) để hiện lại. */
+  var swFocus = false;   /* lớp Speaking/Marketing/EA đang làm bài (learn/qclass.js báo "sw-focus") — cũng thu gọn thanh như ván thường (TJ 2026-10-15) */
+  document.addEventListener("tjwl-sw-focus", function (e) { swFocus = !!e.detail; syncTestFocus(); });
   function syncTestFocus() {
-    var on = !!(G.st && G.st.phase === "play" && $("#s-play") && !$("#s-play").hidden && G.view !== "screen" && !G.spectating);   /* MỌI loại ván đang chơi (từ vựng, Kahoot, test…) */
+    var on = !!(swFocus || (G.st && G.st.phase === "play" && $("#s-play") && !$("#s-play").hidden && G.view !== "screen" && !G.spectating));   /* MỌI loại ván đang chơi (từ vựng, Kahoot, test…) + lớp đang làm bài */
     document.body.classList.toggle("g-playing", on);
     document.body.classList.toggle("g-adm", on && !!G.isHost);
     if (on && !G.tFocus && G.topPin) topPin(false);   /* vào ván mới: mặc định ẩn (không ghim) */
