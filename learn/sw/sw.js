@@ -123,10 +123,10 @@
   function classOn() { return !!(CTX.inRoom && CTX.isHost && S.classMode !== false); }
   setInterval(function () { if (S.screen !== "task") toParent({ type: "sw-hello", kind: S.kind }); }, 2500);   /* luôn hỏi lại (kể cả khi lúc mới nạp CHƯA vào phòng: F5 xong khung nạp trước khi game vào phòng -> trước đây kẹt ở "không trong phòng" nên Admin bắt đầu thành luyện riêng, người chơi không thấy gì) */   /* cập nhật danh sách người trong phòng (người vào sau) */
   function plist() { return (CTX.players || []).filter(function (p) { return !(CTX.isHost && S.hostPlays === false && CTX.me && p.id === CTX.me.id); }); }
-  function aiOn() { return S.aiGrade === undefined ? S.kind === "writing" : !!S.aiGrade; }
+  function aiOn() { return S.aiGrade === undefined ? true : !!S.aiGrade; }   /* TJ 2026-10-15: AI chấm luôn BẬT sẵn cho cả Speaking và Writing (host tắt được) */
   function aiToggleHtml() {
     if (!(CTX.inRoom && CTX.isHost)) return "";
-    return '<label class="card clsrow"><input type="checkbox" id="aimode"' + (aiOn() ? " checked" : "") + '><span>🤖 <b>AI chấm điểm</b> ' + (S.kind === "writing" ? "(người chơi gõ bài ngay trên web, hết giờ AI chấm)" : "(người chơi dùng mic trên web)") + '<br><span class="sub">' + (S.kind === "writing" ? "Tắt: chỉ hiện đề + đồng hồ, viết ở chỗ khác" : "Tắt (mặc định): nói bên HelloTalk, web chỉ hiện đề + đồng hồ") + "</span></span></label>";
+    return '<label class="card clsrow"><input type="checkbox" id="aimode"' + (aiOn() ? " checked" : "") + '><span>🤖 <b>AI chấm điểm</b> ' + (S.kind === "writing" ? "(người chơi gõ bài ngay trên web, hết giờ AI chấm)" : "(người chơi dùng mic trên web)") + '<br><span class="sub">' + (S.kind === "writing" ? "Tắt: chỉ hiện đề + đồng hồ, viết ở chỗ khác" : "Tắt: nói bên HelloTalk, web chỉ hiện đề + đồng hồ (Bật sẵn: người được chọn nói bằng mic trên web)") + "</span></span></label>";
   }
   function classBanner() {
     if (!CTX.inRoom) return "";
