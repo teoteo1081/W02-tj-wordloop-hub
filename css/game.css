@@ -2237,3 +2237,21 @@ body.g-tidyok #g-toppin.on{opacity:1;background:var(--accent);border-color:var(-
   #l-roomcard #l-toprow .g-btn,#l-roomcard #l-toprow #l-hostbtns{width:100%;justify-content:center;white-space:nowrap}
   #l-roomcard #l-toprow #l-hostbtns{margin:0}
 }
+
+/* ===== 📍 THANH NGỮ CẢNH khi menu tự ẩn (điện thoại) — TJ 2026-10-15: "hong biết ở thư mục nào; cho đường dẫn + ← + ✕; combobox phải hiện để chọn lại" =====
+   ← thẻ trước · ✕ thoát game · "Game › 🎤 Speaking ▾" (bấm = danh sách thẻ để đổi) · ☰ menu đầy đủ · 📌 ghim. Thay cho vạch 8px trước đây. */
+.g-ctxbar,.cx-pop{display:none}
+@media (max-width:640px){
+  body.g-tidy{padding-top:46px}
+  body.g-tidy .g-ctxbar{display:flex;position:fixed;left:0;right:0;top:0;height:46px;z-index:71;box-sizing:border-box;align-items:center;gap:6px;padding:5px 8px;background:var(--deep);border-bottom:1px solid var(--line)}
+  body.g-tidy #g-tophandle{display:none}
+  .cx-ic{flex:none;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--text);font-size:17px;line-height:1;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .cx-ic.off{opacity:.35}
+  .cx-sep{flex:none;color:var(--text-2);font-size:13px}
+  .cx-path{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:6px;height:36px;padding:0 12px;border-radius:999px;border:1px solid var(--accent);background:var(--accent);color:#fff;font:700 14px/1 inherit;font-family:inherit;cursor:pointer;white-space:nowrap;overflow:hidden}
+  .cx-path span{min-width:0;overflow:hidden;text-overflow:ellipsis}
+  body.g-tidy .cx-pop:not([hidden]){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;position:fixed;left:8px;right:8px;top:50px;z-index:74;padding:8px;background:var(--deep);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 24px rgba(0,0,0,.55)}
+  .cx-pop button{min-height:44px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);font:600 14px/1.2 inherit;font-family:inherit;padding:8px;cursor:pointer}
+  .cx-pop button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .cx-pop button:disabled{opacity:.4}
+}
