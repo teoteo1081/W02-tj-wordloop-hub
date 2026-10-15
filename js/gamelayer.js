@@ -265,13 +265,14 @@
   /* TJ 2026-10-06: thẻ Game có 2 cột Notebooks (trái) + Pages (phải) y như Bảng, thay cho "Mở cây chủ đề"/📚 trong game.
      Đang ở thẻ Game: bấm 1 Notebook / Section / Page = chọn làm chủ đề ván (không chuyển trang Learning bên dưới). */
   function pickScope(e) {
-    if (!(gameOpened && fitOn) || e.target.closest("[data-menu], .dots")) return;
+    if (!(gameOpened && fitOn) || document.body.classList.contains("board-skin") || e.target.closest("[data-menu], .dots")) return;   /* màn danh sách Block của Bảng (board-skin): bấm Notebook/Page = DUYỆT sang mục khác bình thường để chọn Block (trước: bị chặn thành "chọn chủ đề ván" nên không đi đâu được) */
     var el = e.target.closest("[data-nb],[data-sec],[data-page]"); if (!el) return;
     var t = el.dataset.nb ? "notebooks" : el.dataset.sec ? "sections" : "pages", id = el.dataset.nb || el.dataset.sec || el.dataset.page;
     var nm = String(el.getAttribute("title") || el.textContent || "").replace(/[⋯s]+$/g, "").replace(/s+/g, " ").trim().slice(0, 60);
     e.stopImmediatePropagation(); e.preventDefault();
-    if (boardOnState) { openBoard(t, id, nm); return; }   /* TJ 2026-10-14: bảng đang mở -> bấm Notebook/Section/Page = đưa mục đó lên bảng (không chỉ chọn chủ đề ván) */
+    if (boardOnState) { openBoard(t, id, nm); try { if (w.App && w.App.navTo) w.App.navTo(t, id); } catch (er) {} return; }   /* TJ 2026-10-14: bảng đang mở -> bấm Notebook/Section/Page = đưa mục đó lên bảng (không chỉ chọn chủ đề ván) */
     openScope(t, id, nm);
+    try { if (w.App && w.App.navTo) w.App.navTo(t, id); } catch (er) {}   /* đồng bộ: cột Pages + đường dẫn đổi theo mục vừa chọn */
     w.$$("#sidebar-left .game-pick, #sidebar-right .game-pick").forEach(function (x) { x.classList.remove("game-pick"); }); el.classList.add("game-pick");
   }
   ["#sidebar-left", "#sidebar-right"].forEach(function (s) { var a = w.$(s); if (a) a.addEventListener("click", pickScope, true); });

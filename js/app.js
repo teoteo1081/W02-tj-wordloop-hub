@@ -4308,6 +4308,14 @@
       fn({ target: el });
     });
 
+    /* App.navTo(table, id): đi tới Notebook / Section / Page như bấm ở cột bên — game-layer gọi khi bấm cột trái/phải lúc đang ở thẻ Game, để cột Pages + đường dẫn luôn ĐỒNG BỘ với mục vừa chọn (TJ 2026-10-14) */
+    App.navTo = function (table, id) {
+      var el = document.createElement("span"), fn = { notebooks: onNotebookActivate, sections: onSectionTabActivate, pages: onPageItemActivate }[table];
+      if (!fn || !id) return;
+      el.dataset[table === "notebooks" ? "nb" : table === "sections" ? "sec" : "page"] = id;
+      fn({ target: el });
+    };
+
     /* --- mở block --- */
     w.$("#blocks-list").onclick = async function (e) {
       if (e.target.closest("[data-menu]")) return;
