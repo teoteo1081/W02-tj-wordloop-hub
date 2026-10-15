@@ -558,6 +558,13 @@
     }
     throw last || new Error("AI lỗi");
   }
+  /* AI đôi khi trả mỗi ý là 1 đối tượng {issue, fix…} thay vì chuỗi -> hiện "[object Object]". Chuẩn hoá về chuỗi. */
+  function fbText(x) {
+    if (x == null) return ""; if (typeof x === "string") return x; if (typeof x !== "object") return String(x);
+    var main = x.fix || x.text || x.suggestion || x.correction || x.issue || x.error || x.point || x.tip || x.comment, why = x.reason || x.explanation || x.why || x.detail;
+    if (main) return String(main) + (why ? " — " + why : "");
+    return Object.keys(x).map(function (k) { return x[k]; }).filter(function (v) { return typeof v === "string"; }).join(" — ");
+  }
   async function grade() {
     var t = curTask(), q = t.q, max = MAXS[S.kind][q], res = { q: q, max: max }, ans = S.kind === "writing" ? (S.text || "") : (S.tr || "");
     try {
@@ -568,7 +575,7 @@
       } else if (nWords(ans) < (S.kind === "speaking" ? 3 : 2)) {
         res.score = 0; res.fb = { strengths: [], fixes: [S.kind === "speaking" ? "Không nghe được lời nói (hoặc quá ngắn). Kiểm tra micro/quyền truy cập, nói to và rõ hơn." : "Bài viết trống hoặc quá ngắn."] };
       } else {
-        var out = await ai(sysPrompt(), userPrompt(t, ans)); res.score = Math.max(0, Math.min(max, Math.round(+out.score || 0))); res.fb = out; res.words = nWords(ans);
+        var out = await ai(sysPrompt(), userPrompt(t, ans)); res.score = Math.max(0, Math.min(max, Math.round(+out.score || 0))); out.strengths = (out.strengths || []).map(fbText); out.fixes = (out.fixes || []).map(fbText); res.fb = out; res.words = nWords(ans);
       }
     } catch (e) { res.err = String(e.message || e); res.score = null; }
     res.ans = ans; S.results[q] = res; if (res.score != null) saveRev(t, res); classReport(res); if (LIVE && LIVE.myQ === q) LIVE.my = "result"; S.phase = "result"; render();
