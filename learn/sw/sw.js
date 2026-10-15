@@ -37,8 +37,15 @@
   function best(kind, id) { var b = 0; ST.hist.forEach(function (h) { if (h.kind === kind && h.set === id && h.group === "all" && h.est > b) b = h.est; }); return b; }
 
   /* ---------- màn hình ---------- */
+  /* người chơi (không phải host) trong phòng: KHÔNG tự luyện riêng (TJ 2026-10-14) — chưa tới lượt lớp thì chỉ chờ rồi về phòng chờ / bảng chờ */
+  function waitView() {
+    app.innerHTML = '<div class="card" style="text-align:center;margin-top:30px"><div style="font-size:42px">⏳</div><h2>Đang chờ host bắt đầu</h2><p class="sub">Khi host bấm bắt đầu, đề sẽ tự hiện ra ở đây.</p><button class="big" data-act="leave">← Về phòng chờ</button></div>';
+    clearTimeout(S.leaveT);
+    S.leaveT = setTimeout(function () { if (S.screen === "home" && !LIVE && !PENDING && CTX.inRoom && !CTX.isHost) toParent({ type: "sw-leave" }); }, 2500);
+  }
   function render() {
     document.body.classList.toggle("live", S.screen === "live");
+    if (S.screen === "home" && CTX.inRoom && !CTX.isHost) return waitView();
     if (S.screen === "rev") return revView();
     if (S.screen === "live") return liveRender();
     if (S.screen === "home") return home();
@@ -494,6 +501,7 @@
     if (a === "kind") { S.kind = v; S.setId = (SETS[v][0] || {}).id || ""; render(); }
     else if (a === "set") { S.setId = v; render(); }
     else if (a === "start") { if (classOn()) toParent({ type: "sw-host-start", kind: S.kind, set: S.setId, group: v }); else { S.class = null; S.saved = 0; begin(S.kind, v); } }
+    else if (a === "leave") toParent({ type: "sw-leave" });
     else if (a === "part") { S.group = v; render(); }
     else if (a === "rev") { S.screen = "rev"; render(); }
     else if (a === "revf") { S.revAll = !S.revAll; render(); }
