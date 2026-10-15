@@ -2219,7 +2219,21 @@ body.g-tidyok #g-toppin{display:inline-flex;align-items:center;justify-content:c
 body.g-tidyok #g-toppin.on{opacity:1;background:var(--accent);border-color:var(--accent);color:#fff;transform:rotate(-20deg)}
 /* cài đặt phòng chờ to rõ trên điện thoại: 1 cột, chữ 17px, ô chọn cao 50px (trước: 2 cột, chữ bị cắt "TOEIC Speaking (đ") */
 @media (max-width:520px){
-  .g-settings{grid-template-columns:1fr;gap:14px}
+  .g-settings{grid-template-columns:minmax(0,1fr);gap:14px}   /* minmax(0,…): ô chọn có chữ dài không được làm cột (và cả trang) rộng hơn màn hình */
+  .g-settings > *{min-width:0}
+  .g-settings select,.g-settings input{width:100%;max-width:100%;min-width:0}
+  .g-settings .g-check{white-space:normal}
   .g-settings label{font-size:15px;gap:6px}
   .g-settings select,.g-settings input:not([type=checkbox]):not([type=radio]){font-size:17px;padding:12px;min-height:50px;border-radius:12px}
+}
+
+/* ===== ĐIỆN THOẠI: chống kéo ngang + gọn ô phòng (TJ 2026-10-15: "hất lên nó bị lệch", "ô phòng TJ") ===== */
+@media (max-width:640px){
+  html{overflow-x:hidden}
+  body{overflow-x:clip}   /* clip (không phải hidden): không biến body thành khung cuộn -> giữ thanh dính (sticky) */
+  /* ô phòng: mã phòng bên trái, 2 nút xếp dọc bên phải (trước: nút xuống dòng, lệch phải, chừa trống bên trái) */
+  #l-roomcard .g-lobby-head{flex-wrap:nowrap;align-items:flex-start;gap:10px}
+  #l-roomcard #l-toprow{display:flex;flex-direction:column;align-items:stretch;gap:6px;flex:1 1 auto;min-width:0;max-width:64%}
+  #l-roomcard #l-toprow .g-btn,#l-roomcard #l-toprow #l-hostbtns{width:100%;justify-content:center;white-space:nowrap}
+  #l-roomcard #l-toprow #l-hostbtns{margin:0}
 }

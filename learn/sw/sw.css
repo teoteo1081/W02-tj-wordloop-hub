@@ -256,3 +256,4 @@ body.one img.zoom { position:fixed !important; inset:0; width:100vw !important; 
   .hubpanel label, .lobby label { font-size:14px; }
   .hubpanel select, .hubpanel input[type=text], .hubpanel input[type=number], .lobby select { font-size:17px !important; padding:12px 10px !important; min-height:48px; }
 }
+@media (max-width:560px) { .hp-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .hp-grid > * { min-width:0; } }   /* ô chọn chữ dài không làm cả trang rộng hơn màn hình */
