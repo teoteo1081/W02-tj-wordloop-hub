@@ -97,13 +97,12 @@
       (inRoom ? '<label class="chk"><input type="checkbox" id="hostplays"' + (S.hostPlays !== false ? " checked" : "") + "> Host cũng chơi</label>" : "<span></span>") + "</div>" +
       (inRoom ? aiToggleHtml() : "") +
       (S.kind === "speaking" && !SR && !MOCK && !inRoom ? '<div class="warn">Trình duyệt này không nhận giọng nói (Web Speech). Dùng Chrome/Edge trên máy tính hoặc Android để nói; ở đây bạn vẫn gõ lại lời mình nói được.</div>' : "") +
-      '<div class="hp-btns">' + (!sets.length ? '<span class="sub">Chưa có đề.</span>' : (EMBED && !inRoom) ? '<button class="pri big" disabled>⏳ Đang vào phòng game…</button>' : '<button class="pri big" data-act="start" data-v="' + esc(S.group) + '">▶ Bắt đầu làm bài</button>') +
-      (((ST.rev || []).filter(function (r) { return r.kind === S.kind; }).length) ? '<button class="big" data-act="rev">📒 Bài đã làm (' + (ST.rev || []).filter(function (r) { return r.kind === S.kind; }).length + ")</button>" : "") +
-      '<button class="big" data-act="tips">🧠 Chiến thuật đạt điểm cao</button></div></div>';
-    if (S.showTips) h += tipsHtml();
+      '<div class="hp-btns">' + (!sets.length ? '<span class="sub">Chưa có đề.</span>' : (EMBED && !inRoom) ? '<button class="pri gb" disabled>⏳ Đang vào phòng game…</button>' : '<button class="pri gb" data-act="start" data-v="' + esc(S.group) + '">▶ Bắt đầu làm bài</button>') +
+      (((ST.rev || []).filter(function (r) { return r.kind === S.kind; }).length) ? '<button class="soft gb" data-act="rev">📒 Bài đã làm (' + (ST.rev || []).filter(function (r) { return r.kind === S.kind; }).length + ")</button>" : "") +
+      '<button class="soft gb" data-act="tips">🧠 Chiến thuật đạt điểm cao</button></div></div>';
     var hist = set ? ST.hist.filter(function (h2) { return h2.kind === S.kind && h2.set === set.id; }).slice(-3).reverse() : [];
     if (hist.length) h += '<h2>Lần làm gần đây</h2><div class="card">' + hist.map(function (x) { return '<div class="row"><span class="sub">' + new Date(x.ts).toLocaleDateString() + " · " + esc(x.gt) + '</span><span style="margin-left:auto"><b>' + x.raw + "/" + x.max + "</b> ≈ " + x.est + "</span></div>"; }).join("") + "</div>";
-    h += guideHtml();
+    h += guideHtml() + '<div id="tips-box">' + tipsHtml() + "</div>";
     h += '<details><summary>📥 Nạp đề riêng từ file .json (lưu ở máy này)</summary><p class="sub">Dùng file do <code>tools/sw/parse_prepedu.py</code> tạo. Đề nạp ở đây chỉ nằm trong trình duyệt của bạn, không đưa lên web.</p><input type="file" id="imp" accept=".json,application/json"> <button class="soft" data-act="delextra">Xoá đề đã nạp</button></details>';
     app.innerHTML = h;
     var imp = $("#imp"); if (imp) imp.onchange = importFile;
@@ -695,7 +694,7 @@
     else if (a === "set") { S.setId = v; render(); }
     else if (a === "start") { if (EMBED && !classOn()) { toast("Đang vào phòng game, thử lại sau giây lát"); return; } if (classOn()) toParent({ type: "sw-host-start", kind: S.kind, set: S.setId, group: v, from: S.qFrom || 0, to: S.qTo || 0 }); else { S.class = null; S.saved = 0; begin(S.kind, v); } }
     else if (a === "leave") toParent({ type: "sw-leave" });
-    else if (a === "tips") { S.showTips = !S.showTips; render(); }
+    else if (a === "tips") { var tb = $("#tips-box"); if (tb) tb.scrollIntoView({ behavior: "smooth", block: "start" }); }
     else if (a === "part") { S.group = v; render(); }
     else if (a === "rev") { S.screen = "rev"; render(); }
     else if (a === "revf") { S.revAll = !S.revAll; render(); }

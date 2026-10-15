@@ -132,3 +132,10 @@ body.live .roster { border-color:var(--acc2); box-shadow:0 0 0 1px rgba(143,120,
   select, input[type=text], input[type=number] { font-size:17px !important; }
 }
 .gobtn{color:#1a1233 !important;font-weight:800}
+
+/* nút hub y hệt hub TOEIC: cam #d97757, nút phụ xám chữ sáng, bo 10px, không tràn full-width */
+.hp-btns .gb { width:auto; min-height:0; padding:10px 16px; font-size:15px; font-weight:600; border-radius:10px; border:1px solid transparent; box-shadow:none; background-image:none; }
+.hp-btns .gb.pri { background:#d97757; border-color:#d97757; color:#fff; } .hp-btns .gb.pri:hover { background:#c2663f; }
+.hp-btns .gb.soft { background:#2d2c2a; color:#f5f4ef; border-color:#403e3a; }
+:root[data-theme="light"] .hp-btns .gb.soft { background:#f0eee9; color:#2f2e2b; border-color:#e0ddd5; }
+#tips-box { margin-top:14px; } #tips-box .tips { font-size:15px; line-height:1.55; }
