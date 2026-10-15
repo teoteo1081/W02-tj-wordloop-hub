@@ -1025,7 +1025,14 @@
       return;
     }
 
-    box.innerHTML = list.map(function (b, idx) {
+    box.innerHTML = list.map(function (b, idx) { return blockCardHtml(b, idx, blockPathHtml(b), canDeleteWord, ""); }).join("");
+
+    renderAlert();
+  };
+
+  /* THẺ BLOCK dùng chung: màn Learning (renderBlocks) VÀ danh sách Block trong phòng chờ Game (App.blockCardsHtml) — cùng 1 đoạn mã, không chép lại (TJ 2026-10-15: "bê nguyên từ Learning qua"). */
+  function blockCardHtml(b, idx, pathHtml, canDeleteWord, extraCls) {
+    {
       var ws = App.wordsOf(b.id);
       var fwPreview = fwCardPreviewHtml(b);
       var bp = S.bp[b.id] || {};
@@ -1048,9 +1055,9 @@
          là <div> — không có 2 thuộc tính này thì không Tab tới được bằng
          bàn phím / trình đọc màn hình không biết đây là 1 nút (xem
          keydown handler cùng cặp với "#blocks-list".onclick bên dưới). */
-      return '<div class="block-card' + (st.due ? " due" : "") + '" data-block="' + b.id +
+      return '<div class="block-card' + (st.due ? " due" : "") + (extraCls || "") + '" data-block="' + b.id +
         '" data-bidx="' + (idx % 8) + '" tabindex="0" role="button" aria-label="Mở Block ' + w.esc(b.name) + '">' +
-        blockPathHtml(b) +
+        pathHtml +
         '<div class="block-top">' +
           '<div class="block-left">' +
             '<span class="block-title">' + w.esc(b.name) + "</span>" + tags + blockWsBadgeHtml(b) +
@@ -1103,9 +1110,23 @@
           '<div class="block-tabs-row">' + quickTabsHtml(b.id) + fwPreview + gameBtnHtml(b) + "</div>" +
         "</div>" +
       "</div>";
-    }).join("");
+    }
+  }
 
-    renderAlert();
+  /* danh sách thẻ Block cho game (cùng nguồn dữ liệu S của Learning): trả {html, missing} — missing = Block chưa nạp (thuộc Notebook khác) */
+  App.blockCardsHtml = function (ids, selSet) {
+    var out = [], missing = [], nbName = function (n) { var c = [], g = 0; while (n && g++ < 50) { c.unshift(n.name); n = n.parent_notebook_id ? S.notebooks.find(function (x) { return x.id === n.parent_notebook_id; }) : null; } return c; };
+    var canDeleteWord = false;
+    ids.forEach(function (id) {
+      var b = S.blocks.find(function (x) { return x.id === id; });
+      if (!b) { missing.push(id); return; }
+      var bt = S.batches.find(function (x) { return x.id === b.batch_id; }), pg = bt && S.pages.find(function (x) { return x.id === bt.page_id; }),
+          sc = pg && S.sections.find(function (x) { return x.id === pg.section_id; }), nb = sc && S.notebooks.find(function (x) { return x.id === sc.notebook_id; });
+      var parts = nbName(nb).concat([sc ? sc.name : "—", pg ? pg.name : "—", bt ? bt.name : "—", b.name]);
+      var idx = bt ? App.blocksOf(bt.id).findIndex(function (x) { return x.id === b.id; }) : 0;
+      out.push({ id: id, batch: b.batch_id, html: blockCardHtml(b, Math.max(0, idx), '<div class="block-path">' + w.esc(parts.join(" › ")) + "</div>", canDeleteWord, selSet && selSet[id] ? " sel" : "") });
+    });
+    return { cards: out, missing: missing };
   };
 
   /* ══════════════ RENDER: Ô CẢNH BÁO + 4 THẺ CHU KỲ ══════════════ */

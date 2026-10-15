@@ -867,30 +867,95 @@
     return { page: page, groups: groups };
   }
   function bpSel() { var s = {}; picked.forEach(function (p) { if (p.table === "blocks") s[p.id] = 1; else blocksUnder(p.table, p.id).forEach(function (x) { s[x[0]] = 1; }); }); return s; }
+  /* dữ liệu chi tiết của từng Block (từ, cấp độ, ⭐/❌ và trạng thái chu kỳ của TJ) — tải 1 lần rồi nhớ */
+  var BPD = { words: {}, star: {}, wrong: {}, prog: {}, loaded: {} };
+  async function bpLoad(ids) {
+    var need = ids.filter(function (id) { return !BPD.loaded[id]; }); if (!need.length) return;
+    need.forEach(function (id) { BPD.loaded[id] = 1; });
+    try {
+      var rw = await sb.from("words").select("id,term,level,block_id,sort").in("block_id", need).order("sort");
+      (rw.data || []).forEach(function (w) { (BPD.words[w.block_id] = BPD.words[w.block_id] || []).push(w); });
+      if (progUid()) {
+        var wids = (rw.data || []).map(function (w) { return w.id; }), owner = {}; (rw.data || []).forEach(function (w) { owner[w.id] = w.block_id; });
+        for (var i = 0; i < wids.length; i += 150) {
+          var rp = await sb.from("word_progress").select("word_id,bookmarked,wrong_open").eq("user_id", HOST_PROFILE_ID).in("word_id", wids.slice(i, i + 150));
+          (rp.data || []).forEach(function (x) { var bk = owner[x.word_id]; if (x.bookmarked) BPD.star[bk] = (BPD.star[bk] || 0) + 1; if (x.wrong_open) BPD.wrong[bk] = (BPD.wrong[bk] || 0) + 1; });
+        }
+        var rb = await sb.from("block_progress").select("block_id,passed,cycle,next_review_at").eq("user_id", HOST_PROFILE_ID).in("block_id", need);
+        (rb.data || []).forEach(function (x) { BPD.prog[x.block_id] = x; });
+      }
+    } catch (e) { console.warn("bpLoad", e); need.forEach(function (id) { delete BPD.loaded[id]; }); return; }
+    paintBlockPicker();
+  }
+  function bpStatus(id) {
+    if (!progUid()) return "";
+    var x = BPD.prog[id];
+    if (!x || !x.passed) return '<span class="g-bstat">🟢 Chưa học</span>';
+    var d = x.next_review_at ? Math.round((x.next_review_at - Date.now()) / 864e5) : null;
+    return '<span class="g-bstat ok">' + (d == null ? "✓ Đã học" : d > 0 ? "🟢 Ôn sau " + d + " ngày" : "🟡 Đến hạn ôn") + "</span>";
+  }
+  /* thẻ Block "bê nguyên từ Learning": khung srcdoc nạp css/app.css của WordLoop + HTML do App.blockCardsHtml dựng (cùng mã với màn Learning) */
+  function bpLearningCards(box, R, sel) {
+    try {
+      var pw = window.parent; if (!pw || pw === window || !pw.App || !pw.App.blockCardsHtml) return false;
+      var ids = []; R.groups.forEach(function (g) { g.blocks.forEach(function (b) { ids.push(b.id); }); });
+      var res = pw.App.blockCardsHtml(ids, sel); if (res.missing.length || !res.cards.length) return false;
+      var byId = {}; res.cards.forEach(function (c) { byId[c.id] = c.html; });
+      var body = R.groups.map(function (g) {
+        var all = g.blocks.every(function (b) { return sel[b.id]; });
+        return '<div class="bp-batchrow"><button type="button" class="bp-batch' + (all ? " on" : "") + '" data-bt="' + esc(g.batch.id) + '">' + esc(g.batch.name) + "</button></div>" + g.blocks.map(function (b) { return byId[b.id] || ""; }).join("");
+      }).join("");
+      var link = pw.document.querySelector('link[href*="app.css"]'), href = link ? link.href : "css/app.css", d = pw.document;
+      var doc = '<!doctype html><html class="' + esc(d.documentElement.className) + '" data-theme="' + esc(d.documentElement.getAttribute("data-theme") || "") + '"><head><meta charset="utf-8"><link rel="stylesheet" href="' + esc(href) + '"><style>' +
+        'html,body{margin:0;background:transparent!important;min-height:0!important;height:auto!important;overflow:hidden} body{padding:4px} .block-tabs-row,.dots,.vchip-del,.fw-preview,.block-right .done-badge .btn{display:none!important} .block-card{margin:8px 0;cursor:pointer;opacity:.78} .block-card.sel{opacity:1;box-shadow:0 0 0 2px #d9776a} ' +
+        '.bp-batchrow{margin:12px 0 2px} .bp-batch{border:0;border-radius:999px;padding:6px 14px;background:#d9684b;color:#fff;font:700 14px/1 system-ui,sans-serif;cursor:pointer;opacity:.75} .bp-batch.on{opacity:1;box-shadow:0 0 0 2px rgba(217,104,75,.45)}</style></head><body class="' + esc(d.body.className) + '">' + body +
+        '<script>document.addEventListener("click",function(e){var t=e.target.closest("[data-bt]"),k=e.target.closest(".block-card[data-block]");if(t)parent.__tjBp("bt",t.dataset.bt);else if(k)parent.__tjBp("bk",k.dataset.block);});' +
+        'function rep(){parent.__tjBpH&&parent.__tjBpH(document.documentElement.scrollHeight);}new ResizeObserver(rep).observe(document.body);setTimeout(rep,300);setTimeout(rep,1200);<\/script></body></html>';
+      box.innerHTML = '<h3 class="g-bph">📦 Chọn Batch / Block <span class="g-sub">(chạm thẻ để chọn / bỏ)</span></h3><iframe id="l-bpframe" class="g-bpframe" title="Chọn Batch / Block" scrolling="no"></iframe>';
+      var fr = $("#l-bpframe"); fr.srcdoc = doc; box.hidden = false;
+      return true;
+    } catch (e) { return false; }
+  }
   function paintBlockPicker() {
     var box = $("#l-blocks"); if (!box) return;
     if (!G.bpInternal) G.bpScope = picked.slice(); G.bpInternal = false;   /* đổi chủ đề từ nơi khác (cột bên, Bảng…) -> đặt lại gốc danh sách */
     if (!G.isHost || G.hub === "test" || !TREE || !picked.length) { box.hidden = true; box.innerHTML = ""; return; }
     var R = bpGroups(); if (!R || !R.groups.length) { box.hidden = true; box.innerHTML = ""; return; }
-    var sel = bpSel(), h = '<h3 class="g-bph">📦 Chọn Batch / Block</h3>';
+    var sel = bpSel();
+    if (bpLearningCards(box, R, sel)) return;   /* thẻ Block y hệt Learning (khung riêng, CSS của app) */
+    var h = '<h3 class="g-bph">📦 Chọn Batch / Block <span class="g-sub">(chạm thẻ để chọn / bỏ)</span></h3>', ids = [];
     R.groups.forEach(function (g) {
       var all = g.blocks.every(function (b) { return sel[b.id]; });
-      h += '<div class="g-bpb"><button type="button" class="g-bpbatch' + (all ? " on" : "") + '" data-bt="' + esc(g.batch.id) + '">' + esc(g.batch.name) + '</button><div class="g-bpchips">' +
-        g.blocks.map(function (b) { return '<button type="button" class="g-bchip' + (sel[b.id] ? " on" : "") + '" data-bk="' + esc(b.id) + '">' + esc(b.name) + "</button>"; }).join("") + "</div></div>";
+      h += '<div class="g-bpb"><button type="button" class="g-bpbatch' + (all ? " on" : "") + '" data-bt="' + esc(g.batch.id) + '">' + esc(g.batch.name) + "</button>";
+      g.blocks.forEach(function (b) {
+        ids.push(b.id);
+        var ws = BPD.words[b.id] || [], lv = {}; ws.forEach(function (w) { var k = lvKey(w.level); lv[k] = (lv[k] || 0) + 1; });
+        var chips = Object.keys(lv).sort().map(function (k) { return '<span class="g-blv">' + lv[k] + " " + (k === "-" ? "?" : k) + "</span>"; }).join("");
+        h += '<div class="g-bcard' + (sel[b.id] ? " on" : "") + '" data-bk="' + esc(b.id) + '" role="button" tabindex="0"><div class="g-bpath">' + esc(pathOf({ table: "blocks", id: b.id, title: b.name })) + "</div>" +
+          '<div class="g-bhead"><b>' + esc(b.name) + "</b>" + chips + (BPD.star[b.id] ? '<span class="g-blv star">⭐ ' + BPD.star[b.id] + "</span>" : "") + (BPD.wrong[b.id] ? '<span class="g-blv bad">❌ ' + BPD.wrong[b.id] + "</span>" : "") + bpStatus(b.id) + (sel[b.id] ? '<span class="g-bsel">✓ Đã chọn</span>' : "") + "</div>" +
+          '<div class="g-bwords">' + (ws.length ? ws.map(function (w) { return '<span class="g-bw">' + esc(w.term) + "</span>"; }).join("") : '<span class="g-sub">' + (BPD.loaded[b.id] ? "Chưa có từ" : "Đang tải từ…") + "</span>") + "</div></div>";
+      });
+      h += "</div>";
     });
     box.innerHTML = h; box.hidden = false;
+    bpLoad(ids.slice(0, 60));
   }
-  $("#l-blocks").addEventListener("click", function (e) {
+  function bpPick(kind, id) {
     if (!G.isHost || !TREE) return;
-    var t = e.target.closest("[data-bt]"), k = e.target.closest("[data-bk]");
-    if (t) { var bt = bpById(TREE.batches, t.dataset.bt); if (!bt) return; picked = [{ table: "batches", id: bt.id, title: bt.name }]; }
-    else if (k) {
-      var id = k.dataset.bk, blk = bpById(TREE.blocks, id); if (!blk) return;
+    if (kind === "bt") { var bt = bpById(TREE.batches, id); if (!bt) return; picked = [{ table: "batches", id: bt.id, title: bt.name }]; }
+    else if (kind === "bk") {
+      var blk = bpById(TREE.blocks, id); if (!blk) return;
       var cur = picked.every(function (p) { return p.table === "blocks"; }) ? picked.slice() : [], i = cur.findIndex(function (p) { return p.id === id; });
       if (i >= 0) { if (cur.length > 1) cur.splice(i, 1); } else cur.push({ table: "blocks", id: id, title: blk.name });
       picked = cur;
     } else return;
     G.bpInternal = true; paintTree(); hostSetScope(); G.bpInternal = true; paintBlockPicker();
+  }
+  window.__tjBp = bpPick;
+  window.__tjBpH = function (h) { var f = $("#l-bpframe"); if (f) f.style.height = Math.max(60, h + 6) + "px"; };
+  $("#l-blocks").addEventListener("click", function (e) {
+    var t = e.target.closest("[data-bt]"), k = e.target.closest("[data-bk]");
+    if (t) bpPick("bt", t.dataset.bt); else if (k) bpPick("bk", k.dataset.bk);
   });
   /* PHÒNG CỐ ĐỊNH của host: lấy phòng mới nhất của host, chưa có thì tạo — mã/link dùng mãi */
   async function openHostRoom() {
