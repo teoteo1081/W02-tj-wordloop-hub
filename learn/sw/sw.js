@@ -17,7 +17,7 @@
     speaking: [{ k: "all", t: "Cả bộ 11 câu (~17 phút)", qs: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] }, { k: "read", t: "Q1–2 Đọc to", qs: [1, 2] }, { k: "desc", t: "Q3 Tả ảnh", qs: [3] }, { k: "resp", t: "Q4–6 Trả lời câu hỏi", qs: [4, 5, 6] }, { k: "info", t: "Q7–9 Dựa vào thông tin", qs: [7, 8, 9] }, { k: "sol", t: "Q10 Đề xuất giải pháp", qs: [10] }, { k: "opin", t: "Q11 Nêu ý kiến", qs: [11] }],
     writing: [{ k: "all", t: "Cả bộ 8 câu (~60 phút)", qs: [1, 2, 3, 4, 5, 6, 7, 8] }, { k: "sent", t: "Q1–5 Viết câu theo ảnh", qs: [1, 2, 3, 4, 5] }, { k: "mail", t: "Q6–7 Trả lời email", qs: [6, 7] }, { k: "essay", t: "Q8 Bài luận ý kiến", qs: [8] }]
   };
-  var SETS = { speaking: [], writing: [] }, ST = load(), S = { kind: QS.get("kind") === "writing" ? "writing" : "speaking", setId: "", group: "all", screen: "home" }, timerId = 0, rec = null, recOn = false, CTX = { inRoom: false, isHost: false, me: null, players: [] }, LIVE = null, liveTimer = 0, PENDING = null, KIND0 = QS.get("kind") || "";
+  var SETS = { speaking: [], writing: [] }, ST = load(), S = { kind: QS.get("kind") === "writing" ? "writing" : "speaking", setId: "", group: "all", screen: "home" }, timerId = 0, rec = null, recOn = false, CTX = { inRoom: false, isHost: false, me: null, players: [] }, LIVE = null, liveTimer = 0, PENDING = null, KIND0 = QS.get("kind") || "", EMBED = (function () { try { return window.parent !== window; } catch (e) { return true; } })();
 
   /* ---------- lưu ---------- */
   function load() { try { return JSON.parse(localStorage.getItem(KEY)) || { hist: [] }; } catch (e) { return { hist: [] }; } }
@@ -90,14 +90,14 @@
       fld("Đề", '<select id="sel-set">' + sets.map(function (x, n) { return '<option value="' + esc(x.id) + '"' + (x.id === S.setId ? " selected" : "") + ">Test " + (n + 1) + " — " + esc(String(x.title || "").replace(/^Phỏng vấn:\s*/i, "").slice(0, 30)) + "</option>"; }).join("") + "</select>") +
       fld("Phạm vi", '<select id="sel-scope"><option value="all"' + (scopeAll ? " selected" : "") + '>🧩 Cả bộ</option><option value="part"' + (scopeAll ? "" : " selected") + ">🧩 Từng Part</option></select>") +
       fld("Part", '<select id="sel-grp"' + (scopeAll ? " disabled" : "") + ">" + parts.map(function (x) { return '<option value="' + x.k + '"' + (x.k === S.group ? " selected" : "") + ">" + esc(x.t) + "</option>"; }).join("") + "</select>") +
-      fld("Kiểu chơi", '<select disabled><option>' + (inRoom ? "Cùng 1 câu (host bấm giờ)" : "Luyện riêng") + "</option></select>") +
+      fld("Kiểu chơi", '<select disabled><option>' + (inRoom ? "Cùng 1 câu (kiểu Kahoot: host bấm giờ, cả phòng cùng chơi)" : EMBED ? "Đang vào phòng…" : "Làm một mình") + "</option></select>") +
       fld("Giây mỗi câu", '<input type="text" value="Theo đề thi thật" disabled>') +
       fld("Từ câu", '<input type="number" id="q-from" min="' + qmin + '" max="' + qmax + '" value="' + (S.qFrom || qmin) + '">') +
       fld("Đến câu", '<input type="number" id="q-to" min="' + qmin + '" max="' + qmax + '" value="' + (S.qTo || qmax) + '">') +
       (inRoom ? '<label class="chk"><input type="checkbox" id="hostplays"' + (S.hostPlays !== false ? " checked" : "") + "> Host cũng chơi</label>" : "<span></span>") + "</div>" +
       (inRoom ? aiToggleHtml() : "") +
       (S.kind === "speaking" && !SR && !MOCK && !inRoom ? '<div class="warn">Trình duyệt này không nhận giọng nói (Web Speech). Dùng Chrome/Edge trên máy tính hoặc Android để nói; ở đây bạn vẫn gõ lại lời mình nói được.</div>' : "") +
-      '<div class="hp-btns">' + (sets.length ? '<button class="pri big" data-act="start" data-v="' + esc(S.group) + '">▶ Bắt đầu làm bài</button>' : '<span class="sub">Chưa có đề.</span>') +
+      '<div class="hp-btns">' + (!sets.length ? '<span class="sub">Chưa có đề.</span>' : (EMBED && !inRoom) ? '<button class="pri big" disabled>⏳ Đang vào phòng game…</button>' : '<button class="pri big" data-act="start" data-v="' + esc(S.group) + '">▶ Bắt đầu làm bài</button>') +
       (((ST.rev || []).filter(function (r) { return r.kind === S.kind; }).length) ? '<button class="big" data-act="rev">📒 Bài đã làm (' + (ST.rev || []).filter(function (r) { return r.kind === S.kind; }).length + ")</button>" : "") +
       '<button class="big" data-act="tips">🧠 Chiến thuật đạt điểm cao</button></div></div>';
     if (S.showTips) h += tipsHtml();
@@ -608,7 +608,7 @@
     var b = e.target.closest("[data-act]"); if (!b || b.disabled) return; var a = b.dataset.act, v = b.dataset.v;
     if (a === "kind") { S.kind = v; S.setId = (SETS[v][0] || {}).id || ""; render(); }
     else if (a === "set") { S.setId = v; render(); }
-    else if (a === "start") { if (classOn()) toParent({ type: "sw-host-start", kind: S.kind, set: S.setId, group: v, from: S.qFrom || 0, to: S.qTo || 0 }); else { S.class = null; S.saved = 0; begin(S.kind, v); } }
+    else if (a === "start") { if (EMBED && !classOn()) { toast("Đang vào phòng game, thử lại sau giây lát"); return; } if (classOn()) toParent({ type: "sw-host-start", kind: S.kind, set: S.setId, group: v, from: S.qFrom || 0, to: S.qTo || 0 }); else { S.class = null; S.saved = 0; begin(S.kind, v); } }
     else if (a === "leave") toParent({ type: "sw-leave" });
     else if (a === "tips") { S.showTips = !S.showTips; render(); }
     else if (a === "part") { S.group = v; render(); }
