@@ -5004,6 +5004,9 @@
     });
     /* Esc đóng menu chuột phải / ⋯ (TJ 2026-10-14: "nhấp chuột phải vào từng thể loại xong bấm Escape không được") */
     document.addEventListener("keydown", function (e) { if (e.key !== "Escape") return; var m = w.$("#ctx-menu"); if (m && !m.hidden) { App.closeMenu(); e.preventDefault(); } });
+    /* bấm / gõ phím bên trong khung Game (iframe) không lan lên trang này -> đóng menu khi cửa sổ mất tiêu điểm, và nhận "tjwl-esc" do game.js báo khi bấm Esc */
+    w.addEventListener("blur", function () { var m = w.$("#ctx-menu"); if (m && !m.hidden) App.closeMenu(); });
+    w.addEventListener("message", function (e) { if (e.origin === location.origin && e.data && e.data.type === "tjwl-esc") App.closeMenu(); });
     document.addEventListener("contextmenu", function (e) {
       /* Thiếu [data-block] trước đây -> bấm phải vào 1 Block card chỉ ra
          menu chuột phải mặc định của trình duyệt, không mở được menu

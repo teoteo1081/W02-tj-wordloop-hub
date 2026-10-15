@@ -708,7 +708,7 @@
     dotMenu(row.querySelector("[data-dots]"), e.clientX, e.clientY);
   });
   document.addEventListener("click", function (e) { if (!e.target.closest("#h-dotmenu") && !e.target.closest("[data-dots]")) $("#h-dotmenu").hidden = true; });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape") { $("#h-dotmenu").hidden = true; if (SIDE.open) sideOpen(false); } });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") { $("#h-dotmenu").hidden = true; if (SIDE.open) sideOpen(false); try { if (window.parent !== window) window.parent.postMessage({ type: "tjwl-esc" }, location.origin); } catch (x) {} } });   /* + báo trang cha đóng menu chuột phải của nó */
   $("#h-dotmenu").addEventListener("click", function (e) {
     var b = e.target.closest("[data-act]"); if (!b || !dotFor) return;
     var c = dotFor, me = { table: c.dataset.pick, id: c.dataset.id, title: c.dataset.title };
