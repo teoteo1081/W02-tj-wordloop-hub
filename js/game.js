@@ -248,7 +248,8 @@
   }
   function paintAdmin() {
     var s = G.st; if (!s || $("#g-admin").hidden) return; admMove();
-    var rv = $("#p-reveal"), prox = $("#ga-next"); prox.hidden = !rv || rv.hidden; prox.textContent = rv ? rv.textContent : "";
+    var rv = $("#p-reveal"), prox = $("#ga-next"), rvOn = !!(rv && !rv.hidden), qa = !!(G.isHost && s.phase === "play" && s.mode === "kahoot" && s.q);   /* qa: TJ 2026-10-14 "thiếu nút qua câu tiếp theo để mình check nhanh" */
+    prox.hidden = !(rvOn || qa); prox.textContent = rvOn ? rv.textContent : "⏭ Sang câu kế (kiểm nhanh)";
     var roster = s.roster || {}, list = live(s, rankList(s.scores));
     $("#ga-room").innerHTML = "<b>" + esc(G.room ? G.room.code : "") + "</b> · " + esc(modeLine(s)) + " · " + (hostPlays() ? "👤 host cũng chơi" : "👁 host chỉ xem");
     $("#ga-players").innerHTML = list.map(function (x) {
@@ -258,7 +259,7 @@
     $("#ga-users").hidden = !isTJ(); paintSoundBtn();
   }
   function admAct(a) {
-    if (a === "next") { var rv = $("#p-reveal"); if (rv && !rv.hidden) rv.click(); admShow(false); }
+    if (a === "next") { var rv = $("#p-reveal"); if (rv && !rv.hidden) { rv.click(); admShow(false); } else if (G.isHost && G.st && G.st.phase === "play" && G.st.mode === "kahoot" && G.st.q) { if (!G.st.q.revealed) hostReveal(); else G.revealUntil = Date.now(); } }   /* Kahoot: host kiểm nhanh -> chốt câu rồi tự sang câu kế (~1s) */
     else if (a === "copy") { $("#l-copy").click(); }
     else if (a === "screen") window.open(roomLink(G.room.code, true), "_blank");
     else if (a === "board") { var bb = $("#g-boardbtn"); if (bb && !bb.hidden) bb.click(); admShow(false); }
