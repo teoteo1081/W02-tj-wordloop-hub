@@ -48,7 +48,7 @@
     "#qc .gvi{font-size:22px;font-weight:700;color:var(--blue-dark,#8fb8e8);text-align:center;min-height:2.4em;display:flex;align-items:center;justify-content:center;line-height:1.45;padding:4px 2px}#qc .gsay{text-align:center;margin:4px 0}" +
     "#qc .gopts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}#qc .gopt{min-height:56px;padding:10px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:16px;font-weight:600;cursor:pointer;word-break:break-word;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center}" +
     "#qc .gopt:disabled{cursor:default}#qc .gopt.picked{border-color:#f0a66e;background:rgba(240,166,110,.14)}#qc .gopt.ok{border-color:#4fb985;background:rgba(79,185,133,.2)}#qc .gopt.bad{border-color:#e0607a;background:rgba(224,96,122,.18)}#qc .gopt .pk{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}#qc .gopt .pk .av{width:26px;height:26px;font-size:15px;border-width:2px}" +
-    "#qc .gres{margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--bg);border:1px solid var(--line);font-size:15px}#qc .gres.ok{border-color:#4fb985}#qc .gres.bad{border-color:#e0607a}#qc .grow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px}#qc .grow.gm{margin-top:18px}" +
+    "#qc .nxl{text-align:center;margin-top:10px}#qc .gres{margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--bg);border:1px solid var(--line);font-size:15px}#qc .gres.ok{border-color:#4fb985}#qc .gres.bad{border-color:#e0607a}#qc .grow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px}#qc .grow.gm{margin-top:18px}" +
     "#qc .gq .qbd div.me{outline:2px solid #d97757;border-radius:8px}" +
     "#qc .gtopbar{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:2px 0 8px}#qc .gtopbar .tp{display:flex;flex-direction:column;align-items:center;font-size:12px;gap:2px;padding:4px 8px;border-radius:12px;border:1px solid var(--line);background:var(--card)}#qc .gtopbar .tp.me{border-color:#d97757}#qc .gtopbar .tp .av{width:30px;height:30px;font-size:18px;border-width:2px}" +
     "#qc .gstat{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:0 0 10px}#qc .gstat span{display:flex;flex-direction:column;align-items:center;min-width:64px;padding:6px 10px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-size:11px;color:var(--muted)}#qc .gstat b{font-size:17px;color:var(--ink)}#qc i.g,#qc b.g{color:#4fb985;font-style:normal}#qc i.r,#qc b.r{color:#e0607a;font-style:normal}#qc .cw{margin-left:auto;font-size:13px;white-space:nowrap}#qc .qbd .pts{margin-left:10px}#qc #qvol{width:80px;accent-color:#d97757}" +
@@ -103,7 +103,8 @@
         h += '<div class="gres ' + (mine === Z.ans ? "ok" : "bad") + '"><b>' + (mine === Z.ans ? "✅ Đúng rồi!" : mine == null ? "⏰ Chưa trả lời" : "❌ Chưa đúng") + (my && my.last ? " +" + my.last : "") + "</b><br>" + esc(Z.exp || "") + "</div>" +
           (no.length ? '<div class="strip"><span class="l">⏰ Không kịp:</span>' + no.map(function (id) { return av(id, "dim"); }).join("") + "</div>" : "");
       }
-      if (host) h += '<div class="grow">' + (Z.ph === "q" ? '<button class="qb soft" data-q="lock">👁 Chốt câu</button>' : '<button class="qb" data-q="next">' + (Z.i + 1 >= Z.n ? "🏆 Xem kết quả" : "Câu tiếp ▶") + "</button>") + "</div>";
+      if (Z.ph === "rev" && Z.nxEnd) h += '<div class="gsub nxl">⏭ ' + (Z.i + 1 >= Z.n ? "Xem kết quả" : "Câu tiếp") + ' sau <b id="qnx">' + Math.max(0, Math.ceil((Z.nxEnd - Date.now()) / 1000)) + "</b>s…</div>";
+      if (host) h += '<div class="grow">' + (Z.ph === "q" ? '<button class="qb soft" data-q="lock">👁 Chốt câu</button>' : '<button class="qb' + (Z.nxEnd ? " soft" : "") + '" data-q="next">' + (Z.nxEnd ? "⏭ Bỏ qua" : Z.i + 1 >= Z.n ? "🏆 Xem kết quả" : "Câu tiếp ▶") + "</button>") + "</div>";
       h += "</div>";
       if (rev) h += paintBoard(Z.board, me.id);
     }
@@ -111,6 +112,7 @@
     ov.innerHTML = h + "</div>"; autoSay();
   }
   function tick() {
+    if (Z && Z.ph === "rev" && Z.nxEnd) { var nx = $("#qnx"); if (nx) nx.textContent = Math.max(0, Math.ceil((Z.nxEnd - Date.now()) / 1000)); }
     if (!Z || Z.ph !== "q") return;
     var d = $("#qcd"), pg = $("#qpg"), r = rem(); if (d) d.textContent = Math.ceil(r); if (pg && Z.tot) pg.style.width = Math.min(100, 100 * r / Z.tot) + "%";
     if (H && r <= 0) reveal();
@@ -134,7 +136,7 @@
   var TYPES = [["vocab", "📚 Từ vựng (trộn 3 dạng)"], ["mix", "🔀 Trộn cả trắc nghiệm bài học"], ["quiz", "📝 Trắc nghiệm bài học"], ["en2m", "🔤 Thuật ngữ → nghĩa (tiếng mẹ đẻ)"], ["m2en", "🈯 Nghĩa → thuật ngữ"], ["listen", "🎧 Nghe → chọn nghĩa"]];
   function typesOf(t) { return t === "vocab" ? { en2m: true, m2en: true, listen: true } : t === "mix" ? { quiz: true, en2m: true, m2en: true, listen: true } : (function (o) { o[t] = true; return o; })({}); }
   function showSetup() {   /* giống hub Từ vựng của game: thẻ phòng · bảng "Chủ đề ván này" · các thẻ Block bên dưới (bài học Marketing) */
-    if (!setup) setup = { mods: lessonsList().map(function (l) { return l.id; }), n: 10, sec: 20, secV: 10, hp: true, say: true, type: "vocab" };
+    if (!setup) setup = { mods: lessonsList().map(function (l) { return l.id; }), n: 10, sec: 20, secV: 10, hp: true, say: true, auto: true, type: "vocab" };
     var T = typesOf(setup.type), V = DATA.vocab || [], Qs = DATA.questions || [], inSel = function (id) { return setup.mods.indexOf(id) >= 0; };
     var nQ = Qs.filter(function (q) { return inSel(q.lesson); }).length, nV = V.filter(function (v) { return inSel(v.lesson); }).length, cnt = (T.quiz ? nQ : 0) + (T.en2m || T.m2en || T.listen ? nV : 0);
     var mins = Math.max(1, Math.round(setup.n * ((T.quiz && (T.en2m || T.m2en || T.listen) ? (setup.sec + setup.secV) / 2 : T.quiz ? setup.sec : setup.secV) + 6) / 60));
@@ -147,7 +149,7 @@
       '<label>Giây / câu trắc nghiệm<input type="number" id="qsec" min="5" max="120" value="' + setup.sec + '"></label>' +
       '<label>Giây / câu từ vựng<input type="number" id="qsecv" min="3" max="60" value="' + setup.secV + '"></label>' +
       '<label>Cách tính điểm<select disabled><option>Theo tốc độ: đúng +500…1000</option></select></label></div>' +
-      '<div class="rowchk"><label class="chk"><input type="checkbox" id="qhp"' + (setup.hp ? " checked" : "") + '> Host cũng chơi</label><label class="chk"><input type="checkbox" id="qsay"' + (setup.say ? " checked" : "") + '> 🔊 Tự đọc thuật ngữ tiếng Anh</label></div>' +
+      '<div class="rowchk"><label class="chk"><input type="checkbox" id="qhp"' + (setup.hp ? " checked" : "") + '> Host cũng chơi</label><label class="chk"><input type="checkbox" id="qauto"' + (setup.auto !== false ? " checked" : "") + '> ⏭ Tự chuyển câu (kiểu Kahoot)</label><label class="chk"><input type="checkbox" id="qsay"' + (setup.say ? " checked" : "") + '> 🔊 Tự đọc thuật ngữ tiếng Anh</label></div>' +
       '<div class="pinfo">' + setup.mods.length + " bài · " + nQ + " câu trắc nghiệm · " + nV + " thuật ngữ · ván ≈ " + mins + " phút</div>" +
       '<button class="qb big" data-q="go"' + (cnt ? "" : " disabled") + '>▶ Bắt đầu</button></div>' +
       '<div class="lhead"><h2>📚 Các bài học</h2><span><button class="qb soft sm" data-q="all">Chọn hết</button> <button class="qb soft sm" data-q="none">Bỏ hết</button></span></div>';
@@ -182,13 +184,14 @@
       else { var o2 = pick4(v, "vi"); qs.push({ t: k === "listen" ? "Nghe thuật ngữ rồi chọn nghĩa đúng" : v.en, o: o2, a: o2.indexOf(v.vi), exp: exp, sec: setup.secV, k: k, say: v.en, hide: k === "listen" }); }
     }
     if (!qs.length) return;
-    H = { cor: {}, wr: {}, say: setup.say !== false, hp: setup.hp !== false, run: Date.now() + "-" + Math.random().toString(36).slice(2, 6), qs: qs, i: -1, sec: setup.sec, ans: {}, score: {}, last: {}, expect: 0, names: {} };
+    H = { cor: {}, wr: {}, auto: setup.auto !== false, say: setup.say !== false, hp: setup.hp !== false, run: Date.now() + "-" + Math.random().toString(36).slice(2, 6), qs: qs, i: -1, sec: setup.sec, ans: {}, score: {}, last: {}, expect: 0, names: {} };
     (CTX.players || []).forEach(function (p) { H.names[p.id] = { name: p.name, avatar: p.avatar }; H.score[p.id] = 0; });
     nextQ();
   }
   function playersMap() { var m = {}; (CTX.players || []).forEach(function (p) { if (H.hp !== false || !(CTX.me && p.id === CTX.me.id)) m[p.id] = { name: p.name, avatar: p.avatar }; }); Object.keys(H.ans).forEach(function (id) { if (!m[id]) m[id] = H.names[id] || {}; }); return m; }
   function snap() {
     var q = H.qs[H.i] || { t: "", o: [], a: 0, exp: "" }, base = { run: H.run, ph: H.ph, i: H.i, n: H.qs.length, q: { t: q.t, o: q.o, say: q.say || "", hide: q.hide ? 1 : 0, k: q.k || "quiz", auto: H.say === false ? 0 : 1 }, tot: H.sec, rem: H.ph === "q" ? rem() : 0, got: Object.keys(H.ans).length, ids: Object.keys(H.ans), pl: playersMap() };
+    if (H.ph === "rev") base.nx = H.revEnd ? Math.max(0, (H.revEnd - Date.now()) / 1000) : 0;
     if (H.ph === "rev" || H.ph === "end") { base.ans = q.a; base.exp = q.exp; base.cnt = H.cnt; base.board = H.board; base.picks = {}; Object.keys(base.pl).forEach(function (id) { base.picks[id] = H.ans[id] ? H.ans[id].c : null; }); }
     return base;
   }
@@ -202,11 +205,12 @@
     if (o.ui === "setup") { setup = o.setup; showSetup(); return; }
     if (o.ui === "run" && o.H) {
       H = o.H; setup = setup || { mods: [], n: 10, sec: 20, secV: 10, hp: H.hp !== false, say: H.say !== false, type: "mix" };
-      if (H.ph === "q") { if (Date.now() >= H.tEnd) { reveal(); } else { pushState(); clearInterval(hbT); hbT = setInterval(pushState, 2000); } } else pushState();
+      if (H.ph === "q") { if (Date.now() >= H.tEnd) { reveal(); } else { pushState(); clearInterval(hbT); hbT = setInterval(pushState, 2000); } } else if (H.ph === "rev" && H.auto && H.revEnd) { var left = H.revEnd - Date.now(); if (left <= 0) nextQ(); else { H.autoT = setTimeout(function () { if (H && H.ph === "rev") nextQ(); }, left); pushState(); } } else pushState();
     }
   }
-  function pushState() { if (!H) return; var s = snap(); send(s); Z = Object.assign({}, s, { tEnd: H.tEnd, my: H.my }); saveH(); render(); }
+  function pushState() { if (!H) return; var s = snap(); send(s); Z = Object.assign({}, s, { tEnd: H.tEnd, nxEnd: H.revEnd || 0, my: H.my }); saveH(); render(); }
   function nextQ() {
+    if (H) { clearTimeout(H.autoT); H.revEnd = 0; }
     H.i++; if (H.i >= H.qs.length) return finish();
     H.sec = H.qs[H.i].sec || H.sec; H.ph = "q"; H.ans = {}; H.my = null; H.tEnd = Date.now() + H.sec * 1000; H.t0 = Date.now(); H.expect = expectIds().length; H.last = {};
     pushState(); clearInterval(hbT); hbT = setInterval(pushState, 2000);
@@ -219,10 +223,12 @@
     var q = H.qs[H.i]; H.ph = "rev"; H.cnt = [0, 0, 0, 0];
     Object.keys(H.score).forEach(function (id) { var a0 = H.ans[id]; if (a0 && a0.c === q.a) H.cor[id] = (H.cor[id] || 0) + 1; else H.wr[id] = (H.wr[id] || 0) + 1; });
     Object.keys(H.ans).forEach(function (id) { var a = H.ans[id]; H.cnt[a.c] = (H.cnt[a.c] || 0) + 1; if (a.c === q.a) { var pts = Math.round(1000 - 500 * Math.min(1, a.ms / (H.sec * 1000))); H.score[id] = (H.score[id] || 0) + pts; H.last[id] = pts; } });
-    H.board = board(); pushState();
+    H.board = board(); clearTimeout(H.autoT); H.revEnd = 0;
+    if (H.auto) { var ms = (q.k === "quiz" ? 7000 : 4000) + (H.hp === false ? 0 : 0); H.revEnd = Date.now() + ms; H.autoT = setTimeout(function () { if (H && H.ph === "rev") nextQ(); }, ms); }
+    pushState();
   }
   function finish() { H.ph = "end"; H.board = board(); H.last = {}; H.board.forEach(function (r) { r.last = 0; }); pushState(); }
-  function closeRun() { clearInterval(hbT); clearSaved(); if (H) send({ run: H.run, ph: "close" }); H = null; Z = null; ov.hidden = true; fab.hidden = !(CTX.isHost && CTX.inRoom); }
+  function closeRun() { clearInterval(hbT); clearSaved(); if (H) clearTimeout(H.autoT); if (H) send({ run: H.run, ph: "close" }); H = null; Z = null; ov.hidden = true; fab.hidden = !(CTX.isHost && CTX.inRoom); }
   function hostGot(a) {   /* người chơi gửi đáp án */
     if (!H || H.ph !== "q" || a.run !== H.run || a.i !== H.i || H.ans[a.pid]) return;
     H.names[a.pid] = { name: a.name, avatar: a.avatar }; if (H.score[a.pid] == null) H.score[a.pid] = 0;
@@ -259,7 +265,7 @@
   ov.addEventListener("change", function (e) {
     var t = e.target, v = +t.value;
     if (t.id === "qvol") { SND.vol = v; saveSnd(); return; }
-    if (t.id === "qhp") setup.hp = t.checked; else if (t.id === "qsay") setup.say = t.checked;
+    if (t.id === "qhp") setup.hp = t.checked; else if (t.id === "qsay") setup.say = t.checked; else if (t.id === "qauto") setup.auto = t.checked;
     else if (t.id === "qn") { setup.n = Math.max(1, Math.min(60, v || 10)); setTimeout(showSetup, 0); } else if (t.id === "qsec") { setup.sec = Math.max(5, Math.min(120, v || 20)); setTimeout(showSetup, 0); } else if (t.id === "qsecv") { setup.secV = Math.max(3, Math.min(60, v || 10)); setTimeout(showSetup, 0); }
     else if (t.id === "qtype") { setup.type = t.value; setTimeout(showSetup, 0); }
   });
@@ -273,7 +279,7 @@
       if (H) return;   /* host tự giữ trạng thái của mình */
       if (p.ph === "close") { var was = !!Z; Z = null; ov.hidden = true; if (was) toParent({ type: "sw-leave" }); return; }
       var keepMy = Z && Z.run === p.run && Z.i === p.i ? Z.my : null;
-      Z = Object.assign({}, p, { tEnd: Date.now() + (p.rem || 0) * 1000, my: keepMy });
+      Z = Object.assign({}, p, { tEnd: Date.now() + (p.rem || 0) * 1000, nxEnd: p.nx ? Date.now() + p.nx * 1000 : 0, my: keepMy });
       if (Z.ph === "rev" && Z.my == null) Z.my = null;
       render();
     }
