@@ -104,3 +104,4 @@ select.big { max-width:46%; }
 
 .timer.last5 { animation:softpulse 1s ease-in-out infinite; } .bar.last5 i { background:var(--bad); }
 @keyframes softpulse { 0%,100% { opacity:1; } 50% { opacity:.55; } }
+.hostbar { position:sticky; top:0; z-index:20; box-shadow:0 4px 14px rgba(0,0,0,.28); }

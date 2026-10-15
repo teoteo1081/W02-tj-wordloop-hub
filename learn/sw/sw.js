@@ -300,10 +300,10 @@
       else b = (L.phase === "idle" ? "" : '<button class="pri big" data-act="lstart">▶ Bắt đầu viết</button>') + (L.phase === "idle" ? nx.replace('class="big"', 'class="pri big"') : nx);
       hostbar = '<div class="card hostbar">' + b + "</div>";
     }
-    h += hostbar;   /* nút điều khiển của host nằm NGAY dưới đồng hồ (không dùng thanh cố định dưới đáy: cửa sổ thấp là bị khuất) */
     if (!run && L.my && L.myQ === t.q) h += L.my === "grading" ? '<div class="card" style="text-align:center"><span class="spin"></span> AI đang chấm bài của bạn…</div>' : (S.results[t.q] ? result("", t, true) : "");
     if (!run && L.phase !== "ready") h += othersHtml(t.q) + boardHtml() + aiToggleHtml();
     if (run && spk) h += rosterHtml(false);
+    if (hostbar) { var ti = h.indexOf("</div></div>") + 12; h = h.slice(0, ti) + hostbar + h.slice(ti); }   /* thanh điều khiển của host DÍNH Ở ĐẦU màn (cuộn đâu cũng thấy; ảnh to không đẩy nút xuống khuất) */
     app.innerHTML = h; smoothBar(); liveTick();
   }
   /* ---------- LỊCH SỬ: xem lại bài cũ + lỗi sai (lưu ở máy này) ---------- */
@@ -423,7 +423,7 @@
     if (S.phase === "resp" && S.kind === "speaking") { liveUpd(); var m = $("#manual"); if (m) m.oninput = function () { S.tr = m.value; }; }
   }
   function imgHtml(t) {   /* ảnh đề + dòng ghi nguồn nhỏ (ảnh tự do trên Wikimedia Commons) */
-    return '<img src="' + esc(t.image) + '" alt="" style="max-width:100%;max-height:420px;object-fit:contain;border-radius:10px;display:block;margin:0 auto">' + (t.credit ? '<div class="sub" style="font-size:11px;text-align:center;margin-top:4px">' + esc(t.credit) + "</div>" : "");
+    return '<img src="' + esc(t.image) + '" alt="" style="max-width:100%;max-height:min(420px,38vh);object-fit:contain;border-radius:10px;display:block;margin:0 auto">' + (t.credit ? '<div class="sub" style="font-size:11px;text-align:center;margin-top:4px">' + esc(t.credit) + "</div>" : "");
   }
   function promptHtml(t) {
     var h = "";
