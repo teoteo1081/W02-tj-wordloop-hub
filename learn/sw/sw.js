@@ -328,7 +328,7 @@
       else if (L.phase === "prep") { prim = '<button class="pri big" data-act="lskip">⏭ Kết thúc chuẩn bị</button>'; more = aiB + endB; }
       else if (run) { prim = '<button class="big" data-act="lstop">⏹ Dừng lượt này</button>'; more = aiB + endB; }
       else if (needP) { prim = '<button class="pri big" data-act="lstart">▶ Bắt đầu chuẩn bị (cả phòng)</button>' + nxb; more = allB + aiB + endB; }
-      else if (spk) { prim = '<button class="pri big" data-act="lstart">' + (ps.length ? "▶ Bắt đầu nói" : "↻ Nói lại") + nm + "</button>" + nxb; more = allB + aiB + endB; if (last && !ps.length) prim += endB; }
+      else if (spk) { prim = nxb; more = allB + aiB + endB; if (last && !ps.length) prim += endB; }   /* nút "Bắt đầu nói" nằm ngay dưới danh sách người chơi (rosterHtml) */
       else { prim = (L.phase === "idle" ? "" : '<button class="pri big" data-act="lstart">▶ Bắt đầu viết</button>') + nxb; more = aiB + endB; if (last && L.phase === "idle") prim += endB; }
       hostbar = '<div class="card hostbar"><div class="hb-main">' + prim + '</div><div class="hmore" tabindex="0"><button type="button" class="hmore-h" data-act="hmore" title="Thêm: AI chấm, Kết thúc lớp… (rê chuột vào)">⋯</button><div class="hmore-p">' + more + "</div></div></div>";
     }
@@ -396,12 +396,17 @@
     return '<div id="oth-box">' + (rows.length ? '<div class="card"><b>👥 Kết quả của cả lớp</b>' + rows.join("") + "</div>" : "") + "</div>";
   }
   function pickOf(ps) { var L = LIVE, all = plist(); return all.filter(function (p) { return p.id === L.pick; })[0] || ps[0] || all[0]; }   /* host chọn được cả người đã nói (nói lại, chấm lại) */
+  function rosterGo(host) {   /* nút "Bắt đầu nói · tên" sát danh sách người chơi (chạm tên để chọn, rồi bấm ngay bên dưới) */
+    var L = LIVE; if (!host || !L || S.kind !== "speaking" || L.sp || L.phase === "ready" || L.phase === "prep" || L.phase === "resp" || needPrep()) return "";
+    var ps = plist().filter(function (p) { return !L.done[p.id]; }), pk = pickOf(ps);
+    return pk ? '<button class="pri big" data-act="lstart" style="width:100%;margin-top:10px">' + (ps.length ? "▶ Bắt đầu nói" : "↻ Nói lại") + " · " + esc(pk.name || "") + "</button>" : "";
+  }
   function rosterHtml(host) {
     var L = LIVE, ps = plist(), rest = ps.filter(function (p) { return !L.done[p.id]; }), cur = L.sp ? L.sp.id : (host ? (pickOf(rest) || {}).id : "");
     if (!ps.length) return "";
     return '<div class="card roster"><div class="sub">' + (host ? "Chạm tên để chọn người nói tiếp" : "Thứ tự trong phòng") + '</div>' + ps.map(function (p) {
       var dn = L.done[p.id], on = p.id === cur; return '<button class="chip' + (dn ? " done" : "") + (on ? " on" : "") + '"' + (host && !L.sp ? ' data-act="lpick" data-v="' + esc(p.id) + '" title="' + (dn ? "Nói lại" : "Chọn") + '"' : " disabled") + ">" + (dn ? "✓ " : "") + avatarHtml(p.avatar) + " " + esc(p.name || "?") + "</button>";
-    }).join("") + "</div>";
+    }).join("") + rosterGo(host) + "</div>";
   }
   function liveAct(a, v) {
     if (a === "lsolo" && LIVE) {   /* rời lớp, tự luyện đúng câu này (AI chấm như bình thường) */
