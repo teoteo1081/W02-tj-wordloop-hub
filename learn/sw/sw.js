@@ -146,7 +146,7 @@
     if (!S.class || !CTX.me || res.score == null) return;
     var me = CTX.me, b = S.class.board, e = b[me.id] || (b[me.id] = { name: me.name || "Bạn", avatar: me.avatar || "", total: 0, n: 0 });
     e.total += res.score; e.n++;
-    var fb = res.fb || {}, rec = { pid: me.id, name: me.name || "", avatar: me.avatar || "", q: res.q, score: res.score, max: res.max, ans: String(res.ans || "").slice(0, 500), s: (fb.strengths || []).slice(0, 2), f: (fb.fixes || []).slice(0, 3) };
+    var fb = res.fb || {}, rec = { pid: me.id, name: me.name || "", avatar: me.avatar || "", q: res.q, score: res.score, max: res.max, ans: String(res.ans || "").slice(0, 500), s: (fb.strengths || []).slice(0, 2), f: (fb.fixes || []).slice(0, 3), b: String(fb.better || "").slice(0, 600) };
     ((S.class.rq = S.class.rq || {})[res.q] = S.class.rq[res.q] || {})[me.id] = rec;
     toParent({ type: "sw-class-send", p: Object.assign({ t: "res", run: S.class.run, total: e.total, n: e.n }, rec) });
   }
@@ -204,12 +204,19 @@
     LIVE.sig = sig;
     var wasR = LIVE.mineOn, nowR = meActive(st) && st.phase === "resp", oldI = S.i;
     if (wasR && !nowR) finishMine();
-    LIVE.fins = {}; LIVE.ai = !!st.ai; LIVE.phase = st.phase; LIVE.sp = st.sp || null; LIVE.done = st.done || {}; S.i = st.i || 0; LIVE.adv = 0;
+    LIVE.fins = {}; LIVE.rdys = {}; LIVE.rdyMe = false; LIVE.ai = !!st.ai; LIVE.phase = st.phase; LIVE.sp = st.sp || null; LIVE.done = st.done || {}; S.i = st.i || 0; LIVE.adv = 0;
     LIVE.tot = (st.sec || 0) * SCALE; LIVE.tEnd = st.sec ? Date.now() + LIVE.tot * 1000 : 0;
     if ((st.i || 0) !== oldI) LIVE.my = null;
     liveRender();
     if (!wasR && nowR) startMine();
     if (st.phase === "end") clearLive(); else saveLive();
+  }
+  function liveRdy(pid) {   /* host: người nói bấm "Sẵn sàng" -> vào phần nói ngay; "cả lớp" thì khi mọi người (trừ host) đã sẵn sàng */
+    var L = LIVE; if (!L || !CTX.isHost || L.adv || L.phase !== "prep") return;
+    if (L.sp) { if (L.sp.id === pid) { L.adv = 1; liveNext(); } return; }
+    L.rdys = L.rdys || {}; L.rdys[pid] = 1;
+    var others = plist().filter(function (p) { return !(CTX.me && p.id === CTX.me.id); });
+    if (others.length && others.every(function (p) { return L.rdys[p.id]; })) { L.adv = 1; liveNext(); }
   }
   function liveFin(pid) {   /* host: có người bấm Xong -> hết lượt sớm khi người nói xong, hoặc khi cả lớp đã nộp */
     var L = LIVE; if (!L || !CTX.isHost || L.adv || L.phase !== "resp") return;
@@ -275,6 +282,7 @@
     else if (act && L.phase === "resp") mybox = spk ? '<div class="live" id="live"><i>🎤 Mic của bạn đang bật — hãy nói…</i></div>' + (SR || MOCK ? "" : '<textarea id="manual" placeholder="Trình duyệt không nhận giọng: gõ lại điều bạn nói"></textarea>') + fin : '<textarea id="ans" placeholder="Gõ bài viết của bạn…"></textarea>' + fin;
     else if (!L.ai && myTurn(L) && L.phase === "resp") mybox = fin;
     else if (act) mybox = '<p class="sub">' + (spk ? "Đến lượt bạn — hết giờ chuẩn bị máy tự bật mic." : "Chuẩn bị viết…") + "</p>";
+    if (!host && myTurn(L) && L.phase === "prep") mybox += L.rdyMe ? '<p class="sub">✓ Bạn đã sẵn sàng — đợi mọi người</p>' : '<button class="pri big" data-act="lrdy" style="width:100%;margin-top:8px">⏭ Sẵn sàng rồi — nói luôn</button>';
     var h = '<div class="top"><button class="soft" data-act="quit" title="Thoát">✕</button><div class="t"><b>Câu ' + t.q + "</b> · " + esc(t.type.replace("_", " ")) + ' <span class="sub">(' + (S.i + 1) + "/" + S.tasks.length + ")</span></div></div>";
     h += '<div class="card">' + promptHtml(t) + "</div>";   /* TJ 2026-10-14: màn người chơi PHẢI giống Admin (thấy đề ngay); Admin chỉ bấm bắt đầu + đếm giờ */
     h += '<div class="card" style="text-align:center">';
@@ -357,7 +365,7 @@
     var m = (S.class && S.class.rq && S.class.rq[q]) || {}, me = (CTX.me || {}).id;
     var rows = Object.keys(m).filter(function (k) { return k !== me; }).map(function (k) {
       var r = m[k], ul = function (a, c) { return a && a.length ? '<ul class="fb ' + c + '">' + a.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" : ""; };
-      return '<details open class="oth"><summary>' + avatarHtml(r.avatar) + " <b>" + esc(r.name) + "</b> · " + r.score + "/" + r.max + "</summary>" + (r.ans ? '<div class="live">' + esc(r.ans) + "</div>" : "") + ul(r.s, "ok") + ul(r.f, "") + "</details>";
+      return '<details open class="oth"><summary>' + avatarHtml(r.avatar) + " <b>" + esc(r.name) + "</b> · " + r.score + "/" + r.max + "</summary>" + (r.ans ? '<div class="live">' + esc(r.ans) + "</div>" : "") + ul(r.s, "ok") + ul(r.f, "") + (r.b ? '<details open class="oth-b"><summary>✨ Bản gợi ý cải thiện</summary><div class="model">' + esc(r.b) + "</div></details>" : "") + "</details>";
     });
     return rows.length ? '<div class="card"><b>👥 Kết quả của cả lớp</b>' + rows.join("") + "</div>" : "";
   }
@@ -372,6 +380,10 @@
   function liveAct(a, v) {
     if (a === "lsolo" && LIVE) {   /* rời lớp, tự luyện đúng câu này (AI chấm như bình thường) */
       var t = curTask(); S.leftRun = LIVE.run; LIVE = null; clearTimer(); S.class = null; S.saved = 1; S.tasks = [t]; S.i = 0; S.results = {}; S.group = "one"; S.gt = "Câu " + t.q; S.screen = "task"; question(); return true;
+    }
+    if (a === "lrdy" && LIVE && LIVE.phase === "prep" && !CTX.isHost) {
+      LIVE.rdyMe = true; var me1 = CTX.me || {};
+      toParent({ type: "sw-class-send", p: { t: "rdy", run: LIVE.run, pid: me1.id } }); liveRender(); return true;
     }
     if (a === "lfin" && LIVE && (LIVE.mineOn || (!LIVE.ai && myTurn(LIVE) && LIVE.phase === "resp"))) {
       var me0 = CTX.me || {};
@@ -406,7 +418,7 @@
     var t = curTask(), set = curSet(), tm = TIME[S.kind][t.q] || [0, 60], lab = { read_aloud: "Đọc to", describe: "Tả ảnh", respond: "Trả lời câu hỏi", info: "Dựa vào thông tin", solution: "Đề xuất giải pháp", opinion: "Nêu ý kiến", sentence: "Viết câu theo ảnh", email: "Trả lời email", essay: "Bài luận ý kiến" }[t.type] || "";
     var h = '<div class="top"><button class="soft" data-act="quit" title="Thoát">✕</button><div class="t"><b>Câu ' + t.q + "</b> · " + esc(lab) + '</div>' + dots() + "</div>";
     if (S.phase === "grading") { h += '<div class="card" style="text-align:center"><p><span class="spin"></span> AI đang chấm…</p><p class="sub">Thường mất 5–15 giây.</p></div>'; app.innerHTML = h; return; }
-    if (S.phase === "result") return result(h, t);
+    if (S.phase === "result") return result(h + (t.image ? '<div class="card">' + promptHtml(t) + "</div>" : ""), t);   /* kết quả vẫn hiện ảnh đề để đối chiếu */
     h += '<div class="card">' + promptHtml(t) + "</div>";
     if (S.phase === "intro") {
       h += '<div class="card"><p class="sub">' + intro(t, tm) + '</p><button class="pri big" data-act="go" style="width:100%;margin-top:6px">' + (S.kind === "speaking" ? "▶ Bắt đầu" : "▶ Bắt đầu viết") + '</button><div class="row" style="justify-content:space-between;margin-top:8px">' + (S.i > 0 ? '<button class="soft" data-act="skipq" data-v="-1">‹ Câu trước</button>' : "<span></span>") + '<button class="soft" data-act="skipq" data-v="1">' + (S.i >= S.tasks.length - 1 ? "Kết thúc ›" : "Bỏ qua câu này ›") + "</button></div></div>";
@@ -623,6 +635,7 @@
     else if (d.type === "sw-class-start") applyStart(d);
     else if (d.type === "sw-class-live") liveApply(d.p);
     else if (d.type === "sw-class-fin" && d.p) liveFin(d.p.pid);
+    else if (d.type === "sw-class-rdy" && d.p) liveRdy(d.p.pid);
     else if (d.type === "sw-class-res" && S.class && d.p && d.p.run === S.class.run && !(CTX.me && d.p.pid === CTX.me.id)) { var b = S.class.board, p = d.p, e2 = b[p.pid] || (b[p.pid] = { name: p.name || "Bạn học", avatar: p.avatar || "", total: 0, n: 0 }); e2.total = p.total; e2.n = p.n || e2.n; ((S.class.rq = S.class.rq || {})[p.q] = S.class.rq[p.q] || {})[p.pid] = p; if (S.screen === "live" && LIVE && !busy(LIVE)) liveRender(); else updBoard(); }
   });
   document.addEventListener("change", function (e) {
