@@ -58,7 +58,10 @@
   /* TIẾN TRÌNH HỌC ghi cho ai (TJ 2026-10-03: "các TK Thảo, TJ ... kết quả của Thảo ghi về cho TJ trong TJ WordLoop"):
      máy đăng nhập hồ sơ TJ, HOẶC người chơi game được gắn hồ sơ TJ (game_players.profile_id = TJ, vd "Thảo").
      Gắn/bỏ gắn: 👥 Quản lý người chơi hoặc sửa cột profile_id. null = không ghi (người chơi thường). */
-  function progUid() { return isTJ() || G.meProfile === HOST_PROFILE_ID ? HOST_PROFILE_ID : null; }
+  /* TJ 2026-10-15: "Câu sai trong bài học chỉ tính của TJ và Thảo thôi; Từ vựng lưu cũng chỉ của TJ và Thảo" — dù người chơi khác (Anti_TJ, bạn học…) gắn hồ sơ TJ thì cũng KHÔNG ghi câu sai / từ lưu. So theo TÊN người chơi (bỏ dấu, không phân biệt hoa thường). */
+  function progName(n) { var x = String(n || "").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/Đ/g, "d").toLowerCase().replace(/[^a-z0-9]/g, ""); return x === "tj" || x === "thao"; }
+  function persistOK() { return !!G.me && progName(G.me.name); }
+  function progUid() { return (isTJ() || G.meProfile === HOST_PROFILE_ID) && (!G.me || progName(G.me.name)) ? HOST_PROFILE_ID : null; }
   async function loadMeProfile() {
     if (!G.me || !G.me.id) { G.meProfile = null; return; }
     var r = await sb.from("game_players").select("profile_id").eq("id", G.me.id).maybeSingle();
@@ -2448,8 +2451,8 @@
     /* câu của MỌI người chơi gắn hồ sơ TJ (TJ + vd Thảo) — host giữ hết câu trả lời trong G.answers */
     try {
       var pids = Object.keys((G.st && G.st.scores) || {});
-      var lk = pids.length ? await sb.from("game_players").select("id").eq("profile_id", HOST_PROFILE_ID).in("id", pids) : { data: [] };
-      var mine = {}; (lk.data || []).forEach(function (x) { mine[x.id] = 1; });
+      var lk = pids.length ? await sb.from("game_players").select("id,name").eq("profile_id", HOST_PROFILE_ID).in("id", pids) : { data: [] };
+      var mine = {}; (lk.data || []).forEach(function (x) { if (progName(x.name)) mine[x.id] = 1; });   /* chỉ TJ + Thảo */
       var all = (G.answers || []).filter(function (a) { return mine[a.pid] && a.wid; }).map(function (a) { return { wid: a.wid, ok: !!a.ok }; });
       if (all.length) G.myAns = all;
     } catch (e) {}
@@ -2898,14 +2901,14 @@
   async function apSave(x, y) {
     var m = AP && AP.meta; if (!m) return;
     var id = apId(m, x, y), loc = apLocal(); if (loc.indexOf(id) < 0) { loc.push(id); apLocalSet(loc); }
-    if (G.me) { try { await sb.from("vocab_saves").upsert({ player_id: G.me.id, word_id: id, test: String(m.test), part: +m.part || null, num: +m.num || null }, { onConflict: "player_id,word_id" }); } catch (e) {} }
+    if (persistOK()) { try { await sb.from("vocab_saves").upsert({ player_id: G.me.id, word_id: id, test: String(m.test), part: +m.part || null, num: +m.num || null }, { onConflict: "player_id,word_id" }); } catch (e) {} }
     var msg = AP.box.querySelector(".g-apmsg"); if (msg) msg.textContent = apT("saved") + " " + apClock(x - AP.segs[0].a) + "–" + apClock(y - AP.segs[0].a);
     apPaintMarks();
   }
   async function apDel(id) {
     if (!confirm(apT("del"))) return;
     apLocalSet(apLocal().filter(function (x) { return x !== id; }));
-    if (G.me) { try { await sb.from("vocab_saves").delete().eq("player_id", G.me.id).eq("word_id", id); } catch (e) {} }
+    if (persistOK()) { try { await sb.from("vocab_saves").delete().eq("player_id", G.me.id).eq("word_id", id); } catch (e) {} }
     if ($("#ap-lbody") && !$("#t-statsbox").hidden) apList(); else if (AP && AP.meta) apPaintMarks();
   }
   function apRow(k, label) {
@@ -3038,7 +3041,7 @@
   async function tqSet(k, on) {
     var M = await tqMarks(), L = tqLocal(); if (on) { M[k] = 1; L[k] = 1; } else { delete M[k]; delete L[k]; }
     try { localStorage.setItem(LS_TQM, JSON.stringify(L)); } catch (e) {}
-    if (!G.me) return;
+    if (!persistOK()) return;
     var p = k.split(":");
     try { if (on) await sb.from("vocab_saves").upsert({ player_id: G.me.id, word_id: k, test: p[1], part: +p[2] || null, num: parseInt(p[3], 10) || null }, { onConflict: "player_id,word_id" }); else await sb.from("vocab_saves").delete().eq("player_id", G.me.id).eq("word_id", k); } catch (e) {}
   }
@@ -3394,6 +3397,7 @@
   }
   async function tvSave(v, test, part, num) {
     if (!G.me || !v || !v.t) return false;
+    if (!persistOK()) { var w0 = "toe_w_" + tvSlug(v.t); tvSavedSet()[w0] = 1; return true; }   /* người khác: chỉ đánh dấu trên máy, không ghi vào kho chung / sổ từ */
     var wid = "toe_w_" + tvSlug(v.t);
     var ex = await sb.from("words").select("id").eq("id", wid).maybeSingle();
     if (!ex.data) {   /* kho CHUNG: mỗi chữ 1 dòng, lưu lần đầu thì tạo vào đúng Test/Part */
