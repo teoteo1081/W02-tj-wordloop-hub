@@ -112,7 +112,8 @@
     h += '<div class="g-q"><div class="g-qbar"><div id="p-qbar" style="width:' + (Z.ph === "q" && Z.tot ? Math.min(100, 100 * rem() / Z.tot) : 0) + '%"></div></div>';
     h += '<div class="g-qhint g-sub">' + esc(HINT[q.k] || "") + "</div>";
     h += '<div class="g-qvi">' + (q.hide ? '<span style="font-size:44px">🎧</span>' : esc(q.t)) + "</div>";
-    h += '<div class="g-opts">';
+    var longOpt = q.o.some(function (o) { return String(o).length > 26; });   /* giống màn Từ vựng: đáp án dài -> 1 cột, còn lại 2 cột (game.css ép 1 cột dưới 420px nên ghi đè inline) */
+    h += '<div class="g-opts' + (longOpt ? ' g-opts-1"' : '" style="grid-template-columns:1fr 1fr"') + '>';
     q.o.forEach(function (o, k) {
       var cls = "g-opt", dis = "";
       if (rev) { dis = " disabled"; if (k === Z.ans) cls += " ok"; else if (k === mine) cls += " bad"; }
