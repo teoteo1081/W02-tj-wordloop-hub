@@ -73,7 +73,8 @@
     if (!p || window.innerWidth > 520) { root.style.removeProperty("--pfs"); fitPrompt.k = ""; return; }
     var txt = p.textContent || "", w = Math.max(200, p.clientWidth || (window.innerWidth - 56)), key = txt.length + ":" + w + ":" + window.innerHeight;
     if (fitPrompt.k === key) return; fitPrompt.k = key;
-    var avail = Math.max(120, window.innerHeight - 300);   /* chừa chỗ: tiêu đề + thẻ đồng hồ/danh sách + nút */
+    var cardEl = p.closest(".card"), hasImg = !!(cardEl && cardEl.querySelector("img"));
+    var avail = Math.max(120, window.innerHeight - 300 - (hasImg ? Math.round(window.innerHeight * 0.3) : 0));   /* chừa chỗ: tiêu đề + thẻ đồng hồ/danh sách + nút (+ ảnh/biểu đồ nếu đề có) */
     var probe = document.createElement("div"); probe.className = p.className;
     probe.style.cssText = "position:absolute;visibility:hidden;left:-9999px;top:0;padding:0;margin:0;white-space:pre-wrap;width:" + w + "px";
     probe.textContent = txt; document.body.appendChild(probe);
