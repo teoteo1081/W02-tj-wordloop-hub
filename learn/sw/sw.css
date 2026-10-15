@@ -148,3 +148,9 @@ body.live .roster { border-color:var(--acc2); box-shadow:0 0 0 1px rgba(143,120,
 .hostbar.below { position:static; margin-top:0; }
 .prompt { font-size:21px !important; line-height:1.6; } .prompt.read { font-size:23px !important; line-height:1.7; }
 @media (max-width:420px) { .prompt.read { font-size:21px !important; } .prompt { font-size:20px !important; } }
+
+:root:root:root { --acc:#d97757; --acc2:#e8946f; }   /* toàn bộ tím -> cam như TOEIC */
+.gorow { display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; } .gorow .big { flex:1 1 150px; width:auto; margin:0; min-height:56px; font-size:18px !important; border-radius:12px; }
+.gorow .prepbtn { display:flex; opacity:1; padding:0 12px; }
+.roster .chip.on { background:rgba(217,119,87,.22); border-color:#d97757; box-shadow:0 0 0 3px rgba(217,119,87,.3); color:inherit; }
+body.live .roster { border-color:var(--line); box-shadow:none; }

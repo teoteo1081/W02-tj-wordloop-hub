@@ -400,8 +400,8 @@
   function rosterGo(host) {   /* nút "Bắt đầu nói · tên" sát danh sách người chơi (chạm tên để chọn, rồi bấm ngay bên dưới) */
     var L = LIVE; if (!host || !L || S.kind !== "speaking" || L.sp || L.phase === "ready" || L.phase === "prep" || L.phase === "resp") return "";
     var ps = plist().filter(function (p) { return !L.done[p.id]; }), pk = pickOf(ps), tm = liveTimes();
-    var prepB = needPrep() ? '<button type="button" class="soft prepbtn" data-act="lprep">⏱ Chuẩn bị chung cả phòng · ' + tm[0] + "s</button>" : "";
-    return prepB + (pk ? '<button class="pri big gobtn" data-act="lspeak">' + (ps.length ? "▶ Bắt đầu nói" : "↻ Nói lại") + " · " + esc(pk.name || "") + "</button>" : "");
+    var prepB = needPrep() ? '<button type="button" class="pri big prepbtn" data-act="lprep">⏱ Chuẩn bị chung · ' + tm[0] + "s</button>" : "";
+    return '<div class="gorow">' + prepB + (pk ? '<button class="pri big gobtn" data-act="lspeak">' + (ps.length ? "▶ Bắt đầu nói" : "↻ Nói lại") + " · " + esc(pk.name || "") + "</button>" : "") + "</div>";
   }
   function rosterHtml(host) {
     var L = LIVE, ps = plist(), rest = ps.filter(function (p) { return !L.done[p.id]; }), cur = L.sp ? L.sp.id : (host ? (pickOf(rest) || {}).id : "");
