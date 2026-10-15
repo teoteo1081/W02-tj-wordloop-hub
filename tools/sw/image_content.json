@@ -1,0 +1,493 @@
+{
+ "speaking_s01_q3": {
+  "pick": 1,
+  "scene": "A group of people are sitting on chairs in a bright room, watching a presentation shown on a screen at the front.",
+  "model": "This picture was taken in a bright seminar room. A group of people are sitting in rows of chairs and looking toward a screen at the front. Some of them are wearing jackets, and a few banners stand behind the screen. It looks like a training session or a small conference."
+ },
+ "speaking_s02_q3": {
+  "pick": 1,
+  "scene": "A woman with long hair is typing on a laptop at a desk in a dimly lit room.",
+  "model": "In this picture, a woman is sitting at a desk and typing on a laptop. The room is dim, and the light from the window falls on her hands. She seems to be concentrating on her work, perhaps writing a report or an email."
+ },
+ "speaking_s03_q3": {
+  "pick": 0,
+  "scene": "A woman is stretching her arms above her head at a table with a laptop in a small, bright kitchen.",
+  "model": "This photo shows a woman in a small kitchen. She is sitting at a table with a laptop and stretching her arms above her head, probably taking a short break from work. There are white tulips in a vase on the table, and a clock hangs on the wall."
+ },
+ "speaking_s04_q3": {
+  "pick": 2,
+  "scene": "A desk is covered with a laptop, an open magazine, a smartphone, notebooks and drawing supplies, seen from above.",
+  "model": "This picture shows a desk seen from above. There is a white laptop, an open magazine, a smartphone and some notebooks with sketches. A few pencils lie on the table, so someone has probably been working on a design project."
+ },
+ "speaking_s05_q3": {
+  "pick": 3,
+  "scene": "Many people are standing in line in a large, bright public service hall with information boards on the walls.",
+  "model": "In this picture, many people are waiting in a long line in a large hall. The floor is clean and bright, and there are information boards on the left wall. It looks like a public office or a bank where customers wait for service."
+ },
+ "speaking_s06_q3": {
+  "pick": 3,
+  "scene": "A very large reading room has long tables and rows of lamps, and many people are sitting and reading.",
+  "model": "This photo shows a huge reading room in a library. There are long wooden tables with many people sitting and reading. The room has high arched windows and a high ceiling. It is very quiet and organized, a perfect place to study."
+ },
+ "speaking_s07_q3": {
+  "pick": 5,
+  "scene": "A woman with tattoos is smiling at a desk near a window in an office.",
+  "model": "In this picture, a woman is sitting at a desk next to a large window. She is resting her head on her hand and smiling at the camera. The room is bright and tidy, so she probably enjoys working here."
+ },
+ "speaking_s08_q3": {
+  "pick": 0,
+  "scene": "A man in a light shirt is taking off his dark jacket beside a table with a laptop in a cafe.",
+  "model": "This photo shows a man standing next to a table in a cafe. He is taking off his dark jacket, and there is an open laptop on the table. It looks like he has just arrived and is getting ready to work."
+ },
+ "speaking_s09_q3": {
+  "pick": 0,
+  "scene": "A woman with curly hair is sitting at a desk, writing in a notebook next to a laptop and a phone.",
+  "model": "In this picture, a woman is sitting at a desk in a quiet room. She is writing in a notebook, and a laptop and a phone are beside her. A picture hangs on the wall behind her. She seems to be busy taking notes."
+ },
+ "speaking_s10_q3": {
+  "pick": 1,
+  "scene": "Several women wearing name badges are talking in a small group in a hall.",
+  "model": "This photo shows a group of women standing in a circle and talking. Some wear name badges, so they are probably attending a conference. One woman has pink hair. They look friendly, and they are sharing ideas."
+ },
+ "writing_w01_q1": {
+  "pick": 4,
+  "scene": "A modern library has tall bookshelves along a window and bright orange armchairs in the reading area.",
+  "words": [
+   "bookshelf",
+   "while"
+  ],
+  "model": "Several readers are sitting on the orange armchairs while others look for books along the bookshelf."
+ },
+ "writing_w01_q2": {
+  "pick": 1,
+  "scene": "Two men wearing white helmets are bending over to look at something on the ground in a field.",
+  "words": [
+   "helmet",
+   "beside"
+  ],
+  "model": "Two men, each wearing a helmet, are standing beside each other and checking the ground."
+ },
+ "writing_w01_q3": {
+  "pick": 1,
+  "scene": "A fruit vendor stands at an outdoor market stall full of fruit while people with umbrellas shop in the rain.",
+  "words": [
+   "vendor",
+   "although"
+  ],
+  "model": "The vendor is selling fruit although it is raining."
+ },
+ "writing_w01_q4": {
+  "pick": 0,
+  "scene": "Customers are browsing racks of clothes in a large clothing store with bright ceiling lights.",
+  "words": [
+   "clothes",
+   "because"
+  ],
+  "model": "The customers are looking at the clothes because there is a big sale."
+ },
+ "writing_w01_q5": {
+  "pick": 0,
+  "scene": "A waiter wearing a face mask walks past red tables at an outdoor restaurant.",
+  "words": [
+   "waiter",
+   "serving"
+  ],
+  "model": "The waiter is serving customers at the outdoor restaurant."
+ },
+ "writing_w02_q2": {
+  "pick": 3,
+  "scene": "A construction worker in a yellow safety vest and helmet stands among scaffolding at a building site.",
+  "words": [
+   "worker",
+   "while"
+  ],
+  "model": "The worker is wearing a helmet while he works at the building site."
+ },
+ "writing_w02_q3": {
+  "pick": 1,
+  "scene": "A waiter in a white shirt is serving food from a tray at a table with a white tablecloth.",
+  "words": [
+   "waiter",
+   "before"
+  ],
+  "model": "The waiter is serving dinner before the guests start eating."
+ },
+ "writing_w02_q4": {
+  "pick": 2,
+  "scene": "Travelers are standing in line at an airport check-in area, seen from above.",
+  "words": [
+   "passengers",
+   "until"
+  ],
+  "model": "The passengers are waiting in line until it is their turn to check in."
+ },
+ "writing_w02_q5": {
+  "pick": 4,
+  "scene": "A person is riding a bicycle on a path through a green park on a sunny day.",
+  "words": [
+   "bicycle",
+   "because"
+  ],
+  "model": "He is riding a bicycle because the weather is nice."
+ },
+ "writing_w03_q1": {
+  "pick": 1,
+  "scene": "A waiter holds a tray with a glass of beer and bottles of drinks.",
+  "words": [
+   "tray",
+   "after"
+  ],
+  "model": "The waiter is carrying a tray after taking the customers' orders."
+ },
+ "writing_w03_q2": {
+  "pick": 0,
+  "scene": "A traveler is pulling a suitcase on a train platform while other passengers walk toward the train.",
+  "words": [
+   "suitcase",
+   "before"
+  ],
+  "model": "The traveler is pulling a suitcase before boarding the train."
+ },
+ "writing_w03_q3": {
+  "pick": 0,
+  "scene": "Two workers in helmets and bright safety vests stand at a construction site with a digger behind them.",
+  "words": [
+   "workers",
+   "because"
+  ],
+  "model": "The workers are wearing safety vests because the site can be dangerous."
+ },
+ "writing_w03_q4": {
+  "pick": 1,
+  "scene": "Two people are sitting next to each other on a bench, looking at something together.",
+  "words": [
+   "bench",
+   "while"
+  ],
+  "model": "Two people are sitting on a bench while they look at a newspaper."
+ },
+ "writing_w03_q5": {
+  "pick": 5,
+  "scene": "Many people are standing on a busy subway platform.",
+  "words": [
+   "platform",
+   "when"
+  ],
+  "model": "Many people are waiting on the platform when the train arrives."
+ },
+ "writing_w04_q1": {
+  "pick": 2,
+  "scene": "Two delivery trucks are parked on a street while workers stand near them.",
+  "words": [
+   "truck",
+   "while"
+  ],
+  "model": "A truck is parked on the street while the workers unload the goods."
+ },
+ "writing_w04_q2": {
+  "pick": 1,
+  "scene": "Four workers in helmets walk together, carrying bags and tool boxes.",
+  "words": [
+   "tools",
+   "after"
+  ],
+  "model": "The workers are carrying their tools after they finish work."
+ },
+ "writing_w04_q3": {
+  "pick": 3,
+  "scene": "A man sits at a computer console in a bright room with large machines.",
+  "words": [
+   "computer",
+   "because"
+  ],
+  "model": "The man is using a computer because he needs to enter some data."
+ },
+ "writing_w04_q4": {
+  "pick": 2,
+  "scene": "A cook wearing a white jacket is chopping green vegetables on a cutting board.",
+  "words": [
+   "vegetables",
+   "before"
+  ],
+  "model": "The cook is chopping vegetables before he cooks the meal."
+ },
+ "writing_w04_q5": {
+  "pick": 5,
+  "scene": "A crowd of passengers stands on a station platform, many carrying bags.",
+  "words": [
+   "passengers",
+   "until"
+  ],
+  "model": "The passengers are waiting on the platform until the train comes."
+ },
+ "writing_w05_q1": {
+  "pick": 5,
+  "scene": "A red tray holds a burger, french fries and a canned drink on a table.",
+  "words": [
+   "burger",
+   "because"
+  ],
+  "model": "The burger is on a tray because the customer ordered a combo meal."
+ },
+ "writing_w05_q2": {
+  "pick": 1,
+  "scene": "A woman is sitting behind a desk piled with books and papers.",
+  "words": [
+   "desk",
+   "while"
+  ],
+  "model": "The woman is sitting at a desk while she reads some documents."
+ },
+ "writing_w05_q3": {
+  "pick": 0,
+  "scene": "A checkout counter with a conveyor belt stands in a large supermarket.",
+  "words": [
+   "counter",
+   "if"
+  ],
+  "model": "Customers can pay at the counter if they have finished shopping."
+ },
+ "writing_w05_q4": {
+  "pick": 2,
+  "scene": "People are lining up in front of airport check-in counters with queue barriers.",
+  "words": [
+   "line",
+   "before"
+  ],
+  "model": "The travelers are standing in line before they check in."
+ },
+ "writing_w05_q5": {
+  "pick": 1,
+  "scene": "A person is chopping onions with a large knife on a wooden board.",
+  "words": [
+   "knife",
+   "as"
+  ],
+  "model": "She is chopping onions with a knife as she prepares dinner."
+ },
+ "writing_w06_q1": {
+  "pick": 5,
+  "scene": "A wooden bench stands on green grass in a garden.",
+  "words": [
+   "bench",
+   "where"
+  ],
+  "model": "There is a bench where visitors can sit and relax."
+ },
+ "writing_w06_q2": {
+  "pick": 1,
+  "scene": "A wooden bookshelf is filled with thick encyclopedias and colorful books.",
+  "words": [
+   "bookshelf",
+   "because"
+  ],
+  "model": "The bookshelf is full because the owner loves reading."
+ },
+ "writing_w06_q3": {
+  "pick": 5,
+  "scene": "Two small children stand at a kitchen counter, looking at something on it.",
+  "words": [
+   "children",
+   "while"
+  ],
+  "model": "The children are standing in the kitchen while their parents are cooking."
+ },
+ "writing_w06_q4": {
+  "pick": 4,
+  "scene": "A long supermarket aisle has shelves full of products and a shopper in the distance.",
+  "words": [
+   "aisle",
+   "when"
+  ],
+  "model": "A shopper is walking down the aisle when she looks for some groceries."
+ },
+ "writing_w06_q5": {
+  "pick": 2,
+  "scene": "People stand around tables at an outdoor market while a small dog stands nearby.",
+  "words": [
+   "market",
+   "although"
+  ],
+  "model": "Many people are shopping at the market although it is cloudy."
+ },
+ "writing_w07_q1": {
+  "pick": 1,
+  "scene": "A man in a sweater is standing and reading a book in a colorful room.",
+  "words": [
+   "book",
+   "while"
+  ],
+  "model": "The man is reading a book while he stands in the room."
+ },
+ "writing_w07_q2": {
+  "pick": 3,
+  "scene": "A dining room has round tables covered with white tablecloths and tall windows.",
+  "words": [
+   "tables",
+   "before"
+  ],
+  "model": "The tables are set before the guests arrive."
+ },
+ "writing_w07_q3": {
+  "pick": 0,
+  "scene": "A crowd of people walks past market stalls at sunset.",
+  "words": [
+   "crowd",
+   "because"
+  ],
+  "model": "A crowd has gathered because there is an outdoor event."
+ },
+ "writing_w07_q4": {
+  "pick": 4,
+  "scene": "Heavy machines, including a road roller and a crane, work on a construction site.",
+  "words": [
+   "machine",
+   "while"
+  ],
+  "model": "A machine is flattening the ground while another one is lifting materials."
+ },
+ "writing_w07_q5": {
+  "pick": 3,
+  "scene": "A green and white train travels along a railway with many tracks.",
+  "words": [
+   "train",
+   "as"
+  ],
+  "model": "The train is slowing down as it enters the station."
+ },
+ "writing_w08_q1": {
+  "pick": 3,
+  "scene": "A narrow shop aisle has shelves full of colorful goods and a shopper standing in it.",
+  "words": [
+   "shelves",
+   "while"
+  ],
+  "model": "The shopper is looking at the shelves while he walks through the aisle."
+ },
+ "writing_w08_q2": {
+  "pick": 0,
+  "scene": "A restaurant has red chairs, wooden tables and an open kitchen behind a counter.",
+  "words": [
+   "chairs",
+   "before"
+  ],
+  "model": "The chairs are arranged neatly before the restaurant opens."
+ },
+ "writing_w08_q3": {
+  "pick": 0,
+  "scene": "Outdoor exercise machines stand on a grassy area near some trees.",
+  "words": [
+   "exercise",
+   "because"
+  ],
+  "model": "People can exercise outdoors because the park provides free machines."
+ },
+ "writing_w08_q4": {
+  "pick": 0,
+  "scene": "A meeting room has a long table with chairs and a projector screen at the front.",
+  "words": [
+   "meeting",
+   "after"
+  ],
+  "model": "The meeting room is ready after the staff cleaned it."
+ },
+ "writing_w08_q5": {
+  "pick": 4,
+  "scene": "Travelers sit in a waiting area at an airport with rows of black seats.",
+  "words": [
+   "passengers",
+   "until"
+  ],
+  "model": "The passengers are sitting there until their flight is announced."
+ },
+ "writing_w09_q1": {
+  "pick": 0,
+  "scene": "A person is chopping red peppers with a large knife on a wooden board.",
+  "words": [
+   "knife",
+   "while"
+  ],
+  "model": "She is chopping peppers with a knife while the oven heats up."
+ },
+ "writing_w09_q2": {
+  "pick": 1,
+  "scene": "Fruit and vegetables are displayed on tables at an outdoor market with white canopies.",
+  "words": [
+   "market",
+   "although"
+  ],
+  "model": "The market is busy although it is early in the morning."
+ },
+ "writing_w09_q3": {
+  "pick": 1,
+  "scene": "A waiter wearing black holds a tray of fresh bread rolls.",
+  "words": [
+   "waiter",
+   "when"
+  ],
+  "model": "The waiter is holding a tray of rolls when the guests sit down."
+ },
+ "writing_w09_q4": {
+  "pick": 1,
+  "scene": "Two workers in red jackets stand on a lift platform in front of a building with windows.",
+  "words": [
+   "platform",
+   "because"
+  ],
+  "model": "The workers are standing on a platform because they are repairing the windows."
+ },
+ "writing_w09_q5": {
+  "pick": 1,
+  "scene": "A train station platform has signs showing departure times and rows of lights.",
+  "words": [
+   "station",
+   "before"
+  ],
+  "model": "The station is quiet before the next train arrives."
+ },
+ "writing_w10_q1": {
+  "pick": 5,
+  "scene": "A supermarket aisle has high shelves full of packaged food under bright ceiling lights.",
+  "words": [
+   "shelves",
+   "since"
+  ],
+  "model": "The shelves are full since the store received a new delivery."
+ },
+ "writing_w10_q2": {
+  "pick": 2,
+  "scene": "A young man is sitting at a desk, reading and taking notes.",
+  "words": [
+   "desk",
+   "as"
+  ],
+  "model": "He is taking notes as he reads at the desk."
+ },
+ "writing_w10_q3": {
+  "pick": 5,
+  "scene": "Chefs in white uniforms talk with guests in front of an open restaurant kitchen.",
+  "words": [
+   "chef",
+   "while"
+  ],
+  "model": "The chef is talking to the guests while another one cooks."
+ },
+ "writing_w10_q4": {
+  "pick": 0,
+  "scene": "A vendor stands behind a stall full of oranges, lettuce and green onions at a market.",
+  "words": [
+   "vendor",
+   "if"
+  ],
+  "model": "The vendor will give a discount if customers buy more oranges."
+ },
+ "writing_w10_q5": {
+  "pick": 1,
+  "scene": "A woman is using a computer mouse and keyboard at a white desk.",
+  "words": [
+   "computer",
+   "after"
+  ],
+  "model": "She is using the computer after she opens the file."
+ }
+}

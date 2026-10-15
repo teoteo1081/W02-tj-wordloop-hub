@@ -422,15 +422,18 @@
     if (S.phase === "resp" && S.kind === "writing") { var a = $("#ans"); a.oninput = function () { S.text = a.value; $("#wc").textContent = nWords(a.value) + " từ" + (S.tasks[S.i].q === 8 ? " (mục tiêu ≥ 300)" : ""); }; a.dispatchEvent(new Event("input")); try { a.focus(); } catch (e) {} }
     if (S.phase === "resp" && S.kind === "speaking") { liveUpd(); var m = $("#manual"); if (m) m.oninput = function () { S.tr = m.value; }; }
   }
+  function imgHtml(t) {   /* ảnh đề + dòng ghi nguồn nhỏ (ảnh tự do trên Wikimedia Commons) */
+    return '<img src="' + esc(t.image) + '" alt="" style="max-width:100%;max-height:420px;object-fit:contain;border-radius:10px;display:block;margin:0 auto">' + (t.credit ? '<div class="sub" style="font-size:11px;text-align:center;margin-top:4px">' + esc(t.credit) + "</div>" : "");
+  }
   function promptHtml(t) {
     var h = "";
     if (t.type === "read_aloud") h += '<div class="prompt read">' + esc(t.text) + "</div>";
-    else if (t.type === "describe") h += (t.image ? '<img src="' + esc(t.image) + '" alt="" style="max-width:100%;border-radius:10px">' : "") + (t.scene ? '<p class="sub">📷 Chưa có ảnh thật — đọc mô tả cảnh rồi tả lại bằng lời của bạn:</p><p class="prompt">' + esc(t.scene) + "</p>" : "");
+    else if (t.type === "describe") h += (t.image ? imgHtml(t) : "") + (!t.image && t.scene ? '<p class="sub">📷 Chưa có ảnh thật — đọc mô tả cảnh rồi tả lại bằng lời của bạn:</p><p class="prompt">' + esc(t.scene) + "</p>" : "");
     else if (t.type === "respond") h += (t.scenario ? '<p class="sub">' + esc(t.scenario) + "</p>" : "") + '<div class="prompt">❓ ' + esc(t.question) + "</div>";
     else if (t.type === "info") { var inf = (S.tasks.filter(function (x) { return x.info; })[0] || {}).info; if (inf) h += '<p><b>' + esc(inf.title || "") + '</b></p><table class="tbl">' + inf.rows.map(function (r, i) { return "<tr>" + r.map(function (c) { return (i === 0 ? "<th>" : "<td>") + esc(c) + (i === 0 ? "</th>" : "</td>"); }).join("") + "</tr>"; }).join("") + "</table>"; if (S.phase !== "read") h += '<div class="prompt">❓ ' + esc(t.question) + "</div>"; }
     else if (t.type === "solution") h += '<p class="sub">Nghe tin nhắn rồi đề xuất giải pháp:</p><div class="prompt">🔊 ' + esc(t.message) + '</div><button class="soft" data-act="say" data-v="' + esc(t.message) + '">🔊 Nghe lại</button>';
     else if (t.type === "opinion") h += '<div class="prompt">❓ ' + esc(t.question) + "</div>";
-    else if (t.type === "sentence") h += '<p class="prompt">📷 <i>(Ảnh)</i> ' + esc(t.scene || "") + '</p><p>Dùng cả 2 từ/cụm: <b>' + t.words.map(esc).join(" + ") + "</b></p>";
+    else if (t.type === "sentence") h += (t.image ? imgHtml(t) : '<p class="prompt">📷 <i>(Ảnh)</i> ' + esc(t.scene || "") + "</p>") + '<p>Dùng cả 2 từ/cụm: <b>' + t.words.map(esc).join(" + ") + "</b></p>";
     else if (t.type === "email") { var e = t.email || {}; h += '<div class="mail"><div class="h">From: ' + esc(e.from) + "<br>To: " + esc(e.to) + "<br>Subject: " + esc(e.subject) + '</div><p class="prompt">' + esc(e.body) + '</p></div><p class="sub">' + esc(t.directions || "") + "</p>"; }
     else if (t.type === "essay") h += '<div class="prompt">' + esc(t.question) + '</div><p class="sub">Viết bài luận nêu ý kiến, nêu lý do và ví dụ (≥ 300 từ).</p>';
     return h;

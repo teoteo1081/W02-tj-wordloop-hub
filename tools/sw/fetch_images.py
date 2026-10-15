@@ -17,6 +17,9 @@ ANON = re.search(r'SUPABASE_ANON_KEY:\s*"([^"]+)"', CFG).group(1)
 UA = {'User-Agent': 'wordloop-sw-images/1.0 (teoteo108@gmail.com)'}
 
 
+CONTENT = json.load(open(os.path.join(os.path.dirname(__file__), 'image_content.json'), encoding='utf-8')) if os.path.exists(os.path.join(os.path.dirname(__file__), 'image_content.json')) else {}
+
+
 def tasks():
     d = json.load(open(SETS, encoding='utf-8'))
     out = []
@@ -137,6 +140,11 @@ def upload():
         except Exception as e: print('lỗi tải lên', k, e); continue
         t['image'] = '%s/storage/v1/object/public/toeic/%s?v=1' % (SB, path)
         t['credit'] = ('%s · %s · Wikimedia Commons' % (m['author'] or 'Wikimedia', m['license'])).strip()[:120]
+        ct = CONTENT.get(k)   # mô tả ảnh / từ gợi ý / bài mẫu viết lại ĐÚNG theo ảnh đã chọn (tools/sw/image_content.json)
+        if ct:
+            t['scene'] = ct['scene']
+            if kind == 'writing' and ct.get('words'): t['words'] = ct['words']
+            sset = [x for x in d[kind] if x['id'] == sid][0]; sset.setdefault('models', {})[str(t['q'])] = ct['model']
         n += 1
     json.dump(d, open(SETS, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     print('đã gắn ảnh cho', n, 'câu')
@@ -162,8 +170,8 @@ def cands():
         lst = lst[:6]
         for i, r in enumerate(lst):
             try:
-                u = re.sub(r'/\d+px-', '/360px-', r['url'])
-                open(os.path.join(WORK, 'cand', '%s_%d.jpg' % (k, i)), 'wb').write(urllib.request.urlopen(urllib.request.Request(u, headers=UA), timeout=60).read())
+                u = re.sub(r'/\d+px-', '/330px-', r['url'])
+                data = urllib.request.urlopen(urllib.request.Request(u, headers=UA), timeout=60).read(); open(os.path.join(WORK, 'cand', '%s_%d.jpg' % (k, i)), 'wb').write(data)
             except Exception as e: print('  lỗi tải thử', k, i, e)
             time.sleep(0.3)
         C[k] = lst; json.dump(C, open(f, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
@@ -180,7 +188,9 @@ def csheet(per=5):
             for ci in range(len(C[k])):
                 fp = os.path.join(WORK, 'cand', '%s_%d.jpg' % (k, ci))
                 if not os.path.exists(fp): continue
-                im = Image.open(fp).convert('RGB'); im.thumbnail((W - 4, H - 4)); x, y = ci * W, ri * (H + 18); sh.paste(im, (x, y + 16)); dr.text((x + 2, y + 2), '%s #%d' % (k, ci), fill='black')
+                try: im = Image.open(fp).convert('RGB')
+                except Exception: continue
+                im.thumbnail((W - 4, H - 4)); x, y = ci * W, ri * (H + 18); sh.paste(im, (x, y + 16)); dr.text((x + 2, y + 2), '%s #%d' % (k, ci), fill='black')
         sh.save(os.path.join(WORK, 'csheet_%02d.jpg' % (pi // per)), quality=78); print('csheet_%02d' % (pi // per), chunk)
 
 
@@ -191,6 +201,20 @@ def pick(arg):
     json.dump(P, open(f, 'w', encoding='utf-8'), indent=1); print(len(P), 'lựa chọn')
 
 
+def redl():   # tải lại ảnh nhỏ của mọi ứng viên (cỡ chuẩn 330px) khi file bị rỗng
+    C = json.load(open(os.path.join(WORK, 'cands.json'), encoding='utf-8')); n = 0
+    for k, lst in C.items():
+        for i, r in enumerate(lst):
+            fp = os.path.join(WORK, 'cand', '%s_%d.jpg' % (k, i))
+            if os.path.exists(fp) and os.path.getsize(fp) > 2000: continue
+            try:
+                data = urllib.request.urlopen(urllib.request.Request(re.sub(r'/\d+px-', '/330px-', r['url']), headers=UA), timeout=60).read()
+                open(fp, 'wb').write(data); n += 1
+            except Exception as e: print('lỗi', k, i, str(e)[:60])
+            time.sleep(0.25)
+    print('đã tải', n)
+
+
 if __name__ == '__main__':
     a = sys.argv[1:]
     if '--queries' in a: make_queries()
@@ -198,6 +222,7 @@ if __name__ == '__main__':
     elif '--sheet' in a: sheet()
     elif '--cands' in a: cands()
     elif '--csheet' in a: csheet()
+    elif '--redl' in a: redl()
     elif '--pick' in a: pick(a[a.index('--pick') + 1])
     elif '--upload' in a: upload()
     else: print(__doc__)
