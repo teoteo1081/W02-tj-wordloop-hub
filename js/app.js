@@ -5003,7 +5003,23 @@
       if (!e.target.closest("#ctx-menu")) App.closeMenu();
     });
     /* Esc đóng menu chuột phải / ⋯ (TJ 2026-10-14: "nhấp chuột phải vào từng thể loại xong bấm Escape không được") */
-    document.addEventListener("keydown", function (e) { if (e.key !== "Escape") return; var m = w.$("#ctx-menu"); if (m && !m.hidden) { App.closeMenu(); e.preventDefault(); } });
+    /* Esc = thoát/huỷ lớp trên cùng ở MỌI trang (TJ 2026-10-14: "esc là lựa chọn bình thường ở tất cả các trang, bấm vào thấy không đúng thì thoát ra"):
+       menu chuột phải/⋯ -> xổ xuống (ngôn ngữ, tài khoản) -> hộp thoại (cái nằm trên cùng) -> ngăn kéo/bảng phụ. Mỗi lần Esc đóng đúng 1 lớp. */
+    document.addEventListener("keydown", function (e) {
+      if (e.key !== "Escape" || e.defaultPrevented || e.isComposing) return;
+      var m = w.$("#ctx-menu"); if (m && !m.hidden) { App.closeMenu(); e.preventDefault(); return; }
+      var dd = ["#lang-dropdown", "#user-menu"].map(function (q) { return w.$(q); }).filter(function (x) { return x && !x.hidden; })[0];
+      if (dd) { dd.hidden = true; e.preventDefault(); return; }
+      var ov = w.$$(".modal-overlay").filter(function (x) { return !x.hidden; });
+      if (ov.length) {
+        ov.sort(function (a, b) { return (parseInt(getComputedStyle(a).zIndex, 10) || 0) - (parseInt(getComputedStyle(b).zIndex, 10) || 0); });
+        var top = ov[ov.length - 1], c = top.querySelector("[data-close], [id$='-close']");
+        if (c) c.click(); else top.hidden = true;
+        e.preventDefault(); return;
+      }
+      var bd = ["#panel-backdrop", "#drawer-backdrop"].map(function (q) { return w.$(q); }).filter(function (x) { return x && !x.hidden; })[0];
+      if (bd) { bd.click(); e.preventDefault(); }
+    });
     /* bấm / gõ phím bên trong khung Game (iframe) không lan lên trang này -> đóng menu khi cửa sổ mất tiêu điểm, và nhận "tjwl-esc" do game.js báo khi bấm Esc */
     w.addEventListener("blur", function () { var m = w.$("#ctx-menu"); if (m && !m.hidden) App.closeMenu(); });
     w.addEventListener("message", function (e) { if (e.origin === location.origin && e.data && e.data.type === "tjwl-esc") App.closeMenu(); });
