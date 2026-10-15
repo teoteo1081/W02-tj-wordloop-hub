@@ -899,7 +899,7 @@
     try {
       var pw = window.parent; if (!pw || pw === window || !pw.App || !pw.App.blockCardsHtml) return false;
       var ids = []; R.groups.forEach(function (g) { g.blocks.forEach(function (b) { ids.push(b.id); }); });
-      var res = pw.App.blockCardsHtml(ids, sel); if (res.missing.length || !res.cards.length) return false;
+      var explicit = picked.every(function (p) { return p.table === "blocks"; }), res = pw.App.blockCardsHtml(ids, explicit ? sel : {}); if (res.missing.length || !res.cards.length) return false;   /* chỉ tô khi host CHỌN RIÊNG từng Block (chọn cả Page/Batch thì không tô thẻ nào) */
       var byId = {}; res.cards.forEach(function (c) { byId[c.id] = c.html; });
       var body = R.groups.map(function (g) {
         var all = g.blocks.every(function (b) { return sel[b.id]; });
@@ -907,7 +907,7 @@
       }).join("");
       var link = pw.document.querySelector('link[href*="app.css"]'), href = link ? link.href : "css/app.css", d = pw.document;
       var doc = '<!doctype html><html class="' + esc(d.documentElement.className) + '" data-theme="' + esc(d.documentElement.getAttribute("data-theme") || "") + '"><head><meta charset="utf-8"><link rel="stylesheet" href="' + esc(href) + '"><style>' +
-        'html,body{margin:0;background:transparent!important;min-height:0!important;height:auto!important;overflow:hidden} body{padding:4px} .dots,.vchip-del{display:none!important} .block-card{cursor:pointer}   /* không viền / không đổi dáng: thẻ y hệt Learning (TJ 2026-10-15) */ ' +
+        'html,body{margin:0;background:transparent!important;min-height:0!important;height:auto!important;overflow:hidden} body{padding:4px} .dots,.vchip-del{display:none!important} .block-card{cursor:pointer} .block-card.sel{background-image:linear-gradient(rgba(217,119,106,.10),rgba(217,119,106,.10));box-shadow:inset 0 0 0 1px rgba(217,119,106,.40)}   /* chọn: chỉ ánh hồng nhạt + viền mảnh trong (không đậm) */ ' +
         '.bp-batchrow{margin:12px 0 2px} .bp-batch{border:0;border-radius:999px;padding:6px 14px;background:#d9684b;color:#fff;font:700 14px/1 system-ui,sans-serif;cursor:pointer} .bp-batch.on{box-shadow:0 0 0 2px rgba(217,104,75,.55)}</style></head><body class="' + esc(d.body.className) + '">' + body +
         '<script>document.addEventListener("click",function(e){var q=e.target.closest("[data-quicktab]");if(q){parent.__tjBpQuick(q.dataset.open,q.dataset.quicktab);return;}var g=e.target.closest("[data-gameblock]"),m=e.target.closest("[data-boardblock]"),t=e.target.closest("[data-bt]"),k=e.target.closest(".block-card[data-block]");if(g)parent.__tjBp("play",g.dataset.gameblock);else if(m)parent.__tjBp("board",m.dataset.boardblock);else if(t)parent.__tjBp("bt",t.dataset.bt);else if(k)parent.__tjBp("bk",k.dataset.block);});' +
         'function rep(){parent.__tjBpH&&parent.__tjBpH(document.documentElement.scrollHeight);}new ResizeObserver(rep).observe(document.body);setTimeout(rep,300);setTimeout(rep,1200);<\/script></body></html>';
