@@ -95,9 +95,16 @@
     toParent({ type: "sw-hello", kind: S.kind }); liveRender();
     if (!liveTimer) liveTimer = setInterval(liveTick, 200);
   }
-  function liveSend(st) { st.t = "live"; st.run = LIVE.run; toParent({ type: "sw-class-send", p: st }); liveApply(st); }
+  function liveSend(st) { st.t = "live"; st.run = LIVE.run; st.kind = S.kind; st.set = S.setId; st.group = S.group; toParent({ type: "sw-class-send", p: st }); liveApply(st); }
   function liveApply(st) {
-    if (!LIVE || !st || st.run !== LIVE.run) return;
+    if (!st || st.run === S.leftRun) return;
+    if (!LIVE || st.run !== LIVE.run) {   /* vào phòng sau: dựng màn hình theo trạng thái host đang phát */
+      if (!st.kind || !st.set || !SETS[st.kind].some(function (x) { return x.id === st.set; })) return;
+      S.setId = st.set; liveInit({ kind: st.kind, group: st.group, run: st.run });
+    }
+    var sig = [st.i, st.phase, st.sp && st.sp.id, Object.keys(st.done || {}).length].join("|");
+    if (LIVE.sig === sig && st.hb) { LIVE.tot = (st.sec || 0) * SCALE; LIVE.tEnd = st.sec ? Date.now() + LIVE.tot * 1000 : 0; return; }
+    LIVE.sig = sig;
     LIVE.phase = st.phase; LIVE.sp = st.sp || null; LIVE.done = st.done || {}; S.i = st.i || 0; LIVE.adv = 0;
     LIVE.tot = (st.sec || 0) * SCALE; LIVE.tEnd = st.sec ? Date.now() + LIVE.tot * 1000 : 0;
     liveRender();
@@ -110,7 +117,12 @@
     liveSend(st);
   }
   function liveTick() {
-    var L = LIVE, el = $("#tm"); if (!L || S.screen !== "live" || !el || !L.tEnd) return;
+    var L = LIVE, el = $("#tm"); if (!L || S.screen !== "live") return;
+    if (CTX.isHost && Date.now() - (L.hbAt || 0) > 4000) {
+      L.hbAt = Date.now();
+      toParent({ type: "sw-class-send", p: { t: "live", hb: 1, run: L.run, kind: S.kind, set: S.setId, group: S.group, i: S.i, phase: L.phase, sp: L.sp, done: L.done, sec: L.tEnd ? Math.max(0, (L.tEnd - Date.now()) / 1000 / SCALE) : 0 } });
+    }
+    if (!el || !L.tEnd) return;
     var left = Math.max(0, (L.tEnd - Date.now()) / 1000), sh = MOCK ? left / SCALE : left, cd = $("#cd");
     el.textContent = mmss(sh); var pg = $("#pg"); if (pg) pg.style.width = Math.min(100, 100 * (1 - left / Math.max(.001, L.tot))) + "%";
     if (cd) { var n = Math.ceil(sh - .001); if (sh > 0 && n <= 5 && n >= 1) { if (cd.textContent !== String(n)) { cd.textContent = n; cd.classList.remove("pop"); void cd.offsetWidth; cd.classList.add("pop"); } cd.hidden = false; } else cd.hidden = true; }
@@ -361,7 +373,7 @@
     else if (a === "retry") { question(); }
     else if (a === "regrade") { S.phase = "grading"; render(); grade(); }
     else if (a === "next") { if (S.i >= S.tasks.length - 1) { S.screen = "sum"; render(); } else { S.i++; question(); } }
-    else if (a === "quit") { clearTimer(); stopSpeech(); try { speechSynthesis.cancel(); } catch (x) {} S.screen = "home"; render(); }
+    else if (a === "quit") { if (LIVE) { S.leftRun = LIVE.run; LIVE = null; } clearTimer(); stopSpeech(); try { speechSynthesis.cancel(); } catch (x) {} S.screen = "home"; render(); }
     else if (a === "home") { S.screen = "home"; render(); }
     else if (a === "again") { S.saved = 0; begin(S.kind, S.group); }
     else if (a === "delextra") { try { localStorage.removeItem(EXTRA); } catch (x) {} toast("Đã xoá đề riêng"); setTimeout(function () { location.reload(); }, 700); }

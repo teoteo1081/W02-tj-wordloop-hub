@@ -5,7 +5,8 @@
    Tin iframe→trang: "sw-hello" (xin ngữ cảnh), "sw-host-start" {kind,set,group}, "sw-class-send" {p}. Trang→iframe: "sw-ctx", "sw-class-start", "sw-class-res". */
 (function () {
   "use strict";
-  var api = null, pending = null;
+  var api = null, pending = null, openedRun = "";
+  function liveFwd(p) { frames().forEach(function (f) { post(f.contentWindow, { type: "sw-class-live", p: p }); }); }
   function frames() { return [].slice.call(document.querySelectorAll(".g-learnlayer iframe")); }
   function frameFor(kind) { var k = kind === "writing" ? "kind=writing" : "kind=speaking"; return frames().filter(function (f) { return f.src.indexOf(k) >= 0; })[0]; }
   function post(w, msg) { try { w.postMessage(msg, location.origin); } catch (e) {} }
@@ -17,8 +18,9 @@
   }
   function onMsg(p) {
     if (!p) return;
-    if (p.t === "start") { document.dispatchEvent(new CustomEvent("tjwl-sw-open", { detail: p.kind })); setTimeout(function () { deliverStart(p); }, 250); }
-    else if (p.t === "live") frames().forEach(function (f) { post(f.contentWindow, { type: "sw-class-live", p: p }); });
+    if (p.t === "start") { openedRun = p.run; document.dispatchEvent(new CustomEvent("tjwl-sw-open", { detail: p.kind })); setTimeout(function () { deliverStart(p); }, 250); }
+    else if (p.t === "live") { if (p.run !== openedRun) { openedRun = p.run; document.dispatchEvent(new CustomEvent("tjwl-sw-open", { detail: p.kind })); setTimeout(function () { liveFwd(p); }, 400); } else liveFwd(p); }
+    else if (false) frames().forEach(function (f) { post(f.contentWindow, { type: "sw-class-live", p: p }); });
     else if (p.t === "res") frames().forEach(function (f) { post(f.contentWindow, { type: "sw-class-res", p: p }); });
   }
   window.addEventListener("message", function (e) {
