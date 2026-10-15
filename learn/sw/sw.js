@@ -16,16 +16,23 @@
   var TIME2 = { 1: [45, 45], 2: [45, 45], 3: [45, 30], 4: [45, 30], 5: [3, 15], 6: [3, 15], 7: [3, 30], 8: [3, 15], 9: [3, 15], 10: [3, 30], 11: [45, 60] };
   var MAXS2 = { 1: 3, 2: 3, 3: 3, 4: 3, 5: 3, 6: 3, 7: 3, 8: 3, 9: 3, 10: 3, 11: 5 };
   var GROUPS2 = [{ k: "all", t: "Cả bộ (~17 phút)", qs: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] }, { k: "read", t: "Q1–2 Đọc to", qs: [1, 2] }, { k: "desc", t: "Q3–4 Tả ảnh", qs: [3, 4] }, { k: "resp", t: "Q5–7 Trả lời câu hỏi", qs: [5, 6, 7] }, { k: "info", t: "Q8–10 Dựa vào thông tin", qs: [8, 9, 10] }, { k: "opin", t: "Q11 Nêu ý kiến", qs: [11] }];
+  /* FORMAT 3 (IELTS Speaking): Q1–4 Part 1 · Q5 Part 2 (thẻ nói: chuẩn bị 1 phút, nói 2 phút) · Q6–9 Part 3. Điểm = band 0–9 mỗi câu */
+  var TIME3 = { 1: [0, 30], 2: [0, 30], 3: [0, 30], 4: [0, 30], 5: [60, 120], 6: [0, 45], 7: [0, 45], 8: [0, 45], 9: [0, 45] };
+  var MAXS3 = { 1: 9, 2: 9, 3: 9, 4: 9, 5: 9, 6: 9, 7: 9, 8: 9, 9: 9 };
+  var GROUPS3 = [{ k: "all", t: "Cả bài (~11 phút)", qs: [1, 2, 3, 4, 5, 6, 7, 8, 9] }, { k: "p1", t: "Part 1 · Câu hỏi chung", qs: [1, 2, 3, 4] }, { k: "p2", t: "Part 2 · Thẻ nói 2 phút", qs: [5] }, { k: "p3", t: "Part 3 · Thảo luận", qs: [6, 7, 8, 9] }];
+  var TIPS3 = [["Part 1", "Trả lời thẳng câu hỏi trong 2–3 câu: đáp án + lý do + 1 ví dụ ngắn. Nói tự nhiên, không học thuộc."], ["Part 2", "1 phút chuẩn bị: ghi từ khoá cho từng gạch đầu dòng. Nói đủ 2 phút theo thứ tự các ý; dùng thì quá khứ nếu kể chuyện."], ["Part 3", "Trả lời dài hơn, trừu tượng hơn: nêu quan điểm → giải thích → ví dụ → so sánh (trước/nay, thành phố/nông thôn)."], ["Chấm điểm", "4 tiêu chí: Fluency & Coherence, Lexical Resource, Grammatical Range & Accuracy, Pronunciation (AI chỉ chấm được 3 tiêu chí đầu qua chữ nhận được)."], ["Chung", "Nói liền mạch, tự sửa nhanh rồi nói tiếp. Dùng từ nối (however, as a result) và đa dạng cấu trúc câu."]];
+  function fmtN() { var st = curSet(); return st && st.fmt === 3 ? 3 : st && st.fmt === 2 ? 2 : 1; }
   function fmt2() { var st = curSet(); return !!(st && st.fmt === 2); }
-  function TMT(kind) { return kind === "speaking" && fmt2() ? TIME2 : TIME[kind]; }
-  function MXS(kind) { return kind === "speaking" && fmt2() ? MAXS2 : MAXS[kind]; }
-  function GRP(kind) { return kind === "speaking" && fmt2() ? GROUPS2 : GROUPS[kind]; }
+  function TMT(kind) { return kind === "speaking" && fmtN() === 3 ? TIME3 : kind === "speaking" && fmt2() ? TIME2 : TIME[kind]; }
+  function MXS(kind) { return kind === "speaking" && fmtN() === 3 ? MAXS3 : kind === "speaking" && fmt2() ? MAXS2 : MAXS[kind]; }
+  function GRP(kind) { return kind === "speaking" && fmtN() === 3 ? GROUPS3 : kind === "speaking" && fmt2() ? GROUPS2 : GROUPS[kind]; }
+  function tl(t) { return fmtN() === 3 ? (t.type === "cue" ? "Part 2 · thẻ nói" : t.q <= 4 ? "Part 1" : "Part 3") : String(t.type || "").replace("_", " "); }
   var MAXS = { speaking: { 1: 3, 2: 3, 3: 3, 4: 3, 5: 3, 6: 3, 7: 3, 8: 3, 9: 3, 10: 5, 11: 5 }, writing: { 1: 3, 2: 3, 3: 3, 4: 3, 5: 3, 6: 4, 7: 4, 8: 5 } };
   var GROUPS = {
     speaking: [{ k: "all", t: "Cả bộ 11 câu (~17 phút)", qs: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] }, { k: "read", t: "Q1–2 Đọc to", qs: [1, 2] }, { k: "desc", t: "Q3 Tả ảnh", qs: [3] }, { k: "resp", t: "Q4–6 Trả lời câu hỏi", qs: [4, 5, 6] }, { k: "info", t: "Q7–9 Dựa vào thông tin", qs: [7, 8, 9] }, { k: "sol", t: "Q10 Đề xuất giải pháp", qs: [10] }, { k: "opin", t: "Q11 Nêu ý kiến", qs: [11] }],
     writing: [{ k: "all", t: "Cả bộ 8 câu (~60 phút)", qs: [1, 2, 3, 4, 5, 6, 7, 8] }, { k: "sent", t: "Q1–5 Viết câu theo ảnh", qs: [1, 2, 3, 4, 5] }, { k: "mail", t: "Q6–7 Trả lời email", qs: [6, 7] }, { k: "essay", t: "Q8 Bài luận ý kiến", qs: [8] }]
   };
-  var SETS = { speaking: [], writing: [] }, ST = load(), S = { kind: QS.get("kind") === "writing" ? "writing" : "speaking", setId: "", group: "all", screen: "home" }, timerId = 0, rec = null, recOn = false, CTX = { inRoom: false, isHost: false, me: null, players: [] }, LIVE = null, liveTimer = 0, PENDING = null, KIND0 = QS.get("kind") || "", EMBED = (function () { try { return window.parent !== window; } catch (e) { return true; } })();
+  var SETS = { speaking: [], writing: [] }, ST = load(), S = { kind: QS.get("kind") === "writing" ? "writing" : "speaking", setId: "", group: "all", screen: "home" }, timerId = 0, rec = null, recOn = false, CTX = { inRoom: false, isHost: false, me: null, players: [] }, LIVE = null, liveTimer = 0, PENDING = null, KIND0 = QS.get("kind") || "", EX0 = QS.get("exam") === "ielts" ? "ielts" : "", EMBED = (function () { try { return window.parent !== window; } catch (e) { return true; } })();
 
   /* ---------- lưu ---------- */
   function load() { try { return JSON.parse(localStorage.getItem(KEY)) || { hist: [] }; } catch (e) { return { hist: [] }; } }
@@ -37,12 +44,14 @@
   /* ---------- nạp đề ---------- */
   async function loadSets() {
     try { var r = await fetch("sets.json?v=" + (QS.get("v") || "1")); var d = await r.json(); SETS.speaking = d.speaking || []; SETS.writing = d.writing || []; } catch (e) { toast("Không tải được bộ đề"); }
+    if (EX0) { try { var ri = await fetch("ielts.json?v=" + (QS.get("v") || "1")); var di = await ri.json(); SETS.speaking = di.speaking || []; SETS.writing = []; } catch (e) { toast("Không tải được đề IELTS"); } }
     try { var x = JSON.parse(localStorage.getItem(EXTRA) || "null"); if (x) { (x.speaking || []).forEach(function (s) { s.mine = 1; SETS.speaking.push(s); }); (x.writing || []).forEach(function (s) { s.mine = 1; SETS.writing.push(s); }); } } catch (e) {}
+    if (!EX0) SETS.speaking = SETS.speaking.filter(function (x) { return x.fmt !== 3; });
     S.setId = (SETS[S.kind][0] || {}).id || "";
-    var pf = (ST.pref || {})[S.kind];
+    var pf = (ST.pref || {})[EX0 ? "ielts" : S.kind];
     if (pf && SETS[S.kind].some(function (x) { return x.id === pf.set; })) { S.setId = pf.set; S.group = pf.group || "all"; S.src = pf.src; S.qFrom = pf.from || null; S.qTo = pf.to || null; }
   }
-  function savePref() { ST.pref = ST.pref || {}; ST.pref[S.kind] = { set: S.setId, group: S.group, src: S.src, from: S.qFrom, to: S.qTo }; save(); }
+  function savePref() { ST.pref = ST.pref || {}; ST.pref[EX0 ? "ielts" : S.kind] = { set: S.setId, group: S.group, src: S.src, from: S.qFrom, to: S.qTo }; save(); }
   function curSet() { return SETS[S.kind].filter(function (s) { return s.id === S.setId; })[0]; }
   function curTask() { return S.tasks[S.i]; }
   function best(kind, id) { var b = 0; ST.hist.forEach(function (h) { if (h.kind === kind && h.set === id && h.group === "all" && h.est > b) b = h.est; }); return b; }
@@ -73,11 +82,11 @@
       var sec = 0; g.qs.forEach(function (q) { if (!cs || cs.tasks.some(function (t) { return t.q === q; })) sec += (tm[q] || [0, 0])[0] + (tm[q] || [0, 0])[1]; }); tot += sec;
       return '<div class="gd-row"><span>' + esc(g.t) + "</span><span>" + (cs ? cs.tasks.filter(function (t) { return g.qs.indexOf(t.q) >= 0; }).length : g.qs.length) + " câu</span><span>" + mmss(sec) + "</span></div>";
     }).join("");
-    return '<div class="guide"><p class="sub">Hub này để <b>làm đề thi</b> (TOEIC ' + (S.kind === "speaking" ? "Speaking" : "Writing") + "): làm cả bộ, hoặc chọn từng Part / khoảng câu. Thời gian mặc định theo đề thi thật:</p>" +
+    return '<div class="guide"><p class="sub">Hub này để <b>làm đề thi</b> (' + (EX0 ? "IELTS" : "TOEIC") + ' ' + (S.kind === "speaking" ? "Speaking" : "Writing") + "): làm cả bộ, hoặc chọn từng Part / khoảng câu. Thời gian mặc định theo đề thi thật:</p>" +
       '<h3>' + (S.kind === "speaking" ? "🎤 Speaking" : "✍️ Writing") + ' <span class="sub">' + nTask + " câu · " + Math.round(tot / 60) + " phút · " + (S.kind === "speaking" ? "nói vào micro, AI chấm điểm ước tính" : "gõ bài, AI chấm điểm ước tính") + "</span></h3>" + rows + "</div>";
   }
   function tipsHtml() {
-    return '<div class="card tips"><b>🧠 Chiến thuật đạt điểm cao</b>' + (S.kind === "speaking" && fmt2() ? TIPS2 : TIPS[S.kind]).map(function (x) { return "<p><b>" + esc(x[0]) + ":</b> " + esc(x[1]) + "</p>"; }).join("") + "</div>";
+    return '<div class="card tips"><b>🧠 Chiến thuật đạt điểm cao</b>' + (S.kind === "speaking" && fmtN() === 3 ? TIPS3 : S.kind === "speaking" && fmt2() ? TIPS2 : TIPS[S.kind]).map(function (x) { return "<p><b>" + esc(x[0]) + ":</b> " + esc(x[1]) + "</p>"; }).join("") + "</div>";
   }
   function roomCard() {
     var pl = (CTX.players || []).map(function (p) { return '<div class="rc-p" title="' + esc(p.name || "") + '"><span class="rc-av">' + avatarHtml(p.avatar) + "</span><b>" + esc(p.name || "?") + "</b></div>"; }).join("");
@@ -96,7 +105,7 @@
     var qmin = Math.min.apply(null, gsel.qs), qmax = Math.max.apply(null, gsel.qs);
     function fld(label, inner, cls) { return '<label' + (cls ? ' class="' + cls + '"' : "") + ">" + label + inner + "</label>"; }
     var h = (CTX.inRoom ? roomCard() : "") + '<div class="hubpanel"><div class="hp-grid">' +
-      fld("Bộ đề", '<select id="sel-src"><option value="std"' + (S.src !== "mine" ? " selected" : "") + ">TOEIC " + (S.kind === "speaking" ? "Speaking" : "Writing") + " (đề AI sinh)</option>" + (hasMine ? '<option value="mine"' + (S.src === "mine" ? " selected" : "") + ">📥 " + esc(mineLabel) + "</option>" : "") + "</select>") +
+      fld("Bộ đề", '<select id="sel-src"><option value="std"' + (S.src !== "mine" ? " selected" : "") + ">" + (EX0 ? "IELTS Speaking (chủ đề: prepedu.com · câu hỏi: AI soạn)" : "TOEIC " + (S.kind === "speaking" ? "Speaking" : "Writing") + " (đề AI sinh)") + "</option>" + (hasMine ? '<option value="mine"' + (S.src === "mine" ? " selected" : "") + ">📥 " + esc(mineLabel) + "</option>" : "") + "</select>") +
       fld("Đề", '<select id="sel-set">' + sets.map(function (x, n) { return '<option value="' + esc(x.id) + '"' + (x.id === S.setId ? " selected" : "") + ">Test " + (n + 1) + " — " + esc(String(x.title || "").replace(/^Phỏng vấn:\s*/i, "").slice(0, 30)) + "</option>"; }).join("") + "</select>") +
       fld("Phạm vi", '<select id="sel-scope"><option value="all"' + (scopeAll ? " selected" : "") + '>🧩 Cả bộ</option><option value="part"' + (scopeAll ? "" : " selected") + ">🧩 Từng Part</option></select>") +
       fld("Part", '<select id="sel-grp"' + (scopeAll ? " disabled" : "") + ">" + parts.map(function (x) { return '<option value="' + x.k + '"' + (x.k === S.group ? " selected" : "") + ">" + esc(x.t) + "</option>"; }).join("") + "</select>") +
@@ -161,10 +170,11 @@
   }
   function applyStart(d) {
     if (KIND0 && d.kind && d.kind !== KIND0) return;
+    if ((d.exam || "") !== EX0) return;   /* khung IELTS chỉ nhận lớp IELTS, khung TOEIC chỉ nhận lớp TOEIC */
     if (LIVE && LIVE.run === d.run) return;   /* tin bắt đầu gửi lại (khung nạp xong / nhịp) -> không dựng lại giữa chừng */
     if (!SETS[d.kind].length) { PENDING = d; return; }
     if (!SETS[d.kind].some(function (x) { return x.id === d.set; })) { if (!privOK && CTX.room) { PENDING = d; privLoad(); return; } toast("Máy bạn chưa có đề này"); return; }
-    clearTimer(); stopSpeech(); S.kind = d.kind; S.setId = d.set; liveInit(d); toParent({ type: "sw-want-open", kind: d.kind }); toast("👥 Lớp bắt đầu!");
+    clearTimer(); stopSpeech(); S.kind = d.kind; S.setId = d.set; liveInit(d); toParent({ type: "sw-want-open", kind: d.kind, exam: EX0 }); toast("👥 Lớp bắt đầu!");
   }
   /* ---------- LỚP TRỰC TIẾP: host điều khiển, cả phòng thấy đề + đồng hồ ngược, không chấm điểm, không âm thanh ---------- */
   function liveInit(d) {
@@ -203,7 +213,7 @@
     else if (running) { st.phase = "idle"; st.done = Object.assign({}, st.done); if (o.sp) st.done[o.sp.id] = 1; st.sp = null; }   /* hết giờ trong lúc tải lại: coi như xong lượt */
     liveSend(st);
   }
-  function liveSend(st) { st.t = "live"; st.run = LIVE.run; st.ai = aiOn() ? 1 : 0; st.from = S.qFrom || 0; st.to = S.qTo || 0; st.kind = S.kind; st.set = S.setId; st.group = S.group; if (st.pd === undefined) st.pd = LIVE.pd ? 1 : 0; toParent({ type: "sw-class-send", p: st }); liveApply(st); }
+  function liveSend(st) { st.t = "live"; st.run = LIVE.run; st.ai = aiOn() ? 1 : 0; st.from = S.qFrom || 0; st.to = S.qTo || 0; st.kind = S.kind; st.exam = EX0; st.set = S.setId; st.group = S.group; if (st.pd === undefined) st.pd = LIVE.pd ? 1 : 0; toParent({ type: "sw-class-send", p: st }); liveApply(st); }
   function liveApply(st) {
     if (!st || st.run === S.leftRun) return;
     if (st.phase === "close") {   /* host rời lớp / chuyển sang game khác -> người chơi tự thoát khỏi màn lớp, về game */
@@ -211,10 +221,11 @@
       return;
     }
     if (!LIVE || st.run !== LIVE.run) {   /* vào phòng sau: dựng màn hình theo trạng thái host đang phát */
-      if (KIND0 && st.kind && st.kind !== KIND0) return;   /* khung Writing không nhận lớp Speaking (và ngược lại) */
+      if (KIND0 && st.kind && st.kind !== KIND0) return;
+      if ((st.exam || "") !== EX0) return;   /* khung Writing không nhận lớp Speaking (và ngược lại) */
       if (!st.kind || !st.set || !SETS[st.kind].some(function (x) { return x.id === st.set; })) return;
       S.setId = st.set; liveInit({ kind: st.kind, group: st.group, run: st.run, from: st.from, to: st.to });
-      toParent({ type: "sw-want-open", kind: st.kind });   /* lớp đang chạy -> bảo trang cha mở lại lớp phủ (nếu người chơi lỡ bị đóng) */
+      toParent({ type: "sw-want-open", kind: st.kind, exam: EX0 });   /* lớp đang chạy -> bảo trang cha mở lại lớp phủ (nếu người chơi lỡ bị đóng) */
     }
     var sig = [st.i, st.phase, st.sp && st.sp.id, Object.keys(st.done || {}).length, st.ai ? 1 : 0, st.pd ? 1 : 0, st.nx || ""].join("|");
     if (LIVE.sig === sig && st.hb) { LIVE.tot = (st.sec || 0) * SCALE; LIVE.tEnd = st.sec ? Date.now() + LIVE.tot * 1000 : 0; if (S.screen === "live") smoothBar(); return; }
@@ -284,7 +295,7 @@
     var L = LIVE, el = $("#tm"); if (!L || S.screen !== "live") return;
     if (CTX.isHost && Date.now() - (L.hbAt || 0) > 4000) {
       L.hbAt = Date.now();
-      toParent({ type: "sw-class-send", p: { t: "live", hb: 1, pd: L.pd ? 1 : 0, nx: L.nx || "", ai: aiOn() ? 1 : 0, from: S.qFrom || 0, to: S.qTo || 0, run: L.run, kind: S.kind, set: S.setId, group: S.group, i: S.i, phase: L.phase, sp: L.sp, done: L.done, sec: L.tEnd ? Math.max(0, (L.tEnd - Date.now()) / 1000 / SCALE) : 0 } });
+      toParent({ type: "sw-class-send", p: { t: "live", hb: 1, pd: L.pd ? 1 : 0, nx: L.nx || "", ai: aiOn() ? 1 : 0, from: S.qFrom || 0, to: S.qTo || 0, run: L.run, kind: S.kind, exam: EX0, set: S.setId, group: S.group, i: S.i, phase: L.phase, sp: L.sp, done: L.done, sec: L.tEnd ? Math.max(0, (L.tEnd - Date.now()) / 1000 / SCALE) : 0 } });
     }
     if (L.phase === "ready" && L.tEnd) {
       var lf = Math.max(0, (L.tEnd - Date.now()) / 1000), rn = $("#rdnum"), ra = $("#rdarc");
@@ -310,7 +321,7 @@
     else if (act) mybox = '<p class="sub">' + (spk ? "Đến lượt bạn — hết giờ chuẩn bị máy tự bật mic." : "Chuẩn bị viết…") + "</p>";
     if (L.phase === "prep" && !L.sp) mybox = '<p class="sub">Cả phòng cùng chuẩn bị — xong thì bấm "Sẵn sàng".</p>';
     if (!host && myTurn(L) && L.phase === "prep") mybox += L.rdyMe ? '<p class="sub">✓ Bạn đã sẵn sàng — đợi mọi người</p>' : '<button class="pri big" data-act="lrdy" style="width:100%;margin-top:8px">⏭ Sẵn sàng rồi — nói luôn</button>';
-    var h = '<div class="top"><button class="soft" data-act="quit" title="Thoát">✕</button><div class="t"><b>Câu ' + t.q + "</b> · " + esc(t.type.replace("_", " ")) + ' <span class="sub">(' + (S.i + 1) + "/" + S.tasks.length + ")</span></div></div>";
+    var h = '<div class="top"><button class="soft" data-act="quit" title="Thoát">✕</button><div class="t"><b>Câu ' + t.q + "</b> · " + esc(tl(t)) + ' <span class="sub">(' + (S.i + 1) + "/" + S.tasks.length + ")</span></div></div>";
     h += '<div class="card">' + promptHtml(t) + "</div>";   /* TJ 2026-10-14: màn người chơi PHẢI giống Admin (thấy đề ngay); Admin chỉ bấm bắt đầu + đếm giờ */
     h += '<div class="card" style="text-align:center">';
     if (L.phase === "ready") {
@@ -373,7 +384,7 @@
     try {
       var r = await sbRest("rpc/sw_private_get", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ p_room: room }) }); if (!r.ok) { privOK = true; return; }
       (await r.json()).forEach(function (st) {
-        var k = st.kind === "writing" ? "writing" : "speaking"; if (!st || SETS[k].some(function (x) { return x.id === st.id; })) return;
+        var k = st.kind === "writing" ? "writing" : "speaking"; if (EX0 || !st || SETS[k].some(function (x) { return x.id === st.id; })) return;
         st.mine = 1; st.src = st.src || (/^prep-/.test(st.id) ? "Từ prepedu.com (TOEIC " + (k === "speaking" ? "Speaking" : "Writing") + " có đáp án)" : "Đề riêng trong phòng");
         st.title = String(st.title || "").replace(/^Prepedu\s*/i, "") + (/^prep-/.test(st.id) ? " · prepedu.com" : ""); SETS[k].push(st);
       });
@@ -489,7 +500,7 @@
   }
   function dots() { return '<span class="dots">' + S.tasks.map(function (t, i) { return "<i class=\"" + (i < S.i || (S.results[t.q] && i !== S.i) ? "d" : i === S.i ? "c" : "") + '"></i>'; }).join("") + "</span>"; }
   function task() {
-    var t = curTask(), set = curSet(), tm = TMT(S.kind)[t.q] || [0, 60], lab = { read_aloud: "Đọc to", describe: "Tả ảnh", respond: "Trả lời câu hỏi", info: "Dựa vào thông tin", solution: "Đề xuất giải pháp", opinion: "Nêu ý kiến", sentence: "Viết câu theo ảnh", email: "Trả lời email", essay: "Bài luận ý kiến" }[t.type] || "";
+    var t = curTask(), set = curSet(), tm = TMT(S.kind)[t.q] || [0, 60], lab = { read_aloud: "Đọc to", describe: "Tả ảnh", respond: "Trả lời câu hỏi", info: "Dựa vào thông tin", solution: "Đề xuất giải pháp", opinion: "Nêu ý kiến", sentence: "Viết câu theo ảnh", email: "Trả lời email", essay: "Bài luận ý kiến", cue: "Part 2 · Thẻ nói" }[t.type] || "";
     var h = '<div class="top"><button class="soft" data-act="quit" title="Thoát">✕</button><div class="t"><b>Câu ' + t.q + "</b> · " + esc(lab) + '</div>' + dots() + "</div>";
     if (S.phase === "grading") { h += '<div class="card" style="text-align:center"><p><span class="spin"></span> AI đang chấm…</p><p class="sub">Thường mất 5–15 giây.</p></div>'; app.innerHTML = h; return; }
     if (S.phase === "result") return result(h + (t.image ? '<div class="card">' + promptHtml(t) + "</div>" : ""), t);   /* kết quả vẫn hiện ảnh đề để đối chiếu */
@@ -518,6 +529,7 @@
     else if (t.type === "respond") h += (t.scenario ? '<p class="sub">' + esc(t.scenario) + "</p>" : "") + '<div class="prompt">❓ ' + esc(t.question) + "</div>";
     else if (t.type === "info") { var inf = (S.tasks.filter(function (x) { return x.info; })[0] || {}).info; if (inf) h += '<p><b>' + esc(inf.title || "") + '</b></p><table class="tbl">' + inf.rows.map(function (r, i) { return "<tr>" + r.map(function (c) { return (i === 0 ? "<th>" : "<td>") + esc(c) + (i === 0 ? "</th>" : "</td>"); }).join("") + "</tr>"; }).join("") + "</table>"; if (S.phase !== "read") h += '<div class="prompt">❓ ' + esc(t.question) + "</div>"; }
     else if (t.type === "solution") h += '<p class="sub">Nghe tin nhắn rồi đề xuất giải pháp:</p><div class="prompt">🔊 ' + esc(t.message) + '</div><button class="soft" data-act="say" data-v="' + esc(t.message) + '">🔊 Nghe lại</button>';
+    else if (t.type === "cue") h += '<p class="sub">IELTS Speaking Part 2 · chuẩn bị 1 phút, nói tới 2 phút</p><div class="prompt cue"><b>' + esc(t.cue) + '</b><div class="sub" style="margin:8px 0 2px">You should say:</div><ul>' + (t.bullets || []).map(function (b, i) { return "<li>" + esc(b) + "</li>"; }).join("") + "</ul></div>";
     else if (t.type === "opinion") h += '<div class="prompt">❓ ' + esc(t.question) + "</div>";
     else if (t.type === "sentence") h += '<div class="wordrow"><span class="sub">Viết 1 câu dùng cả 2 từ:</span>' + t.words.map(function (w) { return '<span class="wchip">' + esc(w) + "</span>"; }).join('<span class="wplus">+</span>') + "</div>" + (t.image ? imgHtml(t) : '<p class="prompt">📷 <i>(Ảnh)</i> ' + esc(t.scene || "") + "</p>");
     else if (t.type === "email") { var e = t.email || {}; h += '<div class="mail"><div class="h">From: ' + esc(e.from) + "<br>To: " + esc(e.to) + "<br>Subject: " + esc(e.subject) + '</div><p class="prompt">' + esc(e.body) + '</p></div><p class="sub">' + esc(t.directions || "") + "</p>"; }
@@ -678,11 +690,16 @@
     res.ans = ans; S.results[q] = res; if (res.score != null) saveRev(t, res, aP); classReport(res); if (LIVE && LIVE.myQ === q) LIVE.my = "result"; S.phase = "result"; render();
   }
   function sysPrompt() {
+    if (fmtN() === 3) return "You are a strict but fair IELTS Speaking examiner. The candidate's speech was transcribed automatically (punctuation may be missing, small recognition errors are possible: do NOT penalise recognition glitches). Judge Fluency and Coherence, Lexical Resource and Grammatical Range and Accuracy from the text only (do not judge pronunciation). Give ONE integer band 0-9 for the answer; typical learner answers are band 4-6. Reply JSON only.";
     return S.kind === "speaking" ? "You are a strict but fair TOEIC Speaking rater. The learner's speech was transcribed automatically (punctuation may be missing, small recognition errors are possible: do NOT penalise recognition glitches). You can only judge content, organisation, grammar, vocabulary and fluency signals from the text; do not claim to judge pronunciation. Typical learner answers deserve 1-2 on a 0-3 scale. Reply JSON only."
       : "You are a strict but fair TOEIC Writing rater. Typical learner answers deserve 1-2 on a 0-3 scale (0-4 for emails, 0-5 for the essay). Reply JSON only.";
   }
   function userPrompt(t, ans) {
     var max = MXS(S.kind)[t.q], base = 'Return JSON: {"score":<integer 0-' + max + '>,"strengths":["<1-2 short Vietnamese points>"],"fixes":["<up to 3 Vietnamese points, each with a short English example of the correction>"],"better":"<an improved English version of the learner answer, similar length>"}.\n';
+    if (fmtN() === 3) {
+      var ex = t.type === "cue" ? "Part 2 long turn. Cue card: " + t.cue + " You should say: " + (t.bullets || []).join("; ") + ". Expect a 1.5-2 minute talk covering every point." : (t.q <= 4 ? "Part 1 short answer (expect 2-4 sentences). " : "Part 3 discussion (expect an extended, abstract answer with reasons and examples). ") + "Question: " + t.question;
+      return base.replace("0-" + max, "0-9") + "Task: " + ex + "\nCandidate transcript (" + nWords(ans) + " words): " + ans;
+    }
     if (S.kind === "speaking") {
       var d = t.type === "describe" ? "Photo description (the learner sees a photo described as): " + t.scene : t.type === "solution" ? "Voicemail the learner heard: " + t.message : t.type === "info" ? "Info table: " + JSON.stringify((S.tasks.filter(function (x) { return x.info; })[0] || {}).info) + "\nQuestion: " + t.question : "Question: " + t.question + (t.scenario ? "\nContext: " + t.scenario : "");
       return base + "Task rubric: " + SP_RUBRIC[t.type] + "\n" + d + "\nLearner transcript (" + nWords(ans) + " words): " + ans;
@@ -711,12 +728,17 @@
     }
     h = h.replace('<div class="bottom">', boardHtml() + '<div class="bottom">'); app.innerHTML = h;
   }
+  function nextSetOf() {   /* đề kế tiếp cùng nguồn + cùng format -> luyện 1 Part qua TẤT CẢ các đề lần lượt */
+    var cur = curSet(); if (!cur || (LIVE && S.screen === "live")) return null;
+    var list = SETS[S.kind].filter(function (x) { return !!x.mine === !!cur.mine && (x.fmt || 1) === (cur.fmt || 1); }), i = list.indexOf(cur);
+    return i >= 0 && i < list.length - 1 ? list[i + 1] : null;
+  }
   function summary() {
     var raw = 0, max = 0, rows = "";
-    S.tasks.forEach(function (t) { var r = S.results[t.q]; max += MXS(S.kind)[t.q]; if (r && r.score != null) raw += r.score; rows += "<tr><td>Câu " + t.q + "</td><td>" + esc(t.type.replace("_", " ")) + '</td><td class="n">' + (r && r.score != null ? r.score : "—") + "/" + MXS(S.kind)[t.q] + "</td></tr>"; });
-    var est = Math.round(raw / max * 200 / 5) * 5, lo = Math.max(0, est - 15), hi = Math.min(200, est + 15);
-    var h = '<h1>Kết quả</h1><div class="card"><div class="sub">' + esc(S.gt) + ' · ' + (S.kind === "speaking" ? "Speaking" : "Writing") + '</div><div class="est">' + (S.group === "all" ? lo + "–" + hi : raw + "/" + max) + '</div><div class="sub">' + (S.group === "all" ? "Điểm ước tính thang 0–200 (AI, chỉ để tham khảo)" : "Điểm thô của phần đã làm") + '</div><table class="sum">' + rows + '</table><p class="sub">Thang 0–200 quy đổi gần đúng từ điểm thô; điểm thật do ETS chấm có thể khác.</p></div>' +
-      '<div class="bottom"><div class="in"><button class="big" data-act="home">Chọn đề khác</button><button class="pri big" data-act="again">↻ Làm lại</button></div></div>';
+    S.tasks.forEach(function (t) { var r = S.results[t.q]; max += MXS(S.kind)[t.q]; if (r && r.score != null) raw += r.score; rows += "<tr><td>Câu " + t.q + "</td><td>" + esc(tl(t)) + '</td><td class="n">' + (r && r.score != null ? r.score : "—") + "/" + MXS(S.kind)[t.q] + "</td></tr>"; });
+    var est = Math.round(raw / max * 200 / 5) * 5, lo = Math.max(0, est - 15), hi = Math.min(200, est + 15), band = Math.round(raw / (max || 1) * 9 * 2) / 2;
+    var h = '<h1>Kết quả</h1><div class="card"><div class="sub">' + esc(S.gt) + ' · ' + (S.kind === "speaking" ? "Speaking" : "Writing") + '</div><div class="est">' + (fmtN() === 3 ? "Band " + band.toFixed(1) : S.group === "all" ? lo + "–" + hi : raw + "/" + max) + '</div><div class="sub">' + (fmtN() === 3 ? "Band ước tính theo các câu đã làm (AI, chỉ để tham khảo)" : S.group === "all" ? "Điểm ước tính thang 0–200 (AI, chỉ để tham khảo)" : "Điểm thô của phần đã làm") + '</div><table class="sum">' + rows + '</table><p class="sub">' + (fmtN() === 3 ? "Band do AI ước tính từ chữ nhận được, không chấm phát âm; điểm thật do giám khảo IELTS chấm có thể khác." : "Thang 0–200 quy đổi gần đúng từ điểm thô; điểm thật do ETS chấm có thể khác.") + '</p></div>' +
+      '<div class="bottom"><div class="in"><button class="big" data-act="home">Chọn đề khác</button><button class="pri big" data-act="again">↻ Làm lại</button>' + (nextSetOf() ? '<button class="big" data-act="nextset">▶ ' + (S.group === "all" ? "Đề kế tiếp" : "Part này ở đề kế tiếp") + " (" + esc(String(nextSetOf().title || "").slice(0, 34)) + ")</button>" : "") + "</div></div>";
     h = h.replace('<div class="bottom">', boardHtml() + '<div class="bottom">'); app.innerHTML = h;
     if (!S.saved) { S.saved = 1; ST.hist.push({ kind: S.kind, set: S.setId, group: S.group, gt: S.gt, ts: Date.now(), raw: raw, max: max, est: est }); if (ST.hist.length > 80) ST.hist.shift(); save(); }
   }
@@ -726,7 +748,7 @@
     var b = e.target.closest("[data-act]"); if (!b || b.disabled) return; var a = b.dataset.act, v = b.dataset.v;
     if (a === "kind") { S.kind = v; S.setId = (SETS[v][0] || {}).id || ""; render(); }
     else if (a === "set") { S.setId = v; render(); }
-    else if (a === "start") { if (EMBED && !classOn()) { toast("Đang vào phòng game, thử lại sau giây lát"); return; } if (classOn()) toParent({ type: "sw-host-start", kind: S.kind, set: S.setId, group: v, from: S.qFrom || 0, to: S.qTo || 0 }); else { S.class = null; S.saved = 0; begin(S.kind, v); } }
+    else if (a === "start") { if (EMBED && !classOn()) { toast("Đang vào phòng game, thử lại sau giây lát"); return; } if (classOn()) toParent({ type: "sw-host-start", kind: S.kind, exam: EX0, set: S.setId, group: v, from: S.qFrom || 0, to: S.qTo || 0 }); else { S.class = null; S.saved = 0; begin(S.kind, v); } }
     else if (a === "leave") toParent({ type: "sw-leave" });
     else if (a === "tips") { var tb = $("#tips-box"); if (tb) tb.scrollIntoView({ behavior: "smooth", block: "start" }); }
     else if (a === "part") { S.group = v; render(); }
@@ -744,6 +766,7 @@
     else if (a === "next") { if (S.i >= S.tasks.length - 1) { S.screen = "sum"; render(); } else { S.i++; question(); } }
     else if (a === "quit") { clearLive(); if (LIVE && !CTX.isHost) setTimeout(function () { toParent({ type: "sw-leave" }); }, 50); if (LIVE) { if (CTX.isHost) toParent({ type: "sw-class-send", p: { t: "live", run: LIVE.run, phase: "close" } }); S.leftRun = LIVE.run; LIVE = null; } clearTimer(); stopSpeech(); try { speechSynthesis.cancel(); } catch (x) {} S.screen = "home"; render(); }
     else if (a === "home") { S.screen = "home"; render(); }
+    else if (a === "nextset") { var ns = nextSetOf(); if (ns) { S.setId = ns.id; S.qFrom = S.qTo = null; S.class = null; S.saved = 0; begin(S.kind, S.group); } }
     else if (a === "again") { S.saved = 0; begin(S.kind, S.group); }
     else if (a === "delextra") { try { localStorage.removeItem(EXTRA); } catch (x) {} toast("Đã xoá đề riêng"); setTimeout(function () { location.reload(); }, 700); }
   });
