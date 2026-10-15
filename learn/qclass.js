@@ -44,6 +44,9 @@
   var fab = document.createElement("button"); fab.id = "qfab"; fab.type = "button"; fab.hidden = true; fab.textContent = "👥 Chơi cả phòng"; document.body.appendChild(fab);
 
   function av(id, cls) { var n = (Z && Z.pl && Z.pl[id]) || {}; return '<span class="av ' + (cls || "") + '" title="' + esc(n.name || "") + '">' + ava(n.avatar) + "</span>"; }
+  var lastSay = "";
+  function speak(t) { try { speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(t); u.lang = "en-US"; u.rate = 0.9; speechSynthesis.speak(u); } catch (e) {} }
+  function autoSay() { if (Z && Z.ph === "q" && Z.q && Z.q.say && Z.q.k !== "m2en") { var key = Z.run + ":" + Z.i; if (key !== lastSay) { lastSay = key; speak(Z.q.say); } } }
   function rem() { return Z && Z.tEnd ? Math.max(0, (Z.tEnd - Date.now()) / 1000) : 0; }
   function paintBoard(b, meId) { var pk = Z && Z.ph === "rev" ? Z.picks || null : null; return '<div class="qbd">' + (b || []).slice(0, 8).map(function (r, k) { var c = pk ? pk[r.id] : null, mk = pk ? (c == null ? "⏰" : c === Z.ans ? "✅" : "❌") : ""; return "<div><b>" + (k + 1) + "</b>" + '<span class="av ' + (pk ? (c == null ? "dim" : c === Z.ans ? "ok" : "bad") : "") + '">' + ava(r.avatar) + "</span><span>" + esc(r.name) + (r.id === meId ? " (bạn)" : "") + '</span><span class="pts">' + mk + " " + r.pts + "</span>" + (r.last ? '<span class="d">+' + r.last + "</span>" : "") + "</div>"; }).join("") + "</div>"; }
   function podium(b) {
@@ -59,7 +62,7 @@
       var q = Z.q || { t: "", o: [] };
       if (Z.ph === "q") h += '<div class="qbar"><i id="qpg" style="width:' + (Z.tot ? Math.min(100, 100 * rem() / Z.tot) : 0) + '%"></i></div>';
       if (Z.ph === "q") h += '<div class="strip"><span class="l">Đã trả lời:</span>' + Object.keys(Z.pl || {}).map(function (id) { return av(id, (Z.ids || []).indexOf(id) >= 0 ? "lit" : "dim"); }).join("") + "</div>";
-      h += '<div class="qq">' + esc(q.t) + "</div>";
+      h += '<div class="qq">' + (q.hide ? '<div style="font-size:42px;text-align:center">🎧</div>' : "") + esc(q.t) + (q.say ? ' <button class="qx" data-q="say" title="Nghe lại" style="width:38px;height:38px;vertical-align:middle">🔊</button>' : "") + "</div>";
       q.o.forEach(function (o, k) {
         var cls = "qo", dis = "";
         if (Z.ph === "rev") { dis = " disabled"; if (k === Z.ans) cls += " ok"; else if (k === mine) cls += " bad"; }
@@ -73,7 +76,7 @@
     }
     h += "</div>";
     if (host) h += '<div class="qfoot"><button class="qb soft sm" data-q="users" title="Quản lý người chơi">👥</button><button class="qb soft sm" data-q="copy" title="Copy link mời">🔗</button>' + (Z.ph === "q" ? '<button class="qb soft" data-q="lock">⏭ Chốt câu</button>' : Z.ph === "rev" ? '<button class="qb" data-q="next">' + (Z.i + 1 >= Z.n ? "🏆 Xem kết quả" : "Câu tiếp ›") + "</button>" : '<button class="qb" data-q="close">Đóng lớp</button>') + "</div>";
-    ov.innerHTML = h;
+    ov.innerHTML = h; autoSay();
   }
   function tick() {
     if (!Z || Z.ph !== "q") return;
@@ -89,32 +92,50 @@
       (CTX.players || []).map(function (p) { return '<span class="rp" title="' + esc(p.name || "") + '"><span class="av lit">' + ava(p.avatar) + "</span><b>" + esc(p.name || "?") + "</b></span>"; }).join("") + "</div></div>";
   }
   function showSetup() {
-    if (!setup) setup = { mods: lessonsList().map(function (l) { return l.id; }), n: 10, sec: 20, hp: true };
-    var cnt = DATA.questions.filter(function (q) { return setup.mods.indexOf(q.lesson) >= 0; }).length, h = '<div class="qw"><div class="qtop"><button class="qx" data-q="setupx">✕</button><span class="qn">👥 Chơi cả phòng</span></div>' + roomCard() + '<div class="qs"><h2>Thiết lập ván</h2><label>Module / bài (chạm để bật/tắt) · ' + cnt + " câu có sẵn</label><div class=\"qch\">";
+    if (!setup) setup = { mods: lessonsList().map(function (l) { return l.id; }), n: 10, sec: 20, secV: 10, hp: true, types: { quiz: true, en2m: true, m2en: true, listen: false } };
+    var nQ = DATA.questions.filter(function (q) { return setup.mods.indexOf(q.lesson) >= 0; }).length, nV = (DATA.vocab || []).filter(function (v) { return setup.mods.indexOf(v.lesson) >= 0; }).length, T = setup.types, cnt = (T.quiz ? nQ : 0) + (T.en2m || T.m2en || T.listen ? nV : 0), h = '<div class="qw"><div class="qtop"><button class="qx" data-q="setupx">✕</button><span class="qn">👥 Chơi cả phòng</span></div>' + roomCard() + '<div class="qs"><h2>Thiết lập ván</h2><label>Module / bài (chạm để bật/tắt) · ' + cnt + " câu có sẵn</label><div class=\"qch\">";
     lessonsList().forEach(function (l) { h += '<button class="' + (setup.mods.indexOf(l.id) >= 0 ? "on" : "") + '" data-q="mod" data-id="' + esc(l.id) + '">' + esc(String(l.title || l.id).slice(0, 34)) + "</button>"; });
-    h += '</div><label>Số câu</label><div class="qch">' + [5, 10, 15, 20, 30].map(function (n) { return '<button class="' + (setup.n === n ? "on" : "") + '" data-q="n" data-v="' + n + '">' + n + "</button>"; }).join("") +
-      '</div><label>Giây mỗi câu</label><div class="qch">' + [10, 15, 20, 30, 45].map(function (n) { return '<button class="' + (setup.sec === n ? "on" : "") + '" data-q="sec" data-v="' + n + '">' + n + "s</button>"; }).join("") +
+    h += '</div><label>Kiểu câu hỏi (chọn nhiều = trộn)</label><div class="qch">' + [["quiz", "📝 Trắc nghiệm bài học (" + nQ + ")"], ["en2m", "🔤 Thuật ngữ → nghĩa (" + nV + ")"], ["m2en", "🈯 Nghĩa → thuật ngữ"], ["listen", "🎧 Nghe → chọn nghĩa"]].map(function (t) { return '<button class="' + (T[t[0]] ? "on" : "") + '" data-q="type" data-v="' + t[0] + '">' + t[1] + "</button>"; }).join("") + '</div><label>Số câu</label><div class="qch">' + [5, 10, 15, 20, 30].map(function (n) { return '<button class="' + (setup.n === n ? "on" : "") + '" data-q="n" data-v="' + n + '">' + n + "</button>"; }).join("") +
+      '</div><label>Giây mỗi câu trắc nghiệm (cần đọc đề)</label><div class="qch">' + [15, 20, 30, 45].map(function (n) { return '<button class="' + (setup.sec === n ? "on" : "") + '" data-q="sec" data-v="' + n + '">' + n + "s</button>"; }).join("") +
+      '</div><label>Giây mỗi câu từ vựng (nhanh hơn)</label><div class="qch">' + [6, 8, 10, 15].map(function (n) { return '<button class="' + (setup.secV === n ? "on" : "") + '" data-q="secv" data-v="' + n + '">' + n + "s</button>"; }).join("") +
       '</div><label><input type="checkbox" id="qhp"' + (setup.hp ? " checked" : "") + '> Host cũng chơi (tính điểm)</label><p style="margin-top:16px"><button class="qb" data-q="go"' + (cnt ? "" : " disabled") + '>▶ Bắt đầu</button></p></div></div>';
     ov.hidden = false; fab.hidden = true; ov.innerHTML = h;
   }
   function expectIds() { return (CTX.players || []).filter(function (p) { return setup.hp !== false || !(CTX.me && p.id === CTX.me.id); }).map(function (p) { return p.id; }); }
   function startRun() {
-    var pool = shuffle(DATA.questions.filter(function (q) { return setup.mods.indexOf(q.lesson) >= 0; })).slice(0, setup.n);
-    var qs = pool.map(function (q) { var idx = shuffle(q.opts.map(function (_, k) { return k; })); return { t: q.q, o: idx.map(function (k) { return q.opts[k]; }), a: idx.indexOf(q.a), exp: q.exp || "" }; });
+    var T = setup.types, kinds = ["quiz", "en2m", "m2en", "listen"].filter(function (k) { return T[k]; }), V = shuffle((DATA.vocab || []).filter(function (v) { return setup.mods.indexOf(v.lesson) >= 0; })), Q = shuffle(DATA.questions.filter(function (q) { return setup.mods.indexOf(q.lesson) >= 0; })), qs = [], vi = 0, qi = 0, guard = 0;
+    function pick4(v, key) {   /* 3 đáp án nhiễu: ưu tiên cùng module, không trùng nghĩa */
+      var same = V.filter(function (x) { return x !== v && x.lesson === v.lesson && x[key] !== v[key]; }), rest = V.filter(function (x) { return x !== v && x.lesson !== v.lesson && x[key] !== v[key]; }), o = [v[key]];
+      shuffle(same).concat(shuffle(rest)).forEach(function (x) { if (o.length < 4 && o.indexOf(x[key]) < 0) o.push(x[key]); });
+      return shuffle(o);
+    }
+    while (qs.length < setup.n && guard++ < 400 && kinds.length) {
+      var k = kinds[Math.floor(Math.random() * kinds.length)];
+      if (k === "quiz") {
+        var q = Q[qi++]; if (!q) { kinds.splice(kinds.indexOf("quiz"), 1); continue; }
+        var idx = shuffle(q.opts.map(function (_, i) { return i; }));
+        qs.push({ t: q.q, o: idx.map(function (i) { return q.opts[i]; }), a: idx.indexOf(q.a), exp: q.exp || "", sec: setup.sec, k: "quiz" }); continue;
+      }
+      var v = V[vi++]; if (!v || V.length < 4) { ["en2m", "m2en", "listen"].forEach(function (x) { var i = kinds.indexOf(x); if (i >= 0) kinds.splice(i, 1); }); continue; }
+      var exp = v.en + " = " + v.vi;
+      if (k === "m2en") { var o1 = pick4(v, "en"); qs.push({ t: "Thuật ngữ nào có nghĩa: " + v.vi, o: o1, a: o1.indexOf(v.en), exp: exp, sec: setup.secV, k: k, say: v.en }); }
+      else { var o2 = pick4(v, "vi"); qs.push({ t: k === "listen" ? "Nghe thuật ngữ rồi chọn nghĩa đúng" : v.en, o: o2, a: o2.indexOf(v.vi), exp: exp, sec: setup.secV, k: k, say: v.en, hide: k === "listen" }); }
+    }
+    if (!qs.length) return;
     H = { hp: setup.hp !== false, run: Date.now() + "-" + Math.random().toString(36).slice(2, 6), qs: qs, i: -1, sec: setup.sec, ans: {}, score: {}, last: {}, expect: 0, names: {} };
     (CTX.players || []).forEach(function (p) { H.names[p.id] = { name: p.name, avatar: p.avatar }; H.score[p.id] = 0; });
     nextQ();
   }
   function playersMap() { var m = {}; (CTX.players || []).forEach(function (p) { if (H.hp !== false || !(CTX.me && p.id === CTX.me.id)) m[p.id] = { name: p.name, avatar: p.avatar }; }); Object.keys(H.ans).forEach(function (id) { if (!m[id]) m[id] = H.names[id] || {}; }); return m; }
   function snap() {
-    var q = H.qs[H.i] || { t: "", o: [], a: 0, exp: "" }, base = { run: H.run, ph: H.ph, i: H.i, n: H.qs.length, q: { t: q.t, o: q.o }, tot: H.sec, rem: H.ph === "q" ? rem() : 0, got: Object.keys(H.ans).length, ids: Object.keys(H.ans), pl: playersMap() };
+    var q = H.qs[H.i] || { t: "", o: [], a: 0, exp: "" }, base = { run: H.run, ph: H.ph, i: H.i, n: H.qs.length, q: { t: q.t, o: q.o, say: q.say || "", hide: q.hide ? 1 : 0, k: q.k || "quiz" }, tot: H.sec, rem: H.ph === "q" ? rem() : 0, got: Object.keys(H.ans).length, ids: Object.keys(H.ans), pl: playersMap() };
     if (H.ph === "rev" || H.ph === "end") { base.ans = q.a; base.exp = q.exp; base.cnt = H.cnt; base.board = H.board; base.picks = {}; Object.keys(base.pl).forEach(function (id) { base.picks[id] = H.ans[id] ? H.ans[id].c : null; }); }
     return base;
   }
   function pushState() { if (!H) return; var s = snap(); send(s); Z = Object.assign({}, s, { tEnd: H.tEnd, my: H.my }); render(); }
   function nextQ() {
     H.i++; if (H.i >= H.qs.length) return finish();
-    H.ph = "q"; H.ans = {}; H.my = null; H.tEnd = Date.now() + H.sec * 1000; H.t0 = Date.now(); H.expect = expectIds().length; H.last = {};
+    H.sec = H.qs[H.i].sec || H.sec; H.ph = "q"; H.ans = {}; H.my = null; H.tEnd = Date.now() + H.sec * 1000; H.t0 = Date.now(); H.expect = expectIds().length; H.last = {};
     pushState(); clearInterval(hbT); hbT = setInterval(pushState, 2000);
   }
   function board() {
@@ -141,7 +162,9 @@
     if (a === "quit") { if (H) { if (confirm("Đóng lớp cho cả phòng?")) closeRun(); } else { ov.hidden = true; toParent({ type: "sw-leave" }); } }
     else if (a === "setupx") { ov.hidden = true; fab.hidden = false; }
     else if (a === "mod") { var i = setup.mods.indexOf(b.dataset.id); if (i >= 0) setup.mods.splice(i, 1); else setup.mods.push(b.dataset.id); showSetup(); }
-    else if (a === "n") { setup.n = +b.dataset.v; showSetup(); } else if (a === "sec") { setup.sec = +b.dataset.v; showSetup(); }
+    else if (a === "n") { setup.n = +b.dataset.v; showSetup(); } else if (a === "sec") { setup.sec = +b.dataset.v; showSetup(); } else if (a === "secv") { setup.secV = +b.dataset.v; showSetup(); }
+    else if (a === "type") { setup.types[b.dataset.v] = !setup.types[b.dataset.v]; showSetup(); }
+    else if (a === "say") { if (Z && Z.q && Z.q.say) speak(Z.q.say); }
     else if (a === "go") { var hp = $("#qhp"); setup.hp = hp ? hp.checked : true; startRun(); }
     else if (a === "users" || a === "copy") toParent({ type: "sw-do", a: a });
     else if (a === "lock") reveal(); else if (a === "next") nextQ(); else if (a === "close") closeRun();
