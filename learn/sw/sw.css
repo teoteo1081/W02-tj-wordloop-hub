@@ -257,3 +257,9 @@ body.one img.zoom { position:fixed !important; inset:0; width:100vw !important; 
   .hubpanel select, .hubpanel input[type=text], .hubpanel input[type=number], .lobby select { font-size:17px !important; padding:12px 10px !important; min-height:48px; }
 }
 @media (max-width:560px) { .hp-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .hp-grid > * { min-width:0; } }   /* ô chọn chữ dài không làm cả trang rộng hơn màn hình */
+
+/* ô phòng: mã phòng bên trái, 2 nút của host (Quản lý người chơi · Copy link mời) bên phải — điện thoại xếp dọc (TJ 2026-10-15) */
+.rc-head { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+.rc-btns { display:flex; flex-direction:column; gap:6px; min-width:0; flex:0 1 auto; }
+.rc-btns button { min-height:38px; padding:6px 12px; font-size:13px; white-space:nowrap; }
+@media (min-width:521px) { .rc-btns { flex-direction:row; flex-wrap:wrap; justify-content:flex-end; } }
