@@ -17,8 +17,15 @@
     var f = frameFor(p.kind, p.exam), msg = { type: "sw-class-start", kind: p.kind, exam: p.exam || "", set: p.set, group: p.group, from: p.from, to: p.to, run: p.run, by: p.by };
     pending = msg; setTimeout(function () { if (pending === msg) pending = null; }, 4000); if (f) post(f.contentWindow, msg);   /* luôn giữ lại để gửi lại khi khung nạp xong (tin gửi quá sớm bị mất) */   /* iframe chưa tạo/chưa nạp xong: giữ lại, gửi khi nó xin ngữ cảnh */
   }
+  var openedQz = "";
+  function qFwd(p) { frames().forEach(function (f) { if (f.src.indexOf("/learn/" + p.game + "/") >= 0) post(f.contentWindow, { type: "sw-qz", p: p }); }); }
   function onMsg(p) {
     if (!p) return;
+    if (p.t === "qz" || p.t === "qa") {   /* lớp Kahoot EA / Marketing (learn/qclass.js) */
+      if (p.t === "qz" && p.ph !== "close" && p.run !== openedQz) { openedQz = p.run; document.dispatchEvent(new CustomEvent("tjwl-sw-open", { detail: p.game })); setTimeout(function () { qFwd(p); }, 600); } else qFwd(p);
+      if (p.t === "qz" && p.ph === "close" && p.run === openedQz) openedQz = "";
+      return;
+    }
     if (p.t === "start") { openedRun = p.run; document.dispatchEvent(new CustomEvent("tjwl-sw-open", { detail: p.kind === "writing" ? (p.exam === "ielts" ? "ielw" : "writing") : p.exam === "ielts" ? "ielts" : "speaking" })); setTimeout(function () { deliverStart(p); }, 250); }
     else if (p.t === "live" && p.phase === "close") { liveFwd(p); if (p.run === openedRun) openedRun = ""; }
     else if (p.t === "live") { if (p.run !== openedRun) { openedRun = p.run; document.dispatchEvent(new CustomEvent("tjwl-sw-open", { detail: p.kind === "writing" ? (p.exam === "ielts" ? "ielw" : "writing") : p.exam === "ielts" ? "ielts" : "speaking" })); setTimeout(function () { liveFwd(p); }, 400); } else liveFwd(p); }
@@ -31,7 +38,7 @@
     var d = e.data; if (e.origin !== location.origin || !d || typeof d.type !== "string" || d.type.indexOf("sw-") !== 0) return;
     if (d.type === "sw-hello") {
       post(e.source, Object.assign({ type: "sw-ctx" }, ctx()));
-      var fr0 = frames().filter(function (f) { return f.contentWindow === e.source; })[0]; if (pending && ((pending.kind === "writing") === (d.kind === "writing")) && (pending.kind === "writing" || !fr0 || exOk(fr0, pending.exam))) { var m = pending; pending = null; setTimeout(function () { post(e.source, m); }, 150); }
+      var fr0 = frames().filter(function (f) { return f.contentWindow === e.source; })[0]; if (pending && (d.kind === "writing" || d.kind === "speaking") && ((pending.kind === "writing") === (d.kind === "writing")) && (pending.kind === "writing" || !fr0 || exOk(fr0, pending.exam))) { var m = pending; pending = null; setTimeout(function () { post(e.source, m); }, 150); }
     } else if (d.type === "sw-host-start") {
       var c = ctx(); if (!c.isHost || !c.inRoom) return;
       var p = { t: "start", kind: d.kind === "writing" ? "writing" : "speaking", exam: d.exam === "ielts" ? "ielts" : "", set: String(d.set || ""), group: String(d.group || "all"), from: +d.from || 0, to: +d.to || 0, run: Date.now() + "-" + Math.random().toString(36).slice(2, 6), by: c.me && c.me.id };
@@ -44,7 +51,8 @@
   });
   /* host chuyển sang thẻ khác (Từ vựng / TOEIC / EA / Marketing / về trang game) khi lớp đang chạy -> báo cả phòng thoát lớp */
   document.addEventListener("tjwl-learn-shown", function (e) {
-    var k = e.detail; if (!openedRun || !ctx().isHost || k === "sp" || k === "wr" || k === "ielts" || k === "ielw") return;
+    var k = e.detail; if (openedQz && ctx().isHost && k !== "dm" && k !== "ea") { send({ t: "qz", game: "dm", run: openedQz, ph: "close" }); send({ t: "qz", game: "ea", run: openedQz, ph: "close" }); openedQz = ""; }
+    if (!openedRun || !ctx().isHost || k === "sp" || k === "wr" || k === "ielts" || k === "ielw") return;
     send({ t: "live", run: openedRun, phase: "close" }); openedRun = "";
   });
   function cmd(kind, c, v) { frames().forEach(function (f) { if (kind && f.src.indexOf(kind === "writing" ? "kind=writing" : "kind=speaking") < 0) return; post(f.contentWindow, { type: "sw-cmd", cmd: c, v: v }); }); }
