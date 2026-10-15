@@ -2184,7 +2184,7 @@ body.g-playing.g-adm #g-righthandle{top:2px;right:8px;width:30px;height:30px;fon
 @media (max-width:700px){.g-trialbtn span{display:none}}
 
 /* 📦 chọn Batch / Block dưới nút Bắt đầu — thẻ chi tiết giống Block trên Bảng */
-.g-blocks{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)} .g-bph{margin:0 0 10px;font-size:15px}
+.g-blocks{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);position:relative;left:50%;transform:translateX(-50%);width:min(1180px,calc(100vw - 32px))}   /* tràn ra hai bên cột 640px của phòng chờ, rộng như màn Learning (TJ 2026-10-15) */ .g-bph{margin:0 0 10px;font-size:15px}
 .g-bpb{margin:0 0 14px} .g-bpbatch{display:inline-block;margin:0 0 6px;padding:6px 14px;border-radius:999px;border:0;background:#d9684b;color:#fff;font:700 14px/1 inherit;font-family:inherit;cursor:pointer;opacity:.7}
 .g-bpbatch.on{opacity:1;box-shadow:0 0 0 2px rgba(217,104,75,.45)}
 .g-bcard{margin:8px 0;padding:12px 14px;border-radius:14px;border:1px solid var(--line);border-left:5px solid #555;background:#2b2b2f;cursor:pointer;opacity:.72}
