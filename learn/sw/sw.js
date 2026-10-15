@@ -67,16 +67,17 @@
     speaking: [["Q1–2 Đọc to", "Ngắt ở dấu phẩy và dấu chấm, nhấn từ nội dung, đọc rõ số / ngày / tên riêng; đọc vừa phải để kịp hết đoạn."], ["Q3 Tả ảnh", "Theo thứ tự: ảnh chụp ở đâu → chủ thể chính đang làm gì → vài chi tiết → cảm giác chung. Đừng sa đà chi tiết nhỏ."], ["Q4–6 Trả lời câu hỏi", "Nói đáp án ngay, rồi lý do, rồi 1 ví dụ ngắn. Chỉ có 3 giây chuẩn bị nên bắt đầu nói luôn."], ["Q7–9 Dựa vào thông tin", "Tìm đúng thông tin trong bảng, không đọc nguyên văn, trả lời đúng điều được hỏi."], ["Q10 Đề xuất giải pháp", "Nhắc lại vấn đề → 2 giải pháp → câu kết."], ["Q11 Nêu ý kiến", "Ý kiến → 2 lý do → 1 ví dụ → câu kết."], ["Chung", "Nói đủ thời gian, không im lặng. Lỡ sai thì nói tiếp, đừng quay lại sửa."]],
     writing: [["Q1–5 Viết câu theo ảnh", "Dùng ĐÚNG cả hai từ cho sẵn, viết 1 câu hoàn chỉnh, đúng ngữ pháp, soát chính tả."], ["Q6–7 Trả lời email", "Chào + nêu lý do viết, trả lời đủ TỪNG yêu cầu trong email, giữ giọng lịch sự, kết + tên."], ["Q8 Bài luận ý kiến", "Từ 300 từ: nêu ý kiến + 2–3 lý do + ví dụ + kết; chia đoạn rõ ràng."], ["Chung", "Chừa 1–2 phút cuối để đọc lại và soát lỗi."]]
   };
+  var TIPS2 = [["Q1–2 Đọc to", "Ngắt ở dấu phẩy và dấu chấm, nhấn từ nội dung, đọc rõ số / ngày / tên riêng; 45 giây chuẩn bị để đọc thầm trước."], ["Q3–4 Tả ảnh", "Ảnh chụp ở đâu → chủ thể chính đang làm gì → vài chi tiết → cảm giác chung. 45 giây chuẩn bị, nói 30 giây."], ["Q5–7 Trả lời câu hỏi", "3 giây chuẩn bị: nói đáp án ngay, rồi lý do, rồi 1 ví dụ ngắn. Q5, Q6 có 15 giây, Q7 có 30 giây."], ["Q8–10 Dựa vào thông tin", "45 giây đọc bảng trước, rồi 3 giây chuẩn bị mỗi câu (15s, 15s, 30s). Tìm đúng thông tin, đừng đọc nguyên văn."], ["Q11 Nêu ý kiến", "45 giây chuẩn bị, nói 60 giây: ý kiến → 2 lý do → 1 ví dụ → câu kết."], ["Chung", "Nói đủ thời gian, không im lặng. Lỡ sai thì nói tiếp, đừng quay lại sửa."]];
   function guideHtml() {
-    var tm = TMT(S.kind), gs = GRP(S.kind), tot = 0, rows = gs.filter(function (g) { return g.k !== "all"; }).map(function (g) {
-      var sec = 0; g.qs.forEach(function (q) { sec += (tm[q] || [0, 0])[0] + (tm[q] || [0, 0])[1]; }); tot += sec;
-      return '<div class="gd-row"><span>' + esc(g.t) + "</span><span>" + g.qs.length + " câu</span><span>" + mmss(sec) + "</span></div>";
+    var tm = TMT(S.kind), gs = GRP(S.kind), tot = 0, cs = curSet(), nTask = cs ? cs.tasks.length : gs[0].qs.length, rows = gs.filter(function (g) { return g.k !== "all" && (!cs || cs.tasks.some(function (t) { return g.qs.indexOf(t.q) >= 0; })); }).map(function (g) {
+      var sec = 0; g.qs.forEach(function (q) { if (!cs || cs.tasks.some(function (t) { return t.q === q; })) sec += (tm[q] || [0, 0])[0] + (tm[q] || [0, 0])[1]; }); tot += sec;
+      return '<div class="gd-row"><span>' + esc(g.t) + "</span><span>" + (cs ? cs.tasks.filter(function (t) { return g.qs.indexOf(t.q) >= 0; }).length : g.qs.length) + " câu</span><span>" + mmss(sec) + "</span></div>";
     }).join("");
     return '<div class="guide"><p class="sub">Hub này để <b>làm đề thi</b> (TOEIC ' + (S.kind === "speaking" ? "Speaking" : "Writing") + "): làm cả bộ, hoặc chọn từng Part / khoảng câu. Thời gian mặc định theo đề thi thật:</p>" +
-      '<h3>' + (S.kind === "speaking" ? "🎤 Speaking" : "✍️ Writing") + ' <span class="sub">' + gs[0].qs.length + " câu · " + Math.round(tot / 60) + " phút · " + (S.kind === "speaking" ? "nói vào micro, AI chấm điểm ước tính" : "gõ bài, AI chấm điểm ước tính") + "</span></h3>" + rows + "</div>";
+      '<h3>' + (S.kind === "speaking" ? "🎤 Speaking" : "✍️ Writing") + ' <span class="sub">' + nTask + " câu · " + Math.round(tot / 60) + " phút · " + (S.kind === "speaking" ? "nói vào micro, AI chấm điểm ước tính" : "gõ bài, AI chấm điểm ước tính") + "</span></h3>" + rows + "</div>";
   }
   function tipsHtml() {
-    return '<div class="card tips"><b>🧠 Chiến thuật đạt điểm cao</b>' + TIPS[S.kind].map(function (x) { return "<p><b>" + esc(x[0]) + ":</b> " + esc(x[1]) + "</p>"; }).join("") + "</div>";
+    return '<div class="card tips"><b>🧠 Chiến thuật đạt điểm cao</b>' + (S.kind === "speaking" && fmt2() ? TIPS2 : TIPS[S.kind]).map(function (x) { return "<p><b>" + esc(x[0]) + ":</b> " + esc(x[1]) + "</p>"; }).join("") + "</div>";
   }
   function roomCard() {
     var pl = (CTX.players || []).map(function (p) { return '<div class="rc-p" title="' + esc(p.name || "") + '"><span class="rc-av">' + avatarHtml(p.avatar) + "</span><b>" + esc(p.name || "?") + "</b></div>"; }).join("");
@@ -86,15 +87,16 @@
     savePref();
     var all = SETS[S.kind], hasMine = all.some(function (x) { return x.mine; });
     if (S.src === "mine" && !hasMine) S.src = "std";
+    var mineLabel = (all.filter(function (x) { return x.mine && x.src; })[0] || {}).src || "Đề riêng (nạp từ file)";
     var sets = all.filter(function (x) { return S.src === "mine" ? x.mine : !x.mine; }), set = curSet();
     if (!set || sets.indexOf(set) < 0) { set = sets[0]; if (set) S.setId = set.id; }
-    var g = GRP(S.kind), parts = g.filter(function (x) { return x.k !== "all"; });
-    if (!g.some(function (x) { return x.k === S.group; })) S.group = "all";
+    var g = GRP(S.kind), has = function (x) { return !!set && set.tasks.some(function (t) { return x.qs.indexOf(t.q) >= 0; }); }, parts = g.filter(function (x) { return x.k !== "all" && has(x); });
+    if (!g.some(function (x) { return x.k === S.group && (x.k === "all" || has(x)); })) { S.group = "all"; S.qFrom = S.qTo = null; }
     var gsel = g.filter(function (x) { return x.k === S.group; })[0], scopeAll = S.group === "all", inRoom = classOn();
     var qmin = Math.min.apply(null, gsel.qs), qmax = Math.max.apply(null, gsel.qs);
     function fld(label, inner, cls) { return '<label' + (cls ? ' class="' + cls + '"' : "") + ">" + label + inner + "</label>"; }
     var h = (CTX.inRoom ? roomCard() : "") + '<div class="hubpanel"><div class="hp-grid">' +
-      fld("Bộ đề", '<select id="sel-src"><option value="std"' + (S.src !== "mine" ? " selected" : "") + ">TOEIC " + (S.kind === "speaking" ? "Speaking" : "Writing") + " (đề AI sinh)</option>" + (hasMine ? '<option value="mine"' + (S.src === "mine" ? " selected" : "") + ">📥 Đề riêng (đề trong phòng / nạp từ file)</option>" : "") + "</select>") +
+      fld("Bộ đề", '<select id="sel-src"><option value="std"' + (S.src !== "mine" ? " selected" : "") + ">TOEIC " + (S.kind === "speaking" ? "Speaking" : "Writing") + " (đề AI sinh)</option>" + (hasMine ? '<option value="mine"' + (S.src === "mine" ? " selected" : "") + ">📥 " + esc(mineLabel) + "</option>" : "") + "</select>") +
       fld("Đề", '<select id="sel-set">' + sets.map(function (x, n) { return '<option value="' + esc(x.id) + '"' + (x.id === S.setId ? " selected" : "") + ">Test " + (n + 1) + " — " + esc(String(x.title || "").replace(/^Phỏng vấn:\s*/i, "").slice(0, 30)) + "</option>"; }).join("") + "</select>") +
       fld("Phạm vi", '<select id="sel-scope"><option value="all"' + (scopeAll ? " selected" : "") + '>🧩 Cả bộ</option><option value="part"' + (scopeAll ? "" : " selected") + ">🧩 Từng Part</option></select>") +
       fld("Part", '<select id="sel-grp"' + (scopeAll ? " disabled" : "") + ">" + parts.map(function (x) { return '<option value="' + x.k + '"' + (x.k === S.group ? " selected" : "") + ">" + esc(x.t) + "</option>"; }).join("") + "</select>") +
@@ -372,7 +374,8 @@
       var r = await sbRest("rpc/sw_private_get", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ p_room: room }) }); if (!r.ok) { privOK = true; return; }
       (await r.json()).forEach(function (st) {
         var k = st.kind === "writing" ? "writing" : "speaking"; if (!st || SETS[k].some(function (x) { return x.id === st.id; })) return;
-        st.mine = 1; SETS[k].push(st);
+        st.mine = 1; st.src = st.src || (/^prep-/.test(st.id) ? "Từ prepedu.com (TOEIC " + (k === "speaking" ? "Speaking" : "Writing") + " có đáp án)" : "Đề riêng trong phòng");
+        st.title = String(st.title || "").replace(/^Prepedu\s*/i, "") + (/^prep-/.test(st.id) ? " · prepedu.com" : ""); SETS[k].push(st);
       });
       privOK = true;
       if (PENDING && SETS[PENDING.kind].length) { var pp = PENDING; PENDING = null; applyStart(pp); }
