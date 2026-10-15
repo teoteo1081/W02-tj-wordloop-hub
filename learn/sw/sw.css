@@ -203,3 +203,22 @@ body.live .hostbar .hb-main .pri { flex:1.4 1 0 !important; }
 html { overflow-x:hidden; overscroll-behavior:contain; }
 body { overflow-x:clip; touch-action:pan-y pinch-zoom; }
 #app { overflow-wrap:break-word; }
+
+/* ===== MỘT MÀN HÌNH khi đang đếm giờ / nói / viết (TJ 2026-10-15: "Tất cả phải trong 1 màn hình khi speaking") =====
+   body.one (sw.js: liveRender/task): khung cao đúng màn hình, đề cuộn TRONG thẻ đề (không cuộn cả trang), đồng hồ + mic + nút luôn thấy. */
+body.one, html:has(body.one) { height:100%; overflow:hidden; }
+body.one #app { height:100dvh; max-height:100dvh; display:flex; flex-direction:column; padding:6px 10px 8px; overflow:hidden; }
+body.one:has(.bottom) #app { padding-bottom:78px; }
+body.one #app > * { flex:none; margin-top:6px; margin-bottom:0; }
+body.one #app > .top { position:static; padding:2px 0; }
+body.one #app > .top + .card { flex:1 1 0; min-height:76px; overflow:auto; -webkit-overflow-scrolling:touch; padding:8px 12px; }
+body.one #app > .top + .card .prompt, body.one #app > .top + .card .prompt.read { font-size:clamp(14px,2.6vh,17px) !important; line-height:1.4 !important; }   /* đề nhỏ vừa đủ đọc để thấy NHIỀU chữ hơn (ghi đè cỡ to của chế độ bình thường) */
+body.one #app > .top + .card + .card p { margin:2px 0; }
+body.one #app > .top + .card + .card .row { margin:0; }
+body.one #app > .top + .card img { max-height:24vh !important; }
+body.one #app > .top + .card + .card { padding:8px 12px; }
+body.one #app > .top + .card + .card .timer { font-size:clamp(28px,6vh,44px) !important; line-height:1.1; margin:2px 0; }
+body.one #app > .top + .card + .card .live { min-height:40px; padding:6px 10px; max-height:16vh; overflow:auto; }
+body.one #app > .top + .card + .card textarea { min-height:70px; max-height:24vh; }
+body.one #app > :nth-child(n+4):not(.hostbar):not(.bottom) { display:none; }
+body.one .big { min-height:46px; }
