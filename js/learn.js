@@ -46,6 +46,9 @@
   document.addEventListener("tjwl-sw-open", function (e) { show(e.detail === "writing" ? "wr" : "sp"); });   /* swclass.js: host bắt đầu lớp -> mở đúng thẻ */
   document.addEventListener("tjwl-learn-home", function () { show(""); });   /* game.js: mở từ bài học -> bỏ lớp phủ EA/Marketing, về thẻ Phòng game */
   window.addEventListener("resize", function () { if (!layer.hidden) place(); });
+  /* thanh trên (hàng thẻ Từ vựng/TOEIC/Speaking… xuống dòng, hiện muộn khi biết là host…) đổi chiều cao SAU khi lớp phủ đã đặt -> lớp phủ bị thanh trên che mất đầu trang (nút của host nằm ngay đầu). Theo dõi chiều cao để đặt lại. */
+  try { if (window.ResizeObserver) new ResizeObserver(function () { if (!layer.hidden) place(); }).observe(top); } catch (e) {}
+  setInterval(function () { if (!layer.hidden) place(); }, 1500);
   try { var last = sessionStorage.getItem("tjwl_learn_tab"); if (last && ((last !== "sp" && last !== "wr") || sessionStorage.getItem("tjwl_sw_keep"))) show(last); } catch (e) {}   /* sp/wr chỉ mở khi host bắt đầu lớp (người chơi F5 không bị kẹt ở Speaking) */
   paintHub();
 })();
