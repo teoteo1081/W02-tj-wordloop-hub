@@ -195,3 +195,5 @@ body.live .hostbar { flex-wrap:nowrap; align-items:center; }
 body.live .hostbar .hb-main { flex-wrap:nowrap; gap:6px; min-width:0; }
 body.live .hostbar .hb-main .big { flex:1 1 0 !important; min-width:0; white-space:nowrap; padding:6px 8px; font-size:14px; overflow:hidden; text-overflow:ellipsis; }
 body.live .hostbar .hb-main .pri { flex:1.4 1 0 !important; }
+.wordrow { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:8px; margin:0 0 12px; } .wordrow .sub { flex:1 1 100%; text-align:center; margin:0; }
+.wchip { padding:8px 18px; border-radius:999px; background:#d97757; color:#fff; font-weight:800; font-size:20px; box-shadow:0 4px 14px rgba(217,119,87,.3); } .wplus { font-size:20px; color:var(--muted); font-weight:700; }
