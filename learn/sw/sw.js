@@ -320,7 +320,8 @@
       var ps = plist().filter(function (p) { return !L.done[p.id]; }), needP = spk && tm[0] > 5 && !L.pd, prim = "", more = "";
       var prvB = S.i > 0 ? '<button class="big" data-act="lprev">‹ Câu trước</button>' : "",
           nxb = prvB + (last ? "" : '<button class="big" data-act="lnext">Câu tiếp ›</button>'),
-          endB = '<button class="big danger" data-act="lend">⏹ Kết thúc lớp</button>',
+          endB = '<button class="big endb" data-act="lend">⏹ Kết thúc lớp</button>',
+          mgB = '<button class="big" data-act="hdo" data-v="users">👥 Quản lý người chơi</button><button class="big" data-act="hdo" data-v="copy">🔗 Copy link mời</button>',
           aiB = '<label class="aisw" title="AI chấm điểm cho cả phòng (áp dụng từ lượt kế tiếp)"><span>🤖 AI chấm điểm</span><input type="checkbox" id="aimode"' + (aiOn() ? " checked" : "") + "></label>",
           allB = '<button class="big" data-act="lall" title="Cả phòng nói cùng lúc, mỗi máy tự chấm">👥 Cả lớp nói cùng lúc</button>',
           pk = pickOf(ps), nm = pk ? " · " + esc(pk.name || "") : "";
@@ -330,7 +331,7 @@
       else if (needP) { prim = nxb; more = allB + aiB + endB; }   /* chuẩn bị chung = nút NHỎ ở khu danh sách người chơi */
       else if (spk) { prim = nxb; more = allB + aiB + endB; if (last && !ps.length) prim += endB; }   /* nút "Bắt đầu nói" nằm ngay dưới danh sách người chơi (rosterHtml) */
       else { prim = (L.phase === "idle" ? "" : '<button class="pri big" data-act="lstart">▶ Bắt đầu viết</button>') + nxb; more = aiB + endB; if (last && L.phase === "idle") prim += endB; }
-      hostbar = '<div class="card hostbar"><div class="hb-main">' + prim + '</div><div class="hmore" tabindex="0"><button type="button" class="hmore-h" data-act="hmore" title="Thêm: AI chấm, Kết thúc lớp… (rê chuột vào)">⋯</button><div class="hmore-p">' + more + "</div></div></div>";
+      hostbar = '<div class="card hostbar"><div class="hb-main">' + prim + '</div><div class="hmore" tabindex="0"><button type="button" class="hmore-h" data-act="hmore" title="Thêm: AI chấm, Kết thúc lớp… (rê chuột vào)">⋯</button><div class="hmore-p">' + mgB + more + "</div></div></div>";
     }
     var below = !!hostbar && (L.phase === "ready" || run);   /* đang đếm giờ: nút host nằm NGAY DƯỚI đồng hồ */
     if (below) h += hostbar.replace('class="card hostbar"', 'class="card hostbar below"');
@@ -402,7 +403,7 @@
     var L = LIVE; if (!host || !L || S.kind !== "speaking" || L.sp || L.phase === "ready" || L.phase === "prep" || L.phase === "resp") return "";
     var ps = plist().filter(function (p) { return !L.done[p.id]; }), pk = pickOf(ps), tm = liveTimes();
     var prepB = needPrep() ? '<button type="button" class="pri big prepbtn" data-act="lprep">⏱ Chuẩn bị chung · ' + tm[0] + "s</button>" : "";
-    return '<div class="gorow">' + prepB + (pk ? '<button class="pri big gobtn" data-act="lspeak">' + (ps.length ? "▶ Bắt đầu nói" : "↻ Nói lại") + " · " + esc(pk.name || "") + "</button>" : "") + "</div>";
+    return '<div class="gorow">' + prepB + (pk ? '<button class="pri big gobtn" data-act="lspeak">' + (ps.length ? "▶ Bắt đầu nói" : "↻ Nói lại") + " · " + esc(pk.name || "") + " · " + tm[1] + "s</button>" : "") + "</div>";
   }
   function rosterHtml(host) {
     var L = LIVE, ps = plist(), rest = ps.filter(function (p) { return !L.done[p.id]; }), cur = L.sp ? L.sp.id : (host ? (pickOf(rest) || {}).id : "");
@@ -444,6 +445,7 @@
     else if (a === "lskip") { L.adv = 1; liveNext(); }
     else if (a === "lstop") { L.adv = 1; liveNext(); }
     else if (a === "lend") liveSend({ i: S.i, phase: "end", done: {} });
+    else if (a === "hdo") { toParent({ type: "sw-do", a: v }); }
     else if (a === "hmore") { var hm = $(".hmore"); if (hm) hm.classList.toggle("open"); }
     else if (a === "lprev") { if (S.i > 0) { liveSend({ i: S.i - 1, phase: "show", sp: null, done: {}, sec: 0, pd: 0 }); toParent({ type: "sw-hello", kind: S.kind }); } }
     else if (a === "lnext") {

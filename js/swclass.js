@@ -36,6 +36,7 @@
       var p = { t: "start", kind: d.kind === "writing" ? "writing" : "speaking", set: String(d.set || ""), group: String(d.group || "all"), from: +d.from || 0, to: +d.to || 0, run: Date.now() + "-" + Math.random().toString(36).slice(2, 6), by: c.me && c.me.id };
       send(p); onMsg(p);   /* broadcast không gửi lại cho chính mình -> host tự xử lý */
     } else if (d.type === "sw-class-send" && d.p) send(d.p);
+    else if (d.type === "sw-do") document.dispatchEvent(new CustomEvent("tjwl-sw-do", { detail: d.a }));
     else if (d.type === "sw-leave") document.dispatchEvent(new CustomEvent("tjwl-learn-home"));
     else if (d.type === "sw-admin") document.dispatchEvent(new CustomEvent("tjwl-sw-admin", { detail: d.p }));   /* thẻ Quản trị của game vẽ phần lớp */
     else if (d.type === "sw-want-open") document.dispatchEvent(new CustomEvent("tjwl-sw-open", { detail: d.kind }));   /* người chơi thoát lớp -> về trang game */
