@@ -2079,6 +2079,7 @@
     playBlock: async function (bid, name) {   /* TJ 2026-10-06: Game → trên Bảng = sang thẻ Game với đúng Block đang chiếu, vào PHÒNG CHỜ chờ host chọn dạng game + thời gian rồi tự bấm Bắt đầu (trước: tự bắt đầu ngay) */
       if (!G.isHost || !G.st) return false;
       if (!(await hostPrepLobby())) return false;
+      toVocabHub(); vocabApplyLS();   /* TJ 2026-10-14: "từ Bảng bấm Chơi game không qua thẻ Từ vựng mà vẫn nhớ TOEIC cũ" -> Block là từ vựng: luôn về Hub Từ vựng như nút Chơi game ở WordLoop */
       picked = [{ table: "blocks", id: bid, title: name || "Block" }]; hostSetScope();
       setBoardMeta({ board: false });
       try { window.parent.postMessage({ type: "tjwl-game-show" }, location.origin); } catch (e) {}   /* WordLoop: rời chế độ Bảng, hiện thẻ Game */
