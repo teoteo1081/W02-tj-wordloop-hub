@@ -331,10 +331,12 @@
       else { prim = (L.phase === "idle" ? "" : '<button class="pri big" data-act="lstart">▶ Bắt đầu viết</button>') + nxb; more = aiB + endB; if (last && L.phase === "idle") prim += endB; }
       hostbar = '<div class="card hostbar"><div class="hb-main">' + prim + '</div><div class="hmore" tabindex="0"><button type="button" class="hmore-h" data-act="hmore" title="Thêm: AI chấm, Kết thúc lớp… (rê chuột vào)">⋯</button><div class="hmore-p">' + more + "</div></div></div>";
     }
+    var below = !!hostbar && (L.phase === "ready" || run);   /* đang đếm giờ: nút host nằm NGAY DƯỚI đồng hồ */
+    if (below) h += hostbar.replace('class="card hostbar"', 'class="card hostbar below"');
     if (!L.mineOn && L.phase !== "ready" && L.my && L.myQ === t.q) h += L.my === "grading" ? '<div class="card" style="text-align:center"><span class="spin"></span> AI đang chấm bài của bạn…</div>' : (S.results[t.q] ? result("", t, true) : "");
     if (L.phase !== "ready") h += othersHtml(t.q) + (run ? "" : boardHtml());
     if (run && spk) h += rosterHtml(false);
-    if (hostbar) { var ti = h.indexOf("</div></div>") + 12; h = h.slice(0, ti) + hostbar + h.slice(ti); }   /* thanh điều khiển của host DÍNH Ở ĐẦU màn (cuộn đâu cũng thấy; ảnh to không đẩy nút xuống khuất) */
+    if (hostbar && !below) { var ti = h.indexOf("</div></div>") + 12; h = h.slice(0, ti) + hostbar + h.slice(ti); }   /* thanh điều khiển của host DÍNH Ở ĐẦU màn (cuộn đâu cũng thấy; ảnh to không đẩy nút xuống khuất) */
     app.innerHTML = h; smoothBar(); liveTick(); adminSync();
   }
   /* ---------- LỊCH SỬ: xem lại bài cũ + lỗi sai (lưu ở máy này) ---------- */

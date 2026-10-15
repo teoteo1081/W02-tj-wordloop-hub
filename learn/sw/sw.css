@@ -139,3 +139,12 @@ body.live .roster { border-color:var(--acc2); box-shadow:0 0 0 1px rgba(143,120,
 .hp-btns .gb.soft { background:#2d2c2a; color:#f5f4ef; border-color:#403e3a; }
 :root[data-theme="light"] .hp-btns .gb.soft { background:#f0eee9; color:#2f2e2b; border-color:#e0ddd5; }
 #tips-box { margin-top:14px; } #tips-box .tips { font-size:15px; line-height:1.55; }
+
+/* cam như TOEIC (TJ 2026-10-15) */
+.pri, button.pri { background:#d97757 !important; border-color:#d97757 !important; color:#fff !important; box-shadow:0 4px 14px rgba(217,119,87,.3); }
+.pri:hover { background:#c2663f !important; }
+.bar > i { background:#d97757 !important; } .bar.resp > i { background:#e8a04a !important; } .bar.last5 i { background:var(--bad) !important; }
+.gobtn { color:#fff !important; }
+.hostbar.below { position:static; margin-top:0; }
+.prompt { font-size:21px !important; line-height:1.6; } .prompt.read { font-size:23px !important; line-height:1.7; }
+@media (max-width:420px) { .prompt.read { font-size:21px !important; } .prompt { font-size:20px !important; } }
