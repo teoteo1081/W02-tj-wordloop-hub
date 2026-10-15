@@ -40,6 +40,7 @@
   nav.addEventListener("click", function (e) {
     var b = e.target.closest("[data-learn]"); if (!b || b.disabled) return;
     var k = b.dataset.learn;
+    try { if (k === "sp" || k === "wr") sessionStorage.setItem("tjwl_sw_keep", k); else sessionStorage.removeItem("tjwl_sw_keep"); } catch (e) {}   /* chỉ host bấm thẻ (thanh thẻ chỉ có ở host) -> F5 quay lại đúng Speaking/Writing; người chơi bị lớp tự mở thì KHÔNG nhớ */
     if (k === "" || k === "toeic") { show(""); document.dispatchEvent(new CustomEvent("tjwl-sethub", { detail: k === "toeic" ? "test" : "vocab" })); }
     else show(k);
   });
