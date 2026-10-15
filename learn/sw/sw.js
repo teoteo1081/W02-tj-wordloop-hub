@@ -199,7 +199,7 @@
   function saveLive() {
     if (!CTX.isHost || !LIVE) return;
     try {
-      sessionStorage.setItem("sw-live-v1", JSON.stringify({ run: LIVE.run, kind: S.kind, set: S.setId, group: S.group, from: S.qFrom || 0, to: S.qTo || 0, i: S.i, phase: LIVE.phase, sp: LIVE.sp, done: LIVE.done, tEnd: LIVE.tEnd, pd: LIVE.pd ? 1 : 0, nx: LIVE.nx || "", ai: aiOn() ? 1 : 0, at: Date.now() }));
+      sessionStorage.setItem("sw-live-v1", JSON.stringify({ run: LIVE.run, kind: S.kind, exam: EX0, set: S.setId, group: S.group, from: S.qFrom || 0, to: S.qTo || 0, i: S.i, phase: LIVE.phase, sp: LIVE.sp, done: LIVE.done, tEnd: LIVE.tEnd, pd: LIVE.pd ? 1 : 0, nx: LIVE.nx || "", ai: aiOn() ? 1 : 0, at: Date.now() }));
       sessionStorage.setItem("tjwl_sw_keep", S.kind);   /* learn.js: F5 thì mở lại đúng thẻ Speaking/Writing */
     } catch (e) {}
   }
