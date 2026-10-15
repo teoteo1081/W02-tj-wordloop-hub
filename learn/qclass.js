@@ -133,10 +133,10 @@
       '<div class="grow"><button class="qb soft" data-q="back">← Quay lại</button>' + (link ? '<button class="qb soft" data-q="lesson" data-u="' + esc(link) + '">📘 Đọc bài học</button>' : "") + '<button class="qb" data-q="one" data-id="' + esc(id) + '">🎮 Chơi bài này</button></div></div>';
     ov.hidden = false; fab.hidden = true; ov.innerHTML = h; ov.scrollTop = 0;
   }
-  var TYPES = [["vocab", "📚 Từ vựng (trộn 3 dạng)"], ["mix", "🔀 Trộn cả trắc nghiệm bài học"], ["quiz", "📝 Trắc nghiệm bài học"], ["en2m", "🔤 Thuật ngữ → nghĩa (tiếng mẹ đẻ)"], ["m2en", "🈯 Nghĩa → thuật ngữ"], ["listen", "🎧 Nghe → chọn nghĩa"]];
-  function typesOf(t) { return t === "vocab" ? { en2m: true, m2en: true, listen: true } : t === "mix" ? { quiz: true, en2m: true, m2en: true, listen: true } : (function (o) { o[t] = true; return o; })({}); }
+  var TYPES = [["pro", "🎓 Chuyên ngành: thuật ngữ + câu hỏi tình huống"], ["vocab", "📚 Chỉ thuật ngữ (nghĩa · nghe)"], ["mix", "🔀 Trộn cả trắc nghiệm bài học"], ["quiz", "📝 Trắc nghiệm bài học"], ["en2m", "🔤 Thuật ngữ → nghĩa (tiếng mẹ đẻ)"], ["m2en", "🈯 Nghĩa → thuật ngữ"], ["listen", "🎧 Nghe → chọn nghĩa"]];
+  function typesOf(t) { return t === "pro" ? { quiz: true, en2m: true, m2en: true } : t === "vocab" ? { en2m: true, m2en: true, listen: true } : t === "mix" ? { quiz: true, en2m: true, m2en: true, listen: true } : (function (o) { o[t] = true; return o; })({}); }
   function showSetup() {   /* giống hub Từ vựng của game: thẻ phòng · bảng "Chủ đề ván này" · các thẻ Block bên dưới (bài học Marketing) */
-    if (!setup) setup = { mods: lessonsList().map(function (l) { return l.id; }), n: 10, sec: 20, secV: 10, hp: true, say: true, auto: true, type: "vocab" };
+    if (!setup) setup = { mods: lessonsList().map(function (l) { return l.id; }), n: 10, sec: 25, secV: 15, hp: true, say: true, auto: true, type: "pro" };
     var T = typesOf(setup.type), V = DATA.vocab || [], Qs = DATA.questions || [], inSel = function (id) { return setup.mods.indexOf(id) >= 0; };
     var nQ = Qs.filter(function (q) { return inSel(q.lesson); }).length, nV = V.filter(function (v) { return inSel(v.lesson); }).length, cnt = (T.quiz ? nQ : 0) + (T.en2m || T.m2en || T.listen ? nV : 0);
     var mins = Math.max(1, Math.round(setup.n * ((T.quiz && (T.en2m || T.m2en || T.listen) ? (setup.sec + setup.secV) / 2 : T.quiz ? setup.sec : setup.secV) + 6) / 60));
