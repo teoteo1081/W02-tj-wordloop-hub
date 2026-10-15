@@ -1929,7 +1929,7 @@
   function push() { if (G.isHost && G.st && G.hub && G.st.phase === "lobby") G.st.hub = G.hub; G.lastPush = Date.now(); if (G.ch) G.ch.send({ type: "broadcast", event: "state", payload: pub() }); saveHost(); if (window.Board) Board.onState(G.st); }
   /* 🖤 bảng vẽ chung (js/board.js) — host mở/đóng cho cả phòng + cấp quyền từng người (st.board / st.bperm) */
   if (window.CC) CC.attach({ ch: function () { return G.ch; }, me: function () { return G.me; } });
-  if (window.SWClass) SWClass.attach({ ch: function () { return G.ch; }, me: function () { return G.me; }, isHost: function () { return !!G.isHost; }, players: function () { return (G.online || []).filter(function (p) { return p.play !== false; }).map(function (p) { return { id: p.id, name: p.name, avatar: p.avatar }; }); } });   /* chế độ lớp Speaking/Writing (js/swclass.js) */
+  if (window.SWClass) SWClass.attach({ ch: function () { return G.ch; }, me: function () { return G.me; }, isHost: function () { return !!G.isHost; }, room: function () { return G.room ? G.room.code : ""; }, players: function () { return (G.online || []).filter(function (p) { return p.play !== false; }).map(function (p) { return { id: p.id, name: p.name, avatar: p.avatar }; }); } });   /* chế độ lớp Speaking/Writing (js/swclass.js) */
   if (window.Voice) Voice.attach({ ch: function () { return G.ch; }, me: function () { return G.me; }, isHost: function () { return !!G.isHost; } });
   if (window.Chat) Chat.attach({
     ch: function () { return G.ch; }, me: function () { return G.me; }, st: function () { return G.st; }, isHost: function () { return !!G.isHost; },

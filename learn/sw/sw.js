@@ -52,21 +52,30 @@
     if (S.screen === "sum") return summary();
     return task();
   }
+  function planMin(g) {   /* ước tính tổng thời gian của phần đang chọn */
+    var set = curSet(), tot = 0; if (!set) return 0;
+    set.tasks.forEach(function (t) { if (g.qs.indexOf(t.q) >= 0) { var tm = TIME[S.kind][t.q] || [0, 60]; tot += tm[0] + tm[1]; } });
+    return Math.round(tot / 60);
+  }
+  function roomCard() {
+    var pl = (CTX.players || []).map(function (p) { return '<div class="rc-p" title="' + esc(p.name || "") + '"><span class="rc-av">' + avatarHtml(p.avatar) + "</span><b>" + esc(p.name || "?") + "</b></div>"; }).join("");
+    return '<div class="roomcard"><div class="sub">Mã phòng</div><div class="rc-code">' + esc(CTX.room || "") + '</div><div class="rc-ps">' + pl + "</div></div>";
+  }
   function home() {
     var sets = SETS[S.kind], set = curSet(), g = GROUPS[S.kind];
     if (!g.some(function (x) { return x.k === S.group; })) S.group = "all";
-    var fixed = !!QS.get("kind");
-    var h = '<h1>' + (S.kind === "speaking" ? "🎤 TOEIC Speaking" : "✍️ TOEIC Writing") + '</h1><p class="sub">Luyện theo dạng ETS: đếm giờ chuẩn, ' + (S.kind === "speaking" ? "nói vào micro" : "gõ bài") + ', AI chấm điểm <b>ước tính</b> (không phải điểm chính thức).</p>' +
-      '<div class="tabs"' + (fixed ? " hidden" : "") + '><button class="' + (S.kind === "speaking" ? "on" : "") + '" data-act="kind" data-v="speaking">🎤 Nói (Speaking)</button><button class="' + (S.kind === "writing" ? "on" : "") + '" data-act="kind" data-v="writing">✍️ Viết (Writing)</button></div>';
-    if (S.kind === "speaking" && !SR && !MOCK) h += '<div class="warn">Trình duyệt này không nhận giọng nói (Web Speech). Dùng Chrome/Edge trên máy tính hoặc Android để nói; ở đây bạn vẫn gõ lại lời mình nói được.</div>';
-    h += classBanner() + '<h2>① Chọn đề</h2><div class="setgrid">' + sets.map(function (s, i) { var b = best(S.kind, s.id); return '<button class="' + (s.id === S.setId ? "on" : "") + '" data-act="set" data-v="' + esc(s.id) + '">' + (s.mine ? "📥 " : "") + "Đề " + (i + 1) + "<small>" + (b ? "tốt nhất ~" + b : esc(String(s.title || "").replace(/^Phỏng vấn:\s*/i, "").slice(0, 46))) + "</small></button>"; }).join("") + "</div>";
+    var gsel = g.filter(function (x) { return x.k === S.group; })[0] || g[0], inRoom = classOn();
+    var h = (CTX.inRoom ? roomCard() : "") + '<div class="lobby"><div class="lb-title">' + (S.kind === "speaking" ? "🎤 TOEIC Speaking" : "✍️ TOEIC Writing") + "</div>";
+    if (S.kind === "speaking" && !SR && !MOCK && !inRoom) h += '<div class="warn">Trình duyệt này không nhận giọng nói (Web Speech). Dùng Chrome/Edge trên máy tính hoặc Android để nói; ở đây bạn vẫn gõ lại lời mình nói được.</div>';
+    h += '<div class="lb-grid"><label>Bộ đề<select id="sel-set">' + sets.map(function (x, n) { return '<option value="' + esc(x.id) + '"' + (x.id === S.setId ? " selected" : "") + ">" + (x.mine ? "📥 " : "") + "Đề " + (n + 1) + " — " + esc(String(x.title || "").replace(/^Phỏng vấn:\s*/i, "").slice(0, 34)) + "</option>"; }).join("") + "</select></label>" +
+      '<label>Phần luyện<select id="sel-grp">' + g.map(function (x) { return '<option value="' + x.k + '"' + (x.k === S.group ? " selected" : "") + ">" + esc(x.t) + "</option>"; }).join("") + "</select></label></div>";
+    h += '<p class="sub lb-info">Giờ chuẩn ETS' + (inRoom ? " · bạn bấm giờ, cả phòng cùng thấy" : "") + "</p>";
+    if (inRoom) h += aiToggleHtml();
     if (!sets.length) h += '<p class="sub">Chưa có đề.</p>';
-    if (set) {
-      h += "<h2>② Chọn phần luyện</h2><div class=\"parts\">" + g.map(function (x, i) { var miss = S.kind === "speaking" && x.qs.indexOf(3) >= 0 && x.k === "desc" && !(set.tasks.filter(function (t) { return t.q === 3; })[0] || {}).scene && !(set.tasks.filter(function (t) { return t.q === 3; })[0] || {}).image; return (i === 1 ? '<p class="sub full" style="grid-column:1/-1;margin:6px 0 0">Hoặc luyện riêng từng phần:</p>' : "") + '<button class="' + (x.k === S.group ? "pri" : "") + (i === 0 ? " full" : "") + '" data-act="part" data-v="' + x.k + '"' + (miss ? " disabled" : "") + ">" + (x.k === S.group ? "✓ " : "") + esc(x.t) + "</button>"; }).join("") + "</div>" +
-        '<button class="pri big" data-act="start" data-v="' + esc(S.group) + '" style="width:100%;margin-top:14px;font-size:18px">▶ ' + (classOn() ? "Bắt đầu cho cả phòng" : "Bắt đầu làm bài") + "</button>";
-      var hist = ST.hist.filter(function (h2) { return h2.kind === S.kind && h2.set === set.id; }).slice(-3).reverse();
-      if (hist.length) h += '<h2>Lần làm gần đây</h2><div class="card">' + hist.map(function (x) { return '<div class="row"><span class="sub">' + new Date(x.ts).toLocaleDateString() + " · " + esc(x.gt) + '</span><span style="margin-left:auto"><b>' + x.raw + "/" + x.max + "</b> ≈ " + x.est + "</span></div>"; }).join("") + "</div>";
-    }
+    else h += '<button class="pri big lb-start" data-act="start" data-v="' + esc(S.group) + '">▶ Bắt đầu</button>';
+    h += "</div>";
+    var hist = set ? ST.hist.filter(function (h2) { return h2.kind === S.kind && h2.set === set.id; }).slice(-3).reverse() : [];
+    if (hist.length) h += '<h2>Lần làm gần đây</h2><div class="card">' + hist.map(function (x) { return '<div class="row"><span class="sub">' + new Date(x.ts).toLocaleDateString() + " · " + esc(x.gt) + '</span><span style="margin-left:auto"><b>' + x.raw + "/" + x.max + "</b> ≈ " + x.est + "</span></div>"; }).join("") + "</div>";
     var nrev = (ST.rev || []).filter(function (r) { return r.kind === S.kind; }).length;
     if (nrev) h += '<button class="big" data-act="rev" style="margin-top:10px">📒 Xem lại bài cũ (' + nrev + ")</button>";
     h += '<details><summary>📥 Nạp đề riêng từ file .json (lưu ở máy này)</summary><p class="sub">Dùng file do <code>tools/sw/parse_prepedu.py</code> tạo. Đề nạp ở đây chỉ nằm trong trình duyệt của bạn, không đưa lên web.</p><input type="file" id="imp" accept=".json,application/json"> <button class="soft" data-act="delextra">Xoá đề đã nạp</button></details>';
@@ -75,11 +84,22 @@
   }
   /* ---------- CHẾ ĐỘ LỚP (js/swclass.js ở trang game lo kênh phòng) ---------- */
   /* host trong phòng: Chế độ lớp BẬT sẵn (chỉ tắt khi tự bỏ tick) — trước: chỉ bật khi lúc mở thẻ đã có >=2 người, người vào sau thì host bấm Bắt đầu thành luyện riêng và người chơi không thấy gì */
+  /* màu sáng/tối theo TRANG GAME bên ngoài (không theo hệ điều hành) -> màn người chơi giống hệt màn Admin (TJ 2026-10-14) */
+  function syncTheme() {
+    try {
+      var bg = getComputedStyle(window.parent.document.body).backgroundColor, m = String(bg).match(/[\d.]+/g); if (!m || m.length < 3) return;
+      if (m.length > 3 && +m[3] === 0) return;   /* trong suốt: chưa biết */
+      var lum = (0.2126 * m[0] + 0.7152 * m[1] + 0.0722 * m[2]) / 255;
+      document.documentElement.setAttribute("data-theme", lum < 0.5 ? "dark" : "light");
+    } catch (e) {}
+  }
+  syncTheme(); setInterval(syncTheme, 3000);
   function classOn() { return !!(CTX.inRoom && CTX.isHost && S.classMode !== false); }
   setInterval(function () { if (CTX.inRoom && S.screen !== "task") toParent({ type: "sw-hello", kind: S.kind }); }, 5000);   /* cập nhật danh sách người trong phòng (người vào sau) */
+  function aiOn() { return S.aiGrade === undefined ? S.kind === "writing" : !!S.aiGrade; }
   function aiToggleHtml() {
     if (!(CTX.inRoom && CTX.isHost)) return "";
-    return '<label class="card clsrow"><input type="checkbox" id="aimode"' + (S.aiGrade ? " checked" : "") + '><span>🤖 <b>AI chấm điểm</b> (người chơi dùng mic trên web)<br><span class="sub">Tắt (mặc định): nói bên HelloTalk, web chỉ hiện đề + đồng hồ</span></span></label>';
+    return '<label class="card clsrow"><input type="checkbox" id="aimode"' + (aiOn() ? " checked" : "") + '><span>🤖 <b>AI chấm điểm</b> ' + (S.kind === "writing" ? "(người chơi gõ bài ngay trên web, hết giờ AI chấm)" : "(người chơi dùng mic trên web)") + '<br><span class="sub">' + (S.kind === "writing" ? "Tắt: chỉ hiện đề + đồng hồ, viết ở chỗ khác" : "Tắt (mặc định): nói bên HelloTalk, web chỉ hiện đề + đồng hồ") + "</span></span></label>";
   }
   function classBanner() {
     if (!CTX.inRoom) return "";
@@ -117,7 +137,7 @@
     toParent({ type: "sw-hello", kind: S.kind }); liveRender();
     if (!liveTimer) liveTimer = setInterval(liveTick, 200);
   }
-  function liveSend(st) { st.t = "live"; st.run = LIVE.run; st.ai = S.aiGrade ? 1 : 0; st.kind = S.kind; st.set = S.setId; st.group = S.group; toParent({ type: "sw-class-send", p: st }); liveApply(st); }
+  function liveSend(st) { st.t = "live"; st.run = LIVE.run; st.ai = aiOn() ? 1 : 0; st.kind = S.kind; st.set = S.setId; st.group = S.group; toParent({ type: "sw-class-send", p: st }); liveApply(st); }
   function liveApply(st) {
     if (!st || st.run === S.leftRun) return;
     if (st.phase === "close") {   /* host rời lớp / chuyển sang game khác -> người chơi tự thoát khỏi màn lớp, về game */
@@ -171,7 +191,7 @@
     var L = LIVE, el = $("#tm"); if (!L || S.screen !== "live") return;
     if (CTX.isHost && Date.now() - (L.hbAt || 0) > 4000) {
       L.hbAt = Date.now();
-      toParent({ type: "sw-class-send", p: { t: "live", hb: 1, ai: S.aiGrade ? 1 : 0, run: L.run, kind: S.kind, set: S.setId, group: S.group, i: S.i, phase: L.phase, sp: L.sp, done: L.done, sec: L.tEnd ? Math.max(0, (L.tEnd - Date.now()) / 1000 / SCALE) : 0 } });
+      toParent({ type: "sw-class-send", p: { t: "live", hb: 1, ai: aiOn() ? 1 : 0, run: L.run, kind: S.kind, set: S.setId, group: S.group, i: S.i, phase: L.phase, sp: L.sp, done: L.done, sec: L.tEnd ? Math.max(0, (L.tEnd - Date.now()) / 1000 / SCALE) : 0 } });
     }
     if (!el || !L.tEnd) return;
     var left = Math.max(0, (L.tEnd - Date.now()) / 1000), sh = MOCK ? left / SCALE : left, cd = $("#cd");
@@ -522,7 +542,7 @@
   });
   window.addEventListener("message", function (e) {
     var d = e.data; if (e.origin !== location.origin || !d || typeof d.type !== "string" || d.type.indexOf("sw-") !== 0) return;
-    if (d.type === "sw-ctx") { var np = d.players || [], sig = JSON.stringify([!!d.inRoom, !!d.isHost, np.map(function (p) { return p.id; })]), changed = sig !== CTX.sig; CTX = { inRoom: !!d.inRoom, isHost: !!d.isHost, me: d.me || null, players: np, sig: sig }; revCloudLoad(); if (changed && (S.screen === "home" || (S.screen === "live" && LIVE && LIVE.phase !== "prep" && LIVE.phase !== "resp"))) render(); }
+    if (d.type === "sw-ctx") { var np = d.players || [], sig = JSON.stringify([!!d.inRoom, !!d.isHost, d.room || "", np.map(function (p) { return p.id; })]), changed = sig !== CTX.sig; CTX = { inRoom: !!d.inRoom, isHost: !!d.isHost, me: d.me || null, players: np, room: d.room || "", sig: sig }; revCloudLoad(); if (changed && (S.screen === "home" || (S.screen === "live" && LIVE && LIVE.phase !== "prep" && LIVE.phase !== "resp"))) render(); }
     else if (d.type === "sw-class-start") applyStart(d);
     else if (d.type === "sw-class-live") liveApply(d.p);
     else if (d.type === "sw-class-fin" && d.p) liveFin(d.p.pid);
@@ -530,6 +550,8 @@
   });
   document.addEventListener("change", function (e) {
     if (!e.target) return;
+    if (e.target.id === "sel-set") { S.setId = e.target.value; render(); return; }
+    if (e.target.id === "sel-grp") { S.group = e.target.value; render(); return; }
     if (e.target.id === "clsmode") { S.classMode = e.target.checked; if (S.screen === "home") render(); }
     else if (e.target.id === "aimode") { S.aiGrade = e.target.checked; if (LIVE && S.screen === "live" && CTX.isHost && LIVE.phase !== "prep" && LIVE.phase !== "resp") liveSend({ i: S.i, phase: LIVE.phase, sp: LIVE.sp, done: LIVE.done, sec: 0 }); }
   });

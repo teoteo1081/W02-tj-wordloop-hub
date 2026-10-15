@@ -65,3 +65,16 @@ select.big { max-width:46%; }
 @media (min-width:900px) { body.live #app { max-width:1040px; } body.live .prompt { font-size:26px; line-height:1.55; } body.live .prompt.read { font-size:28px; } body.live .timer { font-size:76px; } body.live .bignum { font-size:110px; } body.live .badge { font-size:15px; } }
 
 .w-ok { color:var(--ok); font-weight:500; text-decoration:none; } .w-bad { color:var(--bad); background:var(--badbg); border-radius:4px; padding:0 2px; font-weight:600; text-decoration:none; } .w-miss { color:var(--warn); background:var(--warnbg); border-radius:4px; padding:0 2px; font-weight:500; text-decoration:none; }
+
+/* ===== màn chọn kiểu phòng chờ game (TJ 2026-10-14: "Speaking/Writing giống phòng chờ này") ===== */
+.roomcard { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:14px 16px; margin:10px 0; }
+.rc-code { font-size:30px; font-weight:900; color:var(--warn); line-height:1.1; letter-spacing:1px; }
+.rc-ps { display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; } .rc-p { display:flex; flex-direction:column; align-items:center; gap:2px; font-size:12px; }
+.rc-av { width:38px; height:38px; border-radius:50%; border:2px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:22px; overflow:hidden; background:var(--bg); } .rc-av img { width:100%; height:100%; object-fit:cover; }
+.lobby { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:16px; margin:10px 0; }
+.lb-title { font-size:18px; font-weight:800; margin-bottom:10px; }
+.lb-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; } @media (max-width:520px) { .lb-grid { grid-template-columns:1fr; } }
+.lobby label { display:flex; flex-direction:column; gap:4px; font-size:12px; color:var(--muted); }
+.lobby select { width:100%; padding:10px 8px; border-radius:10px; background:var(--bg); color:var(--ink); border:1px solid var(--line); font:inherit; font-size:14px; }
+.lb-info { margin:10px 0 6px; } .lb-start { width:100%; font-size:18px; margin-top:12px; }
+.lobby label.clsrow { flex-direction:row; align-items:center; color:var(--ink); font-size:14px; margin:8px 0 0; }
