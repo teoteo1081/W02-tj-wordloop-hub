@@ -53,3 +53,8 @@
 - Tên gọi (Hub → "Khoá học"; "Góc tự học" → "Luyện") và khoá làm mẫu đầu (EA hay CIA).
 - Nối tiến độ Quest lên Supabase? Tách quyền Host?
 - IELTS Academic hay General? Nói: chỉ Chrome/Android hay ghi âm gửi Gemini?
+
+### Cập nhật 2026-10-14 — Chế độ lớp Speaking/Writing: ĐÃ LÀM (game v307)
+- Host (đang trong phòng) tick "👥 Chế độ lớp" ở thẻ Speaking/Writing, bấm ▶ → mọi máy tự mở thẻ + chạy cùng đề/dạng bài; điểm từng câu phát qua kênh phòng (event `sw`) → "🏆 Bảng điểm lớp" ở màn kết quả. Code: `js/swclass.js` (cầu nối), `learn/sw/sw.js` (phía iframe).
+- Đã thử bằng Playwright với phòng giả lập (1 người); CHƯA thử 2 người thật qua Supabase realtime → việc kế: mở 2 trình duyệt cùng 1 phòng để kiểm.
+- Còn lại: import đề prepedu riêng (không commit), ảnh thật cho Q3/Writing Q1–5, thử micro thật, IELTS, skill exam-ingest, ETS 2025.
