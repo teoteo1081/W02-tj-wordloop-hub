@@ -4,7 +4,7 @@
    iframe tạo 1 lần rồi GIỮ SỐNG (ẩn chứ không xoá) để chuyển qua lại không mất lượt đang chơi, và phòng TOEIC bên dưới vẫn chạy. */
 (function () {
   "use strict";
-  var PAGES = { ea: "learn/ea/index.html?v=1", dm: "learn/dm/index.html?v=1", sp: "learn/sw/index.html?v=1&kind=speaking", wr: "learn/sw/index.html?v=1&kind=writing" };
+  var PAGES = { ea: "learn/ea/index.html?v=1", dm: "learn/dm/index.html?v=1", sp: "learn/sw/index.html?v=2&kind=speaking", wr: "learn/sw/index.html?v=2&kind=writing" };
   var TITLES = { ea: "EA Quest", dm: "Marketing Quest", sp: "TOEIC Speaking", wr: "TOEIC Writing" };
   var nav = document.getElementById("g-learn"), top = document.querySelector(".g-top");
   if (!nav || !top) return;
@@ -42,6 +42,7 @@
     if (k === "" || k === "toeic") { show(""); document.dispatchEvent(new CustomEvent("tjwl-sethub", { detail: k === "toeic" ? "test" : "vocab" })); }
     else show(k);
   });
+  document.addEventListener("tjwl-sw-open", function (e) { show(e.detail === "writing" ? "wr" : "sp"); });   /* swclass.js: host bắt đầu lớp -> mở đúng thẻ */
   document.addEventListener("tjwl-learn-home", function () { show(""); });   /* game.js: mở từ bài học -> bỏ lớp phủ EA/Marketing, về thẻ Phòng game */
   window.addEventListener("resize", function () { if (!layer.hidden) place(); });
   try { var last = sessionStorage.getItem("tjwl_learn_tab"); if (last) show(last); } catch (e) {}

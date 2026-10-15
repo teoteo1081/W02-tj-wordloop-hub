@@ -1523,6 +1523,7 @@
     G.ch.on("broadcast", { event: "ans" }, function (m) { if (G.isHost) hostOnAnswer(m.payload); });
     G.ch.on("broadcast", { event: "bmeta" }, function (m) { var d = m.payload || {}, S = G.st || (G.bst = G.bst || { phase: "lobby" }); if ((d.bts || 0) <= (S.bts || 0)) return; if ("board" in d) S.board = d.board; if ("bdoc" in d) S.bdoc = d.bdoc; S.bts = d.bts; if (G.isHost && G.st) push(); else if (window.Board) Board.onState(S); });   /* bảng mở/đóng + bài trên bảng: AI cũng đặt được, bản mới nhất thắng (bts) */
     G.ch.on("broadcast", { event: "chat" }, function (m) { if (window.Chat) Chat.onMsg(m.payload); });
+    G.ch.on("broadcast", { event: "sw" }, function (m) { if (window.SWClass) SWClass.onMsg(m.payload); });   /* chế độ lớp Speaking/Writing */
     G.ch.on("broadcast", { event: "voice" }, function (m) { if (window.Voice) Voice.onMsg(m.payload); });
     G.ch.on("broadcast", { event: "cc" }, function (m) { if (window.CC) CC.onMsg(m.payload); });   /* CC phụ đề (js/cc.js) */   /* 🎤 nói chuyện bằng giọng (js/voice.js) */   /* 💬 chat phòng (js/chat.js) */
     G.ch.on("broadcast", { event: "board" }, function (m) { if (window.Board) Board.onMsg(m.payload); });   /* 🖤 bảng vẽ chung (js/board.js) */
@@ -1908,6 +1909,7 @@
   function push() { if (G.isHost && G.st && G.hub && G.st.phase === "lobby") G.st.hub = G.hub; G.lastPush = Date.now(); if (G.ch) G.ch.send({ type: "broadcast", event: "state", payload: pub() }); saveHost(); if (window.Board) Board.onState(G.st); }
   /* 🖤 bảng vẽ chung (js/board.js) — host mở/đóng cho cả phòng + cấp quyền từng người (st.board / st.bperm) */
   if (window.CC) CC.attach({ ch: function () { return G.ch; }, me: function () { return G.me; } });
+  if (window.SWClass) SWClass.attach({ ch: function () { return G.ch; }, me: function () { return G.me; }, isHost: function () { return !!G.isHost; } });   /* chế độ lớp Speaking/Writing (js/swclass.js) */
   if (window.Voice) Voice.attach({ ch: function () { return G.ch; }, me: function () { return G.me; }, isHost: function () { return !!G.isHost; } });
   if (window.Chat) Chat.attach({
     ch: function () { return G.ch; }, me: function () { return G.me; }, st: function () { return G.st; }, isHost: function () { return !!G.isHost; },

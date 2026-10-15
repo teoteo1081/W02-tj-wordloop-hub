@@ -17,7 +17,7 @@
     speaking: [{ k: "all", t: "Cả bộ 11 câu (~17 phút)", qs: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] }, { k: "read", t: "Q1–2 Đọc to", qs: [1, 2] }, { k: "desc", t: "Q3 Tả ảnh", qs: [3] }, { k: "resp", t: "Q4–6 Trả lời câu hỏi", qs: [4, 5, 6] }, { k: "info", t: "Q7–9 Dựa vào thông tin", qs: [7, 8, 9] }, { k: "sol", t: "Q10 Đề xuất giải pháp", qs: [10] }, { k: "opin", t: "Q11 Nêu ý kiến", qs: [11] }],
     writing: [{ k: "all", t: "Cả bộ 8 câu (~60 phút)", qs: [1, 2, 3, 4, 5, 6, 7, 8] }, { k: "sent", t: "Q1–5 Viết câu theo ảnh", qs: [1, 2, 3, 4, 5] }, { k: "mail", t: "Q6–7 Trả lời email", qs: [6, 7] }, { k: "essay", t: "Q8 Bài luận ý kiến", qs: [8] }]
   };
-  var SETS = { speaking: [], writing: [] }, ST = load(), S = { kind: QS.get("kind") === "writing" ? "writing" : "speaking", setId: "", group: "all", screen: "home" }, timerId = 0, rec = null, recOn = false;
+  var SETS = { speaking: [], writing: [] }, ST = load(), S = { kind: QS.get("kind") === "writing" ? "writing" : "speaking", setId: "", group: "all", screen: "home" }, timerId = 0, rec = null, recOn = false, CTX = { inRoom: false, isHost: false, me: null }, PENDING = null;
 
   /* ---------- lưu ---------- */
   function load() { try { return JSON.parse(localStorage.getItem(KEY)) || { hist: [] }; } catch (e) { return { hist: [] }; } }
@@ -48,7 +48,7 @@
     var h = '<h1>' + (S.kind === "speaking" ? "🎤 TOEIC Speaking" : "✍️ TOEIC Writing") + '</h1><p class="sub">Luyện theo dạng ETS: đếm giờ chuẩn, ' + (S.kind === "speaking" ? "nói vào micro" : "gõ bài") + ', AI chấm điểm <b>ước tính</b> (không phải điểm chính thức).</p>' +
       '<div class="tabs"' + (fixed ? " hidden" : "") + '><button class="' + (S.kind === "speaking" ? "on" : "") + '" data-act="kind" data-v="speaking">🎤 Nói (Speaking)</button><button class="' + (S.kind === "writing" ? "on" : "") + '" data-act="kind" data-v="writing">✍️ Viết (Writing)</button></div>';
     if (S.kind === "speaking" && !SR && !MOCK) h += '<div class="warn">Trình duyệt này không nhận giọng nói (Web Speech). Dùng Chrome/Edge trên máy tính hoặc Android để nói; ở đây bạn vẫn gõ lại lời mình nói được.</div>';
-    h += '<h2>Chọn đề</h2><div class="setgrid">' + sets.map(function (s, i) { var b = best(S.kind, s.id); return '<button class="' + (s.id === S.setId ? "on" : "") + '" data-act="set" data-v="' + esc(s.id) + '">' + (s.mine ? "📥 " : "") + "Đề " + (i + 1) + "<small>" + (b ? "tốt nhất ~" + b : esc(s.title || "")).slice(0, 34) + "</small></button>"; }).join("") + "</div>";
+    h += classBanner() + '<h2>Chọn đề</h2><div class="setgrid">' + sets.map(function (s, i) { var b = best(S.kind, s.id); return '<button class="' + (s.id === S.setId ? "on" : "") + '" data-act="set" data-v="' + esc(s.id) + '">' + (s.mine ? "📥 " : "") + "Đề " + (i + 1) + "<small>" + (b ? "tốt nhất ~" + b : esc(s.title || "")).slice(0, 34) + "</small></button>"; }).join("") + "</div>";
     if (!sets.length) h += '<p class="sub">Chưa có đề.</p>';
     if (set) {
       h += "<h2>Luyện</h2><div class=\"parts\">" + g.map(function (x, i) { var miss = S.kind === "speaking" && x.qs.indexOf(3) >= 0 && x.k === "desc" && !(set.tasks.filter(function (t) { return t.q === 3; })[0] || {}).scene && !(set.tasks.filter(function (t) { return t.q === 3; })[0] || {}).image; return '<button class="' + (i === 0 ? "pri full" : "") + '" data-act="start" data-v="' + x.k + '"' + (miss ? " disabled" : "") + ">" + (i === 0 ? "▶ " : "") + esc(x.t) + "</button>"; }).join("") + "</div>";
@@ -58,6 +58,32 @@
     h += '<details><summary>📥 Nạp đề riêng từ file .json (lưu ở máy này)</summary><p class="sub">Dùng file do <code>tools/sw/parse_prepedu.py</code> tạo. Đề nạp ở đây chỉ nằm trong trình duyệt của bạn, không đưa lên web.</p><input type="file" id="imp" accept=".json,application/json"> <button class="soft" data-act="delextra">Xoá đề đã nạp</button></details>';
     app.innerHTML = h;
     var imp = $("#imp"); if (imp) imp.onchange = importFile;
+  }
+  /* ---------- CHẾ ĐỘ LỚP (js/swclass.js ở trang game lo kênh phòng) ---------- */
+  function classBanner() {
+    if (!CTX.inRoom) return "";
+    if (CTX.isHost) return '<div class="card"><label><input type="checkbox" id="clsmode"' + (S.classMode ? " checked" : "") + '> 👥 <b>Chế độ lớp</b>: bấm ▶ là bắt đầu cho cả phòng</label></div>';
+    return '<div class="warn">👥 Bạn đang trong phòng. Khi host bấm bắt đầu, bài sẽ tự mở ra. Bạn vẫn luyện riêng được.</div>';
+  }
+  function toParent(m) { try { if (window.parent !== window) window.parent.postMessage(m, location.origin); } catch (e) {} }
+  function avatarHtml(a) { a = String(a || ""); return /^https?:/.test(a) ? '<img src="' + esc(a) + '" alt="" style="width:20px;height:20px;border-radius:50%;vertical-align:-5px">' : esc(a.slice(0, 2) || "👤"); }
+  function boardHtml() {
+    if (!S.class) return "";
+    var rows = Object.keys(S.class.board).map(function (k) { return S.class.board[k]; }).sort(function (a, b) { return b.total - a.total; });
+    if (!rows.length) return '<div class="card" id="cls-board"><b>🏆 Bảng điểm lớp</b><p class="sub">Đang chờ kết quả…</p></div>';
+    return '<div class="card" id="cls-board"><b>🏆 Bảng điểm lớp</b><table class="sum">' + rows.map(function (r, i) { return "<tr><td>" + (i + 1) + "</td><td>" + avatarHtml(r.avatar) + " " + esc(r.name) + '</td><td class="n"><b>' + r.total + "</b> điểm · " + r.n + " câu</td></tr>"; }).join("") + "</table></div>";
+  }
+  function updBoard() { var el = $("#cls-board"); if (el) el.outerHTML = boardHtml(); }
+  function classReport(res) {
+    if (!S.class || !CTX.me || res.score == null) return;
+    var me = CTX.me, b = S.class.board, e = b[me.id] || (b[me.id] = { name: me.name || "Bạn", avatar: me.avatar || "", total: 0, n: 0 });
+    e.total += res.score; e.n++;
+    toParent({ type: "sw-class-send", p: { t: "res", run: S.class.run, pid: me.id, name: me.name || "", avatar: me.avatar || "", q: res.q, score: res.score, max: res.max, total: e.total, n: e.n } });
+  }
+  function applyStart(d) {
+    if (!SETS[d.kind].length) { PENDING = d; return; }
+    if (!SETS[d.kind].some(function (x) { return x.id === d.set; })) { toast("Máy bạn chưa có đề này"); return; }
+    clearTimer(); stopSpeech(); S.kind = d.kind; S.setId = d.set; S.class = { run: d.run, board: {} }; S.saved = 0; begin(d.kind, d.group); toast("👥 Lớp bắt đầu!");
   }
   function importFile() {
     var f = this.files[0]; if (!f) return; var r = new FileReader();
@@ -205,7 +231,7 @@
         var out = await ai(sysPrompt(), userPrompt(t, ans)); res.score = Math.max(0, Math.min(max, Math.round(+out.score || 0))); res.fb = out; res.words = nWords(ans);
       }
     } catch (e) { res.err = String(e.message || e); res.score = null; }
-    res.ans = ans; S.results[q] = res; S.phase = "result"; render();
+    res.ans = ans; S.results[q] = res; classReport(res); S.phase = "result"; render();
   }
   function sysPrompt() {
     return S.kind === "speaking" ? "You are a strict but fair TOEIC Speaking rater. The learner's speech was transcribed automatically (punctuation may be missing, small recognition errors are possible: do NOT penalise recognition glitches). You can only judge content, organisation, grammar, vocabulary and fluency signals from the text; do not claim to judge pronunciation. Typical learner answers deserve 1-2 on a 0-3 scale. Reply JSON only."
@@ -237,7 +263,7 @@
       var md = (set.models || {})[t.q]; if (md) h += '<details><summary>📘 Bài mẫu của đề</summary><div class="model">' + esc(md) + "</div></details>";
       h += '<div class="bottom"><div class="in"><button class="big" data-act="retry">↻ Làm lại câu</button><button class="pri big" data-act="next">' + (last ? "Xem kết quả" : "Câu tiếp ▶") + "</button></div></div>";
     }
-    app.innerHTML = h;
+    h = h.replace('<div class="bottom">', boardHtml() + '<div class="bottom">'); app.innerHTML = h;
   }
   function summary() {
     var raw = 0, max = 0, rows = "";
@@ -245,7 +271,7 @@
     var est = Math.round(raw / max * 200 / 5) * 5, lo = Math.max(0, est - 15), hi = Math.min(200, est + 15);
     var h = '<h1>Kết quả</h1><div class="card"><div class="sub">' + esc(S.gt) + ' · ' + (S.kind === "speaking" ? "Speaking" : "Writing") + '</div><div class="est">' + (S.group === "all" ? lo + "–" + hi : raw + "/" + max) + '</div><div class="sub">' + (S.group === "all" ? "Điểm ước tính thang 0–200 (AI, chỉ để tham khảo)" : "Điểm thô của phần đã làm") + '</div><table class="sum">' + rows + '</table><p class="sub">Thang 0–200 quy đổi gần đúng từ điểm thô; điểm thật do ETS chấm có thể khác.</p></div>' +
       '<div class="bottom"><div class="in"><button class="big" data-act="home">Chọn đề khác</button><button class="pri big" data-act="again">↻ Làm lại</button></div></div>';
-    app.innerHTML = h;
+    h = h.replace('<div class="bottom">', boardHtml() + '<div class="bottom">'); app.innerHTML = h;
     if (!S.saved) { S.saved = 1; ST.hist.push({ kind: S.kind, set: S.setId, group: S.group, gt: S.gt, ts: Date.now(), raw: raw, max: max, est: est }); if (ST.hist.length > 80) ST.hist.shift(); save(); }
   }
 
@@ -254,7 +280,7 @@
     var b = e.target.closest("[data-act]"); if (!b || b.disabled) return; var a = b.dataset.act, v = b.dataset.v;
     if (a === "kind") { S.kind = v; S.setId = (SETS[v][0] || {}).id || ""; render(); }
     else if (a === "set") { S.setId = v; render(); }
-    else if (a === "start") { S.saved = 0; begin(S.kind, v); }
+    else if (a === "start") { if (S.classMode && CTX.isHost) toParent({ type: "sw-host-start", kind: S.kind, set: S.setId, group: v }); else { S.class = null; S.saved = 0; begin(S.kind, v); } }
     else if (a === "go") go();
     else if (a === "skipprep") { clearTimer(); startResp(); }
     else if (a === "stop") finish();
@@ -267,6 +293,13 @@
     else if (a === "again") { S.saved = 0; begin(S.kind, S.group); }
     else if (a === "delextra") { try { localStorage.removeItem(EXTRA); } catch (x) {} toast("Đã xoá đề riêng"); setTimeout(function () { location.reload(); }, 700); }
   });
+  window.addEventListener("message", function (e) {
+    var d = e.data; if (e.origin !== location.origin || !d || typeof d.type !== "string" || d.type.indexOf("sw-") !== 0) return;
+    if (d.type === "sw-ctx") { CTX = { inRoom: !!d.inRoom, isHost: !!d.isHost, me: d.me || null }; if (S.screen === "home") render(); }
+    else if (d.type === "sw-class-start") applyStart(d);
+    else if (d.type === "sw-class-res" && S.class && d.p && d.p.run === S.class.run && !(CTX.me && d.p.pid === CTX.me.id)) { var b = S.class.board, p = d.p, e2 = b[p.pid] || (b[p.pid] = { name: p.name || "Bạn học", avatar: p.avatar || "", total: 0, n: 0 }); e2.total = p.total; e2.n = p.n || e2.n; updBoard(); }
+  });
+  document.addEventListener("change", function (e) { if (e.target && e.target.id === "clsmode") S.classMode = e.target.checked; });
   window.addEventListener("pagehide", function () { stopSpeech(); try { speechSynthesis.cancel(); } catch (e) {} });
-  loadSets().then(render);
+  loadSets().then(function () { render(); toParent({ type: "sw-hello", kind: S.kind }); if (PENDING) { var d = PENDING; PENDING = null; applyStart(d); } });
 })();
