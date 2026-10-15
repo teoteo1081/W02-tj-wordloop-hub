@@ -62,6 +62,11 @@
      vào chế độ bảng thì Learning LUÔN hiện (nền bảng); lớp game chỉ lộ ra đúng vùng giữa khi bảng đã có Block, không bao giờ phủ kín Learning. */
   var boardMode = false, seenOn = false, gameOpened = false, boardLearnWas = true;
   function refreshLb() { try { if (w.App && w.App.renderSidebarLbMini) w.App.renderSidebarLbMini(true); } catch (e) {} }   /* ô Xếp hạng cột trái: chế độ bảng = người chơi game, mọi thời gian */   /* gameOpened = thẻ 🎮 Game đã mở bằng open(); chế độ bảng KHÔNG gọi open() nên không đụng tới nút Learning / Game */
+  /* rời Bảng dù vào bằng cách nào: nút Bảng của WordLoop (boardMode) hoặc nút Bảng trong game (boardOnState + lớp game bị ẩn theo kiểu "idle", boardMode=false) */
+  function leaveBoardAny() {
+    if (boardMode) leaveBoard();
+    else if (boardOnState) { setBoardState(false, false); if (gameOpened) setFit(true); }
+  }
   function enterBoard() {
     boardMode = true; seenOn = false;
     try { if (w.App && w.App.showBlockList) w.App.showBlockList(); } catch (e) {}   /* Learning về màn danh sách Block */
@@ -104,11 +109,16 @@
   }
   document.addEventListener("click", function (e) { if (e.target.closest && e.target.closest("#lbd-users")) openUsers(); });
   /* ✕ Về phòng chờ (và phím Esc khi đang ở màn Bảng, không có menu/hộp thoại nào đang mở) = thoát Bảng, mở lại thẻ Game ở phòng chờ */
-  function backToLobby() { if (!boardMode) return; closeBoardMode(); leaveBoard(); if (!isOpen()) open(); }
+  function backToLobby() {
+    if (!boardMode && !boardOnState) return;
+    closeBoardMode();
+    if (boardMode) { leaveBoard(); if (!isOpen()) open(); }   /* vào bảng từ nút Bảng của WordLoop */
+    else { setBoardState(false, false); if (gameOpened) setFit(true); }   /* vào bảng từ nút Bảng BÊN TRONG game (boardMode=false, game vẫn mở): chỉ tắt bảng + lộ lại phòng chờ */
+  }
   var lbdBackAt = 0;
   document.addEventListener("pointerdown", function (e) { if (e.target.closest && e.target.closest("#lbd-close")) { lbdBackAt = Date.now(); backToLobby(); } });   /* bấm xuống là chạy (không chờ thả ra) */
   document.addEventListener("click", function (e) { if (e.target.closest && e.target.closest("#lbd-close") && Date.now() - lbdBackAt > 800) backToLobby(); });   /* bàn phím / trường hợp không có pointerdown */
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !e.defaultPrevented && boardMode && !gameOpened) backToLobby(); });   /* chế độ Bảng: nút Quản lý người chơi (pop-up) trên hàng avatar đầu trang, TJ 2026-10-08 */
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !e.defaultPrevented && (boardMode || (boardOnState && document.body.classList.contains("board-skin")))) backToLobby(); });   /* chế độ Bảng: nút Quản lý người chơi (pop-up) trên hàng avatar đầu trang, TJ 2026-10-08 */
   w.addEventListener("message", function (e) {
     if (e.origin !== location.origin || !e.data || e.data.type !== "tjwl-board-people") return;
     lbdPeople = e.data; lbdRender();
@@ -129,7 +139,7 @@
   /* "Game →" trên Bảng (game.js playBlock): rời chế độ Bảng rồi hiện thẻ Game (phòng chờ đã chọn sẵn Block). Trước đây không ai nhận tin này nên nút không làm gì. */
   w.addEventListener("message", function (e) {
     if (e.origin !== location.origin || !e.data || e.data.type !== "tjwl-game-show") return;
-    if (boardMode) leaveBoard();
+    leaveBoardAny();
     if (!isOpen()) open();
   });
   w.addEventListener("message", function (e) {
@@ -210,7 +220,7 @@
   /* Mở game với chủ đề chọn sẵn (nút 🎮 trên Block card / chuột phải "🎮 Mở phòng game"). Game chưa mở -> tạo iframe
      với ?scope=; đã mở -> gửi postMessage để game đổi chủ đề tại chỗ (không tải lại, giữ phòng/người chơi). */
   function openScope(table, id, title) {
-    if (boardMode) { closeBoardMode(); leaveBoard(); }   /* đang ở chế độ Bảng: rời Bảng để thấy trang game (lớp game đang bị ẩn) */
+    if (boardMode || boardOnState) { closeBoardMode(); leaveBoardAny(); }   /* đang ở chế độ Bảng (từ nút Bảng của WordLoop HOẶC nút Bảng trong game): rời Bảng để thấy trang game (lớp game đang bị ẩn) */
     if (!layer.firstChild) {
       var f = document.createElement("iframe");
       f.src = "game.html?embed=1&t=" + Date.now() + "&scope=" + encodeURIComponent(table + ":" + id) + "&title=" + encodeURIComponent(title || "");
@@ -260,6 +270,7 @@
     var t = el.dataset.nb ? "notebooks" : el.dataset.sec ? "sections" : "pages", id = el.dataset.nb || el.dataset.sec || el.dataset.page;
     var nm = String(el.getAttribute("title") || el.textContent || "").replace(/[⋯s]+$/g, "").replace(/s+/g, " ").trim().slice(0, 60);
     e.stopImmediatePropagation(); e.preventDefault();
+    if (boardOnState) { openBoard(t, id, nm); return; }   /* TJ 2026-10-14: bảng đang mở -> bấm Notebook/Section/Page = đưa mục đó lên bảng (không chỉ chọn chủ đề ván) */
     openScope(t, id, nm);
     w.$$("#sidebar-left .game-pick, #sidebar-right .game-pick").forEach(function (x) { x.classList.remove("game-pick"); }); el.classList.add("game-pick");
   }
