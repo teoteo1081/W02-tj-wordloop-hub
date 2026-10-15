@@ -94,7 +94,7 @@
     var qmin = Math.min.apply(null, gsel.qs), qmax = Math.max.apply(null, gsel.qs);
     function fld(label, inner, cls) { return '<label' + (cls ? ' class="' + cls + '"' : "") + ">" + label + inner + "</label>"; }
     var h = (CTX.inRoom ? roomCard() : "") + '<div class="hubpanel"><div class="hp-grid">' +
-      fld("Bộ đề", '<select id="sel-src"><option value="std"' + (S.src !== "mine" ? " selected" : "") + ">TOEIC " + (S.kind === "speaking" ? "Speaking" : "Writing") + " (đề AI sinh)</option>" + (hasMine ? '<option value="mine"' + (S.src === "mine" ? " selected" : "") + ">📥 Đề riêng (nạp từ file)</option>" : "") + "</select>") +
+      fld("Bộ đề", '<select id="sel-src"><option value="std"' + (S.src !== "mine" ? " selected" : "") + ">TOEIC " + (S.kind === "speaking" ? "Speaking" : "Writing") + " (đề AI sinh)</option>" + (hasMine ? '<option value="mine"' + (S.src === "mine" ? " selected" : "") + ">📥 Đề riêng (đề trong phòng / nạp từ file)</option>" : "") + "</select>") +
       fld("Đề", '<select id="sel-set">' + sets.map(function (x, n) { return '<option value="' + esc(x.id) + '"' + (x.id === S.setId ? " selected" : "") + ">Test " + (n + 1) + " — " + esc(String(x.title || "").replace(/^Phỏng vấn:\s*/i, "").slice(0, 30)) + "</option>"; }).join("") + "</select>") +
       fld("Phạm vi", '<select id="sel-scope"><option value="all"' + (scopeAll ? " selected" : "") + '>🧩 Cả bộ</option><option value="part"' + (scopeAll ? "" : " selected") + ">🧩 Từng Part</option></select>") +
       fld("Part", '<select id="sel-grp"' + (scopeAll ? " disabled" : "") + ">" + parts.map(function (x) { return '<option value="' + x.k + '"' + (x.k === S.group ? " selected" : "") + ">" + esc(x.t) + "</option>"; }).join("") + "</select>") +
@@ -161,7 +161,7 @@
     if (KIND0 && d.kind && d.kind !== KIND0) return;
     if (LIVE && LIVE.run === d.run) return;   /* tin bắt đầu gửi lại (khung nạp xong / nhịp) -> không dựng lại giữa chừng */
     if (!SETS[d.kind].length) { PENDING = d; return; }
-    if (!SETS[d.kind].some(function (x) { return x.id === d.set; })) { toast("Máy bạn chưa có đề này"); return; }
+    if (!SETS[d.kind].some(function (x) { return x.id === d.set; })) { if (!privOK && CTX.room) { PENDING = d; privLoad(); return; } toast("Máy bạn chưa có đề này"); return; }
     clearTimer(); stopSpeech(); S.kind = d.kind; S.setId = d.set; liveInit(d); toParent({ type: "sw-want-open", kind: d.kind }); toast("👥 Lớp bắt đầu!");
   }
   /* ---------- LỚP TRỰC TIẾP: host điều khiển, cả phòng thấy đề + đồng hồ ngược, không chấm điểm, không âm thanh ---------- */
@@ -364,6 +364,22 @@
     save();
   }
   /* đồng bộ Supabase (bảng sw_history, xem tools/sw_history.sql): chỉ lưu câu chưa đạt tối đa, giữ 50 bài gần nhất/người, xoá >90 ngày; chưa có bảng/mạng lỗi thì im lặng dùng bản trên máy */
+  /* ĐỀ RIÊNG TRONG PHÒNG (Supabase, bảng sw_private_sets): đề nguyên văn có bản quyền KHÔNG nằm trong repo công khai; chỉ đọc được qua hàm sw_private_get(mã phòng) -> người trong phòng được phép thấy */
+  var privFor = "", privOK = false;
+  async function privLoad() {
+    var room = CTX.room; if (!room || room === privFor) return; privFor = room; privOK = false;
+    try {
+      var r = await sbRest("rpc/sw_private_get", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ p_room: room }) }); if (!r.ok) { privOK = true; return; }
+      (await r.json()).forEach(function (st) {
+        var k = st.kind === "writing" ? "writing" : "speaking"; if (!st || SETS[k].some(function (x) { return x.id === st.id; })) return;
+        st.mine = 1; SETS[k].push(st);
+      });
+      privOK = true;
+      if (PENDING && SETS[PENDING.kind].length) { var pp = PENDING; PENDING = null; applyStart(pp); }
+      else if (S.screen === "home") render();
+    } catch (e) {}
+    privOK = true; if (PENDING && SETS[PENDING.kind].length) { var p2 = PENDING; PENDING = null; applyStart(p2); }
+  }
   function sbRest(path, opt) {
     opt = opt || {};
     return fetch(String(CFG.SUPABASE_URL || "").replace(/\/$/, "") + "/rest/v1/" + path, { method: opt.method || "GET", headers: Object.assign({ apikey: CFG.SUPABASE_ANON_KEY, Authorization: "Bearer " + CFG.SUPABASE_ANON_KEY, "Content-Type": "application/json" }, opt.headers || {}), body: opt.body });
@@ -730,7 +746,7 @@
   });
   window.addEventListener("message", function (e) {
     var d = e.data; if (e.origin !== location.origin || !d || typeof d.type !== "string" || d.type.indexOf("sw-") !== 0) return;
-    if (d.type === "sw-ctx") { var np = d.players || [], sig = JSON.stringify([!!d.inRoom, !!d.isHost, d.room || "", np.map(function (p) { return p.id; })]), changed = sig !== CTX.sig; CTX = { inRoom: !!d.inRoom, isHost: !!d.isHost, me: d.me || null, players: np, room: d.room || "", sig: sig }; revCloudLoad(); maybeRestore(); if (changed && (S.screen === "home" || (S.screen === "live" && LIVE && !busy(LIVE)))) render(); }
+    if (d.type === "sw-ctx") { var np = d.players || [], sig = JSON.stringify([!!d.inRoom, !!d.isHost, d.room || "", np.map(function (p) { return p.id; })]), changed = sig !== CTX.sig; CTX = { inRoom: !!d.inRoom, isHost: !!d.isHost, me: d.me || null, players: np, room: d.room || "", sig: sig }; revCloudLoad(); privLoad(); maybeRestore(); if (changed && (S.screen === "home" || (S.screen === "live" && LIVE && !busy(LIVE)))) render(); }
     else if (d.type === "sw-class-start") applyStart(d);
     else if (d.type === "sw-class-live") liveApply(d.p);
     else if (d.type === "sw-class-fin" && d.p) liveFin(d.p.pid);
