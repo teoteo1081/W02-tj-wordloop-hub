@@ -41,7 +41,7 @@
   function waitView() {
     app.innerHTML = '<div class="card" style="text-align:center;margin-top:30px"><div style="font-size:42px">⏳</div><h2>Đang chờ host bắt đầu</h2><p class="sub">Khi host bấm bắt đầu, đề sẽ tự hiện ra ở đây.</p><button class="big" data-act="leave">← Về phòng chờ</button></div>';
     clearTimeout(S.leaveT);
-    S.leaveT = setTimeout(function () { if (S.screen === "home" && !LIVE && !PENDING && CTX.inRoom && !CTX.isHost) toParent({ type: "sw-leave" }); }, 2500);
+    S.leaveT = setTimeout(function () { if (S.screen === "home" && !LIVE && !PENDING && CTX.inRoom && !CTX.isHost) toParent({ type: "sw-leave" }); }, 15000);   /* 15s: đủ để nhận nhịp trạng thái của host (4s/lần) nếu lớp đã bắt đầu; lớp mở thì không rời */
   }
   function render() {
     document.body.classList.toggle("live", S.screen === "live");
@@ -52,32 +52,54 @@
     if (S.screen === "sum") return summary();
     return task();
   }
-  function planMin(g) {   /* ước tính tổng thời gian của phần đang chọn */
-    var set = curSet(), tot = 0; if (!set) return 0;
-    set.tasks.forEach(function (t) { if (g.qs.indexOf(t.q) >= 0) { var tm = TIME[S.kind][t.q] || [0, 60]; tot += tm[0] + tm[1]; } });
-    return Math.round(tot / 60);
+  var TIPS = {
+    speaking: [["Q1–2 Đọc to", "Ngắt ở dấu phẩy và dấu chấm, nhấn từ nội dung, đọc rõ số / ngày / tên riêng; đọc vừa phải để kịp hết đoạn."], ["Q3 Tả ảnh", "Theo thứ tự: ảnh chụp ở đâu → chủ thể chính đang làm gì → vài chi tiết → cảm giác chung. Đừng sa đà chi tiết nhỏ."], ["Q4–6 Trả lời câu hỏi", "Nói đáp án ngay, rồi lý do, rồi 1 ví dụ ngắn. Chỉ có 3 giây chuẩn bị nên bắt đầu nói luôn."], ["Q7–9 Dựa vào thông tin", "Tìm đúng thông tin trong bảng, không đọc nguyên văn, trả lời đúng điều được hỏi."], ["Q10 Đề xuất giải pháp", "Nhắc lại vấn đề → 2 giải pháp → câu kết."], ["Q11 Nêu ý kiến", "Ý kiến → 2 lý do → 1 ví dụ → câu kết."], ["Chung", "Nói đủ thời gian, không im lặng. Lỡ sai thì nói tiếp, đừng quay lại sửa."]],
+    writing: [["Q1–5 Viết câu theo ảnh", "Dùng ĐÚNG cả hai từ cho sẵn, viết 1 câu hoàn chỉnh, đúng ngữ pháp, soát chính tả."], ["Q6–7 Trả lời email", "Chào + nêu lý do viết, trả lời đủ TỪNG yêu cầu trong email, giữ giọng lịch sự, kết + tên."], ["Q8 Bài luận ý kiến", "Từ 300 từ: nêu ý kiến + 2–3 lý do + ví dụ + kết; chia đoạn rõ ràng."], ["Chung", "Chừa 1–2 phút cuối để đọc lại và soát lỗi."]]
+  };
+  function guideHtml() {
+    var tm = TIME[S.kind], gs = GROUPS[S.kind], tot = 0, rows = gs.filter(function (g) { return g.k !== "all"; }).map(function (g) {
+      var sec = 0; g.qs.forEach(function (q) { sec += (tm[q] || [0, 0])[0] + (tm[q] || [0, 0])[1]; }); tot += sec;
+      return '<div class="gd-row"><span>' + esc(g.t) + "</span><span>" + g.qs.length + " câu</span><span>" + mmss(sec) + "</span></div>";
+    }).join("");
+    return '<div class="guide"><p class="sub">Hub này để <b>làm đề thi</b> (TOEIC ' + (S.kind === "speaking" ? "Speaking" : "Writing") + "): làm cả bộ, hoặc chọn từng Part / khoảng câu. Thời gian mặc định theo đề thi thật:</p>" +
+      '<h3>' + (S.kind === "speaking" ? "🎤 Speaking" : "✍️ Writing") + ' <span class="sub">' + gs[0].qs.length + " câu · " + Math.round(tot / 60) + " phút · " + (S.kind === "speaking" ? "nói vào micro, AI chấm điểm ước tính" : "gõ bài, AI chấm điểm ước tính") + "</span></h3>" + rows + "</div>";
+  }
+  function tipsHtml() {
+    return '<div class="card tips"><b>🧠 Chiến thuật đạt điểm cao</b>' + TIPS[S.kind].map(function (x) { return "<p><b>" + esc(x[0]) + ":</b> " + esc(x[1]) + "</p>"; }).join("") + "</div>";
   }
   function roomCard() {
     var pl = (CTX.players || []).map(function (p) { return '<div class="rc-p" title="' + esc(p.name || "") + '"><span class="rc-av">' + avatarHtml(p.avatar) + "</span><b>" + esc(p.name || "?") + "</b></div>"; }).join("");
     return '<div class="roomcard"><div class="sub">Mã phòng</div><div class="rc-code">' + esc(CTX.room || "") + '</div><div class="rc-ps">' + pl + "</div></div>";
   }
   function home() {
-    var sets = SETS[S.kind], set = curSet(), g = GROUPS[S.kind];
+    var all = SETS[S.kind], hasMine = all.some(function (x) { return x.mine; });
+    if (S.src === "mine" && !hasMine) S.src = "std";
+    var sets = all.filter(function (x) { return S.src === "mine" ? x.mine : !x.mine; }), set = curSet();
+    if (!set || sets.indexOf(set) < 0) { set = sets[0]; if (set) S.setId = set.id; }
+    var g = GROUPS[S.kind], parts = g.filter(function (x) { return x.k !== "all"; });
     if (!g.some(function (x) { return x.k === S.group; })) S.group = "all";
-    var gsel = g.filter(function (x) { return x.k === S.group; })[0] || g[0], inRoom = classOn();
-    var h = (CTX.inRoom ? roomCard() : "") + '<div class="lobby"><div class="lb-title">' + (S.kind === "speaking" ? "🎤 TOEIC Speaking" : "✍️ TOEIC Writing") + "</div>";
-    if (S.kind === "speaking" && !SR && !MOCK && !inRoom) h += '<div class="warn">Trình duyệt này không nhận giọng nói (Web Speech). Dùng Chrome/Edge trên máy tính hoặc Android để nói; ở đây bạn vẫn gõ lại lời mình nói được.</div>';
-    h += '<div class="lb-grid"><label>Bộ đề<select id="sel-set">' + sets.map(function (x, n) { return '<option value="' + esc(x.id) + '"' + (x.id === S.setId ? " selected" : "") + ">" + (x.mine ? "📥 " : "") + "Đề " + (n + 1) + " — " + esc(String(x.title || "").replace(/^Phỏng vấn:\s*/i, "").slice(0, 34)) + "</option>"; }).join("") + "</select></label>" +
-      '<label>Phần luyện<select id="sel-grp">' + g.map(function (x) { return '<option value="' + x.k + '"' + (x.k === S.group ? " selected" : "") + ">" + esc(x.t) + "</option>"; }).join("") + "</select></label></div>";
-    h += '<p class="sub lb-info">Giờ chuẩn ETS' + (inRoom ? " · bạn bấm giờ, cả phòng cùng thấy" : "") + "</p>";
-    if (inRoom) h += aiToggleHtml();
-    if (!sets.length) h += '<p class="sub">Chưa có đề.</p>';
-    else h += '<button class="pri big lb-start" data-act="start" data-v="' + esc(S.group) + '">▶ Bắt đầu</button>';
-    h += "</div>";
+    var gsel = g.filter(function (x) { return x.k === S.group; })[0], scopeAll = S.group === "all", inRoom = classOn();
+    var qmin = Math.min.apply(null, gsel.qs), qmax = Math.max.apply(null, gsel.qs);
+    function fld(label, inner, cls) { return '<label' + (cls ? ' class="' + cls + '"' : "") + ">" + label + inner + "</label>"; }
+    var h = (CTX.inRoom ? roomCard() : "") + '<div class="hubpanel"><div class="hp-grid">' +
+      fld("Bộ đề", '<select id="sel-src"><option value="std"' + (S.src !== "mine" ? " selected" : "") + ">TOEIC " + (S.kind === "speaking" ? "Speaking" : "Writing") + " (đề AI sinh)</option>" + (hasMine ? '<option value="mine"' + (S.src === "mine" ? " selected" : "") + ">📥 Đề riêng (nạp từ file)</option>" : "") + "</select>") +
+      fld("Đề", '<select id="sel-set">' + sets.map(function (x, n) { return '<option value="' + esc(x.id) + '"' + (x.id === S.setId ? " selected" : "") + ">Test " + (n + 1) + " — " + esc(String(x.title || "").replace(/^Phỏng vấn:\s*/i, "").slice(0, 30)) + "</option>"; }).join("") + "</select>") +
+      fld("Phạm vi", '<select id="sel-scope"><option value="all"' + (scopeAll ? " selected" : "") + '>🧩 Cả bộ</option><option value="part"' + (scopeAll ? "" : " selected") + ">🧩 Từng Part</option></select>") +
+      fld("Part", '<select id="sel-grp"' + (scopeAll ? " disabled" : "") + ">" + parts.map(function (x) { return '<option value="' + x.k + '"' + (x.k === S.group ? " selected" : "") + ">" + esc(x.t) + "</option>"; }).join("") + "</select>") +
+      fld("Kiểu chơi", '<select disabled><option>' + (inRoom ? "Cùng 1 câu (host bấm giờ)" : "Luyện riêng") + "</option></select>") +
+      fld("Giây mỗi câu", '<input type="text" value="Theo đề thi thật" disabled>') +
+      fld("Từ câu", '<input type="number" id="q-from" min="' + qmin + '" max="' + qmax + '" value="' + (S.qFrom || qmin) + '">') +
+      fld("Đến câu", '<input type="number" id="q-to" min="' + qmin + '" max="' + qmax + '" value="' + (S.qTo || qmax) + '">') +
+      (inRoom ? '<label class="chk"><input type="checkbox" id="hostplays"' + (S.hostPlays !== false ? " checked" : "") + "> Host cũng chơi</label>" : "<span></span>") + "</div>" +
+      (inRoom ? aiToggleHtml() : "") +
+      (S.kind === "speaking" && !SR && !MOCK && !inRoom ? '<div class="warn">Trình duyệt này không nhận giọng nói (Web Speech). Dùng Chrome/Edge trên máy tính hoặc Android để nói; ở đây bạn vẫn gõ lại lời mình nói được.</div>' : "") +
+      '<div class="hp-btns">' + (sets.length ? '<button class="pri big" data-act="start" data-v="' + esc(S.group) + '">▶ Bắt đầu làm bài</button>' : '<span class="sub">Chưa có đề.</span>') +
+      (((ST.rev || []).filter(function (r) { return r.kind === S.kind; }).length) ? '<button class="big" data-act="rev">📒 Bài đã làm (' + (ST.rev || []).filter(function (r) { return r.kind === S.kind; }).length + ")</button>" : "") +
+      '<button class="big" data-act="tips">🧠 Chiến thuật đạt điểm cao</button></div></div>';
+    if (S.showTips) h += tipsHtml();
     var hist = set ? ST.hist.filter(function (h2) { return h2.kind === S.kind && h2.set === set.id; }).slice(-3).reverse() : [];
     if (hist.length) h += '<h2>Lần làm gần đây</h2><div class="card">' + hist.map(function (x) { return '<div class="row"><span class="sub">' + new Date(x.ts).toLocaleDateString() + " · " + esc(x.gt) + '</span><span style="margin-left:auto"><b>' + x.raw + "/" + x.max + "</b> ≈ " + x.est + "</span></div>"; }).join("") + "</div>";
-    var nrev = (ST.rev || []).filter(function (r) { return r.kind === S.kind; }).length;
-    if (nrev) h += '<button class="big" data-act="rev" style="margin-top:10px">📒 Xem lại bài cũ (' + nrev + ")</button>";
+    h += guideHtml();
     h += '<details><summary>📥 Nạp đề riêng từ file .json (lưu ở máy này)</summary><p class="sub">Dùng file do <code>tools/sw/parse_prepedu.py</code> tạo. Đề nạp ở đây chỉ nằm trong trình duyệt của bạn, không đưa lên web.</p><input type="file" id="imp" accept=".json,application/json"> <button class="soft" data-act="delextra">Xoá đề đã nạp</button></details>';
     app.innerHTML = h;
     var imp = $("#imp"); if (imp) imp.onchange = importFile;
@@ -96,6 +118,7 @@
   syncTheme(); setInterval(syncTheme, 3000);
   function classOn() { return !!(CTX.inRoom && CTX.isHost && S.classMode !== false); }
   setInterval(function () { if (CTX.inRoom && S.screen !== "task") toParent({ type: "sw-hello", kind: S.kind }); }, 5000);   /* cập nhật danh sách người trong phòng (người vào sau) */
+  function plist() { return (CTX.players || []).filter(function (p) { return !(CTX.isHost && S.hostPlays === false && CTX.me && p.id === CTX.me.id); }); }
   function aiOn() { return S.aiGrade === undefined ? S.kind === "writing" : !!S.aiGrade; }
   function aiToggleHtml() {
     if (!(CTX.inRoom && CTX.isHost)) return "";
@@ -124,20 +147,21 @@
     toParent({ type: "sw-class-send", p: Object.assign({ t: "res", run: S.class.run, total: e.total, n: e.n }, rec) });
   }
   function applyStart(d) {
+    if (LIVE && LIVE.run === d.run) return;   /* tin bắt đầu gửi lại (khung nạp xong / nhịp) -> không dựng lại giữa chừng */
     if (!SETS[d.kind].length) { PENDING = d; return; }
     if (!SETS[d.kind].some(function (x) { return x.id === d.set; })) { toast("Máy bạn chưa có đề này"); return; }
-    clearTimer(); stopSpeech(); S.kind = d.kind; S.setId = d.set; liveInit(d); toast("👥 Lớp bắt đầu!");
+    clearTimer(); stopSpeech(); S.kind = d.kind; S.setId = d.set; liveInit(d); toParent({ type: "sw-want-open", kind: d.kind }); toast("👥 Lớp bắt đầu!");
   }
   /* ---------- LỚP TRỰC TIẾP: host điều khiển, cả phòng thấy đề + đồng hồ ngược, không chấm điểm, không âm thanh ---------- */
   function liveInit(d) {
     var g = GROUPS[d.kind].filter(function (x) { return x.k === d.group; })[0] || GROUPS[d.kind][0], set = curSet();
     clearTimer(); stopSpeech();
-    S.kind = d.kind; S.group = g.k; S.gt = g.t; S.tasks = set.tasks.filter(function (t) { return g.qs.indexOf(t.q) >= 0 && (d.kind === "writing" || t.type !== "describe" || t.scene || t.image); });
+    S.kind = d.kind; S.group = g.k; S.gt = g.t; S.qFrom = d.from || null; S.qTo = d.to || null; S.tasks = set.tasks.filter(function (t) { return g.qs.indexOf(t.q) >= 0 && (!S.qFrom || t.q >= S.qFrom) && (!S.qTo || t.q <= S.qTo) && (d.kind === "writing" || t.type !== "describe" || t.scene || t.image); });
     S.i = 0; S.screen = "live"; S.class = { run: d.run, board: {}, rq: {} }; S.saved = 1; S.results = {}; LIVE = { run: d.run, phase: "show", sp: null, done: {}, tEnd: 0, tot: 0 };
     toParent({ type: "sw-hello", kind: S.kind }); liveRender();
     if (!liveTimer) liveTimer = setInterval(liveTick, 200);
   }
-  function liveSend(st) { st.t = "live"; st.run = LIVE.run; st.ai = aiOn() ? 1 : 0; st.kind = S.kind; st.set = S.setId; st.group = S.group; toParent({ type: "sw-class-send", p: st }); liveApply(st); }
+  function liveSend(st) { st.t = "live"; st.run = LIVE.run; st.ai = aiOn() ? 1 : 0; st.from = S.qFrom || 0; st.to = S.qTo || 0; st.kind = S.kind; st.set = S.setId; st.group = S.group; toParent({ type: "sw-class-send", p: st }); liveApply(st); }
   function liveApply(st) {
     if (!st || st.run === S.leftRun) return;
     if (st.phase === "close") {   /* host rời lớp / chuyển sang game khác -> người chơi tự thoát khỏi màn lớp, về game */
@@ -146,7 +170,8 @@
     }
     if (!LIVE || st.run !== LIVE.run) {   /* vào phòng sau: dựng màn hình theo trạng thái host đang phát */
       if (!st.kind || !st.set || !SETS[st.kind].some(function (x) { return x.id === st.set; })) return;
-      S.setId = st.set; liveInit({ kind: st.kind, group: st.group, run: st.run });
+      S.setId = st.set; liveInit({ kind: st.kind, group: st.group, run: st.run, from: st.from, to: st.to });
+      toParent({ type: "sw-want-open", kind: st.kind });   /* lớp đang chạy -> bảo trang cha mở lại lớp phủ (nếu người chơi lỡ bị đóng) */
     }
     var sig = [st.i, st.phase, st.sp && st.sp.id, Object.keys(st.done || {}).length, st.ai ? 1 : 0].join("|");
     if (LIVE.sig === sig && st.hb) { LIVE.tot = (st.sec || 0) * SCALE; LIVE.tEnd = st.sec ? Date.now() + LIVE.tot * 1000 : 0; return; }
@@ -163,7 +188,7 @@
     var L = LIVE; if (!L || !CTX.isHost || L.adv || L.phase !== "resp") return;
     if (L.sp) { if (L.sp.id === pid) { L.adv = 1; liveNext(); } return; }
     L.fins = L.fins || {}; L.fins[pid] = 1;
-    if (Object.keys(L.fins).length >= Math.max(1, (CTX.players || []).length)) { L.adv = 1; liveNext(); }
+    if (Object.keys(L.fins).length >= Math.max(1, plist().length)) { L.adv = 1; liveNext(); }
   }
   function myTurn(st) {   /* tới lượt máy này: host chọn mình, hoặc "cả lớp" (sp rỗng) */
     if (!st || (st.phase !== "prep" && st.phase !== "resp")) return false;
@@ -184,14 +209,14 @@
   function liveNext() {   /* host: hết giờ (hoặc bấm Dừng) pha hiện tại */
     var L = LIVE, tm = liveTimes(), st = { i: S.i, sp: L.sp, done: L.done };
     if (L.phase === "prep") { st.phase = "resp"; st.sec = tm[1]; }
-    else { st.done = Object.assign({}, L.done); if (L.sp) st.done[L.sp.id] = 1; else if (S.kind === "speaking") (CTX.players || []).forEach(function (p) { st.done[p.id] = 1; }); st.phase = "idle"; st.sec = 0; st.sp = null; }
+    else { st.done = Object.assign({}, L.done); if (L.sp) st.done[L.sp.id] = 1; else if (S.kind === "speaking") plist().forEach(function (p) { st.done[p.id] = 1; }); st.phase = "idle"; st.sec = 0; st.sp = null; }
     liveSend(st);
   }
   function liveTick() {
     var L = LIVE, el = $("#tm"); if (!L || S.screen !== "live") return;
     if (CTX.isHost && Date.now() - (L.hbAt || 0) > 4000) {
       L.hbAt = Date.now();
-      toParent({ type: "sw-class-send", p: { t: "live", hb: 1, ai: aiOn() ? 1 : 0, run: L.run, kind: S.kind, set: S.setId, group: S.group, i: S.i, phase: L.phase, sp: L.sp, done: L.done, sec: L.tEnd ? Math.max(0, (L.tEnd - Date.now()) / 1000 / SCALE) : 0 } });
+      toParent({ type: "sw-class-send", p: { t: "live", hb: 1, ai: aiOn() ? 1 : 0, from: S.qFrom || 0, to: S.qTo || 0, run: L.run, kind: S.kind, set: S.setId, group: S.group, i: S.i, phase: L.phase, sp: L.sp, done: L.done, sec: L.tEnd ? Math.max(0, (L.tEnd - Date.now()) / 1000 / SCALE) : 0 } });
     }
     if (!el || !L.tEnd) return;
     var left = Math.max(0, (L.tEnd - Date.now()) / 1000), sh = MOCK ? left / SCALE : left, cd = $("#cd");
@@ -220,17 +245,19 @@
       if (!host) h += "<p><i>Đợi host bấm Bắt đầu…</i></p>";
     }
     h += "</div>";
-    if (!run && L.my && L.myQ === t.q) h += L.my === "grading" ? '<div class="card" style="text-align:center"><span class="spin"></span> AI đang chấm bài của bạn…</div>' : (S.results[t.q] ? result("", t, true) : "");
-    if (!run) h += othersHtml(t.q) + boardHtml() + aiToggleHtml();
-    if (run && spk) h += rosterHtml(false);
+    var hostbar = "";
     if (host) {
-      var ps = (CTX.players || []).filter(function (p) { return !L.done[p.id]; }), b = "", nx = '<button class="big" data-act="lnext">' + (last ? "Kết thúc" : "Câu tiếp ›") + "</button>";
+      var ps = plist().filter(function (p) { return !L.done[p.id]; }), b = "", nx = '<button class="big" data-act="lnext">' + (last ? "Kết thúc" : "Câu tiếp ›") + "</button>";
       if (run) b = (L.phase === "prep" ? '<button class="big" data-act="lskip">⏭ Vào phần nói</button>' : "") + '<button class="big" data-act="lstop">⏹ Dừng</button>';
       else if (spk && ps.length) b = '<button class="pri big" data-act="lstart">▶ Bắt đầu' + (pickOf(ps) ? " · " + esc(pickOf(ps).name || "") : "") + '</button><button class="big" data-act="lall" title="Cả lớp nói cùng lúc, mỗi máy tự chấm">👥 Cả lớp</button>' + nx;
       else if (spk) b = nx.replace('class="big"', 'class="pri big"');
       else b = (L.phase === "idle" ? "" : '<button class="pri big" data-act="lstart">▶ Bắt đầu viết</button>') + (L.phase === "idle" ? nx.replace('class="big"', 'class="pri big"') : nx);
-      h += '<div class="bottom"><div class="in">' + b + "</div></div>";
+      hostbar = '<div class="card hostbar">' + b + "</div>";
     }
+    h += hostbar;   /* nút điều khiển của host nằm NGAY dưới đồng hồ (không dùng thanh cố định dưới đáy: cửa sổ thấp là bị khuất) */
+    if (!run && L.my && L.myQ === t.q) h += L.my === "grading" ? '<div class="card" style="text-align:center"><span class="spin"></span> AI đang chấm bài của bạn…</div>' : (S.results[t.q] ? result("", t, true) : "");
+    if (!run) h += othersHtml(t.q) + boardHtml() + aiToggleHtml();
+    if (run && spk) h += rosterHtml(false);
     h += '<div class="cd" id="cd" hidden></div>'; app.innerHTML = h; liveTick();
   }
   /* ---------- LỊCH SỬ: xem lại bài cũ + lỗi sai (lưu ở máy này) ---------- */
@@ -290,7 +317,7 @@
   }
   function pickOf(ps) { var L = LIVE; return ps.filter(function (p) { return p.id === L.pick; })[0] || ps[0]; }
   function rosterHtml(host) {
-    var L = LIVE, ps = CTX.players || [], rest = ps.filter(function (p) { return !L.done[p.id]; }), cur = L.sp ? L.sp.id : (host ? (pickOf(rest) || {}).id : "");
+    var L = LIVE, ps = plist(), rest = ps.filter(function (p) { return !L.done[p.id]; }), cur = L.sp ? L.sp.id : (host ? (pickOf(rest) || {}).id : "");
     if (!ps.length) return "";
     return '<div class="card roster"><div class="sub">' + (host ? "Chạm tên để chọn người nói tiếp" : "Thứ tự trong phòng") + '</div>' + ps.map(function (p) {
       var dn = L.done[p.id], on = p.id === cur; return '<button class="chip' + (dn ? " done" : "") + (on ? " on" : "") + '"' + (host && !dn && !L.sp ? ' data-act="lpick" data-v="' + esc(p.id) + '"' : " disabled") + ">" + (dn ? "✓ " : "") + avatarHtml(p.avatar) + " " + esc(p.name || "?") + "</button>";
@@ -311,7 +338,7 @@
     var tm = liveTimes(), L = LIVE;
     if (a === "lstart") {
       var sp = null;
-      if (S.kind === "speaking") { sp = pickOf((CTX.players || []).filter(function (p) { return !L.done[p.id]; })); if (!sp) return true; sp = { id: sp.id, name: sp.name, avatar: sp.avatar }; }
+      if (S.kind === "speaking") { sp = pickOf(plist().filter(function (p) { return !L.done[p.id]; })); if (!sp) return true; sp = { id: sp.id, name: sp.name, avatar: sp.avatar }; }
       liveSend({ i: S.i, phase: S.kind === "speaking" ? "prep" : "resp", sp: sp, sec: S.kind === "speaking" ? tm[0] : tm[1], done: L.done });
     } else if (a === "lpick") { L.pick = v; liveRender(); }
     else if (a === "lall") liveSend({ i: S.i, phase: "prep", sp: null, sec: tm[0], done: L.done });
@@ -379,7 +406,7 @@
   /* ---------- luồng 1 câu ---------- */
   function begin(kind, group) {
     var set = curSet(), g = GROUPS[kind].filter(function (x) { return x.k === group; })[0];
-    S.kind = kind; S.group = group; S.gt = g.t; S.tasks = set.tasks.filter(function (t) { return g.qs.indexOf(t.q) >= 0 && (kind === "writing" || t.type !== "describe" || t.scene || t.image); });
+    S.kind = kind; S.group = group; S.gt = g.t; S.tasks = set.tasks.filter(function (t) { return g.qs.indexOf(t.q) >= 0 && (!S.qFrom || t.q >= S.qFrom) && (!S.qTo || t.q <= S.qTo) && (kind === "writing" || t.type !== "describe" || t.scene || t.image); });
     S.i = 0; S.results = {}; S.screen = "task"; question();
   }
   function question() { var t = curTask(); S.phase = "intro"; S.tr = ""; S.interim = ""; S.text = ""; render(); }
@@ -520,8 +547,9 @@
     var b = e.target.closest("[data-act]"); if (!b || b.disabled) return; var a = b.dataset.act, v = b.dataset.v;
     if (a === "kind") { S.kind = v; S.setId = (SETS[v][0] || {}).id || ""; render(); }
     else if (a === "set") { S.setId = v; render(); }
-    else if (a === "start") { if (classOn()) toParent({ type: "sw-host-start", kind: S.kind, set: S.setId, group: v }); else { S.class = null; S.saved = 0; begin(S.kind, v); } }
+    else if (a === "start") { if (classOn()) toParent({ type: "sw-host-start", kind: S.kind, set: S.setId, group: v, from: S.qFrom || 0, to: S.qTo || 0 }); else { S.class = null; S.saved = 0; begin(S.kind, v); } }
     else if (a === "leave") toParent({ type: "sw-leave" });
+    else if (a === "tips") { S.showTips = !S.showTips; render(); }
     else if (a === "part") { S.group = v; render(); }
     else if (a === "rev") { S.screen = "rev"; render(); }
     else if (a === "revf") { S.revAll = !S.revAll; render(); }
@@ -535,7 +563,7 @@
     else if (a === "regrade") { S.phase = "grading"; render(); grade(); }
     else if (a === "skipq") { var n = S.i + (+v || 0); if (n < 0) return; clearTimer(); stopSpeech(); if (n >= S.tasks.length) { S.screen = "sum"; render(); } else { S.i = n; question(); } }
     else if (a === "next") { if (S.i >= S.tasks.length - 1) { S.screen = "sum"; render(); } else { S.i++; question(); } }
-    else if (a === "quit") { if (LIVE) { if (CTX.isHost) toParent({ type: "sw-class-send", p: { t: "live", run: LIVE.run, phase: "close" } }); S.leftRun = LIVE.run; LIVE = null; } clearTimer(); stopSpeech(); try { speechSynthesis.cancel(); } catch (x) {} S.screen = "home"; render(); }
+    else if (a === "quit") { if (LIVE && !CTX.isHost) setTimeout(function () { toParent({ type: "sw-leave" }); }, 50); if (LIVE) { if (CTX.isHost) toParent({ type: "sw-class-send", p: { t: "live", run: LIVE.run, phase: "close" } }); S.leftRun = LIVE.run; LIVE = null; } clearTimer(); stopSpeech(); try { speechSynthesis.cancel(); } catch (x) {} S.screen = "home"; render(); }
     else if (a === "home") { S.screen = "home"; render(); }
     else if (a === "again") { S.saved = 0; begin(S.kind, S.group); }
     else if (a === "delextra") { try { localStorage.removeItem(EXTRA); } catch (x) {} toast("Đã xoá đề riêng"); setTimeout(function () { location.reload(); }, 700); }
@@ -550,8 +578,18 @@
   });
   document.addEventListener("change", function (e) {
     if (!e.target) return;
-    if (e.target.id === "sel-set") { S.setId = e.target.value; render(); return; }
-    if (e.target.id === "sel-grp") { S.group = e.target.value; render(); return; }
+    var id = e.target.id;
+    if (id === "sel-src") { S.src = e.target.value; S.setId = ""; render(); return; }
+    if (id === "sel-set") { S.setId = e.target.value; render(); return; }
+    if (id === "sel-scope") { S.group = e.target.value === "all" ? "all" : GROUPS[S.kind][1].k; S.qFrom = S.qTo = null; render(); return; }
+    if (id === "sel-grp") { S.group = e.target.value; S.qFrom = S.qTo = null; render(); return; }
+    if (id === "q-from" || id === "q-to") {
+      var g0 = GROUPS[S.kind].filter(function (x) { return x.k === S.group; })[0], lo = Math.min.apply(null, g0.qs), hi = Math.max.apply(null, g0.qs), v0 = parseInt(e.target.value, 10);
+      var f = id === "q-from" ? (isNaN(v0) ? lo : v0) : (S.qFrom || lo), t = id === "q-to" ? (isNaN(v0) ? hi : v0) : (S.qTo || hi);
+      f = Math.max(lo, Math.min(hi, f)); t = Math.max(lo, Math.min(hi, t)); if (f > t) { if (id === "q-from") t = f; else f = t; }
+      S.qFrom = f === lo ? null : f; S.qTo = t === hi ? null : t; render(); return;
+    }
+    if (id === "hostplays") { S.hostPlays = e.target.checked; return; }
     if (e.target.id === "clsmode") { S.classMode = e.target.checked; if (S.screen === "home") render(); }
     else if (e.target.id === "aimode") { S.aiGrade = e.target.checked; if (LIVE && S.screen === "live" && CTX.isHost && LIVE.phase !== "prep" && LIVE.phase !== "resp") liveSend({ i: S.i, phase: LIVE.phase, sp: LIVE.sp, done: LIVE.done, sec: 0 }); }
   });

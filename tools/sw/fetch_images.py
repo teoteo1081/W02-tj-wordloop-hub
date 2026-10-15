@@ -73,7 +73,7 @@ def commons(query, n=12):
         if not re.search(r'(?i)cc0|public domain|pd|cc by|cc-by', lic): continue
         if re.search(r'(?i)nc|nd', lic): continue
         title = pg.get('title', '')
-        if re.search(r'(?i)\b(map|logo|diagram|flag|icon|svg|drawing|painting|illustration|poster|screenshot|chart)\b', title): continue
+        if re.search(r'(?i)(map|logo|diagram|flag|icon|svg|drawing|painting|illustration|poster|screenshot|chart|portrait|president|minister|mural|statue|monument|histor|vintage|sketch|efta|trump|politic|actor|actress|singer|footballer|ceo|mayor|senator|wikipedia|(18|19)\d\d)', title): continue
         res.append({'title': title, 'url': ii['thumburl'], 'license': lic, 'author': re.sub('<[^>]+>', '', (em.get('Artist', {}) or {}).get('value', ''))[:80], 'page': ii.get('descriptionurl', ''), 'idx': pg.get('index', 99)})
     res.sort(key=lambda r: r['idx'])
     return res

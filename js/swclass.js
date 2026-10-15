@@ -13,8 +13,8 @@
   function ctx() { var ch = api && api.ch && api.ch(); return { inRoom: !!ch, isHost: !!(api && api.isHost && api.isHost()), me: api && api.me ? api.me() : null, players: api && api.players ? api.players() : [], room: api && api.room ? api.room() : "" }; }
   function send(p) { var ch = api && api.ch && api.ch(); if (ch) ch.send({ type: "broadcast", event: "sw", payload: p }); }
   function deliverStart(p) {
-    var f = frameFor(p.kind), msg = { type: "sw-class-start", kind: p.kind, set: p.set, group: p.group, run: p.run, by: p.by };
-    if (f) post(f.contentWindow, msg); else pending = msg;   /* iframe chưa tạo/chưa nạp xong: giữ lại, gửi khi nó xin ngữ cảnh */
+    var f = frameFor(p.kind), msg = { type: "sw-class-start", kind: p.kind, set: p.set, group: p.group, from: p.from, to: p.to, run: p.run, by: p.by };
+    pending = msg; setTimeout(function () { if (pending === msg) pending = null; }, 4000); if (f) post(f.contentWindow, msg);   /* luôn giữ lại để gửi lại khi khung nạp xong (tin gửi quá sớm bị mất) */   /* iframe chưa tạo/chưa nạp xong: giữ lại, gửi khi nó xin ngữ cảnh */
   }
   function onMsg(p) {
     if (!p) return;
@@ -32,10 +32,11 @@
       if (pending && ((pending.kind === "writing") === (d.kind === "writing"))) { var m = pending; pending = null; setTimeout(function () { post(e.source, m); }, 150); }
     } else if (d.type === "sw-host-start") {
       var c = ctx(); if (!c.isHost || !c.inRoom) return;
-      var p = { t: "start", kind: d.kind === "writing" ? "writing" : "speaking", set: String(d.set || ""), group: String(d.group || "all"), run: Date.now() + "-" + Math.random().toString(36).slice(2, 6), by: c.me && c.me.id };
+      var p = { t: "start", kind: d.kind === "writing" ? "writing" : "speaking", set: String(d.set || ""), group: String(d.group || "all"), from: +d.from || 0, to: +d.to || 0, run: Date.now() + "-" + Math.random().toString(36).slice(2, 6), by: c.me && c.me.id };
       send(p); onMsg(p);   /* broadcast không gửi lại cho chính mình -> host tự xử lý */
     } else if (d.type === "sw-class-send" && d.p) send(d.p);
-    else if (d.type === "sw-leave") document.dispatchEvent(new CustomEvent("tjwl-learn-home"));   /* người chơi thoát lớp -> về trang game */
+    else if (d.type === "sw-leave") document.dispatchEvent(new CustomEvent("tjwl-learn-home"));
+    else if (d.type === "sw-want-open") document.dispatchEvent(new CustomEvent("tjwl-sw-open", { detail: d.kind }));   /* người chơi thoát lớp -> về trang game */
   });
   /* host chuyển sang thẻ khác (Từ vựng / TOEIC / EA / Marketing / về trang game) khi lớp đang chạy -> báo cả phòng thoát lớp */
   document.addEventListener("tjwl-learn-shown", function (e) {

@@ -78,3 +78,15 @@ select.big { max-width:46%; }
 .lobby select { width:100%; padding:10px 8px; border-radius:10px; background:var(--bg); color:var(--ink); border:1px solid var(--line); font:inherit; font-size:14px; }
 .lb-info { margin:10px 0 6px; } .lb-start { width:100%; font-size:18px; margin-top:12px; }
 .lobby label.clsrow { flex-direction:row; align-items:center; color:var(--ink); font-size:14px; margin:8px 0 0; }
+
+/* ===== hub kiểu TOEIC: khung cài đặt nhiều ô + hướng dẫn bên dưới ===== */
+.hubpanel { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:16px; margin:10px 0; }
+.hp-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; } @media (max-width:560px) { .hp-grid { grid-template-columns:1fr 1fr; } }
+.hubpanel label { display:flex; flex-direction:column; gap:4px; font-size:12px; color:var(--muted); }
+.hubpanel select, .hubpanel input[type=text], .hubpanel input[type=number] { width:100%; padding:10px 8px; border-radius:10px; background:var(--bg); color:var(--ink); border:1px solid var(--line); font:inherit; font-size:14px; }
+.hubpanel label.chk, .hubpanel label.clsrow { flex-direction:row; align-items:center; gap:8px; color:var(--ink); font-size:14px; } .hubpanel label.chk input { width:20px; height:20px; accent-color:var(--acc); }
+.hubpanel label.clsrow { margin:12px 0 0; padding:10px; border:1px solid var(--line); border-radius:12px; }
+.hp-btns { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; } .hp-btns .pri { font-size:16px; }
+.tips p { margin:6px 0; font-size:14px; } .guide { margin:14px 2px; } .guide h3 { margin:10px 0 4px; font-size:16px; }
+.gd-row { display:flex; justify-content:space-between; gap:10px; padding:6px 2px; border-bottom:1px solid var(--line); font-size:14px; } .gd-row span:nth-child(2) { margin-left:auto; color:var(--muted); } .gd-row span:last-child { min-width:48px; text-align:right; }
+.hostbar { display:flex; gap:8px; flex-wrap:wrap; } .hostbar .big { flex:1 1 140px; }
