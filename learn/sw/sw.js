@@ -578,7 +578,79 @@
   function clearTimer() { if (timerId) clearInterval(timerId); timerId = 0; }
   function updTimer() { var el = $("#tm"); if (!el || !S.tEnd) return; var left = Math.max(0, (S.tEnd - Date.now()) / 1000); el.textContent = mmss(MOCK ? left / SCALE : left); var pg = $("#pg"); if (pg) pg.style.width = Math.min(100, 100 * (1 - left / Math.max(.001, S.tTotal))) + "%"; }
   function beep(f) { try { var c = new (window.AudioContext || window.webkitAudioContext)(), o = c.createOscillator(), g = c.createGain(); o.frequency.value = f || 880; o.connect(g); g.connect(c.destination); g.gain.value = .15; o.start(); setTimeout(function () { o.stop(); c.close(); }, 220); } catch (e) {} }
-  function say(text) { try { speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(text); u.lang = "en-US"; u.rate = .95; speechSynthesis.speak(u); } catch (e) {} }
+  function say(text, rate) { try { speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(text); u.lang = "en-US"; u.rate = rate || .95; speechSynthesis.speak(u); } catch (e) {} }
+
+  /* ===== 🎯 LUYỆN TỪNG CHỮ (TJ 2026-10-15: "từng từ luyện lại giống Elsa", gói MIỄN PHÍ) =====
+     Giọng máy đọc mẫu (thường / chậm) + nhận giọng của trình duyệt để kiểm lại: chữ đúng -> chuyển xanh. Mặc định luyện CỤM 3 chữ quanh chữ đó
+     (nhận 1 chữ lẻ hay sai); chỉ biết KHỚP CHỮ, chưa chấm từng âm như ELSA. Không có nhận giọng -> nghe mẫu + tự bấm "đọc được rồi". */
+  var DR = null;
+  function drBad() { var o = []; if (S.rd) S.rd.st.forEach(function (s, i) { if (s !== "ok") o.push(i); }); return o; }
+  function drText(i) { var W = S.rd.words; if (DR.mode === "word") return { text: W[i], at: 0, a: i }; var a = Math.max(0, i - 1), b = Math.min(W.length - 1, i + 1); return { text: W.slice(a, b + 1).join(" "), at: i - a, a: a }; }
+  function drCheck(alts) {
+    var i = DR.list[DR.pos], tg = drText(i), ok = false;
+    alts.forEach(function (tr) {
+      if (DR.mode === "word") { var tw = normW(S.rd.words[i]); String(tr).split(/\s+/).forEach(function (x) { if (same(tw, x)) ok = true; }); }
+      else { var g = gradeRead(tg.text, tr); if (g.st[tg.at] === "ok") ok = true; }
+    });
+    return ok;
+  }
+  function drSync(i) {   /* chữ vừa đúng: tô xanh ngay trong kết quả + cập nhật nút đếm */
+    var el = document.querySelector('#app .prompt.read [data-i="' + i + '"]');
+    if (el) { el.className = "w-ok tapw"; el.setAttribute("data-act", "say"); el.title = "Chạm để nghe đọc mẫu"; }
+    var n = drBad().length, bt = document.getElementById("dr-open-btn");
+    if (bt) { if (n) bt.textContent = "🎯 Luyện " + n + " chữ chưa đúng"; else bt.parentNode.removeChild(bt); }
+  }
+  function drStop() { try { clearTimeout(DR && DR.tm); if (DR && DR.rec) { DR.rec.onend = null; DR.rec.stop(); } } catch (e) {} try { speechSynthesis.cancel(); } catch (e) {} }
+  function drClose() { drStop(); DR = null; var el = document.getElementById("drill"); if (el) el.parentNode.removeChild(el); }
+  function drOpen(startAt) {
+    if (!S.rd) return; var list = drBad(); if (!list.length) { toast("Không còn chữ nào cần luyện 🎉"); return; }
+    stopSpeech && stopSpeech();
+    DR = { list: list, pos: Math.max(0, list.indexOf(startAt)), mode: "chunk", tries: 0, state: "idle", heard: "", okN: 0, nothing: false };
+    if (!document.getElementById("drill")) { var d = document.createElement("div"); d.id = "drill"; d.className = "drill"; d.setAttribute("role", "dialog"); d.setAttribute("aria-label", "Luyện từng chữ"); document.body.appendChild(d); }
+    drRender(); say(drText(DR.list[DR.pos]).text);
+  }
+  function drRender() {
+    var el = document.getElementById("drill"); if (!el || !DR) return;
+    if (DR.state === "done") { el.innerHTML = '<div class="dr-card"><div class="dr-top"><b>🎉 Xong rồi!</b><button class="soft" data-act="dr-close" aria-label="Đóng">✕</button></div><p class="dr-big">Đã luyện đúng ' + DR.okN + "/" + DR.list.length + ' chữ</p><p class="sub">Chữ nào còn đỏ/vàng thì chạm lại để luyện tiếp.</p><button type="button" class="pri big" data-act="dr-close">Đóng</button></div>'; return; }
+    var i = DR.list[DR.pos], tg = drText(i), W = S.rd.words, ctx = tg.text.split(" ").map(function (w, k) { return k === tg.at ? '<b class="dr-hl">' + esc(w) + "</b>" : esc(w); }).join(" ");
+    var ok = DR.state === "ok", fb = "";
+    if (DR.state === "listening") fb = '<div class="dr-fb listen">🎤 Đang nghe… hãy đọc: <b>' + esc(tg.text) + "</b></div>";
+    else if (ok) fb = '<div class="dr-fb good">✓ Chuẩn rồi!' + (DR.self ? " (bạn tự chấm)" : "") + "</div>";
+    else if (DR.state === "fail") fb = '<div class="dr-fb bad">Máy nghe thành: “' + esc(DR.heard || "…") + '” — chưa khớp. Nghe mẫu rồi thử lại (lần ' + Math.min(DR.tries + 1, 3) + "/3)." + (DR.tries >= 3 ? " Thử 🐢 nghe chậm hoặc bấm “Bỏ qua”." : "") + "</div>";
+    else if (DR.nothing) fb = '<div class="dr-fb bad">Chưa nghe thấy gì — bấm 🎤 rồi nói gần micro hơn.</div>';
+    var last = DR.pos >= DR.list.length - 1;
+    el.innerHTML = '<div class="dr-card"><div class="dr-top"><b>🎯 Luyện từng chữ</b><span class="sub">' + (DR.pos + 1) + "/" + DR.list.length + '</span><button class="soft" data-act="dr-close" aria-label="Đóng">✕</button></div>' +
+      '<div class="dr-word">' + esc(W[i]) + '</div><div class="dr-ctx">' + ctx + "</div>" +
+      '<div class="dr-row"><button type="button" data-act="dr-say">🔊 Nghe</button><button type="button" data-act="dr-slow">🐢 Nghe chậm</button></div>' +
+      '<div class="dr-modes"><button type="button" class="' + (DR.mode === "chunk" ? "on" : "") + '" data-act="dr-mode" data-v="chunk">Cụm 3 chữ</button><button type="button" class="' + (DR.mode === "word" ? "on" : "") + '" data-act="dr-mode" data-v="word">Chỉ 1 chữ</button></div>' +
+      (SR ? '<button type="button" class="rec big" data-act="dr-mic">' + (DR.state === "listening" ? "⏹ Dừng" : "🎤 Bấm rồi đọc") + "</button>" : '<p class="sub">Máy này chưa hỗ trợ nhận giọng: nghe mẫu, đọc to, rồi bấm “Đọc được rồi”.</p>') +
+      fb + '<div class="dr-row"><button type="button" class="soft" data-act="dr-ok">✓ Đọc được rồi</button><button type="button" class="' + (ok ? "pri" : "soft") + '" data-act="dr-next">' + (ok ? (last ? "Hoàn tất" : "Chữ kế →") : (last ? "Bỏ qua · xong" : "Bỏ qua →")) + "</button></div></div>";
+  }
+  function drMark(self) { var i = DR.list[DR.pos]; if (S.rd.st[i] !== "ok") { S.rd.st[i] = "ok"; DR.okN++; drSync(i); } DR.state = "ok"; DR.self = !!self; DR.nothing = false; }
+  function drMic() {
+    if (!SR || !DR) return;
+    if (DR.state === "listening") { try { DR.rec.stop(); } catch (e) {} return; }
+    try { speechSynthesis.cancel(); } catch (e) {}
+    DR.state = "listening"; DR.heard = ""; DR.nothing = false; DR.self = false; drRender();
+    var got = false, rec = new SR(); DR.rec = rec; rec.lang = "en-US"; rec.continuous = false; rec.interimResults = false; rec.maxAlternatives = 3;
+    rec.onresult = function (e) { got = true; var r0 = e.results[0], alts = []; for (var k = 0; k < r0.length; k++) alts.push(r0[k].transcript); DR.heard = alts[0] || ""; DR.tries++; if (drCheck(alts)) drMark(false); else DR.state = "fail"; drRender(); };
+    rec.onerror = function (e) { if (e && (e.error === "not-allowed" || e.error === "service-not-allowed")) toast("Chưa cho dùng micro — bấm ổ khoá cạnh thanh địa chỉ để cho phép"); };
+    rec.onend = function () { if (!got && DR && DR.state === "listening") { DR.state = "idle"; DR.nothing = true; drRender(); } };
+    try { rec.start(); } catch (e) { DR.state = "idle"; drRender(); toast("Không mở được nhận giọng"); return; }
+    clearTimeout(DR.tm); DR.tm = setTimeout(function () { try { rec.stop(); } catch (e) {} }, 7000);
+  }
+  function drNext() { drStop(); if (!DR) return; if (DR.pos >= DR.list.length - 1) { DR.state = "done"; drRender(); return; } DR.pos++; DR.tries = 0; DR.state = "idle"; DR.heard = ""; DR.nothing = false; DR.self = false; drRender(); say(drText(DR.list[DR.pos]).text); }
+  function drillAct(a, v, b) {
+    if (a === "dr-open") drOpen(); else if (a === "dr-word") drOpen(+b.dataset.i);
+    else if (!DR) return;
+    else if (a === "dr-close") drClose();
+    else if (a === "dr-say") say(drText(DR.list[DR.pos]).text);
+    else if (a === "dr-slow") say(drText(DR.list[DR.pos]).text, .55);
+    else if (a === "dr-mode") { drStop(); DR.mode = v === "word" ? "word" : "chunk"; DR.tries = 0; DR.state = "idle"; DR.nothing = false; drRender(); }
+    else if (a === "dr-mic") drMic();
+    else if (a === "dr-ok") { drStop(); drMark(true); drRender(); }
+    else if (a === "dr-next") drNext();
+  }
 
   /* ---------- luồng 1 câu ---------- */
   function begin(kind, group) {
@@ -751,7 +823,13 @@
     else {
       var cls = r.score === r.max ? "top" : "s" + r.score, fb = r.fb || {};
       h += '<div class="card"><div class="score"><div class="ring ' + cls + '">' + r.score + "<small>/" + r.max + '</small></div><div><b>' + (r.score >= r.max - 0 ? "Rất tốt!" : r.score >= Math.ceil(r.max / 2) ? "Khá ổn" : "Cần cải thiện") + '</b><div class="sub">Điểm ước tính cho câu này</div></div></div>';
-      if (r.read && r.read.pct >= .05) h += '<p class="prompt read" style="margin-top:8px">' + r.read.words.map(function (w, i) { var cw = String(w).replace(/^[^A-Za-z0-9']+|[^A-Za-z0-9']+$/g, ""); return '<span class="w-' + (r.read.st[i] || "miss") + (cw ? " tapw" : "") + '"' + (cw ? ' role="button" tabindex="0" data-act="say" data-v="' + esc(cw) + '" title="Chạm để nghe đọc mẫu"' : "") + ">" + esc(w) + "</span>"; }).join(" ") + '</p><p class="sub"><span class="w-ok">xanh = đúng</span> · <span class="w-bad">đỏ = sai/chưa rõ</span> · <span class="w-miss">vàng = bỏ sót</span> · 👆 chạm vào chữ để nghe đọc mẫu</p>';   /* TJ 2026-10-15: câu hướng dẫn hứa "bấm chữ đỏ/vàng" nhưng chữ không bấm được -> gắn data-act="say" (đọc mẫu bằng giọng máy) */
+      if (r.read && r.read.pct >= .05) {
+        S.rd = r.read;   /* thẻ luyện từng chữ (drill*) dùng lại kết quả này */
+        h += '<p class="prompt read" style="margin-top:8px">' + r.read.words.map(function (w, i) { var cw = String(w).replace(/^[^A-Za-z0-9']+|[^A-Za-z0-9']+$/g, ""), s0 = r.read.st[i] || "miss", bad = s0 !== "ok";
+          return '<span data-i="' + i + '" class="w-' + s0 + (cw ? " tapw" : "") + '"' + (cw ? ' role="button" tabindex="0" data-act="' + (bad ? "dr-word" : "say") + '" data-v="' + esc(cw) + '" title="' + (bad ? "Chạm để luyện chữ này" : "Chạm để nghe đọc mẫu") + '"' : "") + ">" + esc(w) + "</span>"; }).join(" ") + '</p><p class="sub"><span class="w-ok">xanh = đúng</span> · <span class="w-bad">đỏ = sai/chưa rõ</span> · <span class="w-miss">vàng = bỏ sót</span> · 👆 chạm chữ đỏ/vàng để luyện</p>';
+        var nb0 = r.read.st.filter(function (x) { return x !== "ok"; }).length;
+        if (nb0) h += '<p><button type="button" class="pri" id="dr-open-btn" data-act="dr-open">🎯 Luyện ' + nb0 + ' chữ chưa đúng</button></p>';
+      }
       if ((fb.strengths || []).length) h += '<ul class="fb ok">' + fb.strengths.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>";
       if ((fb.fixes || []).length) h += '<p><b>Cần sửa</b></p><ul class="fb">' + fb.fixes.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>";
       h += "</div>";
@@ -790,6 +868,7 @@
     else if (a === "rev") { S.screen = "rev"; render(); }
     else if (a === "revf") { S.revAll = !S.revAll; render(); }
     else if (a === "revclr") { if (confirm("Xoá toàn bộ lịch sử bài " + (S.kind === "speaking" ? "nói" : "viết") + " trên máy này?")) { ST.rev = (ST.rev || []).filter(function (r) { return r.kind !== S.kind; }); save(); render(); } }
+    else if (a.indexOf("dr-") === 0) { drillAct(a, v, b); return; }   /* thẻ luyện từng chữ */
     else if (a === "hdo") { toParent({ type: "sw-do", a: v }); return; }   /* nút ở ô phòng (màn chờ, chưa có lớp đang chạy) */
     else if (liveAct(a, v)) return;
     else if (a === "go") go();
