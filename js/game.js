@@ -2818,12 +2818,13 @@
     tSeqTok++;   /* dừng mọi lượt phát tự động / nút 🔊 */
     var a = tAudio(), go = function () {
       try { a.currentTime = from != null ? from : (a.dataset.src === AP.url && a.currentTime >= AP.a && a.currentTime < AP.b - 0.3 ? a.currentTime : AP.a); } catch (e) {}
-      a.playbackRate = AP.rate || 1; tVol(true); AP.live = true;
+      a.playbackRate = AP.rate || 1; tVol(true); AP.live = true; AP.fix = 0;
       var p = a.play(); if (p && p.catch) p.catch(function () {});
     };
     if (a.dataset.src !== AP.url) { a.src = AP.url; a.dataset.src = AP.url; }
     a.ontimeupdate = function () {
       if (!AP || !AP.live) return;
+      if ((a.currentTime < AP.a - 1.5 || a.currentTime > AP.b + 20) && AP.fix < 3) { AP.fix++; try { a.currentTime = AP.a; } catch (e) {} return; }   /* trình duyệt phát từ đầu file / sai đoạn -> đưa về đúng đoạn (tối đa 3 lần) */
       if (a.currentTime >= AP.b) { if (AP.loop) { try { a.currentTime = AP.a; } catch (e) {} } else { a.pause(); AP.live = false; try { a.currentTime = AP.a; } catch (e) {} } }
       apSync();
     };
@@ -2921,6 +2922,7 @@
     q.ansL = (String(L.ans || "").match(/^\(?([A-D])\)?(?:\s|$)/) || [])[1] || "";
     var m = String(q.audl || q.full).match(/^\[aud\] q=([\d.]+)-([\d.]+)(?: g=([\d.]+)-([\d.]+))?/m); if (!m) return;
     var qa = +m[1], qb = q.gEnd || +m[2], segs = [];
+    if (!(qb > qa)) qb = qa + 8;   /* mốc lỗi (cuối <= đầu) -> vẫn nghe được đúng chỗ thay vì kẹt/phát sai */
     if (m[3]) { segs.push({ label: apT("all"), a: +m[3], b: qb }); segs.push({ label: apT("q"), a: qa, b: qb }); }
     else segs.push({ label: apT("q"), a: qa, b: qb });
     var box = $("#rv-res"); if (!box) return;
