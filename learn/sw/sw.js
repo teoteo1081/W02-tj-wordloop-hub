@@ -814,5 +814,12 @@
     else if (e.target.id === "aimode") { S.aiGrade = e.target.checked; if (LIVE) { LIVE.ai = S.aiGrade; if (S.screen === "live" && CTX.isHost && !busy(LIVE)) liveSend({ i: S.i, phase: LIVE.phase, sp: LIVE.sp, done: LIVE.done, sec: 0 }); } }
   });
   window.addEventListener("pagehide", function () { stopSpeech(); try { speechSynthesis.cancel(); } catch (e) {} });
+  /* TJ 2026-10-15: "khi vào test thì tất cả chỉ có bài test, vừa gọn màn hình" — đang làm bài (lớp đang chạy hoặc tự luyện 1 câu) -> báo trang game thu gọn
+     thanh trên/dưới của WordLoop + thanh game (như ván Từ vựng); xong/thoát thì trả lại. Áp cho cả 4 lớp: Speaking, Writing, IELTS Speaking, IELTS Writing. */
+  var focusOn = false;
+  setInterval(function () {
+    var on = (S.screen === "live" && !!LIVE && LIVE.phase !== "end") || S.screen === "task";
+    if (on !== focusOn) { focusOn = on; toParent({ type: "sw-focus", on: on }); }
+  }, 300);
   loadSets().then(function () { render(); maybeRestore(); toParent({ type: "sw-hello", kind: S.kind }); if (PENDING) { var d = PENDING; PENDING = null; applyStart(d); } });
 })();
