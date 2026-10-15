@@ -99,11 +99,9 @@
       h += "</div>";
       if (rev) {
         var my = (Z.board || []).filter(function (r) { return r.id === me.id; })[0], no = Object.keys(Z.pl || {}).filter(function (id) { return Z.picks && Z.picks[id] == null; });
-        h += '<div class="gres ' + (mine === Z.ans ? "ok" : "bad") + '"><b>' + (mine === Z.ans ? "✅ Đúng rồi!" : mine == null ? "⏰ Chưa trả lời" : "❌ Chưa đúng") + (my && my.last ? " +" + my.last : "") + "</b><br>" + esc(Z.exp || "") + "</div>" +
-          (no.length ? '<div class="strip"><span class="l">⏰ Không kịp:</span>' + no.map(function (id) { return av(id, "dim"); }).join("") + "</div>" : "");
+        h += '<div class="gres ' + (mine === Z.ans ? "ok" : "bad") + '"><b>' + (mine === Z.ans ? "✅ Đúng rồi!" : mine == null ? "⏰ Chưa trả lời" : "❌ Chưa đúng") + (my && my.last ? " +" + my.last : "") + "</b><br>" + esc(Z.exp || "") + "</div>" ;
       }
-      if (Z.ph === "rev" && Z.nxEnd) h += '<div class="gsub nxl">⏭ ' + (Z.i + 1 >= Z.n ? "Xem kết quả" : "Câu tiếp") + ' sau <b id="qnx">' + Math.max(0, Math.ceil((Z.nxEnd - Date.now()) / 1000)) + "</b>s…</div>";
-      if (host) h += '<div class="grow">' + (Z.ph === "q" ? '<button class="qb soft" data-q="lock">👁 Chốt câu</button>' : '<button class="qb' + (Z.nxEnd ? " soft" : "") + '" data-q="next">' + (Z.nxEnd ? "⏭ Bỏ qua" : Z.i + 1 >= Z.n ? "🏆 Xem kết quả" : "Câu tiếp ▶") + "</button>") + "</div>";
+      if (host && Z.ph === "rev" && !Z.nxEnd) h += '<div class="grow"><button class="qb" data-q="next">' + (Z.i + 1 >= Z.n ? "🏆 Xem kết quả" : "Câu tiếp ▶") + "</button></div>";
       h += "</div>";
       if (rev) h += paintBoard(Z.board, me.id);
     }
