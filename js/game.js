@@ -549,6 +549,7 @@
   function paintTrial() {
     var tb = $("#g-trial"); if (!tb) return;
     tb.hidden = !progUid(); tb.classList.toggle("on", trial()); tb.setAttribute("aria-pressed", trial() ? "true" : "false");
+    var sp = tb.querySelector("span"); if (sp) sp.textContent = trial() ? "Ván thử · BẬT" : "Ván thử";   /* chữ đổi theo trạng thái: sáng = đang BẬT, mờ nét đứt = TẮT */
     tb.title = trial() ? "ĐANG BẬT: ván này KHÔNG ghi tiến trình cho TJ (bấm để tắt)" : "Bấm để chơi thử: câu đúng/sai không ghi vào tiến trình học của TJ";
   }
   function paintMe() {
@@ -562,8 +563,15 @@
     if (!window.Board) return;
     if (G.isHost && G.st) setBoardMeta({ board: !G.st.board });
     else if (Board.isLocalOpen()) Board.closeLocal(); else Board.openLocal();
-    setTimeout(function () { var b = $("#g-boardbtn"); if (b) b.classList.toggle("on", !!(Board.isOpen && Board.isOpen())); }, 100);
+    setTimeout(paintBoardBtn, 100); setTimeout(paintBoardBtn, 800);
   });
+  /* nút Bảng chỉ sáng khi bảng THẬT SỰ đang mở: vẽ theo trạng thái thật mỗi 0,5s (trước: chỉ đoán 1 lần sau 0,1s -> host bấm tắt mà bảng chưa kịp đóng thì nút kẹt sáng) */
+  function paintBoardBtn() {
+    var b = $("#g-boardbtn"); if (!b || b.hidden) return;
+    var on = !!(window.Board && Board.isOpen && Board.isOpen());
+    b.classList.toggle("on", on); b.setAttribute("aria-pressed", on ? "true" : "false");
+  }
+  setInterval(paintBoardBtn, 500);
   $("#g-me").addEventListener("click", function () { if (!G.room || !G.st || G.st.phase === "lobby") renderNameScreen(); });
 
   /* ---------- 2. trang chính ---------- */

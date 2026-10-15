@@ -726,14 +726,14 @@
     /* Notebook giờ lồng được vào nhau (thư mục mẹ/con, xem renderNotebooks)
        -> đường dẫn phải đi hết CHUỖI Notebook cha (nếu có), không chỉ 1
        cái — vd "TOEIC HUB › TJ › Toeic Reading › ...". */
-    var nbChain = [];
+    var nbChain = [], nbIds = [];
     var curNb = S.notebooks.find(function (n) { return n.id === S.notebookId; });
     var guard = 0;
     while (curNb && guard++ < 50) {
-      nbChain.unshift(displayName(curNb));
+      nbChain.unshift(displayName(curNb)); nbIds.unshift(curNb.id);
       curNb = curNb.parent_notebook_id ? S.notebooks.find(function (n) { return n.id === curNb.parent_notebook_id; }) : null;
     }
-    if (!nbChain.length) nbChain.push("—");
+    if (!nbChain.length) { nbChain.push("—"); nbIds.push(null); }
 
     var parts = [nameOf(S.hubs, S.hubId, "—")].concat(nbChain,
       [nameOf(S.sections, S.sectionId, "—"), nameOf(S.pages, S.pageId, "—")]);
@@ -750,8 +750,12 @@
        thẳng framework_data.question, không cần AI sinh gì thêm. */
     var fwQuestion = openBlock && openBlock.framework_data && openBlock.framework_data.question;
 
-    var html = "<b>" + w.esc(parts[0]) + "</b>" + parts.slice(1).map(function (p) {
-      return '<span class="sep">›</span>' + w.esc(p);
+    /* TJ 2026-10-14: đường dẫn bấm được — nhảy sang Hub / Notebook / Section / Page / Batch khác ngay trên đường dẫn (kể cả khi đang ở chế độ Bảng) */
+    var partIds = [["hub", S.hubId]].concat(nbIds.map(function (i) { return ["nb", i]; }), [["sec", S.sectionId], ["page", S.pageId]]);
+    if (S.batchId) partIds.push(["batch", S.batchId]);
+    function crumbA(i, inner) { var pi = partIds[i]; return pi && pi[1] ? '<a class="crumb-nav" data-cn="' + pi[0] + '" data-id="' + pi[1] + '" tabindex="0">' + inner + "</a>" : inner; }
+    var html = crumbA(0, "<b>" + w.esc(parts[0]) + "</b>") + parts.slice(1).map(function (p, i) {
+      return '<span class="sep">›</span>' + crumbA(i + 1, w.esc(p));
     }).join("");
     if (fwQuestion) {
       html += '<span class="sep">›</span><span class="crumb-fw-q">🧭 “' + w.esc(fwQuestion) + '”</span>';
@@ -4272,6 +4276,15 @@
       if (!e.target.closest("[data-batch]") || e.target.closest("[data-menu]")) return;
       e.preventDefault();
       onBatchTabActivate(e);
+    });
+
+    /* đường dẫn (#crumb): bấm 1 mục = làm y như bấm mục đó ở cột bên (dựng phần tử giả có data-* rồi gọi đúng hàm kích hoạt) */
+    w.$("#crumb").addEventListener("click", function (e) {
+      var a = e.target.closest("[data-cn]"); if (!a) return;
+      var k = a.dataset.cn, el = document.createElement("span"), fn = { hub: onHubTabActivate, nb: onNotebookActivate, sec: onSectionTabActivate, page: onPageItemActivate, batch: onBatchTabActivate }[k];
+      if (!fn) return;
+      el.dataset[k === "nb" ? "nb" : k === "sec" ? "sec" : k] = a.dataset.id;
+      fn({ target: el });
     });
 
     /* --- mở block --- */
