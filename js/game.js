@@ -601,6 +601,7 @@
     } catch (err) { $("#h-tree").innerHTML = '<p class="g-err">Không tải được cây: ' + esc(err.message || err) + "</p>"; return; }
     if (!fresh) paintTree();
     loadDue();
+    try { paintBlockPicker(); } catch (e) {}
     return true;
   }
   /* 🔄 Tải lại cây (TJ 2026-10-01): đổi cấu trúc/thêm từ bên WordLoop -> game thấy ngay không cần F5.
@@ -845,9 +846,50 @@
   });
   function paintPicked() {
     paintDue();
+    try { paintBlockPicker(); } catch (e) {}
     $("#h-picked").innerHTML = picked.length ? picked.map(function (p) { return '<span class="g-chip g-chip-path">' + esc(pathOf(p)) + "</span>"; }).join("") : '<span class="g-sub">Chưa chọn chủ đề — tích chọn ở cột 📚 Chủ đề bên trái.</span>';
   }
 
+  /* 📦 CHỌN BATCH / BLOCK NGAY TRONG PHÒNG CHỜ (TJ 2026-10-15: "tab từ vựng cho các Block hiện ở dưới nút Bắt đầu, chọn Block được luôn"):
+     liệt kê Batch + Block của Page đang chọn; chạm Batch = cả Batch, chạm Block = chọn / bỏ từng Block (nhiều Block được). */
+  function bpById(a, id) { return a.filter(function (x) { return x.id === id; })[0]; }
+  function bpGroups() {
+    if (!TREE || !picked.length) return null;
+    var p0 = picked[0], page = null, B = TREE.blocks, BT = TREE.batches, PG = TREE.pages;
+    if (p0.table === "blocks") { var b = bpById(B, p0.id), bt = b && bpById(BT, b.batch_id); page = bt && bpById(PG, bt.page_id); }
+    else if (p0.table === "batches") { var bt2 = bpById(BT, p0.id); page = bt2 && bpById(PG, bt2.page_id); }
+    else if (p0.table === "pages") page = bpById(PG, p0.id);
+    var batches, blocks;
+    if (page) { batches = BT.filter(function (x) { return x.page_id === page.id; }); blocks = B; }
+    else { var u = []; picked.forEach(function (p) { u = u.concat(blocksUnder(p.table, p.id)); }); blocks = u.map(function (x) { return bpById(B, x[0]); }).filter(Boolean); batches = BT.filter(function (x) { return blocks.some(function (b2) { return b2.batch_id === x.id; }); }); }
+    var groups = batches.map(function (x) { return { batch: x, blocks: blocks.filter(function (b2) { return b2.batch_id === x.id; }) }; }).filter(function (g) { return g.blocks.length; });
+    return { page: page, groups: groups };
+  }
+  function bpSel() { var s = {}; picked.forEach(function (p) { if (p.table === "blocks") s[p.id] = 1; else blocksUnder(p.table, p.id).forEach(function (x) { s[x[0]] = 1; }); }); return s; }
+  function paintBlockPicker() {
+    var box = $("#l-blocks"); if (!box) return;
+    if (!G.isHost || G.hub === "test" || !TREE || !picked.length) { box.hidden = true; box.innerHTML = ""; return; }
+    var R = bpGroups(); if (!R || !R.groups.length) { box.hidden = true; box.innerHTML = ""; return; }
+    var sel = bpSel(), h = '<h3 class="g-bph">📦 Chọn Batch / Block' + (R.page ? " · " + esc(R.page.name) : "") + "</h3>";
+    R.groups.forEach(function (g) {
+      var all = g.blocks.every(function (b) { return sel[b.id]; });
+      h += '<div class="g-bpb"><button type="button" class="g-bpbatch' + (all ? " on" : "") + '" data-bt="' + esc(g.batch.id) + '">' + esc(g.batch.name) + '</button><div class="g-bpchips">' +
+        g.blocks.map(function (b) { return '<button type="button" class="g-bchip' + (sel[b.id] ? " on" : "") + '" data-bk="' + esc(b.id) + '">' + esc(b.name) + "</button>"; }).join("") + "</div></div>";
+    });
+    box.innerHTML = h; box.hidden = false;
+  }
+  $("#l-blocks").addEventListener("click", function (e) {
+    if (!G.isHost || !TREE) return;
+    var t = e.target.closest("[data-bt]"), k = e.target.closest("[data-bk]");
+    if (t) { var bt = bpById(TREE.batches, t.dataset.bt); if (!bt) return; picked = [{ table: "batches", id: bt.id, title: bt.name }]; }
+    else if (k) {
+      var id = k.dataset.bk, blk = bpById(TREE.blocks, id); if (!blk) return;
+      var cur = picked.every(function (p) { return p.table === "blocks"; }) ? picked.slice() : [], i = cur.findIndex(function (p) { return p.id === id; });
+      if (i >= 0) { if (cur.length > 1) cur.splice(i, 1); } else cur.push({ table: "blocks", id: id, title: blk.name });
+      picked = cur;
+    } else return;
+    paintTree(); hostSetScope(); paintBlockPicker();
+  });
   /* PHÒNG CỐ ĐỊNH của host: lấy phòng mới nhất của host, chưa có thì tạo — mã/link dùng mãi */
   async function openHostRoom() {
     var r = await sb.from("game_rooms").select("code").eq("host_id", G.profile.id).order("created_at", { ascending: false }).limit(1);
@@ -4055,6 +4097,7 @@
     if (G.isHost && G.st && G.st.hub !== h) { G.st.hub = h; push(); }   /* người chơi thấy giới thiệu + chiến thuật TOEIC trong phòng chờ */
     var box = $("#l-host"); if (!box) return;
     box.classList.toggle("g-hubtest", h === "test");
+    try { paintBlockPicker(); } catch (e) {}
     $$("#l-hubs [data-hub]").forEach(function (b) { var on = b.dataset.hub === h; b.classList.toggle("on", on); b.setAttribute("aria-selected", on ? "true" : "false"); });
     $("#l-hub-test").hidden = h !== "test";
     if (h === "test") {
