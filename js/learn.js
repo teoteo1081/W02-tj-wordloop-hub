@@ -20,7 +20,10 @@
     nav.querySelectorAll("[data-learn]").forEach(function (b) { var k = b.dataset.learn; b.classList.toggle("on", (k === "" && hub !== "test") || (k === "toeic" && hub === "test")); });
   }
   document.addEventListener("tjwl-hubchanged", function (e) { hub = e.detail === "test" ? "test" : "vocab"; paintHub(); });
-  function place() { layer.style.top = Math.round(top.getBoundingClientRect().bottom) + "px"; }
+  /* TJ 2026-10-15: lúc làm bài thanh trên bị đẩy khỏi màn hình -> mép dưới của nó ÂM, khung lớp bị đặt lên trên, mất khúc đầu.
+     Nay: đang chơi (body.g-playing) hoặc mép âm -> khung bắt đầu từ mép trên màn hình (0). */
+  function place() { var b = top.getBoundingClientRect().bottom; layer.style.top = (document.body.classList.contains("g-playing") ? 0 : Math.max(0, Math.round(b))) + "px"; }
+  document.addEventListener("tjwl-sw-focus", function () { place(); setTimeout(place, 250); });   /* sau hiệu ứng trượt thanh trên (.18s) */
   function show(key) {
     if (!PAGES[key]) key = "";
     nav.querySelectorAll("[data-learn]").forEach(function (b) { b.classList.toggle("on", b.dataset.learn === key); });
