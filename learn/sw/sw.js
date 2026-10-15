@@ -83,6 +83,7 @@
   }
   function setOne(on) {   /* bật/tắt chế độ 1 màn hình; bật thì về đầu trang (trang đang cuộn dở sẽ lệch khi khoá cuộn) */
     var was = document.body.classList.contains("one"); document.body.classList.toggle("one", !!on);
+    var ct = curTask(); document.body.classList.toggle("txfree", !!on && S.kind === "speaking" && !!ct && ct.type !== "read_aloud");   /* nói tự do: khung phụ đề chạy được nới rộng */
     if (on && !was) { try { window.scrollTo(0, 0); } catch (e) {} }
   }
   function render() {
@@ -388,6 +389,7 @@
     if (run && spk) h += rosterHtml(false);
     if (hostbar && !below) { var ti = h.indexOf("</div></div>") + 12; h = h.slice(0, ti) + hostbar + h.slice(ti); }   /* thanh điều khiển của host DÍNH Ở ĐẦU màn (cuộn đâu cũng thấy; ảnh to không đẩy nút xuống khuất) */
     app.innerHTML = h; fitPrompt(); smoothBar(); liveTick(); adminSync();
+    if (S.kind === "speaking" && L.phase === "resp" && $("#live")) liveUpd();   /* vẽ lại giữa chừng không làm mất phụ đề + tô màu đề */
   }
   /* ---------- LỊCH SỬ: xem lại bài cũ + lỗi sai (lưu ở máy này) ---------- */
   function promptShort(t) {
@@ -675,7 +677,36 @@
   function finish() { clearTimer(); stopSpeech(); if (S.kind === "writing") { var a = $("#ans"); if (a) S.text = a.value; } else { var m = $("#manual"); if (m && m.value) S.tr = m.value; } if (S.kind === "speaking") beep(520); S.phase = "grading"; render(); grade(); }
 
   /* ---------- nhận giọng ---------- */
-  function liveUpd() { var el = $("#live"); if (!el) return; var tx = (S.tr || "") + (S.interim ? ' <i>' + esc(S.interim) + "</i>" : ""); el.innerHTML = tx.trim() ? esc(S.tr || "") + (S.interim ? " <i>" + esc(S.interim) + "</i>" : "") : '<i>🎤 Hãy nói… lời bạn nói sẽ hiện ở đây</i>'; }
+  /* 📜 PHỤ ĐỀ CHẠY (TJ 2026-10-15): chữ MỚI NÓI luôn hiện ở CUỐI khung, chữ cũ đẩy lên (kéo lên xem lại được, đang kéo thì không giật về cuối).
+     🎯 Bài ĐỌC TO: so khớp NGAY trên đề — xanh = đúng, đỏ = sai, vàng = bỏ sót, gạch dưới = chữ kế tiếp; đề tự cuộn theo chỗ đang đọc (kiểu karaoke như ELSA / Read Along). */
+  function liveUpd() {
+    var el = $("#live"); if (!el) return;
+    var stick = !el.dataset.init || (el.scrollHeight - el.scrollTop - el.clientHeight < 40); el.dataset.init = "1";
+    var tx = (S.tr || "").trim(), ip = (S.interim || "").trim();
+    el.innerHTML = '<div class="lv-in">' + (tx || ip ? esc(tx) + (ip ? " <i>" + esc(ip) + "</i>" : "") : "<i>🎤 Hãy nói… lời bạn nói sẽ hiện ở đây</i>") + "</div>";
+    if (stick) el.scrollTop = el.scrollHeight;
+    try { hlRead(); } catch (e) {}
+  }
+  function hlRead() {
+    var t = curTask(); if (!t || S.kind !== "speaking" || t.type !== "read_aloud") return;
+    var p = document.querySelector("#app .prompt.read"); if (!p) return;
+    if (p.dataset.wrapped !== String(t.text.length)) {   /* bọc từng chữ 1 lần (cùng cách tách với gradeRead) */
+      var k = 0; p.innerHTML = String(t.text).split(/(\s+)/).map(function (tok) { if (!tok) return ""; if (/^\s+$/.test(tok)) return tok; if (!normW(tok)) return esc(tok); return '<span class="lw" data-k="' + (k++) + '">' + esc(tok) + "</span>"; }).join("");
+      p.dataset.wrapped = String(t.text.length);
+    }
+    var tr = ((S.tr || "") + " " + (S.interim || "")).trim(), sp = p.querySelectorAll(".lw"), reach = -1, g = null;
+    if (tr) { g = gradeRead(t.text, tr); g.st.forEach(function (s, i) { if (s === "ok" || s === "bad") reach = i; }); }
+    var cur = null;
+    for (var i = 0; i < sp.length; i++) {
+      var c = "lw", s = g ? g.st[i] : "";
+      if (g && i <= reach) c += s === "ok" ? " lw-ok" : s === "bad" ? " lw-bad" : " lw-skip"; else if (g && i === reach + 1) c += " lw-cur";
+      if (sp[i].className !== c) sp[i].className = c; if (i === reach + 1 || (reach < 0 && i === 0)) cur = sp[i];
+    }
+    var card = p.closest(".card"); if (card && cur && card.scrollHeight > card.clientHeight + 4) {   /* tự cuộn riêng trong thẻ đề, giữ chữ đang đọc ở khoảng 1/3 */
+      var cr = card.getBoundingClientRect(), r = cur.getBoundingClientRect();
+      if (r.bottom > cr.bottom - 24 || r.top < cr.top + 12) card.scrollTop += r.top - cr.top - card.clientHeight * 0.33;
+    }
+  }
   function startSpeech(t) {
     S.tr = ""; S.interim = "";
     if (MOCK) { setTimeout(function () { S.tr = mockSpeech(t); liveUpd(); }, 400); return; }
