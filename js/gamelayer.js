@@ -178,6 +178,13 @@
   bb.className = String(btn.className || "").replace(/\bactive\b/g, "").trim(); bb.textContent = "🖤 Bảng"; bb.title = "Bật / tắt bảng chung";
   bb.hidden = btn.hidden; btn.parentNode.insertBefore(bb, btn.nextSibling);
   setInterval(function () { bb.hidden = btn.hidden; }, 1000);
+  /* ↗ TAB MỚI (TJ 2026-10-14): Game cứ chạy ở tab này, muốn xem bài học khác thì mở app ở tab trình duyệt mới. "noopener" = tab mới KHÔNG kế thừa sessionStorage/window.name
+     -> không tự mở lại game trong tab mới (sẽ thành "người chơi ma" thứ hai trong phòng). */
+  var nt = document.createElement("button"); nt.id = "btn-newtab"; nt.type = "button";
+  nt.className = String(btn.className || "").replace(/active/g, "").trim(); nt.textContent = "↗ Tab mới"; nt.title = "Mở app ở tab trình duyệt mới (Game vẫn chạy ở tab này)";
+  nt.hidden = btn.hidden; bb.parentNode.insertBefore(nt, bb.nextSibling);
+  setInterval(function () { nt.hidden = btn.hidden; }, 1000);
+  nt.addEventListener("click", function () { w.open(location.href.split("#")[0].split("?")[0], "_blank", "noopener"); });
   bb.addEventListener("click", function () {
     if (boardMode) { closeBoardMode(); return; }
     if (gameOpened) dropGame();   /* đang ở trang game -> rời trang game, sang trang bảng */
