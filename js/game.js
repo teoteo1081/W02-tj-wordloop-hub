@@ -971,6 +971,8 @@
         var chips = Object.keys(lv).sort().map(function (k) { return '<span class="g-blv">' + lv[k] + " " + (k === "-" ? "?" : k) + "</span>"; }).join("");
         h += '<div class="g-bcard' + (sel[b.id] ? " on" : "") + '" data-bk="' + esc(b.id) + '" role="button" tabindex="0"><div class="g-bpath">' + esc(pathOf({ table: "blocks", id: b.id, title: b.name })) + "</div>" +
           '<div class="g-bhead"><b>' + esc(b.name) + "</b>" + chips + (BPD.star[b.id] ? '<span class="g-blv star">⭐ ' + BPD.star[b.id] + "</span>" : "") + (BPD.wrong[b.id] ? '<span class="g-blv bad">❌ ' + BPD.wrong[b.id] + "</span>" : "") + bpStatus(b.id) + (sel[b.id] ? '<span class="g-bsel">✓ Đã chọn</span>' : "") + "</div>" +
+          /* TJ 2026-10-15: danh sách đơn giản này (Block ở Notebook KHÁC màn Learning đang mở) trước đây KHÔNG có nút — nay có 🎮/🖤 như thẻ Learning */
+          '<div class="g-bbtns"><button type="button" class="g-btn g-btn-sm" data-bpplay="' + esc(b.id) + '">🎮 Chơi game →</button><button type="button" class="g-btn g-btn-soft g-btn-sm" data-bpboard="' + esc(b.id) + '">🖤 Mở bảng</button></div>' +
           '<div class="g-bwords">' + (ws.length ? ws.map(function (w) { return '<span class="g-bw">' + esc(w.term) + "</span>"; }).join("") : '<span class="g-sub">' + (BPD.loaded[b.id] ? "Chưa có từ" : "Đang tải từ…") + "</span>") + "</div></div>";
       });
       h += "</div>";
@@ -1006,8 +1008,9 @@
   };
   window.__tjBpH = function (h) { var f = $("#l-bpframe"); if (f) f.style.height = Math.max(60, h + 6) + "px"; };
   $("#l-blocks").addEventListener("click", function (e) {
-    var t = e.target.closest("[data-bt]"), k = e.target.closest("[data-bk]");
-    if (t) bpPick("bt", t.dataset.bt); else if (k) bpPick("bk", k.dataset.bk);
+    var t = e.target.closest("[data-bt]"), k = e.target.closest("[data-bk]"), pl = e.target.closest("[data-bpplay]"), bd = e.target.closest("[data-bpboard]");
+    if (pl) bpPick("play", pl.dataset.bpplay); else if (bd) bpPick("board", bd.dataset.bpboard);   /* nút trong thẻ: không kèm việc chọn thẻ */
+    else if (t) bpPick("bt", t.dataset.bt); else if (k) bpPick("bk", k.dataset.bk);
   });
   /* PHÒNG CỐ ĐỊNH của host: lấy phòng mới nhất của host, chưa có thì tạo — mã/link dùng mãi */
   async function openHostRoom() {

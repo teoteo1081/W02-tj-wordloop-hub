@@ -24,6 +24,7 @@ h1{font-size:22px;margin:8px 0 4px} h2{font-size:16px;margin:18px 0 8px}
 .g-btn:hover{background:var(--accent-hi)}
 .g-btn-soft{background:var(--raise);color:var(--text);border:1px solid var(--line)} .g-btn-soft:hover{background:var(--line)}
 .g-btn-sm{padding:5px 10px;font-size:12px}
+.g-bbtns{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}   /* hàng nút 🎮/🖤 trên thẻ Block trong danh sách chọn (TJ 2026-10-15) */
 .g-tag{font-size:11px;background:var(--amber);color:#1a1918;border-radius:6px;padding:1px 6px;font-weight:700}
 .g-no{color:var(--text-2);font-weight:400}
 .g-av{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--raise);font-size:18px;object-fit:cover;flex:none}
