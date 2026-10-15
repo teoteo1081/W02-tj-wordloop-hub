@@ -4948,7 +4948,7 @@
   /* 🔁 CHƠI LẠI VÁN NÀY (TJ 2026-10-04: "khi review thì Admin bấm chơi lại ván đó với những người chơi hiện tại"):
      cùng chủ đề / dạng câu / kiểu chơi / giờ; ván vừa xong -> lấy nguyên cài đặt hiện tại; ván cũ trong 📜 Lịch sử -> lấy từ game_matches.
      Bắt đầu NGAY với những người đang trong phòng. */
-  function replayMatch(M) {
+  function replayMatchObj(M) {   /* chơi lại theo cài đặt ván vừa chơi (không có id ván): trước đây trùng tên với replayMatch(mid) bên dưới nên bị ghi đè -> nút "Chơi lại ván này" luôn báo "không còn thông tin chủ đề" */
     if (!G.isHost || !G.st || !G.room || G.st.phase === "play") return;
     if (!confirm(T("replay_q"))) return;
     var st = G.st;
@@ -4964,7 +4964,7 @@
     push(); renderLobby();
     setTimeout(function () { $("#l-start").click(); }, 400);
   }
-  document.addEventListener("click", function (e) { if (e.target.closest && e.target.closest("#e-replay, #rv-replay")) replayMatch(G.rvMatch || null); });
+  document.addEventListener("click", function (e) { if (e.target.closest && e.target.closest("#e-replay, #rv-replay")) { var rmid = G.rvMatch && G.rvMatch.id; if (rmid) replayMatch(rmid); else replayMatchObj(null); } });
   $("#e-again").addEventListener("click", function () {
     if (!G.isHost || !G.st) return;
     G.st.phase = "lobby"; G.st.scores = {}; G.st.q = null; G.st.matchId = null;
