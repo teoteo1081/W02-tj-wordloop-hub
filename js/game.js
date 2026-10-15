@@ -265,15 +265,18 @@
   var SWA = null;
   document.addEventListener("tjwl-sw-admin", function (e) { SWA = e.detail && e.detail.on ? e.detail : null; paintSwAdmin(); });
   function paintSwAdmin() {
-    var box = $("#ga-swbox"), el = $("#ga-sw"); if (!box || !el) return;
-    if (!SWA || !G.isHost) { box.hidden = true; el.innerHTML = ""; return; }
-    var a = SWA, ph = { ready: "3-2-1", prep: "Chuẩn bị chung", resp: a.kind === "writing" ? "Đang viết" : "Đang nói", idle: a.pd || a.kind === "writing" ? "Chờ chọn người" : "Chưa bắt đầu", show: "Chưa bắt đầu" }[a.phase] || a.phase;
-    el.innerHTML = '<div class="g-sub">Câu ' + (a.i + 1) + "/" + a.n + " · " + esc(ph) + '</div>' +
-      '<div class="ga-row"><button type="button" class="g-btn g-btn-soft g-btn-sm" data-sw="stop">⏹ Dừng lượt</button><button type="button" class="g-btn g-btn-soft g-btn-sm" data-sw="next">Câu tiếp ›</button><button type="button" class="g-btn g-btn-sm" data-sw="end" style="color:#f08a96">Kết thúc lớp</button></div>' +
+    var box = $("#ga-swbox"), el = $("#ga-sw"), gm = $("#ga-game"); if (!box || !el) return;
+    if (!SWA || !G.isHost) { box.hidden = true; el.innerHTML = ""; if (gm) gm.hidden = false; return; }
+    if (gm) gm.hidden = true;   /* đang chạy lớp: thay phần Ván/Người chơi của game bằng của lớp (cùng kiểu) */
+    var a = SWA, ph = { ready: "3-2-1", prep: "Chuẩn bị chung", resp: a.kind === "writing" ? "Đang viết" : "Đang nói", idle: a.pd || a.kind === "writing" ? "Chờ chọn người" : "Chưa bắt đầu", show: "Chưa bắt đầu" }[a.phase] || a.phase, n = 0;
+    el.innerHTML = '<h3>Ván · ' + (a.kind === "writing" ? "Writing" : "Speaking") + '</h3><div class="g-sub">Câu ' + (a.i + 1) + "/" + a.n + " · " + esc(ph) + "</div>" +
+      '<div class="ga-row"><button type="button" class="g-btn g-btn-sm" data-sw="end">■ Kết thúc</button><button type="button" class="g-btn g-btn-soft g-btn-sm" data-sw="next">⏭ Sang câu kế</button><button type="button" class="g-btn g-btn-soft g-btn-sm" data-sw="stop">⏹ Dừng lượt</button></div>' +
       '<label class="g-check"><input type="checkbox" data-sw="ai"' + (a.ai ? " checked" : "") + '> 🤖 AI chấm điểm</label>' +
       (a.kind === "speaking" ? '<label class="g-check"><input type="checkbox" data-sw="hp"' + (a.hp ? " checked" : "") + '> Host cũng chơi</label>' : "") +
-      '<div class="g-sub">Chạm tên = chọn người nói tiếp (✓ đã nói, chạm lại để nói lại)</div><div class="ga-swp">' +
-      a.players.filter(function (p) { return a.hp || !p.me; }).map(function (p) { return '<button type="button" class="g-btn g-btn-sm ' + (p.id === (a.sp || a.pick) ? "" : "g-btn-soft") + '" data-swp="' + esc(p.id) + '">' + (p.done ? "✓ " : "") + esc(p.name) + "</button>"; }).join("") + "</div>";
+      '<h3>Người chơi</h3><ol class="g-board ga-players">' + a.players.filter(function (p) { return a.hp || !p.me; }).map(function (p) {
+        n++; var cur = p.id === a.sp;
+        return '<li class="ga-swli' + (cur ? " cur" : "") + '" data-swp="' + esc(p.id) + '" title="Chạm: chọn người nói tiếp (đã chuẩn bị xong thì vào nói luôn)"><span class="g-rank">' + n + "</span>" + avatar(p.avatar) + '<span class="g-pname">' + esc(p.name) + '</span><span class="ga-st">' + (cur ? "🎤 đang nói" : p.done ? "✓ đã nói" : "") + "</span></li>";
+      }).join("") + "</ol>";
     box.hidden = false;
   }
   document.addEventListener("click", function (e) {
