@@ -63,3 +63,5 @@ select.big { max-width:46%; }
 
 .bignum { font-size:64px; font-weight:900; color:var(--acc); animation:cdpop2 .6s ease-out; } @keyframes cdpop2 { 0% { transform:scale(.4); opacity:0; } 60% { transform:scale(1.15); opacity:1; } 100% { transform:scale(1); } }
 @media (min-width:900px) { body.live #app { max-width:1040px; } body.live .prompt { font-size:26px; line-height:1.55; } body.live .prompt.read { font-size:28px; } body.live .timer { font-size:76px; } body.live .bignum { font-size:110px; } body.live .badge { font-size:15px; } }
+
+.w-ok { color:var(--ok); font-weight:500; text-decoration:none; } .w-bad { color:var(--bad); background:var(--badbg); border-radius:4px; padding:0 2px; font-weight:600; text-decoration:none; } .w-miss { color:var(--warn); background:var(--warnbg); border-radius:4px; padding:0 2px; font-weight:500; text-decoration:none; }

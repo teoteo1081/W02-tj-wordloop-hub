@@ -429,7 +429,7 @@
     else {
       var cls = r.score === r.max ? "top" : "s" + r.score, fb = r.fb || {};
       h += '<div class="card"><div class="score"><div class="ring ' + cls + '">' + r.score + "<small>/" + r.max + '</small></div><div><b>' + (r.score >= r.max - 0 ? "Rất tốt!" : r.score >= Math.ceil(r.max / 2) ? "Khá ổn" : "Cần cải thiện") + '</b><div class="sub">Điểm ước tính cho câu này</div></div></div>';
-      if (r.read) h += '<p class="prompt read" style="margin-top:8px">' + r.read.words.map(function (w, i) { return '<span class="w-' + (r.read.st[i] || "miss") + '">' + esc(w) + "</span>"; }).join(" ") + '</p><p class="sub"><span class="w-ok">xanh = đúng</span> · <span class="w-bad">đỏ = sai/chưa rõ</span> · <span class="w-miss">vàng = bỏ sót</span></p>';
+      if (r.read && r.read.pct >= .05) h += '<p class="prompt read" style="margin-top:8px">' + r.read.words.map(function (w, i) { return '<span class="w-' + (r.read.st[i] || "miss") + '">' + esc(w) + "</span>"; }).join(" ") + '</p><p class="sub"><span class="w-ok">xanh = đúng</span> · <span class="w-bad">đỏ = sai/chưa rõ</span> · <span class="w-miss">vàng = bỏ sót</span></p>';
       if ((fb.strengths || []).length) h += '<ul class="fb ok">' + fb.strengths.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>";
       if ((fb.fixes || []).length) h += '<p><b>Cần sửa</b></p><ul class="fb">' + fb.fixes.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>";
       h += "</div>";
