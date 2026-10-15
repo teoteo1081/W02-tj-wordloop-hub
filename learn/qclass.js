@@ -43,6 +43,17 @@
     "#qc .av.dim{opacity:.35;filter:grayscale(1)}#qc .av.lit{border-color:#d97757}#qc .av.ok{border-color:#4fb985;box-shadow:0 0 0 2px rgba(79,185,133,.35)}#qc .av.bad{border-color:#e0607a;box-shadow:0 0 0 2px rgba(224,96,122,.3)}" +
     "#qc .strip{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 12px}#qc .strip .l{font-size:13px;color:var(--muted);margin-right:4px}#qc .qo .who{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}#qc .qo .who .av{width:28px;height:28px;font-size:16px;border-width:2px}" +
     "#qc .pod{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin:14px 0}#qc .pod>div{text-align:center;flex:1;max-width:150px}#qc .pod .av{width:64px;height:64px;font-size:34px;margin:0 auto 6px}#qc .pod .blk{border-radius:10px 10px 0 0;background:#d97757;color:#fff;font-weight:800;padding:8px 0}" +
+    "#qc .gq .gclock{display:flex;align-items:center;gap:10px;flex-wrap:wrap;row-gap:6px;margin-bottom:10px}#qc .gq .gt{font-size:34px;font-weight:800;color:#d97757;font-variant-numeric:tabular-nums;min-width:44px}#qc .gq .gsub{color:var(--muted);font-size:14px}#qc .gq .gtools{margin-left:auto;display:flex;gap:8px;align-items:center}#qc .qx.sm{width:36px;height:36px;font-size:16px}" +
+    "#qc .gcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}#qc .gbar{height:5px;border-radius:3px;background:var(--line);overflow:hidden;margin-bottom:12px}#qc .gbar i{display:block;height:100%;background:#d97757;transition:width .25s linear}#qc .ghint{text-align:center;font-size:13px;color:var(--muted)}" +
+    "#qc .gvi{font-size:22px;font-weight:700;color:var(--blue-dark,#8fb8e8);text-align:center;min-height:2.4em;display:flex;align-items:center;justify-content:center;line-height:1.45;padding:4px 2px}#qc .gsay{text-align:center;margin:4px 0}" +
+    "#qc .gopts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}#qc .gopt{min-height:56px;padding:10px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:16px;font-weight:600;cursor:pointer;word-break:break-word;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center}" +
+    "#qc .gopt:disabled{cursor:default}#qc .gopt.picked{border-color:#f0a66e;background:rgba(240,166,110,.14)}#qc .gopt.ok{border-color:#4fb985;background:rgba(79,185,133,.2)}#qc .gopt.bad{border-color:#e0607a;background:rgba(224,96,122,.18)}#qc .gopt .pk{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}#qc .gopt .pk .av{width:26px;height:26px;font-size:15px;border-width:2px}" +
+    "#qc .gres{margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--bg);border:1px solid var(--line);font-size:15px}#qc .gres.ok{border-color:#4fb985}#qc .gres.bad{border-color:#e0607a}#qc .grow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px}#qc .grow.gm{margin-top:18px}" +
+    "#qc .gq .qbd div.me{outline:2px solid #d97757;border-radius:8px}" +
+    "@media (max-width:420px){#qc .gopts{grid-template-columns:1fr}}" +
+        "#qc .bkr{display:flex;gap:8px}#qc .bkf .tb{background:var(--bg)}#qc .bkw span[data-tip]{position:relative;cursor:help}#qc .bkw span[data-tip]:hover::after,#qc .bkw span[data-tip]:focus::after{content:attr(data-tip);position:absolute;left:0;bottom:calc(100% + 6px);z-index:6;width:max-content;max-width:260px;white-space:normal;background:#111;color:#fff;padding:6px 10px;border-radius:8px;font-size:13px;font-weight:400;line-height:1.4;box-shadow:0 6px 16px rgba(0,0,0,.4)}" +
+    "#qc .tbl{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px 12px;margin:8px 0}#qc .tr{display:grid;grid-template-columns:26px minmax(110px,170px) 40px 1fr;gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}#qc .tr:last-child{border:0}#qc .tr .n{color:var(--muted);font-size:13px}#qc .tr .te{font-size:16px}#qc .tr .tv{font-size:15px;color:var(--ink)}" +
+    "@media (max-width:520px){#qc .tr{grid-template-columns:22px 1fr 40px}#qc .tr .tv{grid-column:2/-1}}" +
     "#qfab{position:fixed;right:14px;bottom:78px;z-index:8000;padding:11px 18px;border-radius:99px;border:0;background:#d97757;color:#fff;font:700 16px system-ui,sans-serif;box-shadow:0 6px 18px rgba(0,0,0,.3);cursor:pointer}";
   css.textContent += "#qc[hidden],#qfab[hidden]{display:none!important}";
   document.head.appendChild(css);
@@ -54,35 +65,42 @@
   function speak(t) { try { speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(t); u.lang = "en-US"; u.rate = 0.9; speechSynthesis.speak(u); } catch (e) {} }
   function autoSay() { if (Z && Z.ph === "q" && Z.q && Z.q.say && Z.q.auto !== 0 && Z.q.k !== "m2en") { var key = Z.run + ":" + Z.i; if (key !== lastSay) { lastSay = key; speak(Z.q.say); } } }
   function rem() { return Z && Z.tEnd ? Math.max(0, (Z.tEnd - Date.now()) / 1000) : 0; }
-  function paintBoard(b, meId) { var pk = Z && Z.ph === "rev" ? Z.picks || null : null; return '<div class="qbd">' + (b || []).slice(0, 8).map(function (r, k) { var c = pk ? pk[r.id] : null, mk = pk ? (c == null ? "⏰" : c === Z.ans ? "✅" : "❌") : ""; return "<div><b>" + (k + 1) + "</b>" + '<span class="av ' + (pk ? (c == null ? "dim" : c === Z.ans ? "ok" : "bad") : "") + '">' + ava(r.avatar) + "</span><span>" + esc(r.name) + (r.id === meId ? " (bạn)" : "") + '</span><span class="pts">' + mk + " " + r.pts + "</span>" + (r.last ? '<span class="d">+' + r.last + "</span>" : "") + "</div>"; }).join("") + "</div>"; }
+  function paintBoard(b, meId) { var pk = Z && Z.ph === "rev" ? Z.picks || null : null; return '<div class="qbd">' + (b || []).slice(0, 8).map(function (r, k) { var c = pk ? pk[r.id] : null, mk = pk ? (c == null ? "⏰" : c === Z.ans ? "✅" : "❌") : ""; return "<div" + (r.id === meId ? ' class="me"' : "") + "><b>" + (k + 1) + "</b>" + '<span class="av ' + (pk ? (c == null ? "dim" : c === Z.ans ? "ok" : "bad") : "") + '">' + ava(r.avatar) + "</span><span>" + esc(r.name) + (r.id === meId ? " (bạn)" : "") + '</span><span class="pts">' + mk + " " + r.pts + "</span>" + (r.last ? '<span class="d">+' + r.last + "</span>" : "") + "</div>"; }).join("") + "</div>"; }
   function podium(b) {
     b = (b || []).slice(0, 3); if (!b.length) return ""; var order = b.length === 3 ? [1, 0, 2] : b.length === 2 ? [1, 0] : [0], hh = [90, 64, 48];
     return '<div class="pod">' + order.map(function (i) { var r = b[i]; return '<div><span class="av ok">' + ava(r.avatar) + "</span><div>" + esc(r.name) + '</div><div class="blk" style="height:' + hh[i] + 'px">' + ["🥇", "🥈", "🥉"][i] + " " + r.pts + "</div></div>"; }).join("") + "</div>";
   }
-  function render() {
+  var HINT = { quiz: "📝 Trắc nghiệm bài học", en2m: "Chọn nghĩa đúng của thuật ngữ", m2en: "Chọn thuật ngữ đúng với nghĩa", listen: "🎧 Nghe và chọn nghĩa đúng" };
+  function render() {   /* bố cục giống màn chơi Kahoot của game Từ vựng: đồng hồ · thanh tiến trình · từ to giữa · 4 đáp án lưới 2×2 (avatar người chọn dưới chữ) · nút trong thẻ · bảng điểm bên dưới */
     if (!Z || Z.ph === "close") { ov.hidden = true; fab.hidden = !(CTX.isHost && CTX.inRoom); return; }
     ov.hidden = false; fab.hidden = true;
-    var host = !!H, me = CTX.me || {}, mine = Z.my, h = '<div class="qw"><div class="qtop"><button class="qx" data-q="quit" title="' + (host ? "Đóng lớp" : "Thoát") + '">✕</button><span class="qn">' + (Z.ph === "end" ? "🏆 Kết quả" : "Câu " + (Z.i + 1) + "/" + Z.n) + "</span>" + (Z.ph === "q" ? '<span class="qcnt">' + (host ? "Đã trả lời " + (Z.got || 0) + "/" + (H.expect || 0) : mine != null ? "✓ Đã chọn" : "") + '</span><span class="qc2" id="qcd">' + Math.ceil(rem()) + "</span>" : "") + "</div>";
-    if (Z.ph === "end") h += "<h2>Bảng xếp hạng cuối</h2>" + podium(Z.board) + paintBoard(Z.board, me.id) + (host ? "" : '<p class="sub" style="color:var(--muted)">Host sẽ đóng lớp, bạn sẽ về phòng game.</p>');
-    else {
-      var q = Z.q || { t: "", o: [] };
-      if (Z.ph === "q") h += '<div class="qbar"><i id="qpg" style="width:' + (Z.tot ? Math.min(100, 100 * rem() / Z.tot) : 0) + '%"></i></div>';
-      if (Z.ph === "q") h += '<div class="strip"><span class="l">Đã trả lời:</span>' + Object.keys(Z.pl || {}).map(function (id) { return av(id, (Z.ids || []).indexOf(id) >= 0 ? "lit" : "dim"); }).join("") + "</div>";
-      h += '<div class="qq">' + (q.hide ? '<div style="font-size:42px;text-align:center">🎧</div>' : "") + esc(q.t) + (q.say ? ' <button class="qx" data-q="say" title="Nghe lại" style="width:38px;height:38px;vertical-align:middle">🔊</button>' : "") + "</div>";
+    var host = !!H, me = CTX.me || {}, mine = Z.my, q = Z.q || { t: "", o: [] }, rev = Z.ph === "rev";
+    var h = '<div class="qw gq"><div class="gclock"><button class="qx sm" data-q="quit" title="' + (host ? "Đóng lớp" : "Thoát") + '">✕</button>' + (Z.ph === "end" ? '<span class="gt">🏆</span><span class="gsub">Kết quả</span>' : '<span class="gt" id="qcd">' + (Z.ph === "q" ? Math.ceil(rem()) : "✓") + '</span><span class="gsub">Câu ' + (Z.i + 1) + "/" + Z.n + (Z.ph === "q" ? " · " + (host ? "đã trả lời " + (Z.got || 0) + "/" + (H.expect || 0) : mine != null ? "✓ đã chọn" : "") : "") + "</span>") + '<span class="gtools">' + (q.say && Z.ph !== "end" ? '<button class="qx sm" data-q="say" title="Nghe lại">🔊</button>' : "") + (host ? '<button class="qb soft sm" data-q="close">⏹ Kết thúc</button>' : "") + "</span></div>";
+    if (Z.ph === "end") {
+      h += "<h2>Bảng xếp hạng cuối</h2>" + podium(Z.board) + paintBoard(Z.board, me.id) + (host ? "" : '<p class="gsub">Host sẽ đóng lớp, bạn sẽ về phòng game.</p>');
+    } else {
+      h += '<div class="gcard">' + (Z.ph === "q" ? '<div class="gbar"><i id="qpg" style="width:' + (Z.tot ? Math.min(100, 100 * rem() / Z.tot) : 0) + '%"></i></div>' : "") + '<div class="ghint">' + esc(HINT[q.k] || "") + '</div><div class="gvi">' + (q.hide ? '<span style="font-size:44px">🎧</span>' : esc(q.t)) + "</div>";
+      if (q.hide) h += '<div class="gsay"><button class="qb" data-q="say">🔊 Nghe</button></div>';
+      h += '<div class="gopts">';
       q.o.forEach(function (o, k) {
-        var cls = "qo", dis = "";
-        if (Z.ph === "rev") { dis = " disabled"; if (k === Z.ans) cls += " ok"; else if (k === mine) cls += " bad"; }
-        else if (mine === k) cls += " on"; else if (mine != null || (host && !H.hp)) dis = " disabled";
-        h += '<button class="' + cls + '" data-q="pick" data-k="' + k + '"' + dis + "><b>" + "ABCD"[k] + "</b><span>" + esc(o) + "</span>" + (Z.ph === "rev" && Z.picks ? '<span class="who">' + Object.keys(Z.picks).filter(function (id) { return Z.picks[id] === k; }).map(function (id) { return av(id, k === Z.ans ? "ok" : "bad"); }).join("") + "</span>" : "") + "</button>";
+        var cls = "gopt", dis = "";
+        if (rev) { dis = " disabled"; if (k === Z.ans) cls += " ok"; else if (k === mine) cls += " bad"; }
+        else if (mine === k) cls += " picked"; else if (mine != null || (host && !H.hp)) dis = " disabled";
+        h += '<button class="' + cls + '" data-q="pick" data-k="' + k + '"' + dis + '><span class="otext">' + esc(o) + "</span>" + (rev && Z.picks ? '<span class="pk">' + Object.keys(Z.picks).filter(function (id) { return Z.picks[id] === k; }).map(function (id) { return av(id, k === Z.ans ? "ok" : "bad"); }).join("") + "</span>" : "") + "</button>";
       });
-      if (Z.ph === "rev") {
-        var my = (Z.board || []).filter(function (r) { return r.id === me.id; })[0];
-        h += '<div class="qex"><b>' + (mine === Z.ans ? "✅ Đúng rồi!" : mine == null ? "⏰ Chưa trả lời" : "❌ Chưa đúng") + (my && my.last ? " +" + my.last : "") + "</b><br>" + esc(Z.exp || "") + "</div>" + (function () { var no = Object.keys(Z.pl || {}).filter(function (id) { return Z.picks && Z.picks[id] == null; }); return no.length ? '<div class="strip"><span class="l">⏰ Không kịp:</span>' + no.map(function (id) { return av(id, "dim"); }).join("") + "</div>" : ""; })() + paintBoard(Z.board, me.id);
+      h += "</div>";
+      if (Z.ph === "q") h += '<div class="strip"><span class="l">Đã trả lời:</span>' + Object.keys(Z.pl || {}).map(function (id) { return av(id, (Z.ids || []).indexOf(id) >= 0 ? "lit" : "dim"); }).join("") + "</div>";
+      if (rev) {
+        var my = (Z.board || []).filter(function (r) { return r.id === me.id; })[0], no = Object.keys(Z.pl || {}).filter(function (id) { return Z.picks && Z.picks[id] == null; });
+        h += '<div class="gres ' + (mine === Z.ans ? "ok" : "bad") + '"><b>' + (mine === Z.ans ? "✅ Đúng rồi!" : mine == null ? "⏰ Chưa trả lời" : "❌ Chưa đúng") + (my && my.last ? " +" + my.last : "") + "</b><br>" + esc(Z.exp || "") + "</div>" +
+          (no.length ? '<div class="strip"><span class="l">⏰ Không kịp:</span>' + no.map(function (id) { return av(id, "dim"); }).join("") + "</div>" : "");
       }
+      if (host) h += '<div class="grow">' + (Z.ph === "q" ? '<button class="qb soft" data-q="lock">👁 Chốt câu</button>' : '<button class="qb" data-q="next">' + (Z.i + 1 >= Z.n ? "🏆 Xem kết quả" : "Câu tiếp ▶") + "</button>") + "</div>";
+      h += "</div>";
+      if (rev) h += paintBoard(Z.board, me.id);
     }
-    h += "</div>";
-    if (host) h += '<div class="qfoot"><button class="qb soft sm" data-q="users" title="Quản lý người chơi">👥</button><button class="qb soft sm" data-q="copy" title="Copy link mời">🔗</button>' + (Z.ph === "q" ? '<button class="qb soft" data-q="lock">⏭ Chốt câu</button>' : Z.ph === "rev" ? '<button class="qb" data-q="next">' + (Z.i + 1 >= Z.n ? "🏆 Xem kết quả" : "Câu tiếp ›") + "</button>" : '<button class="qb" data-q="close">Đóng lớp</button>') + "</div>";
-    ov.innerHTML = h; autoSay();
+    if (host) h += '<div class="grow gm"><button class="qb soft sm" data-q="users">👥 Quản lý người chơi</button><button class="qb soft sm" data-q="copy">🔗 Copy link mời</button></div>';
+    ov.innerHTML = h + "</div>"; autoSay();
   }
   function tick() {
     if (!Z || Z.ph !== "q") return;
@@ -96,6 +114,14 @@
   function roomCard() {   /* thẻ phòng giống phòng chờ game: mã phòng + avatar người trong phòng + Quản lý người chơi / Copy link mời */
     return '<div class="rcard"><div class="rtop"><div><div class="sub">Mã phòng</div><div class="rcode">' + esc(CTX.room || "") + '</div></div><div class="rbtn"><button class="qb soft sm" data-q="users">👥 Quản lý người chơi</button><button class="qb soft sm" data-q="copy">🔗 Copy link mời</button></div></div><div class="rps">' +
       (CTX.players || []).map(function (p) { return '<span class="rp" title="' + esc(p.name || "") + '"><span class="av lit">' + ava(p.avatar) + "</span><b>" + esc(p.name || "?") + "</b></span>"; }).join("") + "</div></div>";
+  }
+  function showTable(id) {   /* bảng từ vựng của 1 module: thuật ngữ · nghe · nghĩa tiếng Việt · link đọc bài học */
+    var l = lessonsList().filter(function (x) { return x.id === id; })[0] || { id: id, title: id }, vs = (DATA.vocab || []).filter(function (v) { return v.lesson === id; });
+    var base = (window.QUEST_CONFIG && QUEST_CONFIG.lessonBase) || "", link = l.file && /^https?:/.test(base) ? base + l.file : "";
+    var h = '<div class="qw"><div class="qtop"><button class="qx" data-q="back">←</button><span class="qn">📖 ' + esc(String(l.title || id)) + '</span></div><div class="tbl">' +
+      vs.map(function (v, k) { return '<div class="tr"><span class="n">' + (k + 1) + '</span><span class="te"><b>' + esc(v.en) + '</b></span><button class="qx sm" data-q="sayw" data-w="' + esc(v.en) + '" title="Nghe">🔊</button><span class="tv">' + esc(v.vi) + "</span></div>"; }).join("") + "</div>" +
+      '<div class="grow"><button class="qb soft" data-q="back">← Quay lại</button>' + (link ? '<button class="qb soft" data-q="lesson" data-u="' + esc(link) + '">📘 Đọc bài học</button>' : "") + '<button class="qb" data-q="one" data-id="' + esc(id) + '">🎮 Chơi bài này</button></div></div>';
+    ov.hidden = false; fab.hidden = true; ov.innerHTML = h; ov.scrollTop = 0;
   }
   var TYPES = [["mix", "🔀 Trộn tất cả dạng"], ["quiz", "📝 Trắc nghiệm bài học"], ["en2m", "🔤 Thuật ngữ → nghĩa (tiếng mẹ đẻ)"], ["m2en", "🈯 Nghĩa → thuật ngữ"], ["listen", "🎧 Nghe → chọn nghĩa"]];
   function typesOf(t) { return t === "mix" ? { quiz: true, en2m: true, m2en: true, listen: true } : (function (o) { o[t] = true; return o; })({}); }
@@ -120,7 +146,7 @@
     lessonsList().forEach(function (l) {
       var vs = V.filter(function (v) { return v.lesson === l.id; }), lq = Qs.filter(function (q) { return q.lesson === l.id; }).length, no = String(l.title || l.id).match(/^\d+/);
       h += '<div class="bk"><div class="bkh"><b>Module ' + esc(no ? no[0] : l.id) + "</b><span class=\"c\">" + vs.length + ' thuật ngữ</span><span class="c">' + lq + ' trắc nghiệm</span><span class="c part">Phần ' + esc(l.part || "") + '</span></div><div class="bkt">' + esc(String(l.title || l.id).replace(/^\d+ · /, "")) + '</div><div class="bkw">' +
-        vs.slice(0, 16).map(function (v) { return "<span>" + esc(v.en) + "</span>"; }).join("") + (vs.length > 16 ? "<span>+" + (vs.length - 16) + "</span>" : "") + '</div><div class="bkf"><button class="tg' + (inSel(l.id) ? " on" : "") + '" data-q="mod" data-id="' + esc(l.id) + '">' + (inSel(l.id) ? "☑ Đã chọn" : "☐ Chọn") + '</button><button class="pl" data-q="one" data-id="' + esc(l.id) + '">🎮 Chơi game →</button></div></div>';
+        vs.map(function (v) { return '<span tabindex="0" title="' + esc(v.vi) + '" data-tip="' + esc(v.vi) + '">' + esc(v.en) + "</span>"; }).join("") + '</div><div class="bkf"><button class="tg' + (inSel(l.id) ? " on" : "") + '" data-q="mod" data-id="' + esc(l.id) + '">' + (inSel(l.id) ? "☑ Đã chọn" : "☐ Chọn") + '</button><span class="bkr"><button class="tb" data-q="table" data-id="' + esc(l.id) + '">📖 Mở bảng</button><button class="pl" data-q="one" data-id="' + esc(l.id) + '">🎮 Chơi game →</button></span></div></div>';
     });
     h += "</div>";
     ov.hidden = false; fab.hidden = true; var st = ov.scrollTop; ov.innerHTML = h; ov.scrollTop = st; saveH();
@@ -198,6 +224,10 @@
     var b = e.target.closest("[data-q]"); if (!b || b.disabled) return; var a = b.dataset.q, me = CTX.me || {};
     if (a === "quit") { if (H) { if (confirm("Đóng lớp cho cả phòng?")) closeRun(); } else { ov.hidden = true; toParent({ type: "sw-leave" }); } }
     else if (a === "setupx") { ov.hidden = true; fab.hidden = false; clearSaved(); }
+    else if (a === "table") showTable(b.dataset.id);
+    else if (a === "back") showSetup();
+    else if (a === "sayw") speak(b.dataset.w);
+    else if (a === "lesson") { try { window.open(b.dataset.u, "_blank", "noopener"); } catch (x) {} }
     else if (a === "all") { setup.mods = lessonsList().map(function (l) { return l.id; }); showSetup(); }
     else if (a === "none") { setup.mods = []; showSetup(); }
     else if (a === "one") { e.stopPropagation(); setup.mods = [b.dataset.id]; var hp0 = $("#qhp"); setup.hp = hp0 ? hp0.checked : setup.hp; startRun(); }
