@@ -5002,6 +5002,8 @@
       }
       if (!e.target.closest("#ctx-menu")) App.closeMenu();
     });
+    /* Esc đóng menu chuột phải / ⋯ (TJ 2026-10-14: "nhấp chuột phải vào từng thể loại xong bấm Escape không được") */
+    document.addEventListener("keydown", function (e) { if (e.key !== "Escape") return; var m = w.$("#ctx-menu"); if (m && !m.hidden) { App.closeMenu(); e.preventDefault(); } });
     document.addEventListener("contextmenu", function (e) {
       /* Thiếu [data-block] trước đây -> bấm phải vào 1 Block card chỉ ra
          menu chuột phải mặc định của trình duyệt, không mở được menu
