@@ -186,3 +186,6 @@ button.rec, button.rec.big { background:var(--ink) !important; border-color:var(
 .badge.resp { background:var(--ink) !important; color:var(--bg) !important; }
 .hmore-x { position:absolute; top:4px; right:6px; width:30px; height:30px; padding:0; border-radius:50%; font-size:15px; background:transparent; border:0; color:var(--muted); }
 .hmore-p { padding-top:36px; } .hmore.shut .hmore-p { display:none !important; }
+/* y hệt nút "▶ Bắt đầu" của hub game: cam, chữ 16px đậm, bo 10px, nằm trái */
+.gorow { justify-content:flex-start !important; gap:10px; }
+.gorow .big, .gorow .gobtn, .gorow .prepbtn, body.live .gorow .big { padding:12px 22px !important; font-size:16px !important; font-weight:700 !important; border-radius:10px !important; min-height:0 !important; }
