@@ -38,6 +38,7 @@
 
   /* ---------- màn hình ---------- */
   function render() {
+    if (S.screen === "rev") return revView();
     if (S.screen === "live") return liveRender();
     if (S.screen === "home") return home();
     if (S.screen === "sum") return summary();
@@ -56,6 +57,7 @@
       var hist = ST.hist.filter(function (h2) { return h2.kind === S.kind && h2.set === set.id; }).slice(-3).reverse();
       if (hist.length) h += '<h2>Lần làm gần đây</h2><div class="card">' + hist.map(function (x) { return '<div class="row"><span class="sub">' + new Date(x.ts).toLocaleDateString() + " · " + esc(x.gt) + '</span><span style="margin-left:auto"><b>' + x.raw + "/" + x.max + "</b> ≈ " + x.est + "</span></div>"; }).join("") + "</div>";
     }
+    h += '<button class="big" data-act="rev" style="margin-top:10px">📒 Xem lại bài cũ (' + (ST.rev || []).filter(function (r) { return r.kind === S.kind; }).length + ")</button>";
     h += '<details><summary>📥 Nạp đề riêng từ file .json (lưu ở máy này)</summary><p class="sub">Dùng file do <code>tools/sw/parse_prepedu.py</code> tạo. Đề nạp ở đây chỉ nằm trong trình duyệt của bạn, không đưa lên web.</p><input type="file" id="imp" accept=".json,application/json"> <button class="soft" data-act="delextra">Xoá đề đã nạp</button></details>';
     app.innerHTML = h;
     var imp = $("#imp"); if (imp) imp.onchange = importFile;
@@ -177,6 +179,31 @@
       h += '<div class="bottom"><div class="in">' + b + "</div></div>";
     }
     h += '<div class="cd" id="cd" hidden></div>'; app.innerHTML = h; liveTick();
+  }
+  /* ---------- LỊCH SỬ: xem lại bài cũ + lỗi sai (lưu ở máy này) ---------- */
+  function promptShort(t) {
+    var x = t.text || t.question || t.message || t.scene || (t.email && (t.email.subject + " — " + t.email.body)) || "";
+    if (t.words) x += " [" + t.words.join(" + ") + "]";
+    return String(x).slice(0, 400);
+  }
+  function saveRev(t, res) {
+    var fb = res.fb || {}; ST.rev = ST.rev || [];
+    ST.rev.push({ ts: Date.now(), kind: S.kind, set: S.setId, q: res.q, type: t.type, pm: promptShort(t), ans: String(res.ans || "").slice(0, 900), score: res.score, max: res.max, s: (fb.strengths || []).slice(0, 3), f: (fb.fixes || []).slice(0, 5), better: String(fb.better || "").slice(0, 900), live: LIVE ? 1 : 0 });
+    if (ST.rev.length > 200) ST.rev.splice(0, ST.rev.length - 200);
+    save();
+  }
+  function revView() {
+    var all = (ST.rev || []).filter(function (r) { return r.kind === S.kind; }).slice().reverse(), list = S.revAll ? all : all.filter(function (r) { return r.score < r.max; });
+    var li = function (a, c) { return a && a.length ? '<ul class="fb ' + c + '">' + a.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" : ""; };
+    var h = '<div class="top"><button class="soft" data-act="home" title="Về">✕</button><div class="t"><b>📒 Bài cũ · ' + (S.kind === "speaking" ? "Speaking" : "Writing") + '</b></div></div>' +
+      '<div class="row" style="gap:8px;margin:6px 0"><button class="' + (S.revAll ? "" : "pri") + '" data-act="revf">' + (S.revAll ? "Đang xem: tất cả (" + all.length + ")" : "Đang xem: câu chưa đạt tối đa (" + list.length + ")") + '</button></div>';
+    if (!list.length) h += '<div class="card"><p class="sub">' + (all.length ? "Không có câu nào cần xem lại 🎉" : "Chưa có bài nào. Chấm xong câu nào thì câu đó tự lưu ở đây.") + "</p></div>";
+    list.forEach(function (r) {
+      h += '<details class="card"><summary><span class="sub">' + new Date(r.ts).toLocaleDateString() + " " + new Date(r.ts).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + (r.live ? " · 👥 lớp" : "") + "</span> · <b>Câu " + r.q + "</b> · " + esc(String(r.type).replace("_", " ")) + ' <b style="float:right">' + r.score + "/" + r.max + "</b></summary>" +
+        '<p class="sub">Đề:</p><div class="prompt">' + esc(r.pm) + '</div><p class="sub">Bài bạn:</p><div class="live">' + esc(r.ans || "(trống)") + "</div>" + li(r.s, "ok") + (r.f && r.f.length ? "<p><b>Cần sửa</b></p>" : "") + li(r.f, "") + (r.better ? '<details><summary>✨ Bản gợi ý cải thiện</summary><div class="model">' + esc(r.better) + "</div></details>" : "") + "</details>";
+    });
+    if (all.length) h += '<p style="text-align:center"><button class="soft" data-act="revclr">🗑 Xoá lịch sử</button></p>';
+    app.innerHTML = h;
   }
   function othersHtml(q) {   /* kết quả của các bạn khác ở câu này: hiện công khai cho cả phòng */
     var m = (S.class && S.class.rq && S.class.rq[q]) || {}, me = (CTX.me || {}).id;
@@ -361,7 +388,7 @@
         var out = await ai(sysPrompt(), userPrompt(t, ans)); res.score = Math.max(0, Math.min(max, Math.round(+out.score || 0))); res.fb = out; res.words = nWords(ans);
       }
     } catch (e) { res.err = String(e.message || e); res.score = null; }
-    res.ans = ans; S.results[q] = res; classReport(res); if (LIVE && LIVE.myQ === q) LIVE.my = "result"; S.phase = "result"; render();
+    res.ans = ans; S.results[q] = res; if (res.score != null) saveRev(t, res); classReport(res); if (LIVE && LIVE.myQ === q) LIVE.my = "result"; S.phase = "result"; render();
   }
   function sysPrompt() {
     return S.kind === "speaking" ? "You are a strict but fair TOEIC Speaking rater. The learner's speech was transcribed automatically (punctuation may be missing, small recognition errors are possible: do NOT penalise recognition glitches). You can only judge content, organisation, grammar, vocabulary and fluency signals from the text; do not claim to judge pronunciation. Typical learner answers deserve 1-2 on a 0-3 scale. Reply JSON only."
@@ -413,6 +440,9 @@
     if (a === "kind") { S.kind = v; S.setId = (SETS[v][0] || {}).id || ""; render(); }
     else if (a === "set") { S.setId = v; render(); }
     else if (a === "start") { if (S.classMode && CTX.isHost) toParent({ type: "sw-host-start", kind: S.kind, set: S.setId, group: v }); else { S.class = null; S.saved = 0; begin(S.kind, v); } }
+    else if (a === "rev") { S.screen = "rev"; render(); }
+    else if (a === "revf") { S.revAll = !S.revAll; render(); }
+    else if (a === "revclr") { if (confirm("Xoá toàn bộ lịch sử bài " + (S.kind === "speaking" ? "nói" : "viết") + " trên máy này?")) { ST.rev = (ST.rev || []).filter(function (r) { return r.kind !== S.kind; }); save(); render(); } }
     else if (liveAct(a, v)) return;
     else if (a === "go") go();
     else if (a === "skipprep") { clearTimer(); startResp(); }
