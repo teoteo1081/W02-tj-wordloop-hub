@@ -459,7 +459,7 @@
   });
   window.addEventListener("message", function (e) {
     var d = e.data; if (e.origin !== location.origin || !d || typeof d.type !== "string" || d.type.indexOf("sw-") !== 0) return;
-    if (d.type === "sw-ctx") { CTX = { inRoom: !!d.inRoom, isHost: !!d.isHost, me: d.me || null, players: d.players || [] }; if (S.screen === "home" || (S.screen === "live" && LIVE && LIVE.phase !== "prep" && LIVE.phase !== "resp")) render(); }
+    if (d.type === "sw-ctx") { CTX = { inRoom: !!d.inRoom, isHost: !!d.isHost, me: d.me || null, players: d.players || [] }; if (S.classMode === undefined && CTX.isHost && CTX.players.length > 1) S.classMode = true; if (S.screen === "home" || (S.screen === "live" && LIVE && LIVE.phase !== "prep" && LIVE.phase !== "resp")) render(); }
     else if (d.type === "sw-class-start") applyStart(d);
     else if (d.type === "sw-class-live") liveApply(d.p);
     else if (d.type === "sw-class-res" && S.class && d.p && d.p.run === S.class.run && !(CTX.me && d.p.pid === CTX.me.id)) { var b = S.class.board, p = d.p, e2 = b[p.pid] || (b[p.pid] = { name: p.name || "Bạn học", avatar: p.avatar || "", total: 0, n: 0 }); e2.total = p.total; e2.n = p.n || e2.n; ((S.class.rq = S.class.rq || {})[p.q] = S.class.rq[p.q] || {})[p.pid] = p; if (S.screen === "live" && LIVE && LIVE.phase !== "prep" && LIVE.phase !== "resp") liveRender(); else updBoard(); }
