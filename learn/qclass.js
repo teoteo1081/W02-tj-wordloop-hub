@@ -94,14 +94,13 @@
     var rows = (Z.board && Z.board.length ? Z.board : Object.keys(Z.pl || {}).map(function (id) { return { id: id, name: (Z.pl[id] || {}).name, avatar: (Z.pl[id] || {}).avatar, c: 0, w: 0 }; }));
     var meR = rows.filter(function (r) { return r.id === me.id; })[0] || { c: 0, w: 0 };
     var done = Z.ph === "q" ? Z.i : Z.i + 1, left = Math.max(0, Z.n - done), tot = (meR.c || 0) + (meR.w || 0), acc = tot ? Math.round(100 * (meR.c || 0) / tot) + "%" : "—";
-    var h = '<div class="qw gq g-play">';
+    var h = '<div class="qw gq g-play" style="display:block">';   /* display:block: không để cột flex co các dải (dải thống kê bị cắt) */
     /* 1) đồng hồ: số giây to + nhãn + nút tiếng + ✕ */
     h += '<div class="g-clock" style="position:relative;padding-right:36px"><span id="p-left">' + (Z.ph === "q" ? fmtS(rem()) : Z.nxEnd ? "⏭ " + fmtS((Z.nxEnd - Date.now()) / 1000) : "✓") + '</span><span class="g-sub" id="p-mode" style="min-width:0;max-width:58px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Cùng 1 câu</span>' +
       '<span class="g-qtools"><button class="g-replay" data-q="say" type="button" title="Nghe lại"' + (q.say ? "" : " disabled") + '>🔊</button><button class="g-mute' + (SND.mute ? " off" : "") + '" data-q="mute" type="button">' + (SND.mute ? "🔇 Đã tắt tiếng" : "🔊 Có tiếng") + '</button>' +
       '<input type="range" class="g-vol" id="qvol" min="0" max="100" step="5" value="' + SND.vol + '" aria-label="Âm lượng đọc từ" style="width:40px">' +
       "</span>" +
-      '<button class="qx sm" data-q="quit" title="' + (host ? "Đóng lớp" : "Thoát") + '" style="position:absolute;right:4px;top:4px;z-index:2;width:30px;height:30px;padding:0">✕</button>' +
-      (host ? '<button class="g-btn g-btn-soft g-btn-sm" data-q="close" type="button">⏹ Kết thúc</button>' : "") + "</div>";
+      (host ? '<button class="g-btn g-btn-soft g-btn-sm" data-q="close" type="button">⏹ Kết thúc</button>' : '<button class="qx sm" data-q="quit" title="Thoát" style="position:absolute;right:4px;top:4px;z-index:2;width:30px;height:30px;padding:0">✕</button>') + "</div>";
     /* 2) dải thống kê của mình */
     h += '<div class="g-statbar">' + gstat(meR.c || 0, "Đúng", "ok") + gstat(meR.w || 0, "Sai", "bad") + gstat(done + "/" + Z.n, "Đã làm") + gstat(left, "Còn lại") + gstat(acc, "Chính xác") + gstat("—", "TB/câu") + "</div>";
     /* 3) top 3 (huy chương + avatar) */
@@ -116,14 +115,14 @@
     q.o.forEach(function (o, k) {
       var cls = "g-opt", dis = "";
       if (rev) { dis = " disabled"; if (k === Z.ans) cls += " ok"; else if (k === mine) cls += " bad"; }
-      else if (mine === k) cls += " g-picked"; else if (mine != null || (host && !H.hp)) dis = " disabled";
+      else if (mine === k) cls += " g-picked"; else if (host && !H.hp) dis = " disabled";   /* còn giờ thì được ĐỔI đáp án (như màn Từ vựng) */
       var pk = rev && Z.picks ? Object.keys(Z.picks).filter(function (id) { return Z.picks[id] === k; }).map(function (id) { var p = (Z.pl || {})[id] || {}; return gav(p.avatar); }).join("") : "";
       h += '<button class="' + cls + '" data-q="pick" data-k="' + k + '"' + dis + '><span class="g-otext">' + esc(o) + '</span><span class="g-pickers">' + pk + "</span></button>";
     });
     h += "</div>";
     /* 5) dòng thông báo: chỉ khi SAI / hết giờ mới có đáp án + lời giải (đúng thì ô xanh là đủ — TJ 2026-10-15) */
     var msg = "";
-    if (!rev && mine != null) msg = "Đã trả lời — chờ mọi người…";
+    if (!rev && mine != null) msg = "Đã chọn — còn giờ thì bấm đáp án khác để đổi";
     if (rev && mine !== Z.ans) msg = (mine == null ? "⏰ Hết giờ — đáp án: " : "✗ Sai — đáp án: ") + esc(q.o[Z.ans] || "") + (Z.exp ? "<br>" + esc(Z.exp) : "");
     h += '<div class="g-sub g-qmsg">' + msg + "</div>";
     if (host && rev && !Z.nxEnd) h += '<div class="g-row g-center"><button class="g-btn" data-q="next" type="button">' + (Z.i + 1 >= Z.n ? "🏆 Xem kết quả" : "Câu tiếp ▶") + "</button></div>";
@@ -259,7 +258,7 @@
   function closeRun() { clearInterval(hbT); clearSaved(); if (H) clearTimeout(H.autoT); if (H) send({ run: H.run, ph: "close" }); H = null; Z = null; adminSync(); if (CTX.isHost && CTX.inRoom) { showSetup(); return; }   /* host tắt ván -> về màn thiết lập "Chơi cả phòng" (giữ cài đặt), không rơi ra trang chủ thẻ */
     ov.hidden = true; fab.hidden = !(CTX.isHost && CTX.inRoom); }
   function hostGot(a) {   /* người chơi gửi đáp án */
-    if (!H || H.ph !== "q" || a.run !== H.run || a.i !== H.i || H.ans[a.pid]) return;
+    if (!H || H.ph !== "q" || a.run !== H.run || a.i !== H.i) return;   /* người chơi có thể đổi đáp án khi còn giờ: ghi đè lần chọn trước */
     H.names[a.pid] = { name: a.name, avatar: a.avatar }; if (H.score[a.pid] == null) H.score[a.pid] = 0;
     H.ans[a.pid] = { c: a.c, ms: Math.max(0, +a.ms || 0) };
     if (Object.keys(H.ans).length >= H.expect) reveal(); else pushState();
@@ -284,8 +283,8 @@
     else if (a === "say") { if (Z && Z.q && Z.q.say) speak(Z.q.say); }
     else if (a === "go") { var hp = $("#qhp"); setup.hp = hp ? hp.checked : true; startRun(); }
     else if (a === "users" || a === "copy") toParent({ type: "sw-do", a: a });
-    else if (a === "lock") reveal(); else if (a === "next") nextQ(); else if (a === "close") closeRun();
-    else if (a === "pick" && Z && Z.ph === "q" && Z.my == null) {
+    else if (a === "lock") reveal(); else if (a === "next") nextQ(); else if (a === "close") { if (confirm("Kết thúc lớp cho cả phòng?")) closeRun(); }
+    else if (a === "pick" && Z && Z.ph === "q") {   /* còn giờ thì đổi được đáp án: máy host/chủ phòng ghi đè lần chọn trước */
       var k = +b.dataset.k, used = Math.max(0, (Z.tot || 0) * 1000 - rem() * 1000); Z.my = k;
       if (H) { H.my = k; hostGot({ run: H.run, i: H.i, pid: me.id, name: me.name, avatar: me.avatar, c: k, ms: used }); } else send({ t: "qa", run: Z.run, i: Z.i, pid: me.id, name: me.name || "", avatar: me.avatar || "", c: k, ms: used });
       render();
