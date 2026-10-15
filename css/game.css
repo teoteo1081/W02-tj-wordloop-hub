@@ -2183,9 +2183,9 @@ body.g-playing.g-adm #g-righthandle{top:2px;right:8px;width:30px;height:30px;fon
 .g-trialbtn[hidden]{display:none}.g-trialbtn.on{background:#e65100;border:1px solid #e65100;color:#fff}
 @media (max-width:700px){.g-trialbtn span{display:none}}
 
-/* 📦 chọn Batch / Block dưới nút Bắt đầu (phòng chờ, tab Từ vựng) */
-.g-blocks{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)} .g-bph{margin:0 0 8px;font-size:15px}
-.g-bpb{margin:0 0 10px} .g-bpbatch{display:inline-block;margin:0 0 6px;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--text);font:700 13px/1 inherit;font-family:inherit;cursor:pointer}
-.g-bpbatch.on{background:var(--accent);border-color:var(--accent);color:#fff}
-.g-bpchips{display:flex;flex-wrap:wrap;gap:6px} .g-bchip{padding:6px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);font:600 13px/1 inherit;font-family:inherit;cursor:pointer}
-.g-bchip.on{background:var(--accent-soft,rgba(124,77,255,.22));border-color:var(--accent);color:var(--text);box-shadow:inset 0 0 0 1px var(--accent)}
+/* 📦 chọn Batch / Block dưới nút Bắt đầu (phòng chờ, tab Từ vựng) — giống danh sách Block trên Bảng */
+.g-blocks{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)} .g-bph{margin:0 0 10px;font-size:15px}
+.g-bpb{margin:0 0 12px} .g-bpbatch{display:inline-block;margin:0 0 8px;padding:6px 14px;border-radius:999px;border:0;background:#d9684b;color:#fff;font:700 14px/1 inherit;font-family:inherit;cursor:pointer;opacity:.7}
+.g-bpbatch.on{opacity:1;box-shadow:0 0 0 2px rgba(217,104,75,.45)}
+.g-bpchips{display:flex;flex-wrap:wrap;gap:8px} .g-bchip{padding:9px 14px;border-radius:12px;border:2px solid #4a4a52;background:#2d2d33;color:var(--text);font:600 14px/1 inherit;font-family:inherit;cursor:pointer}
+.g-bchip.on{border-color:#d9776a;background:#43335f}
