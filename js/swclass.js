@@ -37,6 +37,7 @@
       send(p); onMsg(p);   /* broadcast không gửi lại cho chính mình -> host tự xử lý */
     } else if (d.type === "sw-class-send" && d.p) send(d.p);
     else if (d.type === "sw-leave") document.dispatchEvent(new CustomEvent("tjwl-learn-home"));
+    else if (d.type === "sw-admin") document.dispatchEvent(new CustomEvent("tjwl-sw-admin", { detail: d.p }));   /* thẻ Quản trị của game vẽ phần lớp */
     else if (d.type === "sw-want-open") document.dispatchEvent(new CustomEvent("tjwl-sw-open", { detail: d.kind }));   /* người chơi thoát lớp -> về trang game */
   });
   /* host chuyển sang thẻ khác (Từ vựng / TOEIC / EA / Marketing / về trang game) khi lớp đang chạy -> báo cả phòng thoát lớp */
@@ -44,5 +45,6 @@
     var k = e.detail; if (!openedRun || !ctx().isHost || k === "sp" || k === "wr") return;
     send({ t: "live", run: openedRun, phase: "close" }); openedRun = "";
   });
-  window.SWClass = { attach: function (a) { api = a; }, onMsg: onMsg };
+  function cmd(kind, c, v) { frames().forEach(function (f) { if (kind && f.src.indexOf(kind === "writing" ? "kind=writing" : "kind=speaking") < 0) return; post(f.contentWindow, { type: "sw-cmd", cmd: c, v: v }); }); }
+  window.SWClass = { cmd: cmd, attach: function (a) { api = a; }, onMsg: onMsg };
 })();

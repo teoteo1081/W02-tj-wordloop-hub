@@ -166,6 +166,14 @@
     toParent({ type: "sw-hello", kind: S.kind }); liveRender();
     if (!liveTimer) liveTimer = setInterval(liveTick, 200);
   }
+  /* thẻ ⚙ Quản trị của game (rê chuột mép phải) hiện phần "Lớp Speaking/Writing": người chơi, AI chấm, host cũng chơi, Dừng / Kết thúc lớp */
+  function adminSync() {
+    if (!CTX.isHost) return;
+    var L = LIVE;
+    if (!L || S.screen !== "live" || L.phase === "end") { toParent({ type: "sw-admin", p: { on: false, kind: S.kind } }); return; }
+    toParent({ type: "sw-admin", p: { on: true, kind: S.kind, i: S.i, n: S.tasks.length, phase: L.phase, pd: L.pd ? 1 : 0, ai: aiOn() ? 1 : 0, hp: S.hostPlays !== false ? 1 : 0, sp: L.sp ? L.sp.id : "", pick: (pickOf(plist().filter(function (p) { return !L.done[p.id]; })) || {}).id || "",
+      players: (CTX.players || []).map(function (p) { return { id: p.id, name: p.name || "?", avatar: p.avatar || "", done: !!L.done[p.id], me: !!(CTX.me && p.id === CTX.me.id) }; }) } });
+  }
   function saveLive() {
     if (!CTX.isHost || !LIVE) return;
     try {
@@ -173,7 +181,7 @@
       sessionStorage.setItem("tjwl_sw_keep", S.kind);   /* learn.js: F5 thì mở lại đúng thẻ Speaking/Writing */
     } catch (e) {}
   }
-  function clearLive() { try { sessionStorage.removeItem("sw-live-v1"); sessionStorage.removeItem("tjwl_sw_keep"); } catch (e) {} }
+  function clearLive() { toParent({ type: "sw-admin", p: { on: false, kind: S.kind } }); try { sessionStorage.removeItem("sw-live-v1"); sessionStorage.removeItem("tjwl_sw_keep"); } catch (e) {} }
   function maybeRestore() {
     if (S.restored || !CTX.isHost || !CTX.inRoom || !SETS[S.kind].length || LIVE) return;
     S.restored = 1;
@@ -309,20 +317,25 @@
     h += "</div>";
     var hostbar = "";
     if (host) {
-      var ps = plist().filter(function (p) { return !L.done[p.id]; }), b = "", nx = '<button class="big" data-act="lnext">' + (last ? "Kết thúc" : "Câu tiếp ›") + "</button>", needP = spk && tm[0] > 0 && !L.pd;
-      if (L.phase === "ready") b = '<button class="big" data-act="lstop">⏭ Bỏ qua đếm ngược</button>';
-      else if (run) b = (L.phase === "prep" ? '<button class="big" data-act="lskip">⏭ Kết thúc chuẩn bị</button>' : "") + '<button class="big" data-act="lstop">⏹ Dừng</button>';
-      else if (needP) b = '<button class="pri big" data-act="lstart">▶ Bắt đầu chuẩn bị (cả phòng)</button><button class="big" data-act="lall" title="Chuẩn bị chung xong cả phòng nói cùng lúc">👥 Cả lớp</button>' + nx;
-      else if (spk && ps.length) b = '<button class="pri big" data-act="lstart">▶ Bắt đầu nói' + (pickOf(ps) ? " · " + esc(pickOf(ps).name || "") : "") + '</button><button class="big" data-act="lall" title="Cả lớp nói cùng lúc, mỗi máy tự chấm">👥 Cả lớp</button>' + nx;
-      else if (spk) b = '<button class="big" data-act="lstart" title="Chọn tên ở danh sách rồi bấm để người đó nói lại">↻ Nói lại' + (pickOf(ps) ? " · " + esc(pickOf(ps).name || "") : "") + "</button>" + nx.replace('class="big"', 'class="pri big"');
-      else b = (L.phase === "idle" ? "" : '<button class="pri big" data-act="lstart">▶ Bắt đầu viết</button>') + (L.phase === "idle" ? nx.replace('class="big"', 'class="pri big"') : nx);
-      hostbar = '<div class="card hostbar">' + b + '<label class="aisw" title="AI chấm điểm cho cả phòng (áp dụng từ lượt kế tiếp)"><input type="checkbox" id="aimode"' + (aiOn() ? " checked" : "") + "> 🤖 AI chấm</label></div>";
+      var ps = plist().filter(function (p) { return !L.done[p.id]; }), needP = spk && tm[0] > 0 && !L.pd, prim = "", more = "";
+      var nxb = last ? "" : '<button class="big" data-act="lnext">Câu tiếp ›</button>',
+          endB = '<button class="big danger" data-act="lend">⏹ Kết thúc lớp</button>',
+          aiB = '<label class="aisw" title="AI chấm điểm cho cả phòng (áp dụng từ lượt kế tiếp)"><span>🤖 AI chấm điểm</span><input type="checkbox" id="aimode"' + (aiOn() ? " checked" : "") + "></label>",
+          allB = '<button class="big" data-act="lall" title="Cả phòng nói cùng lúc, mỗi máy tự chấm">👥 Cả lớp nói cùng lúc</button>',
+          pk = pickOf(ps), nm = pk ? " · " + esc(pk.name || "") : "";
+      if (L.phase === "ready") { prim = '<button class="big" data-act="lstop">⏭ Bỏ qua đếm ngược</button>'; more = aiB + endB; }
+      else if (L.phase === "prep") { prim = '<button class="pri big" data-act="lskip">⏭ Kết thúc chuẩn bị</button>'; more = aiB + endB; }
+      else if (run) { prim = '<button class="big" data-act="lstop">⏹ Dừng lượt này</button>'; more = aiB + endB; }
+      else if (needP) { prim = '<button class="pri big" data-act="lstart">▶ Bắt đầu chuẩn bị (cả phòng)</button>' + nxb; more = allB + aiB + endB; }
+      else if (spk) { prim = '<button class="pri big" data-act="lstart">' + (ps.length ? "▶ Bắt đầu nói" : "↻ Nói lại") + nm + "</button>" + nxb; more = allB + aiB + endB; if (last && !ps.length) prim += endB; }
+      else { prim = (L.phase === "idle" ? "" : '<button class="pri big" data-act="lstart">▶ Bắt đầu viết</button>') + nxb; more = aiB + endB; if (last && L.phase === "idle") prim += endB; }
+      hostbar = '<div class="card hostbar"><div class="hb-main">' + prim + '</div><div class="hmore" tabindex="0"><button type="button" class="hmore-h" data-act="hmore" title="Thêm: AI chấm, Kết thúc lớp… (rê chuột vào)">⋯</button><div class="hmore-p">' + more + "</div></div></div>";
     }
     if (!L.mineOn && L.phase !== "ready" && L.my && L.myQ === t.q) h += L.my === "grading" ? '<div class="card" style="text-align:center"><span class="spin"></span> AI đang chấm bài của bạn…</div>' : (S.results[t.q] ? result("", t, true) : "");
     if (L.phase !== "ready") h += othersHtml(t.q) + (run ? "" : boardHtml());
     if (run && spk) h += rosterHtml(false);
     if (hostbar) { var ti = h.indexOf("</div></div>") + 12; h = h.slice(0, ti) + hostbar + h.slice(ti); }   /* thanh điều khiển của host DÍNH Ở ĐẦU màn (cuộn đâu cũng thấy; ảnh to không đẩy nút xuống khuất) */
-    app.innerHTML = h; smoothBar(); liveTick();
+    app.innerHTML = h; smoothBar(); liveTick(); adminSync();
   }
   /* ---------- LỊCH SỬ: xem lại bài cũ + lỗi sai (lưu ở máy này) ---------- */
   function promptShort(t) {
@@ -416,6 +429,8 @@
     else if (a === "lall") liveSend(needPrep() ? { i: S.i, phase: "ready", sp: null, sec: 3, done: L.done, pd: 0, nx: "prep+all" } : { i: S.i, phase: "ready", sp: null, sec: 3, done: L.done, pd: 1, nx: "resp" });
     else if (a === "lskip") { L.adv = 1; liveNext(); }
     else if (a === "lstop") { L.adv = 1; liveNext(); }
+    else if (a === "lend") liveSend({ i: S.i, phase: "end", done: {} });
+    else if (a === "hmore") { var hm = $(".hmore"); if (hm) hm.classList.toggle("open"); }
     else if (a === "lnext") {
       if (S.i >= S.tasks.length - 1) liveSend({ i: S.i, phase: "end", done: {} });
       else { liveSend({ i: S.i + 1, phase: "show", sp: null, done: {}, sec: 0, pd: 0 }); toParent({ type: "sw-hello", kind: S.kind }); }
@@ -657,6 +672,13 @@
     else if (d.type === "sw-class-live") liveApply(d.p);
     else if (d.type === "sw-class-fin" && d.p) liveFin(d.p.pid);
     else if (d.type === "sw-class-rdy" && d.p) liveRdy(d.p.pid);
+    else if (d.type === "sw-cmd" && CTX.isHost && LIVE) {   /* lệnh từ thẻ Quản trị */
+      var c = d.cmd, v = d.v;
+      if (c === "end") liveAct("lend"); else if (c === "stop") liveAct("lstop"); else if (c === "next") liveAct("lnext"); else if (c === "start") liveAct("lstart");
+      else if (c === "ai") { S.aiGrade = !!v; LIVE.ai = S.aiGrade; liveRender(); }
+      else if (c === "hp") { S.hostPlays = !!v; liveRender(); }
+      else if (c === "pick") { LIVE.pick = v; liveRender(); }
+    }
     else if (d.type === "sw-class-res" && S.class && d.p && d.p.run === S.class.run && !(CTX.me && d.p.pid === CTX.me.id)) { var b = S.class.board, p = d.p, e2 = b[p.pid] || (b[p.pid] = { name: p.name || "Bạn học", avatar: p.avatar || "", total: 0, n: 0 }); if (!p.pending) { e2.total = p.total; e2.n = p.n || e2.n; } ((S.class.rq = S.class.rq || {})[p.q] = S.class.rq[p.q] || {})[p.pid] = p; if (S.screen === "live" && LIVE && !busy(LIVE)) liveRender(); else { updBoard(); var ob = $("#oth-box"); if (ob && S.screen === "live" && LIVE && curTask()) ob.outerHTML = othersHtml(curTask().q); } }   /* đang đếm giờ: chỉ cập nhật ô kết quả, không vẽ lại cả màn (mất chữ đang gõ) */
   });
   document.addEventListener("change", function (e) {

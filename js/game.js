@@ -261,6 +261,27 @@
     }).join("");
     $("#ga-users").hidden = !isTJ(); paintSoundBtn();
   }
+  /* 🎤 Lớp Speaking / Writing trong thẻ Quản trị (khung lớp báo trạng thái qua "tjwl-sw-admin"; lệnh gửi lại bằng SWClass.cmd) */
+  var SWA = null;
+  document.addEventListener("tjwl-sw-admin", function (e) { SWA = e.detail && e.detail.on ? e.detail : null; paintSwAdmin(); });
+  function paintSwAdmin() {
+    var box = $("#ga-swbox"), el = $("#ga-sw"); if (!box || !el) return;
+    if (!SWA || !G.isHost) { box.hidden = true; el.innerHTML = ""; return; }
+    var a = SWA, ph = { ready: "3-2-1", prep: "Chuẩn bị chung", resp: a.kind === "writing" ? "Đang viết" : "Đang nói", idle: a.pd || a.kind === "writing" ? "Chờ chọn người" : "Chưa bắt đầu", show: "Chưa bắt đầu" }[a.phase] || a.phase;
+    el.innerHTML = '<div class="g-sub">Câu ' + (a.i + 1) + "/" + a.n + " · " + esc(ph) + '</div>' +
+      '<div class="ga-row"><button type="button" class="g-btn g-btn-soft g-btn-sm" data-sw="stop">⏹ Dừng lượt</button><button type="button" class="g-btn g-btn-soft g-btn-sm" data-sw="next">Câu tiếp ›</button><button type="button" class="g-btn g-btn-sm" data-sw="end" style="color:#f08a96">Kết thúc lớp</button></div>' +
+      '<label class="g-check"><input type="checkbox" data-sw="ai"' + (a.ai ? " checked" : "") + '> 🤖 AI chấm điểm</label>' +
+      (a.kind === "speaking" ? '<label class="g-check"><input type="checkbox" data-sw="hp"' + (a.hp ? " checked" : "") + '> Host cũng chơi</label>' : "") +
+      '<div class="g-sub">Chạm tên = chọn người nói tiếp (✓ đã nói, chạm lại để nói lại)</div><div class="ga-swp">' +
+      a.players.filter(function (p) { return a.hp || !p.me; }).map(function (p) { return '<button type="button" class="g-btn g-btn-sm ' + (p.id === (a.sp || a.pick) ? "" : "g-btn-soft") + '" data-swp="' + esc(p.id) + '">' + (p.done ? "✓ " : "") + esc(p.name) + "</button>"; }).join("") + "</div>";
+    box.hidden = false;
+  }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("#ga-sw [data-sw], #ga-sw [data-swp]"); if (!b || !SWA || !window.SWClass) return;
+    if (b.dataset.swp) { SWClass.cmd(SWA.kind, "pick", b.dataset.swp); return; }
+    var c = b.dataset.sw;
+    if (c === "ai" || c === "hp") SWClass.cmd(SWA.kind, c, !!b.checked); else SWClass.cmd(SWA.kind, c);
+  });
   function admAct(a) {
     if (a === "next") { var rv = $("#p-reveal"); if (rv && !rv.hidden) { rv.click(); admShow(false); } else if (G.isHost && G.st && G.st.phase === "play" && G.st.mode === "kahoot" && G.st.q) { if (!G.st.q.revealed) hostReveal(); else G.revealUntil = Date.now(); } }   /* Kahoot: host kiểm nhanh -> chốt câu rồi tự sang câu kế (~1s) */
     else if (a === "copy") { $("#l-copy").click(); }
