@@ -542,10 +542,21 @@
     a = a.trim().replace(/^#/, "");
     return rows.find(function (x) { return String(x.name_no) === a; }) || null;
   }
+  /* 🧪 Ván thử (TJ 2026-10-15: "test game mà số câu sai chạy vào tài khoản TJ là không đúng"): bật thì MÁY NÀY không ghi tiến trình học
+     (word_progress: số lần làm/đúng, ❌ Fix lỗi sai, đã thuộc) và không đẩy chu kỳ Tony Buzan. Nhớ theo máy; chỉ hiện với hồ sơ TJ. */
+  function trial() { return readLS("tjwl_game_trial_v1") === true; }
+  function paintTrial() {
+    var tb = $("#g-trial"); if (!tb) return;
+    tb.hidden = !progUid(); tb.classList.toggle("on", trial()); tb.setAttribute("aria-pressed", trial() ? "true" : "false");
+    tb.title = trial() ? "ĐANG BẬT: ván này KHÔNG ghi tiến trình cho TJ (bấm để tắt)" : "Bấm để chơi thử: câu đúng/sai không ghi vào tiến trình học của TJ";
+  }
   function paintMe() {
+    paintTrial();
     var b = $("#g-me"); b.hidden = !G.me;
     if (G.me) b.innerHTML = avatar(G.me.avatar) + " " + label({ name: G.me.name, no: G.me.name_no });
   }
+  $("#g-trial").addEventListener("click", function () { writeLS("tjwl_game_trial_v1", trial() ? null : true); paintTrial(); });
+  setInterval(paintTrial, 3000);   /* hồ sơ đăng nhập xong thì nút mới hiện */
   $("#g-boardbtn").addEventListener("click", function () {   /* 🖍 Bảng: host bật / tắt bảng cho cả phòng; người chơi tự vào / ra Bảng (riêng máy mình) */
     if (!window.Board) return;
     if (G.isHost && G.st) setBoardMeta({ board: !G.st.board });
@@ -2423,7 +2434,7 @@
   var SRS_WAIT = [10 * 6e4, 24 * 36e5, 7 * 864e5, 30 * 864e5, 90 * 864e5, 180 * 864e5], SRS_SHORT = ["10 phút", "24 giờ", "1 tuần", "1 tháng", "3 tháng", "6 tháng"];
   async function srsAfterMatch() {
     G.srsHtml = "";
-    if (!isTJ() || tgt() !== "en") return;
+    if (!isTJ() || tgt() !== "en" || trial()) return;   /* 🧪 Ván thử: không đẩy chu kỳ */
     /* câu của MỌI người chơi gắn hồ sơ TJ (TJ + vd Thảo) — host giữ hết câu trả lời trong G.answers */
     try {
       var pids = Object.keys((G.st && G.st.scores) || {});
@@ -4854,6 +4865,7 @@
   async function recordMyProgress(wid, ok) {
     var uid = progUid();
     if (!uid || !wid || tgt() !== "en") return;   /* tiến trình WordLoop gắn với từ TIẾNG ANH */
+    if (trial()) return;   /* 🧪 Ván thử: không ghi gì cho TJ */
     (G.myAns = G.myAns || []).push({ wid: wid, ok: !!ok });   /* để xét đẩy chu kỳ Tony Buzan lúc hết ván (srsAfterMatch) */
     try {
       var r = await sb.from("word_progress").select("attempts,correct").eq("user_id", uid).eq("word_id", wid).maybeSingle();
