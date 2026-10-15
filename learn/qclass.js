@@ -227,7 +227,8 @@
     pushState();
   }
   function finish() { H.ph = "end"; H.board = board(); H.last = {}; H.board.forEach(function (r) { r.last = 0; }); pushState(); }
-  function closeRun() { clearInterval(hbT); clearSaved(); if (H) clearTimeout(H.autoT); if (H) send({ run: H.run, ph: "close" }); H = null; Z = null; ov.hidden = true; fab.hidden = !(CTX.isHost && CTX.inRoom); }
+  function closeRun() { clearInterval(hbT); clearSaved(); if (H) clearTimeout(H.autoT); if (H) send({ run: H.run, ph: "close" }); H = null; Z = null; if (CTX.isHost && CTX.inRoom) { showSetup(); return; }   /* host tắt ván -> về màn thiết lập "Chơi cả phòng" (giữ cài đặt), không rơi ra trang chủ thẻ */
+    ov.hidden = true; fab.hidden = !(CTX.isHost && CTX.inRoom); }
   function hostGot(a) {   /* người chơi gửi đáp án */
     if (!H || H.ph !== "q" || a.run !== H.run || a.i !== H.i || H.ans[a.pid]) return;
     H.names[a.pid] = { name: a.name, avatar: a.avatar }; if (H.score[a.pid] == null) H.score[a.pid] = 0;
