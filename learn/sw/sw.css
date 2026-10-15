@@ -90,3 +90,17 @@ select.big { max-width:46%; }
 .tips p { margin:6px 0; font-size:14px; } .guide { margin:14px 2px; } .guide h3 { margin:10px 0 4px; font-size:16px; }
 .gd-row { display:flex; justify-content:space-between; gap:10px; padding:6px 2px; border-bottom:1px solid var(--line); font-size:14px; } .gd-row span:nth-child(2) { margin-left:auto; color:var(--muted); } .gd-row span:last-child { min-width:48px; text-align:right; }
 .hostbar { display:flex; gap:8px; flex-wrap:wrap; } .hostbar .big { flex:1 1 140px; }
+
+/* ===== 3-2-1 có vòng quay trước khi bắt đầu đếm giờ ===== */
+.rd { position:relative; width:180px; height:180px; margin:8px auto; }
+.rd svg { position:absolute; inset:0; width:100%; height:100%; }
+.rd .rd-ring { transform:rotate(-90deg); } .rd .trk { fill:none; stroke:var(--line); stroke-width:9; }
+.rd .arc { fill:none; stroke:var(--acc); stroke-width:9; stroke-linecap:round; stroke-dasharray:339.3; stroke-dashoffset:0; transition:stroke-dashoffset .2s linear; }
+.rd .rd-spin circle { fill:none; stroke:var(--acc2); stroke-width:2.5; stroke-dasharray:5 12; transform-origin:50% 50%; animation:rdspin 1.4s linear infinite; }
+.rd .num { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:76px; font-weight:900; color:var(--acc); }
+.rd .num.pop { animation:rdpop .5s ease-out; }
+@keyframes rdspin { to { transform:rotate(360deg); } } @keyframes rdpop { 0% { transform:scale(1.7); opacity:0; } 100% { transform:scale(1); opacity:1; } }
+@media (min-width:900px) { body.live .rd { width:260px; height:260px; } body.live .rd .num { font-size:110px; } }
+
+.timer.last5 { animation:softpulse 1s ease-in-out infinite; } .bar.last5 i { background:var(--bad); }
+@keyframes softpulse { 0%,100% { opacity:1; } 50% { opacity:.55; } }

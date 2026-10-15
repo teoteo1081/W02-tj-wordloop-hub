@@ -6,7 +6,7 @@
 (function () {
   "use strict";
   var api = null, pending = null, openedRun = "";
-  function liveFwd(p) { frames().forEach(function (f) { post(f.contentWindow, { type: "sw-class-live", p: p }); }); }
+  function liveFwd(p) { frames().forEach(function (f) { if (p.kind && f.src.indexOf(p.kind === "writing" ? "kind=writing" : "kind=speaking") < 0) return; post(f.contentWindow, { type: "sw-class-live", p: p }); }); }
   function frames() { return [].slice.call(document.querySelectorAll(".g-learnlayer iframe")); }
   function frameFor(kind) { var k = kind === "writing" ? "kind=writing" : "kind=speaking"; return frames().filter(function (f) { return f.src.indexOf(k) >= 0; })[0]; }
   function post(w, msg) { try { w.postMessage(msg, location.origin); } catch (e) {} }

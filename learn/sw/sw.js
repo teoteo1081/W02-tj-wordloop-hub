@@ -17,7 +17,7 @@
     speaking: [{ k: "all", t: "Cả bộ 11 câu (~17 phút)", qs: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] }, { k: "read", t: "Q1–2 Đọc to", qs: [1, 2] }, { k: "desc", t: "Q3 Tả ảnh", qs: [3] }, { k: "resp", t: "Q4–6 Trả lời câu hỏi", qs: [4, 5, 6] }, { k: "info", t: "Q7–9 Dựa vào thông tin", qs: [7, 8, 9] }, { k: "sol", t: "Q10 Đề xuất giải pháp", qs: [10] }, { k: "opin", t: "Q11 Nêu ý kiến", qs: [11] }],
     writing: [{ k: "all", t: "Cả bộ 8 câu (~60 phút)", qs: [1, 2, 3, 4, 5, 6, 7, 8] }, { k: "sent", t: "Q1–5 Viết câu theo ảnh", qs: [1, 2, 3, 4, 5] }, { k: "mail", t: "Q6–7 Trả lời email", qs: [6, 7] }, { k: "essay", t: "Q8 Bài luận ý kiến", qs: [8] }]
   };
-  var SETS = { speaking: [], writing: [] }, ST = load(), S = { kind: QS.get("kind") === "writing" ? "writing" : "speaking", setId: "", group: "all", screen: "home" }, timerId = 0, rec = null, recOn = false, CTX = { inRoom: false, isHost: false, me: null, players: [] }, LIVE = null, liveTimer = 0, PENDING = null;
+  var SETS = { speaking: [], writing: [] }, ST = load(), S = { kind: QS.get("kind") === "writing" ? "writing" : "speaking", setId: "", group: "all", screen: "home" }, timerId = 0, rec = null, recOn = false, CTX = { inRoom: false, isHost: false, me: null, players: [] }, LIVE = null, liveTimer = 0, PENDING = null, KIND0 = QS.get("kind") || "";
 
   /* ---------- lưu ---------- */
   function load() { try { return JSON.parse(localStorage.getItem(KEY)) || { hist: [] }; } catch (e) { return { hist: [] }; } }
@@ -31,7 +31,10 @@
     try { var r = await fetch("sets.json?v=" + (QS.get("v") || "1")); var d = await r.json(); SETS.speaking = d.speaking || []; SETS.writing = d.writing || []; } catch (e) { toast("Không tải được bộ đề"); }
     try { var x = JSON.parse(localStorage.getItem(EXTRA) || "null"); if (x) { (x.speaking || []).forEach(function (s) { s.mine = 1; SETS.speaking.push(s); }); (x.writing || []).forEach(function (s) { s.mine = 1; SETS.writing.push(s); }); } } catch (e) {}
     S.setId = (SETS[S.kind][0] || {}).id || "";
+    var pf = (ST.pref || {})[S.kind];
+    if (pf && SETS[S.kind].some(function (x) { return x.id === pf.set; })) { S.setId = pf.set; S.group = pf.group || "all"; S.src = pf.src; S.qFrom = pf.from || null; S.qTo = pf.to || null; }
   }
+  function savePref() { ST.pref = ST.pref || {}; ST.pref[S.kind] = { set: S.setId, group: S.group, src: S.src, from: S.qFrom, to: S.qTo }; save(); }
   function curSet() { return SETS[S.kind].filter(function (s) { return s.id === S.setId; })[0]; }
   function curTask() { return S.tasks[S.i]; }
   function best(kind, id) { var b = 0; ST.hist.forEach(function (h) { if (h.kind === kind && h.set === id && h.group === "all" && h.est > b) b = h.est; }); return b; }
@@ -72,6 +75,7 @@
     return '<div class="roomcard"><div class="sub">Mã phòng</div><div class="rc-code">' + esc(CTX.room || "") + '</div><div class="rc-ps">' + pl + "</div></div>";
   }
   function home() {
+    savePref();
     var all = SETS[S.kind], hasMine = all.some(function (x) { return x.mine; });
     if (S.src === "mine" && !hasMine) S.src = "std";
     var sets = all.filter(function (x) { return S.src === "mine" ? x.mine : !x.mine; }), set = curSet();
@@ -147,6 +151,7 @@
     toParent({ type: "sw-class-send", p: Object.assign({ t: "res", run: S.class.run, total: e.total, n: e.n }, rec) });
   }
   function applyStart(d) {
+    if (KIND0 && d.kind && d.kind !== KIND0) return;
     if (LIVE && LIVE.run === d.run) return;   /* tin bắt đầu gửi lại (khung nạp xong / nhịp) -> không dựng lại giữa chừng */
     if (!SETS[d.kind].length) { PENDING = d; return; }
     if (!SETS[d.kind].some(function (x) { return x.id === d.set; })) { toast("Máy bạn chưa có đề này"); return; }
@@ -161,6 +166,26 @@
     toParent({ type: "sw-hello", kind: S.kind }); liveRender();
     if (!liveTimer) liveTimer = setInterval(liveTick, 200);
   }
+  function saveLive() {
+    if (!CTX.isHost || !LIVE) return;
+    try {
+      sessionStorage.setItem("sw-live-v1", JSON.stringify({ run: LIVE.run, kind: S.kind, set: S.setId, group: S.group, from: S.qFrom || 0, to: S.qTo || 0, i: S.i, phase: LIVE.phase, sp: LIVE.sp, done: LIVE.done, tEnd: LIVE.tEnd, ai: aiOn() ? 1 : 0, at: Date.now() }));
+      sessionStorage.setItem("tjwl_sw_keep", S.kind);   /* learn.js: F5 thì mở lại đúng thẻ Speaking/Writing */
+    } catch (e) {}
+  }
+  function clearLive() { try { sessionStorage.removeItem("sw-live-v1"); sessionStorage.removeItem("tjwl_sw_keep"); } catch (e) {} }
+  function maybeRestore() {
+    if (S.restored || !CTX.isHost || !CTX.inRoom || !SETS[S.kind].length || LIVE) return;
+    S.restored = 1;
+    var o = null; try { o = JSON.parse(sessionStorage.getItem("sw-live-v1") || "null"); } catch (e) {}
+    if (!o || o.kind !== S.kind || Date.now() - o.at > 6 * 3600e3 || !SETS[o.kind].some(function (x) { return x.id === o.set; })) return;
+    S.setId = o.set; S.aiGrade = !!o.ai;
+    liveInit({ kind: o.kind, group: o.group, run: o.run, from: o.from, to: o.to });
+    var running = o.phase === "ready" || o.phase === "prep" || o.phase === "resp", left = o.tEnd ? (o.tEnd - Date.now()) / 1000 : 0, st = { i: o.i, phase: o.phase, sp: o.sp, done: o.done || {}, sec: 0 };
+    if (running && left > 0.5) st.sec = left / SCALE;
+    else if (running) { st.phase = "idle"; st.done = Object.assign({}, st.done); if (o.sp) st.done[o.sp.id] = 1; st.sp = null; }   /* hết giờ trong lúc tải lại: coi như xong lượt */
+    liveSend(st);
+  }
   function liveSend(st) { st.t = "live"; st.run = LIVE.run; st.ai = aiOn() ? 1 : 0; st.from = S.qFrom || 0; st.to = S.qTo || 0; st.kind = S.kind; st.set = S.setId; st.group = S.group; toParent({ type: "sw-class-send", p: st }); liveApply(st); }
   function liveApply(st) {
     if (!st || st.run === S.leftRun) return;
@@ -169,12 +194,13 @@
       return;
     }
     if (!LIVE || st.run !== LIVE.run) {   /* vào phòng sau: dựng màn hình theo trạng thái host đang phát */
+      if (KIND0 && st.kind && st.kind !== KIND0) return;   /* khung Writing không nhận lớp Speaking (và ngược lại) */
       if (!st.kind || !st.set || !SETS[st.kind].some(function (x) { return x.id === st.set; })) return;
       S.setId = st.set; liveInit({ kind: st.kind, group: st.group, run: st.run, from: st.from, to: st.to });
       toParent({ type: "sw-want-open", kind: st.kind });   /* lớp đang chạy -> bảo trang cha mở lại lớp phủ (nếu người chơi lỡ bị đóng) */
     }
     var sig = [st.i, st.phase, st.sp && st.sp.id, Object.keys(st.done || {}).length, st.ai ? 1 : 0].join("|");
-    if (LIVE.sig === sig && st.hb) { LIVE.tot = (st.sec || 0) * SCALE; LIVE.tEnd = st.sec ? Date.now() + LIVE.tot * 1000 : 0; return; }
+    if (LIVE.sig === sig && st.hb) { LIVE.tot = (st.sec || 0) * SCALE; LIVE.tEnd = st.sec ? Date.now() + LIVE.tot * 1000 : 0; if (S.screen === "live") smoothBar(); return; }
     LIVE.sig = sig;
     var wasR = LIVE.mineOn, nowR = meActive(st) && st.phase === "resp", oldI = S.i;
     if (wasR && !nowR) finishMine();
@@ -183,6 +209,7 @@
     if ((st.i || 0) !== oldI) LIVE.my = null;
     liveRender();
     if (!wasR && nowR) startMine();
+    if (st.phase === "end") clearLive(); else saveLive();
   }
   function liveFin(pid) {   /* host: có người bấm Xong -> hết lượt sớm khi người nói xong, hoặc khi cả lớp đã nộp */
     var L = LIVE; if (!L || !CTX.isHost || L.adv || L.phase !== "resp") return;
@@ -190,6 +217,7 @@
     L.fins = L.fins || {}; L.fins[pid] = 1;
     if (Object.keys(L.fins).length >= Math.max(1, plist().length)) { L.adv = 1; liveNext(); }
   }
+  function busy(L) { return !!L && (L.phase === "ready" || L.phase === "prep" || L.phase === "resp"); }
   function myTurn(st) {   /* tới lượt máy này: host chọn mình, hoặc "cả lớp" (sp rỗng) */
     if (!st || (st.phase !== "prep" && st.phase !== "resp")) return false;
     return !st.sp || !!(CTX.me && st.sp.id === CTX.me.id);
@@ -205,10 +233,17 @@
     if (S.kind === "writing") { var a = $("#ans"); if (a) S.text = a.value; } else { var m = $("#manual"); if (m && m.value) S.tr = m.value; }
     L.my = "grading"; L.myQ = t.q; grade();
   }
+  function smoothBar() {   /* thanh chạy liền mạch từ vị trí hiện tại tới hết giờ (không nhảy từng khúc theo nhịp 200ms) */
+    var pg = $("#pg"), L = LIVE; if (!pg || !L || !L.tEnd) return;
+    var left = Math.max(0, (L.tEnd - Date.now()) / 1000);
+    pg.style.transition = "none"; pg.style.width = Math.min(100, 100 * (1 - left / Math.max(.001, L.tot))) + "%";
+    void pg.offsetWidth; pg.style.transition = "width " + left.toFixed(2) + "s linear"; pg.style.width = "100%";
+  }
   function liveTimes() { var t = curTask(); return TIME[S.kind][t.q] || [0, 60]; }
   function liveNext() {   /* host: hết giờ (hoặc bấm Dừng) pha hiện tại */
     var L = LIVE, tm = liveTimes(), st = { i: S.i, sp: L.sp, done: L.done };
-    if (L.phase === "prep") { st.phase = "resp"; st.sec = tm[1]; }
+    if (L.phase === "ready") { if (S.kind === "speaking" && tm[0] > 0) { st.phase = "prep"; st.sec = tm[0]; } else { st.phase = "resp"; st.sec = tm[1]; } }
+    else if (L.phase === "prep") { st.phase = "resp"; st.sec = tm[1]; }
     else { st.done = Object.assign({}, L.done); if (L.sp) st.done[L.sp.id] = 1; else if (S.kind === "speaking") plist().forEach(function (p) { st.done[p.id] = 1; }); st.phase = "idle"; st.sec = 0; st.sp = null; }
     liveSend(st);
   }
@@ -218,10 +253,17 @@
       L.hbAt = Date.now();
       toParent({ type: "sw-class-send", p: { t: "live", hb: 1, ai: aiOn() ? 1 : 0, from: S.qFrom || 0, to: S.qTo || 0, run: L.run, kind: S.kind, set: S.setId, group: S.group, i: S.i, phase: L.phase, sp: L.sp, done: L.done, sec: L.tEnd ? Math.max(0, (L.tEnd - Date.now()) / 1000 / SCALE) : 0 } });
     }
+    if (L.phase === "ready" && L.tEnd) {
+      var lf = Math.max(0, (L.tEnd - Date.now()) / 1000), rn = $("#rdnum"), ra = $("#rdarc");
+      if (rn) { var nn = Math.max(1, Math.ceil((MOCK ? lf / SCALE : lf) - .001)); if (rn.textContent !== String(nn)) { rn.textContent = nn; rn.classList.remove("pop"); void rn.offsetWidth; rn.classList.add("pop"); } }
+      if (ra) ra.style.strokeDashoffset = String(339.3 * (1 - Math.min(1, lf / Math.max(.001, L.tot))));
+      if (lf <= 0 && CTX.isHost && !L.adv) { L.adv = 1; liveNext(); }
+      return;
+    }
     if (!el || !L.tEnd) return;
     var left = Math.max(0, (L.tEnd - Date.now()) / 1000), sh = MOCK ? left / SCALE : left, cd = $("#cd");
-    el.textContent = mmss(sh); var pg = $("#pg"); if (pg) pg.style.width = Math.min(100, 100 * (1 - left / Math.max(.001, L.tot))) + "%";
-    if (cd) { var n = Math.ceil(sh - .001); if (sh > 0 && n <= 5 && n >= 1) { if (cd.textContent !== String(n)) { cd.textContent = n; cd.classList.remove("pop"); void cd.offsetWidth; cd.classList.add("pop"); } cd.hidden = false; } else cd.hidden = true; }
+    el.textContent = mmss(sh); el.classList.toggle("last5", sh > 0 && sh <= 5);   /* 5 giây cuối: số nhấp nháy nhẹ + thanh đổi màu, không che đề */
+    var pgb = $("#pg"); if (pgb && pgb.parentNode) pgb.parentNode.classList.toggle("last5", sh > 0 && sh <= 5);
     if (left <= 0 && CTX.isHost && !L.adv) { L.adv = 1; liveNext(); }
   }
   function liveRender() {
@@ -236,7 +278,10 @@
     var h = '<div class="top"><button class="soft" data-act="quit" title="Thoát">✕</button><div class="t"><b>Câu ' + t.q + "</b> · " + esc(t.type.replace("_", " ")) + ' <span class="sub">(' + (S.i + 1) + "/" + S.tasks.length + ")</span></div></div>";
     h += '<div class="card">' + promptHtml(t) + "</div>";   /* TJ 2026-10-14: màn người chơi PHẢI giống Admin (thấy đề ngay); Admin chỉ bấm bắt đầu + đếm giờ */
     h += '<div class="card" style="text-align:center">';
-    if (run) {
+    if (L.phase === "ready") {
+      var rw = L.sp ? avatarHtml(L.sp.avatar) + " <b>" + esc(L.sp.name) + "</b>" : "Cả lớp";
+      h += '<div class="sub">Sắp bắt đầu</div><div class="rd"><svg class="rd-spin" viewBox="0 0 130 130"><circle cx="65" cy="65" r="62" /></svg><svg class="rd-ring" viewBox="0 0 130 130"><circle class="trk" cx="65" cy="65" r="54" /><circle class="arc" id="rdarc" cx="65" cy="65" r="54" /></svg><div class="num" id="rdnum">3</div></div><div class="row" style="justify-content:center"><b>' + rw + "</b></div>";
+    } else if (run) {
       var who = L.sp ? avatarHtml(L.sp.avatar) + " <b>" + esc(L.sp.name) + "</b>" : "Cả lớp", mine = L.sp && me.id && L.sp.id === me.id;
       h += '<div class="row" style="justify-content:center"><span class="badge ' + (L.phase === "resp" ? "resp" : "prep") + '">' + (L.phase === "prep" ? "Chuẩn bị" : spk ? "Đang nói" : "Đang viết") + "</span> " + who + "</div>" + (mine ? "<p><b>🎤 Đến lượt bạn!</b></p>" : "") + '<div class="timer ' + (L.phase === "resp" ? "resp" : "prep") + '" id="tm">0:00</div><div class="bar ' + (L.phase === "resp" ? "resp" : "") + '"><i id="pg"></i></div>' + mybox + (L.ai ? "" : '<p class="sub">🎧 Nói trên HelloTalk · web chỉ đếm giờ (không ghi âm, không chấm)</p>');
     } else {
@@ -248,7 +293,8 @@
     var hostbar = "";
     if (host) {
       var ps = plist().filter(function (p) { return !L.done[p.id]; }), b = "", nx = '<button class="big" data-act="lnext">' + (last ? "Kết thúc" : "Câu tiếp ›") + "</button>";
-      if (run) b = (L.phase === "prep" ? '<button class="big" data-act="lskip">⏭ Vào phần nói</button>' : "") + '<button class="big" data-act="lstop">⏹ Dừng</button>';
+      if (L.phase === "ready") b = '<button class="big" data-act="lstop">⏭ Bỏ qua đếm ngược</button>';
+      else if (run) b = (L.phase === "prep" ? '<button class="big" data-act="lskip">⏭ Vào phần nói</button>' : "") + '<button class="big" data-act="lstop">⏹ Dừng</button>';
       else if (spk && ps.length) b = '<button class="pri big" data-act="lstart">▶ Bắt đầu' + (pickOf(ps) ? " · " + esc(pickOf(ps).name || "") : "") + '</button><button class="big" data-act="lall" title="Cả lớp nói cùng lúc, mỗi máy tự chấm">👥 Cả lớp</button>' + nx;
       else if (spk) b = nx.replace('class="big"', 'class="pri big"');
       else b = (L.phase === "idle" ? "" : '<button class="pri big" data-act="lstart">▶ Bắt đầu viết</button>') + (L.phase === "idle" ? nx.replace('class="big"', 'class="pri big"') : nx);
@@ -256,9 +302,9 @@
     }
     h += hostbar;   /* nút điều khiển của host nằm NGAY dưới đồng hồ (không dùng thanh cố định dưới đáy: cửa sổ thấp là bị khuất) */
     if (!run && L.my && L.myQ === t.q) h += L.my === "grading" ? '<div class="card" style="text-align:center"><span class="spin"></span> AI đang chấm bài của bạn…</div>' : (S.results[t.q] ? result("", t, true) : "");
-    if (!run) h += othersHtml(t.q) + boardHtml() + aiToggleHtml();
+    if (!run && L.phase !== "ready") h += othersHtml(t.q) + boardHtml() + aiToggleHtml();
     if (run && spk) h += rosterHtml(false);
-    h += '<div class="cd" id="cd" hidden></div>'; app.innerHTML = h; liveTick();
+    app.innerHTML = h; smoothBar(); liveTick();
   }
   /* ---------- LỊCH SỬ: xem lại bài cũ + lỗi sai (lưu ở máy này) ---------- */
   function promptShort(t) {
@@ -339,9 +385,9 @@
     if (a === "lstart") {
       var sp = null;
       if (S.kind === "speaking") { sp = pickOf(plist().filter(function (p) { return !L.done[p.id]; })); if (!sp) return true; sp = { id: sp.id, name: sp.name, avatar: sp.avatar }; }
-      liveSend({ i: S.i, phase: S.kind === "speaking" ? "prep" : "resp", sp: sp, sec: S.kind === "speaking" ? tm[0] : tm[1], done: L.done });
+      liveSend({ i: S.i, phase: "ready", sp: sp, sec: 3, done: L.done });   /* 3-2-1 có vòng quay, rồi tự sang chuẩn bị / nói */
     } else if (a === "lpick") { L.pick = v; liveRender(); }
-    else if (a === "lall") liveSend({ i: S.i, phase: "prep", sp: null, sec: tm[0], done: L.done });
+    else if (a === "lall") liveSend({ i: S.i, phase: "ready", sp: null, sec: 3, done: L.done });
     else if (a === "lskip") liveSend({ i: S.i, phase: "resp", sp: L.sp, sec: tm[1], done: L.done });
     else if (a === "lstop") { L.adv = 1; liveNext(); }
     else if (a === "lnext") {
@@ -563,18 +609,18 @@
     else if (a === "regrade") { S.phase = "grading"; render(); grade(); }
     else if (a === "skipq") { var n = S.i + (+v || 0); if (n < 0) return; clearTimer(); stopSpeech(); if (n >= S.tasks.length) { S.screen = "sum"; render(); } else { S.i = n; question(); } }
     else if (a === "next") { if (S.i >= S.tasks.length - 1) { S.screen = "sum"; render(); } else { S.i++; question(); } }
-    else if (a === "quit") { if (LIVE && !CTX.isHost) setTimeout(function () { toParent({ type: "sw-leave" }); }, 50); if (LIVE) { if (CTX.isHost) toParent({ type: "sw-class-send", p: { t: "live", run: LIVE.run, phase: "close" } }); S.leftRun = LIVE.run; LIVE = null; } clearTimer(); stopSpeech(); try { speechSynthesis.cancel(); } catch (x) {} S.screen = "home"; render(); }
+    else if (a === "quit") { clearLive(); if (LIVE && !CTX.isHost) setTimeout(function () { toParent({ type: "sw-leave" }); }, 50); if (LIVE) { if (CTX.isHost) toParent({ type: "sw-class-send", p: { t: "live", run: LIVE.run, phase: "close" } }); S.leftRun = LIVE.run; LIVE = null; } clearTimer(); stopSpeech(); try { speechSynthesis.cancel(); } catch (x) {} S.screen = "home"; render(); }
     else if (a === "home") { S.screen = "home"; render(); }
     else if (a === "again") { S.saved = 0; begin(S.kind, S.group); }
     else if (a === "delextra") { try { localStorage.removeItem(EXTRA); } catch (x) {} toast("Đã xoá đề riêng"); setTimeout(function () { location.reload(); }, 700); }
   });
   window.addEventListener("message", function (e) {
     var d = e.data; if (e.origin !== location.origin || !d || typeof d.type !== "string" || d.type.indexOf("sw-") !== 0) return;
-    if (d.type === "sw-ctx") { var np = d.players || [], sig = JSON.stringify([!!d.inRoom, !!d.isHost, d.room || "", np.map(function (p) { return p.id; })]), changed = sig !== CTX.sig; CTX = { inRoom: !!d.inRoom, isHost: !!d.isHost, me: d.me || null, players: np, room: d.room || "", sig: sig }; revCloudLoad(); if (changed && (S.screen === "home" || (S.screen === "live" && LIVE && LIVE.phase !== "prep" && LIVE.phase !== "resp"))) render(); }
+    if (d.type === "sw-ctx") { var np = d.players || [], sig = JSON.stringify([!!d.inRoom, !!d.isHost, d.room || "", np.map(function (p) { return p.id; })]), changed = sig !== CTX.sig; CTX = { inRoom: !!d.inRoom, isHost: !!d.isHost, me: d.me || null, players: np, room: d.room || "", sig: sig }; revCloudLoad(); maybeRestore(); if (changed && (S.screen === "home" || (S.screen === "live" && LIVE && !busy(LIVE)))) render(); }
     else if (d.type === "sw-class-start") applyStart(d);
     else if (d.type === "sw-class-live") liveApply(d.p);
     else if (d.type === "sw-class-fin" && d.p) liveFin(d.p.pid);
-    else if (d.type === "sw-class-res" && S.class && d.p && d.p.run === S.class.run && !(CTX.me && d.p.pid === CTX.me.id)) { var b = S.class.board, p = d.p, e2 = b[p.pid] || (b[p.pid] = { name: p.name || "Bạn học", avatar: p.avatar || "", total: 0, n: 0 }); e2.total = p.total; e2.n = p.n || e2.n; ((S.class.rq = S.class.rq || {})[p.q] = S.class.rq[p.q] || {})[p.pid] = p; if (S.screen === "live" && LIVE && LIVE.phase !== "prep" && LIVE.phase !== "resp") liveRender(); else updBoard(); }
+    else if (d.type === "sw-class-res" && S.class && d.p && d.p.run === S.class.run && !(CTX.me && d.p.pid === CTX.me.id)) { var b = S.class.board, p = d.p, e2 = b[p.pid] || (b[p.pid] = { name: p.name || "Bạn học", avatar: p.avatar || "", total: 0, n: 0 }); e2.total = p.total; e2.n = p.n || e2.n; ((S.class.rq = S.class.rq || {})[p.q] = S.class.rq[p.q] || {})[p.pid] = p; if (S.screen === "live" && LIVE && !busy(LIVE)) liveRender(); else updBoard(); }
   });
   document.addEventListener("change", function (e) {
     if (!e.target) return;
@@ -591,8 +637,8 @@
     }
     if (id === "hostplays") { S.hostPlays = e.target.checked; return; }
     if (e.target.id === "clsmode") { S.classMode = e.target.checked; if (S.screen === "home") render(); }
-    else if (e.target.id === "aimode") { S.aiGrade = e.target.checked; if (LIVE && S.screen === "live" && CTX.isHost && LIVE.phase !== "prep" && LIVE.phase !== "resp") liveSend({ i: S.i, phase: LIVE.phase, sp: LIVE.sp, done: LIVE.done, sec: 0 }); }
+    else if (e.target.id === "aimode") { S.aiGrade = e.target.checked; if (LIVE && S.screen === "live" && CTX.isHost && !busy(LIVE)) liveSend({ i: S.i, phase: LIVE.phase, sp: LIVE.sp, done: LIVE.done, sec: 0 }); }
   });
   window.addEventListener("pagehide", function () { stopSpeech(); try { speechSynthesis.cancel(); } catch (e) {} });
-  loadSets().then(function () { render(); toParent({ type: "sw-hello", kind: S.kind }); if (PENDING) { var d = PENDING; PENDING = null; applyStart(d); } });
+  loadSets().then(function () { render(); maybeRestore(); toParent({ type: "sw-hello", kind: S.kind }); if (PENDING) { var d = PENDING; PENDING = null; applyStart(d); } });
 })();
