@@ -4,7 +4,7 @@
    iframe tạo 1 lần rồi GIỮ SỐNG (ẩn chứ không xoá) để chuyển qua lại không mất lượt đang chơi, và phòng TOEIC bên dưới vẫn chạy. */
 (function () {
   "use strict";
-  var PAGES = { ea: "learn/ea/index.html?v=31", dm: "learn/dm/index.html?v=31", sp: "learn/sw/index.html?v=90&kind=speaking", wr: "learn/sw/index.html?v=90&kind=writing", ielts: "learn/sw/index.html?v=90&kind=speaking&exam=ielts", ielw: "learn/sw/index.html?v=90&kind=writing&exam=ielts" };
+  var PAGES = { ea: "learn/ea/index.html?v=31", dm: "learn/dm/index.html?v=31", sp: "learn/sw/index.html?v=91&kind=speaking", wr: "learn/sw/index.html?v=91&kind=writing", ielts: "learn/sw/index.html?v=91&kind=speaking&exam=ielts", ielw: "learn/sw/index.html?v=91&kind=writing&exam=ielts" };
   var TITLES = { ea: "EA Quest", dm: "Marketing Quest", sp: "TOEIC Speaking", wr: "TOEIC Writing", ielts: "IELTS Speaking", ielw: "IELTS Writing" };
   var nav = document.getElementById("g-learn"), top = document.querySelector(".g-top");
   if (!nav || !top) return;

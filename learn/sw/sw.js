@@ -93,7 +93,7 @@
   }
   function render() {
     document.body.classList.toggle("live", S.screen === "live");
-    if (S.screen !== "live" && S.screen !== "task") document.body.classList.remove("one");
+    if (S.screen !== "live" && S.screen !== "task") { document.body.classList.remove("one"); micRelease(); }   /* rời bài -> nhả mic */
     if (S.screen === "home" && CTX.inRoom && !CTX.isHost) return waitView();
     if (S.screen === "rev") return revView();
     if (S.screen === "live") return liveRender();
@@ -343,6 +343,7 @@
   }
   function liveRender() {
     var L = LIVE; if (!L) return; var host = CTX.isHost, spk = S.kind === "speaking", me = CTX.me || {};
+    if (S.kind === "speaking" && (L.phase === "ready" || L.phase === "prep")) primeMic();   /* đếm 3-2-1 / chuẩn bị: xin quyền mic NGAY, tới lượt nói là có sẵn */
     setOne(L.phase === "ready" || L.phase === "prep" || L.phase === "resp");   /* TJ 2026-10-15: đang đếm giờ/nói/viết -> MỌI THỨ vừa 1 màn hình, không cuộn */
     if (S.i !== liveRender.lastI) { liveRender.lastI = S.i; try { window.scrollTo(0, 0); } catch (e) {} }   /* sang câu mới: luôn về đầu trang (không bị lệch khuất đề) */
     if (L.phase === "end") { app.innerHTML = '<div class="top"><button class="soft" data-act="quit" title="Thoát">✕</button><div class="t"><b>Hết bài</b></div></div><div class="card" style="text-align:center"><h2>🎉 Cả lớp đã xong</h2></div><div class="bottom"><div class="in"><button class="pri big" data-act="home">Về chọn đề</button></div></div>'; return; }
@@ -590,6 +591,69 @@
   /* ===== 🎯 LUYỆN TỪNG CHỮ (TJ 2026-10-15: "từng từ luyện lại giống Elsa", gói MIỄN PHÍ) =====
      Giọng máy đọc mẫu (thường / chậm) + nhận giọng của trình duyệt để kiểm lại: chữ đúng -> chuyển xanh. Mặc định luyện CỤM 3 chữ quanh chữ đó
      (nhận 1 chữ lẻ hay sai); chỉ biết KHỚP CHỮ, chưa chấm từng âm như ELSA. Không có nhận giọng -> nghe mẫu + tự bấm "đọc được rồi". */
+  /* ===== 🎯 LUYỆN CẢ BÀI (TJ 2026-10-15) — theo cách ELSA / Read Along / shadowing:
+     ① 👂 Nghe mẫu cả đoạn, chữ chạy theo giọng (thường / chậm)  ② 🎤 Đọc cả bài: tô màu TRỰC TIẾP (xanh đúng · đỏ sai · vàng sót) + tự cuộn  ③ chấm % + so với lần trước + nút luyện các chữ sai.
+     Đây là chế độ LUYỆN (khác lúc thi: lúc thi không tô màu). Không ảnh hưởng điểm bài thi. */
+  var PR = null;
+  function prWords(text) { var k = 0, off = []; String(text).split(/(\s+)/).reduce(function (pos, tok) { if (tok && !/^\s+$/.test(tok) && normW(tok)) off.push(pos); return pos + tok.length; }, 0); return off; }
+  function prHtml(text) { var k = 0; return String(text).split(/(\s+)/).map(function (tok) { if (!tok) return ""; if (/^\s+$/.test(tok)) return tok; if (!normW(tok)) return esc(tok); return '<span class="lw" data-k="' + (k++) + '">' + esc(tok) + "</span>"; }).join(""); }
+  function prStop() { try { clearTimeout(PR && PR.tm); clearInterval(PR && PR.iv); if (PR && PR.rec) { PR.rec.onend = null; PR.rec.stop(); } } catch (e) {} try { speechSynthesis.cancel(); } catch (e) {} if (PR) { PR.rec = null; PR.recOn = false; } }
+  function prClose() { prStop(); PR = null; var el = document.getElementById("practice"); if (el) el.parentNode.removeChild(el); }
+  function prSpans() { return document.querySelectorAll("#pr-text .lw"); }
+  function prMark(upTo, cls) { var sp = prSpans(); for (var i = 0; i < sp.length; i++) { var c = "lw" + (i < upTo ? " lw-said" : i === upTo ? " lw-cur" : ""); if (sp[i].className !== c) sp[i].className = c; } prScroll(upTo); }
+  function prScroll(i) { var box = document.getElementById("pr-text"), sp = prSpans()[i]; if (!box || !sp) return; var cr = box.getBoundingClientRect(), r = sp.getBoundingClientRect(); if (r.bottom > cr.bottom - 20 || r.top < cr.top + 10) box.scrollTop += r.top - cr.top - box.clientHeight * 0.3; }
+  function prOpen() {
+    var t = S.prT; if (!t || !t.text) return; stopSpeech && stopSpeech();
+    var key = (S.setId || "") + ":" + t.q, hist = ((ST.pr || {})[key] || []);
+    PR = { text: t.text, off: prWords(t.text), key: key, hist: hist, state: "idle", tr: "", interim: "" };
+    var el = document.getElementById("practice"); if (!el) { el = document.createElement("div"); el.id = "practice"; el.className = "drill"; el.setAttribute("role", "dialog"); el.setAttribute("aria-label", "Luyện cả bài"); document.body.appendChild(el); }
+    var best = hist.reduce(function (m, h) { return Math.max(m, h.pct); }, 0);
+    el.innerHTML = '<div class="dr-card pr-card"><div class="dr-top"><b>🎯 Luyện cả bài</b><span class="sub" id="pr-best">' + (hist.length ? "Tốt nhất " + Math.round(best * 100) + "% · " + hist.length + " lần" : "") + '</span><button class="soft" data-act="pr-close" aria-label="Đóng">✕</button></div>' +
+      '<div class="pr-text prompt read" id="pr-text">' + prHtml(t.text) + '</div>' +
+      '<div class="dr-row"><button type="button" data-act="pr-listen" data-v="1">👂 Nghe mẫu</button><button type="button" data-act="pr-listen" data-v=".6">🐢 Nghe chậm</button></div>' +
+      (SR ? '<button type="button" class="rec big" id="pr-mic" data-act="pr-mic">🎤 Đọc cả bài</button>' : '<p class="sub">Máy này chưa hỗ trợ nhận giọng: bạn vẫn nghe mẫu và đọc theo được.</p>') +
+      '<div id="pr-res"></div><p class="sub" id="pr-hint">Gợi ý: 👂 nghe mẫu trước, rồi đọc theo giọng mẫu, rồi 🎤 đọc cả bài để xem chữ nào xanh/đỏ.</p></div>';
+  }
+  function prListen(rate) {
+    if (!PR) return; prStop(); PR.state = "play"; prMark(-1);
+    var u = new SpeechSynthesisUtterance(PR.text); u.lang = "en-US"; u.rate = rate; var got = false, n = PR.off.length;
+    u.onboundary = function (ev) { if (typeof ev.charIndex !== "number") return; got = true; var k = 0; for (var i = 0; i < PR.off.length; i++) if (PR.off[i] <= ev.charIndex) k = i; prMark(k); };
+    u.onend = function () { if (PR) { clearInterval(PR.iv); PR.state = "idle"; prMark(n); } };
+    try { speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (e) { return; }
+    PR.tm = setTimeout(function () { if (!PR || got || PR.state !== "play") return; var per = (60 / (150 * rate)) * 1000, k = 0; PR.iv = setInterval(function () { if (!PR || PR.state !== "play") return clearInterval(PR && PR.iv); prMark(k++); if (k >= n) clearInterval(PR.iv); }, per); }, 1300);   /* máy không báo biên chữ -> chạy ước lượng theo tốc độ */
+  }
+  function prColor() {
+    var tr = ((PR.tr || "") + " " + (PR.interim || "")).trim(); if (!tr) return;
+    var g = gradeRead(PR.text, tr), reach = -1; g.st.forEach(function (s, i) { if (s === "ok" || s === "bad") reach = i; });
+    var sp = prSpans(); for (var i = 0; i < sp.length; i++) { var s = g.st[i], c = "lw"; if (i <= reach) c += s === "ok" ? " lw-ok" : s === "bad" ? " lw-bad" : " lw-skip"; else if (i === reach + 1) c += " lw-cur"; if (sp[i].className !== c) sp[i].className = c; }
+    prScroll(reach + 1);
+  }
+  function prMic() {
+    if (!PR || !SR) return; var btn = document.getElementById("pr-mic");
+    if (PR.recOn) { prFinish(); return; }
+    prStop(); PR.tr = ""; PR.interim = ""; PR.state = "rec"; PR.recOn = true; prMark(-1); document.getElementById("pr-res").innerHTML = ""; if (btn) btn.textContent = "⏹ Xong";
+    var rec = new SR(); PR.rec = rec; rec.lang = "en-US"; rec.continuous = true; rec.interimResults = true; rec.maxAlternatives = 1;
+    rec.onresult = function (e) { if (!PR) return; var ip = ""; for (var i = e.resultIndex; i < e.results.length; i++) { var r = e.results[i]; if (r.isFinal) PR.tr = (PR.tr + " " + r[0].transcript).trim(); else ip += r[0].transcript; } PR.interim = ip; prColor(); };
+    rec.onerror = function (e) { if (e && (e.error === "not-allowed" || e.error === "service-not-allowed")) { PR.recOn = false; toast("Chưa cho dùng micro — bấm ổ khoá cạnh thanh địa chỉ để cho phép"); if (btn) btn.textContent = "🎤 Đọc cả bài"; } };
+    rec.onend = function () { if (PR && PR.recOn) { try { rec.start(); } catch (e) {} } };
+    try { rec.start(); } catch (e) { PR.recOn = false; toast("Không mở được nhận giọng"); if (btn) btn.textContent = "🎤 Đọc cả bài"; }
+  }
+  function prFinish() {
+    if (!PR) return; var tr = ((PR.tr || "") + " " + (PR.interim || "")).trim(); prStop(); PR.state = "done"; var btn = document.getElementById("pr-mic"); if (btn) btn.textContent = "🔁 Đọc lại";
+    var g = gradeRead(PR.text, tr), pct = g.pct, prev = PR.hist.length ? PR.hist[PR.hist.length - 1].pct : null, best = PR.hist.reduce(function (m, h) { return Math.max(m, h.pct); }, 0);
+    PR.g = g; var bad = g.st.filter(function (s) { return s !== "ok"; }).length;
+    ST.pr = ST.pr || {}; (ST.pr[PR.key] = ST.pr[PR.key] || []).push({ ts: Date.now(), pct: pct }); if (ST.pr[PR.key].length > 30) ST.pr[PR.key].shift(); save(); PR.hist = ST.pr[PR.key];
+    var cmp = prev == null ? "Lần đầu luyện bài này 👍" : (pct > prev ? "▲ Tăng " + Math.round((pct - prev) * 100) + "% so với lần trước (" + Math.round(prev * 100) + "%)" : pct < prev ? "▼ Thấp hơn lần trước (" + Math.round(prev * 100) + "%) — thử lại nhé" : "= Bằng lần trước") + (pct > best && prev != null ? " · 🏆 kỷ lục mới!" : "");
+    document.getElementById("pr-res").innerHTML = '<div class="dr-fb ' + (pct >= .9 ? "good" : "bad") + '"><b>' + Math.round(pct * 100) + "% khớp bài</b> · " + bad + " chữ chưa đúng<br>" + esc(cmp) + "</div>" + (bad ? '<div class="dr-row"><button type="button" class="pri" data-act="pr-words">🎯 Luyện ' + bad + " chữ chưa đúng</button></div>" : "");
+    var bs = document.getElementById("pr-best"); if (bs) bs.textContent = "Tốt nhất " + Math.round(Math.max(best, pct) * 100) + "% · " + PR.hist.length + " lần";
+  }
+  function practiceAct(a, v) {
+    if (a === "pr-open") prOpen(); else if (!PR) return;
+    else if (a === "pr-close") prClose();
+    else if (a === "pr-listen") prListen(+v || 1);
+    else if (a === "pr-mic") prMic();
+    else if (a === "pr-words") { var g = PR.g; prClose(); if (g) { S.rd = g; drOpen(); } }
+  }
   var DR = null;
   function drBad() { var o = []; if (S.rd) S.rd.st.forEach(function (s, i) { if (s !== "ok") o.push(i); }); return o; }
   function drText(i) { var W = S.rd.words; if (DR.mode === "word") return { text: W[i], at: 0, a: i }; var a = Math.max(0, i - 1), b = Math.min(W.length - 1, i + 1); return { text: W.slice(a, b + 1).join(" "), at: i - a, a: a }; }
@@ -724,6 +788,18 @@
     try { rec.start(); } catch (e) { toast("Không mở được nhận giọng"); }
   }
   /* ghi âm lượt nói (MediaRecorder) để NGHE LẠI sau: lưu Supabase Storage (toeic/sw-audio/…) + đường dẫn trong sw_history.audio */
+  /* 🎤 XIN QUYỀN MIC SỚM + DÙNG LẠI 1 LUỒNG (TJ 2026-10-15: "mới vô bài speaking phải accept cái loa mất mấy giây"):
+     trước đây mỗi lượt nói gọi getUserMedia mới -> hộp xin quyền hiện NGAY LÚC BẮT ĐẦU NÓI, ăn mất giờ. Nay xin ngay lần chạm đầu / lúc đếm 3-2-1 / lúc chuẩn bị, giữ luồng (tắt tiếng khi không ghi),
+     nhả khi thoát bài. Nhận giọng (SpeechRecognition) cũng được "mồi" 1 lần để hộp xin quyền của nó hiện sớm. */
+  var MIC = { st: null, busy: null, sr: false, asked: false };
+  function primeMic() {
+    if (MOCK || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return Promise.resolve(null);
+    if (MIC.st && MIC.st.active) return Promise.resolve(MIC.st);
+    if (!MIC.busy) MIC.busy = navigator.mediaDevices.getUserMedia({ audio: true }).then(function (st) { MIC.st = st; MIC.busy = null; st.getAudioTracks().forEach(function (t) { t.enabled = false; }); return st; }).catch(function () { MIC.busy = null; return null; });
+    if (SR && !MIC.sr) { MIC.sr = true; try { var pr = new SR(); pr.lang = "en-US"; pr.onerror = pr.onend = function () {}; pr.start(); setTimeout(function () { try { pr.abort(); } catch (e) {} }, 700); } catch (e) {} }
+    return MIC.busy;
+  }
+  function micRelease() { if (MIC.st) { try { MIC.st.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {} } MIC.st = null; MIC.sr = false; MIC.asked = false; }
   var RECD = null;
   function recAudioStart() {
     RECD = null;
@@ -731,11 +807,13 @@
     var r = RECD = { stopped: false, chunks: [], blob: null, done: false, cbs: [], mr: null };
     function done(blob) { r.blob = blob; r.done = true; var cbs = r.cbs; r.cbs = []; cbs.forEach(function (cb) { cb(blob); }); }
     r.fin = done;
-    navigator.mediaDevices.getUserMedia({ audio: true }).then(function (st) {
-      if (r.stopped) { st.getTracks().forEach(function (t) { t.stop(); }); return done(null); }
-      var mr; try { mr = new MediaRecorder(st); } catch (e) { st.getTracks().forEach(function (t) { t.stop(); }); return done(null); }
+    var shared = !!(MIC.st && MIC.st.active), rel = function (st) { if (st === MIC.st) st.getAudioTracks().forEach(function (t) { t.enabled = false; }); else st.getTracks().forEach(function (t) { t.stop(); }); };
+    (shared ? Promise.resolve(MIC.st) : navigator.mediaDevices.getUserMedia({ audio: true })).then(function (st) {
+      st.getAudioTracks().forEach(function (t) { t.enabled = true; });
+      if (r.stopped) { rel(st); return done(null); }
+      var mr; try { mr = new MediaRecorder(st); } catch (e) { rel(st); return done(null); }
       r.mr = mr; mr.ondataavailable = function (e) { if (e.data && e.data.size) r.chunks.push(e.data); };
-      mr.onstop = function () { st.getTracks().forEach(function (t) { t.stop(); }); done(r.chunks.length ? new Blob(r.chunks, { type: mr.mimeType || "audio/webm" }) : null); };
+      mr.onstop = function () { rel(st); done(r.chunks.length ? new Blob(r.chunks, { type: mr.mimeType || "audio/webm" }) : null); };
       try { mr.start(1000); } catch (e) { done(null); }
     }).catch(function () { done(null); });
   }
@@ -866,6 +944,7 @@
         var nb0 = r.read.st.filter(function (x) { return x !== "ok"; }).length;
         if (nb0) h += '<p><button type="button" class="pri" id="dr-open-btn" data-act="dr-open">🎯 Luyện ' + nb0 + ' chữ chưa đúng</button></p>';
       }
+      if (t && t.type === "read_aloud" && S.kind === "speaking") { S.prT = t; h += '<p class="dr-actions"><button type="button" class="pri" data-act="pr-open">🎯 Luyện cả bài</button></p>'; }
       if ((fb.strengths || []).length) h += '<ul class="fb ok">' + fb.strengths.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>";
       if ((fb.fixes || []).length) h += '<p><b>Cần sửa</b></p><ul class="fb">' + fb.fixes.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>";
       h += "</div>";
@@ -894,6 +973,7 @@
 
   /* ---------- sự kiện ---------- */
   document.addEventListener("click", function (e) {
+    if (!MIC.asked && S.kind === "speaking") { MIC.asked = true; primeMic(); }   /* chạm đầu tiên = xin quyền mic sớm (không đợi tới lúc bắt đầu nói) */
     var b = e.target.closest("[data-act]"); if (!b || b.disabled) return; var a = b.dataset.act, v = b.dataset.v;
     if (a === "kind") { S.kind = v; S.setId = (SETS[v][0] || {}).id || ""; render(); }
     else if (a === "set") { S.setId = v; render(); }
@@ -905,6 +985,7 @@
     else if (a === "revf") { S.revAll = !S.revAll; render(); }
     else if (a === "revclr") { if (confirm("Xoá toàn bộ lịch sử bài " + (S.kind === "speaking" ? "nói" : "viết") + " trên máy này?")) { ST.rev = (ST.rev || []).filter(function (r) { return r.kind !== S.kind; }); save(); render(); } }
     else if (a.indexOf("dr-") === 0) { drillAct(a, v, b); return; }   /* thẻ luyện từng chữ */
+    else if (a.indexOf("pr-") === 0) { practiceAct(a, v); return; }   /* luyện cả bài */
     else if (a === "hdo") { toParent({ type: "sw-do", a: v }); return; }   /* nút ở ô phòng (màn chờ, chưa có lớp đang chạy) */
     else if (liveAct(a, v)) return;
     else if (a === "go") go();
@@ -954,7 +1035,7 @@
     if (e.target.id === "clsmode") { S.classMode = e.target.checked; if (S.screen === "home") render(); }
     else if (e.target.id === "aimode") { S.aiGrade = e.target.checked; if (LIVE) { LIVE.ai = S.aiGrade; if (S.screen === "live" && CTX.isHost && !busy(LIVE)) liveSend({ i: S.i, phase: LIVE.phase, sp: LIVE.sp, done: LIVE.done, sec: 0 }); } }
   });
-  window.addEventListener("pagehide", function () { stopSpeech(); try { speechSynthesis.cancel(); } catch (e) {} });
+  window.addEventListener("pagehide", function () { stopSpeech(); micRelease(); try { speechSynthesis.cancel(); } catch (e) {} });
   /* TJ 2026-10-15: "khi vào test thì tất cả chỉ có bài test, vừa gọn màn hình" — đang làm bài (lớp đang chạy hoặc tự luyện 1 câu) -> báo trang game thu gọn
      thanh trên/dưới của WordLoop + thanh game (như ván Từ vựng); xong/thoát thì trả lại. Áp cho cả 4 lớp: Speaking, Writing, IELTS Speaking, IELTS Writing. */
   document.addEventListener("click", function (e) {   /* chạm ảnh đề (đang làm bài 1 màn hình) -> phóng to; chạm lại -> thu nhỏ */

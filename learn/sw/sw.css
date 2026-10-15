@@ -295,3 +295,9 @@ body.one img.zoom { position:fixed !important; inset:0; width:100vw !important; 
 body.one.has-live #app > .top + .card { flex:0 1 auto; max-height:50%; }
 body.one #app > .live { flex:1 1 0; min-height:72px; max-height:none; margin:6px 0 0; padding:8px 10px; font-size:17px; line-height:1.5; background:var(--card); overflow:auto; }
 body.one.has-live #app > :nth-child(n+5):not(.hostbar):not(.bottom) { display:none; }
+
+/* ===== 🎯 LUYỆN CẢ BÀI (js/sw.js practice*) — TJ 2026-10-15 ===== */
+.pr-card { display:flex; flex-direction:column; max-height:96dvh; height:96dvh; }
+.pr-text { flex:1 1 0; min-height:90px; overflow:auto; margin:8px 0; padding:10px 12px; border:1px solid var(--line); border-radius:14px; background:var(--bg); font-size:clamp(15px,2.6vh,18px) !important; line-height:1.55 !important; }
+.lw-said { color:var(--acc); }
+.dr-actions { margin:10px 0 4px; } .dr-actions button { width:100%; min-height:48px; font-size:16px; }
