@@ -9,7 +9,7 @@
   function frames() { return [].slice.call(document.querySelectorAll(".g-learnlayer iframe")); }
   function frameFor(kind) { var k = kind === "writing" ? "kind=writing" : "kind=speaking"; return frames().filter(function (f) { return f.src.indexOf(k) >= 0; })[0]; }
   function post(w, msg) { try { w.postMessage(msg, location.origin); } catch (e) {} }
-  function ctx() { var ch = api && api.ch && api.ch(); return { inRoom: !!ch, isHost: !!(api && api.isHost && api.isHost()), me: api && api.me ? api.me() : null }; }
+  function ctx() { var ch = api && api.ch && api.ch(); return { inRoom: !!ch, isHost: !!(api && api.isHost && api.isHost()), me: api && api.me ? api.me() : null, players: api && api.players ? api.players() : [] }; }
   function send(p) { var ch = api && api.ch && api.ch(); if (ch) ch.send({ type: "broadcast", event: "sw", payload: p }); }
   function deliverStart(p) {
     var f = frameFor(p.kind), msg = { type: "sw-class-start", kind: p.kind, set: p.set, group: p.group, run: p.run, by: p.by };
@@ -18,6 +18,7 @@
   function onMsg(p) {
     if (!p) return;
     if (p.t === "start") { document.dispatchEvent(new CustomEvent("tjwl-sw-open", { detail: p.kind })); setTimeout(function () { deliverStart(p); }, 250); }
+    else if (p.t === "live") frames().forEach(function (f) { post(f.contentWindow, { type: "sw-class-live", p: p }); });
     else if (p.t === "res") frames().forEach(function (f) { post(f.contentWindow, { type: "sw-class-res", p: p }); });
   }
   window.addEventListener("message", function (e) {

@@ -17,7 +17,7 @@
     speaking: [{ k: "all", t: "Cả bộ 11 câu (~17 phút)", qs: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] }, { k: "read", t: "Q1–2 Đọc to", qs: [1, 2] }, { k: "desc", t: "Q3 Tả ảnh", qs: [3] }, { k: "resp", t: "Q4–6 Trả lời câu hỏi", qs: [4, 5, 6] }, { k: "info", t: "Q7–9 Dựa vào thông tin", qs: [7, 8, 9] }, { k: "sol", t: "Q10 Đề xuất giải pháp", qs: [10] }, { k: "opin", t: "Q11 Nêu ý kiến", qs: [11] }],
     writing: [{ k: "all", t: "Cả bộ 8 câu (~60 phút)", qs: [1, 2, 3, 4, 5, 6, 7, 8] }, { k: "sent", t: "Q1–5 Viết câu theo ảnh", qs: [1, 2, 3, 4, 5] }, { k: "mail", t: "Q6–7 Trả lời email", qs: [6, 7] }, { k: "essay", t: "Q8 Bài luận ý kiến", qs: [8] }]
   };
-  var SETS = { speaking: [], writing: [] }, ST = load(), S = { kind: QS.get("kind") === "writing" ? "writing" : "speaking", setId: "", group: "all", screen: "home" }, timerId = 0, rec = null, recOn = false, CTX = { inRoom: false, isHost: false, me: null }, PENDING = null;
+  var SETS = { speaking: [], writing: [] }, ST = load(), S = { kind: QS.get("kind") === "writing" ? "writing" : "speaking", setId: "", group: "all", screen: "home" }, timerId = 0, rec = null, recOn = false, CTX = { inRoom: false, isHost: false, me: null, players: [] }, LIVE = null, liveTimer = 0, PENDING = null;
 
   /* ---------- lưu ---------- */
   function load() { try { return JSON.parse(localStorage.getItem(KEY)) || { hist: [] }; } catch (e) { return { hist: [] }; } }
@@ -38,6 +38,7 @@
 
   /* ---------- màn hình ---------- */
   function render() {
+    if (S.screen === "live") return liveRender();
     if (S.screen === "home") return home();
     if (S.screen === "sum") return summary();
     return task();
@@ -83,7 +84,78 @@
   function applyStart(d) {
     if (!SETS[d.kind].length) { PENDING = d; return; }
     if (!SETS[d.kind].some(function (x) { return x.id === d.set; })) { toast("Máy bạn chưa có đề này"); return; }
-    clearTimer(); stopSpeech(); S.kind = d.kind; S.setId = d.set; S.class = { run: d.run, board: {} }; S.saved = 0; begin(d.kind, d.group); toast("👥 Lớp bắt đầu!");
+    clearTimer(); stopSpeech(); S.kind = d.kind; S.setId = d.set; liveInit(d); toast("👥 Lớp bắt đầu!");
+  }
+  /* ---------- LỚP TRỰC TIẾP: host điều khiển, cả phòng thấy đề + đồng hồ ngược, không chấm điểm, không âm thanh ---------- */
+  function liveInit(d) {
+    var g = GROUPS[d.kind].filter(function (x) { return x.k === d.group; })[0] || GROUPS[d.kind][0], set = curSet();
+    clearTimer(); stopSpeech();
+    S.kind = d.kind; S.group = g.k; S.gt = g.t; S.tasks = set.tasks.filter(function (t) { return g.qs.indexOf(t.q) >= 0 && (d.kind === "writing" || t.type !== "describe" || t.scene || t.image); });
+    S.i = 0; S.screen = "live"; LIVE = { run: d.run, phase: "show", sp: null, done: {}, tEnd: 0, tot: 0 };
+    toParent({ type: "sw-hello", kind: S.kind }); liveRender();
+    if (!liveTimer) liveTimer = setInterval(liveTick, 200);
+  }
+  function liveSend(st) { st.t = "live"; st.run = LIVE.run; toParent({ type: "sw-class-send", p: st }); liveApply(st); }
+  function liveApply(st) {
+    if (!LIVE || !st || st.run !== LIVE.run) return;
+    LIVE.phase = st.phase; LIVE.sp = st.sp || null; LIVE.done = st.done || {}; S.i = st.i || 0; LIVE.adv = 0;
+    LIVE.tot = (st.sec || 0) * SCALE; LIVE.tEnd = st.sec ? Date.now() + LIVE.tot * 1000 : 0;
+    liveRender();
+  }
+  function liveTimes() { var t = curTask(); return TIME[S.kind][t.q] || [0, 60]; }
+  function liveNext() {   /* host: hết giờ (hoặc bấm Dừng) pha hiện tại */
+    var L = LIVE, tm = liveTimes(), st = { i: S.i, sp: L.sp, done: L.done };
+    if (L.phase === "prep") { st.phase = "resp"; st.sec = tm[1]; }
+    else { if (L.sp) { st.done = Object.assign({}, L.done); st.done[L.sp.id] = 1; } st.phase = "idle"; st.sec = 0; st.sp = null; }
+    liveSend(st);
+  }
+  function liveTick() {
+    var L = LIVE, el = $("#tm"); if (!L || S.screen !== "live" || !el || !L.tEnd) return;
+    var left = Math.max(0, (L.tEnd - Date.now()) / 1000), sh = MOCK ? left / SCALE : left, cd = $("#cd");
+    el.textContent = mmss(sh); var pg = $("#pg"); if (pg) pg.style.width = Math.min(100, 100 * (1 - left / Math.max(.001, L.tot))) + "%";
+    if (cd) { var n = Math.ceil(sh - .001); if (sh > 0 && n <= 5 && n >= 1) { if (cd.textContent !== String(n)) { cd.textContent = n; cd.classList.remove("pop"); void cd.offsetWidth; cd.classList.add("pop"); } cd.hidden = false; } else cd.hidden = true; }
+    if (left <= 0 && CTX.isHost && !L.adv) { L.adv = 1; liveNext(); }
+  }
+  function liveRender() {
+    var L = LIVE; if (!L) return; var host = CTX.isHost, spk = S.kind === "speaking", me = CTX.me || {};
+    if (L.phase === "end") { app.innerHTML = '<div class="top"><button class="soft" data-act="quit" title="Thoát">✕</button><div class="t"><b>Hết bài</b></div></div><div class="card" style="text-align:center"><h2>🎉 Cả lớp đã xong</h2></div><div class="bottom"><div class="in"><button class="pri big" data-act="home">Về chọn đề</button></div></div>'; return; }
+    var t = curTask(), tm = liveTimes(), run = L.phase === "prep" || L.phase === "resp", last = S.i >= S.tasks.length - 1;
+    var h = '<div class="top"><button class="soft" data-act="quit" title="Thoát">✕</button><div class="t"><b>Câu ' + t.q + "</b> · " + esc(t.type.replace("_", " ")) + ' <span class="sub">(' + (S.i + 1) + "/" + S.tasks.length + ")</span></div></div>";
+    h += '<div class="card">' + promptHtml(t) + "</div>";
+    h += '<div class="card" style="text-align:center">';
+    if (run) {
+      var who = L.sp ? avatarHtml(L.sp.avatar) + " <b>" + esc(L.sp.name) + "</b>" : "Cả lớp", mine = L.sp && me.id && L.sp.id === me.id;
+      h += '<div class="row" style="justify-content:center"><span class="badge ' + (L.phase === "resp" ? "resp" : "prep") + '">' + (L.phase === "prep" ? "Chuẩn bị" : spk ? "Đang nói" : "Đang viết") + "</span> " + who + "</div>" + (mine ? "<p><b>🎤 Đến lượt bạn!</b></p>" : "") + '<div class="timer ' + (L.phase === "resp" ? "resp" : "prep") + '" id="tm">0:00</div><div class="bar ' + (L.phase === "resp" ? "resp" : "") + '"><i id="pg"></i></div>';
+    } else {
+      var nd = Object.keys(L.done).length;
+      h += spk ? '<p class="sub">' + (nd ? "Đã nói: <b>" + nd + "</b> người. " : "") + "Chuẩn bị <b>" + tm[0] + "s</b> · trả lời <b>" + tm[1] + "s</b></p>" : '<p class="sub">Thời gian viết: <b>' + mmss(tm[1]) + "</b></p>";
+      if (!host) h += "<p><i>Đợi host bấm…</i></p>";
+    }
+    h += "</div>";
+    if (host) {
+      var ps = (CTX.players || []).filter(function (p) { return !L.done[p.id]; }), b = "", nx = '<button class="big" data-act="lnext">' + (last ? "Kết thúc" : "Câu tiếp ›") + "</button>";
+      if (run) b = (L.phase === "prep" ? '<button class="big" data-act="lskip">⏭ Vào phần nói</button>' : "") + '<button class="big" data-act="lstop">⏹ Dừng</button>';
+      else if (spk && ps.length) b = '<select id="lsp" class="big">' + ps.map(function (p) { return '<option value="' + esc(p.id) + '">' + esc(p.name || "?") + "</option>"; }).join("") + '</select><button class="pri big" data-act="lstart">▶ Bắt đầu</button>' + nx;
+      else if (spk) b = nx.replace('class="big"', 'class="pri big"');
+      else b = (L.phase === "idle" ? "" : '<button class="pri big" data-act="lstart">▶ Bắt đầu viết</button>') + (L.phase === "idle" ? nx.replace('class="big"', 'class="pri big"') : nx);
+      h += '<div class="bottom"><div class="in">' + b + "</div></div>";
+    }
+    h += '<div class="cd" id="cd" hidden></div>'; app.innerHTML = h; liveTick();
+  }
+  function liveAct(a, v) {
+    if (!LIVE || S.screen !== "live" || !CTX.isHost) return false;
+    var tm = liveTimes(), L = LIVE;
+    if (a === "lstart") {
+      var sel = $("#lsp"), sp = null;
+      if (S.kind === "speaking") { var id = sel && sel.value; sp = (CTX.players || []).filter(function (p) { return p.id === id; })[0]; if (!sp) return true; sp = { id: sp.id, name: sp.name, avatar: sp.avatar }; }
+      liveSend({ i: S.i, phase: S.kind === "speaking" ? "prep" : "resp", sp: sp, sec: S.kind === "speaking" ? tm[0] : tm[1], done: L.done });
+    } else if (a === "lskip") liveSend({ i: S.i, phase: "resp", sp: L.sp, sec: tm[1], done: L.done });
+    else if (a === "lstop") { L.adv = 1; liveNext(); }
+    else if (a === "lnext") {
+      if (S.i >= S.tasks.length - 1) liveSend({ i: S.i, phase: "end", done: {} });
+      else { liveSend({ i: S.i + 1, phase: "show", sp: null, done: {}, sec: 0 }); toParent({ type: "sw-hello", kind: S.kind }); }
+    } else return false;
+    return true;
   }
   function importFile() {
     var f = this.files[0]; if (!f) return; var r = new FileReader();
@@ -281,6 +353,7 @@
     if (a === "kind") { S.kind = v; S.setId = (SETS[v][0] || {}).id || ""; render(); }
     else if (a === "set") { S.setId = v; render(); }
     else if (a === "start") { if (S.classMode && CTX.isHost) toParent({ type: "sw-host-start", kind: S.kind, set: S.setId, group: v }); else { S.class = null; S.saved = 0; begin(S.kind, v); } }
+    else if (liveAct(a, v)) return;
     else if (a === "go") go();
     else if (a === "skipprep") { clearTimer(); startResp(); }
     else if (a === "stop") finish();
@@ -295,8 +368,9 @@
   });
   window.addEventListener("message", function (e) {
     var d = e.data; if (e.origin !== location.origin || !d || typeof d.type !== "string" || d.type.indexOf("sw-") !== 0) return;
-    if (d.type === "sw-ctx") { CTX = { inRoom: !!d.inRoom, isHost: !!d.isHost, me: d.me || null }; if (S.screen === "home") render(); }
+    if (d.type === "sw-ctx") { CTX = { inRoom: !!d.inRoom, isHost: !!d.isHost, me: d.me || null, players: d.players || [] }; if (S.screen === "home" || (S.screen === "live" && LIVE && LIVE.phase !== "prep" && LIVE.phase !== "resp")) render(); }
     else if (d.type === "sw-class-start") applyStart(d);
+    else if (d.type === "sw-class-live") liveApply(d.p);
     else if (d.type === "sw-class-res" && S.class && d.p && d.p.run === S.class.run && !(CTX.me && d.p.pid === CTX.me.id)) { var b = S.class.board, p = d.p, e2 = b[p.pid] || (b[p.pid] = { name: p.name || "Bạn học", avatar: p.avatar || "", total: 0, n: 0 }); e2.total = p.total; e2.n = p.n || e2.n; updBoard(); }
   });
   document.addEventListener("change", function (e) { if (e.target && e.target.id === "clsmode") S.classMode = e.target.checked; });

@@ -46,3 +46,8 @@ details { margin:6px 0; } summary { cursor:pointer; color:var(--acc); font-size:
 #toast { position:fixed; left:50%; bottom:78px; transform:translateX(-50%); background:#333; color:#fff; padding:8px 14px; border-radius:99px; font-size:14px; opacity:0; pointer-events:none; transition:opacity .2s; z-index:20; } #toast.show { opacity:.95; }
 .spin { display:inline-block; width:16px; height:16px; border:3px solid var(--line); border-top-color:var(--acc2); border-radius:50%; animation:sp .8s linear infinite; vertical-align:-3px; } @keyframes sp { to { transform:rotate(360deg); } }
 @media (max-width:420px) { #app { padding:8px 10px 90px; } .timer { font-size:30px; } .prompt.read { font-size:17px; } }
+
+.cd { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; font-size:38vmin; font-weight:900; color:var(--bad); opacity:.82; text-shadow:0 4px 30px rgba(0,0,0,.25); z-index:30; }
+.cd[hidden] { display:none; } .cd.pop { animation:cdpop .9s ease-out; }
+@keyframes cdpop { 0% { transform:scale(1.5); opacity:0; } 25% { opacity:.9; } 100% { transform:scale(.85); opacity:.5; } }
+select.big { max-width:46%; }
