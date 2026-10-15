@@ -2575,6 +2575,10 @@
     if (!G.isHost) G.st = s;
     if (s.exSubmitAt && G.ex && !G.ex.done && iPlay()) setTimeout(exSubmit, 0);   /* 📝 host kết thúc -> tự nộp bài */
     if (window.Board) Board.onState(G.isHost ? G.st : s);
+    /* host bắt đầu ván hoặc bật Bảng -> người chơi PHẢI theo: đóng lớp phủ Speaking/Writing/EA... của họ (đang xem lại kết quả thì cứ yên — phần ván mới đã có code kéo về) */
+    var bNow = !!(s && s.board);
+    if (!G.isHost && s && ((bNow && !G.prevBoard) || (s.phase === "play" && was !== "play"))) { try { document.dispatchEvent(new CustomEvent("tjwl-learn-home")); } catch (e) {} }
+    G.prevBoard = bNow;
     if (window.Chat) Chat.onState(G.isHost ? G.st : s);
     if (window.Voice) Voice.onState(G.isHost ? G.st : s);
     if (window.CC) CC.onState(G.isHost ? G.st : s);
