@@ -301,3 +301,7 @@ body.one.has-live #app > :nth-child(n+5):not(.hostbar):not(.bottom) { display:no
 .pr-text { flex:1 1 0; min-height:90px; overflow:auto; margin:8px 0; padding:10px 12px; border:1px solid var(--line); border-radius:14px; background:var(--bg); font-size:clamp(15px,2.6vh,18px) !important; line-height:1.55 !important; }
 .lw-said { color:var(--acc); }
 .dr-actions { margin:10px 0 4px; } .dr-actions button { width:100%; min-height:48px; font-size:16px; }
+
+/* nút tick 🎨 bật tô màu đề lúc đọc (TJ 2026-10-15) */
+.top .hlt { flex:none; min-height:0; height:34px; padding:0 10px; border-radius:999px; font-size:13px; line-height:1; white-space:nowrap; background:transparent; }
+.top .hlt.on { background:var(--acc); border-color:var(--acc); color:#fff; font-weight:700; }

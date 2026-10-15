@@ -81,7 +81,17 @@
     var fs = 18; for (; fs > 14; fs--) { probe.style.setProperty("font-size", fs + "px", "important"); probe.style.setProperty("line-height", "1.45", "important"); if (probe.scrollHeight <= avail) break; }
     document.body.removeChild(probe); root.style.setProperty("--pfs", fs + "px");
   }
-  function dockLive() {   /* TJ 2026-10-15: phụ đề chạy nằm NGAY DƯỚI ĐỀ (chiếm chỗ trống), đồng hồ + nút Xong gọn ở đáy */
+  /* ☐ 🎨 nút tick bật/tắt tô màu đề lúc nói (chỉ bài đọc to) — nằm cạnh ✕ ở thanh tiêu đề (TJ 2026-10-15) */
+  var HL_KEY = "sw_hl_v1";
+  function hlOn() { try { return localStorage.getItem(HL_KEY) === "1"; } catch (e) { return false; } }
+  function hlPaint(b) { var on = hlOn(); b.className = "hlt" + (on ? " on" : ""); b.setAttribute("aria-pressed", on ? "true" : "false"); b.textContent = (on ? "☑" : "☐") + " 🎨"; }
+  function addHlToggle() {
+    var top = document.querySelector("#app > .top"), t = curTask(); if (!top || S.kind !== "speaking" || !t || t.type !== "read_aloud" || top.querySelector(".hlt")) return;
+    var b = document.createElement("button"); b.type = "button"; b.setAttribute("data-act", "hl"); b.title = "Tô màu đề trực tiếp lúc đọc (mặc định TẮT — thi thật không có phản hồi giữa chừng)"; hlPaint(b); top.insertBefore(b, top.children[1] || null);
+  }
+  function hlClear() { document.querySelectorAll("#app .prompt .lw").forEach(function (s) { if (s.className !== "lw") s.className = "lw"; }); }
+  function dockLive() {
+    addHlToggle();   /* TJ 2026-10-15: phụ đề chạy nằm NGAY DƯỚI ĐỀ (chiếm chỗ trống), đồng hồ + nút Xong gọn ở đáy */
     var l = document.getElementById("live"), docked = false;
     if (l && document.body.classList.contains("one")) { var card = l.closest(".card"); if (card && l.parentNode === card) card.parentNode.insertBefore(l, card); docked = l.parentNode === app; }
     document.body.classList.toggle("has-live", docked);
@@ -754,7 +764,7 @@
     var tx = (S.tr || "").trim(), ip = (S.interim || "").trim();
     el.innerHTML = '<div class="lv-in">' + (tx || ip ? esc(tx) + (ip ? " <i>" + esc(ip) + "</i>" : "") : "<i>🎤 Hãy nói… lời bạn nói sẽ hiện ở đây</i>") + "</div>";
     if (stick) el.scrollTop = el.scrollHeight;
-    try { if (S.liveHL) hlRead(); } catch (e) {}   /* TJ 2026-10-15: LÚC THI không tô màu (thi thật không có phản hồi giữa chừng) — chỉ khi bật chế độ luyện (S.liveHL) */
+    try { if (hlOn()) hlRead(); } catch (e) {}   /* TJ 2026-10-15: LÚC THI mặc định KHÔNG tô màu (thi thật không có phản hồi giữa chừng) — chỉ khi bấm nút tick 🎨 (nhớ theo máy) */
   }
   function hlRead() {
     var t = curTask(); if (!t || S.kind !== "speaking" || t.type !== "read_aloud") return;
@@ -975,6 +985,7 @@
   document.addEventListener("click", function (e) {
     if (!MIC.asked && S.kind === "speaking") { MIC.asked = true; primeMic(); }   /* chạm đầu tiên = xin quyền mic sớm (không đợi tới lúc bắt đầu nói) */
     var b = e.target.closest("[data-act]"); if (!b || b.disabled) return; var a = b.dataset.act, v = b.dataset.v;
+    if (a === "hl") { try { localStorage.setItem(HL_KEY, hlOn() ? "0" : "1"); } catch (x) {} hlPaint(b); if (hlOn()) { try { hlRead(); } catch (x) {} } else hlClear(); return; }
     if (a === "kind") { S.kind = v; S.setId = (SETS[v][0] || {}).id || ""; render(); }
     else if (a === "set") { S.setId = v; render(); }
     else if (a === "start") { if (EMBED && !classOn()) { toast("Đang vào phòng game, thử lại sau giây lát"); return; } if (classOn()) toParent({ type: "sw-host-start", kind: S.kind, exam: EX0, set: S.setId, group: v, from: S.qFrom || 0, to: S.qTo || 0 }); else { S.class = null; S.saved = 0; begin(S.kind, v); } }
