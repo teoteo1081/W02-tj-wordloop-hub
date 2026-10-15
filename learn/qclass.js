@@ -31,6 +31,8 @@
     "#qc .qbd{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 12px;margin:10px 0}#qc .qbd div{display:flex;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}#qc .qbd div:last-child{border:0}#qc .qbd .pts{margin-left:auto;font-weight:800}#qc .qbd .d{color:#4fb985;font-size:13px}" +
     "#qc .qb{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 20px;border-radius:10px;border:1px solid transparent;background:#d97757;color:#fff;font:inherit;font-size:16px;font-weight:700;cursor:pointer}#qc .qb.soft{background:var(--card);color:var(--ink);border-color:var(--line)}" +
     "#qc .rcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:6px 0 10px}#qc .rtop{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}#qc .rcode{font-size:34px;font-weight:800;letter-spacing:3px;color:#d97757;line-height:1.1}#qc .rcard .sub{font-size:13px;color:var(--muted)}#qc .rbtn{display:flex;gap:8px;flex-wrap:wrap}#qc .rps{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}#qc .rp{display:flex;flex-direction:column;align-items:center;font-size:12px;gap:3px}#qc .rp .av{width:44px;height:44px;font-size:26px}" +
+    "#qc .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:6px 0 12px}#qc .panel .grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px}#qc .panel .wide{grid-column:1/-1}#qc .panel label{display:block;margin:10px 0 4px;color:var(--muted);font-size:13px}#qc .panel label.chk{color:var(--ink);font-size:15px}#qc .fix{padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);font-size:14px}#qc .act{display:flex;gap:12px;align-items:center;margin:14px 0 2px}#qc .act .sub{color:var(--muted);font-size:13px}" +
+    "#qc .lhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0}#qc .lhead h2{margin:0;font-size:19px}#qc .lcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}#qc .lc{background:var(--card);border:2px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;display:flex;flex-direction:column;gap:6px}#qc .lc.on{border-color:#d97757;background:rgba(217,119,87,.1)}#qc .lc .lt{font-weight:700;font-size:15px}#qc .lc .sub{font-size:13px;color:var(--muted)}#qc .lc .qb{align-self:flex-start;margin-top:2px}" +
     "#qc .qb.sm{padding:10px 14px}#qc .mg{margin-top:18px}#qc .qfoot{position:fixed;left:0;right:0;bottom:0;padding:10px 14px;background:var(--bg);border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}#qc .qfoot .sm:first-child{margin-right:auto}" +
     "#qc .qs label{display:block;margin:12px 0 4px;color:var(--muted);font-size:14px}#qc .qch{display:flex;flex-wrap:wrap;gap:6px}#qc .qch button{padding:8px 12px;border-radius:99px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:14px;cursor:pointer}#qc .qch button.on{background:#d97757;border-color:#d97757;color:#fff}" +
     "#qc .av{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:var(--card);border:3px solid var(--line);font-size:20px;overflow:hidden;flex:none}#qc .av img{width:100%;height:100%;object-fit:cover}" +
@@ -91,15 +93,24 @@
     return '<div class="rcard"><div class="rtop"><div><div class="sub">Mã phòng</div><div class="rcode">' + esc(CTX.room || "") + '</div></div><div class="rbtn"><button class="qb soft sm" data-q="users">👥 Quản lý người chơi</button><button class="qb soft sm" data-q="copy">🔗 Copy link mời</button></div></div><div class="rps">' +
       (CTX.players || []).map(function (p) { return '<span class="rp" title="' + esc(p.name || "") + '"><span class="av lit">' + ava(p.avatar) + "</span><b>" + esc(p.name || "?") + "</b></span>"; }).join("") + "</div></div>";
   }
-  function showSetup() {
+  function showSetup() {   /* giống hub Từ vựng: thiết lập ván Ở TRÊN, các bài học (thẻ) Ở DƯỚI */
     if (!setup) setup = { mods: lessonsList().map(function (l) { return l.id; }), n: 10, sec: 20, secV: 10, hp: true, types: { quiz: true, en2m: true, m2en: true, listen: false } };
-    var nQ = DATA.questions.filter(function (q) { return setup.mods.indexOf(q.lesson) >= 0; }).length, nV = (DATA.vocab || []).filter(function (v) { return setup.mods.indexOf(v.lesson) >= 0; }).length, T = setup.types, cnt = (T.quiz ? nQ : 0) + (T.en2m || T.m2en || T.listen ? nV : 0), h = '<div class="qw"><div class="qtop"><button class="qx" data-q="setupx">✕</button><span class="qn">👥 Chơi cả phòng</span></div>' + roomCard() + '<div class="qs"><h2>Thiết lập ván</h2><label>Module / bài (chạm để bật/tắt) · ' + cnt + " câu có sẵn</label><div class=\"qch\">";
-    lessonsList().forEach(function (l) { h += '<button class="' + (setup.mods.indexOf(l.id) >= 0 ? "on" : "") + '" data-q="mod" data-id="' + esc(l.id) + '">' + esc(String(l.title || l.id).slice(0, 34)) + "</button>"; });
-    h += '</div><label>Kiểu câu hỏi (chọn nhiều = trộn)</label><div class="qch">' + [["quiz", "📝 Trắc nghiệm bài học (" + nQ + ")"], ["en2m", "🔤 Thuật ngữ → nghĩa (" + nV + ")"], ["m2en", "🈯 Nghĩa → thuật ngữ"], ["listen", "🎧 Nghe → chọn nghĩa"]].map(function (t) { return '<button class="' + (T[t[0]] ? "on" : "") + '" data-q="type" data-v="' + t[0] + '">' + t[1] + "</button>"; }).join("") + '</div><label>Số câu</label><div class="qch">' + [5, 10, 15, 20, 30].map(function (n) { return '<button class="' + (setup.n === n ? "on" : "") + '" data-q="n" data-v="' + n + '">' + n + "</button>"; }).join("") +
-      '</div><label>Giây mỗi câu trắc nghiệm (cần đọc đề)</label><div class="qch">' + [15, 20, 30, 45].map(function (n) { return '<button class="' + (setup.sec === n ? "on" : "") + '" data-q="sec" data-v="' + n + '">' + n + "s</button>"; }).join("") +
-      '</div><label>Giây mỗi câu từ vựng (nhanh hơn)</label><div class="qch">' + [6, 8, 10, 15].map(function (n) { return '<button class="' + (setup.secV === n ? "on" : "") + '" data-q="secv" data-v="' + n + '">' + n + "s</button>"; }).join("") +
-      '</div><label><input type="checkbox" id="qhp"' + (setup.hp ? " checked" : "") + '> Host cũng chơi (tính điểm)</label><p style="margin-top:16px"><button class="qb" data-q="go"' + (cnt ? "" : " disabled") + '>▶ Bắt đầu</button></p></div></div>';
-    ov.hidden = false; fab.hidden = true; ov.innerHTML = h;
+    var T = setup.types, V = DATA.vocab || [], Qs = DATA.questions || [], inSel = function (id) { return setup.mods.indexOf(id) >= 0; };
+    var nQ = Qs.filter(function (q) { return inSel(q.lesson); }).length, nV = V.filter(function (v) { return inSel(v.lesson); }).length, cnt = (T.quiz ? nQ : 0) + (T.en2m || T.m2en || T.listen ? nV : 0);
+    var chips = function (key, arr, cur, fmt) { return '<div class="qch">' + arr.map(function (n) { return '<button class="' + (cur === n ? "on" : "") + '" data-q="' + key + '" data-v="' + n + '">' + (fmt ? fmt(n) : n) + "</button>"; }).join("") + "</div>"; };
+    var h = '<div class="qw"><div class="qtop"><button class="qx" data-q="setupx">✕</button><span class="qn">👥 Chơi cả phòng</span></div>' + roomCard() +
+      '<div class="qs panel"><div class="grid"><div><label>Kiểu chơi</label><div class="fix">⚡ Kahoot · cả phòng cùng trả lời</div></div><div><label>Số câu</label>' + chips("n", [5, 10, 15, 20, 30], setup.n) + '</div>' +
+      '<div class="wide"><label>Dạng câu hỏi (chọn nhiều = trộn)</label><div class="qch">' + [["quiz", "📝 Trắc nghiệm bài học"], ["en2m", "🔤 Thuật ngữ → nghĩa"], ["m2en", "🈯 Nghĩa → thuật ngữ"], ["listen", "🎧 Nghe → chọn nghĩa"]].map(function (t) { return '<button class="' + (T[t[0]] ? "on" : "") + '" data-q="type" data-v="' + t[0] + '">' + t[1] + "</button>"; }).join("") + "</div></div>" +
+      '<div><label>Giây / câu trắc nghiệm</label>' + chips("sec", [15, 20, 30, 45], setup.sec, function (n) { return n + "s"; }) + '</div><div><label>Giây / câu từ vựng</label>' + chips("secv", [6, 8, 10, 15], setup.secV, function (n) { return n + "s"; }) + "</div></div>" +
+      '<label class="chk"><input type="checkbox" id="qhp"' + (setup.hp ? " checked" : "") + '> Host cũng chơi (tính điểm)</label>' +
+      '<p class="act"><button class="qb" data-q="go"' + (cnt ? "" : " disabled") + '>▶ Bắt đầu</button><span class="sub">' + setup.mods.length + " bài · " + (T.quiz ? nQ + " trắc nghiệm" : "") + (T.quiz && (T.en2m || T.m2en || T.listen) ? " · " : "") + (T.en2m || T.m2en || T.listen ? nV + " thuật ngữ" : "") + "</span></p></div>" +
+      '<div class="lhead"><h2>📚 Các bài học</h2><span><button class="qb soft sm" data-q="all">Chọn hết</button> <button class="qb soft sm" data-q="none">Bỏ hết</button></span></div><div class="lcards">';
+    lessonsList().forEach(function (l, k) {
+      var lv = V.filter(function (v) { return v.lesson === l.id; }).length, lq = Qs.filter(function (q) { return q.lesson === l.id; }).length;
+      h += '<div class="lc' + (inSel(l.id) ? " on" : "") + '" data-q="mod" data-id="' + esc(l.id) + '"><div class="lt">' + esc(String(l.title || l.id)) + '</div><div class="sub">' + lv + " thuật ngữ · " + lq + ' câu trắc nghiệm</div><button class="qb soft sm" data-q="one" data-id="' + esc(l.id) + '">▶ Chơi riêng bài này</button></div>';
+    });
+    h += "</div></div>";
+    ov.hidden = false; fab.hidden = true; var st = ov.scrollTop; ov.innerHTML = h; ov.scrollTop = st;
   }
   function expectIds() { return (CTX.players || []).filter(function (p) { return setup.hp !== false || !(CTX.me && p.id === CTX.me.id); }).map(function (p) { return p.id; }); }
   function startRun() {
@@ -161,6 +172,9 @@
     var b = e.target.closest("[data-q]"); if (!b || b.disabled) return; var a = b.dataset.q, me = CTX.me || {};
     if (a === "quit") { if (H) { if (confirm("Đóng lớp cho cả phòng?")) closeRun(); } else { ov.hidden = true; toParent({ type: "sw-leave" }); } }
     else if (a === "setupx") { ov.hidden = true; fab.hidden = false; }
+    else if (a === "all") { setup.mods = lessonsList().map(function (l) { return l.id; }); showSetup(); }
+    else if (a === "none") { setup.mods = []; showSetup(); }
+    else if (a === "one") { e.stopPropagation(); setup.mods = [b.dataset.id]; var hp0 = $("#qhp"); setup.hp = hp0 ? hp0.checked : setup.hp; startRun(); }
     else if (a === "mod") { var i = setup.mods.indexOf(b.dataset.id); if (i >= 0) setup.mods.splice(i, 1); else setup.mods.push(b.dataset.id); showSetup(); }
     else if (a === "n") { setup.n = +b.dataset.v; showSetup(); } else if (a === "sec") { setup.sec = +b.dataset.v; showSetup(); } else if (a === "secv") { setup.secV = +b.dataset.v; showSetup(); }
     else if (a === "type") { setup.types[b.dataset.v] = !setup.types[b.dataset.v]; showSetup(); }
@@ -190,5 +204,15 @@
       render();
     }
   });
+  /* màu sáng/tối theo TRANG GAME bên ngoài (không theo hệ điều hành) -> màn người chơi giống hệt màn host */
+  function syncTheme() {
+    try {
+      var bg = getComputedStyle(window.parent.document.body).backgroundColor, m = String(bg).match(/[\d.]+/g); if (!m || m.length < 3) return;
+      if (m.length > 3 && +m[3] === 0) return;
+      var lum = (0.2126 * m[0] + 0.7152 * m[1] + 0.0722 * m[2]) / 255;
+      document.documentElement.setAttribute("data-theme", lum < 0.5 ? "dark" : "light");
+    } catch (e) {}
+  }
+  syncTheme(); setInterval(syncTheme, 3000);
   setInterval(function () { toParent({ type: "sw-hello", kind: "dm" }); }, 2500); toParent({ type: "sw-hello", kind: "dm" });
 })();
