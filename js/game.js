@@ -272,6 +272,14 @@
     var box = $("#ga-swbox"), el = $("#ga-sw"), gm = $("#ga-game"); if (!box || !el) return;
     if (!SWA || !G.isHost) { box.hidden = true; el.innerHTML = ""; if (gm) gm.hidden = false; return; }
     if (gm) gm.hidden = true;   /* đang chạy lớp: thay phần Ván/Người chơi của game bằng của lớp (cùng kiểu) */
+    if (SWA.kind === "dm" || SWA.kind === "ea") {   /* lớp Kahoot Marketing / EA (learn/qclass.js) */
+      var d = SWA, phn = { q: "Đang trả lời", rev: "Xem đáp án", end: "Kết quả" }[d.phase] || d.phase;
+      el.innerHTML = '<h3>Ván · ' + (d.kind === "ea" ? "EA" : "Digital Marketing") + '</h3><div class="g-sub">Câu ' + (d.i + 1) + "/" + d.n + " · " + esc(phn) + "</div>" +
+        '<div class="ga-row"><button type="button" class="g-btn g-btn-sm" data-sw="end">■ Kết thúc</button><button type="button" class="g-btn g-btn-soft g-btn-sm" data-sw="next">' + (d.phase === "q" ? "👁 Chốt câu" : "⏭ Câu tiếp") + "</button></div>" +
+        '<label class="g-check"><input type="checkbox" data-sw="auto"' + (d.auto ? " checked" : "") + '> ⏭ Tự chuyển câu</label>' +
+        '<h3>Người chơi</h3><ol class="g-board ga-players">' + (d.players || []).map(function (p, k) { return '<li class="ga-swli"><span class="g-rank">' + (k + 1) + "</span>" + (p.avatar ? esc(p.avatar) + " " : "") + "<b>" + esc(p.name || "?") + '</b><span class="g-sub" style="margin-left:auto">✓' + (p.c || 0) + " ✗" + (p.w || 0) + " · " + (p.pts || 0) + "</span></li>"; }).join("") + "</ol>";
+      box.hidden = false; return;
+    }
     var a = SWA, ph = { ready: "3-2-1", prep: "Chuẩn bị chung", resp: a.kind === "writing" ? "Đang viết" : "Đang nói", idle: a.pd || a.kind === "writing" ? "Chờ chọn người" : "Chưa bắt đầu", show: "Chưa bắt đầu" }[a.phase] || a.phase, n = 0;
     el.innerHTML = '<h3>Ván · ' + (a.kind === "writing" ? "Writing" : "Speaking") + '</h3><div class="g-sub">Câu ' + (a.i + 1) + "/" + a.n + " · " + esc(ph) + "</div>" +
       '<div class="ga-row"><button type="button" class="g-btn g-btn-sm" data-sw="end">■ Kết thúc</button><button type="button" class="g-btn g-btn-soft g-btn-sm" data-sw="next">⏭ Sang câu kế</button><button type="button" class="g-btn g-btn-soft g-btn-sm" data-sw="stop">⏹ Dừng lượt</button></div>' +
@@ -287,7 +295,7 @@
     var b = e.target.closest && e.target.closest("#ga-sw [data-sw], #ga-sw [data-swp]"); if (!b || !SWA || !window.SWClass) return;
     if (b.dataset.swp) { SWClass.cmd(SWA.kind, "pick", b.dataset.swp); return; }
     var c = b.dataset.sw;
-    if (c === "ai" || c === "hp") SWClass.cmd(SWA.kind, c, !!b.checked); else SWClass.cmd(SWA.kind, c);
+    if (c === "ai" || c === "hp" || c === "auto") SWClass.cmd(SWA.kind, c, !!b.checked); else SWClass.cmd(SWA.kind, c);
   });
   function admAct(a) {
     if (a === "next") { var rv = $("#p-reveal"); if (rv && !rv.hidden) { rv.click(); admShow(false); } else if (G.isHost && G.st && G.st.phase === "play" && G.st.mode === "kahoot" && G.st.q) { if (!G.st.q.revealed) hostReveal(); else G.revealUntil = Date.now(); } }   /* Kahoot: host kiểm nhanh -> chốt câu rồi tự sang câu kế (~1s) */

@@ -107,7 +107,6 @@
       h += "</div>";
       if (rev) h += paintBoard(Z.board, me.id);
     }
-    if (host) h += '<div class="grow gm"><button class="qb soft sm" data-q="users">👥 Quản lý người chơi</button><button class="qb soft sm" data-q="copy">🔗 Copy link mời</button></div>';
     ov.innerHTML = h + "</div>"; autoSay();
   }
   function tick() {
@@ -207,7 +206,12 @@
       if (H.ph === "q") { if (Date.now() >= H.tEnd) { reveal(); } else { pushState(); clearInterval(hbT); hbT = setInterval(pushState, 2000); } } else if (H.ph === "rev" && H.auto && H.revEnd) { var left = H.revEnd - Date.now(); if (left <= 0) nextQ(); else { H.autoT = setTimeout(function () { if (H && H.ph === "rev") nextQ(); }, left); pushState(); } } else pushState();
     }
   }
-  function pushState() { if (!H) return; var s = snap(); send(s); Z = Object.assign({}, s, { tEnd: H.tEnd, nxEnd: H.revEnd || 0, my: H.my }); saveH(); render(); }
+  function adminSync() {
+    if (!CTX.isHost) return;
+    if (!H) { toParent({ type: "sw-admin", p: { on: false, kind: GID } }); return; }
+    toParent({ type: "sw-admin", p: { on: true, kind: GID, i: Math.max(0, H.i), n: H.qs.length, phase: H.ph, auto: !!H.auto, players: (H.ph === "rev" || H.ph === "end" ? H.board : board()) || [] } });
+  }
+  function pushState() { if (!H) return; var s = snap(); send(s); adminSync(); Z = Object.assign({}, s, { tEnd: H.tEnd, nxEnd: H.revEnd || 0, my: H.my }); saveH(); render(); }
   function nextQ() {
     if (H) { clearTimeout(H.autoT); H.revEnd = 0; }
     H.i++; if (H.i >= H.qs.length) return finish();
@@ -227,7 +231,7 @@
     pushState();
   }
   function finish() { H.ph = "end"; H.board = board(); H.last = {}; H.board.forEach(function (r) { r.last = 0; }); pushState(); }
-  function closeRun() { clearInterval(hbT); clearSaved(); if (H) clearTimeout(H.autoT); if (H) send({ run: H.run, ph: "close" }); H = null; Z = null; if (CTX.isHost && CTX.inRoom) { showSetup(); return; }   /* host tắt ván -> về màn thiết lập "Chơi cả phòng" (giữ cài đặt), không rơi ra trang chủ thẻ */
+  function closeRun() { clearInterval(hbT); clearSaved(); if (H) clearTimeout(H.autoT); if (H) send({ run: H.run, ph: "close" }); H = null; Z = null; adminSync(); if (CTX.isHost && CTX.inRoom) { showSetup(); return; }   /* host tắt ván -> về màn thiết lập "Chơi cả phòng" (giữ cài đặt), không rơi ra trang chủ thẻ */
     ov.hidden = true; fab.hidden = !(CTX.isHost && CTX.inRoom); }
   function hostGot(a) {   /* người chơi gửi đáp án */
     if (!H || H.ph !== "q" || a.run !== H.run || a.i !== H.i || H.ans[a.pid]) return;
@@ -273,6 +277,9 @@
   window.addEventListener("message", function (e) {
     var d = e.data; if (e.origin !== location.origin || !d || typeof d.type !== "string") return;
     if (d.type === "sw-ctx") { CTX = { inRoom: !!d.inRoom, isHost: !!d.isHost, me: d.me || null, players: d.players || [], room: d.room || "" }; if (!Z && !H) fab.hidden = !(CTX.isHost && CTX.inRoom) || !ov.hidden; tryRestore(); }
+    else if (d.type === "sw-cmd" && H) {   /* lệnh từ thẻ ⚙ Quản trị của game */
+      if (d.cmd === "end") closeRun(); else if (d.cmd === "next") { if (H.ph === "q") reveal(); else if (H.ph === "rev") nextQ(); } else if (d.cmd === "auto") { H.auto = !!d.v; if (!H.auto) { clearTimeout(H.autoT); H.revEnd = 0; } pushState(); }
+    }
     else if (d.type === "sw-qz" && d.p) {
       var p = d.p; if (p.game !== GID) return;
       if (p.t === "qa") { if (H) hostGot(p); return; }

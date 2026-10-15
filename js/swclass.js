@@ -55,6 +55,6 @@
     if (!openedRun || !ctx().isHost || k === "sp" || k === "wr" || k === "ielts" || k === "ielw") return;
     send({ t: "live", run: openedRun, phase: "close" }); openedRun = "";
   });
-  function cmd(kind, c, v) { frames().forEach(function (f) { if (kind && f.src.indexOf(kind === "writing" ? "kind=writing" : "kind=speaking") < 0) return; post(f.contentWindow, { type: "sw-cmd", cmd: c, v: v }); }); }
+  function cmd(kind, c, v) { frames().forEach(function (f) { if (kind && f.src.indexOf(kind === "writing" ? "kind=writing" : kind === "dm" || kind === "ea" ? "/learn/" + kind + "/" : "kind=speaking") < 0) return; post(f.contentWindow, { type: "sw-cmd", cmd: c, v: v }); }); }
   window.SWClass = { cmd: cmd, attach: function (a) { api = a; }, onMsg: onMsg };
 })();
