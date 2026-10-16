@@ -40,7 +40,9 @@ h1{font-size:22px;margin:8px 0 4px} h2{font-size:16px;margin:18px 0 8px}
 .g-chip{background:var(--raise);border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:13px}
 .g-settings{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:12px}
 .g-settings label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--text-2)}
-.g-settings select,.g-settings input{background:var(--deep);border:1px solid var(--line);border-radius:8px;padding:8px}
+.g-settings select,.g-settings input{background:var(--deep);border:1px solid var(--line);border-radius:8px;padding:8px;font-size:13px;min-width:0;text-overflow:ellipsis}
+/* TJ 2026-10-15: ô "Tiếng chung" nằm trong div (không phải label) nên từng to hơn các ô khác -> ép cùng cỡ chữ, cùng chiều cao, giãn hết hàng với ô tick */
+.g-settings .g-lang2 select{font-size:13px;height:100%;min-height:36px}
 /* phòng chờ */
 .g-lobby-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .g-bigcode{font-size:34px;font-weight:800;letter-spacing:6px;color:var(--amber)}
