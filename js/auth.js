@@ -59,8 +59,17 @@
   /* Toàn app PHẢI gọi 2 hàm này thay vì đọc thẳng Auth.user.admin/
      canEditPassage — để chỗ nào cũng tự động tôn trọng chế độ xem thử.
      Chỉ Admin THẬT mới bật/tắt được viewAsUserId (xem setViewAsUser). */
+  /* TJ 2026-10-16: chạy ở localhost/127.0.0.1 hoặc có cờ localStorage tj_admin='true'
+     -> tự cấp admin, không phụ thuộc hồ sơ/DB online. Vẫn tôn trọng "Xem như User". */
+  Auth.isLocalBypass = function () {
+    var isLocal = w.location.hostname === "localhost" || w.location.hostname === "127.0.0.1";
+    var flag = false;
+    try { flag = w.localStorage.getItem("tj_admin") === "true"; } catch (e) {}
+    return isLocal || flag;
+  };
   Auth.isAdmin = function () {
-    return !!(Auth.user && Auth.user.admin) && !Auth.viewAsUserId;
+    if (Auth.viewAsUserId) return false;
+    return Auth.isLocalBypass() || !!(Auth.user && Auth.user.admin);
   };
   Auth.hasPassageEdit = function () {
     return Auth.isAdmin() || (!!(Auth.user && Auth.user.canEditPassage) && !Auth.viewAsUserId);

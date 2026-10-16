@@ -53,6 +53,11 @@
   /* CHỈ hồ sơ TJ được làm host + ghi tiến trình học từ game (TJ chốt 2026-09-30). KHÔNG dùng is_admin:
      WordLoop có 2 admin (TJ + Anti_TJ) — Anti_TJ vào game chỉ là người chơi thường. */
   var HOST_PROFILE_ID = "f3fd95c9-06e8-4d39-b6f2-efc113d436cf";
+  function adminBypass() {
+    var h = location.hostname, f = false;
+    try { f = localStorage.getItem("tj_admin") === "true"; } catch (e) {}
+    return h === "localhost" || h === "127.0.0.1" || f;
+  }
   function isTJ() { return !!(G.profile && G.profile.id === HOST_PROFILE_ID); }
   function isTJPlayer() { return !!(G.me && String(G.me.name || "").trim().toLowerCase() === "tj"); }   /* người chơi của chính TJ (Thảo gắn hồ sơ TJ nhưng tên khác) */
   /* TIẾN TRÌNH HỌC ghi cho ai (TJ 2026-10-03: "các TK Thảo, TJ ... kết quả của Thảo ghi về cho TJ trong TJ WordLoop"):
@@ -1477,7 +1482,7 @@
     /* TJ 2026-10-04: "TJ là quyền cao nhất, Thảo chỉ gộp tiến trình" — máy của người khác (Thảo, Anti_TJ…) dù từng đăng nhập
        hồ sơ TJ cũng KHÔNG được làm host: chỉ người chơi tên "TJ" (trên máy hồ sơ TJ). Trước: 2 máy cùng hồ sơ TJ giành host
        -> màn hình cả phòng giật liên tục. */
-    G.cand = G.view !== "screen" && isTJ() && G.profile.id === G.room.host_id && isTJPlayer();
+    G.cand = G.view !== "screen" && (adminBypass() || (isTJ() && G.profile.id === G.room.host_id && isTJPlayer()));   /* TJ 2026-10-16: localhost / cờ tj_admin = admin tối cao, không cần hồ sơ online */
     G.since = Date.now();
     /* KHÔNG tự nhận host ngay: chờ presence xem có tab/máy TJ nào vào trước không (onPresence -> setHost).
        Trước đây tab TJ mới tự làm host rồi gửi "phòng chờ" ngay -> cả phòng đang chơi bị giật về phòng chờ. */
@@ -1585,7 +1590,7 @@
       bootBars();   /* TJ 2026-10-09: chat / mic / CC hiện NGAY ngoài phòng chờ, không đợi host (host chưa vào vẫn chat được) */
     });
   }
-  function track() { return G.ch.track({ ver: GAME_VER, ts: Date.now(), id: G.me.id, tab: G.tab, cand: !!G.cand, since: G.since, pf: G.profile ? G.profile.id : null, name: G.me.name, no: G.me.name_no, avatar: G.me.avatar, host: G.isHost, play: G.isHost ? hostPlays() : true, lang: G.myLang }); }
+  function track() { return G.ch.track({ ver: GAME_VER, ts: Date.now(), id: G.me.id, tab: G.tab, cand: !!G.cand, since: G.since, pf: G.cand && adminBypass() && G.room ? G.room.host_id : (G.profile ? G.profile.id : null), name: G.me.name, no: G.me.name_no, avatar: G.me.avatar, host: G.isHost, play: G.isHost ? hostPlays() : true, lang: G.myLang }); }
   /* "Host" do PHÒNG quyết định (hồ sơ = host_id của phòng), không tin máy tự nhận — bản cũ đang mở ở máy khác
      (vd Anti_TJ lúc còn admin) có thể vẫn gửi host:true */
   function isRoomHost(p) { return !!(p && p.pf && G.room && p.pf === G.room.host_id && p.host); }

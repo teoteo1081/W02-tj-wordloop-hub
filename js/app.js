@@ -2455,6 +2455,8 @@
     var pos = list.findIndex(function (r) { return r.id === id; });
 
     var items = [
+      { act: "newtab", icon: "↗", text: "Mở ở tab mới" },   /* TJ 2026-10-15: chuột phải từng mục -> xem ở tab trình duyệt khác */
+      { act: "sep" },
       { act: "rename", icon: "✏️", text: "Đổi tên" },
       { act: "up", icon: "⬆️", text: "Chuyển lên", off: pos <= 0 },
       { act: "down", icon: "⬇️", text: "Chuyển xuống", off: pos < 0 || pos >= list.length - 1 },
@@ -2586,10 +2588,33 @@
   }
   App.closeMenu = closeMenu;
 
+  /* ↗ Mở MỘT mục (Hub/Notebook/Section/Page/Batch/Block) ở tab trình duyệt mới: gom đường đi từ Hub xuống mục đó (đọc từ S, đang nạp sẵn
+     vì mục này đang hiện trên màn) rồi truyền qua ?go=… — tab mới tự nhảy tới đúng chỗ bằng App.jumpTo (xem boot). "noopener" = tab mới
+     KHÔNG kế thừa sessionStorage/window.name -> không tự mở lại Game (sẽ thành "người chơi ma"), cùng lý do với nút "↗ Tab mới" ở gamelayer.js. */
+  App.openInNewTab = function (table, id) {
+    var row = rowOf(table, id); if (!row) return;
+    var c = { hubId: S.hubId }, batch = null, page = null, sec = null;
+    if (table === "hubs") c = { hubId: id };
+    else if (table === "notebooks") c.notebookId = id;
+    else {
+      if (table === "blocks") { c.blockId = id; batch = rowOf("batches", row.batch_id); }
+      else if (table === "batches") batch = row;
+      if (batch) { c.batchId = batch.id; page = rowOf("pages", batch.page_id); }
+      else if (table === "pages") page = row;
+      if (page) { c.pageId = page.id; sec = rowOf("sections", page.section_id); }
+      else if (table === "sections") sec = row;
+      if (sec) { c.sectionId = sec.id; c.notebookId = sec.notebook_id; }
+      if (!c.notebookId) c.notebookId = S.notebookId;
+    }
+    var qs = Object.keys(c).filter(function (k) { return c[k]; }).map(function (k) { return k + "=" + encodeURIComponent(c[k]); }).join("&");
+    w.open(location.href.split("#")[0].split("?")[0] + "?go=" + encodeURIComponent(qs), "_blank", "noopener");
+  };
+
   App.doAction = async function (table, id, act) {
     var meta = MENU[table];
     var row = rowOf(table, id);
     if (!row) return;
+    if (act === "newtab") { App.openInNewTab(table, id); return; }
 
     /* Chặn kép — menu vốn đã lọc bỏ các nút này với role "Chỉ xem" (xem
        App.openMenu), kiểm tra lại đây phòng ai đó tự gọi act qua DevTools.
@@ -5208,7 +5233,14 @@
     /* Mở lại đúng Block + đúng tab đang xem dở trước khi refresh (dựa
        vào Notebook/Section/Page/Batch vừa được readSel() ở trên khôi
        phục lại rồi) — khỏi phải bấm lại từ đầu mỗi lần F5. */
-    if (w.Detail && w.Detail.restoreLast) w.Detail.restoreLast();
+    /* ?go=hubId=…&notebookId=…&…: tab mở từ "↗ Mở ở tab mới" (menu chuột phải) -> nhảy thẳng tới mục đó, KHÔNG mở lại Block dở của tab khác */
+    var goOpts = null;
+    try {
+      var goQ = new URLSearchParams(location.search).get("go");
+      if (goQ) { goOpts = {}; new URLSearchParams(goQ).forEach(function (v, k) { goOpts[k] = v; }); history.replaceState(null, "", location.pathname); }
+    } catch (e) { goOpts = null; }
+    if (goOpts) App.jumpTo(goOpts);
+    else if (w.Detail && w.Detail.restoreLast) w.Detail.restoreLast();
 
     if (mode === "local") {
       console.info("[TJ WordLoop] Đang chạy CHẾ ĐỘ LOCAL. Muốn dùng chung: điền js/config.js.");

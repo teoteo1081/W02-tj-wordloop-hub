@@ -1,0 +1,11 @@
+# Các file/thư mục không cần đưa vào ngữ cảnh của AI để tiết kiệm token
+.venv/
+__pycache__/
+node_modules/
+*.log
+*.sqlite3
+data/
+credentials/
+*.pdf
+*.docx
+*.xlsx
