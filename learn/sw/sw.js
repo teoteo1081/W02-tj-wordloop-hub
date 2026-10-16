@@ -564,7 +564,7 @@
     else if (a === "lend") liveSend({ i: S.i, phase: "end", done: {} });
     else if (a === "hdo") { toParent({ type: "sw-do", a: v }); }
     else if (a === "hclose") { var hm0 = $(".hmore"); if (hm0) { hm0.classList.remove("open"); hm0.classList.add("shut"); setTimeout(function () { hm0.classList.remove("shut"); }, 600); var ae = document.activeElement; if (ae && ae.blur) ae.blur(); } }
-    else if (a === "hmore") { var hm = $(".hmore"); if (hm) hm.classList.toggle("open"); }
+    else if (a === "hmore") { var hm = $(".hmore"); if (hm) { hm.classList.remove("shut"); hm.classList.toggle("open"); }; }
     else if (a === "lprev") { if (S.i > 0) { liveSend({ i: S.i - 1, phase: "show", sp: null, done: {}, sec: 0, pd: 0 }); toParent({ type: "sw-hello", kind: S.kind }); } }
     else if (a === "lnext") {
       if (S.i >= S.tasks.length - 1) liveSend({ i: S.i, phase: "end", done: {} });
@@ -1099,3 +1099,6 @@
   }, 300);
   loadSets().then(function () { render(); maybeRestore(); toParent({ type: "sw-hello", kind: S.kind }); if (PENDING) { var d = PENDING; PENDING = null; applyStart(d); } });
 })();
+
+/* chạm ra ngoài menu ⋯ -> đóng (iPhone: không có cách nào khác ngoài ✕) */
+document.addEventListener("click", function (e) { var hm = document.querySelector(".hmore.open"); if (hm && !e.target.closest(".hmore")) { hm.classList.remove("open"); var ae = document.activeElement; if (ae && ae.blur) ae.blur(); } });
