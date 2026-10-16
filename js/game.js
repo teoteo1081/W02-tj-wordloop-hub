@@ -3386,7 +3386,7 @@
       var zh = tgt() === "zh";
       $(optsEl).innerHTML = q.opts.map(function (o) { return '<button class="g-opt" data-opt="' + esc(o) + '"' + (zh ? ' data-zh="' + esc(o) + '"' : "") + '><span class="g-otext">' + esc(o) + '</span><span class="g-pickers"></span></button>'; }).join("");
     }
-    decoratePy($(textEl).parentNode); markLongOpts(optsEl);
+    decoratePy($(textEl).parentNode); $(optsEl).classList.remove("g-opts-1", "g-tabcd");   /* từ vựng: luôn 2×2 (TJ 2026-10-16) — markLongOpts chỉ cho đề TOEIC */
   }
   /* ---------- 📖 XEM LẠI ĐÁP ÁN (TJ 2026-10-01: "chơi xong phải để người chơi xem lại tất cả đáp án") ----------
      Mỗi máy tự ghi lại câu hỏi NGAY LÚC LỘ ĐÁP ÁN (chụp khung câu hỏi đang hiện: đúng/sai đã tô màu, ai chọn gì),
