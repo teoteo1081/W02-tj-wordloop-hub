@@ -98,7 +98,33 @@
     var b = document.createElement("button"); b.type = "button"; b.setAttribute("data-act", "hl"); b.title = "Tô màu đề trực tiếp lúc đọc (mặc định TẮT — thi thật không có phản hồi giữa chừng)"; hlPaint(b); card.appendChild(b);
   }
   function hlClear() { document.querySelectorAll("#app .prompt .lw").forEach(function (s) { if (s.className !== "lw") s.className = "lw"; }); }
+  /* ===== 🗜 GỌN MÀN LÀM BÀI (TJ 2026-10-15: "không thấy hình full; Câu tiếp lên trên; từ đề xuất nhỏ góc trái; nguồn không chiếm chỗ; thời gian thành thanh") =====
+     xử lý DOM sau mỗi lần vẽ (dựng bằng chuỗi nên không sửa từng nơi): ảnh đề + chip từ (góc trên trái) + nguồn (góc dưới phải) gom vào .imgwrap; nút Câu trước/Câu tiếp/⋯ của host lên hàng tiêu đề;
+     thẻ "Thời gian …" ở màn chờ thành chip ⏱ cạnh tiêu đề. */
+  function tidyPrompt() {
+    var img = document.querySelector("#app > .card > img"); if (!img) return; var card = img.parentNode; if (card.querySelector(":scope > .imgwrap")) return;
+    var wrap = document.createElement("div"); wrap.className = "imgwrap"; card.insertBefore(wrap, img); wrap.appendChild(img);
+    var wr = card.querySelector(":scope > .wordrow"); if (wr) { wr.classList.add("wrow"); wrap.appendChild(wr); }
+    var cr = img.nextElementSibling; if (!cr || !cr.parentNode) cr = null;
+    [].slice.call(card.children).forEach(function (c) { if (c !== wrap && c.classList.contains("sub") && /(CC|Wikimedia|prepedu|©|AI|Taken|\.com)/i.test(c.textContent) && c.textContent.length < 160) { c.className = "cred"; c.removeAttribute("style"); wrap.appendChild(c); } });
+  }
+  function tidyHost() {
+    var hb = document.querySelector("#app > .hostbar:not(.below)"), top = document.querySelector("#app > .top"); if (!hb || !top || top.querySelector(".hbtop")) return;
+    var box = document.createElement("div"); box.className = "hostbar hbtop";
+    var nx = hb.querySelector('[data-act="lnext"]'), pv = hb.querySelector('[data-act="lprev"]'), hm = hb.querySelector(".hmore");
+    if (nx) box.appendChild(nx);
+    if (hm) { box.appendChild(hm); var pp = hm.querySelector(".hmore-p"); if (pv && pp) { pp.insertBefore(pv, pp.firstChild); } else if (pv) box.insertBefore(pv, box.firstChild); }   /* Câu trước nằm trong menu ⋯ cho hàng tiêu đề đỡ chật */
+    else if (pv) box.insertBefore(pv, box.firstChild);
+    top.appendChild(box);
+    var left = hb.querySelectorAll(".hb-main button, .hb-main label"); if (!left.length) hb.parentNode.removeChild(hb); else hb.classList.add("hbbar");   /* còn nút chính (Bắt đầu viết…) -> thanh cố định ở đáy */
+  }
+  function tidyTime() {
+    var top = document.querySelector("#app > .top .t"); if (!top || top.querySelector(".tmchip")) return;
+    var cards = document.querySelectorAll("#app > .card:not(.hostbar)");
+    for (var i = 0; i < cards.length; i++) { var c = cards[i]; if (c.querySelector(".timer, .rd, .roster, textarea")) continue; var m = /^\s*Thời gian (viết|nói)\s*:\s*([0-9:]+)\s*$/.exec(c.textContent || ""); if (m) { var sp = document.createElement("span"); sp.className = "sub tmchip"; sp.textContent = " · ⏱ " + m[2]; top.appendChild(sp); c.parentNode.removeChild(c); break; } }
+  }
   function dockLive() {
+    tidyPrompt(); tidyHost(); tidyTime();
     addHlToggle();   /* TJ 2026-10-15: phụ đề chạy nằm NGAY DƯỚI ĐỀ (chiếm chỗ trống), đồng hồ + nút Xong gọn ở đáy */
     var l = document.getElementById("live"), docked = false;
     if (l && document.body.classList.contains("one")) { var card = l.closest(".card"); if (card && l.parentNode === card) card.parentNode.insertBefore(l, card); docked = l.parentNode === app; }
