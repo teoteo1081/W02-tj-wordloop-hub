@@ -1949,6 +1949,13 @@
     if (!G.isHost || !G.st) { G.pendingIdle = on; return; }
     setBoardMeta(on && window.Board && G.st.bdoc ? { bdoc: null, board: on } : { board: on });
   });
+  /* 📁 "Mở file" ở màn danh sách Block (chế độ Bảng, chưa chọn Block): host mở thư viện file trên bảng ngay */
+  window.addEventListener("message", function (e) {
+    if (e.origin !== location.origin || !e.data || e.data.type !== "tjwl-game-lib") return;
+    if (!G.isHost || !G.st) return;
+    if (!G.st.board) setBoardMeta({ board: true });
+    setTimeout(function () { if (window.Board) Board.openLib(); }, G.st.board ? 0 : 350);
+  });
   async function initHostLobby() {
     var wantIdle = param("boardidle") === "1" || !!G.pendingIdle; G.pendingIdle = false;
     var wantBoard = param("board") === "1" || !!G.pendingBoard; G.pendingBoard = false;

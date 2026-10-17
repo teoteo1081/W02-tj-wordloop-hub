@@ -349,7 +349,7 @@
   }
   function placeTools() {
     var dn = $("#bd-docnav"), sfx = $("#bd-sfx"), ib = $("#bd-iconbar"); if (!dn || !sfx || !ib) return;
-    var rail = !!big && window.matchMedia("(hover:hover) and (pointer:fine) and (min-width:420px)").matches;
+    var rail = !!big && (phoneScreen() || window.matchMedia("(hover:hover) and (pointer:fine) and (min-width:420px)").matches);   /* TJ 2026-10-17: điện thoại cũng để công cụ thành cột dọc bên phải bảng (hàng ngang vuốt ngang khó nhìn); hàng dưới chỉ còn avatar + Game → */
     if (placeTools._r === rail) return; placeTools._r = rail;
     if (rail) { sfx.appendChild(dn); sfx.classList.add("bd-hasrail"); dn.classList.add("bd-railtools"); }
     else { var cp = $("#bd-cplay"); ib.insertBefore(dn, cp && cp.parentNode === ib ? cp : null); sfx.classList.remove("bd-hasrail"); dn.classList.remove("bd-railtools"); }
@@ -1654,7 +1654,7 @@
         '<div class="bd-libmsg">Chọn file từ máy bạn (PDF, ảnh, Word / Excel / PowerPoint, tối đa 50 MB). File hiện lên bảng cho cả phòng; khi có người chia sẻ cái khác hoặc bảng đóng, file bị xoá khỏi kho tạm.</div>' +
         '<div class="bd-libbar"><label class="bd-libup">⬆️ Chọn file từ máy<input type="file" id="bd-pfile" accept="application/pdf,image/*,.docx,.xlsx,.pptx,.doc,.xls,.ppt" hidden></label></div><div class="bd-libmsg" id="bd-libmsg"></div></div>';
     },
-    close: function () { var m = $("#bd-libm"); if (m) m.hidden = true; },
+    close: function () { var m = $("#bd-libm"); if (m) m.hidden = true; try { if (window.parent && window.parent !== window) window.parent.postMessage({ type: "tjwl-lib-closed" }, location.origin); } catch (e) {} },   /* báo trang cha: đang ở màn danh sách Block (chưa có file) thì ẩn lớp bảng lại */
     path: function (n) { return (Lib.folder ? Lib.folder + "/" : "") + n; },
     msg: function (x) { var e = $("#bd-libmsg"); if (e) e.textContent = x; },
     head: function () {
@@ -2137,6 +2137,7 @@
     broadcast: function (m) { send(m); }, myName: function () { var x = me(); return x && x.name ? x.name : ""; }, onMsg: onMsg, onState: onState, onRtc: onRtc, _showVideo: showVideo,   /* _showVideo: chỉ để kiểm thử giao diện chia sẻ bằng hình giả */
     resync: function () { if (open) setTimeout(function () { send({ t: "hello" }); }, 400); },
     isOpen: function () { return open; },
+    openLib: function () { if (api && api.isHost && api.isHost()) Lib.open(); },   /* TJ 2026-10-17: mở thư viện file ngay từ màn danh sách Block của chế độ Bảng (chưa chọn Block) */
     noSound: function () { if (!noSoundAt || Date.now() - noSoundAt > 20000) { noSoundAt = Date.now(); feedNote("🔇 Máy này chưa phát được tiếng đọc — kiểm tra loa / âm lượng máy và quyền âm thanh của trình duyệt, rồi bấm đọc lại."); } },
     /* 🖤 từ cây chủ đề của game (⋯ › Mở lên bảng): list = [[blockId, tên], …], parts = "vw" | "w" | "v" */
     /* TJ 2026-10-05: bảng là TỪNG BLOCK — 1 Block thì mở thẳng (bài đọc trước); nhiều Block (Batch/Page/…) thì mở bảng ở màn DANH SÁCH để TJ chọn */
