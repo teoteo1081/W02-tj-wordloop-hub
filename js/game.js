@@ -5493,6 +5493,8 @@
     /* TJ 2026-10-06: "đang tài khoản Admin mà host gì nữa" — thẻ Game/Bảng chạy TRONG WordLoop (embed, cùng trang) thì lấy luôn hồ sơ WordLoop đang đăng nhập,
        khỏi bắt mở lại link ?u= trên máy/địa chỉ mới (vd localhost) rồi mới được làm host. Không ghi LS_LINK (chỉ dùng cho phiên này). */
     if (!id && G.embed) { try { var pu = window.parent && window.parent !== window && window.parent.Auth && window.parent.Auth.user; if (pu && pu.id && String(pu.id).length === 36) id = pu.id; } catch (e) {} }
+    /* chạy ở localhost/127.0.0.1 (mọi cổng): chưa có hồ sơ nào thì mặc định là TJ, khỏi dán ?u= ở từng cổng. Web thật không dính. */
+    if (!id && (location.hostname === "localhost" || location.hostname === "127.0.0.1")) id = HOST_PROFILE_ID;
     if (!id) return;
     var r = await sb.from("profiles").select("id,display_name,is_admin").eq("id", id).maybeSingle();
     if (!r.data) return;
