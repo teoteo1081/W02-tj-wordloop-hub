@@ -5489,18 +5489,19 @@
     /* link riêng "game.html?u=<mã hồ sơ>" (giống ?u= của web chính, auth.js): mở 1 lần trên máy mới -> máy đó nhớ hồ sơ
        (kể cả TJ = host), không phải tạo tài khoản mới. Người chơi dùng link trần, không cần ?u= */
     var qid = param("u"), id = qid;
-    if (!id) { try { id = localStorage.getItem(LS_LINK); } catch (e) {} }
+    /* localhost/127.0.0.1: mỗi lần mở luôn là TJ; "?u=<mã khác>" chỉ nhớ trong TAB này (sessionStorage, dùng chung khoá với auth.js). Web thật: nhớ lâu dài như cũ. */
+    var isLocalHost = location.hostname === "localhost" || location.hostname === "127.0.0.1", SS_LOCAL = "tjwl_local_view_id_v1";
+    if (!id) { try { id = isLocalHost ? sessionStorage.getItem(SS_LOCAL) : localStorage.getItem(LS_LINK); } catch (e) {} }
     /* TJ 2026-10-06: "đang tài khoản Admin mà host gì nữa" — thẻ Game/Bảng chạy TRONG WordLoop (embed, cùng trang) thì lấy luôn hồ sơ WordLoop đang đăng nhập,
        khỏi bắt mở lại link ?u= trên máy/địa chỉ mới (vd localhost) rồi mới được làm host. Không ghi LS_LINK (chỉ dùng cho phiên này). */
     if (!id && G.embed) { try { var pu = window.parent && window.parent !== window && window.parent.Auth && window.parent.Auth.user; if (pu && pu.id && String(pu.id).length === 36) id = pu.id; } catch (e) {} }
-    /* chạy ở localhost/127.0.0.1 (mọi cổng): chưa có hồ sơ nào thì mặc định là TJ, khỏi dán ?u= ở từng cổng. Web thật không dính. */
-    if (!id && (location.hostname === "localhost" || location.hostname === "127.0.0.1")) id = HOST_PROFILE_ID;
+    if (!id && isLocalHost) id = HOST_PROFILE_ID;   /* localhost (mọi cổng): chưa chỉ định ai thì là TJ */
     if (!id) return;
     var r = await sb.from("profiles").select("id,display_name,is_admin").eq("id", id).maybeSingle();
     if (!r.data) return;
     G.profile = r.data;
     if (qid) {
-      try { localStorage.setItem(LS_LINK, id); } catch (e) {}
+      try { if (isLocalHost) sessionStorage.setItem(SS_LOCAL, id); else localStorage.setItem(LS_LINK, id); } catch (e) {}
       var u = new URLSearchParams(location.search); u.delete("u");
       history.replaceState(null, "", location.pathname + (u.toString() ? "?" + u : "") + location.hash);   /* gỡ mã khỏi thanh địa chỉ */
     }

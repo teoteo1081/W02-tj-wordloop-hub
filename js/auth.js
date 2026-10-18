@@ -34,6 +34,7 @@
   var LS_CUR = "tjwl_current_user_v1";
   var LS_LINK_ID = "tjwl_link_user_id_v1";
   var LOCAL_DEFAULT_ID = "f3fd95c9-06e8-4d39-b6f2-efc113d436cf";   /* hồ sơ TJ — mặc định khi chạy ở localhost (xem tryLinkLogin) */
+  var SS_LOCAL_ID = "tjwl_local_view_id_v1";                         /* localhost: người đang xem trong TAB này (sessionStorage) */
 
   var EMOJIS = ["🐣","🦊","🐼","🐨","🦁","🐯","🐸","🐙","🦉","🐝","🌟","🚀","📚","🎯","🔥","💎","🍀","⚡"];
 
@@ -250,13 +251,16 @@
     var qid = null;
     try { qid = new URLSearchParams(location.search).get("u"); } catch (e) {}
     var id = qid;
-    if (!id) {
+    /* localhost/127.0.0.1 (mọi cổng, kể cả cổng sinh sau): MỖI LẦN MỞ trang luôn là hồ sơ TJ (admin), KHÔNG đọc mã đã lưu lâu dài.
+       Muốn xem như người khác: mở "?u=<mã>" -> chỉ nhớ trong TAB đó (sessionStorage: tải lại tab vẫn giữ, mở tab/cửa sổ mới lại là TJ).
+       Web thật (github.io) KHÔNG chạy nhánh này, vẫn nhớ lâu dài như cũ. */
+    var isLocalHost = w.location.hostname === "localhost" || w.location.hostname === "127.0.0.1";
+    if (!id && isLocalHost) {
+      try { id = sessionStorage.getItem(SS_LOCAL_ID); } catch (e) { id = null; }
+      if (!id) id = LOCAL_DEFAULT_ID;
+    } else if (!id) {
       try { id = localStorage.getItem(LS_LINK_ID); } catch (e) { id = null; }
     }
-    /* Chỉ khi chạy ở localhost/127.0.0.1 (mọi cổng, kể cả cổng sinh sau): chưa có "?u=" hay mã đã lưu thì mặc định
-       vào hồ sơ TJ — khỏi dán link ?u= ở từng cổng. Web thật (github.io) KHÔNG bao giờ chạy nhánh này. Mở "?u=<mã khác>"
-       vẫn ghi đè (và được nhớ) như bình thường, nên vẫn xem như người khác được. */
-    if (!id && (w.location.hostname === "localhost" || w.location.hostname === "127.0.0.1")) id = LOCAL_DEFAULT_ID;
     if (!id) return false;
 
     try {
@@ -266,7 +270,8 @@
         // rơi về hồ sơ trên máy như bình thường, không chặn oan.
         return false;
       }
-      try { localStorage.setItem(LS_LINK_ID, id); } catch (e) {}
+      if (isLocalHost) { try { sessionStorage.setItem(SS_LOCAL_ID, id); } catch (e) {} }
+      else { try { localStorage.setItem(LS_LINK_ID, id); } catch (e) {} }
       Auth.user = {
         id: id,
         name: r.data.display_name || "Học viên",
