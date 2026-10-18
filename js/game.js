@@ -1949,6 +1949,13 @@
     if (!G.isHost || !G.st) { G.pendingIdle = on; return; }
     setBoardMeta(on && window.Board && G.st.bdoc ? { bdoc: null, board: on } : { board: on });
   });
+  /* 📁 "Mở file" ở màn danh sách Block (chế độ Bảng, chưa chọn Block): host mở thư viện file trên bảng ngay */
+  window.addEventListener("message", function (e) {
+    if (e.origin !== location.origin || !e.data || e.data.type !== "tjwl-game-lib") return;
+    if (!G.isHost || !G.st) return;
+    if (!G.st.board) setBoardMeta({ board: true });
+    setTimeout(function () { if (window.Board) Board.openLib(); }, G.st.board ? 0 : 350);
+  });
   async function initHostLobby() {
     var wantIdle = param("boardidle") === "1" || !!G.pendingIdle; G.pendingIdle = false;
     var wantBoard = param("board") === "1" || !!G.pendingBoard; G.pendingBoard = false;
@@ -5482,16 +5489,20 @@
     /* link riêng "game.html?u=<mã hồ sơ>" (giống ?u= của web chính, auth.js): mở 1 lần trên máy mới -> máy đó nhớ hồ sơ
        (kể cả TJ = host), không phải tạo tài khoản mới. Người chơi dùng link trần, không cần ?u= */
     var qid = param("u"), id = qid;
-    if (!id) { try { id = localStorage.getItem(LS_LINK); } catch (e) {} }
+    /* localhost/127.0.0.1: mỗi lần mở luôn là TJ; "?u=<mã khác>" chỉ nhớ trong TAB này (sessionStorage, dùng chung khoá với auth.js). Web thật: nhớ lâu dài như cũ. */
+    var isLocalHost = location.hostname === "localhost" || location.hostname === "127.0.0.1", SS_LOCAL = "tjwl_local_view_id_v1";
+    if (!id) { try { id = isLocalHost ? sessionStorage.getItem(SS_LOCAL) : localStorage.getItem(LS_LINK); } catch (e) {} }
     /* TJ 2026-10-06: "đang tài khoản Admin mà host gì nữa" — thẻ Game/Bảng chạy TRONG WordLoop (embed, cùng trang) thì lấy luôn hồ sơ WordLoop đang đăng nhập,
        khỏi bắt mở lại link ?u= trên máy/địa chỉ mới (vd localhost) rồi mới được làm host. Không ghi LS_LINK (chỉ dùng cho phiên này). */
     if (!id && G.embed) { try { var pu = window.parent && window.parent !== window && window.parent.Auth && window.parent.Auth.user; if (pu && pu.id && String(pu.id).length === 36) id = pu.id; } catch (e) {} }
+    /* game.html ĐỨNG RIÊNG ở localhost KHÔNG tự thành TJ: tab ẩn danh/người chơi (Thảo, Anti_TJ…) phải giữ đúng người chơi của họ
+       (nếu ép TJ thì khối "đổi về người chơi gắn hồ sơ" bên dưới sẽ đổi họ thành TJ). Cần TJ: mở "game.html?u=<mã TJ>" hoặc mở thẻ Game TRONG WordLoop (lấy hồ sơ cha ở trên). */
     if (!id) return;
     var r = await sb.from("profiles").select("id,display_name,is_admin").eq("id", id).maybeSingle();
     if (!r.data) return;
     G.profile = r.data;
     if (qid) {
-      try { localStorage.setItem(LS_LINK, id); } catch (e) {}
+      try { if (isLocalHost) sessionStorage.setItem(SS_LOCAL, id); else localStorage.setItem(LS_LINK, id); } catch (e) {}
       var u = new URLSearchParams(location.search); u.delete("u");
       history.replaceState(null, "", location.pathname + (u.toString() ? "?" + u : "") + location.hash);   /* gỡ mã khỏi thanh địa chỉ */
     }

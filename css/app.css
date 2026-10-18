@@ -2484,7 +2484,11 @@ body.board-skin .lbd-people::-webkit-scrollbar{display:none}
 body.board-skin .lbd-me{position:sticky;top:0;z-index:6;margin:0 -1.2rem;padding:8px 1.2rem 10px;background:linear-gradient(#1d2a24 78%,rgba(29,42,36,0))}
 body.board-skin #workspace{padding-bottom:0}
 body.board-skin .lbd-people{margin-top:1rem}
+/* TJ 2026-10-17: điện thoại — thanh điều hướng dưới (56px, position:fixed) đè lên đáy #workspace; chế độ Bảng bỏ padding-bottom nên phần dưới của Block cuối (hàng nút Mở bảng / Chơi game) bị che, kéo lên không tới. Chừa đúng chiều cao thanh dưới + dải người dính phía trên nó. */
+@media (max-width:860px){body.board-skin #workspace{padding-bottom:calc(56px + env(safe-area-inset-bottom))}body.board-skin .lbd-people{bottom:calc(56px + env(safe-area-inset-bottom))}}
 @media (max-width:700px){body.board-skin .lbd-me{margin:0 -.8rem;padding:8px .8rem 10px}}
+/* TJ 2026-10-17: thêm nút "📁 Mở file" -> điện thoại hết chỗ cho nút ✕ ở mép phải; "Quản lý người chơi" chỉ còn icon 👥 (vẫn có tooltip), tên rút gọn */
+@media (max-width:700px){body.board-skin #lbd-users{font-size:0;padding:5px 10px}body.board-skin #lbd-users::before{content:"👥";font-size:14px}body.board-skin .lbd-me b{max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}body.board-skin .lbd-close{margin-left:auto;padding:.35rem .6rem;white-space:nowrap}}
 
 /* TJ 2026-10-06: thẻ Game — mục vừa chọn làm chủ đề ván ở cột Notebooks / Pages */
 #sidebar-left .game-pick,#sidebar-right .game-pick{outline:2px solid #7c4dff;outline-offset:-2px;border-radius:8px}
