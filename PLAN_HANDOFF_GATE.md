@@ -1,6 +1,6 @@
 # PLAN_HANDOFF_GATE.md — kế hoạch: handoff máy đọc được + cổng kiểm tra xác định
 
-> **Trạng thái: CHỈ LÀ KẾ HOẠCH, đã chỉnh sau audit `6aa52be`.** Chưa có code, chưa sửa `CLAUDE.md`, chưa có hook. Lần post-audit này chỉ sửa kế hoạch.
+> **Trạng thái: đã triển khai trên nhánh theo yêu cầu TJ sau post-audit.** Thiết kế được chỉnh sau audit `6aa52be`, chốt tài liệu tại `43a2ee2`; code, hook và bằng chứng triển khai nằm trong `tools/handoff/`. Xem `tools/handoff/IMPLEMENTATION_REPORT.md` để phân biệt khả năng đã thử thật và giới hạn.
 > Nhánh `handoff/gate`, tách từ `origin/main` `2e4e5d5`; lần fetch khi audit vẫn xác nhận mốc này. Commit trên nhánh theo yêu cầu TJ; không push, không merge.
 
 ## 1. Mục tiêu
@@ -80,13 +80,13 @@ Hook chỉ có tác dụng với Claude Code; AI khác chỉ có phần chữ tr
 - Verifier dùng loại kiểm tra khai báo và tham số có lược đồ (ví dụ `head_equals`, `versions_equal`), ánh xạ tới hàm đọc trong code. Không lưu chuỗi shell rồi chạy lại; không cho đối số git gọi external diff/textconv, alias hay chương trình ngoài. Lưu kết quả mong đợi, kết quả thực và snapshot áp dụng.
 - Nguồn kiểm chứng lifecycle/decision của hook: [Claude Code hooks reference](https://code.claude.com/docs/en/hooks#stop). Đây là căn cứ thiết kế; vẫn phải kiểm phiên bản thực cài khi triển khai.
 
-## 4. Các bước thực hiện (sau khi TJ duyệt kế hoạch)
+## 4. Các bước thực hiện
 0. (Xong) Worktree tạm `_work/wt-handoff-gate`, nhánh `handoff/gate`, từ `origin/main`.
 1. Viết `schema.json`, `handoff.py`, `gate.py` và adapter điều khiển (stdlib); tách gate chỉ đọc khỏi helper ghi checkpoint/ack.
 2. Test trong repo thử ở thư mục tạm.
 3. Thêm khối CLAUDE.md + hook.
 4. Kiểm chứng (mục 5), phiên độc lập chấm.
-5. Commit trên nhánh; **không push, không merge** theo chỉ dẫn TJ. Giữ worktree/nhánh để review; không tự xoá worktree đang dùng. Lần post-audit này chỉ cập nhật plan, không thực hiện các bước triển khai 1–4.
+5. Commit trên nhánh; **không push, không merge** theo chỉ dẫn TJ. Giữ worktree/nhánh để review; không tự xoá worktree đang dùng. Post-audit trước chỉ sửa plan; yêu cầu tiếp theo của TJ đã cho phép triển khai code và kiểm chứng các bước 1–4.
 
 ## 5. Tiêu chí đạt / không đạt
 Các tiêu chí dưới đây dành cho **triển khai sau này**, chưa đạt chỉ nhờ sửa tài liệu:
@@ -102,11 +102,11 @@ Các tiêu chí dưới đây dành cho **triển khai sau này**, chưa đạt 
 - Thử adapter thật trên Claude Code/Windows: CLI 20, CLI 2, exception/timeout/thiếu Python đều chặn tool ghi; CLI 10 không cấp ack trước khi ghi nhận cảnh báo. Ghi phiên bản runtime và bằng chứng tool thực sự không chạy.
 - Phiên QA độc lập (không phải người viết triển khai) chấm từng tiêu chí và đính kèm lệnh, fixture, kết quả thực, giới hạn chưa chứng minh. Chưa có bằng chứng runtime thì chưa công bố gate hoạt động.
 
-## 6. Việc cần TJ chốt
-1. Trước triển khai, kiểm lại remote bằng fetch như bước riêng có ghi rõ tác dụng; gate tự nó không fetch. Audit đã fetch và vẫn thấy `origin/main = 2e4e5d5`.
-2. Lưu bản ghi trong `<git-common-dir>/handoff/` (chung worktree, không đi theo git) hay trong repo? Không dùng `.git/handoff/` theo thư mục hiện tại vì `.git` của linked worktree là file.
-3. Làm cả hook cứng lẫn CLAUDE.md, hay chỉ CLAUDE.md? (Khuyến nghị cả hai.)
-4. Làm song song với merge-review (chỉ thêm file mới, rủi ro thấp) hay đợi merge đó xong?
+## 6. Lựa chọn áp dụng khi TJ yêu cầu triển khai
+1. Fetch được chạy ở bước phục hồi trạng thái riêng; `origin/main` vẫn là `2e4e5d5`. Gate không fetch.
+2. Dùng mặc định thiết kế: bản ghi trong `<git-common-dir>/handoff/`, điều khiển trong `<git-common-dir>/handoff-control/`, chung worktree và không đi theo git. Không dùng `.git/handoff/` theo thư mục hiện tại vì `.git` của linked worktree là file.
+3. Triển khai cả hook và hướng dẫn CLAUDE.md, đúng khuyến nghị. Python stdlib, hook exec-form `py -I`, `onFailure: block`; đã phát hiện Claude Code 2.1.303 trên Windows để thử runtime.
+4. Làm tại worktree `wt-handoff-gate`, không đụng merge-review. Không triển khai adapter shell ghi/Git mutation khi chưa chứng minh kiểm soát phạm vi; v1 chặn các đường đó và hỗ trợ Edit/Write/NotebookEdit, helper export có scope.
 
 ## 7. Đối chiếu post-audit `6aa52be`
 | Phát hiện | Điều chỉnh thiết kế | Bằng chứng phải có khi triển khai |
@@ -117,4 +117,11 @@ Các tiêu chí dưới đây dành cho **triển khai sau này**, chưa đạt 
 | P2: Stop không bảo đảm checkpoint khi chết | 3.1, 3.3, 3.5: checkpoint trước/sau thao tác, phát hiện pending | Test interrupt/kill và phục hồi phiên |
 | P2: claim cũ chặn nhầm | 3.6: lịch sử khác invariant, scope/task/thời hạn/verifier khai báo | Claim HEAD cũ không chặn; invariant sai vẫn chặn |
 
-Post-audit hoàn tất ở mức tài liệu không đồng nghĩa đã kiểm chứng triển khai. Các câu hỏi lựa chọn sản phẩm tại mục 6 vẫn dành cho giai đoạn triển khai; lần này TJ chỉ yêu cầu xử lý plan và commit trên nhánh, không merge.
+Post-audit tại `43a2ee2` chỉ hoàn tất ở mức tài liệu. Yêu cầu triển khai tiếp theo của TJ được thực hiện theo mục 6; bằng chứng code/runtime phải đọc riêng trong báo cáo triển khai, không suy từ việc đã cập nhật plan.
+
+## 8. Điều chỉnh qua QA triển khai
+- QA độc lập tìm và đã yêu cầu bổ sung chặn alias Windows (`.git.`/tên thiết bị), hardlink ghi ra ngoài scope, chuẩn hoá hoa/thường giữa worktree, chống replay tool ID, và phục hồi lock thiếu pending. Các tình huống này phải có test hồi quy.
+- V1 dùng allowlist shell nhỏ thay vì giả vờ phân tích được shell tuỳ ý. Git commit và lệnh test chạy qua operator/Codex shell; không cấp cho Bash quyền chạy script tuỳ ý chỉ vì đã có ack. Đây là nhánh từ chối đã cho phép trong 3.3, không phải hạ tiêu chí không ghi ngoài scope.
+- Việc mở phiên mới không được xoá bằng chứng drift/việc chưa bàn giao. Checkpoint `session_start` không được dùng thay bản làm việc trước đó để dập cảnh báo.
+- Giới hạn đo lường công bố trước khi chốt: Windows v1 chỉ hỗ trợ file thường, chặn mọi reparse point (bao gồm symlink/junction) thay vì tuyên bố hash symlink chưa thử được do thiếu đặc quyền tạo symlink. Fixture junction thật kiểm cùng nhánh reparse-point; bài POSIX symlink được ghi rõ ngoài phạm vi runtime Windows. Không thay đổi mục tiêu không ghi ngoài scope.
+- Gate phải từ chối external clean/process filter đang có hiệu lực trước khi chạy Git status; driver toàn cục không hoạt động được vô hiệu trong riêng lệnh status. Hash cấu hình Git để phát hiện thay đổi bền vững, không lưu giá trị cấu hình có thể chứa bí mật.

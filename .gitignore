@@ -20,7 +20,11 @@ tools/tu_vung.xlsx
 tools/__pycache__/
 supabase/.temp/
 .claude/*
+!.claude/settings.json
 !.claude/commands/
+
+# Handoff Python bytecode (entrypoints also disable bytecode writes).
+tools/handoff/__pycache__/
 
 # Excel xem việc tự sinh (tools/readme_to_xlsx.py) — không commit, nguồn thật là README.md
 TJ_CongViec.xlsx

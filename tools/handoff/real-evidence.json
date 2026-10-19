@@ -1,0 +1,1 @@
+{"after_sha256": "51281ae44072900b6b6d3e6bb7497322af7d82a3b877c302634a44843a882770", "before_sha256": "51281ae44072900b6b6d3e6bb7497322af7d82a3b877c302634a44843a882770", "byte_identical": true, "exit_codes": [0, 0], "inspected_files": 737, "passed": true, "readonly": true, "reasons": [], "worktrees": 2}

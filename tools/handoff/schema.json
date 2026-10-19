@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wordloop.invalid/handoff/v1",
+  "title": "Immutable handoff checkpoint v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "record_id", "record_hash", "created_at", "session_id", "sequence", "repo_id", "worktree", "task_id", "task", "status", "phase", "terminal", "base_sha", "head_sha", "branch", "state_hash", "dirty", "operations", "stash", "commits", "next_steps", "claims", "claim_results", "supersedes"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "record_id": {"type": "string"},
+    "record_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "session_id": {"type": "string", "minLength": 1},
+    "sequence": {"type": "integer", "minimum": 1},
+    "repo_id": {"type": "string"},
+    "worktree": {"type": "string"},
+    "task_id": {"type": "string", "minLength": 1},
+    "task": {"type": "string"},
+    "status": {"enum": ["done", "partial", "blocked", "abandoned"]},
+    "phase": {"type": "string"},
+    "terminal": {"type": "boolean"},
+    "base_sha": {"type": "string"},
+    "head_sha": {"type": "string"},
+    "branch": {"type": "string"},
+    "state_hash": {"type": "string"},
+    "dirty": {"type": "array", "items": {"type": "string"}},
+    "operations": {"type": "object"},
+    "stash": {"type": "string"},
+    "commits": {"type": "array", "items": {"type": "string"}},
+    "next_steps": {"type": "array", "items": {"type": "string"}},
+    "claims": {"type": "array", "items": {"$ref": "#/$defs/claim"}},
+    "claim_results": {"type": "array", "items": {"type": "object", "required": ["claim_id", "state", "expected", "actual", "passed"], "additionalProperties": false, "properties": {"claim_id": {"type": "string"}, "state": {"enum": ["historical", "expired", "checked"]}, "expected": {}, "actual": {}, "passed": {"type": ["boolean", "null"]}}}},
+    "supersedes": {"type": ["string", "null"]}
+  },
+  "$defs": {
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claim_id", "kind", "repo_id", "worktree", "task_id", "baseline_head", "applies_head", "verifier", "args", "expected"],
+      "properties": {
+        "claim_id": {"type": "string", "minLength": 1},
+        "kind": {"enum": ["historical_evidence", "required_invariant"]},
+        "repo_id": {"type": "string"},
+        "worktree": {"type": "string"},
+        "task_id": {"type": "string", "minLength": 1},
+        "baseline_head": {"type": "string"},
+        "applies_head": {"type": ["string", "null"]},
+        "verifier": {"enum": ["head_equals", "versions_equal"]},
+        "args": {"type": "object"},
+        "expected": {"type": ["string", "boolean"]}
+      },
+      "allOf": [
+        {"if": {"properties": {"verifier": {"const": "head_equals"}}}, "then": {"properties": {"args": {"maxProperties": 0}, "expected": {"type": "string"}}}},
+        {"if": {"properties": {"verifier": {"const": "versions_equal"}}}, "then": {"properties": {"args": {"required": ["left", "right", "key"], "additionalProperties": false, "properties": {"left": {"type": "string"}, "right": {"type": "string"}, "key": {"type": "string"}}}, "expected": {"const": true}}}}
+      ]
+    }
+  }
+}

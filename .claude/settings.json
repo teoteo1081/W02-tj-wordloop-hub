@@ -1,0 +1,11 @@
+{
+  "hooks": {
+    "SessionStart": [{"hooks": [{"type": "command", "command": "py", "args": ["-I", "${CLAUDE_PROJECT_DIR}/tools/handoff/hook.py"], "timeout": 180}]}],
+    "PreToolUse": [{"matcher": ".*", "hooks": [{"type": "command", "command": "py", "args": ["-I", "${CLAUDE_PROJECT_DIR}/tools/handoff/hook.py"], "timeout": 180, "onFailure": "block"}]}],
+    "PostToolUse": [{"matcher": ".*", "hooks": [{"type": "command", "command": "py", "args": ["-I", "${CLAUDE_PROJECT_DIR}/tools/handoff/hook.py"], "timeout": 180}]}],
+    "PostToolUseFailure": [{"matcher": ".*", "hooks": [{"type": "command", "command": "py", "args": ["-I", "${CLAUDE_PROJECT_DIR}/tools/handoff/hook.py"], "timeout": 180}]}],
+    "Stop": [{"hooks": [{"type": "command", "command": "py", "args": ["-I", "${CLAUDE_PROJECT_DIR}/tools/handoff/hook.py"], "timeout": 180}]}],
+    "StopFailure": [{"hooks": [{"type": "command", "command": "py", "args": ["-I", "${CLAUDE_PROJECT_DIR}/tools/handoff/hook.py"], "timeout": 180}]}],
+    "SessionEnd": [{"hooks": [{"type": "command", "command": "py", "args": ["-I", "${CLAUDE_PROJECT_DIR}/tools/handoff/hook.py"], "timeout": 180}]}]
+  }
+}

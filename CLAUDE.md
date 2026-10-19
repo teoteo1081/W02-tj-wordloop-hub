@@ -1,5 +1,9 @@
 # CLAUDE.md — ngữ cảnh cho Claude Code khi làm việc trong repo này
 
+## Cổng kiểm tra đầu phiên
+
+Đọc `tools/handoff/README.md`. Trước khi sửa: `py -I tools/handoff/gate.py --session <session_id> --task <task_id> --touch <file> ...` (chỉ đọc). Mã 20/2: dừng thao tác ghi; mã 10: báo và ghi nhận đầy đủ warning codes trước khi dùng `handoff.py ack`. Token không tự cấp quyền. Hook dùng ack một lần cho Edit/Write/NotebookEdit và cấp ack kế tiếp sau hậu kiểm; shell chưa có adapter được chặn. Không dùng lệnh shell để lách hook. Cuối phiên ghi checkpoint bằng `handoff.py write --session <id> --task <id> --status <done|partial|blocked|abandoned> --next "..."`. Bản ghi bất biến trong `<git-common-dir>/handoff/`, không sửa/xoá để bỏ qua kiểm tra. Pending sau gián đoạn phải được kiểm tra bằng trạng thái thật trước khi operator recover; không dựa vào `Stop` để bảo đảm chống crash. Không push, không merge khi TJ chưa cho phép.
+
 Đọc `README.md` trước để hiểu tổng thể app. File này chỉ ghi thêm những điều **không hiển nhiên từ code**, các quyết định thiết kế đã tranh luận qua lại nhiều lần, và các lỗi đã sửa để tránh lặp lại. Nếu có `HANDOFF.md` khác rỗng, đọc thêm nó SAU CÙNG — đó là checkpoint tạm của phiên trước lúc sắp hết token, xem luật dùng ngay đầu file đó trước khi tin bất cứ gì trong đó.
 
 ## Nguyên tắc chung khi sửa app này
