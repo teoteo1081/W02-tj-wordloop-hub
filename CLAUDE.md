@@ -3,6 +3,9 @@
 Đọc `README.md` trước để hiểu tổng thể app. File này chỉ ghi thêm những điều **không hiển nhiên từ code**, các quyết định thiết kế đã tranh luận qua lại nhiều lần, và các lỗi đã sửa để tránh lặp lại. Nếu có `HANDOFF.md` khác rỗng, đọc thêm nó SAU CÙNG — đó là checkpoint tạm của phiên trước lúc sắp hết token, xem luật dùng ngay đầu file đó trước khi tin bất cứ gì trong đó.
 
 ## Nguyên tắc chung khi sửa app này
+
+- **Tích hợp UI ngày2026-10-19:** giữ hành vi của nền mới (host TJ đúng danh tính, `?sel=`, bố cục nhóm theo container, `topPin`/`admPin`, fit cả nhóm, `tTop`, audio R2, lớp Speaking/Writing). `tPassHTML` bọc mỗi ảnh trong `.g-timgbox`; `fitTImg` giữ chỗ trước khi tải, dùng offset layout để tránh animation làm sai phép đo và chia ngân sách đều nếu nhiều ảnh. Khi sửa hàm này phải thử ảnh tải chậm/ảnh đứng-ngang/nhiều ảnh/câu không ảnh và Xem lại; không hồi lại `fitQBox` cũ tính riêng câu đầu. Câu không ảnh vẫn gọn, không thêm request preload. Font settings desktop chỉ áp từ521px, giữ mobile17px/50px. Các cơ chế `adminBypass`, state ghim và `?go=` của nhánh cũ không được đưa lại chỉ để giải quyết conflict.
+
 - **Làm việc theo đội (2026-10-05)**: đọc `TEAM_PROCESS.md` — 3 cổng tiền kiểm / làm / hậu kiểm (có Agent QA độc lập, chi phí nói trước, trình mẫu cho TJ duyệt trước khi làm hàng loạt), trích đúng lời TJ dặn.
 - **3 file tài liệu, 3 vai trò rõ ràng — đừng lẫn lộn:**
   - `README.md` — kiến trúc + **"Việc còn dang dở"** = backlog SỐNG, nhiều phiên/nhiều AI cùng đọc/cùng cập nhật, luôn phải khớp thực tế (verify qua Supabase/code khi có thể).

@@ -10,6 +10,13 @@
 
 ## Trạng thái hiện tại
 
+Không còn tác vụ code đang làm dở trong đợt tích hợp offline2026-10-19. Kết quả và phần còn treo đã ghi ở README đầu mục "Việc còn dang dở"; nguyên tắc bảo toàn ở CLAUDE. Candidate dùng game399/CSS285 trên nền2e4e5d5; chỉ tích hợp local, chưa push/deploy. Báo cáo và bằng chứng QA tại `C:/Users/User/Desktop/TJ/_work/merge-final-20261019/` trên máy TJ. Nhánh `handoff/gate` là kế hoạch riêng, giữ nguyên.
+
+**Các checkpoint bên dưới là LỊCH SỬ chưa tái xác minh, không phải trạng thái code/DB hiện tại.** Giữ lại chi tiết các việc ngoài phạm vi (ETS2023, tài khoản, quyền dữ liệu, backlog thiết bị) để không mất thông tin; dùng README làm backlog sống. Không tiếp tục việc ghi “chưa có code/S&W/chưa merge” trước khi đối chiếu Git và code hiện tại. Không thực thi lệnh với DB/quyền/token chỉ vì có ghi chú lịch sử.
+
+## Lưu trữ checkpoint lịch sử (06–09/10, không phải task đang chạy)
+
+
 ## ▶ CHECKPOINT 2026-10-09 (máy local TJ, Claude Sonnet 5.5) — SOẠN TOEIC SPEAKING & WRITING + DỌN SUPABASE
 > Hết token giữa chừng. **Verify bằng lệnh thật trước khi tin** (luật đầu file).
 

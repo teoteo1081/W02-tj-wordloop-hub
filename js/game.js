@@ -3255,25 +3255,40 @@
     body = body.replace(/^\[([^\]\n]{2,40})\]\n?/gm, '<span class="g-tdoc">$1</span>');
     /* OCR ghi chú định dạng bằng chữ "7:00 A.M. (underlined)" -> gạch chân thật (TJ 2026-10-04: thấy lạ) */
     body = body.replace(/([^\n—–]*?\S)\s*\((underlined|bold|bolded|in bold|italic|italics|circled|highlighted)\)/gi, function (m, t, k) { k = k.toLowerCase(); return /under/.test(k) ? "<u>" + t + "</u>" : /ital/.test(k) ? "<i>" + t + "</i>" : "<b>" + t + "</b>"; });
-    return (txt ? '<div class="g-tpass">' + (crumb || "") + body + "</div>" : crumb ? '<div class="g-tpass">' + crumb + "</div>" : "") + img.map(function (u) { return '<img class="g-timg" alt="" src="' + esc(u) + '">'; }).join("");
+    return (txt ? '<div class="g-tpass">' + (crumb || "") + body + "</div>" : crumb ? '<div class="g-tpass">' + crumb + "</div>" : "") + img.map(function (u) { return '<div class="g-timgbox"><img class="g-timg" alt="" src="' + esc(u) + '"></div>'; }).join("");
   }
   /* 📐 ảnh đề vừa KHÍT màn hình đang dùng (TJ 2026-10-04: "tuỳ kích cỡ màn hình mà phải phù hợp"): đo chỗ trống thật
      = cao màn hình − phần phía trên ảnh − câu hỏi + 4 nút bên dưới. Không đủ chỗ (điện thoại, bảng vẽ đang mở) thì tính
      sau khi đã cuộn tới đề. Đo lại khi ảnh tải xong / xoay máy / đổi cỡ cửa sổ. */
+  function tLayoutTop(el) { var top = 0; while (el) { top += el.offsetTop; el = el.offsetParent; } return top; }
   function fitTImg() {
     $$(".g-timg").forEach(function (img) {
       if (!img.offsetParent) return;
-      var box = img.closest(".g-qvi") || img.parentNode, card = box.parentNode;
-      var below = 0, sib = img.nextElementSibling; while (sib) { below += sib.offsetHeight; sib = sib.nextElementSibling; }
+      var frame = img.closest(".g-timgbox"), media = frame || img;
+      var box = img.closest(".g-qvi") || media.parentNode, card = box.parentNode;
+      var below = 0, sib = media.nextElementSibling; while (sib) { below += sib.offsetHeight; sib = sib.nextElementSibling; }
       var ops = card && card.querySelector(".g-opts"), rv = card && card.querySelector("#p-reveal");
       var sub1 = card && card.querySelector(".g-tsub");   /* nhóm 3 câu (hình "Look at the graphic"): chừa chỗ cho CẢ 3 câu + nút + bảng điểm dưới để cả nhóm vừa 1 màn hình (TJ 2026-10-13); hình không nhỏ hơn 120px */
-      var after = sub1 && ops ? ops.getBoundingClientRect().bottom - box.getBoundingClientRect().bottom + 28 + (function () { var t = 0, n = ops.nextElementSibling; while (n) { t += n.offsetHeight; n = n.nextElementSibling; } return t; })() + 60 : sub1 ? sub1.offsetHeight + 28 : ops ? ops.getBoundingClientRect().bottom - box.getBoundingClientRect().bottom + 28 : 0;   /* tới hết 4 nút + 1 dòng thông báo (Xem lại: không tính lời giải dài bên dưới) */
+      var after = sub1 && ops ? tLayoutTop(ops) + ops.offsetHeight - tLayoutTop(box) - box.offsetHeight + 28 + (function () { var t = 0, n = ops.nextElementSibling; while (n) { t += n.offsetHeight; n = n.nextElementSibling; } return t; })() + 60 : sub1 ? sub1.offsetHeight + 28 : ops ? tLayoutTop(ops) + ops.offsetHeight - tLayoutTop(box) - box.offsetHeight + 28 : 0;   /* tới hết 4 nút + 1 dòng thông báo (Xem lại: không tính lời giải dài bên dưới) */
       if (rv && !rv.hidden) after += rv.offsetHeight + 8;   /* host 🎧 theo audio: nút "Câu tiếp ▶" */
-      var docTop = img.getBoundingClientRect().top + window.scrollY, boxTop = box.getBoundingClientRect().top + window.scrollY;
+      var docTop = tLayoutTop(media), boxTop = tLayoutTop(box);   /* ignore question fade-in transforms */
       var need = below + after + 24, vh = window.innerHeight;
       var h = vh - docTop - need;                       /* vừa ngay không cần cuộn */
       if (h < 180) h = vh - (docTop - boxTop) - need;   /* không đủ -> vừa sau khi cuộn tới đề */
-      img.style.maxHeight = Math.max(120, Math.round(h)) + "px";
+      if (frame) {
+        var frames = box.querySelectorAll(".g-timgbox");
+        if (frames.length > 1) {   /* allocate once by image count, never by which image loaded first */
+          var last = frames[frames.length - 1], tail = 0, next = last.nextElementSibling;
+          while (next) { tail += next.offsetHeight; next = next.nextElementSibling; }
+          var firstTop = tLayoutTop(frames[0]), total = vh - firstTop - tail - after - 24;
+          if (total < 180) total = vh - (firstTop - boxTop) - tail - after - 24;
+          h = (total - (frames.length - 1) * 10) / frames.length;
+        }
+      }
+      /* TS-075: reserve the media slot before the image loads. Its natural size
+         must not move answers; keep the newer whole-group space calculation. */
+      if (frame) frame.style.height = Math.max(120, Math.round(h)) + "px";
+      else img.style.maxHeight = Math.max(120, Math.round(h)) + "px";
     });
   }
   window.addEventListener("resize", function () { clearTimeout(G.fitT); G.fitT = setTimeout(fitTImg, 150); });
@@ -3314,6 +3329,7 @@
         var pk = (G.st && G.st.matchId || "") + ":" + q.num + ":" + (q.qn || ""); if (mine && optsEl === "#p-opts") tTop(pk);
         if (mine && tc && G.st && G.st.tplay && pk !== G.tPlayedQn) { G.tPlayedQn = pk; tAutoPlay(q); }
         else if (mine && !(tc && G.st && G.st.tplay)) { setTimeout(tShowNext, 0); if (G.st && G.st.mode === "free" && !G.st.race) G.tQEnd = Date.now() + ((T_SEC[q.part] || 30) * q.subs.length + 45) * 1000; }
+        fitTImg();
         return;
       }
       $(textEl).innerHTML = tPassHTML(q.passage, q.num, tCrumb(q)) +
