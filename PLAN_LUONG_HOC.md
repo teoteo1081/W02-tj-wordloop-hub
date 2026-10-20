@@ -1,5 +1,9 @@
 # PLAN_LUONG_HOC.md — sắp xếp lại luồng học TJ WordLoop (đề xuất 2026-10-08, CHỜ TJ DUYỆT)
 
+> **Đối chiếu 2026-10-20:** đây là thiết kế/đề xuất lịch sử, không phải roadmap hiện tại. Hành động, trạng thái và thứ tự chờ TJ chọn nằm tại [README — WL](README.md#việc-còn-dang-dở); bản đồ nguồn ở [PLAN_TONG](PLAN_TONG.md). Số liệu DB/Storage/quyền ghi ngày 08–09/10 chưa đo lại. Không thực hiện lệnh/nhập sách hay đổi quyền từ ghi chú cũ.
+> **Code hiện có:** TOEIC S&W, IELTS Speaking/Writing và lớp ở [learn/sw/sw.js](learn/sw/sw.js), [js/learn.js](js/learn.js), [js/swclass.js](js/swclass.js). Có bộ đề JSON trong repo; không suy ra bảng DB `sw_tasks`/`sw_attempts` đã được tạo. Các trò/mô hình dữ liệu đề xuất dưới đây chưa mặc nhiên được duyệt/triển khai. Receiver `tjwl-game-show` đã có trong [js/gamelayer.js](js/gamelayer.js); lỗi điều hướng cũ cần tái hiện trước sửa.
+
+
 > Mục tiêu của TJ: mỗi khoá (TOEIC, EA, Marketing, CIA 1000 câu EN-ES-CN…) có **một trang riêng dễ hiểu**, đi theo một luồng học rõ, gắn với game ôn bài; TJ là admin + host nên cần chỗ quản trị; giao diện bắt mắt, nội dung hút người học chung.
 > Số liệu lấy từ Supabase thật + code ngày 2026-10-08. Chưa chơi thử toàn bộ luồng trên trình duyệt.
 

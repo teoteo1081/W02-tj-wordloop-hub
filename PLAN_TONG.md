@@ -1,4 +1,33 @@
-# PLAN_TONG.md — kế hoạch tổng WordLoop (tổng hợp 2026-10-14)
+# PLAN_TONG.md — bản đồ tài liệu WordLoop (đối chiếu 2026-10-20)
+
+**Roadmap/action list hiện tại duy nhất: [README — WL-01…WL-18](README.md#việc-còn-dang-dở).** File này nối các thiết kế nguồn, không tạo lịch ưu tiên thứ hai. Thứ tự sản phẩm chưa được chốt lại trong lần rà tài liệu.
+
+## Hiện trạng có bằng chứng code/Git
+
+- `main` = ref cục bộ `origin/main` = `e324beb54b29ddfa055956c756a4ceba2676dfa1`; tích hợp 19/10 đã ở cả hai ref. Không fetch, không xác nhận Pages/deploy.
+- TOEIC Speaking/Writing, IELTS Speaking/Writing và chế độ lớp có code: [js/learn.js](js/learn.js) PAGES, [learn/sw/sw.js](learn/sw/sw.js) FORMAT3/TIME3W/loadSets, [js/swclass.js](js/swclass.js) routing `exam=ielts`. Bộ đề trong repo: [sets.json](learn/sw/sets.json), [ielts.json](learn/sw/ielts.json); không dùng chúng suy ra DB/cloud inventory. Việc tiếp là QA/nguồn/quota (WL-05), không dựng lại màn “sắp có”.
+- Gate có implementation/test ở `handoff/gate` / `origin/handoff/gate` `4c43c50`; chưa thuộc lịch sử main. Audit/integration theo WL-02, không tự merge.
+- `js/gamelayer.js` đã có receiver `tjwl-game-show`; ghi chú “thiếu receiver” trong kế hoạch 08/10 là lịch sử, cần tái hiện luồng (WL-06).
+- `learn/ea/index.html` còn `lessonBase` trỏ GitHub L04; không kiểm quyền repo ngoài. Các số ETS/Storage/quota/token/chi phí bên dưới là ghi nhận có ngày, chưa đo lại.
+
+## Tra thiết kế theo hành động
+
+| Việc | Action hiện tại | Tài liệu nguồn |
+|---|---|---|
+| Tích hợp, QA thiết bị và gate | WL-01, WL-02, WL-11 | [README](README.md#việc-còn-dang-dở), [HANDOFF](HANDOFF.md) |
+| Kho sách, R2, quyền file tạm | WL-03, WL-04 | [R2_BUCKETS](R2_BUCKETS.md), [SUPABASE_STORAGE](SUPABASE_STORAGE.md) |
+| S&W và IELTS | WL-05, WL-15 | [ý tưởng S&W](PLAN_TOEIC_SW_GAME.md), [nguồn tham khảo](NGUON_THAM_KHAO_SW_IELTS.md) |
+| EA, Marketing và khung khoá học | WL-06, WL-07, WL-13 | [PLAN_LUONG_HOC](PLAN_LUONG_HOC.md) |
+| Phòng, Bảng, Correct | WL-08…WL-11 | Chi tiết dated backlog ở README |
+| Nạp đề / nội dung / việc còn lại | WL-12…WL-18 | README và lịch sử dưới đây |
+
+## Quyết định còn cần TJ
+
+Tên gọi/khung khoá học và EA hay CIA làm mẫu; đồng bộ tiến độ Quest, tách Host; IELTS Academic/General và có làm Nghe/Đọc không; nền tảng mic/âm thanh; mẫu, quyền và ngân sách trước mọi nhập dữ liệu/chuyển kho/chạy AI hàng loạt. Không hỏi lại quyết định không TURN trả phí. Hướng thẻ giữ nguyên/chỉ thêm đã được ghi là TJ chốt 14/10; bố cục chi tiết vẫn cần đối chiếu code/mẫu.
+
+---
+
+# Bản ghi kế hoạch 2026-10-14 (lịch sử)
 
 > Gộp từ `PLAN_LUONG_HOC.md` (đề xuất 2026-10-08), `PLAN_TOEIC_SW_GAME.md`, `README.md`, `HANDOFF.md` và các quyết định trong phiên 2026-10-13/14.
 > Mục nào ghi "đề xuất" là CHƯA được TJ duyệt. Chi tiết kỹ thuật từng việc: xem file nguồn tương ứng.
@@ -20,7 +49,7 @@
 - Hấp dẫn: chuỗi ngày, thử thách hằng ngày, huy hiệu, xếp hạng theo khoá.
 - **Điều hướng thẻ (TJ chốt hướng 2026-10-14):** GIỮ NGUYÊN các thẻ hiện tại, chỉ THÊM thẻ mới; thanh thẻ chia hàng theo nhóm: Từ vựng / TOEIC / IELTS / Khác (EA, Digital Marketing, GA4, Git & GitHub…); thêm môn mới = thêm 1 dòng cấu hình. Cách nhìn "Theo kỹ năng" (nghe/đọc/viết/nói xuyên kỳ thi) để SAU, khi đã có S&W và IELTS.
 
-## 4. TOEIC Speaking & Writing và IELTS (đã bàn, CHƯA làm)
+## 4. Thiết kế ban đầu TOEIC S&W / IELTS (đã có code về sau; xem hiện trạng đầu file)
 - Thẻ mới **"TOEIC S&W"** cạnh thẻ TOEIC. Màn nhỏ: chỉ hiện Đề / Part / Bắt đầu, phần còn lại thu gọn; làm bài ở chế độ tập trung (ẩn thanh phụ).
 - Thứ tự: **bộ chấm Viết** (dán bài → AI chấm theo tiêu chí, hiện KHOẢNG điểm ước tính; đề do AI sinh, sách NTV/study4 chỉ làm bộ mẫu hiệu chỉnh) → game Viết (đếm giờ chuẩn, bảng điểm) → **Nói Part 1–2** (tận dụng `js/readalong.js`) → các Part Nói còn lại → thi thử đủ bộ + chế độ lớp.
 - Điểm Nói/Viết là ƯỚC TÍNH do AI; phát âm/ngữ điệu không chấm thật được (Web Speech chỉ cho chữ). Quyết sớm: Nói chỉ hỗ trợ Chrome máy tính/Android, hay ghi âm gửi Gemini (cần sửa proxy nhận âm thanh).
@@ -30,8 +59,8 @@
 
 ## 4b. Tiến độ thực tế S&W (cập nhật 2026-10-14 tối)
 - **ĐÃ LÀM (main, commit 9214370):** 2 nút "🎤 Speaking" / "✍️ Writing" trong thanh "Góc tự học" → app một người `learn/sw/` (đếm giờ chuẩn ETS, Web Speech nhận giọng, AI chấm qua gemini-proxy, điểm ước tính, tiến độ localStorage `sw-quest-v1`, `?mock=1` giả giọng để test). 10 đề Speaking + 10 đề Writing do Python sinh (`tools/sw/gen_sets.py`; Q3 Speaking và Q1–5 Writing dùng mô tả ảnh bằng chữ). Đã chạy thử trên web thật bằng Playwright (Python + chromium có sẵn, `executable_path`); CHƯA thử micro thật.
-- **ĐANG LÀM / TIẾP THEO — Chế độ lớp:** host chọn đề + dạng bài trong phòng, bấm Bắt đầu → mọi máy vào Speaking/Writing chạy cùng câu → điểm từng người phát lại qua kênh phòng → bảng xếp hạng chung. Nhánh `feat/sw-class` (xem commit gần nhất để biết làm tới đâu). Cần: tin `sw` trong `js/game.js` (G.ch), cầu nối trong `js/learn.js`, phần lớp trong `learn/sw/sw.js`.
-- **CHƯA LÀM:** nạp đề prepedu nguyên văn vào máy TJ (`tools/sw/parse_prepedu.py` → file .json → nút "Nạp đề riêng"; KHÔNG commit nội dung có bản quyền); ảnh thật cho Speaking Q3 / Writing Q1–5; IELTS Viết/Nói dùng lại bộ máy này.
+- **Thiết kế lớp ban đầu — code hiện đã có trên main:** host chọn đề + dạng bài trong phòng, bấm Bắt đầu → mọi máy vào Speaking/Writing chạy cùng câu → điểm từng người phát lại qua kênh phòng → bảng xếp hạng chung. Nhánh `feat/sw-class` (xem commit gần nhất để biết làm tới đâu). Cần: tin `sw` trong `js/game.js` (G.ch), cầu nối trong `js/learn.js`, phần lớp trong `learn/sw/sw.js`.
+- **Danh sách còn treo ghi ngày 14/10, cần đối chiếu lại WL-05:** nạp đề prepedu nguyên văn vào máy TJ (`tools/sw/parse_prepedu.py` → file .json → nút "Nạp đề riêng"; KHÔNG commit nội dung có bản quyền); ảnh thật cho Speaking Q3 / Writing Q1–5; IELTS Viết/Nói hiện có code, cần QA (WL-05/WL-15).
 
 ## 5. Phòng và Bảng (README, theo thứ tự nên làm)
 1. Tab "🖍 Bảng trắng" riêng (bút + ô chữ). 2. Phòng học 24/24 không cần host. 3. Nút "Theo mọi người" cho bài đọc. 4. Chia sẻ ảnh/file trên iPhone. 5. Sửa lỗi Nói/Đọc kiểu HelloTalk. 6. Kiểm trên máy thật (voice iPhone, ghi âm, thanh bút, CC, file lớn).
@@ -42,8 +71,8 @@
 - **ETS 2025:** nạp bằng skill trên (nguồn đặt ở `Desktop\TJ\_staging\ETS 2025\TEST N\`, cùng cách đặt tên như 2023).
 - Việc nội dung: EA Part I SU04–14; PDF English File lên bucket `library`; hub IELTS/English File đang trống.
 
-## 7. Thứ tự đề xuất
-1. Nền tảng (mục 2) + xếp thẻ theo nhóm + thẻ S&W (rỗng, "sắp có").
+## 7. Thứ tự đề xuất ngày 14/10 (đã cũ, không dùng để triển khai)
+1. Nền tảng (mục 2) + xếp thẻ theo nhóm + thẻ S&W (ý tưởng lúc lập kế hoạch; hiện đã có app).
 2. Skill `exam-ingest` + ETS 2025 (làm ở session mới).
 3. Bộ chấm Viết → Nói Part 1–2.
 4. Khung Khoá học, Quản trị, nối tiến độ.
@@ -57,4 +86,4 @@
 ### Cập nhật 2026-10-14 — Chế độ lớp Speaking/Writing: ĐÃ LÀM (game v307)
 - Host (đang trong phòng) tick "👥 Chế độ lớp" ở thẻ Speaking/Writing, bấm ▶ → mọi máy tự mở thẻ + chạy cùng đề/dạng bài; điểm từng câu phát qua kênh phòng (event `sw`) → "🏆 Bảng điểm lớp" ở màn kết quả. Code: `js/swclass.js` (cầu nối), `learn/sw/sw.js` (phía iframe).
 - Đã thử bằng Playwright với phòng giả lập (1 người); CHƯA thử 2 người thật qua Supabase realtime → việc kế: mở 2 trình duyệt cùng 1 phòng để kiểm.
-- Còn lại: import đề prepedu riêng (không commit), ảnh thật cho Q3/Writing Q1–5, thử micro thật, IELTS, skill exam-ingest, ETS 2025.
+- Còn lại: import đề prepedu riêng (không commit), ảnh thật cho Q3/Writing Q1–5, thử micro thật, QA IELTS S/W đã có code, skill exam-ingest, ETS 2025.
