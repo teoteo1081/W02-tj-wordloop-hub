@@ -1,10 +1,17 @@
 # PLAN_RESTRUCTURE — tái cấu trúc codebase (giữ nguyên logic sản phẩm + giao diện)
 
-> Trạng thái: **ĐỀ XUẤT, CHƯA DUYỆT, CHƯA ĐỔI CODE.** Bản 2.1 (2026-10-20), đã đối chiếu với `AUDIT_INFRA_ADVISOR.md` (commit `d281196`) và sửa theo 5 góp ý review (mục 0).
+> Trạng thái: **ĐỀ XUẤT, CHƯA DUYỆT, CHƯA ĐỔI CODE.** Bản 2.2 (2026-10-20): đã đối chiếu với `AUDIT_INFRA_ADVISOR.md` (commit `d281196`), sửa theo 5 góp ý review, và áp **mô hình vận hành do TJ chốt** (mục 5): `main` đóng băng, mọi việc chỉ trong worktree này, Netlify phục vụ nhánh restructure song song với GitHub Pages phục vụ `main`, cuối cùng thay `main`.
 > Số liệu đo từ repo tại `e324beb` (nhánh này) và kiểm lại bằng đọc code ở mục 3; chưa chạy app.
 > Cần TJ trả lời mục 9 trước khi bắt đầu.
 
 ## 0. Thay đổi so với bản 1
+
+**Bản 2.2 — mô hình vận hành TJ chốt (2026-10-20):**
+- `main` **đóng băng**; mọi việc chỉ làm trên `feat/restructure-plan` (một dòng tích hợp, không nhánh `fix/…` riêng cho việc thuộc restructure).
+- Baseline **giữ `e324beb`**, không merge `main`; lấy commit từ nơi khác bằng cherry-pick (đã đưa kế hoạch Netlify vào: `9ce51fd`). Câu 2 và câu 8 ở mục 9 đã được trả lời.
+- **Hai dòng song song:** `main` → GitHub Pages (TJ dùng), `feat/restructure-plan` → Netlify (kiểm thử), cho tới khi worktree **freeze** rồi thay hẳn `main` bằng fast-forward, không force-push (mục 5).
+- Thêm **luồng H (hosting)** và các hệ quả của việc hai dòng **dùng chung backend production** (mục 5.1, luồng H, mục 8): tương thích ngược schema/giao thức/Edge Function với bản `main` đóng băng, và quy tắc ghi dữ liệu từ bản mới.
+- Bỏ quy trình "mỗi bước merge vào `main`" ở mọi tài liệu; thay bằng "mỗi bước commit vào dòng tích hợp, kiểm trên Netlify".
 
 **Bản 2.1 — sửa theo review (đã kiểm từng điểm bằng code, cả 5 đều đúng):**
 - **B1:** sổ chi tiêu riêng, giữ trước nguyên tử, dùng chung hai provider, đóng khi không đọc/ghi được, không dính khoá ngoại `blocks` (mục 6, B1). Bỏ ý dùng `ai_usage_daily` làm trần.
@@ -23,7 +30,8 @@
 ## 1. Mục tiêu và ranh giới
 
 - **Luồng A (làm):** đổi cấu trúc thư mục/module, bỏ trùng lặp, đưa mọi truy cập dữ liệu về một lớp, thêm lưới an toàn (test, CI). **Không đổi tính năng, giao diện, schema.**
-- **Luồng B (làm, tách riêng):** vá lỗ hổng chi phí/ghi-xoá tự do. Đổi hành vi server, nên không được lẫn vào PR restructure.
+- **Luồng B (làm, commit riêng):** vá lỗ hổng chi phí/ghi-xoá tự do. Đổi hành vi server, nên mỗi việc là commit riêng (không lẫn vào commit dời mã) và **deploy là bước riêng cần TJ đồng ý từng lần**, vì backend dùng chung với bản `main` đang chạy (mục 5.1).
+- **Luồng H (hosting):** chuyển nơi phục vụ frontend của dòng restructure sang Netlify theo `PLAN_NETLIFY_FRONTEND.md`, trong khi `main` ở lại GitHub Pages. Không đụng mã ứng dụng.
 - **Luồng C (làm sau A1):** tối ưu cách tải dữ liệu. Đổi cách chạy bên trong, cần test hồi quy và đôi khi cần SQL thêm bảng/hàm (chỉ THÊM, TJ đồng ý trước).
 - **Ngoài phạm vi:** đổi cơ chế đăng nhập `?u=`/RLS `shared_all` (quyết định đã chốt trong `CLAUDE.md`), SFU thay WebRTC mesh (tính năng mới), bật TURN (việc vận hành của TJ, code đã có).
 - **Tiêu chí xong của luồng A:** ảnh chụp các màn chính trước/sau giống nhau (sai khác = 0), test hồi quy xanh, web live chạy như cũ.
@@ -91,19 +99,44 @@ Giữ lại: `game.html` là entry riêng (iframe + `postMessage` là seam sẵn
 
 ## 5. Trạng thái nhánh và thứ tự với việc khác (kiểm 2026-10-20)
 
-- **Baseline cần xác định rõ** (kiểm bằng `git rev-list`/`merge-base`, 2026-10-20): nhánh này rẽ từ `origin/main` = `e324beb`, và `origin/main` **đã là tổ tiên** của nhánh nên rebase lên nó không lấy thêm gì. Commit mới `8b071e6` (chỉ sửa 6 file `.md`, không đụng code) nằm ở **`main` cục bộ, chưa push lên `origin`** (`origin/main...main` = 0 trước, 1 sau).
-  - Muốn có `8b071e6` trong nhánh này: `git rebase main` (ref cục bộ), hoặc `git cherry-pick 8b071e6`. Nhánh chưa push nên rebase an toàn.
-  - Nếu TJ muốn baseline là bản đã lên remote: TJ push `main` (một lệnh `git push origin main` riêng) rồi `git fetch` và rebase lên `origin/main`.
-  - Chốt ở mục 9, câu 8. Đến lúc chốt, mọi chỗ trong tài liệu ghi "rebase lên main" nghĩa là theo ref đã chọn, và A0 ghi lại SHA baseline vào bảng số liệu gốc.
+- **Baseline ĐÃ CHỐT: `e324beb` (= `origin/main`).** `origin/main` là tổ tiên của nhánh này nên rebase lên nó không lấy thêm gì và không cần làm. Commit `8b071e6` (chỉ sửa 6 file `.md`) nằm ở `main` cục bộ, **chưa push và không vào nhánh này** (không merge, không rebase lên `main` cục bộ). Hệ quả khi thay `main` ở cuối: phần chỉnh tài liệu trong `8b071e6` không đi theo; nếu cần giữ phần nào thì chuyển tay vào lúc tách tài liệu (M1.7). A0 ghi SHA baseline vào bảng số liệu gốc.
+- **Điều kiện để thay `main` bằng fast-forward ở cuối:** `origin/main` không tiến thêm so với `e324beb`. Vì vậy không ai push gì lên `origin/main` trong thời gian này, kể cả `8b071e6`. Lệnh kiểm có trong `WORKTREE_ANCHOR.md`.
 - Nhánh `handoff/gate` (chưa vào `main`) **sửa `js/game.js` (28 dòng)** và thêm `tools/handoff/` (Python + test). Phải quyết định merge hay bỏ nó **trước khi cắt `game.js` ở A3**, nếu không sẽ xung đột nặng. Thêm: CI ở A0 nên chạy được cả test của nó nếu nó được giữ.
 - `AUDIT_INFRA_ADVISOR.md` đang nằm trong commit của nhánh này; giữ nguyên làm tài liệu tham chiếu.
+- `PLAN_NETLIFY_FRONTEND.md` được cherry-pick vào nhánh này (`9ce51fd` ← `e94e086`); nó viết cho "chuyển frontend sang Netlify" nói chung, còn trong mô hình này Netlify phục vụ **dòng restructure** và `main` ở lại Pages (luồng H).
+
+### 5.1 Mô hình hai dòng song song — hệ quả bắt buộc phải xử lý
+
+| | Dòng cũ | Dòng mới |
+|---|---|---|
+| Nhánh | `main` (đóng băng, `e324beb`) | `feat/restructure-plan` |
+| Phục vụ | GitHub Pages (`teoteo1081.github.io/W02-tj-wordloop-hub/`) | Netlify (chưa tạo; xem luồng H) |
+| Ai dùng | TJ hằng ngày | TJ/agent kiểm thử |
+| **Backend** | **CHUNG**: cùng Supabase (DB, Storage, Realtime), Edge Function, Worker/R2 | |
+
+Vì backend dùng chung, nên:
+
+1. **Dữ liệu thật có thể bị bản mới làm hỏng.** Bản mới ghi chung bảng với bản đang dùng. Cho tới khi nhật ký lời gọi của bản mới khớp bản `main` (CALL-*, TEST §5) và TJ đồng ý, bản mới chỉ ghi bằng hồ sơ thử và phòng `ZZ_…`; chỉ đọc bằng hồ sơ thật. Sau cổng đó mới ghi bằng hồ sơ thật.
+2. **Schema chỉ THÊM và tương thích ngược** với bản `main` đóng băng (không đổi tên/xoá cột, không đổi kiểu, hàm mới không thay hàm cũ). Cột/bảng/hàm mới (B1 sổ chi tiêu, C2 hàm thống kê) bản cũ không dùng nên không bị ảnh hưởng. Đây là bất biến I9 của spec.
+3. **Deploy Edge Function/Worker có tác dụng ngay với bản `main` đang dùng.** B1/B2 phải nhận được đúng các yêu cầu mà bản `main` gửi (kể cả `user_id:null`). Test BCK-* (TEST §9.5) chạy bộ lời gọi của bản baseline lên backend đã đổi. Mỗi lần deploy cần TJ đồng ý riêng.
+4. **Giao thức game phải tương thích hai chiều trong suốt dự án**, vì người dùng bản `main` và bản mới có thể cùng một phòng. Bất biến I4 từ "trong lúc cập nhật" thành "suốt dự án"; MP-18 (hỗn hợp phiên bản) lên tầng B.
+5. **Hai origin khác nhau** (github.io và netlify.app): `localStorage`, `sessionStorage`, PWA đã cài không dùng chung; hồ sơ phải vào lại bằng `?u=`. Bộ lọc `Origin` của B1/B2 phải liệt kê cả hai host.
+6. **Đừng dùng hồ sơ thật ở bản xem thử trên github.io của nhánh restructure** (đường dẫn `…/preview/feat-restructure-plan/`): nó cùng origin với `main` nên dùng chung `localStorage` với `main`. Dùng Netlify (origin riêng) để kiểm thử.
+
+**Freeze và thay `main`.** Freeze = hoàn tất cột mốc cần thiết, đạt tiêu chí nghiệm thu của spec §9, và TJ đồng ý. Trình tự thay `main` (mỗi bước là một lệnh/quyết định riêng của TJ, không tự động):
+1. Kiểm `origin/main` vẫn `e324beb` và còn fast-forward được.
+2. Lưu `main` cũ: nhánh/tag `archive/main-before-restructure-<ngày>` trên `origin` (tiền lệ: `archive/main-before-20261019`).
+3. `git push origin <đầu nhánh restructure>:main` (fast-forward, không force); GitHub Pages tự build lại.
+4. Cập nhật `CLAUDE.md`/`README.md` (hosting, quy trình, các quy ước đã đổi).
+5. Kiểm bản deploy; quyết định host chính sau khi thay (mục 9, câu 11).
+6. **Quay lại nếu hỏng:** đưa `main` về nhánh archive. Việc này cần ghi đè `origin/main` (force) nên chỉ làm khi TJ chỉ đạo rõ; vì vậy nên giữ GitHub Pages còn phục vụ bản archive (trên một đường dẫn riêng hoặc repo phụ) như phương án dự phòng không cần force. *Chưa thiết kế chi tiết; xem mục 9, câu 12.*
 
 ## 6. Kế hoạch theo luồng
 
 ### Luồng A — Restructure (giữ nguyên hành vi)
 
 **A0 — Lưới an toàn (bắt buộc làm trước mọi thứ trong A và C)**
-- Tích hợp baseline đã chốt (mục 9, câu 8) và chốt xử lý `handoff/gate` (mục 5). Ghi SHA baseline.
+- Baseline đã chốt `e324beb` (mục 5; không merge `main`). Chốt xử lý `handoff/gate` (mục 5). Ghi SHA baseline.
 - Đo số liệu gốc cho bảng mục 7 và lưu lại.
 - Test Node cho `context`, `srs`, adapter local của `db`; chuyển các mục "Lỗi đã sửa" trong `CLAUDE.md` thành test hồi quy.
 - Workflow CI chạy `node --check` + test trên mọi PR.
@@ -128,7 +161,7 @@ Giữ lại: `game.html` là entry riêng (iframe + `postMessage` là seam sẵn
 - Tách tài liệu: kiến trúc / quyết định / backlog / runbook (`HANDOFF.md` giữ vai tạm thời như `CLAUDE.md` mô tả).
 - Dời `tools/` (mục 9, câu 4).
 
-**A2 — ES modules gốc** (`<script type="module">`). Vẫn không cần build, chạy được trên GitHub Pages. Thứ tự lá trước, gốc sau: `util`, `srs`, `context`, `speech`, `db`, `auth`, các feature, cuối cùng `app`. Bỏ `window.X` dần; giữ lớp tương thích tạm cho code chưa chuyển.
+**A2 — ES modules gốc** (`<script type="module">`). Vẫn không cần build, chạy được trên GitHub Pages và Netlify (cả hai chỉ phục vụ tệp tĩnh). Thứ tự lá trước, gốc sau: `util`, `srs`, `context`, `speech`, `db`, `auth`, các feature, cuối cùng `app`. Bỏ `window.X` dần; giữ lớp tương thích tạm cho code chưa chuyển.
 
 *Cổng bắt buộc trước khi chuyển module đầu tiên — quy tắc version cho cả đồ thị import.* Hiện `/bump` chỉ dò thẻ `<script>`/`<link>` trong HTML; module con được `import` thì không có thẻ nào, và tăng `?v=` của file vào (entry) không đổi URL các file nó import → trình duyệt/CDN giữ bản cũ của module con. Thêm nữa, **danh tính module là URL**: hai nơi import cùng file với `?v=` khác nhau tạo ra hai bản thể riêng (state nhân đôi). Nên:
 - Cấm viết tay `?v=` trong câu lệnh `import`. Mỗi module chỉ có **một** chuỗi URL trong cả đồ thị.
@@ -142,11 +175,11 @@ Giữ lại: `game.html` là entry riêng (iframe + `postMessage` là seam sẵn
 
 **A3 — Cắt file lớn theo seam.** `game.js` → state/room-net, luật vòng chơi, UI, các plugin voice/chat/cc/readalong/shadow. `app.js`, `detail.js` → theo màn hình. CSS tách theo component.
 
-**A4 (tuỳ chọn) — Vite.** Băm tên file thay `?v=N`, loại hẳn lỗi cache. Đổi lại có build step và phải chuyển deploy sang GitHub Actions. Chỉ làm nếu TJ chọn (mục 9, câu 3); có thể được kéo lên trước A2 nếu import map không dùng được trên thiết bị đích (xem cổng version ở A2).
+**A4 (tuỳ chọn) — Vite.** Băm tên file thay `?v=N`, loại hẳn lỗi cache. Đổi lại có build step và phải có nơi chạy build (GitHub Actions cho Pages, hoặc Netlify tự build; Netlify sinh `dist/` rất hợp, xem luồng H). Chỉ làm nếu TJ chọn (mục 9, câu 3); có thể được kéo lên trước A2 nếu import map không dùng được trên thiết bị đích (xem cổng version ở A2).
 
-### Luồng B — Vá bảo mật (đổi hành vi; mỗi việc nhánh `fix/…` riêng; deploy ngoài git)
+### Luồng B — Vá bảo mật (đổi hành vi; commit riêng trong dòng tích hợp; deploy là bước riêng)
 
-Lý do không gộp vào nhánh restructure: deploy Edge Function/Worker là bước ngoài git, quay lại bằng cách deploy bản cũ, và cần TJ cấp quyền/secret. Có thể làm song song với A, không cần chờ A0.
+Mã viết trong worktree này như mọi việc khác (`main` đóng băng, không nhánh `fix/…` riêng). Nhưng **deploy Edge Function/Worker/SQL là bước ngoài git, có tác dụng ngay với bản `main` đang dùng** (mục 5.1), quay lại bằng cách deploy bản cũ, và cần TJ đồng ý và cấp secret từng lần. Có thể làm song song với A, không cần chờ A0, miễn tương thích ngược với bản `main`.
 
 - **B1 — Proxy AI.** Không bắt buộc `user_id`. Thay bằng: danh sách model cho phép; trần kích thước `sys`+`user`; ép trần token ra ở phía server (bỏ qua giá trị client xin cao hơn); kiểm `Origin` làm lớp lọc mềm; và **sổ chi tiêu (ledger) toàn hệ thống** thiết kế như dưới đây.
 
@@ -176,6 +209,21 @@ Lý do không gộp vào nhánh restructure: deploy Edge Function/Worker là bư
 - **C3 — Nạp lười cây** (`DB.getFullTree`). Đổi hành vi Journey/sidebar; chỉ làm khi có test và ảnh chụp từ A0. Ưu tiên thấp nếu C2 đã giải được phần lớn độ trễ.
 - Đo thời gian trước/sau trên mạng giả lập chậm, không chỉ tin vào số dòng.
 
+### Luồng H — Hosting (Netlify cho dòng restructure; xem `PLAN_NETLIFY_FRONTEND.md`)
+
+Chi tiết N0–N3, chi phí, rollback nằm ở file đó; ở đây chỉ ghi phần **điều chỉnh theo mô hình hai dòng** và phần plan Netlify chưa nói.
+
+| Mã | Việc | Điều chỉnh / bổ sung |
+|---|---|---|
+| H0 (= N0) | Xác minh dashboard Netlify cũ, quyền, gói, credit | Thêm: hết credit thì **mọi site trong tài khoản bị pause** và gói Free là giới hạn cứng (đã kiểm tài liệu Netlify); kiểm các site khác trong team |
+| H1 (= N1) | Cấu hình site phục vụ **nhánh `feat/restructure-plan`**, không phải `main` | Mặc định dùng **branch deploy** (0 credit cho thao tác deploy, URL ổn định theo tên nhánh) thay vì đặt nhánh này làm production branch (mỗi lần push tốn 15 credit). Chốt ở N0 sau khi xác minh định dạng URL. `main` không nối vào Netlify trong giai đoạn song song |
+| H1b | Publish directory | Netlify publish cả thư mục; muốn artifact chỉ chứa frontend thì cần bước copy sang `dist/`, xung đột bất biến I8 (không build step). Chọn: (a) publish nguyên gốc, giống Pages hiện nay, (b) script copy nhỏ, (c) để A4 (Vite) sinh `dist/`. Đề xuất (a) cho giai đoạn song song |
+| H1c | Cấu hình bỏ qua build khi không đổi file frontend | Chỉ cần nếu dùng production branch; với branch deploy thì không tốn credit nên chưa cần |
+| H2 (= N2) | Kiểm chứng | Dùng bộ test của dự án (TEST) trỏ vào URL Netlify; "game hai thiết bị" ghi dữ liệu `ZZ_…` lên backend thật cần TJ cho phép và quy trình dọn (TEST §12) |
+| H3 (= N3) | Chuyển địa chỉ chính | **Không còn là một cột mốc riêng.** Sau khi thay `main` (mục 5.1), quyết định host chính (câu 11). Plan Netlify giữ nguyên các bước thông báo/rollback |
+
+Cache: Netlify và Pages có thể đặt `Cache-Control` mặc định khác nhau (nhớ Netlify mặc định revalidate, Pages `max-age=600`; **chưa kiểm**). Đo bằng `curl -I` trên bản deploy đầu tiên; kết quả chỉ làm nhẹ áp lực của cổng version A2, không thay thế nó (danh tính module là URL).
+
 ## 7. Chỉ số đo trước/sau và nghiệm thu
 
 | Chỉ số | Hiện tại | Đích |
@@ -191,7 +239,7 @@ Lý do không gộp vào nhánh restructure: deploy Edge Function/Worker là bư
 | Version module | `?v=N` thủ công trên thẻ HTML | giữ đến khi A2 có cơ chế cho cả đồ thị import (một URL/module, `/bump` bắc cầu); sau A4 không còn |
 | JS nạp ở `index.html` (không tính CDN) | ~978 KB | không tăng; mục tiêu giảm sau A3/C1 |
 
-Mỗi bước A merge vào `main` chỉ khi: CI xanh, ảnh chụp sai khác = 0, TJ xem bản preview (`feat/…` có preview qua `pages-preview.yml`) rồi mới `git push origin main` (một lệnh riêng). Quay lại: mỗi bước là một nhóm commit có thể `git revert`; không có bước nào đổi schema.
+Mỗi bước A được commit vào dòng tích hợp (`feat/restructure-plan`) chỉ khi: CI xanh, ảnh chụp sai khác = 0, nhật ký lời gọi khớp chuẩn, và (với bước đụng `game.js`/giao thức) đã kiểm tay hai thiết bị thật trên bản Netlify. **Không có bước nào đẩy lên `main`**; `main` chỉ thay một lần ở cuối (mục 5.1). Quay lại: mỗi bước là một nhóm commit có thể `git revert`; riêng thay đổi backend (luồng B, C2) quay lại bằng deploy bản cũ vì chỉ THÊM, không đổi schema hiện có.
 
 ## 8. Sổ rủi ro
 
@@ -207,28 +255,42 @@ Mỗi bước A merge vào `main` chỉ khi: CI xanh, ảnh chụp sai khác = 0
 | Vượt trần chi tiêu AI do đua nhau (race) hoặc sổ lệch | Cao nếu dùng `ai_usage_daily` | Sổ riêng, giữ trước nguyên tử, đóng khi lỗi (B1) |
 | Ảnh "giống nhau" nhưng hành vi mạng/realtime đã đổi sau A1 | Trung bình | Nhật ký lời gọi chuẩn + kịch bản hai client + kiểm tay hai thiết bị thật |
 | Agent QA vào nhầm phòng thật | Đã từng xảy ra | Phòng `ZZ_…`, chặn `joinRoom("TJ")` |
+| Bản mới ghi sai vào DB dùng chung → hỏng dữ liệu bản `main` đang dùng | Cao | Chỉ ghi bằng hồ sơ thử cho tới khi nhật ký lời gọi khớp; TJ đồng ý trước khi ghi bằng hồ sơ thật (mục 5.1) |
+| Deploy backend (B1/B2/C2) làm hỏng bản `main` đóng băng | Cao | Tương thích ngược bắt buộc (I9), test BCK-*, mỗi lần deploy TJ đồng ý |
+| Hai phiên bản client cùng phòng game trong nhiều tuần | Trung bình | Giao thức đóng băng (I4), MP-18 tầng B |
+| Hết credit Netlify làm pause cả tài khoản | Trung bình | Branch deploy (0 credit), chốt ngân sách ở N0 (câu 10) |
+| `origin/main` bị ai đó push → mất khả năng fast-forward | Trung bình | Không push `origin/main`; kiểm bằng lệnh trong anchor trước mỗi phiên |
+| Thay `main` rồi hỏng, quay lại cần force-push | Trung bình | Lưu archive; phương án dự phòng không cần force (mục 5.1, câu 12) |
+| Chỉnh tài liệu trong `8b071e6` thất lạc khi thay `main` | Thấp | Chuyển tay ở M1.7 nếu TJ muốn giữ |
 
 ## 9. Cần TJ quyết
 
+*Đã chốt (TJ 2026-10-20):* câu 2 (`main` đóng băng, mọi việc chỉ trong worktree này, một dòng tích hợp, kể cả luồng B), câu 8 (baseline `e324beb`, cherry-pick không merge), cách thay `main` ở cuối (fast-forward, không force), hai dòng song song Pages/Netlify. Các câu còn mở: 1, 3–7, 9–12.
+
 1. Chấp nhận A0 (lưới an toàn) trước khi đụng code?
-2. Có đóng băng tính năng mới trong lúc restructure không? Nếu không, mỗi bước phải nhỏ và merge nhanh. Một nhánh tích hợp duy nhất (`feat/restructure-plan`) cho luồng A và C như bạn yêu cầu, hay quay về quy ước mỗi việc một nhánh? Đề xuất: **một nhánh cho luồng A**, luồng B tách `fix/…` riêng vì deploy ngoài git.
+2. ✔ **Đã chốt:** `main` đóng băng; mọi việc chỉ trong worktree này; một dòng tích hợp duy nhất.
 3. Cơ chế version cho A2: import map (cần Safari iOS ≥ 16.4: người chơi iPhone của bạn dùng bản nào?), script đóng dấu, hay kéo Vite lên trước A2? (Đề xuất: import map nếu thiết bị đích đủ mới; nếu không thì Vite trước. Không bắt đầu A2 khi chưa chọn.)
 4. `tools/` ra repo riêng (private) hay chỉ ra thư mục riêng? (Đề xuất: repo riêng, vì có đề ETS.)
 5. Kệ sách `tj-shelf`: (a) token trong JS công khai + giới hạn `Origin` và tốc độ (chặn người bình thường, không chặn người cố ý); (b) chỉ host được ghi/xoá qua chữ ký ngắn hạn do Edge Function cấp (chặt hơn nhưng chỉ chắc nếu hồ sơ host được xác thực thật); (c) chấp nhận rủi ro vì là sách tham khảo có bản gốc ở nơi khác, chỉ sửa phần `listAll`.
 6. Sổ chi tiêu AI (B1): (a) trần mỗi ngày là bao nhiêu USD (cần con số)? (b) Khi sổ không đọc/ghi được: đóng (AI dừng, an toàn chi tiêu — đề xuất) hay mở (AI vẫn chạy, mất bảo vệ trong lúc DB hỏng)? (c) Gemini miễn phí có tính vào trần theo giá danh nghĩa không (đề xuất: có, để một trần chặn cả hai)?
 7. `handoff/gate`: giữ và merge trước, hay hoãn đến sau A3?
-8. Baseline: tích hợp `8b071e6` từ `main` cục bộ (`git rebase main`) ngay, hay TJ push `main` lên `origin` trước rồi mới rebase lên `origin/main`? (Đề xuất: `git rebase main` cục bộ, vì commit chỉ sửa `.md` và nhánh này chưa push.)
+8. ✔ **Đã chốt:** baseline `e324beb`; không merge/rebase `main`; lấy commit khác bằng cherry-pick.
+9. **Ghi dữ liệu thật từ bản mới (mục 5.1):** đồng ý quy tắc "chỉ ghi bằng hồ sơ thử/phòng `ZZ_…` cho tới khi nhật ký lời gọi khớp, rồi TJ đồng ý mới ghi bằng hồ sơ thật"? Hay muốn một bản sao Supabase riêng cho dòng restructure (an toàn hơn nhưng tốn công dựng và đồng bộ dữ liệu)?
+10. **Netlify:** (a) dùng site Netlify cũ hay tạo site mới? (b) branch deploy cho nhánh restructure (0 credit, đề xuất) hay đặt nhánh làm production branch (15 credit mỗi lần push)? (c) ngân sách chấp nhận nếu sau này cần gói trả phí?
+11. **Host chính sau khi thay `main`:** vẫn GitHub Pages, hay chuyển sang Netlify (khi đó plan Netlify N3 mới áp dụng)?
+12. **Dự phòng quay lại** sau khi thay `main`: giữ bản archive phục vụ trên đường dẫn riêng (không cần force), hay chấp nhận quay lại bằng force-push khi cần?
 
 ## 10. Ước lượng thô (chưa kiểm chứng)
 
-A0: 1–2 phiên · A1: 2–3 · A2: 3–5 · A3: 5–8 · B1–B3: 1–2 phiên (làm song song) · C1: dưới 1 · C2: 1–2 · C3: 1–2. Luồng A tổng khoảng 11–18 phiên, chia bước nhỏ.
+A0: 1–2 phiên · A1: 2–3 · A2: 3–5 · A3: 5–8 · B1–B3: 1–2 phiên (làm song song) · C1: dưới 1 · C2: 1–2 · C3: 1–2 · H0–H2: dưới 1–2 (song song). Luồng A tổng khoảng 11–18 phiên theo bản 1; `ROADMAP_RESTRUCTURE.md` §10 có số cập nhật (14–21, vì A0 nặng hơn).
 
 ## 11. Ràng buộc phải giữ trong suốt quá trình
 
 - Bump `?v=N` đúng file đã sửa (và `game-version.json` khớp `game.html`) cho đến khi có A4.
 - `data/starter.json` và `data/starter.version.json` luôn khớp `version`.
 - Chỉ THÊM cột/bảng/hàm DB, chạy SQL trước khi merge code, không tự chạy khi chưa được TJ đồng ý.
-- `git push origin main` là một lệnh riêng; TJ xem thử rồi mới lên `main`.
+- **Không push `origin/main`, không merge `main` vào dòng này** cho tới lúc freeze và thay `main` (mục 5.1). Khi thay, `git push origin <đầu nhánh>:main` là một lệnh riêng do TJ bảo.
+- Backend dùng chung với bản `main` đóng băng: chỉ THÊM, tương thích ngược; mỗi lần deploy cần TJ đồng ý (I9).
 - Không commit file đề ETS, không dán key/token vào file.
 - Không hồi lại các thứ đã bỏ hẳn (xem "Quyết định đã chốt" trong `CLAUDE.md`).
 

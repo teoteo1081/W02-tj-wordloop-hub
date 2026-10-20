@@ -1,7 +1,7 @@
 # TEST_REGRESSION_RESTRUCTURE — kế hoạch kiểm thử hồi quy cho restructure
 
 > Trạng thái: **DỰ THẢO, CHƯA DUYỆT; CHƯA CÓ DÒNG TEST NÀO ĐƯỢC VIẾT.** Đây là đặc tả bộ test (ca nào, kiểm gì, tiêu chí đạt), không phải mã test. Mã test viết ở M0 sau khi TJ duyệt (xem `ROADMAP_RESTRUCTURE.md`).
-> Nguồn: `PLAN_RESTRUCTURE.md` bản 2.1, `SPEC_RESTRUCTURE.md` (bất biến I1–I8), mục "Lỗi đã sửa" và "Quyết định đã chốt" trong `CLAUDE.md`.
+> Nguồn: `PLAN_RESTRUCTURE.md` bản 2.2 (hai dòng song song: `main` đóng băng trên GitHub Pages, dòng restructure trên Netlify, dùng chung backend), `SPEC_RESTRUCTURE.md` (bất biến I1–I9), mục "Lỗi đã sửa" và "Quyết định đã chốt" trong `CLAUDE.md`.
 > Mọi chỗ ghi "(chưa xác minh)" là điều A0 phải kiểm trước khi viết ca tương ứng.
 
 ## 1. Mục tiêu và nguyên tắc
@@ -68,14 +68,14 @@ Ba bậc ưu tiên (cột "Tầng"): **B** = chặn merge; **N** = chạy hằng
 
 **Quy tắc ngoại lệ baseline (áp cho mọi ca tĩnh).** M0 yêu cầu mọi ca tầng B xanh *trên mã chưa đổi*. Nếu một ca bắt được vi phạm có sẵn từ trước, **không** được bỏ qua âm thầm, cũng không sửa mã ngay trong M0. Chọn một trong hai:
 1. **Ratchet:** đo vi phạm hiện có ở M0, ghi vào tệp danh sách ngoại lệ có lý do từng dòng; test đỏ khi có vi phạm *mới*, xanh khi danh sách *giảm*. Danh sách được duyệt cùng M0.
-2. **Tách bước sửa trước cổng M0:** chỉ khi vi phạm là lỗi thật đáng sửa ngay, làm thành PR `fix/…` riêng (một việc một nhánh, có bump), merge xong mới tính cổng.
+2. **Tách bước sửa trước cổng M0:** chỉ khi vi phạm là lỗi thật đáng sửa ngay, làm thành commit riêng trên dòng tích hợp (không lẫn vào commit dời mã, có bump), merge xong mới tính cổng.
 
 Kiểm đo trên baseline (2026-10-20, `e324beb`) cho STA-03: có 5 mục cục bộ không `?v=` — `index.html:25–27` (`manifest.webmanifest`, `icon.svg`, `apple-touch-icon` → `icon.svg`), `game.html:7` (`icon.svg`), `learn/sw/index.html:15` (`../../js/config.js`). `learn/dm`, `learn/ea` không có mục nào.
 
 | Mục | Xử lý | Lý do |
 |---|---|---|
 | `manifest.webmanifest`, `icon.svg` (3 chỗ) | Ngoại lệ **vĩnh viễn** trong `STA-03.allow` | Tài nguyên hầu như không đổi, không phải mã; thêm `?v=` không có lợi |
-| `learn/sw/index.html` → `../../js/config.js` | Ngoại lệ **tạm** trong `STA-03.allow` + PR `fix/…` riêng sau M0 thêm `?v=` đúng số của `index.html` và xoá dòng khỏi danh sách | Có rủi ro thật (cache cũ của cấu hình), nhưng đổi nó là sửa mã ngoài phạm vi M0; không gộp vào restructure |
+| `learn/sw/index.html` → `../../js/config.js` | Ngoại lệ **tạm** trong `STA-03.allow` + commit riêng sau M0 thêm `?v=` đúng số của `index.html` và xoá dòng khỏi danh sách | Có rủi ro thật (cache cũ của cấu hình), nhưng đổi nó là sửa mã ngoài phạm vi M0; không gộp vào restructure |
 
 Mọi danh sách ngoại lệ nằm cạnh bộ test và chỉ được sửa bởi PR có TJ duyệt.
 
@@ -209,7 +209,7 @@ Tên sự kiện đóng băng: `alive, ans, bmeta, board, cc, chat, gaps, graded
 | MP-15 | R | B | **Bảo vệ phòng thật:** trong mọi test, nếu có kênh `game:TJ` hoặc mã phòng `TJ` xuất hiện trong lời gọi → test **thất bại ngay** (lỗi QA cũ: vào nhầm phòng "TJ"). Gamelayer đóng vì "không phải TJ" thì xoá iframe; mất mạng (DB rơi về Local) không coi là "không phải TJ" |
 | MP-16 | R | B | Lịch sử → "Ôn ngay": dùng `G.rvMid`, **không** ghi đè `G.logMatch` (log ván đang chơi vẫn nguyên) |
 | MP-17 | C | N | `renderLobby()`/`renderEnd()` chạy lặp mỗi lần phòng gửi trạng thái: các hành động "một lần" (tắt tiếng, reset) chỉ chạy một lần nhờ cờ đổi pha (`G.soundPh`) |
-| MP-18 | C | N | **Hỗn hợp phiên bản (I4):** client chạy bản baseline (phục vụ ở cổng riêng, từ một thư mục `git worktree` của SHA baseline) và client chạy bản mới (cổng khác), **mỗi client một context, nối qua cùng broker**; broker chỉ khoá theo tên kênh `game:<mã>` nên không phụ thuộc origin. Một phòng `ZZ_…`: MP-01, MP-02, MP-06 vẫn đạt. (Hai bản dưới cùng origin không cần thiết và không dùng) |
+| MP-18 | C | **B** | **Hỗn hợp phiên bản (I4) — chặn merge vì hai bản sẽ cùng tồn tại suốt dự án (plan §5.1):** client chạy bản baseline = `e324beb` (đúng nội dung bản `main` đóng băng) (phục vụ ở cổng riêng, từ một thư mục `git worktree` của SHA baseline) và client chạy bản mới (cổng khác), **mỗi client một context, nối qua cùng broker**; broker chỉ khoá theo tên kênh `game:<mã>` nên không phụ thuộc origin. Một phòng `ZZ_…`: MP-01, MP-02, MP-06 vẫn đạt. (Hai bản dưới cùng origin không cần thiết và không dùng) |
 | MP-19 | C | N | Bảng: `docTap` dùng `getClientRects()` từng dòng — chạm vào từ vắt hai dòng chọn đúng từ, không nuốt cú chạm từ khác |
 | MP-20 | C | B | Bài đọc/bảng từ vựng mặc định `freeView = true` (mỗi người tự cuộn) |
 | MP-21 | C | B | **Một tab một phòng** (`tjwl_game_tabs`, quyết định 2026-09-30): hai trang **cùng một context** cùng hồ sơ: tab mới vào → tab cũ tạm dừng (`tab_other`); tab cũ đang `phase==="play"` → tab mới bị chặn (`tab_busy`); nút "Dùng game ở tab này" (`force`) giành được, chấp nhận bỏ ván; 📺 (`view==="screen"`) và xem lại ván không tính. Đây là ca *duy nhất* dùng hai trang chung context |
@@ -299,6 +299,35 @@ Chạy trên **ảnh chụp dữ liệu thật** (xuất chỉ-đọc, đặt ng
 | SCH-01 | N | Script chỉ-đọc so `information_schema` (bảng, cột, kiểu, khoá, chỉ mục, policy) với `tools/supabase_schema.sql` + `tools/game_schema.sql`; xuất danh sách lệch. Cần PAT tạm của TJ; thu hồi sau |
 | SCH-02 | B | Hình dạng body gọi Edge Function AI (`model, sys, user, user_id, block_id`) không đổi sau M1.5 (nối I2) |
 
+### 9.5 Tương thích ngược với bản `main` đóng băng — BCK (I9)
+
+Backend dùng chung: mọi thay đổi ở `supabase/`, Worker, SQL có tác dụng ngay với bản đang dùng. Các ca này chạy **bộ lời gọi của bản baseline** (lấy từ nhật ký lời gọi chuẩn §5, chụp ở `e324beb`) lên backend đã đổi.
+
+| ID | Loại | Tầng | Kiểm gì → đạt |
+|---|---|---|---|
+| BCK-01 | C | B | Edge Function AI (sau B1): bốn đường gọi hợp lệ của bản baseline (WordLoop, CC, chấm câu, tra nghĩa — gồm `user_id:null, block_id:null`) nhận phản hồi cùng hình dạng như trước khi còn ngân sách; 403 `quota_user` giữ nguyên hình dạng |
+| BCK-02 | C | B | Sau B1 khi hết ngân sách hoặc sổ không đọc được: bản baseline nhận lỗi mà nó đã xử lý được (không ném lỗi không bắt; thông báo hiển thị như lỗi proxy hiện có) — ghi lại hành vi thật của bản baseline với 503 trước khi bật B1 |
+| BCK-03 | C | B | Worker `tj-shelf` (sau B2): `list`/`PUT`/`DELETE` mà `game.js` baseline gửi (không có thêm header mới) vẫn chạy theo phương án xác thực TJ chọn; nếu phương án làm bản baseline mất quyền ghi/xoá thì ghi rõ đây là thay đổi hành vi có chủ đích, cần TJ duyệt |
+| BCK-04 | C | B | Schema: mọi DDL chỉ THÊM (kiểm bằng so sánh `information_schema` trước/sau: không cột/bảng/hàm bị xoá, đổi tên hoặc đổi kiểu); bộ lời gọi REST của bản baseline chạy y hệt |
+| BCK-05 | C | B | Hàm Postgres mới (C2) không đổi kết quả của đường cũ mà bản baseline vẫn dùng (`words`/`word_progress` truy vấn như trước) |
+| BCK-06 | C | B | Giao thức game: bản baseline và bản mới cùng phòng (MP-18) sau mỗi thay đổi ở `game`/`board` |
+
+### 9.6 Hosting — HST (luồng H)
+
+Chạy trên URL Netlify của nhánh restructure (và, với HST-04, cả bản Pages của `main`). Kiểm tay hoặc Playwright trỏ vào URL thật; **không** ghi dữ liệu thật trừ theo §12.
+
+| ID | Loại | Tầng | Kiểm gì → đạt |
+|---|---|---|---|
+| HST-01 | C | N | Mở trực tiếp `index.html`, `game.html`, `learn/dm`, `learn/ea`, `learn/sw`; không 404; không có rewrite về SPA; `game.html` không bị "Pretty URLs" đổi đường dẫn (chưa xác minh cấu hình mặc định của Netlify) |
+| HST-02 | C | N | Mọi tệp mà HTML tham chiếu đều có trên host (quét liên kết); tài nguyên ngoài (CIA, Marketing trên github.io của repo khác) còn tải được |
+| HST-03 | C | N | `gamelayer`: iframe game cùng origin với cha, `postMessage` kiểm `location.origin` hoạt động trên origin Netlify |
+| HST-04 | C | N | Hai host cùng backend: một thiết bị trên Pages (`main`), một trên Netlify, cùng phòng `ZZ_…` (nối MP-18, BCK-06) |
+| HST-05 | C | N | PWA: cài và mở lại đúng host; `sw.js` đăng ký; offline theo mức hiện có |
+| HST-06 | C | N | `curl -I` ghi `Cache-Control` của `index.html`, `js/*.js?v=…`, `sw.js` trên cả hai host; ghi lại kết quả (không có tiêu chí đạt/trượt, dùng để quyết áp lực của cổng version A2) |
+| HST-07 | C | N | Origin: `localStorage` của hai host tách biệt; vào lại hồ sơ bằng `?u=` hoạt động trên Netlify; bộ lọc `Origin` của B1/B2 (nếu đã bật) chấp nhận đúng hai host chính thức và URL branch deploy, từ chối host lạ |
+| HST-08 | C | N | Credit: ghi số credit trước/sau một lượt kiểm thử (đối chiếu công thức của `PLAN_NETLIFY_FRONTEND.md`) |
+| HST-09 | C | M | Sau khi thay `main` (plan §5.1): lặp HST-01..05 trên host chính thức; bản archive còn truy cập được theo phương án dự phòng đã chọn |
+
 ## 10. Ma trận truy vết
 
 Nguồn: `CLAUDE.md`. Cột "Phủ" là ID ca; "—" nghĩa là chưa có ca tự động (cần M0 quyết hoặc để kiểm tay).
@@ -350,7 +379,7 @@ Nguồn: `CLAUDE.md`. Cột "Phủ" là ID ca; "—" nghĩa là chưa có ca t�
 | Bảng: quyền mọi người như host | MP-08, MP-09 |
 | Chat/Voice/CC/Đọc theo | MP-11..13, FLW-17 |
 | Game khoá host theo hồ sơ TJ, không theo `is_admin` | MP-15 và thêm ca "hồ sơ không phải TJ không mở được phòng game" (tầng B) |
-| Hosting GitHub Pages; preview theo nhánh | — (kiểm tay: workflow chạy) |
+| Hosting: `main` ở GitHub Pages, dòng restructure ở Netlify song song; cuối cùng thay `main` (TJ 2026-10-20; thay quyết định cũ "Hosting là GitHub Pages, không đề xuất Netlify" của `CLAUDE.md`, cập nhật `CLAUDE.md` khi thay `main`) | HST-01..09, BCK-* |
 
 ## 11. CI, cổng merge và kiểm tay
 
@@ -359,7 +388,7 @@ Nguồn: `CLAUDE.md`. Cột "Phủ" là ID ca; "—" nghĩa là chưa có ca t�
 | Tầng | Khi nào | Gồm |
 |---|---|---|
 | **B (chặn merge)** | Mọi PR | STA-*, CTX/SRS/UTL/RA, LS/DB/CL, CALL-* tầng B, VIS tầng B, MP tầng B, FLW/BRD tầng B, LED/RPC/SHF/SCH tầng B (khi PR thuộc luồng đó). Mục tiêu ≤ 10 phút |
-| **N (hằng đêm / gọi tay)** | Lịch hoặc `workflow_dispatch` | Ma trận ảnh đầy đủ, MP-10/12/13/17/18, offline/SW, CALL-W07/G03/G06/G07, LED-11, RPC-06, SCH-01 |
+| **N (hằng đêm / gọi tay)** | Lịch hoặc `workflow_dispatch` | Ma trận ảnh đầy đủ, MP-10/12/13/17, offline/SW, CALL-W07/G03/G06/G07, LED-11, RPC-06, SCH-01, HST-01..08 (MP-18 và BCK-* đã ở tầng B) |
 | **M (kiểm tay)** | Trước khi merge M1.4 và mỗi lô M3 thuộc `game.js`; trước mỗi lần TJ bảo đẩy `main` | §11.3 |
 
 ### 11.2 Chính sách
@@ -378,7 +407,8 @@ Nguồn: `CLAUDE.md`. Cột "Phủ" là ID ca; "—" nghĩa là chưa có ca t�
 5. Đọc theo (Web Speech): Chrome/Edge; ghi nhận iPhone flaky.
 6. Chia sẻ màn hình (người sau đè người trước); iPhone không có `getDisplayMedia` (không phải lỗi).
 7. Offline: tải online → tắt mạng → tải lại `index.html` và game.
-8. Bản deploy: xem workflow "pages build and deployment", tải lại từng file JS ở web thật (`curl`) và `node --check`.
+8. Bản deploy Netlify: xem log deploy (SHA đúng nhánh), tải lại từng file JS từ URL Netlify (`curl`) và `node --check`; ghi `Cache-Control` (HST-06). Bản `main` trên Pages **không bị đụng**: xác nhận SHA trên trang Pages vẫn là bản đóng băng.
+9. Hỗn hợp: một thiết bị bản `main` (Pages) + một thiết bị bản Netlify cùng phòng `ZZ_…` (HST-04).
 
 ## 12. Môi trường, dữ liệu cố định và an toàn
 
@@ -390,7 +420,8 @@ Nguồn: `CLAUDE.md`. Cột "Phủ" là ID ca; "—" nghĩa là chưa có ca t�
 - Thư viện `@supabase/supabase-js@2.45.4` phục vụ cục bộ (đóng gói bằng `npm pack`, theo `tools/qa/README.md`) để chặn mạng thật; chặn mọi miền ngoài trừ mock.
 
 **An toàn:**
-- Không ghi lên Supabase thật. Kiểm chạm dịch vụ thật (nếu cần, ví dụ SCH-01) chỉ-đọc và có TJ đồng ý.
+- **Bộ test tự động không bao giờ ghi lên Supabase thật** (mock). Kiểm chạm dịch vụ thật (SCH-01, HST-*) chỉ-đọc, trừ ngoại lệ dưới đây.
+- **Ngoại lệ ghi dữ liệu thật (dòng restructure dùng chung backend với bản `main` đang dùng — plan §5.1):** (1) chỉ khi TJ cho phép từng đợt; (2) chỉ bằng hồ sơ thử và phòng/khoá `ZZ_…` có tiền tố rõ ràng; (3) có danh sách việc đã ghi và bước dọn (xoá dòng `ZZ_…` trong `game_rooms`, câu trả lời, lịch sử, tệp `lib/_tmp/ZZ_…`) chạy ngay sau đợt kiểm; (4) ghi bằng **hồ sơ thật** chỉ sau cổng nhật ký lời gọi khớp + TJ đồng ý (câu 9 của plan). Không bao giờ bằng hồ sơ TJ trong phòng `TJ`.
 - Mọi test game dùng mã phòng `ZZ_<test>_<ngẫu nhiên cố định>`; lớp bao kiểm tra (MP-15) thất bại ngay nếu thấy `game:TJ`.
 - Không đưa dữ liệu người dùng thật, link đăng nhập `?u=`, key hay token vào fixture hay vào repo; ảnh chụp dữ liệu thật cho RPC-01 để ngoài repo.
 - Không commit tệp đề ETS (STA-06).
@@ -406,4 +437,6 @@ Nguồn: `CLAUDE.md`. Cột "Phủ" là ID ca; "—" nghĩa là chưa có ca t�
 3. Hiện trạng CSS cho STA-07 (đang xanh hay đang vi phạm).
 4. Số điểm gọi Supabase *động* (chuỗi bảng ghép lúc chạy) trong `game.js` — ảnh hưởng độ khó của nhật ký lời gọi chuẩn (ROADMAP §10, điều kiện đổi lộ trình).
 5. Danh sách hàm `App.*` bị gọi ngược (SPEC §4.2).
-6. Cách phục vụ hai bản (baseline + mới) song song cho MP-18.
+6. Cách phục vụ bản baseline (`e324beb`, một `git worktree` thứ hai ở cổng khác) song song với bản mới cho MP-18/BCK-* (ROADMAP M0.1).
+7. Chụp bộ lời gọi baseline (đầu vào cho BCK-*) ngay ở M0, trước khi có thay đổi backend nào.
+8. Xác minh cấu hình Netlify cho HST-01 ("Pretty URLs") và định dạng URL branch deploy cho HST-07 (H0).

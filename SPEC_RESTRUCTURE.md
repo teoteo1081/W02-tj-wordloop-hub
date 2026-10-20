@@ -1,6 +1,6 @@
 # SPEC_RESTRUCTURE — đặc tả trạng thái đích của codebase sau restructure
 
-> Trạng thái: **DỰ THẢO, CHƯA DUYỆT.** Sinh từ `PLAN_RESTRUCTURE.md` bản 2.1. Plan nói *làm gì và vì sao*; file này nói *đích đến phải đúng như thế nào để nghiệm thu được*. Lộ trình ở `ROADMAP_RESTRUCTURE.md`, kiểm thử ở `TEST_REGRESSION_RESTRUCTURE.md`.
+> Trạng thái: **DỰ THẢO, CHƯA DUYỆT.** Sinh từ `PLAN_RESTRUCTURE.md` bản 2.2 (mô hình vận hành: `main` đóng băng chạy GitHub Pages, dòng restructure chạy Netlify, dùng chung backend, cuối cùng thay `main`). Plan nói *làm gì và vì sao*; file này nói *đích đến phải đúng như thế nào để nghiệm thu được*. Lộ trình ở `ROADMAP_RESTRUCTURE.md`, kiểm thử ở `TEST_REGRESSION_RESTRUCTURE.md`.
 > Mọi chỗ ghi "(chưa xác minh)" là giả định cần A0 kiểm lại bằng đo đạc, không phải sự thật đã biết.
 > Từ khoá: **PHẢI** = bắt buộc nghiệm thu; **NÊN** = mong muốn, có thể hoãn nếu ghi lý do.
 
@@ -19,13 +19,16 @@ Sau mỗi bước restructure, các điều sau PHẢI vẫn đúng. Đây là t
 | I1 | Mỗi màn hình dựng ra giống hệt trước (cùng dữ liệu cố định, cùng viewport) | Ảnh chụp, sai khác = 0 (TEST §6) |
 | I2 | Cùng thao tác người dùng gọi cùng chuỗi lời gọi Supabase/Edge/Worker (bảng, thao tác, bộ lọc, hình dạng payload, thứ tự) | Nhật ký lời gọi chuẩn (TEST §5) |
 | I3 | Dữ liệu `localStorage` giữ nguyên tên khoá và hình dạng (người dùng đang dùng không mất dữ liệu khi cập nhật) | Test khoá/giá trị `localStorage` (TEST §4.1) |
-| I4 | Giao thức realtime của game giữ nguyên tên sự kiện và hình dạng tin (máy cũ và mới có thể ở cùng một phòng trong lúc cập nhật) | Test hai client, một bản cũ một bản mới (TEST §7) |
+| I4 | Giao thức realtime của game giữ nguyên tên sự kiện và hình dạng tin. **Suốt dự án** (không chỉ lúc cập nhật): người dùng bản `main` đóng băng và bản restructure có thể ở cùng một phòng | Test hai client, một bản baseline một bản mới, tầng chặn merge (TEST §7, MP-18) |
 | I5 | Hàm thuần (`Context`, `SRS`, `normalizeAnswer`, `ReadAlong` chấm điểm) trả cùng kết quả cho cùng đầu vào | Test Node (TEST §3) |
 | I6 | URL công khai không đổi: `index.html`, `game.html`, `game.html?room=…`, `?u=…`, `?sel=…`, `learn/*/index.html`, `manifest.webmanifest`, `data/starter*.json` | Test điều hướng + kiểm tĩnh |
 | I7 | Mọi quyết định trong mục "Quyết định đã chốt" và "Lỗi đã sửa" của `CLAUDE.md` còn hiệu lực | Ma trận truy vết (TEST §10) |
-| I8 | Không thêm yêu cầu build bắt buộc trước khi chạy local (`python3 -m http.server`), trừ khi TJ chọn A4 | Chạy tay + CI |
+| I8 | Không thêm yêu cầu build bắt buộc trước khi chạy local (`python3 -m http.server`), trừ khi TJ chọn A4. Cũng áp cho Netlify: phục vụ được từ thư mục gốc nguyên trạng, hoặc bước build/copy phải được TJ chọn rõ (plan, luồng H1b) | Chạy tay + CI |
+| I9 | **Tương thích ngược với bản `main` đóng băng trên backend dùng chung:** (a) schema chỉ THÊM (không đổi tên/xoá/đổi kiểu); (b) Edge Function/Worker nhận đúng mọi yêu cầu mà bản baseline gửi (kể cả `user_id:null`); (c) bản restructure chỉ ghi dữ liệu thật theo quy tắc ghi của plan §5.1 | Test BCK-* (TEST §9.5), nhật ký lời gọi (TEST §5), SCH-01 |
 
-I2, I3, I4 được viết ra vì ảnh chụp không bắt được chúng (xem plan, A0).
+I2, I3, I4, I9 được viết ra vì ảnh chụp không bắt được chúng (xem plan, A0 và §5.1).
+
+Ghi chú khi đổi origin: `localStorage`, `sessionStorage` và PWA gắn theo origin, nên bản `main` (github.io) và bản restructure (Netlify) **không dùng chung** dữ liệu cục bộ. I3 đảm bảo *tên khoá và hình dạng* giữ nguyên khi người dùng chuyển sang bản mới sau khi thay `main` (cùng origin lúc đó), chứ không đảm bảo dữ liệu tự chuyển giữa hai origin.
 
 ## 3. Cấu trúc đích
 
@@ -124,11 +127,12 @@ Quy tắc an toàn khi kiểm thử: không bao giờ vào phòng `TJ`; mọi ha
 
 Restructure luồng A được coi là **xong** khi đồng thời:
 
-1. Toàn bộ nhóm test PHẢI-chặn-merge xanh trên `main`, ảnh chụp sai khác = 0, nhật ký lời gọi khớp chuẩn (hoặc khác có ghi chú duyệt từng dòng).
+1. Toàn bộ nhóm test PHẢI-chặn-merge xanh **trên đầu nhánh restructure ở thời điểm freeze**, ảnh chụp sai khác = 0, nhật ký lời gọi khớp chuẩn (hoặc khác có ghi chú duyệt từng dòng).
 2. Bảng chỉ số ở plan mục 7 đạt đích: ngoài `data/` 0 điểm Supabase, 0 điểm `localStorage`, 1 định nghĩa `esc`, file lớn nhất dưới ~800 dòng, 0 global tự đặt (trừ điểm vào), đồ thị import không vòng.
-3. Kiểm tay trên bản preview bằng hai thiết bị thật trong phòng `ZZ_…`: lobby → ván → kết thúc, bảng, voice/CC bật-tắt, tải lại giữa ván.
-4. Bản đã deploy (`github.io`) chạy: tải online → tắt mạng → tải lại vẫn dùng được; sau một lần cập nhật không còn người dùng kẹt bản cũ.
-5. TJ xem bản preview và đồng ý (`/ship` chỉ khi TJ bảo).
+3. Kiểm tay trên bản Netlify bằng hai thiết bị thật trong phòng `ZZ_…`: lobby → ván → kết thúc, bảng, voice/CC bật-tắt, tải lại giữa ván; thêm một lượt **hỗn hợp phiên bản**: một thiết bị chạy bản `main` (Pages), một thiết bị chạy bản Netlify, cùng phòng.
+4. Bản Netlify chạy: tải online → tắt mạng → tải lại vẫn dùng được; sau một lần cập nhật không còn người dùng kẹt bản cũ. *(Sau khi thay `main`, lặp lại kiểm này trên host chính thức.)*
+5. Bản restructure ghi dữ liệu thật đúng như `main` (nhật ký lời gọi khớp) và TJ đã đồng ý cho ghi bằng hồ sơ thật (plan §5.1, câu 9).
+6. TJ xem bản Netlify và đồng ý freeze. Việc thay `main` là một quyết định và một lệnh riêng theo plan §5.1 (`/ship` chỉ khi TJ bảo).
 
 ## 10. Câu hỏi còn mở ảnh hưởng đặc tả
 
@@ -139,7 +143,10 @@ Các câu này nằm ở plan mục 9 và chặn các phần tương ứng:
 | 3 (cơ chế version) | §6, và toàn bộ A2 |
 | 4 (vị trí `tools/`) | §3.1 dòng `tools/` |
 | 7 (`handoff/gate`) | §3.1 dòng `js/game.js` / A3 |
-| 8 (baseline) | Mọi bước bắt đầu |
-| 1, 2 (A0, đóng băng tính năng) | Toàn bộ lộ trình |
+| ~~8 (baseline)~~ ✔ đã chốt `e324beb` | — |
+| ~~2 (đóng băng, một dòng tích hợp)~~ ✔ đã chốt | — |
+| 1 (A0) | Toàn bộ lộ trình |
+| 9 (ghi dữ liệu thật từ bản mới) | I9(c), tiêu chí nghiệm thu 5 |
+| 10, 11, 12 (Netlify, host chính, dự phòng quay lại) | Luồng H, thủ tục thay `main` |
 
 Phần B1 (sổ chi tiêu) và C2 (RPC thống kê) có đặc tả riêng trong plan (mục 6) và được kiểm bằng TEST §9; không lặp ở đây.

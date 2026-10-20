@@ -1,6 +1,6 @@
 # ROADMAP_RESTRUCTURE — lộ trình thực hiện restructure
 
-> Trạng thái: **DỰ THẢO, CHƯA DUYỆT, CHƯA BẮT ĐẦU.** Sinh từ `PLAN_RESTRUCTURE.md` bản 2.1. Đặc tả đích ở `SPEC_RESTRUCTURE.md`; danh mục test ở `TEST_REGRESSION_RESTRUCTURE.md`.
+> Trạng thái: **DỰ THẢO, CHƯA DUYỆT, CHƯA BẮT ĐẦU.** Sinh từ `PLAN_RESTRUCTURE.md` bản 2.2. **Mô hình vận hành (TJ chốt):** `main` đóng băng (GitHub Pages, TJ dùng); mọi việc chỉ trong worktree `feat/restructure-plan` (Netlify); hai dòng song song, dùng chung backend, tới khi freeze rồi thay hẳn `main`. Đặc tả đích ở `SPEC_RESTRUCTURE.md`; danh mục test ở `TEST_REGRESSION_RESTRUCTURE.md`.
 > Ước lượng tính bằng "phiên làm việc" (một phiên Claude Code/một buổi), thô, chưa kiểm chứng. Không có ngày lịch vì còn phụ thuộc các quyết định của TJ.
 
 ## 1. Nguyên tắc vận hành lộ trình
@@ -9,17 +9,23 @@
 2. **Không bước nào vừa đổi cấu trúc vừa đổi hành vi.** Muốn đổi hành vi thì tách luồng B hoặc C với PR riêng.
 3. **Test trước, di chuyển sau.** Mỗi vùng mã chỉ được dời sau khi test đặc trưng (characterization) cho vùng đó đã xanh trên mã hiện tại.
 4. **PR nhỏ, dễ hoàn tác.** Tham chiếu: một PR đụng một module hoặc một lớp, dưới ~600 dòng diff không tính phần chỉ dời nguyên văn. Mỗi PR có thể `git revert` độc lập.
-5. **Quy ước repo giữ nguyên:** mỗi việc một nhánh `feat/…`/`fix/…`; TJ xem bản preview rồi mới lên `main`; `git push origin main` luôn là một lệnh riêng; bump `?v=N` (hoặc cơ chế thay thế sau A2) đúng file đã sửa; không commit đề ETS; không dán key.
-6. **Luồng B (vá bảo mật) tách khỏi nhánh restructure** vì deploy nằm ngoài git và cần secret của TJ.
-7. Mọi bước chạm dữ liệu Supabase chỉ THÊM (bảng/cột/hàm); chạy SQL **trước** khi merge code dùng nó và chỉ khi TJ đồng ý (`CLAUDE.md`).
+5. **Quy ước theo mô hình hai dòng (thay quy ước "mỗi việc một nhánh, lên `main` từng bước"):** mọi việc là commit trên một dòng tích hợp duy nhất `feat/restructure-plan`; **không push `origin/main`, không merge `main` vào** cho tới lúc thay `main` ở cuối; lấy commit từ nơi khác bằng cherry-pick; bump `?v=N` (hoặc cơ chế thay thế sau A2) đúng file đã sửa; không commit đề ETS; không dán key.
+6. **Luồng B (vá bảo mật):** mã viết trong dòng tích hợp, nhưng **deploy là bước riêng ngoài git cần TJ đồng ý từng lần**, vì backend dùng chung nên có tác dụng ngay với bản `main` đang chạy.
+7. Mọi bước chạm dữ liệu Supabase chỉ THÊM (bảng/cột/hàm) và **tương thích ngược với bản `main` đóng băng** (SPEC I9); chạy SQL **trước** khi code dùng nó chạy, và chỉ khi TJ đồng ý (`CLAUDE.md`).
+8. **Bản mới chỉ ghi dữ liệu thật theo quy tắc ghi** (plan §5.1): hồ sơ thử/phòng `ZZ_…` cho tới khi nhật ký lời gọi khớp và TJ đồng ý.
 
 ## 2. Cổng quyết định của TJ (chặn việc gì)
 
 | Cổng | Câu hỏi (plan, mục 9) | Chặn |
 |---|---|---|
-| G0 | 1, 2: chấp nhận A0; đóng băng tính năng hay không; một nhánh hay nhiều | Mọi thứ |
-| G1 | 8: baseline (`git rebase main` cục bộ hay push rồi rebase `origin/main`) | M0 |
-| G2 | 7: `handoff/gate` giữ và merge trước, hay hoãn | M0 (CI) và M3 (cắt `game.js`) |
+| G0 | 1: chấp nhận A0 (câu 2 ✔ đã chốt: `main` đóng băng, một dòng tích hợp) | Mọi thứ |
+| G1 | ✔ **đã chốt:** baseline `e324beb`, không merge `main`, cherry-pick khi cần | — |
+| G7 | 9: quy tắc ghi dữ liệu thật từ bản mới (hay dùng bản sao Supabase riêng) | Mọi kiểm thử ghi bằng hồ sơ thật; cổng ra M1 |
+| G8 | 10: Netlify (site cũ/mới, branch deploy hay production branch, ngân sách) | H0–H2 |
+| G9 | 11: host chính sau khi thay `main` | Thủ tục thay `main` bước 5, plan §5.1 |
+| G10 | 12: dự phòng quay lại sau khi thay `main` | Thủ tục thay `main` |
+| G-freeze | TJ tuyên bố freeze khi đạt SPEC §9 | Thay `main` |
+| G2 | 7: `handoff/gate` (chưa vào `main`, sửa `js/game.js`): cherry-pick vào dòng này, hay bỏ / hoãn. Vì `main` đóng băng nên không có chuyện "merge vào `main` trước" | M0 (CI) và M3 (cắt `game.js`) |
 | G3 | 3: cơ chế version (import map / đóng dấu / Vite) và thiết bị iOS đích | M2 |
 | G4 | 4: vị trí `tools/` | M1 |
 | G5 | 5: phương án xác thực `tj-shelf` | B2 |
@@ -55,18 +61,18 @@ B1, B2, B3 không phụ thuộc M0–M3 và có thể chạy song song ngay khi 
 
 ### M0 — Nền tảng và lưới an toàn
 
-**Cổng vào:** G0, G1, G2 đã mở.
+**Cổng vào:** G0, G2 đã mở (G1 đã chốt: baseline `e324beb`).
 
 | Việc | Đầu ra | Ghi chú |
 |---|---|---|
-| M0.1 Tích hợp baseline | Nhánh trên SHA baseline đã chốt; SHA ghi vào bảng số liệu gốc | |
+| M0.1 Chốt baseline | Xác nhận đầu nhánh dẫn xuất từ `e324beb`; ghi SHA baseline vào bảng số liệu gốc; phục vụ một bản baseline (worktree thứ hai tại `e324beb`) để dùng cho MP-18 và BCK-* | |
 | M0.2 Đo số liệu gốc | Bảng plan mục 7 điền đủ cột "Hiện tại" | gồm danh sách hàm `App.*` bị gọi ngược (SPEC §4.2) |
 | M0.3 Test Node | Bộ test `context`, `srs`, `util`, `readalong`, adapter local `db`; kiểm tĩnh | TEST §3, §4.1 |
 | M0.4 Khung Playwright | Mock REST/Storage/Functions; **broker Realtime giả trong tiến trình test, mỗi client một context** (không dùng `BroadcastChannel` để nối client); cố định dữ liệu/đồng hồ/random (hạt giống random khác nhau giữa các context) | TEST §7, §12 |
 | M0.5 Nhật ký lời gọi chuẩn | Golden call log cho mọi kịch bản chuẩn | TEST §5 |
 | M0.6 Ảnh chuẩn | Ma trận màn × viewport; chạy hai lần giống hệt | TEST §6 |
 | M0.7 Kịch bản hai client | Các kịch bản multiplayer chạy xanh trên mã hiện tại | TEST §7 |
-| M0.7b Ngoại lệ baseline | Chạy mọi ca tĩnh trên mã chưa đổi; lập danh sách vi phạm có sẵn (vd `STA-03.allow` với 5 mục: manifest, 3 chỗ `icon.svg`, `learn/sw` → `config.js`) theo quy tắc ratchet; PR `fix/…` riêng (sau M0) cho vi phạm đáng sửa như `learn/sw` thiếu `?v=` | TEST §3.3, §13 |
+| M0.7b Ngoại lệ baseline | Chạy mọi ca tĩnh trên mã chưa đổi; lập danh sách vi phạm có sẵn (vd `STA-03.allow` với 5 mục: manifest, 3 chỗ `icon.svg`, `learn/sw` → `config.js`) theo quy tắc ratchet; commit riêng (sau M0) cho vi phạm đáng sửa như `learn/sw` thiếu `?v=` | TEST §3.3, §13 |
 | M0.8 CI | Workflow chạy test tầng PHẢI-chặn-merge; tích hợp test của `handoff/gate` nếu G2 giữ nó | TEST §11 |
 
 **Cổng ra:** mọi test M0 xanh **trên mã chưa đổi** (các ca ratchet xanh với danh sách ngoại lệ đã duyệt; không ca nào bị bỏ qua âm thầm); ảnh chuẩn ổn định qua hai lần chạy; ma trận truy vết (TEST §10) không còn dòng "chưa có test" cho nhóm PHẢI-chặn-merge; TJ xem báo cáo số liệu gốc.
@@ -110,7 +116,7 @@ B1, B2, B3 không phụ thuộc M0–M3 và có thể chạy song song ngay khi 
 
 ### M3 — Cắt file lớn
 
-**Cổng vào:** M2 xong; G2 đã giải quyết (nhánh `handoff/gate` đã vào `main` hoặc đã bị bỏ) để không xung đột trên `js/game.js`.
+**Cổng vào:** M2 xong; G2 đã giải quyết (`handoff/gate` đã được cherry-pick vào dòng này hoặc đã bị bỏ) để không xung đột trên `js/game.js`.
 
 Thứ tự đề xuất (rủi ro tăng dần, vì phần sau bám nhiều phụ thuộc hơn):
 1. `board.js` (phần canvas/chia sẻ/PDF tách thành module riêng).
@@ -130,7 +136,7 @@ Thứ tự đề xuất (rủi ro tăng dần, vì phần sau bám nhiều phụ
 **Cổng ra:** không còn `?v=N` thủ công; offline/SW đạt; thời gian build CI ≤ 5 phút.
 **Ước lượng:** 1–2 phiên (chưa tính chuyển deploy).
 
-## 5. Luồng B — vá bảo mật (song song, nhánh `fix/…` riêng)
+## 5. Luồng B — vá bảo mật (song song; mã trong dòng tích hợp, deploy là bước riêng)
 
 | Mã | Việc | Cổng vào | Cổng ra |
 |---|---|---|---|
@@ -150,11 +156,22 @@ Thứ tự đề xuất (rủi ro tăng dần, vì phần sau bám nhiều phụ
 
 Ước lượng: C1 dưới 1, C2 1–2, C3 1–2. Đo thời gian trước/sau trên mạng giả lập chậm.
 
-## 7. Quy trình mỗi PR (danh sách kiểm)
+## 6b. Luồng H — hosting (Netlify cho dòng restructure; song song, không đụng mã ứng dụng)
 
-Mỗi PR restructure PHẢI đạt trước khi báo xong:
+| Mã | Việc | Cổng vào | Cổng ra |
+|---|---|---|---|
+| H0 | Xác minh dashboard Netlify cũ: quyền, gói, credit/team usage, repo liên kết, domain; chốt site cũ hay mới | G8 | Bảng cấu hình nguồn/đích, ngân sách đã chốt (chú ý: hết credit thì mọi site trong tài khoản bị pause; gói Free là giới hạn cứng) |
+| H1 | Tạo cấu hình phục vụ nhánh `feat/restructure-plan` (mặc định branch deploy, 0 credit); chọn publish directory (nguyên gốc / copy / chờ Vite) | H0 | URL kiểm thử ổn định; artifact đối chiếu được với SHA; `main` **không** nối vào Netlify |
+| H2 | Chạy bộ kiểm HST-* (TEST §9.6) và quy trình dọn dữ liệu `ZZ_…` trên URL Netlify | H1, G7 | Bằng chứng ghi SHA, URL, thiết bị, kết quả; đo `Cache-Control` bằng `curl -I` |
+| H3 | Quyết định host chính sau khi thay `main` | Freeze + G9 | Plan Netlify N3 áp dụng nếu chọn Netlify |
 
-1. Nhánh `feat/…` từ baseline hiện tại; `git fetch` và `git rev-list --left-right --count origin/main...HEAD` trước khi đẩy (máy khác cũng đẩy).
+Lưu ý nhịp: nếu (trái đề xuất) đặt nhánh restructure làm production branch của Netlify thì mỗi lần push tốn 15 credit; gói Free chỉ đủ 20 lần/tháng chưa tính traffic. Mặc định branch deploy để tránh vấn đề này.
+
+## 7. Quy trình mỗi bước (danh sách kiểm)
+
+Mỗi bước restructure (một hoặc vài commit trên dòng tích hợp) PHẢI đạt trước khi báo xong:
+
+1. Đang ở worktree này, nhánh `feat/restructure-plan`; chạy lệnh kiểm trong `WORKTREE_ANCHOR.md` (`origin/main` vẫn `e324beb`, còn fast-forward được). Không `git push origin main`, không merge `main`.
 2. `node --check` mọi file đã sửa, nối bằng `&&`; dừng nếu lỗi.
 3. Test Node + kiểm tĩnh xanh.
 4. Playwright: nhóm PHẢI-chặn-merge xanh; ảnh sai khác = 0; nhật ký lời gọi khớp chuẩn (khác thì liệt kê từng dòng khác và lý do để TJ duyệt).
@@ -162,15 +179,20 @@ Mỗi PR restructure PHẢI đạt trước khi báo xong:
 6. `/verify` cho vùng `context.js` nếu có đụng.
 7. Sửa một chỗ thì rà các chỗ giống (`grep`) và sửa cùng lượt (quy ước TJ 2026-10-08).
 8. Agent QA độc lập cho PR đụng `game.js`/`board.js` hoặc giao thức realtime (quy ước đã dùng 3 vòng cho thay đổi tương tự).
-9. Bản preview của nhánh; TJ xem; chỉ khi TJ bảo mới `git push origin main` (một lệnh riêng) và kiểm workflow "pages build and deployment".
-10. Cập nhật bảng trạng thái ở mục 8 trong cùng PR.
+9. Đẩy nhánh `feat/restructure-plan` (khi TJ bảo; `git push -u origin feat/restructure-plan`, **không** `:main`) để Netlify dựng bản kiểm thử; TJ xem trên URL Netlify. Bước đẩy nhánh cũng kích hoạt workflow Pages preview của repo (hợp lệ, nhưng đường dẫn đó dùng chung origin với `main`: không dùng hồ sơ thật ở đó).
+10. Nếu bước có deploy backend: TJ đồng ý riêng; chạy BCK-* trước và sau.
+11. Cập nhật bảng trạng thái ở mục 8 trong cùng commit.
+
+*Thay `main` ở cuối không phải một bước của danh sách này; nó theo thủ tục ở plan §5.1 và chỉ khi TJ tuyên bố freeze.*
 
 ## 8. Bảng theo dõi tiến độ
 
 | Cột mốc | Trạng thái | Cổng đang chờ | Ghi chú |
 |---|---|---|---|
-| G0–G6 | Chưa mở | TJ trả lời plan mục 9 | |
-| M0 | Chưa bắt đầu | G0, G1, G2 | |
+| G1 (baseline), câu 2 | ✔ Đã chốt 2026-10-20 | — | `e324beb`; `main` đóng băng; fast-forward ở cuối |
+| G0, G2–G10 | Chưa mở | TJ trả lời plan mục 9 | |
+| H0–H2 | Chưa bắt đầu | G8 (+ G7 cho H2) | |
+| M0 | Chưa bắt đầu | G0, G2 | |
 | M1 | Chưa bắt đầu | M0, G4 | |
 | M2 | Chưa bắt đầu | M1, G3 | |
 | M3 | Chưa bắt đầu | M2, G2 | |
