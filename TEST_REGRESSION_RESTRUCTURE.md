@@ -28,7 +28,7 @@ Ba bậc ưu tiên (cột "Tầng"): **B** = chặn merge; **N** = chạy hằng
 | Lớp dữ liệu | Node + Supabase giả | adapter local/cloud, khoá `localStorage` | §4 |
 | Nhật ký lời gọi chuẩn | Playwright + mock mạng | I2 | §5 |
 | Giao diện (ảnh) | Playwright | I1 | §6 |
-| Hai client | Playwright, 2 trang cùng context + Realtime giả | I4, giao thức game | §7 |
+| Hai client | Playwright, mỗi client một context + broker Realtime giả trong tiến trình test | I4, giao thức game | §7 |
 | Luồng tính năng | Playwright | hành vi WordLoop/Bảng | §8 |
 | Máy chủ | Deno/Node + provider giả; SQL trên bản sao | luồng B và C | §9 |
 | Kiểm tay | checklist, thiết bị thật | âm thanh, WebRTC thật, iOS | §11.3 |
@@ -66,11 +66,24 @@ Ba bậc ưu tiên (cột "Tầng"): **B** = chặn merge; **N** = chạy hằng
 
 ### 3.3 Kiểm tĩnh
 
+**Quy tắc ngoại lệ baseline (áp cho mọi ca tĩnh).** M0 yêu cầu mọi ca tầng B xanh *trên mã chưa đổi*. Nếu một ca bắt được vi phạm có sẵn từ trước, **không** được bỏ qua âm thầm, cũng không sửa mã ngay trong M0. Chọn một trong hai:
+1. **Ratchet:** đo vi phạm hiện có ở M0, ghi vào tệp danh sách ngoại lệ có lý do từng dòng; test đỏ khi có vi phạm *mới*, xanh khi danh sách *giảm*. Danh sách được duyệt cùng M0.
+2. **Tách bước sửa trước cổng M0:** chỉ khi vi phạm là lỗi thật đáng sửa ngay, làm thành PR `fix/…` riêng (một việc một nhánh, có bump), merge xong mới tính cổng.
+
+Kiểm đo trên baseline (2026-10-20, `e324beb`) cho STA-03: có 5 mục cục bộ không `?v=` — `index.html:25–27` (`manifest.webmanifest`, `icon.svg`, `apple-touch-icon` → `icon.svg`), `game.html:7` (`icon.svg`), `learn/sw/index.html:15` (`../../js/config.js`). `learn/dm`, `learn/ea` không có mục nào.
+
+| Mục | Xử lý | Lý do |
+|---|---|---|
+| `manifest.webmanifest`, `icon.svg` (3 chỗ) | Ngoại lệ **vĩnh viễn** trong `STA-03.allow` | Tài nguyên hầu như không đổi, không phải mã; thêm `?v=` không có lợi |
+| `learn/sw/index.html` → `../../js/config.js` | Ngoại lệ **tạm** trong `STA-03.allow` + PR `fix/…` riêng sau M0 thêm `?v=` đúng số của `index.html` và xoá dòng khỏi danh sách | Có rủi ro thật (cache cũ của cấu hình), nhưng đổi nó là sửa mã ngoài phạm vi M0; không gộp vào restructure |
+
+Mọi danh sách ngoại lệ nằm cạnh bộ test và chỉ được sửa bởi PR có TJ duyệt.
+
 | ID | Loại | Tầng | Kiểm gì |
 |---|---|---|---|
 | STA-01 | C | B | `node --check` mọi `.js` đã theo dõi |
 | STA-02 | R | B | `data/starter.json` `version` **trùng ký tự** với `data/starter.version.json` (lỗi vòng lặp "Thư viện có bản mới") |
-| STA-03 | R | B | Mọi `<script src>`/`<link href>` cục bộ trong `index.html`, `game.html`, `learn/*/index.html` có `?v=`; `GAME_VER` (từ `game.js?v=` trong `game.html`) trùng `game-version.json`. Sau M2: thay bằng STA-10 |
+| STA-03 | R | B | **Kiểu ratchet (chỉ được giảm):** mọi `<script src>`/`<link href>` cục bộ trong `index.html`, `game.html`, `learn/*/index.html` phải có `?v=`, *ngoại trừ* các mục trong danh sách ngoại lệ baseline `STA-03.allow` (đo ở M0, xem dưới). Thêm mục mới vào danh sách = đỏ; bớt mục = được. `GAME_VER` (từ `game.js?v=` trong `game.html`) trùng `game-version.json`. Sau M2: thay bằng STA-10 |
 | STA-04 | R | B | Không chuỗi `GEMINI_API_KEY=`/`sb_secret_`/`sbp_` trong `js/`, `supabase/`, `*.html`, `tools/**/*.js` (trừ ví dụ có chú thích rõ) |
 | STA-05 | C | B | `SUPABASE_ANON_KEY` trong `js/config.js` giải mã ra `role: "anon"` (lỗi cũ: nhầm `service_role`) |
 | STA-06 | C | B | Không file đề ETS bị theo dõi: danh sách `git ls-files` không chứa `*.pdf`, `*.mp3` ngoài danh sách cho phép (liệt kê ở A0) |
@@ -157,7 +170,25 @@ Ba bậc ưu tiên (cột "Tầng"): **B** = chặn merge; **N** = chạy hằng
 
 ## 7. Hai client và giao thức game (I4)
 
-Cách chạy: hai trang cùng một context Playwright, Realtime giả bằng `BroadcastChannel`, phòng `ZZ_…`. Tên sự kiện đóng băng: `alive, ans, bmeta, board, cc, chat, gaps, graded, hello, rtc, state, sw, sync, voice`, cờ `relay`, mốc `bts` (SPEC §7).
+**Cách chạy: mỗi client một `BrowserContext` Playwright riêng, nối với nhau bằng một *broker Realtime giả* chạy trong tiến trình test; phòng `ZZ_…`.**
+
+Vì sao không dùng hai trang cùng context (đã đọc `game.js:1625–1644, 1716`; sửa lỗi thiết kế của bản trước):
+- Game đã có kênh `BroadcastChannel("tjwl_game_tabs")` để **một trình duyệt chỉ một tab vào phòng**: tab mới vào thì tab cũ tạm dừng (`tab_other`), còn tab cũ đang giữa ván thì tab mới bị chặn (`tab_busy`). Hai trang cùng context sẽ tự đá nhau khỏi phòng ngay trên baseline, làm MP-01/02 đỏ vì lý do không liên quan restructure.
+- Người chơi lưu theo trình duyệt (`localStorage`): hai trang cùng context là **cùng một người**, không dựng được "host + người chơi". Mỗi client cần `localStorage` riêng, nghĩa là context riêng.
+- `BroadcastChannel` chỉ trao đổi trong **cùng origin**; client chạy bản baseline ở cổng khác (MP-18) sẽ không thấy client bản mới.
+
+**Broker Realtime giả (thay `supabase.channel`):**
+- Tiêm vào mỗi trang một shim thay `sb.channel(...)`; shim chuyển mọi tin qua `page.exposeBinding` tới broker trong Node, broker phát lại cho các trang khác cùng tên kênh (`game:<mã>`). Vì đi qua tiến trình test nên nối được giữa các context và giữa các origin/cổng khác nhau.
+- Bề mặt API tối thiểu (đo ở `game.js`, `board.js`, `voice.js`, `chat.js`, `cc.js`, `swclass.js`; A0 xác nhận đủ): `channel(tên, {config:{broadcast:{self:true}, presence:{key}}})`, `.on("broadcast",{event},cb)`, `.on("presence",{event},cb)`, `.subscribe(cb)` với các trạng thái `SUBSCRIBED/CLOSED/CHANNEL_ERROR`, `.send({type:"broadcast",event,payload})`, `.track`, `.untrack`, `.presenceState()`, `removeChannel`. `broadcast.self=true` phải đúng nghĩa (người gửi cũng nhận lại tin của mình).
+- Điều khiển lỗi: broker có thể trễ, thả tin, đảo thứ tự, ngắt kênh một client (`CLOSED`) rồi cho nối lại — dùng cho MP-05, MP-07.
+- Hệ quả cần nói rõ: thư viện `supabase-js` Realtime thật (logic tự nối lại, heartbeat) **không** được chạy trong các test này; chỉ logic phía game. Phần đó thuộc kiểm tay (§11.3).
+
+**Cách ly giữa các client (bắt buộc):**
+- Mỗi context có hồ sơ riêng trong fixture (host dùng `HOST_PROFILE_ID`, người chơi dùng id khác) và `localStorage` riêng.
+- **Gieo `Math.random` khác nhau cho mỗi context.** `G.tab` được sinh bằng `Math.random()` và việc bầu host dựa vào nó (`game.js:152`); nếu hai context gieo cùng một hạt giống thì trùng `tab` và hành vi bầu host sai.
+- Kênh `tjwl_game_tabs` và `tjwl-host-speak` giữ nguyên là `BroadcastChannel` thật trong từng context (không giả), nên hành vi một-tab-một-phòng vẫn đúng như sản phẩm (xem MP-21).
+
+Tên sự kiện đóng băng: `alive, ans, bmeta, board, cc, chat, gaps, graded, hello, rtc, state, sw, sync, voice`, cờ `relay`, mốc `bts` (SPEC §7).
 
 | ID | Loại | Tầng | Kịch bản → đạt |
 |---|---|---|---|
@@ -178,11 +209,12 @@ Cách chạy: hai trang cùng một context Playwright, Realtime giả bằng `B
 | MP-15 | R | B | **Bảo vệ phòng thật:** trong mọi test, nếu có kênh `game:TJ` hoặc mã phòng `TJ` xuất hiện trong lời gọi → test **thất bại ngay** (lỗi QA cũ: vào nhầm phòng "TJ"). Gamelayer đóng vì "không phải TJ" thì xoá iframe; mất mạng (DB rơi về Local) không coi là "không phải TJ" |
 | MP-16 | R | B | Lịch sử → "Ôn ngay": dùng `G.rvMid`, **không** ghi đè `G.logMatch` (log ván đang chơi vẫn nguyên) |
 | MP-17 | C | N | `renderLobby()`/`renderEnd()` chạy lặp mỗi lần phòng gửi trạng thái: các hành động "một lần" (tắt tiếng, reset) chỉ chạy một lần nhờ cờ đổi pha (`G.soundPh`) |
-| MP-18 | C | N | **Hỗn hợp phiên bản (I4):** client chạy bản baseline (phục vụ ở cổng riêng) và client chạy bản mới cùng một phòng `ZZ_…`: MP-01, MP-02, MP-06 vẫn đạt |
+| MP-18 | C | N | **Hỗn hợp phiên bản (I4):** client chạy bản baseline (phục vụ ở cổng riêng, từ một thư mục `git worktree` của SHA baseline) và client chạy bản mới (cổng khác), **mỗi client một context, nối qua cùng broker**; broker chỉ khoá theo tên kênh `game:<mã>` nên không phụ thuộc origin. Một phòng `ZZ_…`: MP-01, MP-02, MP-06 vẫn đạt. (Hai bản dưới cùng origin không cần thiết và không dùng) |
 | MP-19 | C | N | Bảng: `docTap` dùng `getClientRects()` từng dòng — chạm vào từ vắt hai dòng chọn đúng từ, không nuốt cú chạm từ khác |
 | MP-20 | C | B | Bài đọc/bảng từ vựng mặc định `freeView = true` (mỗi người tự cuộn) |
+| MP-21 | C | B | **Một tab một phòng** (`tjwl_game_tabs`, quyết định 2026-09-30): hai trang **cùng một context** cùng hồ sơ: tab mới vào → tab cũ tạm dừng (`tab_other`); tab cũ đang `phase==="play"` → tab mới bị chặn (`tab_busy`); nút "Dùng game ở tab này" (`force`) giành được, chấp nhận bỏ ván; 📺 (`view==="screen"`) và xem lại ván không tính. Đây là ca *duy nhất* dùng hai trang chung context |
 
-**Giới hạn phải nói thẳng:** `BroadcastChannel` không mô phỏng độ trễ/mất gói/thứ tự của Realtime thật. Sau M1.4 và mỗi lô M3 thuộc `game.js` vẫn có kiểm tay hai thiết bị thật (§11.3).
+**Giới hạn phải nói thẳng:** broker giả không mô phỏng độ trễ/mất gói/thứ tự của Realtime thật ngoài những gì ta chủ động bơm vào, và không chạy phần tự nối lại của thư viện. Sau M1.4 và mỗi lô M3 thuộc `game.js` vẫn có kiểm tay hai thiết bị thật (§11.3).
 
 ## 8. Luồng tính năng (trình duyệt, mock)
 
@@ -366,6 +398,8 @@ Nguồn: `CLAUDE.md`. Cột "Phủ" là ID ca; "—" nghĩa là chưa có ca t�
 **Tham khảo có sẵn:** `tools/qa/` (`c.js`, `tb.js`, `t2.js`, `d2.js`, `harness.js`, `board4.js`, `sync.sh`). Đường dẫn trong đó là của máy cloud và hạ tầng chỉ là khung mock cũ; dùng làm ý tưởng, viết lại cho khung mới.
 
 ## 13. Việc A0 phải làm rõ trước khi viết mã test
+
+0. **Chạy thử từng ca tĩnh trên baseline và lập danh sách vi phạm có sẵn** (STA-03 đã đo: 5 mục; STA-04, STA-06, STA-07, STA-08 chưa đo). Mỗi vi phạm xử lý theo quy tắc ngoại lệ baseline ở §3.3. Không ca nào được bước vào cổng M0 mà chưa chạy xanh trên mã chưa đổi.
 
 1. Hàm nào của `ReadAlong`, `Context`, `Speech` truy cập được từ ngoài IIFE để test trực tiếp (nếu không, kiểm ở tầng trình duyệt).
 2. Danh sách đầy đủ khoá `localStorage` (LS-01) và danh sách file được phép theo dõi cho STA-06.

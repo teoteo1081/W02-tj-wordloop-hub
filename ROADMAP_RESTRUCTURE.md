@@ -62,13 +62,14 @@ B1, B2, B3 không phụ thuộc M0–M3 và có thể chạy song song ngay khi 
 | M0.1 Tích hợp baseline | Nhánh trên SHA baseline đã chốt; SHA ghi vào bảng số liệu gốc | |
 | M0.2 Đo số liệu gốc | Bảng plan mục 7 điền đủ cột "Hiện tại" | gồm danh sách hàm `App.*` bị gọi ngược (SPEC §4.2) |
 | M0.3 Test Node | Bộ test `context`, `srs`, `util`, `readalong`, adapter local `db`; kiểm tĩnh | TEST §3, §4.1 |
-| M0.4 Khung Playwright | Mock REST/Storage/Functions, Realtime giả bằng `BroadcastChannel`, cố định dữ liệu/đồng hồ/random | TEST §12 |
+| M0.4 Khung Playwright | Mock REST/Storage/Functions; **broker Realtime giả trong tiến trình test, mỗi client một context** (không dùng `BroadcastChannel` để nối client); cố định dữ liệu/đồng hồ/random (hạt giống random khác nhau giữa các context) | TEST §7, §12 |
 | M0.5 Nhật ký lời gọi chuẩn | Golden call log cho mọi kịch bản chuẩn | TEST §5 |
 | M0.6 Ảnh chuẩn | Ma trận màn × viewport; chạy hai lần giống hệt | TEST §6 |
 | M0.7 Kịch bản hai client | Các kịch bản multiplayer chạy xanh trên mã hiện tại | TEST §7 |
+| M0.7b Ngoại lệ baseline | Chạy mọi ca tĩnh trên mã chưa đổi; lập danh sách vi phạm có sẵn (vd `STA-03.allow` với 5 mục: manifest, 3 chỗ `icon.svg`, `learn/sw` → `config.js`) theo quy tắc ratchet; PR `fix/…` riêng (sau M0) cho vi phạm đáng sửa như `learn/sw` thiếu `?v=` | TEST §3.3, §13 |
 | M0.8 CI | Workflow chạy test tầng PHẢI-chặn-merge; tích hợp test của `handoff/gate` nếu G2 giữ nó | TEST §11 |
 
-**Cổng ra:** mọi test M0 xanh **trên mã chưa đổi**; ảnh chuẩn ổn định qua hai lần chạy; ma trận truy vết (TEST §10) không còn dòng "chưa có test" cho nhóm PHẢI-chặn-merge; TJ xem báo cáo số liệu gốc.
+**Cổng ra:** mọi test M0 xanh **trên mã chưa đổi** (các ca ratchet xanh với danh sách ngoại lệ đã duyệt; không ca nào bị bỏ qua âm thầm); ảnh chuẩn ổn định qua hai lần chạy; ma trận truy vết (TEST §10) không còn dòng "chưa có test" cho nhóm PHẢI-chặn-merge; TJ xem báo cáo số liệu gốc.
 **Rủi ro:** mock lệch Realtime thật (giảm bằng kiểm tay hai thiết bị ở cổng ra M1/M3); bộ test chuẩn dao động (không tiếp tục nếu hai lần chạy khác nhau).
 **Ước lượng:** 3–4 phiên (lớn hơn con số 1–2 phiên ở plan bản 1, vì bản 2.1 thêm mock Realtime, nhật ký lời gọi và hai client).
 
