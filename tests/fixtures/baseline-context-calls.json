@@ -1,11 +1,17 @@
 {
-  "baseline_root": "wt-baseline-e324beb",
+  "baseline": {
+    "commit": "e324beb54b29ddfa055956c756a4ceba2676dfa1",
+    "tree": "9de0480570b1c95c85912d685626891ba142b825",
+    "clean": true
+  },
+  "source_sha256": {
+    "js/context.js": "50e1a0919615303164511e2b2805b3fc5999c0d10d6c8eae77bcfc1003012605"
+  },
   "captured_with": "executed (fetch stub)",
   "scenarios": [
     {
       "id": "CTX-GEM-NOCTX",
       "desc": "Context._callGemini, quotaCtx = null",
-      "error": null,
       "calls": [
         {
           "url": "https://example.invalid/functions/v1/gemini-proxy",
@@ -36,7 +42,6 @@
     {
       "id": "CTX-GEM-CTX",
       "desc": "Context._callGemini, quotaCtx = {userId, blockId}",
-      "error": null,
       "calls": [
         {
           "url": "https://example.invalid/functions/v1/gemini-proxy",
@@ -67,7 +72,6 @@
     {
       "id": "CTX-OAI-NOCTX",
       "desc": "Context._callOpenAI qua proxy, quotaCtx = null",
-      "error": null,
       "calls": [
         {
           "url": "https://example.invalid/functions/v1/openai-proxy",
@@ -98,7 +102,6 @@
     {
       "id": "CTX-OAI-CTX",
       "desc": "Context._callOpenAI qua proxy, quotaCtx = {userId, blockId}",
-      "error": null,
       "calls": [
         {
           "url": "https://example.invalid/functions/v1/openai-proxy",
@@ -129,7 +132,6 @@
     {
       "id": "CTX-LOOKUP",
       "desc": "Context.lookupWord (quotaCtx null -> không ăn quota)",
-      "error": null,
       "calls": [
         {
           "url": "https://example.invalid/functions/v1/gemini-proxy",
@@ -160,7 +162,6 @@
     {
       "id": "CTX-PROVIDER-ORDER",
       "desc": "Context._callProvider: Gemini trước",
-      "error": null,
       "calls": [
         {
           "url": "https://example.invalid/functions/v1/gemini-proxy",

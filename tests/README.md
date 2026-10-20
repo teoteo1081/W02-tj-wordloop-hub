@@ -13,18 +13,25 @@ Luật: chỉ thêm tệp trong thư mục này. Không sửa mã ứng dụng. 
 | `fixtures/baseline-context-calls.json` | **Đã chạy** (Node, `fetch` giả) — sinh bởi `capture/capture_context_calls.js` | `Context._callGemini`, `_callOpenAI` (qua proxy), `lookupWord`, `_callProvider`; có/không `quotaCtx`; tên header, khoá body, `user_id`/`block_id`, có `signal` timeout |
 | `fixtures/baseline-backend-calls.static.json` | **Đọc từ mã** (chưa chạy) | `cc.js`, ba điểm trong `game.js` (chấm câu, tra nghĩa, viết câu), `fetch-article` ở `app.js`, `turn-creds`, và 7 lời gọi kệ sách `tj-shelf` |
 
-Kiểm hợp đồng tĩnh còn khớp mã baseline:
+Lệnh (mặc định đọc `../wt-baseline-e324beb`):
 
 ```
-node tests/capture/verify_backend_fixture.js [thư_mục_baseline]   # mặc định ../wt-baseline-e324beb
-node tests/capture/capture_context_calls.js  [thư_mục_baseline]   # sinh lại fixture đã chạy
+node tests/capture/verify_backend_fixture.js [thư_mục_baseline]          # đối chiếu hợp đồng tĩnh với mã baseline
+node tests/capture/capture_context_calls.js  [thư_mục_baseline]          # THU LẠI và SO với fixture đã commit (không ghi)
+node tests/capture/capture_context_calls.js  [thư_mục_baseline] --write  # cập nhật fixture: chỉ trong PR riêng, TJ duyệt từng dòng khác
+node tests/capture/selftest_capture_verify.js [thư_mục_baseline]         # phản chứng: hai công cụ trên phải THẤT BẠI khi hợp đồng bị đổi
 ```
 
-Đã thử phản chứng: sửa một dòng trong bản sao `cc.js` thì verifier báo `LỆCH` và thoát mã 1.
+Ràng buộc của công cụ (đã có phản chứng trong self-test, 46 ca):
+
+- **Khoá baseline (`baseline.js`):** nguồn phải là đúng commit `e324beb54b29…`, cây tệp `9de0480570b1…`, `git status` sạch. Mã khác hoặc có sửa cục bộ → từ chối, không ghi gì. Fixture ghi `baseline.commit/tree` và SHA-256 của `js/context.js`; metadata lệch ghim → báo lỗi.
+- **Verifier kiểm hợp đồng, không chỉ vị trí:** với mục `verification: contract`, nó phân tích lời gọi `fetch(...)` và kiểm method, tên header, khoá body (hoặc biểu thức body), biểu thức `model`/`user_id`/`block_id`, có `signal` hay không, và hẹn giờ huỷ (ms). Mục `position-only` (chỉ `SHELF-URL`, hàm dựng URL không có `fetch`) chỉ xác nhận *vị trí* và được in rõ là "không phải hợp đồng". Self-test làm hỏng từng thuộc tính trong bản sao (kể cả `block_id: "game-gap"` → `"WRONG-BLOCK"`) và kiểm verifier bắt đúng mục, không báo nhầm mục khác.
+- **Capture đối chiếu kỳ vọng từng kịch bản** (đúng 1 yêu cầu, URL, method, header, khoá body, model, `user_id`, `block_id`, có `signal`). Kịch bản ném lỗi hoặc sai kỳ vọng → thoát mã 1 và **không ghi gì**; ghi bằng tệp tạm rồi đổi tên; mặc định chỉ *so* với fixture đã commit.
+- Chế độ `unsafe` (không ghim) chỉ dành cho self-test và bị cấm ghi fixture.
 
 ## Giới hạn (phải nói thẳng)
 
-- Các điểm gọi trong `game.js`, `cc.js`, `app.js`, `turn.js` nằm trong IIFE có DOM nên **chưa được chạy**; hợp đồng của chúng mới là *đọc mã* và được giữ khớp bằng anchor. M0.5 (Playwright) sẽ chuyển chúng sang "đã chạy".
+- Các điểm gọi trong `game.js`, `cc.js`, `app.js`, `turn.js` nằm trong IIFE có DOM nên **chưa được chạy**; hợp đồng của chúng mới là *đọc mã* và được verifier đối chiếu với mã baseline bằng cách phân tích lời gọi (không chỉ tìm vị trí). M0.5 (Playwright) sẽ chuyển chúng sang "đã chạy".
 - Fixture chỉ ghi **hình dạng** yêu cầu (tên khoá, tên header, kiểu giá trị), không ghi nội dung prompt đầy đủ và không ghi phản hồi thật của dịch vụ.
 - Chưa có test BCK-*: bộ này mới là **đầu vào** của chúng. BCK-01/02/03 sẽ so yêu cầu của bản baseline với phản hồi của backend đã đổi.
 - Chưa phủ REST/Storage/Realtime của Supabase (thuộc M0.5, sau khi có khung Playwright; cần TJ đồng ý cài gói).
