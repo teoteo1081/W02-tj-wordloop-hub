@@ -1,7 +1,11 @@
 # PLAN_TOEIC_SW_GAME.md — ý tưởng game TOEIC Speaking (đề xuất 2026-10-09, chờ TJ chọn)
 
+> **Đối chiếu 2026-10-20:** đây là thiết kế/đề xuất lịch sử, không phải roadmap hiện tại. Hành động, trạng thái và thứ tự chờ TJ chọn nằm tại [README — WL](README.md#việc-còn-dang-dở); bản đồ nguồn ở [PLAN_TONG](PLAN_TONG.md). Số liệu DB/Storage/quyền ghi ngày 08–09/10 chưa đo lại. Không thực hiện lệnh/nhập sách hay đổi quyền từ ghi chú cũ.
+> **Code hiện có:** TOEIC S&W, IELTS Speaking/Writing và lớp ở [learn/sw/sw.js](learn/sw/sw.js), [js/learn.js](js/learn.js), [js/swclass.js](js/swclass.js). Có bộ đề JSON trong repo; không suy ra bảng DB `sw_tasks`/`sw_attempts` đã được tạo. Các trò/mô hình dữ liệu đề xuất dưới đây chưa mặc nhiên được duyệt/triển khai. Receiver `tjwl-game-show` đã có trong [js/gamelayer.js](js/gamelayer.js); lỗi điều hướng cũ cần tái hiện trước sửa.
+
+
 > Nguồn: sách NTV TOEIC Speaking (bản scan, 292 trang) + sách đáp án + audio 268 file (~136 MB). Sách và audio có bản quyền: KHÔNG đưa lên bucket public `toeic`, KHÔNG commit vào repo. Khi làm game, dùng thư mục máy cục bộ (đã gitignore) hoặc bucket private + link có chữ ký.
-> Trạng thái làm việc xem `HANDOFF.md` mục CHECKPOINT 2026-10-09.
+> Checkpoint 2026-10-09 trong `HANDOFF.md` chỉ là lịch sử; trạng thái hiện tại xem roadmap WL-05/WL-15 trong README.
 
 ## 6 dạng đề → 6 trò chơi
 | Part (câu) | Trò | Cơ chế |
@@ -20,7 +24,7 @@
 - **Thử thách hằng ngày:** 1 câu Part 3 + 1 câu Part 5, chuỗi ngày.
 - **Sổ cụm hay dùng:** cụm nói đúng → ⭐ Ôn riêng, ôn theo chu kỳ Tony Buzan.
 
-## Dữ liệu cần (chưa tạo)
+## Mô hình dữ liệu đề xuất 09/10 (trạng thái DB chưa kiểm lại)
 - Bảng `sw_tasks` (test, part, đề, ảnh, thời gian, đáp án mẫu, tiêu chí) và `sw_attempts` (user, bản chữ, điểm, nhận xét; không lưu ghi âm hoặc xoá sau 30 ngày). Cần PAT của TJ để tạo (nhắc thu hồi sau).
 - Chấm điểm bằng AI qua `gemini-proxy` (miễn phí) hoặc `openai-proxy` (có phí, hỏi TJ trước).
 

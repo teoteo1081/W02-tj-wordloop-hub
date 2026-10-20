@@ -10,7 +10,9 @@
 
 ## Trạng thái hiện tại
 
-Không còn tác vụ code đang làm dở trong đợt tích hợp offline2026-10-19. Kết quả và phần còn treo đã ghi ở README đầu mục "Việc còn dang dở"; nguyên tắc bảo toàn ở CLAUDE. Candidate dùng game399/CSS285 trên nền2e4e5d5; chỉ tích hợp local, chưa push/deploy. Báo cáo và bằng chứng QA tại `C:/Users/User/Desktop/TJ/_work/merge-final-20261019/` trên máy TJ. Nhánh `handoff/gate` là kế hoạch riêng, giữ nguyên.
+Backlog sống và hành động hiện tại: [README — roadmap WL](README.md#việc-còn-dang-dở). Không có tác vụ app dở giữa chừng được xác nhận bởi lần rà tài liệu 2026-10-20. `main` và ref cục bộ `origin/main` cùng `e324beb54b29ddfa055956c756a4ceba2676dfa1` (không fetch); tích hợp game399/CSS285 đã có ở đó, trạng thái deploy chưa kiểm. Báo cáo QA lịch sử ở `C:/Users/User/Desktop/TJ/_work/merge-final-20261019/` chỉ là đường dẫn ghi nhận, lần này không xác minh lại artifact.
+
+`handoff/gate` / `origin/handoff/gate` ở `4c43c50b98bcfd0fe0cf448d7e0e4afc4dc2f7fa` đã có implementation + test (`tools/handoff/`), không còn là kế hoạch thuần và chưa thuộc lịch sử main. Việc audit/sửa gate do chủ việc riêng giữ tại worktree `C:/Users/User/Desktop/TJ/_work/wt-handoff-gate`; tài liệu này không xác nhận kết quả sửa chưa commit, không cho phép tự merge/push. Theo dõi WL-02; đọc bằng `git show origin/handoff/gate:tools/handoff/README.md` khi ở main.
 
 **Các checkpoint bên dưới là LỊCH SỬ chưa tái xác minh, không phải trạng thái code/DB hiện tại.** Giữ lại chi tiết các việc ngoài phạm vi (ETS2023, tài khoản, quyền dữ liệu, backlog thiết bị) để không mất thông tin; dùng README làm backlog sống. Không tiếp tục việc ghi “chưa có code/S&W/chưa merge” trước khi đối chiếu Git và code hiện tại. Không thực thi lệnh với DB/quyền/token chỉ vì có ghi chú lịch sử.
 

@@ -31,8 +31,11 @@
 | Chuyên gia (thiết kế / sư phạm / bảo mật) | Đánh giá theo vai | Không đẩy lên `main` |
 
 ## 3. Chỗ ghi tiến độ chung
+- Roadmap/action list hiện tại duy nhất: [README — WL](README.md#việc-còn-dang-dở); ID ổn định, trạng thái phải dẫn bằng chứng có ngày. [PLAN_TONG](PLAN_TONG.md) chỉ nối thiết kế nguồn; HANDOFF là checkpoint tạm/lịch sử. Ghi riêng đề xuất và TJ đã duyệt, code/QA/deploy/dữ liệu; không lấy ref Git suy ra cloud/billing.
 - Nguồn thật = **file văn bản trong git** (`README.md` "Việc còn dang dở" hiện tại; có thể thêm `PROGRESS.md`), KHÔNG dùng Excel/Supabase làm nguồn chung (ghi đè nhau / tốn Storage). Excel chỉ là bản xem tự sinh: `python3 tools/readme_to_xlsx.py` (cần `pip install openpyxl`) -> `TJ_CongViec.xlsx` gồm sheet Tóm tắt / Việc còn dang dở / Đã xong gần đây (không commit file .xlsx; Ưu tiên/Trạng thái là script ĐOÁN từ README).
 - Phiên sắp hết token: ghi checkpoint vào `HANDOFF.md` rồi dọn khi xong (luật trong file đó).
 
-## 4. Việc TJ đang chờ (lấy từ README, cập nhật 2026-10-06; ưu tiên hiện tại: EA + Digital Marketing)
+## 4. Ghi nhận TJ chờ ngày 2026-10-06 (lịch sử; ưu tiên khi đó: EA + Digital Marketing)
+
+Không dùng danh sách này làm lịch triển khai hiện tại; đối chiếu [roadmap WL](README.md#việc-còn-dang-dở), đặc biệt WL-07/WL-18, trước khi đổi dịch vụ/repo/token.
 ~~Duyệt 1.301 bẫy pending~~ (XONG 2026-10-06: AI chấm lần 2 -> 72 duyệt / 1.042 loại / 187 chờ, xem README); bật GitHub Pages/public cho L02, L05–L08 (xem cảnh báo bản quyền L08/L04); đăng ký custom dimension `site` trong GA4; revoke token Supabase (nếu còn); chọn 3–5 KPI cho dashboard.
