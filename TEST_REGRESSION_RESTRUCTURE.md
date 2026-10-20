@@ -326,7 +326,8 @@ Chạy trên URL Netlify của nhánh restructure (và, với HST-04, cả bản
 | HST-06 | C | N | `curl -I` ghi `Cache-Control` của `index.html`, `js/*.js?v=…`, `sw.js` trên cả hai host; ghi lại kết quả (không có tiêu chí đạt/trượt, dùng để quyết áp lực của cổng version A2) |
 | HST-07 | C | N | Origin: `localStorage` của hai host tách biệt; vào lại hồ sơ bằng `?u=` hoạt động trên Netlify; bộ lọc `Origin` của B1/B2 (nếu đã bật) chấp nhận đúng hai host chính thức và URL branch deploy, từ chối host lạ |
 | HST-08 | C | N | Credit: ghi số credit trước/sau một lượt kiểm thử (đối chiếu công thức của `PLAN_NETLIFY_FRONTEND.md`) |
-| HST-09 | C | M | Sau khi thay `main` (plan §5.1): lặp HST-01..05 trên host chính thức; bản archive còn truy cập được theo phương án dự phòng đã chọn |
+| HST-09 | C | M | Sau khi thay `main` (plan §5.1): lặp HST-01..05 trên host chính thức; phương án quay lại đã chọn (câu 12) còn dùng được |
+| HST-10 | C | N | **Diễn tập commit khôi phục (trước khi thay `main`):** trên nhánh tạm, tạo commit mới có cây = cây nhánh archive đặt trên đầu nhánh restructure; `git diff --stat <archive> <commit khôi phục>` **trống**; commit là hậu duệ trực tiếp của đầu nhánh (đẩy được bằng fast-forward, không cần force); phục vụ nó và chạy BCK-01..06, MP-18, HST-01..05 trên **backend ở trạng thái hiện hành** (sau mọi deploy B/C). Kết quả ghi vào hồ sơ freeze. Lặp lại nếu backend đổi sau diễn tập |
 
 ## 10. Ma trận truy vết
 
@@ -438,5 +439,5 @@ Nguồn: `CLAUDE.md`. Cột "Phủ" là ID ca; "—" nghĩa là chưa có ca t�
 4. Số điểm gọi Supabase *động* (chuỗi bảng ghép lúc chạy) trong `game.js` — ảnh hưởng độ khó của nhật ký lời gọi chuẩn (ROADMAP §10, điều kiện đổi lộ trình).
 5. Danh sách hàm `App.*` bị gọi ngược (SPEC §4.2).
 6. Cách phục vụ bản baseline (`e324beb`, một `git worktree` thứ hai ở cổng khác) song song với bản mới cho MP-18/BCK-* (ROADMAP M0.1).
-7. Chụp bộ lời gọi baseline (đầu vào cho BCK-*) ngay ở M0, trước khi có thay đổi backend nào.
+7. Chụp bộ lời gọi baseline (đầu vào cho BCK-*) ở `e324beb` **trước khi deploy bất kỳ thay đổi backend nào** (ROADMAP M0.5a, tách riêng và nhỏ: chỉ Edge Function AI và Worker `tj-shelf`; phần REST/Storage/Realtime nằm ở M0.5). Thiếu bộ này thì BCK-* không chạy được và B1/B2/SQL không được deploy.
 8. Xác minh cấu hình Netlify cho HST-01 ("Pretty URLs") và định dạng URL branch deploy cho HST-07 (H0).

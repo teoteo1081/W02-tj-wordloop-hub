@@ -129,7 +129,13 @@ Vì backend dùng chung, nên:
 3. `git push origin <đầu nhánh restructure>:main` (fast-forward, không force); GitHub Pages tự build lại.
 4. Cập nhật `CLAUDE.md`/`README.md` (hosting, quy trình, các quy ước đã đổi).
 5. Kiểm bản deploy; quyết định host chính sau khi thay (mục 9, câu 11).
-6. **Quay lại nếu hỏng:** đưa `main` về nhánh archive. Việc này cần ghi đè `origin/main` (force) nên chỉ làm khi TJ chỉ đạo rõ; vì vậy nên giữ GitHub Pages còn phục vụ bản archive (trên một đường dẫn riêng hoặc repo phụ) như phương án dự phòng không cần force. *Chưa thiết kế chi tiết; xem mục 9, câu 12.*
+6. **Quay lại nếu hỏng — có ba phương án, ưu tiên theo thứ tự (chốt ở mục 9, câu 12):**
+   1. **Commit khôi phục (đề xuất; không force-push, giữ nguyên URL chính).** Tạo một commit **mới** có cây tệp đúng bằng cây của nhánh archive, đặt lên đầu `main` hiện tại, rồi đẩy bằng fast-forward bình thường. Ví dụ ý tưởng (chưa chạy): `git commit-tree <archive>^{tree} -p <đầu main> -m "Khôi phục frontend về <archive>"`, kiểm `git diff --stat <archive> <commit mới>` trống, rồi `git push origin <commit mới>:main`. Lịch sử restructure vẫn nằm nguyên trong `main` (không viết lại), nên sửa tiếp về phía trước dễ; GitHub Pages tự build lại; nếu Netlify là host chính, deploy của commit này tốn credit như mọi deploy production (hoàn tác bằng "publish lại deploy cũ" của Netlify không tốn credit nhưng chỉ tác dụng trên Netlify, không đổi `main`).
+      - **Phải kiểm tương thích với backend tại thời điểm khôi phục.** Bản archive (frontend của `main` cũ) chạy trên backend đã được deploy thêm trong lúc song song (B1/B2/C2…). Điều kiện này do I9 và BCK-* bảo đảm *tại thời điểm deploy từng thay đổi*; trước khi thay `main` phải chạy lại BCK-* trên đúng trạng thái backend lúc đó và ghi kết quả vào hồ sơ freeze. Sau khi thay `main`, **mọi thay đổi backend tiếp theo** vẫn phải giữ BCK-* xanh cho tới khi TJ bỏ phương án khôi phục.
+      - **Phải diễn tập trước khi thay `main`** (HST-10): làm commit khôi phục trên một nhánh tạm, kiểm cây bằng cây archive, phục vụ nó (bản xem thử/Netlify) và chạy BCK-* + MP-18 + HST-01..05 trên backend hiện hành.
+      - Giới hạn: người dùng đã mở bản mới có thể còn mã cũ trong bộ nhớ đệm/PWA cho tới khi tải lại; dữ liệu `localStorage` do bản mới tạo chỉ dùng được nếu I3 đúng (bản cũ bỏ qua khoá lạ).
+   2. **Phục vụ bản archive trên địa chỉ riêng** (đường dẫn Pages hoặc repo phụ) và hướng người dùng sang đó. Không đụng `main`, nhưng đổi URL, đổi origin (mất `localStorage`/PWA của người dùng) — chỉ dùng khi (1) không khả thi.
+   3. **Ghi đè `origin/main` về nhánh archive (force-push).** Chỉ khi TJ chỉ đạo rõ bằng lời, vì viết lại lịch sử.
 
 ## 6. Kế hoạch theo luồng
 
@@ -179,7 +185,11 @@ Vì backend dùng chung, nên:
 
 ### Luồng B — Vá bảo mật (đổi hành vi; commit riêng trong dòng tích hợp; deploy là bước riêng)
 
-Mã viết trong worktree này như mọi việc khác (`main` đóng băng, không nhánh `fix/…` riêng). Nhưng **deploy Edge Function/Worker/SQL là bước ngoài git, có tác dụng ngay với bản `main` đang dùng** (mục 5.1), quay lại bằng cách deploy bản cũ, và cần TJ đồng ý và cấp secret từng lần. Có thể làm song song với A, không cần chờ A0, miễn tương thích ngược với bản `main`.
+Mã viết trong worktree này như mọi việc khác (`main` đóng băng, không nhánh `fix/…` riêng). Nhưng **deploy Edge Function/Worker/SQL là bước ngoài git, có tác dụng ngay với bản `main` đang dùng** (mục 5.1), quay lại bằng cách deploy bản cũ, và cần TJ đồng ý và cấp secret từng lần. **Tách hai việc:**
+- **Viết mã B** (Edge Function, Worker, SQL, test) có thể làm song song với A, không cần chờ A0.
+- **Deploy B1/B2 (và mọi SQL/Function/Worker) KHÔNG được chạy trước** khi: (a) bộ lời gọi baseline của đúng thành phần đó đã được thu ở `e324beb` (ROADMAP M0.5a; TEST §13.7), (b) các ca BCK-* tương ứng đạt (BCK-01/02 cho B1, BCK-03 cho B2, BCK-04/05 cho SQL/RPC), (c) TJ đồng ý từng lần. Không có đầu vào baseline thì "tương thích ngược" chỉ là giả định.
+- B3 (đối chiếu schema, chỉ đọc) không bị ràng buộc này.
+- **Đánh đổi cần TJ biết:** B1 vá lỗ hổng chi phí, nên bị M0.5a làm chậm. M0.5a được tách riêng, nhỏ (chỉ thu các lời gọi tới Edge Function AI và Worker `tj-shelf`, từ các điểm gọi đã biết), để không phải chờ hết M0 (ước 3–4 phiên). Nếu TJ muốn vá khẩn cấp hơn, có phương án thay: kiểm tay bốn đường gọi hợp lệ trên bản baseline với ghi chép có chữ ký của TJ, rồi deploy; ghi rõ đó là ngoại lệ có chủ đích, không phải chuẩn.
 
 - **B1 — Proxy AI.** Không bắt buộc `user_id`. Thay bằng: danh sách model cho phép; trần kích thước `sys`+`user`; ép trần token ra ở phía server (bỏ qua giá trị client xin cao hơn); kiểm `Origin` làm lớp lọc mềm; và **sổ chi tiêu (ledger) toàn hệ thống** thiết kế như dưới đây.
 
@@ -260,7 +270,8 @@ Mỗi bước A được commit vào dòng tích hợp (`feat/restructure-plan`)
 | Hai phiên bản client cùng phòng game trong nhiều tuần | Trung bình | Giao thức đóng băng (I4), MP-18 tầng B |
 | Hết credit Netlify làm pause cả tài khoản | Trung bình | Branch deploy (0 credit), chốt ngân sách ở N0 (câu 10) |
 | `origin/main` bị ai đó push → mất khả năng fast-forward | Trung bình | Không push `origin/main`; kiểm bằng lệnh trong anchor trước mỗi phiên |
-| Thay `main` rồi hỏng, quay lại cần force-push | Trung bình | Lưu archive; phương án dự phòng không cần force (mục 5.1, câu 12) |
+| Thay `main` rồi hỏng, cần quay lại | Trung bình | Lưu archive; ưu tiên **commit khôi phục** (cây = cây archive, fast-forward, không force, giữ URL) đã diễn tập (HST-10) và kiểm BCK-* trên backend hiện hành (mục 5.1 bước 6, câu 12) |
+| Deploy backend trước khi có baseline lời gọi → "tương thích ngược" chỉ là giả định | Cao | Cổng deploy B: M0.5a + BCK-* đạt + TJ đồng ý (luồng B) |
 | Chỉnh tài liệu trong `8b071e6` thất lạc khi thay `main` | Thấp | Chuyển tay ở M1.7 nếu TJ muốn giữ |
 
 ## 9. Cần TJ quyết
@@ -278,7 +289,7 @@ Mỗi bước A được commit vào dòng tích hợp (`feat/restructure-plan`)
 9. **Ghi dữ liệu thật từ bản mới (mục 5.1):** đồng ý quy tắc "chỉ ghi bằng hồ sơ thử/phòng `ZZ_…` cho tới khi nhật ký lời gọi khớp, rồi TJ đồng ý mới ghi bằng hồ sơ thật"? Hay muốn một bản sao Supabase riêng cho dòng restructure (an toàn hơn nhưng tốn công dựng và đồng bộ dữ liệu)?
 10. **Netlify:** (a) dùng site Netlify cũ hay tạo site mới? (b) branch deploy cho nhánh restructure (0 credit, đề xuất) hay đặt nhánh làm production branch (15 credit mỗi lần push)? (c) ngân sách chấp nhận nếu sau này cần gói trả phí?
 11. **Host chính sau khi thay `main`:** vẫn GitHub Pages, hay chuyển sang Netlify (khi đó plan Netlify N3 mới áp dụng)?
-12. **Dự phòng quay lại** sau khi thay `main`: giữ bản archive phục vụ trên đường dẫn riêng (không cần force), hay chấp nhận quay lại bằng force-push khi cần?
+12. **Dự phòng quay lại** sau khi thay `main` (mục 5.1 bước 6): (1) commit khôi phục cây archive rồi fast-forward — không force-push, giữ URL (đề xuất), kèm diễn tập HST-10 và duy trì BCK-* xanh sau khi thay; (2) phục vụ archive ở địa chỉ riêng; (3) force-push khi TJ chỉ đạo. Chọn (1) có chấp nhận ràng buộc "backend về sau luôn tương thích với frontend archive" không, và trong bao lâu?
 
 ## 10. Ước lượng thô (chưa kiểm chứng)
 

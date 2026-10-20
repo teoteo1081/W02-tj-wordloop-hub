@@ -23,7 +23,7 @@
 | G7 | 9: quy tắc ghi dữ liệu thật từ bản mới (hay dùng bản sao Supabase riêng) | Mọi kiểm thử ghi bằng hồ sơ thật; cổng ra M1 |
 | G8 | 10: Netlify (site cũ/mới, branch deploy hay production branch, ngân sách) | H0–H2 |
 | G9 | 11: host chính sau khi thay `main` | Thủ tục thay `main` bước 5, plan §5.1 |
-| G10 | 12: dự phòng quay lại sau khi thay `main` | Thủ tục thay `main` |
+| G10 | 12: dự phòng quay lại sau khi thay `main` (đề xuất: commit khôi phục cây archive + fast-forward, không force; cần diễn tập HST-10) | Thủ tục thay `main` |
 | G-freeze | TJ tuyên bố freeze khi đạt SPEC §9 | Thay `main` |
 | G2 | 7: `handoff/gate` (chưa vào `main`, sửa `js/game.js`): cherry-pick vào dòng này, hay bỏ / hoãn. Vì `main` đóng băng nên không có chuyện "merge vào `main` trước" | M0 (CI) và M3 (cắt `game.js`) |
 | G3 | 3: cơ chế version (import map / đóng dấu / Vite) và thiết bị iOS đích | M2 |
@@ -55,7 +55,7 @@ flowchart LR
     G0 --> B3[B3 Đối chiếu schema]
 ```
 
-B1, B2, B3 không phụ thuộc M0–M3 và có thể chạy song song ngay khi cổng của chúng mở.
+Viết mã B1, B2, B3 không phụ thuộc M0–M3 và chạy song song ngay khi cổng của chúng mở. **Deploy B1/B2 thì phụ thuộc M0.5a** (bộ lời gọi baseline tới Edge Function AI và Worker `tj-shelf`) và các ca BCK-* tương ứng; B3 chỉ đọc nên không bị ràng buộc này.
 
 ## 4. Cột mốc
 
@@ -69,7 +69,8 @@ B1, B2, B3 không phụ thuộc M0–M3 và có thể chạy song song ngay khi 
 | M0.2 Đo số liệu gốc | Bảng plan mục 7 điền đủ cột "Hiện tại" | gồm danh sách hàm `App.*` bị gọi ngược (SPEC §4.2) |
 | M0.3 Test Node | Bộ test `context`, `srs`, `util`, `readalong`, adapter local `db`; kiểm tĩnh | TEST §3, §4.1 |
 | M0.4 Khung Playwright | Mock REST/Storage/Functions; **broker Realtime giả trong tiến trình test, mỗi client một context** (không dùng `BroadcastChannel` để nối client); cố định dữ liệu/đồng hồ/random (hạt giống random khác nhau giữa các context) | TEST §7, §12 |
-| M0.5 Nhật ký lời gọi chuẩn | Golden call log cho mọi kịch bản chuẩn | TEST §5 |
+| **M0.5a Baseline lời gọi backend (làm sớm, tách riêng)** | Bộ lời gọi baseline tới **Edge Function AI** (WordLoop, CC, chấm câu, tra nghĩa) và **Worker `tj-shelf`** (`list`/`PUT`/`DELETE`), chụp ở `e324beb`; là đầu vào của BCK-01..03 và là **điều kiện deploy B1/B2** | TEST §9.5, §13.7 |
+| M0.5 Nhật ký lời gọi chuẩn | Golden call log cho mọi kịch bản chuẩn (gồm cả REST/Storage/Realtime; đầu vào của BCK-04/05) | TEST §5 |
 | M0.6 Ảnh chuẩn | Ma trận màn × viewport; chạy hai lần giống hệt | TEST §6 |
 | M0.7 Kịch bản hai client | Các kịch bản multiplayer chạy xanh trên mã hiện tại | TEST §7 |
 | M0.7b Ngoại lệ baseline | Chạy mọi ca tĩnh trên mã chưa đổi; lập danh sách vi phạm có sẵn (vd `STA-03.allow` với 5 mục: manifest, 3 chỗ `icon.svg`, `learn/sw` → `config.js`) theo quy tắc ratchet; commit riêng (sau M0) cho vi phạm đáng sửa như `learn/sw` thiếu `?v=` | TEST §3.3, §13 |
@@ -140,8 +141,8 @@ Thứ tự đề xuất (rủi ro tăng dần, vì phần sau bám nhiều phụ
 
 | Mã | Việc | Cổng vào | Cổng ra |
 |---|---|---|---|
-| B1 | Sổ chi tiêu AI: bảng `ai_spend_ledger`, hàm `reserve/settle`, danh sách model, trần kích thước và token, fail-closed, mã dùng chung `_shared/` | G6 + TJ đồng ý chạy SQL | 8 test của TEST §9.1 xanh, 4 đường gọi hợp lệ còn chạy; deploy bằng lệnh trong `CLAUDE.md` |
-| B2 | `tj-shelf`: bỏ `listAll` mỗi PUT; xác thực theo phương án G5 | G5 | Test TEST §9.3; giới hạn 2 GB/25 MB giữ nguyên |
+| B1 | Sổ chi tiêu AI: bảng `ai_spend_ledger`, hàm `reserve/settle`, danh sách model, trần kích thước và token, fail-closed, mã dùng chung `_shared/` | **Viết mã:** G6. **Deploy:** G6 + **M0.5a xong** + TJ đồng ý chạy SQL và deploy | 8 test của TEST §9.1 xanh, **BCK-01/02 đạt** trên bộ lời gọi baseline; deploy bằng lệnh trong `CLAUDE.md` |
+| B2 | `tj-shelf`: bỏ `listAll` mỗi PUT; xác thực theo phương án G5 | **Viết mã:** G5. **Deploy:** G5 + **M0.5a xong** + TJ đồng ý | Test TEST §9.3, **BCK-03 đạt**; giới hạn 2 GB/25 MB giữ nguyên |
 | B3 | Đối chiếu `supabase_schema.sql`/`game_schema.sql` với `information_schema` (chỉ đọc) | TJ cấp PAT tạm, nhắc thu hồi sau | Báo cáo lệch + sửa file cho khớp; không DDL |
 
 Ước lượng: B1 1–2 phiên, B2 dưới 1, B3 dưới 1. Chưa deploy gì khi cổng chưa mở.
@@ -204,7 +205,7 @@ Mỗi bước restructure (một hoặc vài commit trên dòng tích hợp) PH�
 
 ## 9. Thứ tự đề xuất nếu phải ưu tiên
 
-1. **Ngay (song song, không phụ thuộc):** B1 (chi phí AI bị hở), B3 (chỉ đọc).
+1. **Ngay (song song):** viết mã B1/B2 và làm B3 (chỉ đọc); **M0.5a** (nhỏ) để mở cổng deploy B1/B2. Deploy B1/B2 chờ M0.5a + BCK-* đạt + TJ đồng ý (không còn là "không phụ thuộc").
 2. **M0** (nền cho mọi thứ còn lại).
 3. **M1**, trong lúc đó chạy **C1**.
 4. **C2** (hiệu năng Journey) khi M1 xong.

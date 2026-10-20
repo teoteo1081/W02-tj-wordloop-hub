@@ -132,7 +132,8 @@ Restructure luồng A được coi là **xong** khi đồng thời:
 3. Kiểm tay trên bản Netlify bằng hai thiết bị thật trong phòng `ZZ_…`: lobby → ván → kết thúc, bảng, voice/CC bật-tắt, tải lại giữa ván; thêm một lượt **hỗn hợp phiên bản**: một thiết bị chạy bản `main` (Pages), một thiết bị chạy bản Netlify, cùng phòng.
 4. Bản Netlify chạy: tải online → tắt mạng → tải lại vẫn dùng được; sau một lần cập nhật không còn người dùng kẹt bản cũ. *(Sau khi thay `main`, lặp lại kiểm này trên host chính thức.)*
 5. Bản restructure ghi dữ liệu thật đúng như `main` (nhật ký lời gọi khớp) và TJ đã đồng ý cho ghi bằng hồ sơ thật (plan §5.1, câu 9).
-6. TJ xem bản Netlify và đồng ý freeze. Việc thay `main` là một quyết định và một lệnh riêng theo plan §5.1 (`/ship` chỉ khi TJ bảo).
+6. Diễn tập khôi phục (HST-10) đạt trên backend ở trạng thái hiện hành: có phương án quay lại **không cần force-push** (commit khôi phục cây archive rồi fast-forward) hoặc TJ đã chọn phương án khác ở câu 12.
+7. TJ xem bản Netlify và đồng ý freeze. Việc thay `main` là một quyết định và một lệnh riêng theo plan §5.1 (`/ship` chỉ khi TJ bảo).
 
 ## 10. Câu hỏi còn mở ảnh hưởng đặc tả
 
