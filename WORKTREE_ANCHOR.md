@@ -26,6 +26,9 @@ Nó tồn tại vì:
 |---|---|
 | `WORKTREE_ANCHOR.md` | File này: mục đích và luật của worktree |
 | `PLAN_RESTRUCTURE.md` | Kế hoạch tái cấu trúc (nguồn sự thật của việc cần làm, các luồng A/B/C, câu hỏi chờ TJ quyết) |
+| `SPEC_RESTRUCTURE.md` | Đặc tả trạng thái đích: bất biến I1–I8, cấu trúc, quy tắc phụ thuộc, hợp đồng lớp dữ liệu, version/cache, giao thức game, tiêu chí nghiệm thu |
+| `ROADMAP_RESTRUCTURE.md` | Lộ trình: cột mốc M0–M4, luồng B/C, cổng quyết định của TJ, quy trình mỗi PR, ước lượng |
+| `TEST_REGRESSION_RESTRUCTURE.md` | Đặc tả bộ test hồi quy (ca, tiêu chí đạt, tầng chạy, ma trận truy vết tới `CLAUDE.md`). Chỉ là đặc tả, **chưa có mã test** |
 | `AUDIT_INFRA_ADVISOR.md` | Báo cáo audit hạ tầng/bảo mật làm đầu vào. Có chỗ chưa khớp code thật; phần đối chiếu nằm ở mục 3 của `PLAN_RESTRUCTURE.md`. Không sửa file audit để chữa chỗ sai, ghi errata vào plan |
 
 ## Luật của worktree này
