@@ -240,6 +240,7 @@ def snapshot_once(repo, touch, as_of):
         normalised = {path_key(name) for name in names}
         if len(normalised) != len(names):
             raise GateError("case-colliding paths are unsupported")
+        observed_names = set(normalised)
         names = normalised
         if wr.worktree == repo.worktree:
             names.update(touch)
@@ -255,6 +256,10 @@ def snapshot_once(repo, touch, as_of):
         status = git(root, "status", "--porcelain=v2", "-z", "--untracked-files=all")
         result["worktrees"][wr.worktree] = {
             "head": head, "branch": branch, "index": decode(index), "files": files,
+            # Independent of --touch: a later session may select a different
+            # scope. Ignored files remain governed by scoped ack snapshots.
+            "content_hash": digest({"index": decode(index),
+                                    "files": {name: files[name] for name in sorted(observed_names)}}),
             "status": decode(status), "dirty": dirty_paths(status), "operations": operations,
             "config_hash": hashlib.sha256(git(root, "config", "--null", "--list", "--includes")).hexdigest(),
             "index_locked": (gd / "index.lock").exists()}
@@ -329,8 +334,10 @@ def validate_record(value):
                 "sequence", "repo_id", "worktree", "task_id", "task", "status", "phase",
                 "terminal", "base_sha", "head_sha", "branch", "state_hash", "dirty",
                 "operations", "stash", "commits", "next_steps", "claims", "claim_results", "supersedes"}
-    if not isinstance(value, dict) or set(value) != required or type(value["schema_version"]) is not int or value["schema_version"] != VERSION:
+    if not isinstance(value, dict) or not required.issubset(value) or set(value) - required - {"content_hash"} or type(value["schema_version"]) is not int or value["schema_version"] != VERSION:
         raise GateError("invalid checkpoint schema")
+    if "content_hash" in value and (not isinstance(value["content_hash"], str) or not re.fullmatch(r"[0-9a-f]{64}", value["content_hash"])):
+        raise GateError("invalid checkpoint content hash")
     if value["status"] not in ("done", "partial", "blocked", "abandoned"):
         raise GateError("invalid checkpoint status")
     if type(value["sequence"]) is not int or value["sequence"] < 1 or type(value["terminal"]) is not bool:
@@ -429,6 +436,13 @@ def evaluate(repo, state, task="", session="", *, _locked=False, _claims=None):
         meaningful = [r for r in relevant if r["phase"] != "session_start"]
         if meaningful and meaningful[-1]["head_sha"] != wr["head"]:
             add("HEAD_DRIFT", worktree=name)
+        if meaningful:
+            baseline = meaningful[-1].get("content_hash")
+            if baseline is not None and baseline != wr["content_hash"]:
+                add("UNRECORDED_WORK", worktree=name, detail="content/index differs from latest checkpoint")
+            elif baseline is None and wr["dirty"]:
+                add("CHECKPOINT_STATE_UNVERIFIED", worktree=name,
+                    detail="legacy checkpoint has no content fingerprint for dirty work")
         if not meaningful:
             local_commits = git(name, "rev-list", "--count", "HEAD", "--not", "--remotes", optional=True) if wr["head"] else b"0"
             if wr["dirty"] or int(local_commits.strip() or b"0"):

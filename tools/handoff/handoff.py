@@ -56,7 +56,7 @@ def run(args):
     target = ".handoff/latest.json"
     tool_input = {"target": target, "record_hash": records[-1]["record_hash"]}
     call_id = "export-" + records[-1]["record_id"]
-    begin(repo, args.session, call_id, "handoff-export", tool_input, [target])
+    begin(repo, args.session, call_id, "handoff-export", tool_input, [target], handoff_record=records[-1])
     durable_json(repo.path(target, regular=True), records[-1])
     return finish(repo, args.session, call_id, "handoff-export", tool_input)
 

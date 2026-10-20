@@ -100,7 +100,10 @@ py -I tools/handoff/handoff.py export --session SESSION --task TASK
 ```
 
 This copies the latest checkpoint of that task/worktree through the same write
-transaction. The imported JSON is historical evidence, not an ack on another
+transaction. Successful export checkpoints preserve the source task's status,
+terminal flag, description and next steps; exporting a completed task does not
+reopen it. A failed or interrupted export still requires transaction recovery.
+The imported JSON is historical evidence, not an ack on another
 machine. Local repo IDs include the common-dir identity; exports do not silently
 join a different machine's active checkpoint chain.
 
@@ -146,6 +149,16 @@ are disabled for status collection. Git configuration is hashed without storing
 its values. Collection is repeated to detect
 concurrent changes. No network/fetch/index refresh is performed by the gate.
 
+New checkpoints include an optional v1 `content_hash` of the index and all tracked
+and nonignored untracked file contents/modes. Gate compares it with the latest
+non-SessionStart checkpoint, so changes after a completed checkpoint (including
+a second rewrite of an already dirty file) warn as `UNRECORDED_WORK`. Opening a
+session does not clear this warning. Old v1 checkpoints remain readable; dirty
+work against one without this fingerprint warns as `CHECKPOINT_STATE_UNVERIFIED`.
+This comparison is independent of touch scope. Ignored files stay outside this
+cross-checkpoint fingerprint; exact touched ignored files remain protected by
+the full scoped acknowledgement token, as before.
+
 Windows trailing-dot/space aliases, reserved device names, path traversal and
 Git metadata targets are rejected. Write/verifier paths cannot be symlinks,
 junctions or hardlinks. On Windows v1 all reparse points (including symlinks and
@@ -183,4 +196,9 @@ py -I tools/handoff/test_runtime.py --output tools/handoff/runtime-evidence.json
 ```
 
 See `IMPLEMENTATION_REPORT.md` for the observed outcomes and independent QA.
+That report and the checked-in runtime evidence describe the original
+implementation checkpoint. The 2026-10-20 checkpoint/export fixes change the
+production Python sources; the old runtime digests do not certify these changes.
+Their behavioral regressions are checked separately; repeat the opt-in Claude
+runtime suite before claiming fresh runtime enforcement evidence.
 Runtime configuration reference: [Claude Code hooks](https://code.claude.com/docs/en/hooks).

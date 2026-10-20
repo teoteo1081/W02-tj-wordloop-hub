@@ -109,6 +109,43 @@ class HandoffTests(unittest.TestCase):
         self.assertIn(b"GATE_TOKEN=", p.stdout)
         self.assertEqual(before, self.metadata_bytes())
 
+    def test_changes_after_terminal_checkpoint_are_unrecorded(self):
+        self.g("update-ref", "refs/remotes/origin/main", "HEAD")
+        checkpoint(self.repo, self.session, self.task, status="done", terminal=True)
+        self.assertEqual(self.report(session="next-session")["exit_code"], 0)
+        self.put("a.txt", "external change\n")
+        report = self.report(session="next-session")
+        self.assertEqual(report["exit_code"], 10)
+        self.assertIn("UNRECORDED_WORK", warning_codes(report))
+        checkpoint(self.repo, "next-session", self.task, phase="session_start")
+        self.assertIn("UNRECORDED_WORK", warning_codes(self.report(session="next-session")))
+
+    def test_recorded_dirty_content_changed_again_is_unrecorded(self):
+        self.put("a.txt", "edit-one\n")
+        checkpoint(self.repo, self.session, self.task, status="partial", terminal=True)
+        before = self.report(session="next-session")
+        self.assertNotIn("UNRECORDED_WORK", warning_codes(before))
+        stamp = (self.root / "a.txt").stat().st_mtime_ns
+        status = git(self.root, "status", "--porcelain=v2", "-z")
+        self.put("a.txt", "edit-two\n")
+        os.utime(self.root / "a.txt", ns=(stamp, stamp))
+        self.assertEqual(status, git(self.root, "status", "--porcelain=v2", "-z"))
+        self.assertIn("UNRECORDED_WORK", warning_codes(self.report(session="next-session")))
+
+    def test_checkpoint_fingerprint_is_scope_independent_and_legacy_is_readable(self):
+        self.g("update-ref", "refs/remotes/origin/main", "HEAD")
+        self.put("ignored.txt", "scoped only")
+        self.ack(("ignored.txt",))
+        original = checkpoint(self.repo, self.session, self.task, status="done", terminal=True)
+        self.assertEqual(self.report(paths=("b.txt",), session="next-session")["exit_code"], 0)
+        legacy = {k: v for k, v in original.items() if k not in ("record_hash", "content_hash")}
+        legacy.update(record_id="legacy-fixture", created_at="2099-01-01T00:00:00+00:00", sequence=2)
+        legacy["record_hash"] = digest(legacy)
+        validate_record(legacy)
+        durable_json(self.repo.records / "legacy.json", legacy, exclusive=True)
+        self.put("a.txt", "unverified against old checkpoint")
+        self.assertIn("CHECKPOINT_STATE_UNVERIFIED", warning_codes(self.report(session="next-session")))
+
     def test_git_clean_and_process_filters_never_execute(self):
         script = Path(self.temp) / "filter.py"
         marker = Path(self.temp) / "filter-ran"
@@ -334,12 +371,47 @@ time.sleep(120)
         exported = json.loads((self.root / ".handoff/latest.json").read_text("utf-8"))
         self.assertEqual(exported, original)
 
+    def test_export_preserves_terminal_status_and_next_steps(self):
+        self.g("update-ref", "refs/remotes/origin/main", "HEAD")
+        original = checkpoint(self.repo, self.session, self.task, status="done", terminal=True,
+                              next_steps=["Verify the two-device workflow"], task_text="Completed task")
+        self.ack((".handoff/latest.json",))
+        args = handoff.parser().parse_args(["export", "--repo", str(self.root),
+                                          "--session", self.session, "--task", self.task])
+        self.assertTrue(handoff.run(args)["ready"])
+        records, invalid = read_records(self.repo)
+        self.assertFalse(invalid)
+        latest = records[-1]
+        for field in ("status", "terminal", "next_steps", "task"):
+            self.assertEqual(latest[field], original[field], field)
+        exported = json.loads((self.root / ".handoff/latest.json").read_text("utf-8"))
+        self.assertEqual(exported, original)
+        self.assertNotIn("UNCLOSED_SESSION", warning_codes(self.report(session="next-session")))
+
+    def test_failed_export_keeps_pending_and_marks_task_uncertain(self):
+        original = checkpoint(self.repo, self.session, self.task, status="done", terminal=True,
+                              next_steps=["Verify exported handoff"])
+        self.ack((".handoff/latest.json",))
+        data = {"target": ".handoff/latest.json", "record_hash": original["record_hash"]}
+        begin(self.repo, self.session, "failed-export", "handoff-export", data,
+              [".handoff/latest.json"], handoff_record=original)
+        self.put(".handoff/latest.json", "partial export")
+        with self.assertRaises(GateError):
+            finish(self.repo, self.session, "failed-export", "handoff-export", data, failed=True)
+        records, _ = read_records(self.repo)
+        self.assertEqual(records[-1]["status"], "blocked")
+        self.assertFalse(records[-1]["terminal"])
+        self.assertEqual(records[-1]["next_steps"], original["next_steps"])
+        self.assertTrue((self.repo.control / "pending.json").exists())
+        self.assertEqual(self.report()["exit_code"], 20)
+
     def test_schema_and_checkpoint_types_match(self):
         value = checkpoint(self.repo, self.session, self.task)
         schema = json.loads((SOURCE / "schema.json").read_text("utf-8"))
-        self.assertEqual(set(value), set(schema["required"]))
+        self.assertEqual(set(value), set(schema["properties"]))
+        self.assertTrue(set(schema["required"]).issubset(value))
         for field, bad in (("dirty", [42]), ("next_steps", [False]), ("session_id", ""),
-                           ("task_id", ""), ("schema_version", True)):
+                           ("task_id", ""), ("schema_version", True), ("content_hash", "invalid")):
             changed = dict(value)
             changed[field] = bad
             changed["record_hash"] = digest({k: v for k, v in changed.items() if k != "record_hash"})

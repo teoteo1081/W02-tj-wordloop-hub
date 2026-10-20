@@ -23,6 +23,7 @@
     "head_sha": {"type": "string"},
     "branch": {"type": "string"},
     "state_hash": {"type": "string"},
+    "content_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
     "dirty": {"type": "array", "items": {"type": "string"}},
     "operations": {"type": "object"},
     "stash": {"type": "string"},

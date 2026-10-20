@@ -103,6 +103,7 @@ def record(repo, session, task, *, status="partial", phase="checkpoint", termina
              "status": status, "phase": phase, "terminal": terminal,
              "base_sha": base, "head_sha": local["head"], "branch": local["branch"],
              "state_hash": report["state_hash"], "dirty": local["dirty"],
+             "content_hash": local["content_hash"],
              "operations": local["operations"],
              "stash": git(repo.root, "rev-parse", "--verify", "refs/stash", optional=True).decode("ascii").strip(),
              "commits": commits, "next_steps": list(next_steps),
@@ -144,7 +145,7 @@ def acknowledge(repo, session, task, token, touch, accepts=(), as_of=None):
         release(repo)
 
 
-def begin(repo, session, tool_id, tool_name, tool_input, paths):
+def begin(repo, session, tool_id, tool_name, tool_input, paths, *, handoff_record=None):
     if not isinstance(tool_id, str) or not tool_id:
         raise GateError("tool_use_id required")
     owner = {"session_id": session, "worktree": repo.worktree, "tool_use_id": tool_id}
@@ -164,9 +165,17 @@ def begin(repo, session, tool_id, tool_name, tool_input, paths):
         state, report = gate(repo, ack["scope"], ack["task_id"], session, ack["as_of"], _locked=True)
         if report["exit_code"] == 20 or report["state_hash"] != ack["token"]:
             raise GateError("gate blocked or state changed since acknowledgement")
+        handoff_context = {}
+        if handoff_record is not None:
+            validate_record(handoff_record)
+            if (handoff_record["repo_id"], handoff_record["worktree"], handoff_record["task_id"]) != (repo.id, repo.worktree, ack["task_id"]):
+                raise GateError("export checkpoint must belong to acknowledged worktree/task")
+            handoff_context = {k: handoff_record[k] for k in ("status", "terminal", "next_steps")}
+            handoff_context["task_text"] = handoff_record["task"]
         pending = {**owner, "task_id": ack["task_id"], "scope": ack["scope"],
                    "paths": paths, "as_of": ack["as_of"], "before": state,
                    "warnings": warning_codes(report),
+                   "handoff_context": handoff_context,
                    "fingerprint": digest({"tool": tool_name, "input": tool_input})}
         used = repo.control / "used" / digest(session) / (digest(tool_id) + ".json")
         if used.exists():
@@ -178,7 +187,8 @@ def begin(repo, session, tool_id, tool_name, tool_input, paths):
         reserved = True
         ack["ready"] = False
         durable_json(ack_path(repo, session), ack)
-        record(repo, session, ack["task_id"], phase="before_tool", state=state, report=report)
+        record(repo, session, ack["task_id"], phase="before_tool", state=state, report=report,
+               **handoff_context)
         return pending
     finally:
         if not reserved:
@@ -192,6 +202,9 @@ def outside_scope(state, current, paths):
     wr["files"] = {p: v for p, v in wr["files"].items() if os.path.normcase(p) not in allowed}
     wr["dirty"] = [p for p in wr["dirty"] if os.path.normcase(p) not in allowed]
     wr.pop("status")
+    # This is derived from files/index; filter allowed files above, then compare
+    # their underlying evidence instead of the aggregate that includes them.
+    wr.pop("content_hash")
     return copy
 
 
@@ -211,8 +224,11 @@ def finish(repo, session, tool_id, tool_name, tool_input, *, failed=False):
     valid = outside_scope(state, repo.worktree, pending["paths"]) == outside_scope(pending["before"], repo.worktree, pending["paths"])
     # Leave pending intact on partial failure, unexpected changes, or any
     # checkpoint/evaluation error. Nothing silently rolls back tool side effects.
-    record(repo, session, pending["task_id"], status="blocked" if failed or not valid else "partial",
-           phase="tool_failed" if failed else "after_tool", state=state)
+    handoff_context = dict(pending.get("handoff_context", {}))
+    if failed or not valid:
+        handoff_context.update(status="blocked", terminal=False)
+    record(repo, session, pending["task_id"],
+           phase="tool_failed" if failed else "after_tool", state=state, **handoff_context)
     if failed or not valid:
         raise GateError("tool failed or state changed outside scope; inspect and recover pending operation")
     path.unlink()
