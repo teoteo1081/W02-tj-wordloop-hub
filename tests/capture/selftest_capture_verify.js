@@ -96,6 +96,41 @@ function failsFor(res, id) { const r = res.results.find((x) => x.id === id); ret
     const r = verify({ root: copyTree(), unsafe: true, fixture: tmp });
     ok("bắt được fixture ghim sai SHA", !r.ok && r.failures.length > 0); }
 
+  console.log("Verifier phải bắt fixture mất hợp đồng (schema, ID bắt buộc, mức xác minh):");
+  const schemaCases = [
+    ["calls = [] (mất hết hợp đồng)", (f) => { f.calls = []; }],
+    ["đổi mọi mục thành position-only", (f) => { f.calls.forEach((c) => { c.verification = "position-only"; }); }],
+    ["hạ một hợp đồng (CC-TRANSLATE) xuống position-only", (f) => { f.calls.find((c) => c.id === "CC-TRANSLATE").verification = "position-only"; }],
+    ["nâng SHELF-URL lên contract", (f) => { f.calls.find((c) => c.id === "SHELF-URL").verification = "contract"; }],
+    ["thiếu một ID bắt buộc (SHELF-MKDIR)", (f) => { f.calls = f.calls.filter((c) => c.id !== "SHELF-MKDIR"); }],
+    ["ID trùng", (f) => { f.calls.push(JSON.parse(JSON.stringify(f.calls[0]))); }],
+    ["ID lạ ngoài danh sách bắt buộc", (f) => { const c = JSON.parse(JSON.stringify(f.calls[0])); c.id = "EXTRA-CALL"; f.calls.push(c); }],
+    ["thiếu trường method", (f) => { delete f.calls.find((c) => c.id === "GAME-GAP-OPENAI").method; }],
+    ["signal không phải boolean", (f) => { f.calls.find((c) => c.id === "GAME-GAP-OPENAI").signal = "no"; }],
+    ["thiếu timeoutMs", (f) => { delete f.calls.find((c) => c.id === "TURN-CREDS").timeoutMs; }],
+    ["đổi file của một ID", (f) => { f.calls.find((c) => c.id === "TURN-CREDS").file = "js/cc.js"; }],
+    ["verification sai chính tả", (f) => { f.calls.find((c) => c.id === "TURN-CREDS").verification = "contrat"; }],
+    ["khai cả bodyKeys và bodyExpr", (f) => { f.calls.find((c) => c.id === "TURN-CREDS").bodyKeys = []; }],
+    ["thiếu mảng calls", (f) => { delete f.calls; }]
+  ];
+  for (const [label, edit] of schemaCases) {
+    const f2 = JSON.parse(JSON.stringify(fx)); edit(f2);
+    const tmp = path.join(mk("tjwl-fx-"), "fx.json"); fs.writeFileSync(tmp, JSON.stringify(f2));
+    const r = verify({ root: copyTree(), unsafe: true, fixture: tmp });
+    ok("bắt được: " + label, !r.ok && r.failures.some((x) => /^SCHEMA:/.test(x)), JSON.stringify({ ok: r.ok, failures: r.failures.slice(0, 2) }));
+  }
+
+  console.log("Băm baseline không phụ thuộc kiểu xuống dòng (CRLF/LF):");
+  { const lf = copyTree(); const crlf = copyTree();
+    const p = path.join(crlf, "js/context.js"); fs.writeFileSync(p, fs.readFileSync(p, "utf8").replace(/\n/g, "\r\n"));
+    ok("sha256Lf: bản CRLF và bản LF cho cùng một băm", baseline.sha256Lf(path.join(lf, "js/context.js")) === baseline.sha256Lf(p));
+    const a = (await capture.collect(lf, null)).out, b = (await capture.collect(crlf, null)).out;
+    ok("capture: source_hashes giống hệt giữa CRLF và LF", JSON.stringify(a.source_hashes) === JSON.stringify(b.source_hashes));
+    const golden = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "fixtures", "baseline-context-calls.json"), "utf8"));
+    ok("băm LF khớp fixture đã commit (CI Linux sẽ khớp)", a.source_hashes["js/context.js"].sha256_lf === golden.source_hashes["js/context.js"].sha256_lf);
+    ok("git blob ghim trong fixture khớp kho git baseline", baseline.gitBlob(root, "js/context.js") === golden.source_hashes["js/context.js"].git_blob && !!golden.source_hashes["js/context.js"].git_blob);
+    ok("so sánh toàn bộ kịch bản giữa CRLF và LF giống hệt", JSON.stringify(a.scenarios) === JSON.stringify(b.scenarios)); }
+
   console.log("Ghim baseline:");
   { let threw = false; try { verify({ root: copyTree() }); } catch (e) { threw = true; } ok("verifier từ chối nguồn không phải baseline git", threw); }
   { let threw = false; try { await capture.run({ root: copyTree(), mode: "check" }); } catch (e) { threw = true; } ok("capture từ chối nguồn không phải baseline git", threw); }

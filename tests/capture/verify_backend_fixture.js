@@ -148,6 +148,60 @@ function checkCall(c, lines) {
   return { level: "contract", problems };
 }
 
+/* Danh sách hợp đồng BẮT BUỘC có trong fixture, kèm mức xác minh và nguồn. Thiếu, thừa, trùng hoặc hạ mức đều là lỗi:
+   chỉ SHELF-URL (hàm dựng URL, không có fetch) được là position-only. Thêm/bớt hợp đồng = sửa bảng này trong PR có TJ duyệt. */
+const REQUIRED = {
+  "CC-TRANSLATE": { verification: "contract", service: "gemini-proxy", file: "js/cc.js" },
+  "GAME-GRADE-SENTENCE": { verification: "contract", service: "gemini-proxy", file: "js/game.js" },
+  "GAME-LOOKUP-TOEIC": { verification: "contract", service: "gemini-proxy", file: "js/game.js" },
+  "GAME-GAP-OPENAI": { verification: "contract", service: "openai-proxy", file: "js/game.js" },
+  "APP-FETCH-ARTICLE": { verification: "contract", service: "fetch-article", file: "js/app.js" },
+  "TURN-CREDS": { verification: "contract", service: "turn-creds", file: "js/turn.js" },
+  "SHELF-LIST": { verification: "contract", service: "tj-shelf", file: "js/game.js" },
+  "SHELF-UPLOAD": { verification: "contract", service: "tj-shelf", file: "js/game.js" },
+  "SHELF-DELETE": { verification: "contract", service: "tj-shelf", file: "js/game.js" },
+  "SHELF-MOVE": { verification: "contract", service: "tj-shelf", file: "js/game.js" },
+  "SHELF-FOLDERS": { verification: "contract", service: "tj-shelf", file: "js/game.js" },
+  "SHELF-MKDIR": { verification: "contract", service: "tj-shelf", file: "js/game.js" },
+  "SHELF-URL": { verification: "position-only", service: "tj-shelf", file: "js/game.js" }
+};
+
+/* Kiểm cấu trúc fixture trước khi đối chiếu với mã. Trả về danh sách lỗi (rỗng = hợp lệ). */
+function validateSchema(fx) {
+  const errs = [];
+  if (!fx || typeof fx !== "object") return ["fixture không phải object"];
+  if (!Array.isArray(fx.calls)) return ["fixture thiếu mảng `calls`"];
+  const seen = {};
+  fx.calls.forEach((c, i) => {
+    const where = "calls[" + i + "]" + (c && c.id ? " (" + c.id + ")" : "");
+    if (!c || typeof c !== "object") { errs.push(where + ": không phải object"); return; }
+    if (typeof c.id !== "string" || !c.id) { errs.push(where + ": thiếu id"); return; }
+    if (seen[c.id]) errs.push("id trùng: " + c.id);
+    seen[c.id] = true;
+    const req = REQUIRED[c.id];
+    if (!req) { errs.push("id không nằm trong danh sách bắt buộc: " + c.id + " (thêm vào REQUIRED trong PR có duyệt)"); return; }
+    if (c.verification !== req.verification) errs.push(c.id + ": verification = " + JSON.stringify(c.verification) + " (bắt buộc: " + req.verification + ")");
+    if (c.service !== req.service) errs.push(c.id + ": service = " + JSON.stringify(c.service) + " (bắt buộc: " + req.service + ")");
+    if (c.file !== req.file) errs.push(c.id + ": file = " + JSON.stringify(c.file) + " (bắt buộc: " + req.file + ")");
+    if (!Number.isInteger(c.line) || c.line < 1) errs.push(c.id + ": line không hợp lệ");
+    if (typeof c.anchor !== "string" || !c.anchor) errs.push(c.id + ": thiếu anchor");
+    if (c.verification === "contract") {
+      if (typeof c.method !== "string") errs.push(c.id + ": thiếu method");
+      if (!Array.isArray(c.headerNames)) errs.push(c.id + ": thiếu headerNames (mảng)");
+      if (typeof c.signal !== "boolean") errs.push(c.id + ": thiếu signal (boolean)");
+      if (!("timeoutMs" in c) || !(c.timeoutMs === null || Number.isInteger(c.timeoutMs))) errs.push(c.id + ": timeoutMs phải là null hoặc số nguyên");
+      if (typeof c.urlContains !== "string" || !c.urlContains) errs.push(c.id + ": thiếu urlContains");
+      if (c.bodyKeys !== undefined && c.bodyExpr !== undefined) errs.push(c.id + ": không được khai cả bodyKeys và bodyExpr");
+      if (c.bodyKeys !== undefined && !Array.isArray(c.bodyKeys)) errs.push(c.id + ": bodyKeys phải là mảng");
+    }
+  });
+  Object.keys(REQUIRED).forEach((id) => { if (!seen[id]) errs.push("thiếu hợp đồng bắt buộc: " + id); });
+  const nContract = fx.calls.filter((c) => c && c.verification === "contract").length;
+  const wantContract = Object.keys(REQUIRED).filter((id) => REQUIRED[id].verification === "contract").length;
+  if (nContract !== wantContract) errs.push("số hợp đồng được kiểm = " + nContract + " (bắt buộc: " + wantContract + ")");
+  return errs;
+}
+
 function verify(opts) {
   opts = opts || {};
   const root = path.resolve(opts.root || baseline.defaultRoot());
@@ -156,6 +210,8 @@ function verify(opts) {
   const meta = { pinned: false };
   const failures = [];
   if (!opts.unsafe) { baseline.assertPinned(root); meta.pinned = true; }
+  const schemaErrs = validateSchema(fx);
+  if (schemaErrs.length) return { ok: false, results: [], failures: schemaErrs.map((e) => "SCHEMA: " + e), meta };
   if (!fx.baseline || fx.baseline.commit !== baseline.PIN.commit || fx.baseline.tree !== baseline.PIN.tree) failures.push("metadata baseline của fixture không khớp commit/tree đã ghim");
   const results = []; const cache = {};
   fx.calls.forEach((c) => {
@@ -170,7 +226,7 @@ function verify(opts) {
   return { ok: !bad.length && !failures.length, results, failures, meta };
 }
 
-module.exports = { verify, checkCall, parseObject, splitTop, matching };
+module.exports = { verify, checkCall, validateSchema, REQUIRED, parseObject, splitTop, matching };
 
 if (require.main === module) {
   const rootArg = process.argv.slice(2).find((a) => !a.startsWith("--"));

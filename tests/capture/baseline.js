@@ -32,12 +32,19 @@ function assertPinned(root) {
   return { commit: commit, tree: tree, clean: true, pinned: true };
 }
 
-function sha256File(file) {
-  return crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex");
+/* SHA-256 của nội dung đã CHUẨN HOÁ về LF: không phụ thuộc core.autocrlf / hệ điều hành (Windows CRLF và Linux LF cho cùng kết quả). */
+function sha256Lf(file) {
+  const text = fs.readFileSync(file, "utf8").replace(/\r\n/g, "\n");
+  return crypto.createHash("sha256").update(text, "utf8").digest("hex");
+}
+
+/* SHA của git blob tại HEAD (đọc từ kho git, KHÔNG từ tệp trong thư mục làm việc) — bất biến theo kiểu xuống dòng của máy. null nếu không phải kho git. */
+function gitBlob(root, rel) {
+  try { return git(root, ["rev-parse", "HEAD:" + rel]); } catch (e) { return null; }
 }
 
 function defaultRoot() {
   return path.resolve(__dirname, "..", "..", "..", "wt-baseline-e324beb");
 }
 
-module.exports = { PIN, assertPinned, sha256File, defaultRoot };
+module.exports = { PIN, assertPinned, sha256Lf, gitBlob, defaultRoot };

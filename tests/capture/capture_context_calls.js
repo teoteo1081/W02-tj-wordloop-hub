@@ -65,7 +65,8 @@ async function collect(root, pin, scenarios) {
   const errors = [];
   const out = {
     baseline: pin ? { commit: pin.commit, tree: pin.tree, clean: true } : { commit: "(KHÔNG GHIM — chỉ self-test)", tree: null, clean: null },
-    source_sha256: { "js/context.js": baseline.sha256File(ctxFile) },
+    /* git_blob: SHA blob trong kho git (bất biến theo EOL); sha256_lf: băm nội dung đã chuẩn hoá LF. Không băm byte thô của tệp làm việc. */
+    source_hashes: { "js/context.js": { git_blob: pin ? baseline.gitBlob(root, "js/context.js") : null, sha256_lf: baseline.sha256Lf(ctxFile) } },
     captured_with: "executed (fetch stub)",
     scenarios: []
   };

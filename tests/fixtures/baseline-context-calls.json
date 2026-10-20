@@ -4,8 +4,11 @@
     "tree": "9de0480570b1c95c85912d685626891ba142b825",
     "clean": true
   },
-  "source_sha256": {
-    "js/context.js": "50e1a0919615303164511e2b2805b3fc5999c0d10d6c8eae77bcfc1003012605"
+  "source_hashes": {
+    "js/context.js": {
+      "git_blob": "7f44f76c510273de526c01f5e1838cab66b48abd",
+      "sha256_lf": "c75b6081a5564291ef3398bfc097d356e69e701c14c8c17f97b15c35a30aa4bc"
+    }
   },
   "captured_with": "executed (fetch stub)",
   "scenarios": [

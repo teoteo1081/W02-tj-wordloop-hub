@@ -22,9 +22,9 @@ node tests/capture/capture_context_calls.js  [thư_mục_baseline] --write  # c�
 node tests/capture/selftest_capture_verify.js [thư_mục_baseline]         # phản chứng: hai công cụ trên phải THẤT BẠI khi hợp đồng bị đổi
 ```
 
-Ràng buộc của công cụ (đã có phản chứng trong self-test, 46 ca):
+Ràng buộc của công cụ (đã có phản chứng trong self-test, 65 ca):
 
-- **Khoá baseline (`baseline.js`):** nguồn phải là đúng commit `e324beb54b29…`, cây tệp `9de0480570b1…`, `git status` sạch. Mã khác hoặc có sửa cục bộ → từ chối, không ghi gì. Fixture ghi `baseline.commit/tree` và SHA-256 của `js/context.js`; metadata lệch ghim → báo lỗi.
+- **Khoá baseline (`baseline.js`):** nguồn phải là đúng commit `e324beb54b29…`, cây tệp `9de0480570b1…`, `git status` sạch. Mã khác hoặc có sửa cục bộ → từ chối, không ghi gì. Fixture ghi `baseline.commit/tree` và băm của `js/context.js` theo hai cách **không phụ thuộc kiểu xuống dòng**: `git_blob` (SHA blob trong kho git, đọc từ git, không từ tệp làm việc) và `sha256_lf` (băm nội dung đã chuẩn hoá về LF). Windows CRLF và Linux LF cho cùng kết quả (self-test kiểm trực tiếp). Metadata lệch ghim → báo lỗi.
 - **Verifier kiểm hợp đồng, không chỉ vị trí:** với mục `verification: contract`, nó phân tích lời gọi `fetch(...)` và kiểm method, tên header, khoá body (hoặc biểu thức body), biểu thức `model`/`user_id`/`block_id`, có `signal` hay không, và hẹn giờ huỷ (ms). Mục `position-only` (chỉ `SHELF-URL`, hàm dựng URL không có `fetch`) chỉ xác nhận *vị trí* và được in rõ là "không phải hợp đồng". Self-test làm hỏng từng thuộc tính trong bản sao (kể cả `block_id: "game-gap"` → `"WRONG-BLOCK"`) và kiểm verifier bắt đúng mục, không báo nhầm mục khác.
 - **Capture đối chiếu kỳ vọng từng kịch bản** (đúng 1 yêu cầu, URL, method, header, khoá body, model, `user_id`, `block_id`, có `signal`). Kịch bản ném lỗi hoặc sai kỳ vọng → thoát mã 1 và **không ghi gì**; ghi bằng tệp tạm rồi đổi tên; mặc định chỉ *so* với fixture đã commit.
 - Chế độ `unsafe` (không ghim) chỉ dành cho self-test và bị cấm ghi fixture.
@@ -41,3 +41,7 @@ Ràng buộc của công cụ (đã có phản chứng trong self-test, 46 ca):
 - Mọi lời gọi `tj-shelf` **không mang header xác thực**; upload gửi `File` thô với `content-type` theo tệp. Phương án xác thực của B2 sẽ làm bản baseline mất quyền ghi/xoá (BCK-03).
 - Ba điểm (CC dịch, chấm câu, tra nghĩa TOEIC) và `lookupWord` **cố ý** gửi `user_id:null, block_id:null`; `game.js` viết câu gửi `block_id:"game-gap"` kèm `user_id` hồ sơ.
 - Có hai Edge Function ngoài hai proxy AI mà baseline đang gọi: `fetch-article` và `turn-creds`.
+
+## Schema và danh sách hợp đồng bắt buộc
+
+`verify_backend_fixture.js` kiểm cấu trúc fixture **trước** khi đối chiếu mã (`REQUIRED` trong file): đủ 13 ID, không trùng, không ID lạ; đúng `service`/`file`; mọi mục `contract` có `method`, `headerNames`, `signal` (boolean), `timeoutMs` (null hoặc số), `urlContains`; chỉ `SHELF-URL` được là `position-only`; tổng số hợp đồng được kiểm phải đúng 12. `calls: []`, hạ mức xác minh, thiếu/thừa ID đều làm verifier thất bại (14 ca trong self-test). Thêm hoặc bớt hợp đồng = sửa `REQUIRED` trong PR có TJ duyệt.
