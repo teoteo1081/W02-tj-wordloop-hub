@@ -1,0 +1,192 @@
+{
+  "baseline_root": "wt-baseline-e324beb",
+  "captured_with": "executed (fetch stub)",
+  "scenarios": [
+    {
+      "id": "CTX-GEM-NOCTX",
+      "desc": "Context._callGemini, quotaCtx = null",
+      "error": null,
+      "calls": [
+        {
+          "url": "https://example.invalid/functions/v1/gemini-proxy",
+          "method": "POST",
+          "headerNames": [
+            "Authorization",
+            "Content-Type",
+            "apikey"
+          ],
+          "hasSignal": true,
+          "bodyKeys": [
+            "block_id",
+            "model",
+            "sys",
+            "user",
+            "user_id"
+          ],
+          "body": {
+            "block_id": null,
+            "model": "gemini-3.5-flash-lite",
+            "sys": "SYS",
+            "user": "USER",
+            "user_id": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "CTX-GEM-CTX",
+      "desc": "Context._callGemini, quotaCtx = {userId, blockId}",
+      "error": null,
+      "calls": [
+        {
+          "url": "https://example.invalid/functions/v1/gemini-proxy",
+          "method": "POST",
+          "headerNames": [
+            "Authorization",
+            "Content-Type",
+            "apikey"
+          ],
+          "hasSignal": true,
+          "bodyKeys": [
+            "block_id",
+            "model",
+            "sys",
+            "user",
+            "user_id"
+          ],
+          "body": {
+            "block_id": "B-PLACEHOLDER",
+            "model": "gemini-3.5-flash-lite",
+            "sys": "SYS",
+            "user": "USER",
+            "user_id": "U-PLACEHOLDER"
+          }
+        }
+      ]
+    },
+    {
+      "id": "CTX-OAI-NOCTX",
+      "desc": "Context._callOpenAI qua proxy, quotaCtx = null",
+      "error": null,
+      "calls": [
+        {
+          "url": "https://example.invalid/functions/v1/openai-proxy",
+          "method": "POST",
+          "headerNames": [
+            "Authorization",
+            "Content-Type",
+            "apikey"
+          ],
+          "hasSignal": true,
+          "bodyKeys": [
+            "block_id",
+            "model",
+            "sys",
+            "user",
+            "user_id"
+          ],
+          "body": {
+            "block_id": null,
+            "model": "gpt-4o-mini",
+            "sys": "SYS",
+            "user": "USER",
+            "user_id": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "CTX-OAI-CTX",
+      "desc": "Context._callOpenAI qua proxy, quotaCtx = {userId, blockId}",
+      "error": null,
+      "calls": [
+        {
+          "url": "https://example.invalid/functions/v1/openai-proxy",
+          "method": "POST",
+          "headerNames": [
+            "Authorization",
+            "Content-Type",
+            "apikey"
+          ],
+          "hasSignal": true,
+          "bodyKeys": [
+            "block_id",
+            "model",
+            "sys",
+            "user",
+            "user_id"
+          ],
+          "body": {
+            "block_id": "B-PLACEHOLDER",
+            "model": "gpt-4o-mini",
+            "sys": "SYS",
+            "user": "USER",
+            "user_id": "U-PLACEHOLDER"
+          }
+        }
+      ]
+    },
+    {
+      "id": "CTX-LOOKUP",
+      "desc": "Context.lookupWord (quotaCtx null -> không ăn quota)",
+      "error": null,
+      "calls": [
+        {
+          "url": "https://example.invalid/functions/v1/gemini-proxy",
+          "method": "POST",
+          "headerNames": [
+            "Authorization",
+            "Content-Type",
+            "apikey"
+          ],
+          "hasSignal": true,
+          "bodyKeys": [
+            "block_id",
+            "model",
+            "sys",
+            "user",
+            "user_id"
+          ],
+          "body": {
+            "block_id": null,
+            "model": "gemini-3.5-flash-lite",
+            "sys": "<string 154 ký tự>",
+            "user": "<string 732 ký tự>",
+            "user_id": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "CTX-PROVIDER-ORDER",
+      "desc": "Context._callProvider: Gemini trước",
+      "error": null,
+      "calls": [
+        {
+          "url": "https://example.invalid/functions/v1/gemini-proxy",
+          "method": "POST",
+          "headerNames": [
+            "Authorization",
+            "Content-Type",
+            "apikey"
+          ],
+          "hasSignal": true,
+          "bodyKeys": [
+            "block_id",
+            "model",
+            "sys",
+            "user",
+            "user_id"
+          ],
+          "body": {
+            "block_id": null,
+            "model": "gemini-3.5-flash-lite",
+            "sys": "SYS",
+            "user": "USER",
+            "user_id": null
+          }
+        }
+      ]
+    }
+  ]
+}

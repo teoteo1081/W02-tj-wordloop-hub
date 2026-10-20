@@ -1,0 +1,94 @@
+{
+  "baseline": "e324beb",
+  "captured_with": "static-reading",
+  "note": "Hợp đồng lời gọi backend của bản baseline, đọc trực tiếp từ mã (CHƯA chạy). Các điểm nằm trong IIFE lớn có DOM (game.js, cc.js, app.js, turn.js) chưa gọi được từ Node; M0.5 (Playwright) sẽ chuyển chúng sang 'executed'. Giá trị là chỗ giữ chỗ, không có khoá/token thật. Mỗi mục có anchor: biểu thức chính quy PHẢI khớp trong file/dòng của baseline (kiểm bằng verify_backend_fixture.js).",
+  "services": {
+    "gemini-proxy": { "path": "/functions/v1/gemini-proxy", "method": "POST", "headerNames": ["Authorization", "Content-Type", "apikey"] },
+    "openai-proxy": { "path": "/functions/v1/openai-proxy", "method": "POST", "headerNames": ["Authorization", "Content-Type", "apikey"] },
+    "fetch-article": { "path": "/functions/v1/fetch-article", "method": "POST", "headerNames": ["Authorization", "Content-Type", "apikey"] },
+    "turn-creds": { "path": "/functions/v1/turn-creds", "method": "POST", "headerNames": ["Authorization", "Content-Type", "apikey"] },
+    "tj-shelf": { "base": "https://tj-shelf.tj-wordloop.workers.dev", "auth": "KHÔNG có header xác thực nào trong bất kỳ lời gọi nào (CORS *)" }
+  },
+  "calls": [
+    {
+      "id": "CC-TRANSLATE", "service": "gemini-proxy", "file": "js/cc.js", "line": 92,
+      "anchor": "functions/v1/gemini-proxy.*user_id: null, block_id: null",
+      "bodyKeys": ["block_id", "model", "sys", "user", "user_id"],
+      "user_id": null, "block_id": null, "model": "cfg.GEMINI_MODEL || gemini-3.5-flash-lite",
+      "signal": false, "onFailure": "ném Error('http <status>') khi !res.ok; phía gọi bắt lỗi"
+    },
+    {
+      "id": "GAME-GRADE-SENTENCE", "service": "gemini-proxy", "file": "js/game.js", "line": 2519,
+      "anchor": "functions/v1/gemini-proxy",
+      "bodyKeys": ["block_id", "model", "sys", "user", "user_id"],
+      "user_id": null, "block_id": null, "model": "cfg.GEMINI_MODEL || gemini-3.5-flash-lite",
+      "signal": true, "timeoutMs": 25000, "onFailure": "bắt lỗi, rơi về điểm không có AI (ai = [])"
+    },
+    {
+      "id": "GAME-LOOKUP-TOEIC", "service": "gemini-proxy", "file": "js/game.js", "line": 3536,
+      "anchor": "functions/v1/gemini-proxy",
+      "bodyKeys": ["block_id", "model", "sys", "user", "user_id"],
+      "user_id": null, "block_id": null, "model": "cfg.GEMINI_MODEL || gemini-3.5-flash-lite",
+      "signal": false, "onFailure": "bắt lỗi, trả null"
+    },
+    {
+      "id": "GAME-GAP-OPENAI", "service": "openai-proxy", "file": "js/game.js", "line": 1309,
+      "anchor": "functions/v1/openai-proxy",
+      "bodyKeys": ["block_id", "model", "sys", "temperature", "user", "user_id"],
+      "user_id": "G.profile.id hoặc null", "block_id": "game-gap", "model": "cfg.OPENAI_MODEL || gpt-4o-mini",
+      "signal": false, "onFailure": "ném Error(thông điệp lỗi hoặc mã HTTP) khi !res.ok"
+    },
+    {
+      "id": "APP-FETCH-ARTICLE", "service": "fetch-article", "file": "js/app.js", "line": 2339,
+      "anchor": "functions/v1/fetch-article",
+      "bodyKeys": ["url"], "signal": false,
+      "onFailure": "ném Error khi !r.ok hoặc thiếu data.html; dùng sau khi tải trực tiếp thất bại do lỗi mạng/CORS"
+    },
+    {
+      "id": "TURN-CREDS", "service": "turn-creds", "file": "js/turn.js", "line": 10,
+      "anchor": "functions/v1/turn-creds",
+      "bodyKeys": [], "body": "{} (chuỗi JSON rỗng)", "signal": false,
+      "schedule": "gọi lúc nạp rồi mỗi 20 phút", "onFailure": "bỏ qua im lặng"
+    },
+    {
+      "id": "SHELF-LIST", "service": "tj-shelf", "file": "js/game.js", "line": 2283,
+      "anchor": "SHELF \\+ \"/list\\?prefix=\"",
+      "method": "GET", "path": "/list?prefix=<encodeURIComponent(folder)>", "headerNames": [], "response": "{items:[...]}"
+    },
+    {
+      "id": "SHELF-UPLOAD", "service": "tj-shelf", "file": "js/game.js", "line": 2287,
+      "anchor": "SHELF \\+ \"/file/\" \\+ shelfPath\\(path\\), \\{ method: \"PUT\"",
+      "method": "PUT", "path": "/file/<shelfPath(path)>", "headerNames": ["content-type"], "body": "Blob/File gốc (không JSON), content-type theo file hoặc application/octet-stream", "response": "{error?}"
+    },
+    {
+      "id": "SHELF-DELETE", "service": "tj-shelf", "file": "js/game.js", "line": 2291,
+      "anchor": "method: \"DELETE\"",
+      "method": "DELETE", "path": "/file/<shelfPath(path)>", "headerNames": [], "response": "{error?}"
+    },
+    {
+      "id": "SHELF-MOVE", "service": "tj-shelf", "file": "js/game.js", "line": 2295,
+      "anchor": "SHELF \\+ \"/move\"",
+      "method": "POST", "path": "/move", "headerNames": ["content-type"], "bodyKeys": ["from", "to"], "response": "{error?}"
+    },
+    {
+      "id": "SHELF-FOLDERS", "service": "tj-shelf", "file": "js/game.js", "line": 2298,
+      "anchor": "SHELF \\+ \"/folders\"",
+      "method": "GET", "path": "/folders", "headerNames": [], "response": "{folders:[...]}"
+    },
+    {
+      "id": "SHELF-MKDIR", "service": "tj-shelf", "file": "js/game.js", "line": 2302,
+      "anchor": "SHELF \\+ \"/mkdir\"",
+      "method": "POST", "path": "/mkdir", "headerNames": ["content-type"], "bodyKeys": ["path"], "response": "{error?}"
+    },
+    {
+      "id": "SHELF-URL", "service": "tj-shelf", "file": "js/game.js", "line": 2304,
+      "anchor": "SHELF \\+ \"/file/\" \\+ shelfPath\\(path\\)",
+      "method": "GET (mở trực tiếp bằng thẻ/trình duyệt)", "path": "/file/<shelfPath(path)>", "headerNames": []
+    }
+  ],
+  "shelf_notes": [
+    "Đường dẫn bắt đầu bằng _tmp/ không đi qua Worker mà qua Supabase Storage (isTmp).",
+    "Mọi lời gọi tới tj-shelf không mang header xác thực: phương án xác thực của B2 sẽ làm bản baseline mất quyền ghi/xoá (xem BCK-03)."
+  ],
+  "openai_proxy_extras": "game.js gửi thêm 'temperature'; Context._callOpenAI qua proxy không gửi (xem baseline-context-calls.json)."
+}

@@ -38,6 +38,7 @@ Nó tồn tại vì:
 | `ROADMAP_RESTRUCTURE.md` | Lộ trình: cột mốc M0–M4, luồng B/C/H, cổng quyết định của TJ, quy trình mỗi bước, ước lượng |
 | `TEST_REGRESSION_RESTRUCTURE.md` | Đặc tả bộ test hồi quy (ca, tiêu chí đạt, tầng chạy, ma trận truy vết tới `CLAUDE.md`). Chỉ là đặc tả, **chưa có mã test** |
 | `PLAN_NETLIFY_FRONTEND.md` | Kế hoạch chuyển nơi deploy frontend sang Netlify (cherry-pick từ `feat/netlify-frontend-plan`). Trong mô hình này Netlify phục vụ **nhánh restructure**, còn `main` ở lại GitHub Pages; xem luồng H trong plan restructure |
+| `tests/` | Lưới an toàn A0: kịch bản thu lời gọi baseline (`tests/capture/`), hợp đồng lời gọi backend (`tests/fixtures/`), `tests/README.md`. Chỉ tệp mới; không đụng mã ứng dụng |
 | `AUDIT_INFRA_ADVISOR.md` | Báo cáo audit hạ tầng/bảo mật làm đầu vào. Có chỗ chưa khớp code thật; phần đối chiếu nằm ở mục 3 của `PLAN_RESTRUCTURE.md`. Không sửa file audit để chữa chỗ sai, ghi errata vào plan |
 
 ## Luật của worktree này
@@ -46,9 +47,12 @@ Nó tồn tại vì:
 - Đọc, đo, đối chiếu code; sửa và commit các file kế hoạch/tài liệu ở đây.
 - Commit cục bộ trên `feat/restructure-plan`; cherry-pick commit từ nơi khác khi TJ bảo.
 
-**Chưa được làm cho đến khi TJ duyệt `PLAN_RESTRUCTURE.md` và trả lời mục 9 của nó:**
-- Sửa bất kỳ file trong `js/`, `css/`, `index.html`, `game.html`, `sw.js`, `data/`, `supabase/`, `tools/`.
+**Đã được TJ duyệt (2026-10-20): A0 — lưới an toàn.** Được thêm tệp mới trong `tests/` (fixture, kịch bản thu lời gọi, khung kiểm thử) và dựng worktree baseline chỉ-đọc `C:\Users\User\Desktop\TJ\_work\wt-baseline-e324beb` (detached tại `e324beb`, không sửa, không commit trong đó). TJ đã quyết **không dùng đường vá gấp cho rủi ro chi phí AI**: B1 đi theo thứ tự có cổng.
+
+**Vẫn chưa được làm cho đến khi TJ duyệt phần tương ứng của `PLAN_RESTRUCTURE.md` và trả lời mục 9:**
+- Sửa bất kỳ file ứng dụng trong `js/`, `css/`, `index.html`, `game.html`, `sw.js`, `data/`, `supabase/`, `tools/` (A0 chỉ *thêm* `tests/`, không đụng mã ứng dụng).
 - Chạy SQL lên Supabase, deploy Edge Function hay Worker, đổi secret, kết nối Netlify, tạo site hay trả phí.
+- Cài gói từ mạng (vd Playwright): cần TJ đồng ý riêng khi tới bước dựng khung trình duyệt.
 
 **Không bao giờ:**
 - Push lên `origin/main`, merge `main` vào đây, hoặc force-push. Thay `main` chỉ theo mục 5 ở trên và chỉ khi TJ bảo.
@@ -58,7 +62,7 @@ Nó tồn tại vì:
 
 ## Trạng thái hiện tại
 
-Giai đoạn **lập kế hoạch**. Chưa có dòng code ứng dụng nào bị đổi. Việc kế tiếp phụ thuộc câu trả lời của TJ ở mục 9 của `PLAN_RESTRUCTURE.md`; khi được duyệt, bắt đầu từ A0 (lưới an toàn) trên baseline `e324beb`.
+Giai đoạn **A0 — lưới an toàn (đang thực thi)**. Chưa có dòng mã ứng dụng nào bị đổi; chỉ có tài liệu và `tests/`. Đã xong: M0.1 (baseline) và M0.5a (thu lời gọi backend, xem `tests/README.md`). Việc kế tiếp theo `ROADMAP_RESTRUCTURE.md` mục 4 (M0.2 số liệu gốc, M0.3 test Node, M0.7b ngoại lệ baseline…). Các câu 3–7 và 9–12 ở mục 9 của plan vẫn mở và chặn các bước sau A0.
 
 Khi trạng thái đổi (bắt đầu A0, hoàn thành một pha, freeze, hủy), sửa đúng mục này trong cùng commit.
 

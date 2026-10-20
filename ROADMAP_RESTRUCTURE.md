@@ -191,9 +191,9 @@ Mỗi bước restructure (một hoặc vài commit trên dòng tích hợp) PH�
 | Cột mốc | Trạng thái | Cổng đang chờ | Ghi chú |
 |---|---|---|---|
 | G1 (baseline), câu 2 | ✔ Đã chốt 2026-10-20 | — | `e324beb`; `main` đóng băng; fast-forward ở cuối |
-| G0, G2–G10 | Chưa mở | TJ trả lời plan mục 9 | |
+| G0 ✔ (2026-10-20); G2–G10 | G0 đã duyệt, còn lại chưa mở | TJ trả lời plan mục 9 | |
 | H0–H2 | Chưa bắt đầu | G8 (+ G7 cho H2) | |
-| M0 | Chưa bắt đầu | G0, G2 | |
+| M0 | **Đang làm** (G0 ✔ duyệt A0 2026-10-20; G2 chưa) | G2 cho M0.8 (CI) | Xong: M0.1 (worktree baseline `wt-baseline-e324beb`), M0.5a (xem `tests/README.md`). Còn: M0.2, M0.3, M0.4, M0.5, M0.6, M0.7, M0.7b, M0.8 |
 | M1 | Chưa bắt đầu | M0, G4 | |
 | M2 | Chưa bắt đầu | M1, G3 | |
 | M3 | Chưa bắt đầu | M2, G2 | |
