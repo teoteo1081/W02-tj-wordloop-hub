@@ -46,7 +46,7 @@ Nó tồn tại vì:
 
 ## Trạng thái hiện tại
 
-Giai đoạn **lập kế hoạch**. Chưa có dòng code ứng dụng nào bị đổi. Việc kế tiếp phụ thuộc câu trả lời của TJ ở mục 9 của `PLAN_RESTRUCTURE.md`; bước đầu tiên khi được duyệt là rebase lên `origin/main` rồi làm A0 (lưới an toàn).
+Giai đoạn **lập kế hoạch**. Chưa có dòng code ứng dụng nào bị đổi. Việc kế tiếp phụ thuộc câu trả lời của TJ ở mục 9 của `PLAN_RESTRUCTURE.md`; bước đầu tiên khi được duyệt là tích hợp baseline đã chốt (xem `PLAN_RESTRUCTURE.md` mục 5: `origin/main` đã là tổ tiên của nhánh này, commit `8b071e6` chỉ có ở `main` cục bộ) rồi làm A0 (lưới an toàn).
 
 Khi trạng thái đổi (bắt đầu A0, hoàn thành một pha, hủy), sửa đúng mục này trong cùng commit.
 
