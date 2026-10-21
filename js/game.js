@@ -1447,6 +1447,7 @@
   /* 🪤 ĐÁP ÁN BẪY (TJ duyệt 2026-10-05): bảng word_traps (status=approved) — mỗi từ có vài đáp án sai "dễ nhầm" do AI soạn + TJ duyệt:
      look 🔤 giống mặt chữ · family 👪 cùng họ từ · syn 🔀 gần nghĩa · false ⚠️ bạn giả. Dùng tối đa 2 bẫy / câu, còn lại lấy như cũ;
      điền chỗ trống chỉ dùng look/family (syn/false có thể vừa câu). Chưa có bảng / chưa duyệt = giữ cách cũ. q.traps = {norm(đáp án): {k, why}} chỉ lộ lúc xem lại. */
+  var lastMs = {};   /* norm(đáp án) -> nghĩa ĐÚNG dòng đã lọc (từ trùng chữ nhiều dòng có nghĩa khác nhau: hiển thị phải dùng đúng dòng đã lọc) */
   var TRAPS = null, TRAP_KINDS = { meaning: ["look", "family", "syn", "false"], en2m: ["look", "family", "syn", "false"], gap: ["look", "family"] }, lastTraps = null;
   var TRAP_LAB = {
     vi: { look: "🔤 Giống mặt chữ", family: "👪 Cùng họ từ", syn: "🔀 Gần nghĩa", false: "⚠️ Bạn giả" },
@@ -1473,31 +1474,44 @@
       await Promise.all([work(), work(), work(), work(), work()]);
     } catch (e) { /* bỏ qua */ }
   }
+  /* Chống 2 ô cùng nghĩa (TJ 2026-10-21: well-balanced có 2 ô "Cân bằng", self-centred có 2 ô "Ích kỷ"): MỌI đáp án sai — bẫy AI lẫn từ bốc ngẫu nhiên —
+     phải qua CÙNG 1 bộ lọc: nghĩa ở bất kỳ tiếng nào (vi/en/es/zh, đã gọt ngoặc) không được trùng đáp án đúng, và không trùng đáp án sai khác. */
+  var MLANGS = ["vi", "en", "es", "zh"];
+  function stripNote(t) { return String(t || "").replace(/（[^）]*）|\([^)]*\)/g, " ").replace(/\s+/g, " ").trim(); }
+  function mKeys(m) {   /* các "dấu vân tay nghĩa" của 1 đáp án: tiếng:chữ-đã-chuẩn-hoá (cả dạng gọt ngoặc lẫn dạng quizForm) */
+    var out = [];
+    MLANGS.forEach(function (l) { var v = m && m[l]; if (!v) return; [norm(stripNote(v)), norm(quizForm(v))].forEach(function (k) { if (k) out.push(l + ":" + k); }); });
+    return out;
+  }
+  function looseTerm(t) { return String(t || "").toLowerCase().replace(/[^a-z0-9\u00c0-\u024f\u4e00-\u9fff]+/g, ""); }
+  /* bẫy có ghi chú lộ đáp án ("(sai)", "Dạng gạch nối sai"...) -> không dùng, nhìn là biết bẫy */
+  function trapLeaks(x) { return [x.trap_vi, x.trap_en, x.trap_zh, x.trap_es].some(function (t) { return /(\bsai\b|không đúng|nhầm|\bwrong\b|\bincorrect\b|misspell|错误|不正确|incorrecto)/i.test(String(t || "")); }); }
   function distractors(w, p, mode) {
-    /* không lấy đáp án nhiễu TRÙNG NGHĨA với đáp án đúng ở bất kỳ tiếng nào (lucky/fortunate cùng "may mắn",
-       court/course cùng "球场") — câu sẽ có 2 đáp án đúng (chuyên gia ngôn ngữ 2026-10-03) */
-    var sameMean = function (x) { return ["vi", "en", "es", "zh"].some(function (l) { return x.m && w.m && x.m[l] && w.m[l] && norm(quizForm(x.m[l])) === norm(quizForm(w.m[l])); }); };
-    var ok = function (x) { return norm(x.term) !== norm(w.term) && !sameMean(x); };
-    var sameBlock = shuffle(p.filter(function (x) { return ok(x) && x.block === w.block; }));
-    var samePos = shuffle(p.filter(function (x) { return ok(x) && x.block !== w.block && w.pos && x.pos === w.pos; }));
-    var rest = shuffle(p.filter(function (x) { return ok(x) && x.block !== w.block && !(w.pos && x.pos === w.pos); }));
-    var picks = [], used = {};
-    var usedM = {};
-    lastTraps = null;
-    var tl = TRAPS && mode && TRAP_KINDS[mode] ? (TRAPS[norm(w.term)] || []).filter(function (x) { return TRAP_KINDS[mode].indexOf(x.kind) >= 0 && norm(x.trap_term) !== norm(w.term); }) : [];
+    var wKeys = mKeys(w.m), wLoose = looseTerm(w.term), picks = [], used = {}, usedM = {};
+    wKeys.forEach(function (k) { usedM[k] = 1; });
+    var fits = function (term, m) {   /* đáp án sai này có nghĩa/chữ trùng thứ đã có không? */
+      if (!term || used[norm(term)] || looseTerm(term) === wLoose) return false;
+      return !mKeys(m).some(function (k) { return usedM[k]; });
+    };
+    var take = function (term, m) { used[norm(term)] = 1; lastMs[norm(term)] = m; mKeys(m).forEach(function (k) { usedM[k] = 1; }); picks.push(term); };
+    used[norm(w.term)] = 1;
+    var sameBlock = shuffle(p.filter(function (x) { return x.block === w.block; }));
+    var samePos = shuffle(p.filter(function (x) { return x.block !== w.block && w.pos && x.pos === w.pos; }));
+    var rest = shuffle(p.filter(function (x) { return x.block !== w.block && !(w.pos && x.pos === w.pos); }));
+    lastTraps = null; lastMs = {}; lastMs[norm(w.term)] = w.m || {};
+    var tl = TRAPS && mode && TRAP_KINDS[mode] ? (TRAPS[norm(w.term)] || []).filter(function (x) { return TRAP_KINDS[mode].indexOf(x.kind) >= 0 && !trapLeaks(x); }) : [];
     if (tl.length) {
       lastTraps = {};
-      shuffle(tl).slice(0, 2).forEach(function (x) {
-        var k = norm(x.trap_term); if (used[k]) return;
-        used[k] = 1; picks.push(x.trap_term); lastTraps[k] = { k: x.kind, why: x.why || "", m: { en: x.trap_en, vi: x.trap_vi, zh: x.trap_zh, es: x.trap_es } };
+      var nt = 0;
+      shuffle(tl).forEach(function (x) {
+        if (nt >= 2) return;
+        var tm = { en: stripNote(x.trap_en), vi: stripNote(x.trap_vi), zh: stripNote(x.trap_zh), es: stripNote(x.trap_es) };
+        if (!fits(x.trap_term, tm)) return;
+        take(x.trap_term, tm); nt++;
+        lastTraps[norm(x.trap_term)] = { k: x.kind, why: x.why || "", m: tm };
       });
     }
-    sameBlock.concat(samePos, rest).forEach(function (x) {
-      if (picks.length >= 3 || used[norm(x.term)]) return;
-      var mk = ["vi", "en", "es", "zh"].map(function (l) { return x.m && x.m[l] ? l + ":" + norm(quizForm(x.m[l])) : ""; }).filter(Boolean);
-      if (mk.some(function (k) { return usedM[k]; })) return;   /* 2 đáp án nhiễu cũng không trùng nghĩa nhau */
-      used[norm(x.term)] = 1; mk.forEach(function (k) { usedM[k] = 1; }); picks.push(x.term);
-    });
+    sameBlock.concat(samePos, rest).forEach(function (x) { if (picks.length < 3 && fits(x.term, x.m)) take(x.term, x.m); });
     return shuffle([w.term].concat(picks));
   }
   /* thời gian mỗi câu (giây) theo dạng: phiếu = giây/câu × số chỗ trống; đặt câu ≥60; dictation ≥30 */
@@ -1568,7 +1582,7 @@
     } else {
       var lp = poolFor(lang).filter(function (x) { return x.sent; }); if (lp.length < 4) lp = p;
       q = { type: "listen", wid: w.wid, word: w.term, ans: w.term, say: w.term, texts: w.m, opts: distractors(w, lp), optTexts: {} };
-      q.opts.forEach(function (o) { var x = lp.find(function (y) { return norm(y.term) === norm(o); }) || G.pool.find(function (y) { return norm(y.term) === norm(o); }); q.optTexts[o] = x ? x.m : {}; });
+      q.opts.forEach(function (o) { var x = lp.find(function (y) { return norm(y.term) === norm(o); }) || G.pool.find(function (y) { return norm(y.term) === norm(o); }); q.optTexts[o] = lastMs[norm(o)] || (x ? x.m : {}); });
     }
     return q;
   }
@@ -1611,7 +1625,7 @@
     if (q.type === "meaning") { q.opts = distractors(w, p, "meaning"); q.traps = lastTraps; }
     if (q.type === "en2m") {   /* hiện TỪ tiếng Anh, 4 lựa chọn = NGHĨA (mỗi người thấy theo tiếng mẹ đẻ của mình) */
       q.word = w.term; q.opts = distractors(w, p, "en2m"); q.traps = lastTraps; q.optTexts = {};
-      q.opts.forEach(function (o) { var tr = q.traps && q.traps[norm(o)]; var x = tr ? { m: tr.m } : (p.find(function (y) { return norm(y.term) === norm(o); }) || G.pool.find(function (y) { return norm(y.term) === norm(o); })); q.optTexts[o] = x ? x.m : {}; });
+      q.opts.forEach(function (o) { var tr = q.traps && q.traps[norm(o)]; var x = tr ? { m: tr.m } : (p.find(function (y) { return norm(y.term) === norm(o); }) || G.pool.find(function (y) { return norm(y.term) === norm(o); })); q.optTexts[o] = lastMs[norm(o)] || (x ? x.m : {}); });
     }
     else q.len = w.term.length;
     return q;

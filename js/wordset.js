@@ -342,11 +342,12 @@
     return ctx.t === "gap" ? "Điền từ vào câu" : (LANG_LBL[ctx.lang] || "Nghĩa");
   };
   function meaningDistractors(x, field, pool, extra) {
-    var seen = {}; seen[x[field]] = true;
+    var nk = function (t) { return w.normalizeAnswer(t); };   /* so sau khi chuẩn hoá hoa/thường/dấu câu: không có 2 ô cùng nghĩa */
+    var seen = {}; seen[nk(x[field])] = true;
     var others = [];
     shuffle(pool).concat(shuffle(extra)).forEach(function (y) {
-      if (others.length >= 3 || y.id === x.id || !y[field] || seen[y[field]]) return;
-      seen[y[field]] = true;
+      if (others.length >= 3 || y.id === x.id || !y[field] || seen[nk(y[field])]) return;
+      seen[nk(y[field])] = true;
       others.push(y[field]);
     });
     return others;

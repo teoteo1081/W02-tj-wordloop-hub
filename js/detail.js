@@ -1424,8 +1424,9 @@
     var gaps = w.Context.gapSentences(passageText)
       .filter(function (g) { return byTerm[g.term.toLowerCase()]; })
       .map(function (g) {
+        var seenT = {}; seenT[w.normalizeAnswer(g.term)] = 1;   /* Block có từ lặp -> không để 2 ô cùng chữ */
         var wrong = shuffle(allTerms.filter(function (t) {
-          return w.normalizeAnswer(t) !== w.normalizeAnswer(g.term);
+          var k = w.normalizeAnswer(t); if (seenT[k]) return false; seenT[k] = 1; return true;
         })).slice(0, 3);
         return { term: g.term, text: g.text, given: null, options: shuffle([g.term].concat(wrong)) };
       });
@@ -1470,8 +1471,11 @@
 
     var mcWords = shuffle(withVi).slice(0, Math.min(MEANING_CAP, withVi.length));
     var mc = mcWords.map(function (x) {
+      /* không có 2 ô cùng nghĩa (so sau khi chuẩn hoá hoa/thường/dấu câu, kể cả giữa các ô sai với nhau) — TJ 2026-10-21 */
+      var seenM = {}; seenM[w.normalizeAnswer(x[field])] = 1;
       var others = shuffle(withVi.filter(function (y) {
-        return y.id !== x.id && y[field] !== x[field];
+        if (y.id === x.id) return false;
+        var k = w.normalizeAnswer(y[field]); if (seenM[k]) return false; seenM[k] = 1; return true;
       })).slice(0, 3).map(function (y) { return y[field]; });
       return { term: x.term, wordId: x.id, answer: x[field], options: shuffle([x[field]].concat(others)), given: null };
     });

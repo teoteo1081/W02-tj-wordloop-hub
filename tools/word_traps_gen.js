@@ -11,7 +11,7 @@ const SYS = `Bạn là giáo viên tiếng Anh giàu kinh nghiệm dạy ngườ
 - "family": CÙNG HỌ TỪ nhưng khác loại từ hoặc khác nghĩa (vd economy/economic/economical).
 - "syn": GẦN NGHĨA nhưng SAI sắc thái/văn cảnh — phải KHÔNG thể thay cho từ gốc trong câu thông thường.
 - "false": lỗi người Việt hay mắc: bạn giả, dịch sai phổ biến, hoặc kết hợp từ (collocation) sai. Đó phải là từ/cụm tiếng Anh mà người học dễ CHỌN NHẦM.
-Quy tắc cứng: (1) bẫy phải SAI RÕ RÀNG với nghĩa từ gốc, KHÔNG được là cách dịch/đồng nghĩa chấp nhận được (tránh tạo 2 đáp án đúng); (2) là từ/cụm tiếng Anh có thật; (3) cùng loại từ và độ dài tương đương khi có thể; (4) không lặp lại từ gốc hay lặp nhau; (5) nếu KHÔNG có bẫy tốt cho một loại, đặt giá trị null cho loại đó — đừng gượng ép; (6) "risk":"check" nếu bạn thấy bẫy có thể bị coi là đúng trong một số ngữ cảnh (kèm risk_note ngắn), còn lại "safe".
+Quy tắc cứng: (0) nghĩa tiếng Việt/Trung/Tây Ban Nha của bẫy PHẢI KHÁC nghĩa từ gốc (không được cùng cách dịch, kể cả biến thể chính tả Anh/Mỹ như centred/centered) và KHÔNG ghi chú trong ngoặc kiểu \"(sai)\"; (1) bẫy phải SAI RÕ RÀNG với nghĩa từ gốc, KHÔNG được là cách dịch/đồng nghĩa chấp nhận được (tránh tạo 2 đáp án đúng); (2) là từ/cụm tiếng Anh có thật; (3) cùng loại từ và độ dài tương đương khi có thể; (4) không lặp lại từ gốc hay lặp nhau; (5) nếu KHÔNG có bẫy tốt cho một loại, đặt giá trị null cho loại đó — đừng gượng ép; (6) "risk":"check" nếu bạn thấy bẫy có thể bị coi là đúng trong một số ngữ cảnh (kèm risk_note ngắn), còn lại "safe".
 Mỗi bẫy: {"term":"","en":"định nghĩa tiếng Anh ngắn ≤8 từ của CHÍNH TỪ BẪY","vi":"nghĩa tiếng Việt ngắn của từ bẫy","zh":"中文","es":"español","why":"1 câu tiếng Việt: vì sao dễ nhầm và khác thế nào","risk":"safe|check","risk_note":""}.
 Trả JSON: {"items":[{"term":"<từ gốc đúng như đề>","look":{...}|null,"family":{...}|null,"syn":{...}|null,"false":{...}|null}]}`;
 async function rest(path) { const r = await fetch(SB + '/rest/v1/' + path, { headers: H }); if (!r.ok) throw new Error(path + ' ' + r.status); return r.json(); }
@@ -50,7 +50,10 @@ function seeded(n) { let x = 20261004; return () => (x = (x * 1664525 + 10139042
       const t = it[kind]; if (!t || !t.term) return; const k = norm(t.term), flags = [];
       if (used.has(k)) return; used.add(k);
       if (!t.vi || !t.why) flags.push('thiếu nghĩa/lý do');
-      if (norm(t.vi) && norm(t.vi) === norm(w.meaning_vi)) flags.push('nghĩa trùng từ gốc');
+      const qf = x => norm(String(x || '').replace(/（[^）]*）|\([^)]*\)/g, ' ').split(/\s*[\/;；,，、]\s*/)[0]);   // gọt ngoặc, lấy cách nói đầu (giống quizForm của game)
+      if (qf(t.vi) && qf(t.vi) === qf(w.meaning_vi)) flags.push('nghĩa trùng từ gốc');
+      if (/[(（]/.test(t.vi || '') || /(\bsai\b|không đúng|nhầm)/i.test(t.vi || '')) flags.push('nghĩa bẫy có ghi chú lộ đáp án (ngoặc/"sai") — viết lại nghĩa, đừng ghi chú');
+      if (k.replace(/[^a-z0-9]/g, '') === norm(w.term).replace(/[^a-z0-9]/g, '')) flags.push('chữ bẫy giống từ gốc (khác dấu gạch/khoảng trắng)');
       if (kind === 'syn' || kind === 'false') flags.push('loại dễ thành đáp án đúng thứ hai');
       traps.push({ kind, term: t.term, en: t.en || '', vi: t.vi || '', zh: t.zh || '', es: t.es || '', why: t.why || '', risk: t.risk === 'check' || flags.some(f => f !== 'loại dễ thành đáp án đúng thứ hai') ? 'check' : 'safe', risk_note: [t.risk_note, ...flags.filter(f => f !== 'loại dễ thành đáp án đúng thứ hai')].filter(Boolean).join('; ') });
     });
