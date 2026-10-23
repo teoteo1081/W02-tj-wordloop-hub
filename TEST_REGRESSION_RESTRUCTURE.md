@@ -1,6 +1,6 @@
 # TEST_REGRESSION_RESTRUCTURE — kế hoạch kiểm thử hồi quy cho restructure
 
-> Trạng thái: **DỰ THẢO, CHƯA DUYỆT; CHƯA CÓ DÒNG TEST NÀO ĐƯỢC VIẾT.** Đây là đặc tả bộ test (ca nào, kiểm gì, tiêu chí đạt), không phải mã test. Mã test viết ở M0 sau khi TJ duyệt (xem `ROADMAP_RESTRUCTURE.md`).
+> Trạng thái: **A0 đã duyệt và có mã test; các phần còn lại là đặc tả chờ thực hiện.** Cycle Node ngày 2026-10-22 ở `tests/a0/` có báo cáo PARTIAL và ma trận độ phủ tại `tests/a0/README.md`; không coi số ca trong đặc tả này là số test đã chạy. Bộ M0.5a cũ ở `tests/capture/` vẫn được kiểm lại.
 > Nguồn: `PLAN_RESTRUCTURE.md` bản 2.2 (hai dòng song song: `main` đóng băng trên GitHub Pages, dòng restructure trên Netlify, dùng chung backend), `SPEC_RESTRUCTURE.md` (bất biến I1–I9), mục "Lỗi đã sửa" và "Quyết định đã chốt" trong `CLAUDE.md`.
 > Mọi chỗ ghi "(chưa xác minh)" là điều A0 phải kiểm trước khi viết ca tương ứng.
 

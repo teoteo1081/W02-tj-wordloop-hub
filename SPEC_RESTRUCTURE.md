@@ -12,7 +12,9 @@
 
 ### 1.1 Nghiệm thu cycle A0 chạy bằng Node (2026-10-22)
 
-Phần này cụ thể hoá cycle trong PLAN §0.1, không mở quyền sửa ứng dụng hay triển khai các luồng sau A0. **Checkpoint hiện tại chỉ commit plan/spec rồi dừng theo yêu cầu TJ; chưa thực hiện cycle.** Các tiêu chí dưới đây là mục tiêu cần chứng minh khi tiếp tục, không phải kết quả đã đạt.
+Phần này cụ thể hoá cycle trong PLAN §0.1, không mở quyền sửa ứng dụng hay triển khai các luồng sau A0. **Checkpoint kế hoạch ban đầu (`f79eaa7`) chỉ commit plan/spec rồi dừng.** Tiêu chí dưới đây là chuẩn nghiệm thu; trạng thái thực hiện cập nhật ngay bên dưới.
+
+**Cập nhật sau audit `a0e08ac`:** TJ đã yêu cầu chạy cycle và commit trên nhánh, không merge. Chỉ đạo dừng ở checkpoint plan/spec phía trên là lịch sử. Cycle hiện có kết quả **PARTIAL** tại `tests/a0/cycle-report.json`, độ phủ/giới hạn ở `tests/a0/README.md`; không tuyên bố mọi tiêu chí dưới đây đã đạt. Đặc tả CTX-09 vẫn giữ nguyên trong lúc chờ PO xác nhận ngoại lệ TJ, không tự cập nhật kỳ vọng để bỏ lỗi.
 
 | Tiêu chí bắt buộc | Bằng chứng nghiệm thu |
 |---|---|

@@ -1,0 +1,9476 @@
+{
+  "source": {
+    "commit": "e324beb54b29ddfa055956c756a4ceba2676dfa1",
+    "tree": "9de0480570b1c95c85912d685626891ba142b825",
+    "clean": true,
+    "pinned": true
+  },
+  "methods": {
+    "counts": "Tracked files; LF-normalized UTF-8 bytes; nonempty final line counts once.",
+    "lexical": "Regex candidate inventory, includes comments/string bodies and non-Supabase .from calls. Not AST/call graph/runtime evidence. Variable aliases and computed properties may be missed.",
+    "storage": "localStorage operations plus tjwl_* literal candidates; identifiers/dynamic keys need runtime LS-01 capture.",
+    "dependencies": "window/w global references and lexical App method calls, not closure-variable sharing or complete module dependency graph.",
+    "browser": "Transfer/compressed bytes, interaction coverage, LCP and runtime memory require browser measurements."
+  },
+  "files": [
+    {
+      "file": ".claude/commands/bump.md",
+      "lines": 10,
+      "bytesLf": 795
+    },
+    {
+      "file": ".claude/commands/qa.md",
+      "lines": 12,
+      "bytesLf": 862
+    },
+    {
+      "file": ".claude/commands/ship.md",
+      "lines": 11,
+      "bytesLf": 813
+    },
+    {
+      "file": ".claude/commands/start.md",
+      "lines": 12,
+      "bytesLf": 1150
+    },
+    {
+      "file": ".claude/commands/sync.md",
+      "lines": 23,
+      "bytesLf": 2125
+    },
+    {
+      "file": ".claude/commands/task.md",
+      "lines": 29,
+      "bytesLf": 2789
+    },
+    {
+      "file": ".claude/commands/verify.md",
+      "lines": 13,
+      "bytesLf": 907
+    },
+    {
+      "file": "BOARD.md",
+      "lines": 24,
+      "bytesLf": 2065
+    },
+    {
+      "file": "CLAUDE.md",
+      "lines": 145,
+      "bytesLf": 59495
+    },
+    {
+      "file": "HANDOFF.md",
+      "lines": 218,
+      "bytesLf": 54125
+    },
+    {
+      "file": "HUONG_DAN_LAM_O_NHA.md",
+      "lines": 47,
+      "bytesLf": 4054
+    },
+    {
+      "file": "NGUON_THAM_KHAO_SW_IELTS.md",
+      "lines": 41,
+      "bytesLf": 6672
+    },
+    {
+      "file": "PLAN_LUONG_HOC.md",
+      "lines": 83,
+      "bytesLf": 8286
+    },
+    {
+      "file": "PLAN_TOEIC_SW_GAME.md",
+      "lines": 28,
+      "bytesLf": 2696
+    },
+    {
+      "file": "PLAN_TONG.md",
+      "lines": 60,
+      "bytesLf": 8143
+    },
+    {
+      "file": "R2_BUCKETS.md",
+      "lines": 26,
+      "bytesLf": 2656
+    },
+    {
+      "file": "README.md",
+      "lines": 591,
+      "bytesLf": 180874
+    },
+    {
+      "file": "SUPABASE_STORAGE.md",
+      "lines": 48,
+      "bytesLf": 5899
+    },
+    {
+      "file": "TEAM_PROCESS.md",
+      "lines": 38,
+      "bytesLf": 5334
+    },
+    {
+      "file": "css/app.css",
+      "lines": 2513,
+      "bytesLf": 149118
+    },
+    {
+      "file": "css/game.css",
+      "lines": 2264,
+      "bytesLf": 197458
+    },
+    {
+      "file": "game.html",
+      "lines": 279,
+      "bytesLf": 27789
+    },
+    {
+      "file": "index.html",
+      "lines": 1243,
+      "bytesLf": 74205
+    },
+    {
+      "file": "js/app.js",
+      "lines": 5290,
+      "bytesLf": 296103
+    },
+    {
+      "file": "js/auth.js",
+      "lines": 375,
+      "bytesLf": 18913
+    },
+    {
+      "file": "js/board.js",
+      "lines": 2150,
+      "bytesLf": 211775
+    },
+    {
+      "file": "js/cc.js",
+      "lines": 188,
+      "bytesLf": 18242
+    },
+    {
+      "file": "js/chat.js",
+      "lines": 182,
+      "bytesLf": 17665
+    },
+    {
+      "file": "js/config.js",
+      "lines": 35,
+      "bytesLf": 2394
+    },
+    {
+      "file": "js/context.js",
+      "lines": 1970,
+      "bytesLf": 133141
+    },
+    {
+      "file": "js/db.js",
+      "lines": 2223,
+      "bytesLf": 113914
+    },
+    {
+      "file": "js/detail.js",
+      "lines": 3292,
+      "bytesLf": 173927
+    },
+    {
+      "file": "js/export.js",
+      "lines": 251,
+      "bytesLf": 11856
+    },
+    {
+      "file": "js/game.js",
+      "lines": 5598,
+      "bytesLf": 523111
+    },
+    {
+      "file": "js/gamelayer.js",
+      "lines": 345,
+      "bytesLf": 27741
+    },
+    {
+      "file": "js/home.js",
+      "lines": 171,
+      "bytesLf": 9000
+    },
+    {
+      "file": "js/hubpage.js",
+      "lines": 58,
+      "bytesLf": 4087
+    },
+    {
+      "file": "js/i18n.js",
+      "lines": 1099,
+      "bytesLf": 63547
+    },
+    {
+      "file": "js/journey.js",
+      "lines": 540,
+      "bytesLf": 27361
+    },
+    {
+      "file": "js/keys.local.example.js",
+      "lines": 12,
+      "bytesLf": 763
+    },
+    {
+      "file": "js/learn.js",
+      "lines": 102,
+      "bytesLf": 10269
+    },
+    {
+      "file": "js/readalong.js",
+      "lines": 167,
+      "bytesLf": 14132
+    },
+    {
+      "file": "js/reader.js",
+      "lines": 601,
+      "bytesLf": 28156
+    },
+    {
+      "file": "js/shadow.js",
+      "lines": 99,
+      "bytesLf": 7928
+    },
+    {
+      "file": "js/speech.js",
+      "lines": 518,
+      "bytesLf": 24446
+    },
+    {
+      "file": "js/srs.js",
+      "lines": 84,
+      "bytesLf": 4130
+    },
+    {
+      "file": "js/swclass.js",
+      "lines": 61,
+      "bytesLf": 7318
+    },
+    {
+      "file": "js/toeic_tips.js",
+      "lines": 228,
+      "bytesLf": 23421
+    },
+    {
+      "file": "js/turn.js",
+      "lines": 18,
+      "bytesLf": 1448
+    },
+    {
+      "file": "js/util.js",
+      "lines": 166,
+      "bytesLf": 8034
+    },
+    {
+      "file": "js/voice.js",
+      "lines": 259,
+      "bytesLf": 23886
+    },
+    {
+      "file": "js/wordset.js",
+      "lines": 706,
+      "bytesLf": 36897
+    },
+    {
+      "file": "learn/dm/data/cases.js",
+      "lines": 337,
+      "bytesLf": 27804
+    },
+    {
+      "file": "learn/dm/data/lessons-data.js",
+      "lines": 202,
+      "bytesLf": 25477
+    },
+    {
+      "file": "learn/dm/data/research.js",
+      "lines": 38,
+      "bytesLf": 9133
+    },
+    {
+      "file": "learn/dm/index.html",
+      "lines": 64,
+      "bytesLf": 4850
+    },
+    {
+      "file": "learn/ea/data/cases.js",
+      "lines": 693,
+      "bytesLf": 64632
+    },
+    {
+      "file": "learn/ea/data/lessons-data.js",
+      "lines": 9428,
+      "bytesLf": 333366
+    },
+    {
+      "file": "learn/ea/data/research.js",
+      "lines": 50,
+      "bytesLf": 13232
+    },
+    {
+      "file": "learn/ea/index.html",
+      "lines": 29,
+      "bytesLf": 1441
+    },
+    {
+      "file": "learn/qclass.js",
+      "lines": 331,
+      "bytesLf": 45946
+    },
+    {
+      "file": "learn/quest.css",
+      "lines": 171,
+      "bytesLf": 9297
+    },
+    {
+      "file": "learn/quest.js",
+      "lines": 743,
+      "bytesLf": 48657
+    },
+    {
+      "file": "learn/sw/index.html",
+      "lines": 18,
+      "bytesLf": 798
+    },
+    {
+      "file": "learn/sw/sw.css",
+      "lines": 338,
+      "bytesLf": 38454
+    },
+    {
+      "file": "learn/sw/sw.js",
+      "lines": 1104,
+      "bytesLf": 132083
+    },
+    {
+      "file": "sw.js",
+      "lines": 40,
+      "bytesLf": 1598
+    },
+    {
+      "file": "tools/_verify_passage.js",
+      "lines": 61,
+      "bytesLf": 2799
+    },
+    {
+      "file": "tools/claude-setup-template/wordloop-commands/bump.md",
+      "lines": 10,
+      "bytesLf": 795
+    },
+    {
+      "file": "tools/claude-setup-template/wordloop-commands/qa.md",
+      "lines": 12,
+      "bytesLf": 862
+    },
+    {
+      "file": "tools/claude-setup-template/wordloop-commands/ship.md",
+      "lines": 11,
+      "bytesLf": 813
+    },
+    {
+      "file": "tools/claude-setup-template/wordloop-commands/verify.md",
+      "lines": 13,
+      "bytesLf": 907
+    },
+    {
+      "file": "tools/copy_pol_cia2.js",
+      "lines": 34,
+      "bytesLf": 2347
+    },
+    {
+      "file": "tools/ets2023/QUY_TRINH_NAP_DE.md",
+      "lines": 57,
+      "bytesLf": 7616
+    },
+    {
+      "file": "tools/ets2023/README.md",
+      "lines": 16,
+      "bytesLf": 1325
+    },
+    {
+      "file": "tools/game-worker/README.md",
+      "lines": 20,
+      "bytesLf": 1836
+    },
+    {
+      "file": "tools/game-worker/worker.js",
+      "lines": 53,
+      "bytesLf": 3189
+    },
+    {
+      "file": "tools/pol2_casual_formal.js",
+      "lines": 94,
+      "bytesLf": 7278
+    },
+    {
+      "file": "tools/qa/README.md",
+      "lines": 6,
+      "bytesLf": 925
+    },
+    {
+      "file": "tools/qa/board4.js",
+      "lines": 68,
+      "bytesLf": 8161
+    },
+    {
+      "file": "tools/qa/c.js",
+      "lines": 88,
+      "bytesLf": 10281
+    },
+    {
+      "file": "tools/qa/d2.js",
+      "lines": 49,
+      "bytesLf": 6757
+    },
+    {
+      "file": "tools/qa/harness.js",
+      "lines": 193,
+      "bytesLf": 14586
+    },
+    {
+      "file": "tools/qa/t2.js",
+      "lines": 17,
+      "bytesLf": 2546
+    },
+    {
+      "file": "tools/qa/tb.js",
+      "lines": 14,
+      "bytesLf": 1640
+    },
+    {
+      "file": "tools/shelf-worker/worker.js",
+      "lines": 71,
+      "bytesLf": 4567
+    },
+    {
+      "file": "tools/sw/PREPEDU.md",
+      "lines": 15,
+      "bytesLf": 3302
+    },
+    {
+      "file": "tools/toeic_i18n_add.js",
+      "lines": 27,
+      "bytesLf": 3199
+    },
+    {
+      "file": "tools/toeic_lc_struct.js",
+      "lines": 16,
+      "bytesLf": 2417
+    },
+    {
+      "file": "tools/toeic_lc_vi.js",
+      "lines": 29,
+      "bytesLf": 5397
+    },
+    {
+      "file": "tools/toeic_ocr_struct.js",
+      "lines": 48,
+      "bytesLf": 6072
+    },
+    {
+      "file": "tools/toeic_p67_gen.js",
+      "lines": 53,
+      "bytesLf": 6519
+    },
+    {
+      "file": "tools/toeic_script_struct.js",
+      "lines": 29,
+      "bytesLf": 4011
+    },
+    {
+      "file": "tools/toeic_script_upload.js",
+      "lines": 17,
+      "bytesLf": 1295
+    },
+    {
+      "file": "tools/toeic_traps.js",
+      "lines": 16,
+      "bytesLf": 3039
+    },
+    {
+      "file": "tools/word_traps_gen.js",
+      "lines": 63,
+      "bytesLf": 6879
+    },
+    {
+      "file": "tools/word_traps_import.js",
+      "lines": 14,
+      "bytesLf": 1155
+    },
+    {
+      "file": "tools/word_traps_recheck.js",
+      "lines": 55,
+      "bytesLf": 5379
+    }
+  ],
+  "largestJs": [
+    {
+      "file": "js/game.js",
+      "lines": 5598,
+      "bytesLf": 523111
+    },
+    {
+      "file": "js/app.js",
+      "lines": 5290,
+      "bytesLf": 296103
+    },
+    {
+      "file": "js/detail.js",
+      "lines": 3292,
+      "bytesLf": 173927
+    },
+    {
+      "file": "js/db.js",
+      "lines": 2223,
+      "bytesLf": 113914
+    },
+    {
+      "file": "js/board.js",
+      "lines": 2150,
+      "bytesLf": 211775
+    },
+    {
+      "file": "js/context.js",
+      "lines": 1970,
+      "bytesLf": 133141
+    },
+    {
+      "file": "js/i18n.js",
+      "lines": 1099,
+      "bytesLf": 63547
+    },
+    {
+      "file": "js/wordset.js",
+      "lines": 706,
+      "bytesLf": 36897
+    },
+    {
+      "file": "js/reader.js",
+      "lines": 601,
+      "bytesLf": 28156
+    },
+    {
+      "file": "js/journey.js",
+      "lines": 540,
+      "bytesLf": 27361
+    }
+  ],
+  "supabaseCandidates": [
+    {
+      "file": "js/app.js",
+      "line": 609,
+      "method": "from",
+      "argument": "dynamic"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1449,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_results"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 164,
+      "method": "from",
+      "argument": "literal",
+      "name": "profiles"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 216,
+      "method": "from",
+      "argument": "literal",
+      "name": "profiles"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 221,
+      "method": "from",
+      "argument": "literal",
+      "name": "profiles"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 267,
+      "method": "from",
+      "argument": "literal",
+      "name": "profiles"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 319,
+      "method": "from",
+      "argument": "literal",
+      "name": "site_visits"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 322,
+      "method": "from",
+      "argument": "literal",
+      "name": "site_visits"
+    },
+    {
+      "file": "js/db.js",
+      "line": 257,
+      "method": "from",
+      "argument": "literal",
+      "name": "hubs"
+    },
+    {
+      "file": "js/db.js",
+      "line": 347,
+      "method": "from",
+      "argument": "dynamic"
+    },
+    {
+      "file": "js/db.js",
+      "line": 365,
+      "method": "from",
+      "argument": "dynamic"
+    },
+    {
+      "file": "js/db.js",
+      "line": 488,
+      "method": "from",
+      "argument": "literal",
+      "name": "sections"
+    },
+    {
+      "file": "js/db.js",
+      "line": 528,
+      "method": "from",
+      "argument": "dynamic"
+    },
+    {
+      "file": "js/db.js",
+      "line": 588,
+      "method": "from",
+      "argument": "dynamic"
+    },
+    {
+      "file": "js/db.js",
+      "line": 865,
+      "method": "from",
+      "argument": "literal",
+      "name": "words"
+    },
+    {
+      "file": "js/db.js",
+      "line": 911,
+      "method": "from",
+      "argument": "literal",
+      "name": "words"
+    },
+    {
+      "file": "js/db.js",
+      "line": 980,
+      "method": "from",
+      "argument": "literal",
+      "name": "words"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1026,
+      "method": "from",
+      "argument": "literal",
+      "name": "words"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1052,
+      "method": "from",
+      "argument": "literal",
+      "name": "batches"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1077,
+      "method": "from",
+      "argument": "literal",
+      "name": "words"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1119,
+      "method": "from",
+      "argument": "dynamic"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1131,
+      "method": "from",
+      "argument": "dynamic"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1145,
+      "method": "from",
+      "argument": "literal",
+      "name": "profiles"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1153,
+      "method": "from",
+      "argument": "literal",
+      "name": "profiles"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1162,
+      "method": "from",
+      "argument": "literal",
+      "name": "profiles"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1173,
+      "method": "from",
+      "argument": "literal",
+      "name": "profiles"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1185,
+      "method": "from",
+      "argument": "literal",
+      "name": "profiles"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1198,
+      "method": "from",
+      "argument": "literal",
+      "name": "profiles"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1210,
+      "method": "from",
+      "argument": "literal",
+      "name": "notebooks"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1220,
+      "method": "from",
+      "argument": "literal",
+      "name": "notebook_access"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1229,
+      "method": "from",
+      "argument": "literal",
+      "name": "notebook_access"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1238,
+      "method": "from",
+      "argument": "literal",
+      "name": "notebook_access"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1256,
+      "method": "from",
+      "argument": "literal",
+      "name": "block_progress"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1301,
+      "method": "from",
+      "argument": "dynamic"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1316,
+      "method": "from",
+      "argument": "literal",
+      "name": "blocks"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1367,
+      "method": "from",
+      "argument": "literal",
+      "name": "block_progress"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1424,
+      "method": "from",
+      "argument": "literal",
+      "name": "word_progress"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1501,
+      "method": "from",
+      "argument": "literal",
+      "name": "batches"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1557,
+      "method": "from",
+      "argument": "literal",
+      "name": "word_progress"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1583,
+      "method": "from",
+      "argument": "literal",
+      "name": "word_progress"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1684,
+      "method": "from",
+      "argument": "literal",
+      "name": "notebooks"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1689,
+      "method": "from",
+      "argument": "literal",
+      "name": "words"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1800,
+      "method": "from",
+      "argument": "literal",
+      "name": "hubs"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1803,
+      "method": "from",
+      "argument": "dynamic"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1838,
+      "method": "from",
+      "argument": "literal",
+      "name": "blocks"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1883,
+      "method": "from",
+      "argument": "literal",
+      "name": "blocks"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1887,
+      "method": "from",
+      "argument": "literal",
+      "name": "blocks"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1891,
+      "method": "from",
+      "argument": "literal",
+      "name": "blocks"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1908,
+      "method": "from",
+      "argument": "literal",
+      "name": "words"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1946,
+      "method": "from",
+      "argument": "literal",
+      "name": "blocks"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1955,
+      "method": "from",
+      "argument": "literal",
+      "name": "notebooks"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1971,
+      "method": "from",
+      "argument": "literal",
+      "name": "block_progress"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1995,
+      "method": "from",
+      "argument": "dynamic"
+    },
+    {
+      "file": "js/db.js",
+      "line": 2022,
+      "method": "from",
+      "argument": "literal",
+      "name": "daily_log"
+    },
+    {
+      "file": "js/db.js",
+      "line": 2024,
+      "method": "from",
+      "argument": "literal",
+      "name": "daily_log"
+    },
+    {
+      "file": "js/db.js",
+      "line": 2036,
+      "method": "from",
+      "argument": "literal",
+      "name": "daily_log"
+    },
+    {
+      "file": "js/db.js",
+      "line": 2113,
+      "method": "from",
+      "argument": "literal",
+      "name": "blocks"
+    },
+    {
+      "file": "js/db.js",
+      "line": 2114,
+      "method": "from",
+      "argument": "literal",
+      "name": "block_progress"
+    },
+    {
+      "file": "js/db.js",
+      "line": 2116,
+      "method": "from",
+      "argument": "literal",
+      "name": "block_progress"
+    },
+    {
+      "file": "js/db.js",
+      "line": 2149,
+      "method": "from",
+      "argument": "literal",
+      "name": "words"
+    },
+    {
+      "file": "js/db.js",
+      "line": 2150,
+      "method": "from",
+      "argument": "literal",
+      "name": "blocks"
+    },
+    {
+      "file": "js/game.js",
+      "line": 67,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_players"
+    },
+    {
+      "file": "js/game.js",
+      "line": 558,
+      "method": "from",
+      "argument": "literal",
+      "name": "game-avatars"
+    },
+    {
+      "file": "js/game.js",
+      "line": 560,
+      "method": "from",
+      "argument": "literal",
+      "name": "game-avatars"
+    },
+    {
+      "file": "js/game.js",
+      "line": 576,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_players"
+    },
+    {
+      "file": "js/game.js",
+      "line": 587,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_players"
+    },
+    {
+      "file": "js/game.js",
+      "line": 588,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_players"
+    },
+    {
+      "file": "js/game.js",
+      "line": 651,
+      "method": "from",
+      "argument": "dynamic"
+    },
+    {
+      "file": "js/game.js",
+      "line": 853,
+      "method": "from",
+      "argument": "literal",
+      "name": "block_progress"
+    },
+    {
+      "file": "js/game.js",
+      "line": 932,
+      "method": "from",
+      "argument": "literal",
+      "name": "words"
+    },
+    {
+      "file": "js/game.js",
+      "line": 937,
+      "method": "from",
+      "argument": "literal",
+      "name": "word_progress"
+    },
+    {
+      "file": "js/game.js",
+      "line": 940,
+      "method": "from",
+      "argument": "literal",
+      "name": "block_progress"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1035,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_rooms"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1036,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_rooms"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1048,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_rooms"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1082,
+      "method": "from",
+      "argument": "literal",
+      "name": "test_items"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1175,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_rooms"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1191,
+      "method": "from",
+      "argument": "dynamic"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1204,
+      "method": "from",
+      "argument": "literal",
+      "name": "notebooks"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1359,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_gap_sentences"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1415,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_gap_sentences"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1468,
+      "method": "from",
+      "argument": "literal",
+      "name": "word_traps"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1628,
+      "method": "removeChannel",
+      "argument": "dynamic"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1657,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_rooms"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1714,
+      "method": "removeChannel",
+      "argument": "dynamic"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1716,
+      "method": "channel",
+      "argument": "literal",
+      "name": "game:"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2064,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_rooms"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2086,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_rooms"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2142,
+      "method": "from",
+      "argument": "literal",
+      "name": "toeic"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2146,
+      "method": "from",
+      "argument": "literal",
+      "name": "toeic"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2147,
+      "method": "from",
+      "argument": "literal",
+      "name": "toeic"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2148,
+      "method": "from",
+      "argument": "literal",
+      "name": "toeic"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2154,
+      "method": "from",
+      "argument": "literal",
+      "name": "toeic"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2161,
+      "method": "from",
+      "argument": "literal",
+      "name": "toeic"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2180,
+      "method": "from",
+      "argument": "literal",
+      "name": "word_progress"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2187,
+      "method": "from",
+      "argument": "literal",
+      "name": "word_progress"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2202,
+      "method": "from",
+      "argument": "literal",
+      "name": "words"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2205,
+      "method": "from",
+      "argument": "literal",
+      "name": "words"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2209,
+      "method": "from",
+      "argument": "literal",
+      "name": "word_progress"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2217,
+      "method": "from",
+      "argument": "literal",
+      "name": "word_progress"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2226,
+      "method": "from",
+      "argument": "literal",
+      "name": "words"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2229,
+      "method": "from",
+      "argument": "literal",
+      "name": "word_progress"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2231,
+      "method": "from",
+      "argument": "literal",
+      "name": "block_progress"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2316,
+      "method": "from",
+      "argument": "literal",
+      "name": "blocks"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2323,
+      "method": "from",
+      "argument": "literal",
+      "name": "blocks"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2335,
+      "method": "from",
+      "argument": "literal",
+      "name": "blocks"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2339,
+      "method": "from",
+      "argument": "literal",
+      "name": "blocks"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2368,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_rooms"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2370,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_matches"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2614,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_results"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2620,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_answers"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2626,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_matches"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2628,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_rooms"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2643,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_players"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2657,
+      "method": "from",
+      "argument": "literal",
+      "name": "block_progress"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2678,
+      "method": "from",
+      "argument": "literal",
+      "name": "block_progress"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3087,
+      "method": "from",
+      "argument": "literal",
+      "name": "vocab_saves"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3093,
+      "method": "from",
+      "argument": "literal",
+      "name": "vocab_saves"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3100,
+      "method": "from",
+      "argument": "literal",
+      "name": "vocab_saves"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3119,
+      "method": "from",
+      "argument": "literal",
+      "name": "test_items"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3145,
+      "method": "from",
+      "argument": "literal",
+      "name": "test_items"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3227,
+      "method": "from",
+      "argument": "literal",
+      "name": "vocab_saves"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3235,
+      "method": "from",
+      "argument": "literal",
+      "name": "vocab_saves"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3235,
+      "method": "from",
+      "argument": "literal",
+      "name": "vocab_saves"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3480,
+      "method": "from",
+      "argument": "literal",
+      "name": "vocab_saves"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3573,
+      "method": "from",
+      "argument": "dynamic"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3583,
+      "method": "from",
+      "argument": "dynamic"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3587,
+      "method": "from",
+      "argument": "literal",
+      "name": "blocks"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3589,
+      "method": "from",
+      "argument": "literal",
+      "name": "words"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3591,
+      "method": "from",
+      "argument": "literal",
+      "name": "blocks"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3595,
+      "method": "from",
+      "argument": "literal",
+      "name": "blocks"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3597,
+      "method": "from",
+      "argument": "literal",
+      "name": "words"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3598,
+      "method": "from",
+      "argument": "literal",
+      "name": "blocks"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3600,
+      "method": "from",
+      "argument": "literal",
+      "name": "blocks"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3607,
+      "method": "from",
+      "argument": "literal",
+      "name": "words"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3610,
+      "method": "from",
+      "argument": "literal",
+      "name": "words"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3613,
+      "method": "from",
+      "argument": "literal",
+      "name": "vocab_saves"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3616,
+      "method": "from",
+      "argument": "literal",
+      "name": "word_progress"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3693,
+      "method": "from",
+      "argument": "literal",
+      "name": "word_progress"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3706,
+      "method": "from",
+      "argument": "literal",
+      "name": "word_progress"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3762,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_answers"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3773,
+      "method": "from",
+      "argument": "literal",
+      "name": "test_items"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3788,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_matches"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3789,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_answers"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3824,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_answers"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3964,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_answers"
+    },
+    {
+      "file": "js/game.js",
+      "line": 3984,
+      "method": "from",
+      "argument": "literal",
+      "name": "test_items"
+    },
+    {
+      "file": "js/game.js",
+      "line": 4103,
+      "method": "from",
+      "argument": "literal",
+      "name": "test_items"
+    },
+    {
+      "file": "js/game.js",
+      "line": 4517,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_answers"
+    },
+    {
+      "file": "js/game.js",
+      "line": 4540,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_players"
+    },
+    {
+      "file": "js/game.js",
+      "line": 4672,
+      "method": "from",
+      "argument": "literal",
+      "name": "words"
+    },
+    {
+      "file": "js/game.js",
+      "line": 4674,
+      "method": "from",
+      "argument": "literal",
+      "name": "blocks"
+    },
+    {
+      "file": "js/game.js",
+      "line": 4675,
+      "method": "from",
+      "argument": "literal",
+      "name": "words"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5097,
+      "method": "from",
+      "argument": "literal",
+      "name": "word_progress"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5099,
+      "method": "from",
+      "argument": "literal",
+      "name": "word_progress"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5236,
+      "method": "from",
+      "argument": "literal",
+      "name": "test_items"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5275,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_matches"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5279,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_results"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5306,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_players"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5307,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_results"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5308,
+      "method": "from",
+      "argument": "literal",
+      "name": "profiles"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5330,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_results"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5332,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_results"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5335,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_results"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5336,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_results"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5338,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_answers"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5339,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_players"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5356,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_players"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5359,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_players"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5391,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_results"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5412,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_answers"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5446,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_matches"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5461,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_results"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5465,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_results"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5517,
+      "method": "from",
+      "argument": "literal",
+      "name": "profiles"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5528,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_players"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5530,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_players"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5532,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_players"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5539,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_players"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5545,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_players"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5566,
+      "method": "removeChannel",
+      "argument": "dynamic"
+    },
+    {
+      "file": "js/game.js",
+      "line": 5583,
+      "method": "from",
+      "argument": "literal",
+      "name": "game_players"
+    }
+  ],
+  "localStorage": {
+    "referenceFiles": [
+      "js/app.js",
+      "js/auth.js",
+      "js/board.js",
+      "js/cc.js",
+      "js/chat.js",
+      "js/db.js",
+      "js/detail.js",
+      "js/game.js",
+      "js/gamelayer.js",
+      "js/hubpage.js",
+      "js/journey.js",
+      "js/learn.js",
+      "js/reader.js",
+      "js/speech.js",
+      "js/voice.js",
+      "js/wordset.js"
+    ],
+    "files": [
+      "js/app.js",
+      "js/auth.js",
+      "js/board.js",
+      "js/cc.js",
+      "js/chat.js",
+      "js/db.js",
+      "js/detail.js",
+      "js/game.js",
+      "js/gamelayer.js",
+      "js/hubpage.js",
+      "js/journey.js",
+      "js/reader.js",
+      "js/speech.js",
+      "js/voice.js",
+      "js/wordset.js"
+    ],
+    "operations": [
+      {
+        "file": "js/app.js",
+        "line": 29,
+        "operation": "setItem",
+        "keyIdentifier": "LS_SEL"
+      },
+      {
+        "file": "js/app.js",
+        "line": 38,
+        "operation": "getItem",
+        "keyIdentifier": "LS_SEL"
+      },
+      {
+        "file": "js/app.js",
+        "line": 605,
+        "operation": "getItem",
+        "keyIdentifier": "collapsedKey"
+      },
+      {
+        "file": "js/app.js",
+        "line": 609,
+        "operation": "setItem",
+        "keyIdentifier": "collapsedKey"
+      },
+      {
+        "file": "js/app.js",
+        "line": 3160,
+        "operation": "getItem",
+        "keyIdentifier": "LS_REVIEW_TAB"
+      },
+      {
+        "file": "js/app.js",
+        "line": 3169,
+        "operation": "setItem",
+        "keyIdentifier": "LS_REVIEW_TAB"
+      },
+      {
+        "file": "js/app.js",
+        "line": 3888,
+        "operation": "getItem",
+        "keyIdentifier": "LS_THEME"
+      },
+      {
+        "file": "js/app.js",
+        "line": 3892,
+        "operation": "setItem",
+        "keyIdentifier": "LS_THEME"
+      },
+      {
+        "file": "js/app.js",
+        "line": 3918,
+        "operation": "getItem",
+        "keyIdentifier": "pinKey"
+      },
+      {
+        "file": "js/app.js",
+        "line": 3950,
+        "operation": "setItem",
+        "keyIdentifier": "pinKey"
+      },
+      {
+        "file": "js/app.js",
+        "line": 3975,
+        "operation": "getItem",
+        "keyIdentifier": "LS_FONT"
+      },
+      {
+        "file": "js/app.js",
+        "line": 3987,
+        "operation": "setItem",
+        "keyIdentifier": "LS_FONT"
+      },
+      {
+        "file": "js/app.js",
+        "line": 4006,
+        "operation": "getItem",
+        "keyIdentifier": "LS_ACCENT"
+      },
+      {
+        "file": "js/app.js",
+        "line": 4028,
+        "operation": "setItem",
+        "keyIdentifier": "LS_ACCENT"
+      },
+      {
+        "file": "js/app.js",
+        "line": 4073,
+        "operation": "setItem",
+        "keyIdentifier": "LS_LOCAL_LANG"
+      },
+      {
+        "file": "js/app.js",
+        "line": 4087,
+        "operation": "getItem",
+        "keyIdentifier": "LS_WIDTH"
+      },
+      {
+        "file": "js/app.js",
+        "line": 4099,
+        "operation": "setItem",
+        "keyIdentifier": "LS_WIDTH"
+      },
+      {
+        "file": "js/app.js",
+        "line": 5192,
+        "operation": "clear",
+        "key": "unresolved"
+      },
+      {
+        "file": "js/auth.js",
+        "line": 117,
+        "operation": "getItem",
+        "keyIdentifier": "LS_USERS"
+      },
+      {
+        "file": "js/auth.js",
+        "line": 122,
+        "operation": "setItem",
+        "keyIdentifier": "LS_USERS"
+      },
+      {
+        "file": "js/auth.js",
+        "line": 125,
+        "operation": "setItem",
+        "keyIdentifier": "LS_USERS"
+      },
+      {
+        "file": "js/auth.js",
+        "line": 147,
+        "operation": "setItem",
+        "keyIdentifier": "LS_CUR"
+      },
+      {
+        "file": "js/auth.js",
+        "line": 184,
+        "operation": "getItem",
+        "keyIdentifier": "LS_LOCAL_LANG"
+      },
+      {
+        "file": "js/auth.js",
+        "line": 198,
+        "operation": "getItem",
+        "keyIdentifier": "LS_CUR"
+      },
+      {
+        "file": "js/auth.js",
+        "line": 200,
+        "operation": "setItem",
+        "keyIdentifier": "LS_CUR"
+      },
+      {
+        "file": "js/auth.js",
+        "line": 262,
+        "operation": "getItem",
+        "keyIdentifier": "LS_LINK_ID"
+      },
+      {
+        "file": "js/auth.js",
+        "line": 274,
+        "operation": "setItem",
+        "keyIdentifier": "LS_LINK_ID"
+      },
+      {
+        "file": "js/auth.js",
+        "line": 362,
+        "operation": "removeItem",
+        "keyIdentifier": "LS_LINK_ID"
+      },
+      {
+        "file": "js/board.js",
+        "line": 185,
+        "operation": "getItem",
+        "keyIdentifier": "KEY"
+      },
+      {
+        "file": "js/board.js",
+        "line": 192,
+        "operation": "setItem",
+        "keyIdentifier": "KEY"
+      },
+      {
+        "file": "js/board.js",
+        "line": 192,
+        "operation": "removeItem",
+        "keyIdentifier": "KEY"
+      },
+      {
+        "file": "js/board.js",
+        "line": 251,
+        "operation": "setItem",
+        "literalKey": "tjwl_feed_sz_v1"
+      },
+      {
+        "file": "js/board.js",
+        "line": 295,
+        "operation": "setItem",
+        "literalKey": "tjwl_bd_actcol_v1"
+      },
+      {
+        "file": "js/board.js",
+        "line": 342,
+        "operation": "getItem",
+        "literalKey": "tjwl_feed_sz_v1"
+      },
+      {
+        "file": "js/board.js",
+        "line": 684,
+        "operation": "getItem",
+        "keyIdentifier": "RK"
+      },
+      {
+        "file": "js/board.js",
+        "line": 705,
+        "operation": "setItem",
+        "keyIdentifier": "RK"
+      },
+      {
+        "file": "js/board.js",
+        "line": 757,
+        "operation": "getItem",
+        "literalKey": "tjwl_bd_actcol_v1"
+      },
+      {
+        "file": "js/board.js",
+        "line": 1448,
+        "operation": "getItem",
+        "literalKey": "tjwl_lk_t"
+      },
+      {
+        "file": "js/board.js",
+        "line": 1450,
+        "operation": "setItem",
+        "literalKey": "tjwl_lk_t"
+      },
+      {
+        "file": "js/board.js",
+        "line": 1486,
+        "operation": "getItem",
+        "keyIdentifier": "KEY"
+      },
+      {
+        "file": "js/board.js",
+        "line": 1489,
+        "operation": "setItem",
+        "keyIdentifier": "KEY"
+      },
+      {
+        "file": "js/board.js",
+        "line": 1614,
+        "operation": "getItem",
+        "keyIdentifier": "SPK"
+      },
+      {
+        "file": "js/board.js",
+        "line": 1632,
+        "operation": "setItem",
+        "keyIdentifier": "SPK"
+      },
+      {
+        "file": "js/board.js",
+        "line": 1633,
+        "operation": "setItem",
+        "keyIdentifier": "SPK"
+      },
+      {
+        "file": "js/cc.js",
+        "line": 25,
+        "operation": "getItem",
+        "keyIdentifier": "LS_LANG"
+      },
+      {
+        "file": "js/cc.js",
+        "line": 44,
+        "operation": "setItem",
+        "keyIdentifier": "LS_LANG"
+      },
+      {
+        "file": "js/chat.js",
+        "line": 25,
+        "operation": "setItem",
+        "keyIdentifier": "k"
+      },
+      {
+        "file": "js/chat.js",
+        "line": 34,
+        "operation": "getItem",
+        "keyIdentifier": "k"
+      },
+      {
+        "file": "js/chat.js",
+        "line": 34,
+        "operation": "removeItem",
+        "keyIdentifier": "k"
+      },
+      {
+        "file": "js/chat.js",
+        "line": 166,
+        "operation": "removeItem",
+        "keyIdentifier": "kc"
+      },
+      {
+        "file": "js/db.js",
+        "line": 27,
+        "operation": "getItem",
+        "keyIdentifier": "LS_DELETED"
+      },
+      {
+        "file": "js/db.js",
+        "line": 30,
+        "operation": "setItem",
+        "keyIdentifier": "LS_DELETED"
+      },
+      {
+        "file": "js/db.js",
+        "line": 110,
+        "operation": "getItem",
+        "keyIdentifier": "LS_DB"
+      },
+      {
+        "file": "js/db.js",
+        "line": 121,
+        "operation": "setItem",
+        "keyIdentifier": "LS_DB"
+      },
+      {
+        "file": "js/db.js",
+        "line": 132,
+        "operation": "setItem",
+        "keyIdentifier": "LS_VER"
+      },
+      {
+        "file": "js/db.js",
+        "line": 136,
+        "operation": "getItem",
+        "keyIdentifier": "LS_VER"
+      },
+      {
+        "file": "js/db.js",
+        "line": 147,
+        "operation": "getItem",
+        "literalKey": "tjwl_skip_lib_update_v1"
+      },
+      {
+        "file": "js/db.js",
+        "line": 288,
+        "operation": "getItem",
+        "keyIdentifier": "LS_DB"
+      },
+      {
+        "file": "js/db.js",
+        "line": 1445,
+        "operation": "getItem",
+        "keyIdentifier": "key"
+      },
+      {
+        "file": "js/db.js",
+        "line": 1446,
+        "operation": "setItem",
+        "keyIdentifier": "key"
+      },
+      {
+        "file": "js/db.js",
+        "line": 2016,
+        "operation": "getItem",
+        "keyIdentifier": "LS_DAILY"
+      },
+      {
+        "file": "js/db.js",
+        "line": 2018,
+        "operation": "setItem",
+        "keyIdentifier": "LS_DAILY"
+      },
+      {
+        "file": "js/db.js",
+        "line": 2033,
+        "operation": "getItem",
+        "keyIdentifier": "LS_DAILY"
+      },
+      {
+        "file": "js/detail.js",
+        "line": 40,
+        "operation": "setItem",
+        "keyIdentifier": "LS_LAST_BLOCK"
+      },
+      {
+        "file": "js/detail.js",
+        "line": 44,
+        "operation": "removeItem",
+        "keyIdentifier": "LS_LAST_BLOCK"
+      },
+      {
+        "file": "js/detail.js",
+        "line": 50,
+        "operation": "getItem",
+        "keyIdentifier": "LS_LAST_BLOCK"
+      },
+      {
+        "file": "js/detail.js",
+        "line": 312,
+        "operation": "getItem",
+        "keyIdentifier": "LS_VOCAB_COLLAPSE"
+      },
+      {
+        "file": "js/detail.js",
+        "line": 329,
+        "operation": "getItem",
+        "keyIdentifier": "LS_PASSAGE_COLLAPSE"
+      },
+      {
+        "file": "js/detail.js",
+        "line": 454,
+        "operation": "getItem",
+        "keyIdentifier": "LS_FW_COLLAPSE"
+      },
+      {
+        "file": "js/detail.js",
+        "line": 579,
+        "operation": "getItem",
+        "keyIdentifier": "LS_FW_VIEW"
+      },
+      {
+        "file": "js/detail.js",
+        "line": 1457,
+        "operation": "getItem",
+        "keyIdentifier": "LS_MEANING_LANG"
+      },
+      {
+        "file": "js/detail.js",
+        "line": 1462,
+        "operation": "setItem",
+        "keyIdentifier": "LS_MEANING_LANG"
+      },
+      {
+        "file": "js/detail.js",
+        "line": 2697,
+        "operation": "setItem",
+        "keyIdentifier": "LS_VOCAB_COLLAPSE"
+      },
+      {
+        "file": "js/detail.js",
+        "line": 2701,
+        "operation": "setItem",
+        "keyIdentifier": "LS_PASSAGE_COLLAPSE"
+      },
+      {
+        "file": "js/detail.js",
+        "line": 2707,
+        "operation": "setItem",
+        "keyIdentifier": "LS_FW_COLLAPSE"
+      },
+      {
+        "file": "js/detail.js",
+        "line": 2721,
+        "operation": "setItem",
+        "keyIdentifier": "LS_FW_VIEW"
+      },
+      {
+        "file": "js/game.js",
+        "line": 368,
+        "operation": "getItem",
+        "keyIdentifier": "k"
+      },
+      {
+        "file": "js/game.js",
+        "line": 369,
+        "operation": "removeItem",
+        "keyIdentifier": "k"
+      },
+      {
+        "file": "js/game.js",
+        "line": 369,
+        "operation": "setItem",
+        "keyIdentifier": "k"
+      },
+      {
+        "file": "js/game.js",
+        "line": 1703,
+        "operation": "removeItem",
+        "keyIdentifier": "k"
+      },
+      {
+        "file": "js/game.js",
+        "line": 2265,
+        "operation": "setItem",
+        "literalKey": "tjwl_selection_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 2266,
+        "operation": "setItem",
+        "literalKey": "tjwl_last_block_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 2314,
+        "operation": "setItem",
+        "keyIdentifier": "LS_SOUND"
+      },
+      {
+        "file": "js/game.js",
+        "line": 3081,
+        "operation": "getItem",
+        "keyIdentifier": "LS_AUDM"
+      },
+      {
+        "file": "js/game.js",
+        "line": 3082,
+        "operation": "setItem",
+        "keyIdentifier": "LS_AUDM"
+      },
+      {
+        "file": "js/game.js",
+        "line": 3223,
+        "operation": "getItem",
+        "keyIdentifier": "LS_TQM"
+      },
+      {
+        "file": "js/game.js",
+        "line": 3232,
+        "operation": "setItem",
+        "keyIdentifier": "LS_TQM"
+      },
+      {
+        "file": "js/game.js",
+        "line": 3810,
+        "operation": "getItem",
+        "literalKey": "tjwl_looked_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 4159,
+        "operation": "getItem",
+        "literalKey": "tjwl_game_tmode_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 4170,
+        "operation": "setItem",
+        "literalKey": "tjwl_game_tmode_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 4235,
+        "operation": "setItem",
+        "keyIdentifier": "LS_VSET"
+      },
+      {
+        "file": "js/game.js",
+        "line": 4275,
+        "operation": "setItem",
+        "keyIdentifier": "LS_HUB"
+      },
+      {
+        "file": "js/game.js",
+        "line": 4803,
+        "operation": "getItem",
+        "keyIdentifier": "k"
+      },
+      {
+        "file": "js/game.js",
+        "line": 4815,
+        "operation": "setItem",
+        "keyIdentifier": "LS_VOL"
+      },
+      {
+        "file": "js/game.js",
+        "line": 4843,
+        "operation": "setItem",
+        "keyIdentifier": "LS_SOUND"
+      },
+      {
+        "file": "js/game.js",
+        "line": 4850,
+        "operation": "setItem",
+        "keyIdentifier": "LS_SOUND"
+      },
+      {
+        "file": "js/game.js",
+        "line": 5510,
+        "operation": "getItem",
+        "keyIdentifier": "LS_LINK"
+      },
+      {
+        "file": "js/game.js",
+        "line": 5521,
+        "operation": "setItem",
+        "keyIdentifier": "LS_LINK"
+      },
+      {
+        "file": "js/gamelayer.js",
+        "line": 176,
+        "operation": "setItem",
+        "literalKey": "tjwl_game_open_at"
+      },
+      {
+        "file": "js/gamelayer.js",
+        "line": 190,
+        "operation": "removeItem",
+        "literalKey": "tjwl_game_open_at"
+      },
+      {
+        "file": "js/gamelayer.js",
+        "line": 218,
+        "operation": "removeItem",
+        "literalKey": "tjwl_game_open_at"
+      },
+      {
+        "file": "js/gamelayer.js",
+        "line": 317,
+        "operation": "getItem",
+        "literalKey": "tjwl_game_open_at"
+      },
+      {
+        "file": "js/hubpage.js",
+        "line": 51,
+        "operation": "getItem",
+        "literalKey": "tjwl_game_open_at"
+      },
+      {
+        "file": "js/journey.js",
+        "line": 251,
+        "operation": "getItem",
+        "keyIdentifier": "LS_JTAB"
+      },
+      {
+        "file": "js/journey.js",
+        "line": 256,
+        "operation": "setItem",
+        "keyIdentifier": "LS_JTAB"
+      },
+      {
+        "file": "js/reader.js",
+        "line": 326,
+        "operation": "getItem",
+        "keyIdentifier": "LS_PIN_WP"
+      },
+      {
+        "file": "js/reader.js",
+        "line": 340,
+        "operation": "setItem",
+        "keyIdentifier": "LS_PIN_WP"
+      },
+      {
+        "file": "js/reader.js",
+        "line": 432,
+        "operation": "setItem",
+        "keyIdentifier": "LS_MODE"
+      },
+      {
+        "file": "js/reader.js",
+        "line": 512,
+        "operation": "getItem",
+        "keyIdentifier": "LS_MODE"
+      },
+      {
+        "file": "js/speech.js",
+        "line": 57,
+        "operation": "getItem",
+        "keyIdentifier": "LS_VOICE"
+      },
+      {
+        "file": "js/speech.js",
+        "line": 95,
+        "operation": "setItem",
+        "keyIdentifier": "LS_VOICE"
+      },
+      {
+        "file": "js/speech.js",
+        "line": 179,
+        "operation": "getItem",
+        "keyIdentifier": "LS_QUIZ_MUTE"
+      },
+      {
+        "file": "js/speech.js",
+        "line": 182,
+        "operation": "setItem",
+        "keyIdentifier": "LS_QUIZ_MUTE"
+      },
+      {
+        "file": "js/voice.js",
+        "line": 115,
+        "operation": "getItem",
+        "literalKey": "tjwl_voice_mon_v1"
+      },
+      {
+        "file": "js/voice.js",
+        "line": 116,
+        "operation": "setItem",
+        "literalKey": "tjwl_voice_mon_v1"
+      },
+      {
+        "file": "js/voice.js",
+        "line": 128,
+        "operation": "getItem",
+        "literalKey": "tjwl_voice_raw_v1"
+      },
+      {
+        "file": "js/voice.js",
+        "line": 129,
+        "operation": "setItem",
+        "literalKey": "tjwl_voice_raw_v1"
+      },
+      {
+        "file": "js/wordset.js",
+        "line": 168,
+        "operation": "getItem",
+        "keyIdentifier": "LS_TAB"
+      },
+      {
+        "file": "js/wordset.js",
+        "line": 169,
+        "operation": "setItem",
+        "keyIdentifier": "LS_TAB"
+      },
+      {
+        "file": "js/wordset.js",
+        "line": 597,
+        "operation": "setItem",
+        "keyIdentifier": "LS_TAB"
+      }
+    ],
+    "keyLiteralCandidates": [
+      {
+        "file": "js/app.js",
+        "line": 8,
+        "key": "tjwl_selection_v1"
+      },
+      {
+        "file": "js/app.js",
+        "line": 601,
+        "key": "tjwl_nb_collapsed_v1"
+      },
+      {
+        "file": "js/app.js",
+        "line": 3147,
+        "key": "tjwl_reviewall_tab_v1"
+      },
+      {
+        "file": "js/app.js",
+        "line": 3866,
+        "key": "tjwl_theme_v1"
+      },
+      {
+        "file": "js/app.js",
+        "line": 3905,
+        "key": "tjwl_pins_v1"
+      },
+      {
+        "file": "js/app.js",
+        "line": 3914,
+        "key": "tjwl_pins_v1"
+      },
+      {
+        "file": "js/app.js",
+        "line": 3971,
+        "key": "tjwl_fontscale_v1"
+      },
+      {
+        "file": "js/app.js",
+        "line": 3996,
+        "key": "tjwl_accent_v1"
+      },
+      {
+        "file": "js/app.js",
+        "line": 4039,
+        "key": "tjwl_local_lang_v1"
+      },
+      {
+        "file": "js/app.js",
+        "line": 4082,
+        "key": "tjwl_sidebarw_v1"
+      },
+      {
+        "file": "js/auth.js",
+        "line": 33,
+        "key": "tjwl_users_v1"
+      },
+      {
+        "file": "js/auth.js",
+        "line": 34,
+        "key": "tjwl_current_user_v1"
+      },
+      {
+        "file": "js/auth.js",
+        "line": 35,
+        "key": "tjwl_link_user_id_v1"
+      },
+      {
+        "file": "js/auth.js",
+        "line": 37,
+        "key": "tjwl_local_view_id_v1"
+      },
+      {
+        "file": "js/auth.js",
+        "line": 181,
+        "key": "tjwl_local_lang_v1"
+      },
+      {
+        "file": "js/board.js",
+        "line": 181,
+        "key": "tjwl_game_voice_v1"
+      },
+      {
+        "file": "js/board.js",
+        "line": 251,
+        "key": "tjwl_feed_sz_v1"
+      },
+      {
+        "file": "js/board.js",
+        "line": 295,
+        "key": "tjwl_bd_actcol_v1"
+      },
+      {
+        "file": "js/board.js",
+        "line": 342,
+        "key": "tjwl_feed_sz_v1"
+      },
+      {
+        "file": "js/board.js",
+        "line": 683,
+        "key": "tjwl_bd_recent_v1"
+      },
+      {
+        "file": "js/board.js",
+        "line": 757,
+        "key": "tjwl_bd_actcol_v1"
+      },
+      {
+        "file": "js/board.js",
+        "line": 1448,
+        "key": "tjwl_lk_t"
+      },
+      {
+        "file": "js/board.js",
+        "line": 1450,
+        "key": "tjwl_lk_t"
+      },
+      {
+        "file": "js/board.js",
+        "line": 1486,
+        "key": "tjwl_looked_v1"
+      },
+      {
+        "file": "js/board.js",
+        "line": 1613,
+        "key": "tjwl_bd_sidepin_v1"
+      },
+      {
+        "file": "js/cc.js",
+        "line": 13,
+        "key": "tjwl_cc_lang_v1"
+      },
+      {
+        "file": "js/chat.js",
+        "line": 24,
+        "key": "tjwl_chat_v1_"
+      },
+      {
+        "file": "js/db.js",
+        "line": 15,
+        "key": "tjwl_db_v1"
+      },
+      {
+        "file": "js/db.js",
+        "line": 16,
+        "key": "tjwl_starter_ver_v1"
+      },
+      {
+        "file": "js/db.js",
+        "line": 17,
+        "key": "tjwl_deleted_ids_v1"
+      },
+      {
+        "file": "js/db.js",
+        "line": 18,
+        "key": "tjwl_daily_log_v1"
+      },
+      {
+        "file": "js/db.js",
+        "line": 147,
+        "key": "tjwl_skip_lib_update_v1"
+      },
+      {
+        "file": "js/db.js",
+        "line": 1441,
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "file": "js/db.js",
+        "line": 1442,
+        "key": "tjwl_wrong_open_v1"
+      },
+      {
+        "file": "js/db.js",
+        "line": 1443,
+        "key": "tjwl_wrong_ctx_v1"
+      },
+      {
+        "file": "js/detail.js",
+        "line": 37,
+        "key": "tjwl_last_block_v1"
+      },
+      {
+        "file": "js/detail.js",
+        "line": 310,
+        "key": "tjwl_vocab_collapsed_v1"
+      },
+      {
+        "file": "js/detail.js",
+        "line": 327,
+        "key": "tjwl_passage_collapsed_v1"
+      },
+      {
+        "file": "js/detail.js",
+        "line": 452,
+        "key": "tjwl_fw_panel_collapsed_v1"
+      },
+      {
+        "file": "js/detail.js",
+        "line": 574,
+        "key": "tjwl_fw_panel_view_v1"
+      },
+      {
+        "file": "js/detail.js",
+        "line": 1453,
+        "key": "tjwl_meaning_lang_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 43,
+        "key": "tjwl_game_player_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 44,
+        "key": "tjwl_link_user_id_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 45,
+        "key": "tjwl_game_host_"
+      },
+      {
+        "file": "js/game.js",
+        "line": 46,
+        "key": "tjwl_game_lang_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 168,
+        "key": "tjwl_menu_pin_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 228,
+        "key": "tjwl_menu_pin_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 607,
+        "key": "tjwl_game_trial_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 619,
+        "key": "tjwl_game_trial_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 733,
+        "key": "tjwl_game_sidepin_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 754,
+        "key": "tjwl_game_sidew_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 1296,
+        "key": "tjwl_game_gapai_v3"
+      },
+      {
+        "file": "js/game.js",
+        "line": 1625,
+        "key": "tjwl_game_tabs"
+      },
+      {
+        "file": "js/game.js",
+        "line": 2182,
+        "key": "tjwl_board_stars_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 2191,
+        "key": "tjwl_board_stars_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 2191,
+        "key": "tjwl_board_stars_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 2265,
+        "key": "tjwl_selection_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 2266,
+        "key": "tjwl_last_block_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 2608,
+        "key": "tjwl_game_tsheet_"
+      },
+      {
+        "file": "js/game.js",
+        "line": 3080,
+        "key": "tjwl_audmarks_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 3221,
+        "key": "tjwl_tqmarks_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 3419,
+        "key": "tjwl_game_review_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 3810,
+        "key": "tjwl_looked_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 4159,
+        "key": "tjwl_game_tmode_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 4170,
+        "key": "tjwl_game_tmode_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 4225,
+        "key": "tjwl_game_hub_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 4232,
+        "key": "tjwl_game_vset_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 4648,
+        "key": "tjwl_game_voice_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 4727,
+        "key": "tjwl_voice_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 4805,
+        "key": "tjwl_game_sound_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 4808,
+        "key": "tjwl_game_volume_v1"
+      },
+      {
+        "file": "js/game.js",
+        "line": 4975,
+        "key": "tjwl_tpos"
+      },
+      {
+        "file": "js/game.js",
+        "line": 4978,
+        "key": "tjwl_tpos"
+      },
+      {
+        "file": "js/game.js",
+        "line": 5241,
+        "key": "tjwl_game_tsheet_"
+      },
+      {
+        "file": "js/game.js",
+        "line": 5509,
+        "key": "tjwl_local_view_id_v1"
+      },
+      {
+        "file": "js/gamelayer.js",
+        "line": 79,
+        "key": "tjwl_board_mode"
+      },
+      {
+        "file": "js/gamelayer.js",
+        "line": 83,
+        "key": "tjwl_board_mode"
+      },
+      {
+        "file": "js/gamelayer.js",
+        "line": 176,
+        "key": "tjwl_game_open"
+      },
+      {
+        "file": "js/gamelayer.js",
+        "line": 176,
+        "key": "tjwl_game_open_at"
+      },
+      {
+        "file": "js/gamelayer.js",
+        "line": 184,
+        "key": "tjwl_board_mode"
+      },
+      {
+        "file": "js/gamelayer.js",
+        "line": 190,
+        "key": "tjwl_game_open"
+      },
+      {
+        "file": "js/gamelayer.js",
+        "line": 190,
+        "key": "tjwl_game_open_at"
+      },
+      {
+        "file": "js/gamelayer.js",
+        "line": 218,
+        "key": "tjwl_game_open"
+      },
+      {
+        "file": "js/gamelayer.js",
+        "line": 218,
+        "key": "tjwl_game_open_at"
+      },
+      {
+        "file": "js/gamelayer.js",
+        "line": 317,
+        "key": "tjwl_game_open"
+      },
+      {
+        "file": "js/gamelayer.js",
+        "line": 317,
+        "key": "tjwl_game_open_at"
+      },
+      {
+        "file": "js/gamelayer.js",
+        "line": 320,
+        "key": "tjwl_board_mode"
+      },
+      {
+        "file": "js/hubpage.js",
+        "line": 51,
+        "key": "tjwl_game_open"
+      },
+      {
+        "file": "js/hubpage.js",
+        "line": 51,
+        "key": "tjwl_game_open_at"
+      },
+      {
+        "file": "js/journey.js",
+        "line": 49,
+        "key": "tjwl_journey_tab_v1"
+      },
+      {
+        "file": "js/learn.js",
+        "line": 55,
+        "key": "tjwl_learn_tab"
+      },
+      {
+        "file": "js/learn.js",
+        "line": 63,
+        "key": "tjwl_sw_keep"
+      },
+      {
+        "file": "js/learn.js",
+        "line": 63,
+        "key": "tjwl_sw_keep"
+      },
+      {
+        "file": "js/learn.js",
+        "line": 100,
+        "key": "tjwl_learn_tab"
+      },
+      {
+        "file": "js/learn.js",
+        "line": 100,
+        "key": "tjwl_sw_keep"
+      },
+      {
+        "file": "js/reader.js",
+        "line": 23,
+        "key": "tjwl_readmode_v1"
+      },
+      {
+        "file": "js/reader.js",
+        "line": 325,
+        "key": "tjwl_wp_pin_v1"
+      },
+      {
+        "file": "js/speech.js",
+        "line": 54,
+        "key": "tjwl_voice_v1"
+      },
+      {
+        "file": "js/speech.js",
+        "line": 177,
+        "key": "tjwl_quiz_muted_v1"
+      },
+      {
+        "file": "js/voice.js",
+        "line": 115,
+        "key": "tjwl_voice_mon_v1"
+      },
+      {
+        "file": "js/voice.js",
+        "line": 116,
+        "key": "tjwl_voice_mon_v1"
+      },
+      {
+        "file": "js/voice.js",
+        "line": 128,
+        "key": "tjwl_voice_raw_v1"
+      },
+      {
+        "file": "js/voice.js",
+        "line": 129,
+        "key": "tjwl_voice_raw_v1"
+      },
+      {
+        "file": "js/wordset.js",
+        "line": 20,
+        "key": "tjwl_wordset_tab_v1"
+      }
+    ]
+  },
+  "escDefinitions": [
+    {
+      "file": "js/board.js",
+      "line": 56
+    },
+    {
+      "file": "js/cc.js",
+      "line": 17
+    },
+    {
+      "file": "js/chat.js",
+      "line": 21
+    },
+    {
+      "file": "js/game.js",
+      "line": 42
+    },
+    {
+      "file": "js/readalong.js",
+      "line": 13
+    },
+    {
+      "file": "js/util.js",
+      "line": 8
+    },
+    {
+      "file": "js/voice.js",
+      "line": 16
+    }
+  ],
+  "globalAssignments": [
+    {
+      "file": "js/app.js",
+      "line": 21,
+      "name": "S"
+    },
+    {
+      "file": "js/app.js",
+      "line": 24,
+      "name": "App"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 374,
+      "name": "Auth"
+    },
+    {
+      "file": "js/board.js",
+      "line": 1113,
+      "name": "hidden"
+    },
+    {
+      "file": "js/board.js",
+      "line": 1113,
+      "name": "textContent"
+    },
+    {
+      "file": "js/board.js",
+      "line": 1595,
+      "name": "__bdDocT"
+    },
+    {
+      "file": "js/board.js",
+      "line": 2134,
+      "name": "Board"
+    },
+    {
+      "file": "js/cc.js",
+      "line": 174,
+      "name": "CC"
+    },
+    {
+      "file": "js/chat.js",
+      "line": 157,
+      "name": "Chat"
+    },
+    {
+      "file": "js/config.js",
+      "line": 12,
+      "name": "APP_CONFIG"
+    },
+    {
+      "file": "js/context.js",
+      "line": 82,
+      "name": "Context"
+    },
+    {
+      "file": "js/db.js",
+      "line": 276,
+      "name": "supabase"
+    },
+    {
+      "file": "js/db.js",
+      "line": 2222,
+      "name": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3291,
+      "name": "Detail"
+    },
+    {
+      "file": "js/export.js",
+      "line": 250,
+      "name": "Export"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1023,
+      "name": "__tjBp"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1024,
+      "name": "__tjBpQuick"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1027,
+      "name": "__tjBpH"
+    },
+    {
+      "file": "js/game.js",
+      "line": 4029,
+      "name": "checked"
+    },
+    {
+      "file": "js/game.js",
+      "line": 4051,
+      "name": "TJ_HUB"
+    },
+    {
+      "file": "js/game.js",
+      "line": 4259,
+      "name": "TJ_HUB"
+    },
+    {
+      "file": "js/game.js",
+      "line": 4684,
+      "name": "esc"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 176,
+      "name": "name"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 190,
+      "name": "name"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 218,
+      "name": "name"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 344,
+      "name": "GameLayer"
+    },
+    {
+      "file": "js/home.js",
+      "line": 11,
+      "name": "Home"
+    },
+    {
+      "file": "js/hubpage.js",
+      "line": 57,
+      "name": "HubPage"
+    },
+    {
+      "file": "js/i18n.js",
+      "line": 1098,
+      "name": "I18N"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 33,
+      "name": "Journey"
+    },
+    {
+      "file": "js/readalong.js",
+      "line": 165,
+      "name": "ReadAlong"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 600,
+      "name": "Reader"
+    },
+    {
+      "file": "js/shadow.js",
+      "line": 98,
+      "name": "Shadow"
+    },
+    {
+      "file": "js/speech.js",
+      "line": 517,
+      "name": "Speech"
+    },
+    {
+      "file": "js/srs.js",
+      "line": 22,
+      "name": "SRS"
+    },
+    {
+      "file": "js/swclass.js",
+      "line": 60,
+      "name": "SWClass"
+    },
+    {
+      "file": "js/toeic_tips.js",
+      "line": 3,
+      "name": "TOEIC_TIPS"
+    },
+    {
+      "file": "js/turn.js",
+      "line": 14,
+      "name": "__turnServers"
+    },
+    {
+      "file": "js/util.js",
+      "line": 5,
+      "name": "$"
+    },
+    {
+      "file": "js/util.js",
+      "line": 6,
+      "name": "$$"
+    },
+    {
+      "file": "js/util.js",
+      "line": 8,
+      "name": "esc"
+    },
+    {
+      "file": "js/util.js",
+      "line": 23,
+      "name": "uid"
+    },
+    {
+      "file": "js/util.js",
+      "line": 30,
+      "name": "normalizeAnswer"
+    },
+    {
+      "file": "js/util.js",
+      "line": 39,
+      "name": "fmtDateTime"
+    },
+    {
+      "file": "js/util.js",
+      "line": 47,
+      "name": "humanTime"
+    },
+    {
+      "file": "js/util.js",
+      "line": 63,
+      "name": "toast"
+    },
+    {
+      "file": "js/util.js",
+      "line": 84,
+      "name": "parseVocabText"
+    },
+    {
+      "file": "js/util.js",
+      "line": 156,
+      "name": "chunk"
+    },
+    {
+      "file": "js/util.js",
+      "line": 162,
+      "name": "pct"
+    },
+    {
+      "file": "js/voice.js",
+      "line": 229,
+      "name": "Voice"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 17,
+      "name": "WordSet"
+    }
+  ],
+  "dependencyCandidates": [
+    {
+      "file": "js/app.js",
+      "line": 9,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/app.js",
+      "line": 21,
+      "target": "S"
+    },
+    {
+      "file": "js/app.js",
+      "line": 24,
+      "target": "App"
+    },
+    {
+      "file": "js/app.js",
+      "line": 63,
+      "target": "Speech"
+    },
+    {
+      "file": "js/app.js",
+      "line": 81,
+      "target": "Speech"
+    },
+    {
+      "file": "js/app.js",
+      "line": 85,
+      "target": "Speech"
+    },
+    {
+      "file": "js/app.js",
+      "line": 193,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 195,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 195,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 196,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 201,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 202,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 202,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 204,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 211,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 211,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 216,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 225,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 225,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 225,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 225,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 226,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 226,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 234,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 256,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 258,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 259,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 287,
+      "target": "ResizeObserver"
+    },
+    {
+      "file": "js/app.js",
+      "line": 305,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 305,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 305,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 343,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 348,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 348,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 348,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 348,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 359,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 361,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 378,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 379,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 379,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 379,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 381,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 392,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 395,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 433,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 434,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 434,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 458,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 518,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 518,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 518,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 519,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 602,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 602,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 743,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 743,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 744,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 785,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 785,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 786,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 809,
+      "target": "SRS"
+    },
+    {
+      "file": "js/app.js",
+      "line": 811,
+      "target": "SRS"
+    },
+    {
+      "file": "js/app.js",
+      "line": 835,
+      "target": "Context"
+    },
+    {
+      "file": "js/app.js",
+      "line": 877,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 877,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 877,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 877,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 912,
+      "target": "Context"
+    },
+    {
+      "file": "js/app.js",
+      "line": 943,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/app.js",
+      "line": 943,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/app.js",
+      "line": 944,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/app.js",
+      "line": 953,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/app.js",
+      "line": 953,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/app.js",
+      "line": 954,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1039,
+      "target": "SRS"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1096,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1096,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1144,
+      "target": "SRS"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1154,
+      "target": "SRS"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1216,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1216,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1245,
+      "target": "Speech"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1301,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1312,
+      "target": "Home"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1312,
+      "target": "Home"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1313,
+      "target": "Journey"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1313,
+      "target": "Journey"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1315,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1315,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1315,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1320,
+      "target": "Home"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1320,
+      "target": "Home"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1321,
+      "target": "Journey"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1321,
+      "target": "Journey"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1323,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1323,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1323,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1339,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1341,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1341,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1395,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1396,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1396,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1411,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1445,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1445,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1449,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1469,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1488,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1488,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1502,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1502,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1503,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1521,
+      "target": "Context"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1521,
+      "target": "Context"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1521,
+      "target": "Context"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1535,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1549,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1550,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1556,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1566,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1578,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1581,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1588,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1590,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1590,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1590,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1590,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1616,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1656,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1693,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1694,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1703,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1707,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1726,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1730,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1730,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1777,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1835,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1850,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1850,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1851,
+      "target": "Context"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1867,
+      "target": "App"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1867,
+      "target": "App"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1867,
+      "target": "App"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1874,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1883,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1918,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1923,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1923,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1924,
+      "target": "Context"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1930,
+      "target": "Context"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1939,
+      "target": "Context"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1940,
+      "target": "Context"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1940,
+      "target": "Context"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1941,
+      "target": "Context"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1949,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1968,
+      "target": "Context"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1981,
+      "target": "Context"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1984,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 1985,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2001,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2006,
+      "target": "App"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2006,
+      "target": "App"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2006,
+      "target": "App"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2024,
+      "target": "Context"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2030,
+      "target": "Context"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2039,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2039,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2071,
+      "target": "App"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2071,
+      "target": "App"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2071,
+      "target": "App"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2098,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2103,
+      "target": "App"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2103,
+      "target": "App"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2103,
+      "target": "App"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2113,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2125,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2125,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2126,
+      "target": "Context"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2128,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2147,
+      "target": "App"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2147,
+      "target": "App"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2147,
+      "target": "App"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2158,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2228,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2246,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2246,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2334,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2381,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2501,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2501,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2501,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2501,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2548,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2552,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2552,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2552,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2552,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2553,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2553,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2553,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2553,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2659,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2665,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2702,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2721,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2728,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2768,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2781,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2788,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2802,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2802,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2802,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2802,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2802,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2846,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2846,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2846,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2846,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2850,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2850,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2851,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2851,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2852,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2863,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2864,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2867,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2883,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2888,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2888,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2888,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2888,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2889,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2890,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2905,
+      "target": "GameLayer"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2905,
+      "target": "GameLayer"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2909,
+      "target": "GameLayer"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2909,
+      "target": "GameLayer"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2945,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2945,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 2959,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3000,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3027,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3094,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3133,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3189,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3189,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3262,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3266,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3267,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3279,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3344,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3344,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3368,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3368,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3441,
+      "target": "Speech"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3474,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3474,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3550,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3740,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3744,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3744,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3744,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3744,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3745,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3746,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3750,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3752,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3753,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3755,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3756,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3758,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3759,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3769,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3773,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3773,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3810,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3831,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3860,
+      "target": "Home"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3860,
+      "target": "Home"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3915,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 3915,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4045,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4045,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4045,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4046,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4046,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4062,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4062,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4063,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4068,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4068,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4068,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4069,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4069,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4076,
+      "target": "I18N"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4076,
+      "target": "I18N"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4076,
+      "target": "I18N"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4169,
+      "target": "ResizeObserver"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4183,
+      "target": "ResizeObserver"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4196,
+      "target": "ResizeObserver"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4344,
+      "target": "GameLayer"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4344,
+      "target": "GameLayer"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4346,
+      "target": "GameLayer"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4346,
+      "target": "GameLayer"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4348,
+      "target": "GameLayer"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4348,
+      "target": "GameLayer"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4366,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4366,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4376,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4390,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4413,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4434,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4451,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4459,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4459,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4459,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4459,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4460,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4461,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4476,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4486,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4546,
+      "target": "Context"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4588,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4591,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4613,
+      "target": "GameLayer"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4613,
+      "target": "GameLayer"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4613,
+      "target": "GameLayer"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4638,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4657,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4669,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4684,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4701,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4704,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4756,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4757,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4777,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4783,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4784,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4810,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4820,
+      "target": "I18N"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4820,
+      "target": "I18N"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4820,
+      "target": "I18N"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4823,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4823,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4823,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4823,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4834,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4840,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4842,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4863,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4895,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4895,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4912,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4931,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4948,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4957,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4961,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4961,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4961,
+      "target": "I18N"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4961,
+      "target": "I18N"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4963,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4963,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4963,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4963,
+      "target": "I18N"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4963,
+      "target": "I18N"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4969,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4978,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 4989,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 5000,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 5010,
+      "target": "Export"
+    },
+    {
+      "file": "js/app.js",
+      "line": 5019,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 5033,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 5053,
+      "target": "Speech"
+    },
+    {
+      "file": "js/app.js",
+      "line": 5055,
+      "target": "Speech"
+    },
+    {
+      "file": "js/app.js",
+      "line": 5056,
+      "target": "Speech"
+    },
+    {
+      "file": "js/app.js",
+      "line": 5147,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 5147,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 5147,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 5172,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 5186,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 5194,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 5206,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 5224,
+      "target": "Speech"
+    },
+    {
+      "file": "js/app.js",
+      "line": 5225,
+      "target": "DB"
+    },
+    {
+      "file": "js/app.js",
+      "line": 5226,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 5231,
+      "target": "Auth"
+    },
+    {
+      "file": "js/app.js",
+      "line": 5269,
+      "target": "Journey"
+    },
+    {
+      "file": "js/app.js",
+      "line": 5274,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 5274,
+      "target": "Detail"
+    },
+    {
+      "file": "js/app.js",
+      "line": 5274,
+      "target": "Detail"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 149,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 149,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 163,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 163,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 164,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 202,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 202,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 216,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 221,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 231,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 249,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 249,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 249,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 267,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 288,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 316,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 316,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 319,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 322,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 333,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 333,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 333,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 335,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 339,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 349,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 349,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 350,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 359,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 359,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 360,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 368,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 368,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 368,
+      "target": "DB"
+    },
+    {
+      "file": "js/auth.js",
+      "line": 374,
+      "target": "Auth"
+    },
+    {
+      "file": "js/board.js",
+      "line": 630,
+      "target": "ReadAlong"
+    },
+    {
+      "file": "js/board.js",
+      "line": 696,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/board.js",
+      "line": 1050,
+      "target": "DM_READINGS"
+    },
+    {
+      "file": "js/board.js",
+      "line": 1054,
+      "target": "DM_READINGS"
+    },
+    {
+      "file": "js/board.js",
+      "line": 1054,
+      "target": "DM_READINGS"
+    },
+    {
+      "file": "js/board.js",
+      "line": 1055,
+      "target": "DM_READINGS"
+    },
+    {
+      "file": "js/board.js",
+      "line": 1055,
+      "target": "DM_READINGS"
+    },
+    {
+      "file": "js/board.js",
+      "line": 1273,
+      "target": "BroadcastChannel"
+    },
+    {
+      "file": "js/board.js",
+      "line": 1737,
+      "target": "DM_READINGS"
+    },
+    {
+      "file": "js/board.js",
+      "line": 1890,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/board.js",
+      "line": 1893,
+      "target": "RTCPeerConnection"
+    },
+    {
+      "file": "js/board.js",
+      "line": 1897,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/board.js",
+      "line": 2134,
+      "target": "Board"
+    },
+    {
+      "file": "js/cc.js",
+      "line": 12,
+      "target": "SpeechRecognition"
+    },
+    {
+      "file": "js/cc.js",
+      "line": 88,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/cc.js",
+      "line": 134,
+      "target": "Voice"
+    },
+    {
+      "file": "js/cc.js",
+      "line": 139,
+      "target": "Voice"
+    },
+    {
+      "file": "js/cc.js",
+      "line": 174,
+      "target": "CC"
+    },
+    {
+      "file": "js/chat.js",
+      "line": 80,
+      "target": "Voice"
+    },
+    {
+      "file": "js/chat.js",
+      "line": 157,
+      "target": "Chat"
+    },
+    {
+      "file": "js/config.js",
+      "line": 12,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/context.js",
+      "line": 82,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 145,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/context.js",
+      "line": 163,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 166,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 290,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 296,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 314,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 363,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 374,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 374,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 375,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 394,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 446,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 449,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 450,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 455,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 456,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 469,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 470,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 476,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 477,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 487,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 488,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 507,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 529,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 583,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 717,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 718,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 720,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 720,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 721,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 721,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 729,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 761,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 762,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 766,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 784,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 791,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 793,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 795,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 907,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 909,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 949,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 950,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 964,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1010,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1020,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1022,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1025,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1027,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1030,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1032,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1063,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1079,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1123,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1124,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1143,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1143,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1193,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1194,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1201,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1201,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1248,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1388,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1389,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1460,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1465,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1466,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1480,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1491,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1491,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1491,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1492,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1492,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1505,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1506,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1511,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1598,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1642,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1642,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1657,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1660,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1726,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1727,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1731,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1733,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1733,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1967,
+      "target": "Context"
+    },
+    {
+      "file": "js/context.js",
+      "line": 1967,
+      "target": "Context"
+    },
+    {
+      "file": "js/db.js",
+      "line": 19,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/db.js",
+      "line": 322,
+      "target": "Context"
+    },
+    {
+      "file": "js/db.js",
+      "line": 322,
+      "target": "Context"
+    },
+    {
+      "file": "js/db.js",
+      "line": 323,
+      "target": "Context"
+    },
+    {
+      "file": "js/db.js",
+      "line": 1329,
+      "target": "SRS"
+    },
+    {
+      "file": "js/db.js",
+      "line": 2077,
+      "target": "SRS"
+    },
+    {
+      "file": "js/db.js",
+      "line": 2108,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/db.js",
+      "line": 2108,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/db.js",
+      "line": 2120,
+      "target": "SRS"
+    },
+    {
+      "file": "js/db.js",
+      "line": 2194,
+      "target": "Context"
+    },
+    {
+      "file": "js/db.js",
+      "line": 2222,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 7,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 9,
+      "target": "S"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 64,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 64,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 65,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 77,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 77,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 77,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 77,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 79,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 79,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 79,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 99,
+      "target": "Context"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 114,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 114,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 114,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 115,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 115,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 115,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 127,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 129,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 172,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 177,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 177,
+      "target": "S"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 190,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 190,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 190,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 190,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 193,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 205,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 205,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 205,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 206,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 206,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 206,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 210,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 210,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 210,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 242,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 267,
+      "target": "SRS"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 368,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 368,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 368,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 421,
+      "target": "SRS"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 425,
+      "target": "SRS"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 435,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 435,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 435,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 584,
+      "target": "Context"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 847,
+      "target": "Context"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 897,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 897,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 897,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 897,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 946,
+      "target": "Context"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 975,
+      "target": "Context"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 977,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1001,
+      "target": "Reader"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1002,
+      "target": "Reader"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1016,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1022,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1022,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1022,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1040,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1040,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1040,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1045,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1045,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1049,
+      "target": "Context"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1051,
+      "target": "Context"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1054,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1054,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1054,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1065,
+      "target": "Context"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1065,
+      "target": "Context"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1067,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1068,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1085,
+      "target": "Context"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1087,
+      "target": "Context"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1091,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1092,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1126,
+      "target": "Context"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1169,
+      "target": "Context"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1170,
+      "target": "Context"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1198,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1216,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1334,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1345,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1348,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1348,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1423,
+      "target": "Context"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1424,
+      "target": "Context"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1493,
+      "target": "Context"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1494,
+      "target": "Context"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1513,
+      "target": "Context"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1514,
+      "target": "Context"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1590,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1772,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1796,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1812,
+      "target": "SRS"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1813,
+      "target": "SRS"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1818,
+      "target": "SRS"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1818,
+      "target": "SRS"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1838,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1845,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1845,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1845,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1846,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1849,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1850,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1851,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1914,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1915,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1915,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1934,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1937,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1937,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1941,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1941,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1942,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1942,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1942,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1945,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1945,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1961,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1961,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1961,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1974,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2017,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2020,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2021,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2021,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2021,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2022,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2032,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2036,
+      "target": "CSS"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2036,
+      "target": "CSS"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2036,
+      "target": "CSS"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2046,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2046,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2046,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2047,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2047,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2047,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2050,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2050,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2050,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2052,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2054,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2060,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2060,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2060,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2061,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2061,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2061,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2061,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2061,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2063,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2063,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2063,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2076,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2081,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2081,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2083,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2093,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2184,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2220,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2270,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2272,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2272,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2276,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2276,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2277,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2277,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2277,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2284,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2284,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2294,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2295,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2295,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2306,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2306,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2306,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2357,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2365,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2376,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2408,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2421,
+      "target": "SRS"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2464,
+      "target": "Reader"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2465,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2485,
+      "target": "Reader"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2486,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2493,
+      "target": "Reader"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2493,
+      "target": "Reader"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2494,
+      "target": "Reader"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2534,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2534,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2538,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2542,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2564,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2564,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2564,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2580,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2625,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2625,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2626,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2631,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2632,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2633,
+      "target": "Reader"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2633,
+      "target": "Reader"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2633,
+      "target": "Reader"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2640,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2649,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2659,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2694,
+      "target": "Context"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2776,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2788,
+      "target": "Context"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2793,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2798,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2798,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2799,
+      "target": "Context"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2813,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2817,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2817,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2817,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2852,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2866,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2871,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2871,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2872,
+      "target": "Context"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2881,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2885,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2885,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2885,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2925,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2931,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2931,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2934,
+      "target": "Context"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2942,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2945,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2956,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2964,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2964,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2964,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2994,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2995,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3068,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3075,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3075,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3075,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3094,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3094,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3095,
+      "target": "Context"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3104,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3104,
+      "target": "Auth"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3105,
+      "target": "Context"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3115,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3119,
+      "target": "DB"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3127,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3127,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3127,
+      "target": "App"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3136,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3137,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3143,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3149,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3158,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3161,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3162,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3172,
+      "target": "Reader"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3175,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3176,
+      "target": "Reader"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3186,
+      "target": "Reader"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3200,
+      "target": "Reader"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3211,
+      "target": "Reader"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3217,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3227,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3261,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3272,
+      "target": "Speech"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3291,
+      "target": "Detail"
+    },
+    {
+      "file": "js/export.js",
+      "line": 14,
+      "target": "S"
+    },
+    {
+      "file": "js/export.js",
+      "line": 19,
+      "target": "App"
+    },
+    {
+      "file": "js/export.js",
+      "line": 19,
+      "target": "App"
+    },
+    {
+      "file": "js/export.js",
+      "line": 53,
+      "target": "App"
+    },
+    {
+      "file": "js/export.js",
+      "line": 67,
+      "target": "Detail"
+    },
+    {
+      "file": "js/export.js",
+      "line": 67,
+      "target": "Detail"
+    },
+    {
+      "file": "js/export.js",
+      "line": 98,
+      "target": "App"
+    },
+    {
+      "file": "js/export.js",
+      "line": 99,
+      "target": "Context"
+    },
+    {
+      "file": "js/export.js",
+      "line": 123,
+      "target": "Context"
+    },
+    {
+      "file": "js/export.js",
+      "line": 189,
+      "target": "App"
+    },
+    {
+      "file": "js/export.js",
+      "line": 197,
+      "target": "App"
+    },
+    {
+      "file": "js/export.js",
+      "line": 250,
+      "target": "Export"
+    },
+    {
+      "file": "js/game.js",
+      "line": 38,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/game.js",
+      "line": 79,
+      "target": "Board"
+    },
+    {
+      "file": "js/game.js",
+      "line": 79,
+      "target": "Board"
+    },
+    {
+      "file": "js/game.js",
+      "line": 79,
+      "target": "Board"
+    },
+    {
+      "file": "js/game.js",
+      "line": 315,
+      "target": "SWClass"
+    },
+    {
+      "file": "js/game.js",
+      "line": 622,
+      "target": "Board"
+    },
+    {
+      "file": "js/game.js",
+      "line": 630,
+      "target": "Board"
+    },
+    {
+      "file": "js/game.js",
+      "line": 808,
+      "target": "Board"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1629,
+      "target": "Board"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1629,
+      "target": "Chat"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1629,
+      "target": "Voice"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1629,
+      "target": "CC"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1710,
+      "target": "Chat"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1710,
+      "target": "Voice"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1710,
+      "target": "CC"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1711,
+      "target": "Board"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1729,
+      "target": "Board"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1730,
+      "target": "Chat"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1731,
+      "target": "SWClass"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1732,
+      "target": "Voice"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1733,
+      "target": "CC"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1734,
+      "target": "Board"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1735,
+      "target": "Board"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1770,
+      "target": "Board"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1936,
+      "target": "Board"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1950,
+      "target": "Board"
+    },
+    {
+      "file": "js/game.js",
+      "line": 1957,
+      "target": "Board"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2115,
+      "target": "Board"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2121,
+      "target": "Board"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2123,
+      "target": "CC"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2124,
+      "target": "SWClass"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2125,
+      "target": "Voice"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2126,
+      "target": "Chat"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2164,
+      "target": "Board"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2769,
+      "target": "Board"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2774,
+      "target": "Chat"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2775,
+      "target": "Voice"
+    },
+    {
+      "file": "js/game.js",
+      "line": 2776,
+      "target": "CC"
+    },
+    {
+      "file": "js/game.js",
+      "line": 4043,
+      "target": "TOEIC_TIPS"
+    },
+    {
+      "file": "js/game.js",
+      "line": 4043,
+      "target": "TOEIC_TIPS"
+    },
+    {
+      "file": "js/game.js",
+      "line": 4051,
+      "target": "TJ_HUB"
+    },
+    {
+      "file": "js/game.js",
+      "line": 4051,
+      "target": "TJ_HUB"
+    },
+    {
+      "file": "js/game.js",
+      "line": 4056,
+      "target": "TOEIC_TIPS"
+    },
+    {
+      "file": "js/game.js",
+      "line": 4056,
+      "target": "TOEIC_TIPS"
+    },
+    {
+      "file": "js/game.js",
+      "line": 4066,
+      "target": "TOEIC_TIPS"
+    },
+    {
+      "file": "js/game.js",
+      "line": 4259,
+      "target": "TJ_HUB"
+    },
+    {
+      "file": "js/game.js",
+      "line": 4682,
+      "target": "Context"
+    },
+    {
+      "file": "js/game.js",
+      "line": 4706,
+      "target": "Board"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 13,
+      "target": "Auth"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 13,
+      "target": "Auth"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 13,
+      "target": "Auth"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 13,
+      "target": "Auth"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 13,
+      "target": "DB"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 13,
+      "target": "DB"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 17,
+      "target": "Auth"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 17,
+      "target": "Auth"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 17,
+      "target": "Auth"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 17,
+      "target": "DB"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 17,
+      "target": "DB"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 17,
+      "target": "Auth"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 46,
+      "target": "ResizeObserver"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 46,
+      "target": "ResizeObserver"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 65,
+      "target": "App"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 65,
+      "target": "App"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 65,
+      "target": "App"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 73,
+      "target": "App"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 73,
+      "target": "App"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 73,
+      "target": "App"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 172,
+      "target": "Speech"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 172,
+      "target": "Speech"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 172,
+      "target": "Speech"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 284,
+      "target": "App"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 284,
+      "target": "App"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 284,
+      "target": "App"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 286,
+      "target": "App"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 286,
+      "target": "App"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 286,
+      "target": "App"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 310,
+      "target": "Auth"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 310,
+      "target": "Auth"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 310,
+      "target": "Auth"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 344,
+      "target": "GameLayer"
+    },
+    {
+      "file": "js/home.js",
+      "line": 11,
+      "target": "Home"
+    },
+    {
+      "file": "js/home.js",
+      "line": 17,
+      "target": "Speech"
+    },
+    {
+      "file": "js/home.js",
+      "line": 34,
+      "target": "Detail"
+    },
+    {
+      "file": "js/home.js",
+      "line": 34,
+      "target": "Detail"
+    },
+    {
+      "file": "js/home.js",
+      "line": 68,
+      "target": "Auth"
+    },
+    {
+      "file": "js/home.js",
+      "line": 68,
+      "target": "Auth"
+    },
+    {
+      "file": "js/home.js",
+      "line": 71,
+      "target": "DB"
+    },
+    {
+      "file": "js/home.js",
+      "line": 96,
+      "target": "App"
+    },
+    {
+      "file": "js/home.js",
+      "line": 96,
+      "target": "App"
+    },
+    {
+      "file": "js/home.js",
+      "line": 162,
+      "target": "App"
+    },
+    {
+      "file": "js/home.js",
+      "line": 169,
+      "target": "App"
+    },
+    {
+      "file": "js/hubpage.js",
+      "line": 28,
+      "target": "Speech"
+    },
+    {
+      "file": "js/hubpage.js",
+      "line": 28,
+      "target": "Speech"
+    },
+    {
+      "file": "js/hubpage.js",
+      "line": 28,
+      "target": "Speech"
+    },
+    {
+      "file": "js/hubpage.js",
+      "line": 57,
+      "target": "HubPage"
+    },
+    {
+      "file": "js/i18n.js",
+      "line": 1062,
+      "target": "Auth"
+    },
+    {
+      "file": "js/i18n.js",
+      "line": 1062,
+      "target": "Auth"
+    },
+    {
+      "file": "js/i18n.js",
+      "line": 1063,
+      "target": "Auth"
+    },
+    {
+      "file": "js/i18n.js",
+      "line": 1077,
+      "target": "Auth"
+    },
+    {
+      "file": "js/i18n.js",
+      "line": 1077,
+      "target": "Auth"
+    },
+    {
+      "file": "js/i18n.js",
+      "line": 1077,
+      "target": "Auth"
+    },
+    {
+      "file": "js/i18n.js",
+      "line": 1087,
+      "target": "Auth"
+    },
+    {
+      "file": "js/i18n.js",
+      "line": 1087,
+      "target": "Auth"
+    },
+    {
+      "file": "js/i18n.js",
+      "line": 1088,
+      "target": "Auth"
+    },
+    {
+      "file": "js/i18n.js",
+      "line": 1098,
+      "target": "I18N"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 33,
+      "target": "Journey"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 43,
+      "target": "SRS"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 57,
+      "target": "Speech"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 78,
+      "target": "Auth"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 78,
+      "target": "Auth"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 80,
+      "target": "DB"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 85,
+      "target": "DB"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 86,
+      "target": "App"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 86,
+      "target": "App"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 86,
+      "target": "App"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 97,
+      "target": "Detail"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 97,
+      "target": "Detail"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 240,
+      "target": "SRS"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 242,
+      "target": "SRS"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 243,
+      "target": "SRS"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 320,
+      "target": "Auth"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 320,
+      "target": "Auth"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 322,
+      "target": "DB"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 379,
+      "target": "GameLayer"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 379,
+      "target": "DB"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 379,
+      "target": "Auth"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 379,
+      "target": "Auth"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 379,
+      "target": "Auth"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 414,
+      "target": "App"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 424,
+      "target": "App"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 425,
+      "target": "App"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 439,
+      "target": "GameLayer"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 439,
+      "target": "GameLayer"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 461,
+      "target": "Auth"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 461,
+      "target": "Auth"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 463,
+      "target": "DB"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 464,
+      "target": "DB"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 465,
+      "target": "App"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 465,
+      "target": "App"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 465,
+      "target": "App"
+    },
+    {
+      "file": "js/keys.local.example.js",
+      "line": 6,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/keys.local.example.js",
+      "line": 7,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/learn.js",
+      "line": 31,
+      "target": "TJ_HUB"
+    },
+    {
+      "file": "js/learn.js",
+      "line": 98,
+      "target": "ResizeObserver"
+    },
+    {
+      "file": "js/readalong.js",
+      "line": 10,
+      "target": "SpeechRecognition"
+    },
+    {
+      "file": "js/readalong.js",
+      "line": 133,
+      "target": "CC"
+    },
+    {
+      "file": "js/readalong.js",
+      "line": 139,
+      "target": "Board"
+    },
+    {
+      "file": "js/readalong.js",
+      "line": 162,
+      "target": "CC"
+    },
+    {
+      "file": "js/readalong.js",
+      "line": 165,
+      "target": "ReadAlong"
+    },
+    {
+      "file": "js/readalong.js",
+      "line": 166,
+      "target": "ReadAlong"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 24,
+      "target": "S"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 246,
+      "target": "Detail"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 246,
+      "target": "Detail"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 246,
+      "target": "Detail"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 256,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 265,
+      "target": "Context"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 321,
+      "target": "Speech"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 321,
+      "target": "Detail"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 321,
+      "target": "Detail"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 321,
+      "target": "Detail"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 357,
+      "target": "DB"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 372,
+      "target": "DB"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 378,
+      "target": "Auth"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 380,
+      "target": "DB"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 380,
+      "target": "Auth"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 386,
+      "target": "App"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 386,
+      "target": "App"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 386,
+      "target": "App"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 387,
+      "target": "Detail"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 387,
+      "target": "Detail"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 389,
+      "target": "DB"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 389,
+      "target": "Auth"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 391,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 391,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 391,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 392,
+      "target": "App"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 392,
+      "target": "App"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 392,
+      "target": "App"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 398,
+      "target": "Detail"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 398,
+      "target": "Detail"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 398,
+      "target": "Detail"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 398,
+      "target": "Detail"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 401,
+      "target": "App"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 401,
+      "target": "App"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 401,
+      "target": "App"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 411,
+      "target": "App"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 411,
+      "target": "App"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 411,
+      "target": "App"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 412,
+      "target": "Detail"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 412,
+      "target": "Detail"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 416,
+      "target": "S"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 416,
+      "target": "S"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 416,
+      "target": "App"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 416,
+      "target": "App"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 416,
+      "target": "App"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 416,
+      "target": "S"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 419,
+      "target": "DB"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 424,
+      "target": "App"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 424,
+      "target": "App"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 424,
+      "target": "App"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 492,
+      "target": "Detail"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 492,
+      "target": "Detail"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 517,
+      "target": "Speech"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 518,
+      "target": "Speech"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 519,
+      "target": "Detail"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 519,
+      "target": "Detail"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 519,
+      "target": "Detail"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 519,
+      "target": "Detail"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 553,
+      "target": "Detail"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 553,
+      "target": "Detail"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 590,
+      "target": "Speech"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 600,
+      "target": "Reader"
+    },
+    {
+      "file": "js/shadow.js",
+      "line": 14,
+      "target": "MediaRecorder"
+    },
+    {
+      "file": "js/shadow.js",
+      "line": 30,
+      "target": "ReadAlong"
+    },
+    {
+      "file": "js/shadow.js",
+      "line": 31,
+      "target": "MediaRecorder"
+    },
+    {
+      "file": "js/shadow.js",
+      "line": 41,
+      "target": "CC"
+    },
+    {
+      "file": "js/shadow.js",
+      "line": 46,
+      "target": "AudioContext"
+    },
+    {
+      "file": "js/shadow.js",
+      "line": 58,
+      "target": "CC"
+    },
+    {
+      "file": "js/shadow.js",
+      "line": 60,
+      "target": "CC"
+    },
+    {
+      "file": "js/shadow.js",
+      "line": 68,
+      "target": "CC"
+    },
+    {
+      "file": "js/shadow.js",
+      "line": 98,
+      "target": "Shadow"
+    },
+    {
+      "file": "js/speech.js",
+      "line": 19,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/speech.js",
+      "line": 19,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/speech.js",
+      "line": 20,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/speech.js",
+      "line": 20,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/speech.js",
+      "line": 517,
+      "target": "Speech"
+    },
+    {
+      "file": "js/srs.js",
+      "line": 22,
+      "target": "SRS"
+    },
+    {
+      "file": "js/swclass.js",
+      "line": 60,
+      "target": "SWClass"
+    },
+    {
+      "file": "js/toeic_tips.js",
+      "line": 2,
+      "target": "TOEIC_TIPS"
+    },
+    {
+      "file": "js/toeic_tips.js",
+      "line": 3,
+      "target": "TOEIC_TIPS"
+    },
+    {
+      "file": "js/turn.js",
+      "line": 7,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/voice.js",
+      "line": 7,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/voice.js",
+      "line": 21,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/voice.js",
+      "line": 121,
+      "target": "AudioContext"
+    },
+    {
+      "file": "js/voice.js",
+      "line": 132,
+      "target": "RTCPeerConnection"
+    },
+    {
+      "file": "js/voice.js",
+      "line": 143,
+      "target": "AudioContext"
+    },
+    {
+      "file": "js/voice.js",
+      "line": 229,
+      "target": "Voice"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 17,
+      "target": "WordSet"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 18,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 48,
+      "target": "S"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 64,
+      "target": "Context"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 73,
+      "target": "S"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 76,
+      "target": "App"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 82,
+      "target": "DB"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 85,
+      "target": "DB"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 86,
+      "target": "App"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 102,
+      "target": "Auth"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 102,
+      "target": "S"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 109,
+      "target": "Detail"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 110,
+      "target": "DB"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 166,
+      "target": "Speech"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 170,
+      "target": "Detail"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 170,
+      "target": "Detail"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 187,
+      "target": "Speech"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 191,
+      "target": "Detail"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 191,
+      "target": "Detail"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 195,
+      "target": "Detail"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 195,
+      "target": "Detail"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 204,
+      "target": "Auth"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 207,
+      "target": "DB"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 240,
+      "target": "App"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 240,
+      "target": "App"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 240,
+      "target": "App"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 249,
+      "target": "Auth"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 249,
+      "target": "Auth"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 288,
+      "target": "Detail"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 358,
+      "target": "S"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 358,
+      "target": "S"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 399,
+      "target": "Detail"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 399,
+      "target": "Detail"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 461,
+      "target": "Detail"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 470,
+      "target": "Detail"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 479,
+      "target": "Speech"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 502,
+      "target": "Auth"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 504,
+      "target": "S"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 504,
+      "target": "S"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 519,
+      "target": "S"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 519,
+      "target": "S"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 519,
+      "target": "S"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 520,
+      "target": "DB"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 521,
+      "target": "DB"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 521,
+      "target": "Detail"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 523,
+      "target": "App"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 523,
+      "target": "App"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 523,
+      "target": "App"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 526,
+      "target": "S"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 526,
+      "target": "S"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 526,
+      "target": "S"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 529,
+      "target": "DB"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 532,
+      "target": "DB"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 569,
+      "target": "Speech"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 595,
+      "target": "Speech"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 603,
+      "target": "Speech"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 639,
+      "target": "Context"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 639,
+      "target": "APP_CONFIG"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 649,
+      "target": "DB"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 651,
+      "target": "S"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 651,
+      "target": "S"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 672,
+      "target": "Speech"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 678,
+      "target": "Speech"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 692,
+      "target": "Speech"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 697,
+      "target": "DB"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 700,
+      "target": "App"
+    }
+  ],
+  "appReverseCalls": [
+    {
+      "file": "js/db.js",
+      "line": 1247,
+      "method": "openLeaderboard"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 77,
+      "method": "exitReview"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 114,
+      "method": "renderBatches"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 115,
+      "method": "renderCrumb"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 127,
+      "method": "batchesOf"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 129,
+      "method": "blocksOf"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 172,
+      "method": "stepBatch"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 177,
+      "method": "blocksOf"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 185,
+      "method": "jumpTo"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 190,
+      "method": "exitReview"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 205,
+      "method": "renderBatches"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 206,
+      "method": "renderCrumb"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 210,
+      "method": "refreshWordCounter"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 368,
+      "method": "isOnRieng"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 897,
+      "method": "isOnRieng"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1022,
+      "method": "hideAiError"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1040,
+      "method": "currentTopicHint"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1054,
+      "method": "showAiError"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1590,
+      "method": "renderBlocks"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1796,
+      "method": "renderBlocks"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1845,
+      "method": "wsMark"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1942,
+      "method": "refreshWordSetBadges"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1958,
+      "method": "renderBlocks"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 1961,
+      "method": "renderBatches"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2047,
+      "method": "wsMark"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2061,
+      "method": "refreshWordSetBadges"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2063,
+      "method": "reloadOnRieng"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2220,
+      "method": "renderBlocks"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2277,
+      "method": "refreshWordSetBadges"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2306,
+      "method": "renderBatches"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2408,
+      "method": "renderBlocks"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2465,
+      "method": "renderBlocks"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2817,
+      "method": "showAiError"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2885,
+      "method": "showAiError"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 2964,
+      "method": "showAiError"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3075,
+      "method": "hideAiError"
+    },
+    {
+      "file": "js/detail.js",
+      "line": 3127,
+      "method": "showAiError"
+    },
+    {
+      "file": "js/export.js",
+      "line": 19,
+      "method": "batchesOf"
+    },
+    {
+      "file": "js/export.js",
+      "line": 19,
+      "method": "blocksOf"
+    },
+    {
+      "file": "js/export.js",
+      "line": 53,
+      "method": "blocksOf"
+    },
+    {
+      "file": "js/export.js",
+      "line": 98,
+      "method": "wordsOf"
+    },
+    {
+      "file": "js/export.js",
+      "line": 189,
+      "method": "wordsOf"
+    },
+    {
+      "file": "js/export.js",
+      "line": 197,
+      "method": "askConfirm"
+    },
+    {
+      "file": "js/game.js",
+      "line": 958,
+      "method": "blockCardsHtml"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 65,
+      "method": "renderSidebarLbMini"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 73,
+      "method": "showBlockList"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 284,
+      "method": "navTo"
+    },
+    {
+      "file": "js/gamelayer.js",
+      "line": 286,
+      "method": "navTo"
+    },
+    {
+      "file": "js/home.js",
+      "line": 96,
+      "method": "notebookAllowedForUser"
+    },
+    {
+      "file": "js/home.js",
+      "line": 162,
+      "method": "jumpTo"
+    },
+    {
+      "file": "js/home.js",
+      "line": 169,
+      "method": "jumpTo"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 86,
+      "method": "setWordCounter"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 414,
+      "method": "jumpTo"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 424,
+      "method": "ensureNotebookContext"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 425,
+      "method": "openMenu"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 426,
+      "method": "doAction"
+    },
+    {
+      "file": "js/journey.js",
+      "line": 465,
+      "method": "setWordCounter"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 386,
+      "method": "wsMark"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 392,
+      "method": "refreshWordSetBadges"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 401,
+      "method": "renderAll"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 411,
+      "method": "isOnRieng"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 416,
+      "method": "myRoleInNotebook"
+    },
+    {
+      "file": "js/reader.js",
+      "line": 424,
+      "method": "renderAll"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 76,
+      "method": "blocksOf"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 86,
+      "method": "blocksOf"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 240,
+      "method": "applyWordSetData"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 523,
+      "method": "wsMark"
+    },
+    {
+      "file": "js/wordset.js",
+      "line": 700,
+      "method": "jumpTo"
+    }
+  ],
+  "indexLocalScripts": {
+    "files": [
+      "js/config.js",
+      "js/keys.local.js",
+      "js/util.js",
+      "js/srs.js",
+      "js/context.js",
+      "js/speech.js",
+      "js/db.js",
+      "js/auth.js",
+      "js/i18n.js",
+      "js/reader.js",
+      "js/detail.js",
+      "js/export.js",
+      "js/journey.js",
+      "js/home.js",
+      "js/wordset.js",
+      "js/app.js",
+      "js/gamelayer.js",
+      "js/hubpage.js"
+    ],
+    "missing": [
+      "js/keys.local.js"
+    ],
+    "bytesLf": 983647
+  },
+  "pending": [
+    "Browser performance measurements",
+    "Runtime localStorage key inventory",
+    "Full closure-variable sharing graph before splitting game.js"
+  ]
+}

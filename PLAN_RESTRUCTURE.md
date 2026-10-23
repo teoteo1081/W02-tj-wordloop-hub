@@ -31,6 +31,8 @@
 
 **Chỉ đạo TJ ngày 2026-10-22:** lập cycle dài hơn vì TJ không can thiệp kỹ thuật code; cycle dừng khi cần PO quyết định. Sau đó TJ yêu cầu **commit plan/spec trước khi làm và dừng sau commit**. Vì vậy checkpoint tài liệu này chưa khởi chạy cycle; không được tự tiếp tục triển khai sau commit trong phiên này.
 
+**Chỉ đạo tiếp theo (2026-10-22, sau audit `a0e08ac`):** TJ yêu cầu sửa file, chạy cycle ngay rồi commit tác vụ trên nhánh, không merge. Lệnh dừng sau commit plan/spec ở trên là checkpoint lịch sử, đã được thay bởi chỉ đạo tiếp tục này. Kết quả cycle ghi ở `tests/a0/README.md` và `tests/a0/cycle-report.json`: **PARTIAL**, chưa qua cổng M0. Mã ứng dụng giữ nguyên. Có lệch CTX-09 (ngoại lệ TJ dùng OpenAI trước) cần PO xác nhận; không sửa ứng dụng để ép test xanh.
+
 **Kết quả dự kiến khi được tiếp tục:** hoàn thiện phần A0 kiểm được bằng Node trên baseline ghim `e324beb54b29ddfa055956c756a4ceba2676dfa1`, có số liệu gốc, test hồi quy, kiểm tĩnh, ma trận độ phủ và checkpoint commit trên `feat/restructure-plan`. Không đồng nghĩa đã qua toàn bộ cổng M0.
 
 **Phạm vi:** thêm bộ kiểm thử/báo cáo trong `tests/` và cập nhật tài liệu trên worktree hiện tại. Giữ nguyên mã ứng dụng và baseline; không cài gói từ mạng, gọi dịch vụ thật, sửa dữ liệu thật hay deploy. Việc chọn cấu trúc test, shim, dữ liệu giả, cách đo và sửa lỗi của chính bộ test do agent tự xử lý trong phạm vi này.
@@ -121,7 +123,7 @@ Giữ lại: `game.html` là entry riêng (iframe + `postMessage` là seam sẵn
 
 ## 5. Trạng thái nhánh và thứ tự với việc khác (kiểm 2026-10-20)
 
-- **Baseline ĐÃ CHỐT: `e324beb` (= `origin/main`).** `origin/main` là tổ tiên của nhánh này nên rebase lên nó không lấy thêm gì và không cần làm. Commit `8b071e6` (chỉ sửa 6 file `.md`) nằm ở `main` cục bộ, **chưa push và không vào nhánh này** (không merge, không rebase lên `main` cục bộ). Hệ quả khi thay `main` ở cuối: phần chỉnh tài liệu trong `8b071e6` không đi theo; nếu cần giữ phần nào thì chuyển tay vào lúc tách tài liệu (M1.7). A0 ghi SHA baseline vào bảng số liệu gốc.
+- **Baseline ĐÃ CHỐT: `e324beb`.** Tại 2026-10-20 nó bằng `origin/main`; ngày 2026-10-22 remote main đã là `6c7b66b` và không còn là tổ tiên nhánh restructure. Baseline vẫn là tổ tiên của cả hai dòng. Không merge/rebase main vào nhánh này. Commit `8b071e6` (chỉ sửa 6 file `.md`) nằm ở `main` cục bộ, chưa push và không vào nhánh này. Nếu cần giữ phần tài liệu của nó, chuyển tay ở M1.7 sau khi chọn phạm vi. M0.2 lưu SHA và cách đo trong `tests/a0/metrics-baseline.json`.
 - **Điều kiện để thay `main` bằng fast-forward ở cuối:** `origin/main` không tiến thêm so với `e324beb`. *Điều kiện này đã bị phá ngày 2026-10-22:* `origin/main` = `6c7b66b` (hơn baseline hai commit `4708ba9`, `6c7b66b`). Fast-forward không còn đúng nguyên trạng; PO chọn cách tiếp nhận hai commit đó (mục 0.1) trước tích hợp cuối. Lệnh kiểm đã cập nhật trong `WORKTREE_ANCHOR.md`.
 - Nhánh `handoff/gate` (chưa vào `main`) **sửa `js/game.js` (28 dòng)** và thêm `tools/handoff/` (Python + test). Phải quyết định merge hay bỏ nó **trước khi cắt `game.js` ở A3**, nếu không sẽ xung đột nặng. Thêm: CI ở A0 nên chạy được cả test của nó nếu nó được giữ.
 - `AUDIT_INFRA_ADVISOR.md` đang nằm trong commit của nhánh này; giữ nguyên làm tài liệu tham chiếu.
@@ -131,7 +133,7 @@ Giữ lại: `game.html` là entry riêng (iframe + `postMessage` là seam sẵn
 
 | | Dòng cũ | Dòng mới |
 |---|---|---|
-| Nhánh | `main` (đóng băng, `e324beb`) | `feat/restructure-plan` |
+| Nhánh | `origin/main` tại `6c7b66b` (baseline ban đầu `e324beb`; đã lệch, xem §0.1) | `feat/restructure-plan` |
 | Phục vụ | GitHub Pages (`teoteo1081.github.io/W02-tj-wordloop-hub/`) | Netlify (chưa tạo; xem luồng H) |
 | Ai dùng | TJ hằng ngày | TJ/agent kiểm thử |
 | **Backend** | **CHUNG**: cùng Supabase (DB, Storage, Realtime), Edge Function, Worker/R2 | |
@@ -261,15 +263,17 @@ Cache: Netlify và Pages có thể đặt `Cache-Control` mặc định khác nh
 | Chỉ số | Hiện tại | Đích |
 |---|---|---|
 | Ảnh chụp các màn chính (sai khác) | chưa có chuẩn | 0 sau mỗi bước A |
-| Truy cập Supabase ngoài lớp `data/` | 119 + 6 + 1 + 1 | 0 |
-| Truy cập `localStorage` ngoài `core/storage` | 16 file | 0 |
-| Định nghĩa `esc()` | 6 | 1 |
-| File JS lớn nhất | 5.561 dòng | dưới ~800 dòng |
-| Global `window.X` do app tự đặt | 17 module (đếm từ `w.X =`/`window.X =`) | 0 (sau A2, trừ điểm vào) |
-| Test tự động | 0 | `context`, `srs`, `db` local + Playwright với Supabase/Realtime giả, nhật ký lời gọi chuẩn, kịch bản hai client |
+| Truy cập Supabase ngoài lớp `data/` | Đo từ vựng: game 121, auth 6, app 2; db 53. Đây là candidate `.from/rpc/channel/removeChannel`, chưa phải số truy cập ngữ nghĩa đã xác minh | 0 |
+| Truy cập `localStorage` ngoài `core/storage` | 16 file nhắc tên; 15 file có candidate thao tác; runtime mới phủ kịch bản Node | 0 |
+| Định nghĩa `esc()` | 7 candidate định nghĩa | 1 |
+| File JS lớn nhất | `js/game.js`: 5.598 dòng LF | dưới ~800 dòng |
+| Global `window.X` do app tự đặt | 51 candidate phép gán / 47 tên; có alias `w` cục bộ và chuỗi/comment nên chưa có số global ngữ nghĩa đáng tin | 0 (sau A2, trừ điểm vào) |
+| Test tự động | Cycle Node: 54 đạt / 1 lỗi đặc tả trên cả baseline và nhánh; self-test phản chứng mới 6/6; capture cũ 65/65 | `context`, `srs`, `db` local + Playwright với Supabase/Realtime giả, nhật ký lời gọi chuẩn, kịch bản hai client |
 | Ổn định của ảnh chuẩn | chưa đo | hai lần chạy liên tiếp giống hệt nhau trước khi dùng làm chuẩn |
 | Version module | `?v=N` thủ công trên thẻ HTML | giữ đến khi A2 có cơ chế cho cả đồ thị import (một URL/module, `/bump` bắc cầu); sau A4 không còn |
-| JS nạp ở `index.html` (không tính CDN) | ~978 KB | không tăng; mục tiêu giảm sau A3/C1 |
+| JS nạp ở `index.html` (không tính CDN) | 983.647 byte UTF-8 LF của script tracked hiện hữu; thiếu `keys.local.js` untracked, chưa phải transfer size | không tăng; mục tiêu giảm sau A3/C1 |
+
+Số đo cycle A0: `node tests/a0/measure.js`; nguồn ghim, phương pháp, vị trí candidate và các giới hạn ở `tests/a0/metrics-baseline.json`. M0.2 còn thiếu đồ thị biến closure đầy đủ và số liệu trình duyệt; M0.3/M0.7b có phần chưa phủ/chờ quyết định, xem báo cáo cycle. Không dùng candidate regex như bằng chứng đã phân tích AST hoặc chạy giao diện.
 
 Mỗi bước A được commit vào dòng tích hợp (`feat/restructure-plan`) chỉ khi: CI xanh, ảnh chụp sai khác = 0, nhật ký lời gọi khớp chuẩn, và (với bước đụng `game.js`/giao thức) đã kiểm tay hai thiết bị thật trên bản Netlify. **Không có bước nào đẩy lên `main`**; `main` chỉ thay một lần ở cuối (mục 5.1). Quay lại: mỗi bước là một nhóm commit có thể `git revert`; riêng thay đổi backend (luồng B, C2) quay lại bằng deploy bản cũ vì chỉ THÊM, không đổi schema hiện có.
 
@@ -298,9 +302,9 @@ Mỗi bước A được commit vào dòng tích hợp (`feat/restructure-plan`)
 
 ## 9. Cần TJ quyết
 
-*Đã chốt (TJ 2026-10-20):* câu 2 (`main` đóng băng, mọi việc chỉ trong worktree này, một dòng tích hợp, kể cả luồng B), câu 8 (baseline `e324beb`, cherry-pick không merge), cách thay `main` ở cuối (fast-forward, không force; *điều kiện ff đã lệch 2026-10-22, xem 0.1*), hai dòng song song Pages/Netlify. Các câu còn mở: 1, 3–7, 9–12.
+*Đã chốt:* câu 1 (A0 đã duyệt 2026-10-20 và tiếp tục cycle 2026-10-22), câu 2 (`main` đóng băng, mọi việc chỉ trong worktree này, một dòng tích hợp, kể cả luồng B), câu 8 (baseline `e324beb`, cherry-pick không merge), cách thay `main` ban đầu (fast-forward, không force; điều kiện đã lệch, xem 0.1), hai dòng song song Pages/Netlify. Các câu còn mở: 3–7, 9–12; thêm quyết định CTX-09 và ngoại lệ version baseline ở báo cáo cycle.
 
-1. Chấp nhận A0 (lưới an toàn) trước khi đụng code?
+1. ✔ **Đã duyệt A0:** test và tài liệu; chưa mở quyền sửa mã ứng dụng.
 2. ✔ **Đã chốt:** `main` đóng băng; mọi việc chỉ trong worktree này; một dòng tích hợp duy nhất.
 3. Cơ chế version cho A2: import map (cần Safari iOS ≥ 16.4: người chơi iPhone của bạn dùng bản nào?), script đóng dấu, hay kéo Vite lên trước A2? (Đề xuất: import map nếu thiết bị đích đủ mới; nếu không thì Vite trước. Không bắt đầu A2 khi chưa chọn.)
 4. `tools/` ra repo riêng (private) hay chỉ ra thư mục riêng? (Đề xuất: repo riêng, vì có đề ETS.)

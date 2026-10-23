@@ -1,6 +1,6 @@
 # ROADMAP_RESTRUCTURE — lộ trình thực hiện restructure
 
-> Trạng thái: **DỰ THẢO, CHƯA DUYỆT, CHƯA BẮT ĐẦU.** Sinh từ `PLAN_RESTRUCTURE.md` bản 2.2. **Mô hình vận hành (TJ chốt):** `main` đóng băng (GitHub Pages, TJ dùng); mọi việc chỉ trong worktree `feat/restructure-plan` (Netlify); hai dòng song song, dùng chung backend, tới khi freeze rồi thay hẳn `main`. Đặc tả đích ở `SPEC_RESTRUCTURE.md`; danh mục test ở `TEST_REGRESSION_RESTRUCTURE.md`.
+> Trạng thái: **A0 đã duyệt, đang thực hiện; các pha sau còn dự thảo/chờ duyệt.** Cycle Node ngày 2026-10-22 kết thúc PARTIAL, xem `tests/a0/README.md`. Sinh từ `PLAN_RESTRUCTURE.md` bản 2.2. Mô hình hai dòng Pages/Netlify và lệch main hiện hành theo PLAN §0.1. Đặc tả đích ở `SPEC_RESTRUCTURE.md`; danh mục test ở `TEST_REGRESSION_RESTRUCTURE.md`.
 > Ước lượng tính bằng "phiên làm việc" (một phiên Claude Code/một buổi), thô, chưa kiểm chứng. Không có ngày lịch vì còn phụ thuộc các quyết định của TJ.
 
 ## 1. Nguyên tắc vận hành lộ trình
@@ -18,7 +18,7 @@
 
 | Cổng | Câu hỏi (plan, mục 9) | Chặn |
 |---|---|---|
-| G0 | 1: chấp nhận A0 (câu 2 ✔ đã chốt: `main` đóng băng, một dòng tích hợp) | Mọi thứ |
+| G0 | ✔ A0 đã duyệt; cycle Node được tiếp tục theo chỉ đạo TJ 2026-10-22 | — |
 | G1 | ✔ **đã chốt:** baseline `e324beb`, không merge `main`, cherry-pick khi cần | — |
 | G7 | 9: quy tắc ghi dữ liệu thật từ bản mới (hay dùng bản sao Supabase riêng) | Mọi kiểm thử ghi bằng hồ sơ thật; cổng ra M1 |
 | G8 | 10: Netlify (site cũ/mới, branch deploy hay production branch, ngân sách) | H0–H2 |
@@ -61,7 +61,7 @@ Viết mã B1, B2, B3 không phụ thuộc M0–M3 và chạy song song ngay khi
 
 ### M0 — Nền tảng và lưới an toàn
 
-**Cổng vào:** G0, G2 đã mở (G1 đã chốt: baseline `e324beb`).
+**Cổng vào:** G0 đã mở; G1 đã chốt baseline `e324beb`. G2 chặn M0.8 (tích hợp CI `handoff/gate`), không chặn phần Node độc lập.
 
 | Việc | Đầu ra | Ghi chú |
 |---|---|---|
@@ -193,7 +193,7 @@ Mỗi bước restructure (một hoặc vài commit trên dòng tích hợp) PH�
 | G1 (baseline), câu 2 | ✔ Đã chốt 2026-10-20 | — | `e324beb`; `main` đóng băng; fast-forward ở cuối *(lệch từ 2026-10-22: `origin/main` = `6c7b66b`, PO chọn cách tiếp nhận, PLAN 0.1)* |
 | G0 ✔ (2026-10-20); G2–G10 | G0 đã duyệt, còn lại chưa mở | TJ trả lời plan mục 9 | |
 | H0–H2 | Chưa bắt đầu | G8 (+ G7 cho H2) | |
-| M0 | **Đang làm** (G0 ✔ duyệt A0 2026-10-20; G2 chưa) | G2 cho M0.8 (CI) | Xong: M0.1 (worktree baseline `wt-baseline-e324beb`), M0.5a (xem `tests/README.md`). Còn: M0.2, M0.3, M0.4, M0.5, M0.6, M0.7, M0.7b, M0.8 |
+| M0 | **Đang làm; cycle Node PARTIAL** | CTX-09, duyệt ngoại lệ version; cài Playwright; G2 cho M0.8 | Xong M0.1, đầu vào M0.5a. M0.2 có số liệu tĩnh, chưa đủ đồ thị closure/browser. M0.3 có 54 đạt/1 lỗi đặc tả; M0.7b có 6 đạt/2 pending. Coverage và QA ở `tests/a0/README.md`; M0.4–M0.8 chưa qua cổng |
 | M1 | Chưa bắt đầu | M0, G4 | |
 | M2 | Chưa bắt đầu | M1, G3 | |
 | M3 | Chưa bắt đầu | M2, G2 | |

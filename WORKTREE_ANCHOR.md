@@ -10,7 +10,7 @@
 | Nhánh | `feat/restructure-plan` (tên giữ nguyên; đổi tên chỉ khi TJ bảo) |
 | Rẽ từ | `origin/main` tại `e324beb` (2026-10-20). **Baseline đã chốt: `e324beb`.** |
 | Checkout chính | `C:\Users\User\Desktop\TJ\Project\W02-tj-wordloop-hub` (nhánh `main`, không thuộc worktree này) |
-| Upstream | **Cố ý để trống.** Lúc tạo, nhánh tự theo dõi `origin/main`; đã gỡ để một lệnh `git push` trần không đẩy thẳng lên `main`. |
+| Upstream | `origin/feat/restructure-plan` (đã kiểm lại 2026-10-22); không theo dõi `origin/main`. |
 
 ## Mô hình vận hành (TJ chốt 2026-10-20)
 
@@ -18,7 +18,7 @@
 2. **Mọi việc chỉ làm trong worktree này.** Không tạo nhánh `fix/…`/`feat/…` riêng ở nơi khác cho việc thuộc restructure; mỗi bước là một hoặc vài commit có thông điệp rõ trên `feat/restructure-plan`.
 3. **Không merge `main` hay nhánh khác vào đây.** Cần lấy một commit từ nơi khác thì **cherry-pick** (đã làm một lần: kế hoạch Netlify, `9ce51fd` ← `e94e086`). Baseline không đổi; `8b071e6` (chỉ có ở `main` cục bộ, chưa push) **không** vào nhánh này.
 4. **Hai dòng chạy song song:** `main` → GitHub Pages (bản cũ, TJ dùng); `feat/restructure-plan` → Netlify (bản mới, để kiểm thử). Duy trì song song cho tới khi worktree này **freeze**.
-5. **Kết thúc:** khi worktree freeze, bản restructure **thay thế hoàn toàn `main` cũ**. Cách thay: lưu `main` cũ thành nhánh/tag `archive/main-before-restructure-<ngày>`, rồi đưa `origin/main` tiến tới đầu nhánh này bằng **fast-forward, không force-push** (làm được vì `origin/main` = tổ tiên của nhánh này, miễn `origin/main` không tiến thêm; vì vậy **không được push gì lên `origin/main`** trong thời gian này, kể cả `8b071e6`). Đây là một quyết định và một lệnh riêng của TJ, không tự động.
+5. **Kết thúc:** khi worktree freeze, bản restructure thay thế `main` theo phương án PO duyệt. Kế hoạch fast-forward ban đầu chỉ đúng khi `origin/main` là tổ tiên của nhánh này. **Điều kiện đã lệch:** ngày 2026-10-22, `origin/main` ở `6c7b66b` và không còn là tổ tiên của nhánh restructure. Không tự merge, cherry-pick, force-push hay thay main; PO chọn cách tiếp nhận thay đổi trước tích hợp cuối (PLAN §0.1).
 
 ## Mục đích
 
@@ -36,9 +36,9 @@ Nó tồn tại vì:
 | `PLAN_RESTRUCTURE.md` | Kế hoạch tái cấu trúc (nguồn sự thật của việc cần làm, các luồng A/B/C/H, câu hỏi chờ TJ quyết) |
 | `SPEC_RESTRUCTURE.md` | Đặc tả trạng thái đích: bất biến I1–I9, cấu trúc, quy tắc phụ thuộc, hợp đồng lớp dữ liệu, version/cache, giao thức game, tiêu chí nghiệm thu |
 | `ROADMAP_RESTRUCTURE.md` | Lộ trình: cột mốc M0–M4, luồng B/C/H, cổng quyết định của TJ, quy trình mỗi bước, ước lượng |
-| `TEST_REGRESSION_RESTRUCTURE.md` | Đặc tả bộ test hồi quy (ca, tiêu chí đạt, tầng chạy, ma trận truy vết tới `CLAUDE.md`). Chỉ là đặc tả, **chưa có mã test** |
+| `TEST_REGRESSION_RESTRUCTURE.md` | Đặc tả bộ test hồi quy; phần đã thực chạy và giới hạn ở `tests/a0/README.md`, không đồng nhất đặc tả với độ phủ thực tế |
 | `PLAN_NETLIFY_FRONTEND.md` | Kế hoạch chuyển nơi deploy frontend sang Netlify (cherry-pick từ `feat/netlify-frontend-plan`). Trong mô hình này Netlify phục vụ **nhánh restructure**, còn `main` ở lại GitHub Pages; xem luồng H trong plan restructure |
-| `tests/` | Lưới an toàn A0: kịch bản thu lời gọi baseline (`tests/capture/`), hợp đồng lời gọi backend (`tests/fixtures/`), `tests/README.md`. Chỉ tệp mới; không đụng mã ứng dụng |
+| `tests/` | Lưới an toàn A0: capture/fixtures cũ và cycle Node/đo số liệu/kiểm tĩnh ở `tests/a0/`; mã ứng dụng giữ nguyên |
 | `AUDIT_INFRA_ADVISOR.md` | Báo cáo audit hạ tầng/bảo mật làm đầu vào. Có chỗ chưa khớp code thật; phần đối chiếu nằm ở mục 3 của `PLAN_RESTRUCTURE.md`. Không sửa file audit để chữa chỗ sai, ghi errata vào plan |
 
 ## Luật của worktree này
@@ -62,7 +62,9 @@ Nó tồn tại vì:
 
 ## Trạng thái hiện tại
 
-Giai đoạn **A0 — lưới an toàn (đang thực thi)**. Chưa có dòng mã ứng dụng nào bị đổi; chỉ có tài liệu và `tests/`. Đã xong: M0.1 (baseline) và M0.5a (thu lời gọi backend, xem `tests/README.md`). Việc kế tiếp theo `ROADMAP_RESTRUCTURE.md` mục 4 (M0.2 số liệu gốc, M0.3 test Node, M0.7b ngoại lệ baseline…). `origin/main` đã tiến 2 commit sau baseline (2026-10-22): fast-forward không còn đúng nguyên trạng, PO chọn cách tiếp nhận trước tích hợp cuối (PLAN 0.1); cycle A0 tiếp theo chưa khởi chạy. Các câu 3–7 và 9–12 ở mục 9 của plan vẫn mở và chặn các bước sau A0.
+Giai đoạn **A0 — lưới an toàn (đang thực thi)**. Đã xong M0.1 (baseline) và đầu vào M0.5a (xem `tests/README.md`). Mã ứng dụng giữ nguyên. `origin/main` đã tiến hai commit sau baseline tới `6c7b66b`; PO chọn cách tiếp nhận trước tích hợp cuối. Các câu 3–7 và 9–12 của plan vẫn mở và chặn phần tương ứng sau A0.
+
+**Checkpoint mới — cycle Node 2026-10-22:** TJ đã cho chạy sau audit `a0e08ac`. Đã sửa ancestry gate và mô tả fast-forward; chạy cycle tới điểm PO, **PARTIAL**: unit baseline/current cùng 54 đạt/1 lỗi đặc tả (CTX-09, TJ OpenAI trước); kiểm tĩnh 6 đạt/2 pending (version baseline + scope CSS); phản chứng mới 6/6, capture cũ 65/65. Báo cáo và lệnh tái lập ở `tests/a0/README.md`. Không sửa app/không cài gói/không mạng production. Chờ PO xác nhận ngoại lệ TJ và ngoại lệ version; Playwright vẫn cần quyền cài gói riêng. Không merge, không push trong cycle này.
 
 Khi trạng thái đổi (bắt đầu A0, hoàn thành một pha, freeze, hủy), sửa đúng mục này trong cùng commit.
 
@@ -70,9 +72,10 @@ Khi trạng thái đổi (bắt đầu A0, hoàn thành một pha, freeze, hủy
 
 ```
 git -C C:/Users/User/Desktop/TJ/_work/wt-restructure-plan status -sb          # phải là ## feat/restructure-plan (không có ...origin/main)
-git -C C:/Users/User/Desktop/TJ/_work/wt-restructure-plan diff --stat e324beb -- js css index.html game.html sw.js   # phải trống (mã ứng dụng chưa đổi so với baseline)
+git -C C:/Users/User/Desktop/TJ/_work/wt-restructure-plan diff --stat e324beb -- js css index.html game.html sw.js data learn supabase tools   # phải trống (mã ứng dụng chưa đổi so với baseline)
 git rev-parse --short origin/main                                              # hiện 6c7b66b (đã ghi nhận ở PLAN 0.1); giá trị khác = main tiến thêm, báo PO
 git merge-base --is-ancestor e324beb origin/main && echo baseline-ok           # phải in baseline-ok: baseline vẫn là tổ tiên của main
+git merge-base --is-ancestor e324beb HEAD && echo restructure-baseline-ok      # phải in restructure-baseline-ok: nhánh đang làm vẫn chứa baseline
 git rev-list --count e324beb..origin/main                                      # hiện 2 (4708ba9, 6c7b66b); số khác = main tiến thêm, báo PO
 ```
 

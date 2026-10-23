@@ -1,0 +1,5166 @@
+{
+  "status": "PARTIAL",
+  "scope": "A0 Node cycle; no application changes or production calls",
+  "checkpointBeforeCycle": "a0e08ac6d9721d95e692fd723658e5cb98e9915a",
+  "baseline": {
+    "commit": "e324beb54b29ddfa055956c756a4ceba2676dfa1",
+    "tree": "9de0480570b1c95c85912d685626891ba142b825",
+    "clean": true,
+    "pinned": true
+  },
+  "originMainObserved": "6c7b66bb75ba752c0f726efffacf98a2cd1acaa4",
+  "sourceHashes": {
+    "js/util.js": {
+      "baseline": "ec178cdbdff4116db2f4a07b2c351117b058f7de85820370e81a3b752a0e88df",
+      "current": "ec178cdbdff4116db2f4a07b2c351117b058f7de85820370e81a3b752a0e88df"
+    },
+    "js/srs.js": {
+      "baseline": "e3dbb7fe9e5e90ce8cf129dce31058d27ce8e36cf62f2bdf4e93757aaad7180f",
+      "current": "e3dbb7fe9e5e90ce8cf129dce31058d27ce8e36cf62f2bdf4e93757aaad7180f"
+    },
+    "js/context.js": {
+      "baseline": "c75b6081a5564291ef3398bfc097d356e69e701c14c8c17f97b15c35a30aa4bc",
+      "current": "c75b6081a5564291ef3398bfc097d356e69e701c14c8c17f97b15c35a30aa4bc"
+    },
+    "js/db.js": {
+      "baseline": "bc952b5b8bffa276d5a0ab65ac295b35e2dd546699c0775143ab8083c7700759",
+      "current": "bc952b5b8bffa276d5a0ab65ac295b35e2dd546699c0775143ab8083c7700759"
+    },
+    "js/readalong.js": {
+      "baseline": "83e0088b473cc4da32e07e979ea02c50879ae50f9678ede0c0289b5392f7f2a8",
+      "current": "83e0088b473cc4da32e07e979ea02c50879ae50f9678ede0c0289b5392f7f2a8"
+    },
+    "js/detail.js": {
+      "baseline": "6d04d16c0c1367115c058df92cd4eb8cb52f46eb4cac3447c75c5620698c6cec",
+      "current": "6d04d16c0c1367115c058df92cd4eb8cb52f46eb4cac3447c75c5620698c6cec"
+    }
+  },
+  "sourceEqual": true,
+  "changedOutsideDocsTests": [],
+  "baselineUnit": {
+    "passed": 54,
+    "failed": 1,
+    "results": [
+      {
+        "id": "CTX-01",
+        "name": "longest phrase wins",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-02",
+        "name": "unterminated final sentence retained",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-03",
+        "name": "ten unique gaps",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-04",
+        "name": "known abbreviation truncation",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-05",
+        "name": "reads ai provenance",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-05",
+        "name": "reads pasted provenance",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-05",
+        "name": "reads claude provenance",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-06",
+        "name": "metadata roundtrip",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-07",
+        "name": "all gaps use supplied Vietnamese translations",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-08",
+        "name": "split preserves bounded content 30000",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-08",
+        "name": "split preserves bounded content 42000",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-08",
+        "name": "split preserves bounded content 33600",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-08",
+        "name": "split preserves bounded content 40800",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-09",
+        "name": "cloud Gemini first then OpenAI on failure",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-09",
+        "name": "spec Gemini first also for TJ identity",
+        "status": "FAIL",
+        "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'https://example.invalid/functions/v1/openai-proxy'\n- 'https://example.invalid/functions/v1/gemini-proxy'\n"
+      },
+      {
+        "id": "CTX-10",
+        "name": "abort at exactly 25000ms and clean timer",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-11",
+        "name": "quota_user never falls back",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-12",
+        "name": "lookup sends null quota identifiers",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-13",
+        "name": "Detail.generatePassage leaves empty passage on no-key",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-13",
+        "name": "Detail.generatePassage leaves empty passage on AI-error",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-15",
+        "name": "extractVocab forwards quota unchanged",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-15",
+        "name": "enrichWords forwards same quota across batches",
+        "status": "PASS"
+      },
+      {
+        "id": "SRS-01",
+        "name": "step/group clamp and all wait intervals",
+        "status": "PASS"
+      },
+      {
+        "id": "SRS-01",
+        "name": "advance/demote and terminal state",
+        "status": "PASS"
+      },
+      {
+        "id": "SRS-01",
+        "name": "not started, due boundary, future",
+        "status": "PASS"
+      },
+      {
+        "id": "UTL-01",
+        "name": "normalization null",
+        "status": "PASS"
+      },
+      {
+        "id": "UTL-01",
+        "name": "normalization undefined",
+        "status": "PASS"
+      },
+      {
+        "id": "UTL-01",
+        "name": "normalization \" ( cat ) \"",
+        "status": "PASS"
+      },
+      {
+        "id": "UTL-01",
+        "name": "normalization \" A.,!?;:\\\"'`()[] B \"",
+        "status": "PASS"
+      },
+      {
+        "id": "UTL-01",
+        "name": "normalization \"  CAT\\n DOG  \"",
+        "status": "PASS"
+      },
+      {
+        "id": "UTL-02",
+        "name": "escape markup and NFC",
+        "status": "PASS"
+      },
+      {
+        "id": "RA-01",
+        "name": "exact alignment",
+        "status": "PASS"
+      },
+      {
+        "id": "RA-01",
+        "name": "skip alignment",
+        "status": "PASS"
+      },
+      {
+        "id": "RA-01",
+        "name": "extra alignment",
+        "status": "PASS"
+      },
+      {
+        "id": "RA-01",
+        "name": "wrong alignment",
+        "status": "PASS"
+      },
+      {
+        "id": "RA-01",
+        "name": "one/two character tolerance for longer words",
+        "status": "PASS"
+      },
+      {
+        "id": "RA-01",
+        "name": "real public lifecycle/card/broadcast on fake recognition: cat",
+        "status": "PASS"
+      },
+      {
+        "id": "RA-01",
+        "name": "real public lifecycle/card/broadcast on fake recognition: cat zoo",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-01",
+        "name": "starter keeps user parent moves and refreshes content",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-02",
+        "name": "tombstoned word never resurrected",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-01",
+        "name": "starter preserves moves at every parent level",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-03",
+        "name": "duplicateNotebook scope null",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-03",
+        "name": "duplicateNotebook scope __ALL__",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-03",
+        "name": "duplicateNotebook scope u1",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-04",
+        "name": "export/import replaces rather than merges and survives reload",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-05",
+        "name": "bookmark defaults, own row, mastery, explicit false",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-06",
+        "name": "wrong then correct clears context without losing score",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-08",
+        "name": "journey deduplicates terms and ignores blanks",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-07",
+        "name": "Fix context retains wrong type and language, clears same kind",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-08",
+        "name": "bookmarks and wrong words merge duplicate ids",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-05",
+        "name": "missing bookmark column preserves explicit false fallback",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-06",
+        "name": "missing wrong columns falls back without losing score",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-09",
+        "name": "private blocks idempotence, cap, removal and passage retention",
+        "status": "PASS"
+      },
+      {
+        "id": "LS-01",
+        "name": "local import/export uses fixed database key without network",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-09",
+        "name": "new bookmarks fill last block, preserve order, delete empty blocks",
+        "status": "PASS"
+      }
+    ],
+    "storageTrace": [
+      {
+        "scenario": 38,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 38,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 38,
+        "op": "get",
+        "key": "tjwl_deleted_ids_v1"
+      },
+      {
+        "scenario": 38,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 38,
+        "op": "set",
+        "key": "tjwl_starter_ver_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "string"
+        }
+      },
+      {
+        "scenario": 39,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 39,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 39,
+        "op": "get",
+        "key": "tjwl_deleted_ids_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "w1"
+          ]
+        }
+      },
+      {
+        "scenario": 39,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 40,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 40,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 40,
+        "op": "get",
+        "key": "tjwl_deleted_ids_v1"
+      },
+      {
+        "scenario": 40,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 41,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 41,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 41,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 41,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 41,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 41,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 41,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 41,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 42,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 42,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 42,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 42,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 42,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 42,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 42,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 42,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 42,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 42,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 42,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 43,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 43,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 43,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 43,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 43,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 43,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 43,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 43,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 43,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 43,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 44,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 44,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 44,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 45,
+        "op": "get",
+        "key": "tjwl_db_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 46,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 46,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 46,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 46,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 46,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 46,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 47,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 47,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 47,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 48,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 49,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 49,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 49,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1"
+      },
+      {
+        "scenario": 50,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 50,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 50,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1"
+      },
+      {
+        "scenario": 51,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 51,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 51,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1"
+      },
+      {
+        "scenario": 52,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 52,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 52,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1"
+      },
+      {
+        "scenario": 53,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 53,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 53,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1"
+      },
+      {
+        "scenario": 53,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 53,
+        "op": "get",
+        "key": "tjwl_wrong_ctx_v1"
+      },
+      {
+        "scenario": 53,
+        "op": "get",
+        "key": "tjwl_wrong_ctx_v1"
+      },
+      {
+        "scenario": 54,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 54,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 54,
+        "op": "set",
+        "key": "tjwl_bookmarks_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 54,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 55,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 55,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 55,
+        "op": "get",
+        "key": "tjwl_wrong_ctx_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 55,
+        "op": "set",
+        "key": "tjwl_wrong_open_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 55,
+        "op": "set",
+        "key": "tjwl_wrong_ctx_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 55,
+        "op": "get",
+        "key": "tjwl_wrong_ctx_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 55,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 55,
+        "op": "get",
+        "key": "tjwl_wrong_ctx_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 55,
+        "op": "set",
+        "key": "tjwl_wrong_open_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 55,
+        "op": "set",
+        "key": "tjwl_wrong_ctx_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 55,
+        "op": "get",
+        "key": "tjwl_wrong_ctx_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1"
+      },
+      {
+        "scenario": 56,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 56,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 56,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1"
+      },
+      {
+        "scenario": 56,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 56,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 57,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      }
+    ],
+    "storageTraceScope": "Only synthetic Node scenarios in unit.js; not all UI workflows or all storage files. Final value shape, not a golden snapshot at each operation."
+  },
+  "currentUnit": {
+    "passed": 54,
+    "failed": 1,
+    "results": [
+      {
+        "id": "CTX-01",
+        "name": "longest phrase wins",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-02",
+        "name": "unterminated final sentence retained",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-03",
+        "name": "ten unique gaps",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-04",
+        "name": "known abbreviation truncation",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-05",
+        "name": "reads ai provenance",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-05",
+        "name": "reads pasted provenance",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-05",
+        "name": "reads claude provenance",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-06",
+        "name": "metadata roundtrip",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-07",
+        "name": "all gaps use supplied Vietnamese translations",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-08",
+        "name": "split preserves bounded content 30000",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-08",
+        "name": "split preserves bounded content 42000",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-08",
+        "name": "split preserves bounded content 33600",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-08",
+        "name": "split preserves bounded content 40800",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-09",
+        "name": "cloud Gemini first then OpenAI on failure",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-09",
+        "name": "spec Gemini first also for TJ identity",
+        "status": "FAIL",
+        "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'https://example.invalid/functions/v1/openai-proxy'\n- 'https://example.invalid/functions/v1/gemini-proxy'\n"
+      },
+      {
+        "id": "CTX-10",
+        "name": "abort at exactly 25000ms and clean timer",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-11",
+        "name": "quota_user never falls back",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-12",
+        "name": "lookup sends null quota identifiers",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-13",
+        "name": "Detail.generatePassage leaves empty passage on no-key",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-13",
+        "name": "Detail.generatePassage leaves empty passage on AI-error",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-15",
+        "name": "extractVocab forwards quota unchanged",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-15",
+        "name": "enrichWords forwards same quota across batches",
+        "status": "PASS"
+      },
+      {
+        "id": "SRS-01",
+        "name": "step/group clamp and all wait intervals",
+        "status": "PASS"
+      },
+      {
+        "id": "SRS-01",
+        "name": "advance/demote and terminal state",
+        "status": "PASS"
+      },
+      {
+        "id": "SRS-01",
+        "name": "not started, due boundary, future",
+        "status": "PASS"
+      },
+      {
+        "id": "UTL-01",
+        "name": "normalization null",
+        "status": "PASS"
+      },
+      {
+        "id": "UTL-01",
+        "name": "normalization undefined",
+        "status": "PASS"
+      },
+      {
+        "id": "UTL-01",
+        "name": "normalization \" ( cat ) \"",
+        "status": "PASS"
+      },
+      {
+        "id": "UTL-01",
+        "name": "normalization \" A.,!?;:\\\"'`()[] B \"",
+        "status": "PASS"
+      },
+      {
+        "id": "UTL-01",
+        "name": "normalization \"  CAT\\n DOG  \"",
+        "status": "PASS"
+      },
+      {
+        "id": "UTL-02",
+        "name": "escape markup and NFC",
+        "status": "PASS"
+      },
+      {
+        "id": "RA-01",
+        "name": "exact alignment",
+        "status": "PASS"
+      },
+      {
+        "id": "RA-01",
+        "name": "skip alignment",
+        "status": "PASS"
+      },
+      {
+        "id": "RA-01",
+        "name": "extra alignment",
+        "status": "PASS"
+      },
+      {
+        "id": "RA-01",
+        "name": "wrong alignment",
+        "status": "PASS"
+      },
+      {
+        "id": "RA-01",
+        "name": "one/two character tolerance for longer words",
+        "status": "PASS"
+      },
+      {
+        "id": "RA-01",
+        "name": "real public lifecycle/card/broadcast on fake recognition: cat",
+        "status": "PASS"
+      },
+      {
+        "id": "RA-01",
+        "name": "real public lifecycle/card/broadcast on fake recognition: cat zoo",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-01",
+        "name": "starter keeps user parent moves and refreshes content",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-02",
+        "name": "tombstoned word never resurrected",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-01",
+        "name": "starter preserves moves at every parent level",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-03",
+        "name": "duplicateNotebook scope null",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-03",
+        "name": "duplicateNotebook scope __ALL__",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-03",
+        "name": "duplicateNotebook scope u1",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-04",
+        "name": "export/import replaces rather than merges and survives reload",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-05",
+        "name": "bookmark defaults, own row, mastery, explicit false",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-06",
+        "name": "wrong then correct clears context without losing score",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-08",
+        "name": "journey deduplicates terms and ignores blanks",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-07",
+        "name": "Fix context retains wrong type and language, clears same kind",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-08",
+        "name": "bookmarks and wrong words merge duplicate ids",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-05",
+        "name": "missing bookmark column preserves explicit false fallback",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-06",
+        "name": "missing wrong columns falls back without losing score",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-09",
+        "name": "private blocks idempotence, cap, removal and passage retention",
+        "status": "PASS"
+      },
+      {
+        "id": "LS-01",
+        "name": "local import/export uses fixed database key without network",
+        "status": "PASS"
+      },
+      {
+        "id": "DB-09",
+        "name": "new bookmarks fill last block, preserve order, delete empty blocks",
+        "status": "PASS"
+      }
+    ],
+    "storageTrace": [
+      {
+        "scenario": 38,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 38,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 38,
+        "op": "get",
+        "key": "tjwl_deleted_ids_v1"
+      },
+      {
+        "scenario": 38,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 38,
+        "op": "set",
+        "key": "tjwl_starter_ver_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "string"
+        }
+      },
+      {
+        "scenario": 39,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 39,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 39,
+        "op": "get",
+        "key": "tjwl_deleted_ids_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "w1"
+          ]
+        }
+      },
+      {
+        "scenario": 39,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 40,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 40,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 40,
+        "op": "get",
+        "key": "tjwl_deleted_ids_v1"
+      },
+      {
+        "scenario": 40,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 41,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 41,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 41,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 41,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 41,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 41,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 41,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 41,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 42,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 42,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 42,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 42,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 42,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 42,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 42,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 42,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 42,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 42,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 42,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 43,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 43,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 43,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 43,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 43,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 43,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 43,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 43,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 43,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 43,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 44,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 44,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 44,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 45,
+        "op": "get",
+        "key": "tjwl_db_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 46,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 46,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 46,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 46,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 46,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 46,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 47,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 47,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 47,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 48,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 49,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 49,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 49,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1"
+      },
+      {
+        "scenario": 50,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 50,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 50,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1"
+      },
+      {
+        "scenario": 51,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 51,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 51,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1"
+      },
+      {
+        "scenario": 52,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 52,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 52,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1"
+      },
+      {
+        "scenario": 53,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 53,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 53,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1"
+      },
+      {
+        "scenario": 53,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 53,
+        "op": "get",
+        "key": "tjwl_wrong_ctx_v1"
+      },
+      {
+        "scenario": 53,
+        "op": "get",
+        "key": "tjwl_wrong_ctx_v1"
+      },
+      {
+        "scenario": 54,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 54,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 54,
+        "op": "set",
+        "key": "tjwl_bookmarks_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 54,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 55,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 55,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 55,
+        "op": "get",
+        "key": "tjwl_wrong_ctx_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 55,
+        "op": "set",
+        "key": "tjwl_wrong_open_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 55,
+        "op": "set",
+        "key": "tjwl_wrong_ctx_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 55,
+        "op": "get",
+        "key": "tjwl_wrong_ctx_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 55,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 55,
+        "op": "get",
+        "key": "tjwl_wrong_ctx_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 55,
+        "op": "set",
+        "key": "tjwl_wrong_open_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 55,
+        "op": "set",
+        "key": "tjwl_wrong_ctx_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 55,
+        "op": "get",
+        "key": "tjwl_wrong_ctx_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1"
+      },
+      {
+        "scenario": 56,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 56,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 56,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1"
+      },
+      {
+        "scenario": 56,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 56,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 57,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 58,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      }
+    ],
+    "storageTraceScope": "Only synthetic Node scenarios in unit.js; not all UI workflows or all storage files. Final value shape, not a golden snapshot at each operation."
+  },
+  "baselineStatic": {
+    "source": {
+      "commit": "e324beb54b29ddfa055956c756a4ceba2676dfa1",
+      "tree": "9de0480570b1c95c85912d685626891ba142b825",
+      "clean": true,
+      "pinned": true
+    },
+    "passed": 6,
+    "failed": 0,
+    "pending": 2,
+    "details": [
+      {
+        "id": "STA-01",
+        "status": "passed",
+        "issues": [],
+        "note": "Every tracked .js checked, without execution."
+      },
+      {
+        "id": "STA-02",
+        "status": "passed",
+        "issues": [],
+        "note": "Strict string equality."
+      },
+      {
+        "id": "STA-03",
+        "status": "pending",
+        "issues": [
+          {
+            "file": "game.html",
+            "line": 7,
+            "resource": "icon.svg",
+            "reason": "Local script/link has no ?v=; no PO-approved allowlist loaded"
+          },
+          {
+            "file": "index.html",
+            "line": 25,
+            "resource": "manifest.webmanifest",
+            "reason": "Local script/link has no ?v=; no PO-approved allowlist loaded"
+          },
+          {
+            "file": "index.html",
+            "line": 26,
+            "resource": "icon.svg",
+            "reason": "Local script/link has no ?v=; no PO-approved allowlist loaded"
+          },
+          {
+            "file": "index.html",
+            "line": 27,
+            "resource": "icon.svg",
+            "reason": "Local script/link has no ?v=; no PO-approved allowlist loaded"
+          },
+          {
+            "file": "learn/sw/index.html",
+            "line": 15,
+            "resource": "../../js/config.js",
+            "reason": "Local script/link has no ?v=; no PO-approved allowlist loaded"
+          }
+        ],
+        "note": "All local script/link tags; GAME_VER derives from game.js query string."
+      },
+      {
+        "id": "STA-04",
+        "status": "passed",
+        "issues": [],
+        "note": "Conservative scan; examples require explicit review, no source snippets emitted.",
+        "examples": [
+          {
+            "file": "supabase/functions/gemini-proxy/index.ts",
+            "line": 13,
+            "reason": "Explicit deployment example in // comment; no credential value"
+          },
+          {
+            "file": "supabase/functions/gemini-proxy/index.ts",
+            "line": 23,
+            "reason": "Explicit deployment example in // comment; no credential value"
+          }
+        ]
+      },
+      {
+        "id": "STA-05",
+        "status": "passed",
+        "issues": [],
+        "note": "Decoded role only, no key printed; does not verify JWT signature."
+      },
+      {
+        "id": "STA-06",
+        "status": "passed",
+        "issues": [],
+        "note": "No PDF/MP3 automatically allowed."
+      },
+      {
+        "id": "STA-07",
+        "status": "pending",
+        "issues": [
+          {
+            "file": "css/app.css",
+            "line": 220,
+            "property": "word-break:break-all",
+            "reason": "Candidate forbidden wrapping rule; determine reading/vocabulary scope and approve any baseline exception"
+          },
+          {
+            "file": "css/app.css",
+            "line": 1574,
+            "property": "word-break:break-all",
+            "reason": "Candidate forbidden wrapping rule; determine reading/vocabulary scope and approve any baseline exception"
+          }
+        ],
+        "note": "Conservative CSS candidate scan includes comments; selector/context must be reviewed before exceptions."
+      },
+      {
+        "id": "STA-08",
+        "status": "passed",
+        "issues": [],
+        "note": "Every quoted ASSETS member resolved on disk; no service-worker/network execution."
+      }
+    ]
+  },
+  "currentStatic": {
+    "source": {
+      "pinned": false
+    },
+    "passed": 6,
+    "failed": 0,
+    "pending": 2,
+    "details": [
+      {
+        "id": "STA-01",
+        "status": "passed",
+        "issues": [],
+        "note": "Every tracked .js checked, without execution.",
+        "newIssues": []
+      },
+      {
+        "id": "STA-02",
+        "status": "passed",
+        "issues": [],
+        "note": "Strict string equality.",
+        "newIssues": []
+      },
+      {
+        "id": "STA-03",
+        "status": "pending",
+        "issues": [
+          {
+            "file": "game.html",
+            "line": 7,
+            "resource": "icon.svg",
+            "reason": "Local script/link has no ?v=; no PO-approved allowlist loaded"
+          },
+          {
+            "file": "index.html",
+            "line": 25,
+            "resource": "manifest.webmanifest",
+            "reason": "Local script/link has no ?v=; no PO-approved allowlist loaded"
+          },
+          {
+            "file": "index.html",
+            "line": 26,
+            "resource": "icon.svg",
+            "reason": "Local script/link has no ?v=; no PO-approved allowlist loaded"
+          },
+          {
+            "file": "index.html",
+            "line": 27,
+            "resource": "icon.svg",
+            "reason": "Local script/link has no ?v=; no PO-approved allowlist loaded"
+          },
+          {
+            "file": "learn/sw/index.html",
+            "line": 15,
+            "resource": "../../js/config.js",
+            "reason": "Local script/link has no ?v=; no PO-approved allowlist loaded"
+          }
+        ],
+        "note": "All local script/link tags; GAME_VER derives from game.js query string.",
+        "newIssues": []
+      },
+      {
+        "id": "STA-04",
+        "status": "passed",
+        "issues": [],
+        "note": "Conservative scan; examples require explicit review, no source snippets emitted.",
+        "examples": [
+          {
+            "file": "supabase/functions/gemini-proxy/index.ts",
+            "line": 13,
+            "reason": "Explicit deployment example in // comment; no credential value"
+          },
+          {
+            "file": "supabase/functions/gemini-proxy/index.ts",
+            "line": 23,
+            "reason": "Explicit deployment example in // comment; no credential value"
+          }
+        ],
+        "newIssues": []
+      },
+      {
+        "id": "STA-05",
+        "status": "passed",
+        "issues": [],
+        "note": "Decoded role only, no key printed; does not verify JWT signature.",
+        "newIssues": []
+      },
+      {
+        "id": "STA-06",
+        "status": "passed",
+        "issues": [],
+        "note": "No PDF/MP3 automatically allowed.",
+        "newIssues": []
+      },
+      {
+        "id": "STA-07",
+        "status": "pending",
+        "issues": [
+          {
+            "file": "css/app.css",
+            "line": 220,
+            "property": "word-break:break-all",
+            "reason": "Candidate forbidden wrapping rule; determine reading/vocabulary scope and approve any baseline exception"
+          },
+          {
+            "file": "css/app.css",
+            "line": 1574,
+            "property": "word-break:break-all",
+            "reason": "Candidate forbidden wrapping rule; determine reading/vocabulary scope and approve any baseline exception"
+          }
+        ],
+        "note": "Conservative CSS candidate scan includes comments; selector/context must be reviewed before exceptions.",
+        "newIssues": []
+      },
+      {
+        "id": "STA-08",
+        "status": "passed",
+        "issues": [],
+        "note": "Every quoted ASSETS member resolved on disk; no service-worker/network execution.",
+        "newIssues": []
+      }
+    ]
+  },
+  "counterexamples": {
+    "passed": 6,
+    "failed": 0,
+    "results": [
+      {
+        "id": "CTX-01",
+        "status": "PASS",
+        "controlFailures": 0,
+        "mutantFailures": 1
+      },
+      {
+        "id": "UTL-01",
+        "status": "PASS",
+        "controlFailures": 0,
+        "mutantFailures": 2
+      },
+      {
+        "id": "SRS-01",
+        "status": "PASS",
+        "controlFailures": 0,
+        "mutantFailures": 1
+      },
+      {
+        "id": "DB-02",
+        "status": "PASS",
+        "controlFailures": 0,
+        "mutantFailures": 1
+      },
+      {
+        "id": "RA-01",
+        "status": "PASS",
+        "controlFailures": 0,
+        "mutantFailures": 1
+      },
+      {
+        "id": "CTX-11",
+        "status": "PASS",
+        "controlFailures": 0,
+        "mutantFailures": 1
+      }
+    ]
+  },
+  "existingCapture": [
+    {
+      "file": "verify_backend_fixture.js",
+      "exitCode": 0,
+      "error": null,
+      "stdout": "OK    CC-TRANSLATE  js/cc.js:92  [HỢP ĐỒNG]\nOK    GAME-GRADE-SENTENCE  js/game.js:2519  [HỢP ĐỒNG]\nOK    GAME-LOOKUP-TOEIC  js/game.js:3536  [HỢP ĐỒNG]\nOK    GAME-GAP-OPENAI  js/game.js:1309  [HỢP ĐỒNG]\nOK    APP-FETCH-ARTICLE  js/app.js:2339  [HỢP ĐỒNG]\nOK    TURN-CREDS  js/turn.js:10  [HỢP ĐỒNG]\nOK    SHELF-LIST  js/game.js:2283  [HỢP ĐỒNG]\nOK    SHELF-UPLOAD  js/game.js:2287  [HỢP ĐỒNG]\nOK    SHELF-DELETE  js/game.js:2291  [HỢP ĐỒNG]\nOK    SHELF-MOVE  js/game.js:2295  [HỢP ĐỒNG]\nOK    SHELF-FOLDERS  js/game.js:2298  [HỢP ĐỒNG]\nOK    SHELF-MKDIR  js/game.js:2302  [HỢP ĐỒNG]\nOK    SHELF-URL  js/game.js:2304  [VỊ TRÍ (không phải hợp đồng)]\n\nTất cả 12 hợp đồng khớp mã baseline; 1 mục chỉ xác nhận vị trí.\n",
+      "stderr": ""
+    },
+    {
+      "file": "capture_context_calls.js",
+      "exitCode": 0,
+      "error": null,
+      "stdout": " OK CTX-GEM-NOCTX: /functions/v1/gemini-proxy\n OK CTX-GEM-CTX: /functions/v1/gemini-proxy\n OK CTX-OAI-NOCTX: /functions/v1/openai-proxy\n OK CTX-OAI-CTX: /functions/v1/openai-proxy\n OK CTX-LOOKUP: /functions/v1/gemini-proxy\n OK CTX-PROVIDER-ORDER: /functions/v1/gemini-proxy\nFixture khớp kết quả thu lại từ baseline e324beb.\n",
+      "stderr": ""
+    },
+    {
+      "file": "selftest_capture_verify.js",
+      "exitCode": 0,
+      "error": null,
+      "stdout": "Nền: bản sao không sửa phải đạt (unsafe)\n  ĐẠT  bản sao nguyên vẹn → mọi hợp đồng khớp\nVerifier phải bắt thay đổi hợp đồng:\n  ĐẠT  bắt được: đổi block_id game-gap → WRONG-BLOCK (GAME-GAP-OPENAI)\n  ĐẠT     và không báo nhầm mục khác\n  ĐẠT  bắt được: đổi user_id (GAME-GAP-OPENAI)\n  ĐẠT     và không báo nhầm mục khác\n  ĐẠT  bắt được: đổi user_id trong cc.js (CC-TRANSLATE)\n  ĐẠT     và không báo nhầm mục khác\n  ĐẠT  bắt được: bỏ khoá body `temperature` (GAME-GAP-OPENAI)\n  ĐẠT     và không báo nhầm mục khác\n  ĐẠT  bắt được: thêm khoá body lạ (GAME-GAP-OPENAI)\n  ĐẠT     và không báo nhầm mục khác\n  ĐẠT  bắt được: bỏ header apikey (GAME-GAP-OPENAI)\n  ĐẠT     và không báo nhầm mục khác\n  ĐẠT  bắt được: bỏ signal (dòng 2520) (GAME-GRADE-SENTENCE)\n  ĐẠT     và không báo nhầm mục khác\n  ĐẠT  bắt được: đổi hẹn giờ huỷ 25000→1000 (GAME-GRADE-SENTENCE)\n  ĐẠT     và không báo nhầm mục khác\n  ĐẠT  bắt được: đổi method PUT→POST (SHELF-UPLOAD)\n  ĐẠT     và không báo nhầm mục khác\n  ĐẠT  bắt được: thêm header xác thực vào DELETE (SHELF-DELETE)\n  ĐẠT     và không báo nhầm mục khác\n  ĐẠT  bắt được: thêm khoá body mkdir (SHELF-MKDIR)\n  ĐẠT     và không báo nhầm mục khác\n  ĐẠT  bắt được: thêm khoá body fetch-article (APP-FETCH-ARTICLE)\n  ĐẠT     và không báo nhầm mục khác\n  ĐẠT  bắt được: đổi body turn-creds (TURN-CREDS)\n  ĐẠT     và không báo nhầm mục khác\nVerifier phải bắt fixture sai:\n  ĐẠT  bắt được fixture sai: blockIdExpr sai\n  ĐẠT  bắt được fixture sai: userIdExpr sai\n  ĐẠT  bắt được fixture sai: bodyKeys thiếu khoá\n  ĐẠT  bắt được fixture sai: headerNames thừa\n  ĐẠT  bắt được fixture sai: timeoutMs sai\n  ĐẠT  bắt được fixture sai: signal sai\n  ĐẠT  bắt được fixture sai: method sai\n  ĐẠT  bắt được fixture ghim sai SHA\nVerifier phải bắt fixture mất hợp đồng (schema, ID bắt buộc, mức xác minh):\n  ĐẠT  bắt được: calls = [] (mất hết hợp đồng)\n  ĐẠT  bắt được: đổi mọi mục thành position-only\n  ĐẠT  bắt được: hạ một hợp đồng (CC-TRANSLATE) xuống position-only\n  ĐẠT  bắt được: nâng SHELF-URL lên contract\n  ĐẠT  bắt được: thiếu một ID bắt buộc (SHELF-MKDIR)\n  ĐẠT  bắt được: ID trùng\n  ĐẠT  bắt được: ID lạ ngoài danh sách bắt buộc\n  ĐẠT  bắt được: thiếu trường method\n  ĐẠT  bắt được: signal không phải boolean\n  ĐẠT  bắt được: thiếu timeoutMs\n  ĐẠT  bắt được: đổi file của một ID\n  ĐẠT  bắt được: verification sai chính tả\n  ĐẠT  bắt được: khai cả bodyKeys và bodyExpr\n  ĐẠT  bắt được: thiếu mảng calls\nBăm baseline không phụ thuộc kiểu xuống dòng (CRLF/LF):\n  ĐẠT  sha256Lf: bản CRLF và bản LF cho cùng một băm\n  ĐẠT  capture: source_hashes giống hệt giữa CRLF và LF\n  ĐẠT  băm LF khớp fixture đã commit (CI Linux sẽ khớp)\n  ĐẠT  git blob ghim trong fixture khớp kho git baseline\n  ĐẠT  so sánh toàn bộ kịch bản giữa CRLF và LF giống hệt\nGhim baseline:\n  ĐẠT  verifier từ chối nguồn không phải baseline git\n  ĐẠT  capture từ chối nguồn không phải baseline git\n  ĐẠT  capture cấm --write ở chế độ unsafe\nCapture phải thất bại (không ghi) khi kịch bản sai:\n  ĐẠT  ép _callGemini lỗi → capture báo thất bại\n  ĐẠT  đổi model mặc định → capture báo thất bại\n  ĐẠT  bỏ chuyển user_id (gemini) → capture báo thất bại\n  ĐẠT  bỏ chuyển user_id (openai) → capture báo thất bại\nCapture không được ghi đè fixture khi kịch bản bắt buộc thất bại (nguồn thật, đã ghim):\n  ĐẠT  kịch bản sai kỳ vọng → ok=false\n  ĐẠT  fixture cũ giữ nguyên, không bị ghi đè\n  ĐẠT  không để lại tệp tạm\n  ĐẠT  kịch bản không gửi yêu cầu nào → ok=false và fixture giữ nguyên\n\n65 đạt, 0 hỏng.\n",
+      "stderr": ""
+    }
+  ],
+  "coverage": {
+    "executedIds": [
+      "CTX-01",
+      "CTX-02",
+      "CTX-03",
+      "CTX-04",
+      "CTX-05",
+      "CTX-06",
+      "CTX-07",
+      "CTX-08",
+      "CTX-09",
+      "CTX-10",
+      "CTX-11",
+      "CTX-12",
+      "CTX-13",
+      "CTX-15",
+      "DB-01",
+      "DB-02",
+      "DB-03",
+      "DB-04",
+      "DB-05",
+      "DB-06",
+      "DB-07",
+      "DB-08",
+      "DB-09",
+      "LS-01",
+      "RA-01",
+      "SRS-01",
+      "UTL-01",
+      "UTL-02"
+    ],
+    "failingIds": [
+      "CTX-09"
+    ],
+    "partial": {
+      "CTX-05": "Valid single-source metadata flags tested; malformed/conflicting flags not tested.",
+      "CTX-12": "Node lookup tested; game/CC contract assertions remain static M0.5a, not DOM execution.",
+      "CTX-13": "Public Detail.generatePassage no-key/AI-error preserves empty block and never invokes stock fallback; rendering is a stub, not a visual assertion.",
+      "CTX-15": "Quota forwarded on single extraction and batched enrichment; multi-chapter app orchestration needs browser.",
+      "RA-01": "Public _align plus toggle/fake SpeechRecognition lifecycle, card percentage and Board.broadcast tested. Real microphone, browser layout and Web Speech integration still need browser/device.",
+      "DB-06": "Wrong/correct and missing-column fallback tested; blank-answer filtering occurs in UI callers and is not tested here.",
+      "DB-07": "Stored exact context and Detail.pushFixResult same-kind guard tested; WordSet saveAnswer/rendering not executed.",
+      "LS-01": "Runtime trace for synthetic Node scenarios only, no full UI key/value golden or all 16 storage-reference files."
+    },
+    "unexecuted": {
+      "CTX-14": "Nightly generateAI prompt/random/title scenario not implemented.",
+      "STA-11": "Only six modules loaded with entry-point checks here, not every tracked JS module.",
+      "STA-09": "Applies from M2.",
+      "STA-10": "Applies from M2.",
+      "browser": "M0.4, M0.5, M0.6, M0.7 and UI-dependent clauses; Playwright installation requires PO authorization.",
+      "CI": "M0.8 still awaits handoff/gate decision (G2)."
+    }
+  },
+  "measurementSummary": {
+    "largestJs": [
+      {
+        "file": "js/game.js",
+        "lines": 5598,
+        "bytesLf": 523111
+      },
+      {
+        "file": "js/app.js",
+        "lines": 5290,
+        "bytesLf": 296103
+      },
+      {
+        "file": "js/detail.js",
+        "lines": 3292,
+        "bytesLf": 173927
+      },
+      {
+        "file": "js/db.js",
+        "lines": 2223,
+        "bytesLf": 113914
+      },
+      {
+        "file": "js/board.js",
+        "lines": 2150,
+        "bytesLf": 211775
+      },
+      {
+        "file": "js/context.js",
+        "lines": 1970,
+        "bytesLf": 133141
+      },
+      {
+        "file": "js/i18n.js",
+        "lines": 1099,
+        "bytesLf": 63547
+      },
+      {
+        "file": "js/wordset.js",
+        "lines": 706,
+        "bytesLf": 36897
+      },
+      {
+        "file": "js/reader.js",
+        "lines": 601,
+        "bytesLf": 28156
+      },
+      {
+        "file": "js/journey.js",
+        "lines": 540,
+        "bytesLf": 27361
+      }
+    ],
+    "indexLocalScripts": {
+      "files": [
+        "js/config.js",
+        "js/keys.local.js",
+        "js/util.js",
+        "js/srs.js",
+        "js/context.js",
+        "js/speech.js",
+        "js/db.js",
+        "js/auth.js",
+        "js/i18n.js",
+        "js/reader.js",
+        "js/detail.js",
+        "js/export.js",
+        "js/journey.js",
+        "js/home.js",
+        "js/wordset.js",
+        "js/app.js",
+        "js/gamelayer.js",
+        "js/hubpage.js"
+      ],
+      "missing": [
+        "js/keys.local.js"
+      ],
+      "bytesLf": 983647
+    },
+    "escDefinitionCount": 7,
+    "storageReferenceFileCount": 16,
+    "measurementMethods": {
+      "counts": "Tracked files; LF-normalized UTF-8 bytes; nonempty final line counts once.",
+      "lexical": "Regex candidate inventory, includes comments/string bodies and non-Supabase .from calls. Not AST/call graph/runtime evidence. Variable aliases and computed properties may be missed.",
+      "storage": "localStorage operations plus tjwl_* literal candidates; identifiers/dynamic keys need runtime LS-01 capture.",
+      "dependencies": "window/w global references and lexical App method calls, not closure-variable sharing or complete module dependency graph.",
+      "browser": "Transfer/compressed bytes, interaction coverage, LCP and runtime memory require browser measurements."
+    },
+    "incomplete": [
+      "Browser performance measurements",
+      "Runtime localStorage key inventory",
+      "Full closure-variable sharing graph before splitting game.js"
+    ],
+    "baselineAndCurrentAppMeasurementsEqual": true
+  },
+  "poDecisions": [
+    "CTX-09: baseline TJ profile chooses OpenAI first; TEST §3.1 requires Gemini first without specifying the TJ exception. Confirm existing exception or authorize separate behavior fix.",
+    "STA-03: approve the five measured baseline version exceptions or authorize a separate application fix; no allowlist has been approved by this cycle.",
+    "Before browser work: authorize Playwright package installation. G2 still needed for final CI integration; main drift decision needed before final integration."
+  ],
+  "notes": [
+    "STA-07 conservatively reports two non-reading CSS candidates for technical scope review, not as a confirmed product violation.",
+    "Legacy Context.generate still exists but no caller was found in application JS; CTX-13 is tested through Detail.generatePassage instead.",
+    "No automatic acceptance of failures or golden updates; runner exits 1 while assertions fail or static review is pending."
+  ]
+}
