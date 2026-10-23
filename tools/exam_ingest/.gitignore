@@ -1,2 +1,6 @@
 __pycache__/
 *.py[cod]
+*.pdf
+*.mp3
+*.wav
+*.m4a

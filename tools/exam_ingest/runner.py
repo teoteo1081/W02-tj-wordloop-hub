@@ -40,6 +40,19 @@ def package_hash():
     return digest({str(p.relative_to(root)): file_hash(p) for p in sorted(root.glob("*.py"))})
 
 
+def tools_identity(profile):
+    """Size+mtime of configured tool binaries/model dirs, so a tool upgrade invalidates cached stages."""
+    identity = {}
+    for key, value in sorted((profile.data.get("tools") or {}).items()):
+        path = Path(str(value))
+        try:
+            info = path.stat()
+            identity[key] = [str(value), info.st_size, info.st_mtime_ns]
+        except OSError:
+            identity[key] = [str(value), None, None]
+    return identity
+
+
 def run(profile, number, work_root, run_id, stage="review", allow_ai=False,
         provider=None, actions=None):
     require(stage in DEPENDENCIES, "INVALID_STAGE", "Unknown processing stage")
@@ -67,9 +80,10 @@ def run(profile, number, work_root, run_id, stage="review", allow_ai=False,
         state = read_json(state_path) if state_path.exists() else {"schema_version": 1, "stages": {}}
         context = Context(profile, number, directory, manifest,
                           provider or Provider(profile.data.get("provider"), allow_ai,
-                                               ledger=directory / "ai_usage.json"), {})
+                                               ledger=directory.parent / "ai_usage.json"), {})
         fingerprint = digest({"profile": profile.fingerprint, "sources": manifest,
-                              "code": package_hash(), "version": __version__})
+                              "code": package_hash(), "version": __version__,
+                              "tools": tools_identity(profile)})
         completed = []
 
         def execute(name):

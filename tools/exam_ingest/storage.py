@@ -174,7 +174,7 @@ class LiveBackend:
                      " from test_items where id in (" + ",".join(literal(row["id"]) for row in rows) + ") for update), "
                      "expected as (select value from jsonb_array_elements(" + expected_json + ")), "
                      "gate as (select count(*)=" + str(len(rows)) + " as ok from locked l join expected e "
-                     "on l.id=e.value->>'id' where to_jsonb(l) @> e.value) "
+                     "on l.id=e.value->>'id' where to_jsonb(l) = e.value) "
                      "update test_items t set " + ",".join(k + "=r." + k for k in ("explain", "stem_vi", "vocab", "i18n")) +
                      " from " + record + " where (select ok from gate) and t.id=r.id and t.test=r.test returning t.id")
         changed = self._sql(query)

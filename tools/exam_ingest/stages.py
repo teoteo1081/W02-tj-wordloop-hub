@@ -245,7 +245,7 @@ def build(ctx):
         if part <= 4:
             image_key = f"q{num}" if part == 1 else f"g{32 + (num - 32) // 3 * 3}"
             if image_key in images:
-                passages.append("[img] " + image_base + Path(images[image_key]["path"]).name)
+                passages.append("[img] " + image_base + Path(images[image_key]["path"]).name + "?v=1")
             cue = all_cues[str(num)]
             marker = "[aud] q=%.2f-%.2f" % tuple(cue["q"])
             if "g" in cue:

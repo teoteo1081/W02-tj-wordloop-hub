@@ -1,6 +1,7 @@
 """Explicit opt-in, bounded AI calls; never switches to a paid fallback."""
 import json
 import os
+import re
 import time
 import urllib.request
 from datetime import datetime, timezone, timedelta
@@ -38,6 +39,8 @@ class Provider:
         require(type(maximum) is int and maximum > 0 and type(attempts) is int and 1 <= attempts <= 3,
                 "INVALID_BUDGET", "Specify max_calls and 1..3 attempts")
         require(isinstance(s.get("model"), str) and bool(s["model"]), "INVALID_BUDGET", "Explicit model required")
+        if self.transport is None:
+            self._check_config()
         for attempt in range(attempts):
             require(self.calls < maximum, "BUDGET_EXHAUSTED", "AI call limit reached")
             self.calls += 1
@@ -66,14 +69,19 @@ class Provider:
                     self.sleep(min(2 ** attempt, 4))
         raise IngestError("AI_FAILED", "Provider failed within retry/call budget; inspect local source")
 
-    def _request(self, payload):
+    def _check_config(self):
+        """Configuration errors must not consume attempts or the call budget."""
         s = self.settings
-        endpoint = s.get("endpoint", "")
-        import re
-        require(bool(re.fullmatch(r"https://[a-z0-9]{20}\.supabase\.co/functions/v1/gemini-proxy", endpoint)),
+        require(bool(re.fullmatch(r"https://[a-z0-9]{20}\.supabase\.co/functions/v1/gemini-proxy", s.get("endpoint", ""))),
                 "INVALID_TARGET", "Use an HTTPS gemini-proxy endpoint")
         key = os.environ.get(s.get("credential_env", "SUPABASE_ANON_KEY"), "")
         require(bool(key), "BLOCKED_AUTH", "Provider credential environment variable is unset")
+        return key
+
+    def _request(self, payload):
+        s = self.settings
+        endpoint = s["endpoint"]
+        key = self._check_config()
         req = urllib.request.Request(endpoint, data=json.dumps(payload).encode(),
                                       headers={"Content-Type": "application/json", "apikey": key,
                                                "Authorization": "Bearer " + key})

@@ -75,8 +75,10 @@ def main(argv=None):
             if args.apply:
                 from .common import require
                 require(args.backup_root is not None, "INVALID_OUTPUT", "Explicit backup-root required for apply")
+                require(args.preflight is not None, "BLOCKED_PREFLIGHT", "--preflight file required for apply")
+                require(args.approved_plan_hash, "BLOCKED_APPROVAL", "--approved-plan-hash required for apply")
                 from .storage import LiveBackend
-                backend = LiveBackend(profile.data["target"], read_json(args.preflight) if args.preflight else None)
+                backend = LiveBackend(profile.data["target"], read_json(args.preflight))
             result = apply_plan(read_json(args.plan), profile, backend, args.backup_root,
                                 args.approved_plan_hash, args.apply)
         if getattr(args, "output", None):
@@ -86,6 +88,6 @@ def main(argv=None):
     except IngestError as exc:
         print(json.dumps({"status": exc.code, "detail": str(exc)}, ensure_ascii=False))
         return 2
-    except (OSError, ValueError, KeyError, TypeError):
+    except (OSError, ValueError, KeyError, TypeError, AttributeError):
         print(json.dumps({"status": "FAILED", "detail": "Invalid input/environment; no credentials or response bodies logged"}))
         return 1

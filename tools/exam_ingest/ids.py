@@ -20,6 +20,7 @@ class Identity:
         require(type(self.test_number) is int and self.test_number > 0,
                 "INVALID_ID", "Test number must be a positive integer")
         require(not self.legacy or self.year == 2024, "INVALID_ID", "Legacy IDs belong to 2024")
+        require(self.year != 2024 or self.legacy, "INVALID_ID", "2024 uses only the legacy codec")
         if self.part is not None:
             require(type(self.part) is int and 1 <= self.part <= 7,
                     "INVALID_ID", "Part must be 1..7")

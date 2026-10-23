@@ -21,7 +21,7 @@ from .fixtures import make_fixture, approval, FakeBackend
 class IdConfigTests(unittest.TestCase):
     def test_canonical_roundtrip_and_legacy_do_not_collide(self):
         ids = set()
-        for year in range(2019, 2027):
+        for year in (y for y in range(2019, 2027) if y != 2024):
             value = Identity(year, 1, 5, 101)
             self.assertEqual(value, parse_id(value.question_id))
             self.assertEqual(value.year, parse_test(value.test).year)
@@ -31,6 +31,34 @@ class IdConfigTests(unittest.TestCase):
         self.assertEqual(parse_test("1").year, 2024)
         self.assertNotIn(legacy.question_id, ids)
         self.assertEqual(Identity(2019, 1, 5, 101).question_id, "ets19_t1_p5_101")
+
+    def test_2024_only_legacy_codec(self):
+        with self.assertRaises(IngestError):
+            Identity(2024, 1, 5, 101)
+        with self.assertRaises(IngestError):
+            parse_id("ets24_t1_p5_101")
+        with self.assertRaises(IngestError):
+            parse_test("2024-1")
+
+    def test_provider_config_error_does_not_spend_budget(self):
+        settings = {"model": "fixture-model", "max_calls": 2, "attempts": 3, "endpoint": "https://example.invalid/x",
+                    "quota_checked": True, "budget_approved": True,
+                    "quota_checked_at": datetime.now(timezone.utc).isoformat()}
+        provider = Provider(settings, allow_ai=True, sleep=lambda _: None)
+        with self.assertRaises(IngestError) as caught:
+            provider.structured("sys", "prompt")
+        self.assertEqual(caught.exception.code, "INVALID_TARGET")
+        self.assertEqual((provider.calls, provider.usage), (0, []))
+
+    def test_cli_apply_requires_preflight_before_any_client(self):
+        import io, contextlib
+        from ..cli import main
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            code = main(["publish", "--profile", "tools/exam_ingest/profiles/ets2019.json", "--plan", "x.json",
+                         "--apply", "--approved-plan-hash", "h", "--backup-root", "C:/nowhere"])
+        self.assertEqual(code, 2)
+        self.assertIn("BLOCKED_PREFLIGHT", out.getvalue())
 
     def test_invalid_ids(self):
         for value in ("ets2019_t1_p5_101", "ets19_t0_p1_1", "ets19_t1_p8_1", "ets19_t1_p5_201", "ets19_t1_p1_200"):

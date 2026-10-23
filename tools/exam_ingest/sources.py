@@ -3,7 +3,7 @@ from pathlib import Path
 import json
 import subprocess
 import wave
-from .common import IngestError, file_hash, require
+from .common import IngestError, file_hash, outside_repository, require
 
 REQUIRED = {"lc_pdf", "rc_pdf", "audio", "answer_key", "reference_key"}
 
@@ -31,6 +31,10 @@ def audio_duration(path, ffprobe="ffprobe"):
 def inspect_source(profile, role, spec):
     path = profile.source(spec)
     require(path.is_file(), "MISSING_SOURCE", f"Missing {role}: {path.name}")
+    try:
+        outside_repository(path.parent)
+    except IngestError as exc:
+        raise IngestError("UNSAFE_SOURCE", f"Source must be outside the Git checkout: {role}") from exc
     sha = file_hash(path)
     require(not spec.get("sha256") or sha == spec["sha256"], "SOURCE_CHANGED", f"Hash mismatch: {role}")
     out = {"path": str(path), "sha256": sha, "bytes": path.stat().st_size}

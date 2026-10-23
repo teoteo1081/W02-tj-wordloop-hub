@@ -74,7 +74,7 @@ def validate_bundle(bundle, profile):
         import re
         for url in re.findall(r"\[img\] (\S+)", row["passage"]):
             require(url.startswith(profile.data["target"]["image_base"]) and
-                    url.rsplit("/", 1)[-1] in media_names,
+                    url.rsplit("/", 1)[-1].split("?", 1)[0] in media_names,
                     "INVALID_MEDIA", "Question references media outside this publication")
     return profile.identity(number).test
 
@@ -157,6 +157,7 @@ def apply_plan(plan, profile, client, backup_root, approved_plan_hash=None, appl
         return _apply_plan(plan, profile, client, backup_root, approved_plan_hash, False)
     require(plan.get("plan_hash") == _seal(plan) and approved_plan_hash == plan["plan_hash"],
             "BLOCKED_APPROVAL", "Explicit approval of an unchanged plan hash required")
+    require(backup_root is not None, "INVALID_OUTPUT", "Explicit backup-root required for apply")
     directory = outside_repository(Path(backup_root) / plan["plan_hash"])
     directory.mkdir(parents=True, exist_ok=True)
     lock = directory / "publish.lock"
@@ -165,9 +166,18 @@ def apply_plan(plan, profile, client, backup_root, approved_plan_hash=None, appl
             stream.write("publication in progress\n")
     except FileExistsError:
         require(False, "PUBLISH_LOCKED", "Publication lock exists; inspect owner before retry")
+    import tempfile
+    target_lock = Path(tempfile.gettempdir()) / f"exam_ingest_{plan['target_hash'][:16]}_{plan['test']}.lock"
+    try:
+        with target_lock.open("x", encoding="utf-8") as stream:
+            stream.write("publication in progress for this target/Test" + chr(10))
+    except FileExistsError:
+        lock.unlink()
+        require(False, "PUBLISH_LOCKED", "Another publication of this target/Test is running; inspect owner before retry")
     try:
         return _apply_plan(plan, profile, client, backup_root, approved_plan_hash, True)
     finally:
+        target_lock.unlink()
         lock.unlink()
 
 
