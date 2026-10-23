@@ -240,14 +240,14 @@
     if (hashRaw && (!sel.sectionId || !sel.pageId)) {
       var baseName = hashRaw.split("/").pop().replace(/\.html$/i, "");
       var suMatch = baseName.match(/SU\d+/i);
-      var suCode = suMatch ? suMatch[0].toUpperCase() : "";
+      var suRe = suMatch ? new RegExp("SU0*" + parseInt(suMatch[0].slice(2), 10) + "(?![0-9])", "i") : null;   /* SU02 (tên file) khớp SU2 (tên section/page) */
       var cleanWords = baseName.replace(/^(EA\d+_)?(SU\d+_)?/i, "").replace(/[_-]+/g, " ").trim().toLowerCase();
 
       if (!sel.sectionId && S.sections) {
         var hitSec = S.sections.find(function (s) {
           if (!s || !s.name) return false;
           var nm = s.name.toUpperCase();
-          if (suCode && nm.indexOf(suCode) >= 0) return true;
+          if (suRe && suRe.test(nm)) return true;
           if (cleanWords && cleanWords.length > 3 && s.name.toLowerCase().indexOf(cleanWords) >= 0) return true;
           return false;
         });
@@ -261,13 +261,13 @@
     if (hashRaw && !sel.pageId && pgs.length) {
       var baseName = hashRaw.split("/").pop().replace(/\.html$/i, "");
       var suMatch = baseName.match(/SU\d+/i);
-      var suCode = suMatch ? suMatch[0].toUpperCase() : "";
+      var suRe = suMatch ? new RegExp("SU0*" + parseInt(suMatch[0].slice(2), 10) + "(?![0-9])", "i") : null;   /* SU02 (tên file) khớp SU2 (tên section/page) */
       var cleanWords = baseName.replace(/^(EA\d+_)?(SU\d+_)?/i, "").replace(/[_-]+/g, " ").trim().toLowerCase();
 
       var hitPage = pgs.find(function (p) {
         if (!p || !p.name) return false;
         var nm = p.name.toUpperCase();
-        if (suCode && nm.indexOf(suCode) >= 0) return true;
+        if (suRe && suRe.test(nm)) return true;
         if (cleanWords && cleanWords.length > 3 && p.name.toLowerCase().indexOf(cleanWords) >= 0) return true;
         return false;
       });
@@ -275,7 +275,7 @@
         var anyPage = S.pages.find(function (p) {
           if (!p || !p.name) return false;
           var nm = p.name.toUpperCase();
-          if (suCode && nm.indexOf(suCode) >= 0) return true;
+          if (suRe && suRe.test(nm)) return true;
           if (cleanWords && cleanWords.length > 3 && p.name.toLowerCase().indexOf(cleanWords) >= 0) return true;
           return false;
         });

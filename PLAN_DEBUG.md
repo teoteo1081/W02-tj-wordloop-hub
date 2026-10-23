@@ -119,7 +119,10 @@ Khắc phục triệt để 6 lỗi UI, PWA offline và lỗi console đã đư�
 * [x] Thực thi toàn bộ 6 nhóm sửa lỗi (FIX-01 đến FIX-06) theo kế hoạch
 * [x] One-Shot Correction:
   - Fix 1: Thêm rule `[hidden]{display:none;}` cho `.crumb`, `.batches-bar`, `.section-bar` và cập nhật `App.toggleStudyBars` kèm `.section-bar`.
-  - Fix 2: Tải `keys.local.js` trên localhost vô điều kiện khi chạy local (không bị chặn bởi SUPABASE_URL mặc định).
+  - Fix 2: Tải `keys.local.js` trên localhost vô điều kiện khi chạy local (không bị chặn bởi SUPABASE_URL mặc định). Lưu ý (QA): script chèn động chạy SAU `app.js`, nên giá trị đọc lúc init (`SUPABASE_*`) ghi đè trong file này bị trễ; key đọc lúc gọi (Gemini/OpenAI) vẫn đúng.
   - Fix 3: Trỏ link bài học EA Quest về `../../index.html?sel=hub_ea2025#`, hỗ trợ `qclass.js`, và định tuyến hash bài học tự động trong `boot()` & `loadNotebook()`.
 * [x] Kiểm tra tĩnh `node --check` toàn bộ file `.js` sau sửa đổi
 * [x] Chờ Coordinator audit độc lập trước khi commit
+
+## Ngoại lệ làn (TJ cho phép 2026-10-22)
+* Làn D (`fix/debug-plan`, mã ứng dụng) được đưa lên `main` theo ngoại lệ do TJ cho phép. Đã QA độc lập (3 luồng PASS); sửa thêm: số SU khớp bỏ số 0 đầu (`SU02`↔`SU2`). Làn R phải rebase lại lên `main`. Còn lại (L3): khối xử lý hash trong `boot()` lặp 2 lần, dọn sau.
