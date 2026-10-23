@@ -53,6 +53,33 @@
 
 **Bàn giao cuối cycle:** nêu kết quả, bằng chứng, SHA checkpoint, giới hạn độ phủ và quyết định PO theo dạng tác động người dùng / phương án / đề xuất. Tiêu chí nghiệm thu cụ thể ở SPEC §1.1. Không tuyên bố A0 hoàn tất khi chưa có bằng chứng trình duyệt, ảnh chuẩn và hai client.
 
+## 0.2 Cycle tiếp theo — A0 trong trình duyệt (plan-only sau `0d22ae2`)
+
+**Chỉ đạo hiện tại của TJ:** commit plan cycle vào nhánh, không mutate. Checkpoint này chỉ thay đổi tài liệu; **chưa chạy cycle, chưa tạo/sửa test, fixture hay mã ứng dụng**. Không suy ra quyền bắt đầu thực hiện từ việc commit kế hoạch; dừng sau commit tài liệu và chờ chỉ đạo tiếp tục.
+
+**Mục tiêu khi được tiếp tục:** dựng bằng chứng hành vi trong trình duyệt cho phần A0 còn thiếu: luồng học chính, nhật ký backend/storage, hai client độc lập và ảnh desktop/mobile ổn định. Đây là cycle kiểm thử, không phải bắt đầu restructure mã ứng dụng hay nghiệm thu preview.
+
+**Nguồn:** baseline giữ `e324beb54b29ddfa055956c756a4ceba2676dfa1`; checkpoint đầu vào `0d22ae2`. Khi thực hiện phải kiểm lại Git, baseline sạch, SHA/hình dạng nguồn nạp thật và tình trạng main; không tự nhập thay đổi từ các nhánh khác. Các quyết định PO về ưu tiên AI và cache ở §0.1 tiếp tục có hiệu lực.
+
+**Công cụ đã xác minh ở bước lập kế hoạch:** có Playwright Python tại Python312/site-packages và executable Chromium `chromium-1248/chrome-win64/chrome.exe` tồn tại. Đây là bằng chứng công cụ có sẵn, **chưa chứng minh trình duyệt khởi chạy hay test chạy được**. Ưu tiên dùng công cụ đã có; không tự cài/nâng cấp hoặc tải gói/browser mới. Nếu không dùng được, tiếp tục phần độc lập rồi báo phụ thuộc thực tế, không coi giả định môi trường là lỗi sản phẩm.
+
+| Chặng | Đầu ra dự kiến |
+|---|---|
+| M0.4 — khung trình duyệt | Server cục bộ cho baseline/nhánh; dữ liệu tổng hợp, đồng hồ/random cố định. Chặn mạng thật trước khi nạp app, mô phỏng REST/Storage/Functions; broker Realtime giả trong tiến trình test, mỗi người một browser context, không dùng BroadcastChannel nối người chơi |
+| Luồng học chính | Kiểm mở Notebook/Block, trả lời/chấm, bookmark/Ôn riêng, Fix lỗi sai, lưu và tải lại tiến trình; nối ID của TEST §4/§8 và các khoảng trống Node vào ma trận thực chạy |
+| M0.5 — nhật ký | Thu thao tác backend và khóa/hình dạng storage của từng kịch bản; tách nguồn baseline/nhánh, thứ tự bất đồng bộ theo TEST §5. Không đưa dữ liệu hay tài khoản thật vào artifact |
+| M0.7 — hai client | Tạo/vào phòng `ZZ_…`, bắt đầu ván, trả lời, kết thúc; tải lại giữa ván. Client riêng context, có kiểm chuyển trạng thái/tin và kết quả lưu, không chỉ kiểm màn hình có xuất hiện |
+| M0.6 — ảnh chuẩn | Desktop `1280×800` và mobile `390×844`; học có bài đọc, bookmark/Fix, lobby và ván đang chơi. Cùng môi trường chạy hai lần độc lập; vùng dao động chỉ che khi có lý do công khai |
+| QA và checkpoint | QA độc lập tái kiểm phần rủi ro, đối chiếu artifact/độ phủ; báo cáo phần đạt/lỗi/chưa phủ. Commit test/tài liệu trên `feat/restructure-plan`, không merge/push; không tuyên bố mọi M0 đã hoàn tất |
+
+**Phạm vi khi thực hiện:** thêm test/harness/báo cáo trong `tests/` và cập nhật tài liệu. Không sửa module ứng dụng để làm test xanh; không dùng hồ sơ/phòng thật, SQL, deploy, hosting, secret hay dịch vụ AI thật. Mock ở ranh giới dịch vụ; không thay hàm ứng dụng đang được kiểm bằng kết quả mong muốn. Có thể chia chặng kỹ thuật/commit nhỏ trong cùng cycle mà không hỏi PO chọn chi tiết code.
+
+**Cổng nghiệm thu:** SPEC §1.2. Ảnh/nhật ký thu lần đầu là candidate baseline để review, chưa tự coi đã được PO duyệt; thay chuẩn đã có vẫn theo TEST §1.3. M0.8/CI phụ thuộc G2 `handoff/gate` và nằm ngoài cycle này; chưa cần PO giải quyết G2 để làm các chặng độc lập ở trên.
+
+**Cache và preview:** nợ cấu hình phải sửa trước nghiệm thu preview như PO đã chốt. Cycle trình duyệt này không gồm sửa cache hay triển khai preview; gate `node tests/a0/static.js . --current --preview` phải tiếp tục đỏ trong lúc config chưa sửa. Tác vụ sửa app/cache sẽ được tách commit/phạm vi riêng trước cổng preview, không trộn với thu baseline.
+
+**Điểm dừng:** cần đổi hành vi/phạm vi, chấp nhận thay đổi chuẩn, tác động dữ liệu production, chi phí/quyền cài mới hoặc quyết định sản phẩm chưa có. Nếu một điểm chỉ chặn một chặng, hoàn thành phần độc lập còn được phép trước khi bàn giao. Môi trường không chạy hoặc mock lệch thì agent tự điều tra trong phạm vi, không chuyển thành câu hỏi PO về cách viết code. Bàn giao bằng tác động người dùng, bằng chứng, phương án và đề xuất.
+
 ## 1. Mục tiêu và ranh giới
 
 - **Luồng A (làm):** đổi cấu trúc thư mục/module, bỏ trùng lặp, đưa mọi truy cập dữ liệu về một lớp, thêm lưới an toàn (test, CI). **Không đổi tính năng, giao diện, schema.**

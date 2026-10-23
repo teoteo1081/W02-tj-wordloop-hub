@@ -31,6 +31,25 @@ Phần này cụ thể hoá cycle trong PLAN §0.1, không mở quyền sửa �
 
 **Quy tắc quyết định:** agent tự giải quyết kỹ thuật trong phạm vi. Khi cần thay đổi sản phẩm, duyệt chuẩn/ngoại lệ, cấp quyền cài gói/chi phí hoặc tác động hệ thống thật, trình PO quyết định bằng ảnh hưởng và phương án; không tự chọn thay. Hai commit trên main sau baseline nêu ở PLAN §0.1 không được tự nhập vào cycle này; tương thích với main hiện hành và cách tích hợp cuối phải được đánh giá lại trước cổng liên quan.
 
+### 1.2 Nghiệm thu cycle A0 trong trình duyệt (PLAN §0.2)
+
+**Trạng thái: kế hoạch, chưa thực hiện.** TJ chỉ yêu cầu commit plan và không mutate. Mục này định nghĩa bằng chứng cần có khi được chỉ đạo chạy, không xác nhận test/ảnh/multiplayer đã đạt và không mở quyền sửa ứng dụng/deploy/cài mới.
+
+| Tiêu chí | Bằng chứng phải quan sát được |
+|---|---|
+| Đúng nguồn | Báo cáo ghi SHA baseline/nhánh và URL server cục bộ tương ứng; baseline sạch, mã ứng dụng không đổi; kiểm source nạp thực tế để tránh chạy nhầm checkout hoặc cache cũ |
+| Cách ly mạng/dữ liệu | Cài chặn mạng trước navigation và trên từng context; lời gọi chưa mô phỏng phải bị từ chối và hiện trong báo cáo. Có phản chứng request tới endpoint không khai báo bị chặn. Dữ liệu tổng hợp, mã phòng `ZZ_…`, không truy cập backend/tài khoản thật |
+| Hành vi WordLoop | Các luồng mở bài, trả lời/chấm, bookmark/Fix, lưu/reload có assertion trạng thái và dữ liệu đầu ra, truy vết tới ID TEST. Không dùng số lần click hay screenshot đơn lẻ làm bằng chứng đã lưu đúng |
+| Nhật ký backend/storage | Theo từng kịch bản có nguồn baseline/nhánh, thao tác, đối tượng, bộ lọc và hình dạng payload/giá trị; chuẩn hóa ID/time và thứ tự song song theo TEST §5. Liệt kê mọi khác biệt; không tự cập nhật golden để bỏ lỗi |
+| Hai client thực sự độc lập | Hai browser context không chia sẻ storage; broker giả chuyển tin theo context/kênh. Chứng minh lobby → ván → kết quả, đáp án và tải lại giữa ván; không thay state cả hai client trực tiếp để giả kết quả đồng bộ |
+| Ảnh ổn định | Ma trận tối thiểu PLAN §0.2 ở 1280×800 và 390×844, kích thước viewport thực được ghi. Hai lượt chạy mới độc lập cho ảnh giống hệt sau mask có lý do; không nới ngưỡng vì test chập chờn |
+| Tính tái lập | Có lệnh chạy, phụ thuộc hiện hữu, log và tổng đạt/lỗi/skip/chưa phủ. Lỗi assertion, request ngoài mock hoặc chuẩn không ổn định phải trả exit khác 0; không báo SUCCESS khi tiêu chí bắt buộc chưa đủ bằng chứng |
+| QA và phạm vi | QA độc lập đối chiếu kịch bản/artifact/coverage và chạy lại phần rủi ro; báo verdict. Diff chỉ trong tests/tài liệu, checkpoint có commit SHA trên nhánh hiện tại; không merge/push |
+
+Áp dụng cùng trạng thái thực hiện và verdict độc lập ở §1.1. Có bằng chứng một phần thì báo PARTIAL và chỉ rõ phần thiếu, không tự đổi tiêu chí thành phần đã chạy. Cycle browser đạt cũng không tự mở cổng CI, sửa dữ liệu thật hoặc nghiệm thu toàn M0; phải đối chiếu đầy đủ TEST §10/ROADMAP.
+
+Ảnh và call log lần đầu được ghi **candidate baseline** để review. Chỉ báo "đã thu và ổn định" khi đã tái lập; chỉ báo "đã được PO duyệt" khi có quyết định tương ứng. Nợ cache vẫn làm preview gate đỏ cho tới khi sửa riêng như quyết định PO; không được tắt gate để kết thúc cycle browser.
+
 ## 2. Bất biến (hợp đồng "giữ nguyên")
 
 Sau mỗi bước restructure, các điều sau PHẢI vẫn đúng. Đây là tiêu chí nghiệm thu chung, bổ sung cho tiêu chí riêng từng bước.
