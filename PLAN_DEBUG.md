@@ -126,3 +126,6 @@ Khắc phục triệt để 6 lỗi UI, PWA offline và lỗi console đã đư�
 
 ## Ngoại lệ làn (TJ cho phép 2026-10-22)
 * Làn D (`fix/debug-plan`, mã ứng dụng) được đưa lên `main` theo ngoại lệ do TJ cho phép. Đã QA độc lập (3 luồng PASS); sửa thêm: số SU khớp bỏ số 0 đầu (`SU02`↔`SU2`). Làn R phải rebase lại lên `main`. Còn lại (L3): khối xử lý hash trong `boot()` lặp 2 lần, dọn sau.
+
+## Hash bài học EA -> chương (nhánh fix/ea-lesson-hash)
+* Dữ liệu thật đặt tên chương `Ch.NN ...` (không có mã SU) nên dò SU không chạy; thêm bảng `EA_LESSON_CH` (tên file bài -> số chương đầu, trong `js/app.js`) và gom khối xử lý hash lặp thành `hashNameTest` (xử lý L3). Chỉ 15/17 bài đã đối chiếu tên chương; `S_Corporations_to_Exempt_Organizations` chưa có chương tương ứng trong Notebook Part II -> chỉ chọn được Part. Cần TJ xem lại bảng ánh xạ (suy từ tên chương). Đã thử trên web thật (GET-only): SU02->Ch.02, SU05->Ch.70, Basis->Ch.20.

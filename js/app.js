@@ -219,6 +219,35 @@
     }, 600);
   };
 
+  /* Bài học EA (tên file trong #hash) -> số chương "Ch.NN" của Notebook EA 2025 — tên chương thật
+     không có mã SU nên không dò theo SU được. Chỉ các bài đã đối chiếu tên chương; bài khác để trống
+     (chỉ chọn được Part). Chương đầu của bài, nằm TRONG đúng Notebook Part của file. */
+  var EA_LESSON_CH = {
+    Preliminary_Work_to_Estate_Gift_Basics: 8, Filing_Status_to_Retirement_Plans: 1,
+    EA1_SU01_Filing_Requirements: 1, EA1_SU02_Gross_Income_I: 2, EA1_SU03_Gross_Income_II: 2,
+    Entity_Types_to_Other_Deductions: 15, Basis_to_Partnership_Operations: 20,
+    Disposition_of_Partners_Interest_to_Corporate_Formation: 25, Corporate_Income_to_Redemptions_and_Liquidations: 33,
+    EA3_SU01_Practice_before_the_IRS: 53, EA3_SU02_Tax_Preparers_and_Penalties: 60, EA3_SU03_Representation: 64,
+    EA3_SU04_Examination_of_Returns_and_Appeals_Process: 66, EA3_SU05_The_Collection_Process: 70,
+    EA3_SU06_Tax_Authority: 74, EA3_SU07_Recordkeeping_and_Electronic_Filing: 78
+  };
+  /* #hash (tên file bài học) -> hàm kiểm tên Section/Page có khớp không; null nếu hash rỗng */
+  function hashNameTest(hashRaw) {
+    if (!hashRaw) return null;
+    var baseName = hashRaw.split("/").pop().replace(/\.html$/i, "");
+    var suMatch = baseName.match(/SU\d+/i);
+    var suRe = suMatch ? new RegExp("SU0*" + parseInt(suMatch[0].slice(2), 10) + "(?![0-9])", "i") : null;   /* SU02 (tên file) khớp SU2 (tên section/page) */
+    var cleanWords = baseName.replace(/^(EA\d+_)?(SU\d+_)?/i, "").replace(/[_-]+/g, " ").trim().toLowerCase();
+    var ch = EA_LESSON_CH[baseName];
+    var chRe = ch ? new RegExp("^Ch[.]0*" + ch + "(?![0-9])", "i") : null;
+    return function (name) {
+      if (!name) return false;
+      if (chRe && chRe.test(name)) return true;
+      if (suRe && suRe.test(name.toUpperCase())) return true;
+      return !!(cleanWords && cleanWords.length > 3 && name.toLowerCase().indexOf(cleanWords) >= 0);
+    };
+  }
+
   async function loadNotebook(notebookId) {
     /* Mở Notebook Ôn riêng của CHÍNH MÌNH -> đồng bộ Block với danh sách ⭐
        trước (gỡ từ đã bỏ ⭐, thêm từ mới), rồi mới nạp như Notebook thường. */
@@ -237,48 +266,19 @@
 
     var sel = readSel();
     var hashRaw = (location.hash ? decodeURIComponent(location.hash.slice(1)) : "").trim();
-    if (hashRaw && (!sel.sectionId || !sel.pageId)) {
-      var baseName = hashRaw.split("/").pop().replace(/\.html$/i, "");
-      var suMatch = baseName.match(/SU\d+/i);
-      var suRe = suMatch ? new RegExp("SU0*" + parseInt(suMatch[0].slice(2), 10) + "(?![0-9])", "i") : null;   /* SU02 (tên file) khớp SU2 (tên section/page) */
-      var cleanWords = baseName.replace(/^(EA\d+_)?(SU\d+_)?/i, "").replace(/[_-]+/g, " ").trim().toLowerCase();
-
-      if (!sel.sectionId && S.sections) {
-        var hitSec = S.sections.find(function (s) {
-          if (!s || !s.name) return false;
-          var nm = s.name.toUpperCase();
-          if (suRe && suRe.test(nm)) return true;
-          if (cleanWords && cleanWords.length > 3 && s.name.toLowerCase().indexOf(cleanWords) >= 0) return true;
-          return false;
-        });
-        if (hitSec) sel.sectionId = hitSec.id;
-      }
+    var hashHit = hashNameTest(hashRaw);
+    if (hashHit && !sel.sectionId && S.sections) {
+      var hitSec = S.sections.find(function (s) { return s && hashHit(s.name); });
+      if (hitSec) sel.sectionId = hitSec.id;
     }
 
     S.sectionId = pick(S.sections, sel.sectionId);
     var pgs = S.sectionId ? pagesOfSection(S.sectionId) : [];
 
-    if (hashRaw && !sel.pageId && pgs.length) {
-      var baseName = hashRaw.split("/").pop().replace(/\.html$/i, "");
-      var suMatch = baseName.match(/SU\d+/i);
-      var suRe = suMatch ? new RegExp("SU0*" + parseInt(suMatch[0].slice(2), 10) + "(?![0-9])", "i") : null;   /* SU02 (tên file) khớp SU2 (tên section/page) */
-      var cleanWords = baseName.replace(/^(EA\d+_)?(SU\d+_)?/i, "").replace(/[_-]+/g, " ").trim().toLowerCase();
-
-      var hitPage = pgs.find(function (p) {
-        if (!p || !p.name) return false;
-        var nm = p.name.toUpperCase();
-        if (suRe && suRe.test(nm)) return true;
-        if (cleanWords && cleanWords.length > 3 && p.name.toLowerCase().indexOf(cleanWords) >= 0) return true;
-        return false;
-      });
+    if (hashHit && !sel.pageId && pgs.length) {
+      var hitPage = pgs.find(function (p) { return p && hashHit(p.name); });
       if (!hitPage && S.pages) {
-        var anyPage = S.pages.find(function (p) {
-          if (!p || !p.name) return false;
-          var nm = p.name.toUpperCase();
-          if (suRe && suRe.test(nm)) return true;
-          if (cleanWords && cleanWords.length > 3 && p.name.toLowerCase().indexOf(cleanWords) >= 0) return true;
-          return false;
-        });
+        var anyPage = S.pages.find(function (p) { return p && hashHit(p.name); });
         if (anyPage) {
           S.sectionId = anyPage.section_id;
           pgs = pagesOfSection(S.sectionId);
