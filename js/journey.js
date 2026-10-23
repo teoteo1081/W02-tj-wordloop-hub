@@ -66,6 +66,7 @@
     w.$("#btn-back").hidden = true;
     w.$("#screen-journey").hidden = false;
     w.$("#btn-learning").hidden = false;
+    if (w.App && w.App.toggleStudyBars) w.App.toggleStudyBars(false);
     w.$("#workspace").scrollTop = 0;
 
     J._crumb = [];   // trống = cây bên phải đang ở gốc "🌐 Toàn bộ"
@@ -94,6 +95,7 @@
   J.close = function () {
     w.$("#screen-journey").hidden = true;
     w.$("#btn-learning").hidden = true;
+    if (w.App && w.App.toggleStudyBars) w.App.toggleStudyBars(true);
     if (J._prevWasDetail && w.Detail && w.Detail.blockId) {
       w.$("#screen-detail").hidden = false;
       w.$("#btn-back").hidden = false;

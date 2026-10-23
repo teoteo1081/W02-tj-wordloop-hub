@@ -76,7 +76,7 @@
   const hash = (s) => { let h = 5381; for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return (h >>> 0).toString(36); };
   const lessonById = Object.fromEntries(DATA.lessons.map((l) => [l.id, l]));
   const shortTitle = (l) => l.title.replace(/^EA( Exam)? Part (I|II|III)\s*[–-]\s*/, "");
-  const lessonLink = (id) => { const l = lessonById[id]; return l ? CFG.lessonBase + l.file.split("/").map(encodeURIComponent).join("/") : "#"; };
+  const lessonLink = (id) => { const l = lessonById[id]; return (l && CFG.lessonBase && l.file) ? CFG.lessonBase + l.file.split("/").map(encodeURIComponent).join("/") : ""; };
   DATA.vocab.forEach((v) => { v.key = v.lesson + "|" + v.en; v.part = (lessonById[v.lesson] || {}).part; });
   DATA.questions.forEach((q) => { q.key = q.lesson + "|" + hash(q.q); q.part = (lessonById[q.lesson] || {}).part; });
 
@@ -289,7 +289,7 @@
     document.getElementById("after").innerHTML = `
       <div class="feedback ${ok ? "ok" : "bad"}"><b>${ok ? pick(CHEERS) : pick(COMFORT)}</b><br>
         <b>${esc(v.en)}</b> <button class="speak" data-speak="${esc(v.en)}">🔊</button> = ${esc(v.vi)}
-        <div class="muted" style="margin-top:6px">📍 ${esc(v.section)}${l ? ` · <a href="${lessonLink(v.lesson)}" target="_blank" rel="noopener">mở bài học</a>` : ""}</div>
+        <div class="muted" style="margin-top:6px">📍 ${esc(v.section)}${(l && lessonLink(v.lesson)) ? ` · <a href="${lessonLink(v.lesson)}" target="_blank" rel="noopener">mở bài học</a>` : ""}</div>
         <div class="muted">Ôn lại sau: ${BOX_DAYS[st.box] === 0 ? "hôm nay" : BOX_DAYS[st.box] + " ngày"}</div>
       </div>
       <button class="btn block" data-act="vocabNext">${V.i + 1 < V.items.length ? "Tiếp nha →" : "Xem kết quả 🎁"}</button>`;
@@ -647,7 +647,7 @@
   function progress() {
     const rows = DATA.lessons.map((l) => {
       const v = vocabStat(l.id), q = quizStat(l.id);
-      return `<tr><td><span class="pill p${(l.part - 1) % 3 + 1}">${esc(partLabel(l.part))}</span> <a href="${lessonLink(l.id)}" target="_blank" rel="noopener">${esc(shortTitle(l))}</a></td><td class="num">📚 ${v.pct}%</td><td class="num">📝 ${q.pct}%</td></tr>`;
+      return `<tr><td><span class="pill p${(l.part - 1) % 3 + 1}">${esc(partLabel(l.part))}</span> ${lessonLink(l.id) ? `<a href="${lessonLink(l.id)}" target="_blank" rel="noopener">${esc(shortTitle(l))}</a>` : esc(shortTitle(l))}</td><td class="num">📚 ${v.pct}%</td><td class="num">📝 ${q.pct}%</td></tr>`;
     }).join("");
     const learned = DATA.vocab.filter((v) => (S.vocab[v.key] || {}).box >= 3).length;
     const qOk = DATA.questions.filter((q) => (S.quiz[q.key] || {}).last === 1).length;

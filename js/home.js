@@ -24,6 +24,7 @@
     w.$("#btn-back").hidden = true;
     w.$("#screen-home").hidden = false;
     w.$("#btn-learning").hidden = false;
+    if (w.App && w.App.toggleStudyBars) w.App.toggleStudyBars(false);
     w.$("#workspace").scrollTop = 0;
     await H.load();
   };
@@ -31,6 +32,7 @@
   H.close = function () {
     w.$("#screen-home").hidden = true;
     w.$("#btn-learning").hidden = true;
+    if (w.App && w.App.toggleStudyBars) w.App.toggleStudyBars(true);
     if (H._prevWasDetail && w.Detail && w.Detail.blockId) {
       w.$("#screen-detail").hidden = false;
       w.$("#btn-back").hidden = false;

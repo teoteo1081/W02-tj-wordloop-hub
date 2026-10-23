@@ -1285,6 +1285,7 @@
     w.$("#screen-leaderboard").hidden = true;
     w.$("#screen-wordset").hidden = true;
     w.$("#btn-learning").hidden = true;
+    App.toggleStudyBars(true);
 
     /* Bug đã gặp: nhảy từ Trang chủ/Journey vào 1 Notebook/Section/Page/
        Batch (KHÔNG mở thẳng 1 Block cụ thể) thì màn hình trống trơn —
@@ -1323,6 +1324,14 @@
     try { if (w.WordSet && w.WordSet.isOpen()) w.WordSet.close(); } catch (e) {}
     try { leaveDetail(); } catch (e) {}
     try { w.$("#screen-detail").hidden = true; w.$("#screen-blocks").hidden = false; } catch (e) {}
+    App.toggleStudyBars(true);
+  };
+
+  App.toggleStudyBars = function (show) {
+    var crumb = w.$("#crumb");
+    var bbar = w.$(".batches-bar");
+    if (crumb) crumb.hidden = !show;
+    if (bbar) bbar.hidden = !show;
   };
 
   /* ══════════════ BỘ ĐẾM TỔNG SỐ TỪ (góc phải thanh trên cùng) ══════════════
@@ -3448,6 +3457,7 @@
     w.$("#btn-back").hidden = true;
     w.$("#screen-leaderboard").hidden = false;
     w.$("#btn-learning").hidden = false;
+    App.toggleStudyBars(false);
     w.$("#workspace").scrollTop = 0;
 
     var parts = leaderboardScopeParts(table, id);
@@ -3471,6 +3481,7 @@
   App.closeLeaderboardPage = function () {
     w.$("#screen-leaderboard").hidden = true;
     w.$("#btn-learning").hidden = true;
+    App.toggleStudyBars(true);
     if (LB_PAGE.prevWasDetail && w.Detail && w.Detail.blockId) {
       w.$("#screen-detail").hidden = false;
       w.$("#btn-back").hidden = false;
@@ -5156,6 +5167,11 @@
     App.bindDrag();
 
     /* --- mobile --- */
+    var brand = w.$("#brand");
+    if (brand) {
+      brand.style.cursor = "pointer";
+      brand.onclick = function () { location.reload(); };
+    }
     w.$("#btn-drawer-left").onclick = function () {
       openDrawer(w.$("#sidebar-left").classList.contains("open") ? null : "left");
     };

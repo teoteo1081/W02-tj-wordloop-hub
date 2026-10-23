@@ -178,6 +178,7 @@
     w.$("#btn-back").hidden = true;
     w.$("#screen-wordset").hidden = false;
     w.$("#btn-learning").hidden = false;
+    if (w.App && w.App.toggleStudyBars) w.App.toggleStudyBars(false);
     w.$("#workspace").scrollTop = 0;
     WS.quiz = null;
     await WS.load();
@@ -188,6 +189,7 @@
     clearTimeout(WS._autoNext);
     w.$("#screen-wordset").hidden = true;
     w.$("#btn-learning").hidden = true;
+    if (w.App && w.App.toggleStudyBars) w.App.toggleStudyBars(true);
     if (WS._prevWasDetail && w.Detail && w.Detail.blockId) {
       w.$("#screen-detail").hidden = false;
       w.$("#btn-back").hidden = false;
@@ -698,6 +700,7 @@
         var loc = await w.DB.locateBlock(jump.dataset.wsJump);
         if (!loc) { w.toast("Không tìm thấy Block của từ này", "err"); return; }
         w.$("#screen-wordset").hidden = true;
+        if (w.App && w.App.toggleStudyBars) w.App.toggleStudyBars(true);
         await w.App.jumpTo(loc);
       } catch (err) {
         w.toast("Không mở được Block: " + (err.message || err), "err");

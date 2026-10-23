@@ -1,6 +1,6 @@
 # Kế hoạch sửa lỗi (PLAN_DEBUG.md) — WordLoop Hub
 
-> **Trạng thái:** DỰ THẢO KẾ HOẠCH (ĐÃ TÁCH WORKTREE `wt-debug-plan` · CHƯA MUTATE CODE ỨNG DỤNG).  
+> **Trạng thái:** HOÀN THÀNH THỰC THI (ĐÃ SỬA VÀ VERIFY TẠI WORKTREE `wt-debug-plan` · SẴN SÀNG AUDIT).  
 > **Nhánh:** `fix/debug-plan` tại worktree `C:/Users/User/Desktop/TJ/_work/wt-debug-plan`.  
 > **Cam kết:** Giữ nguyên 100% logic sản phẩm và quy tắc thiết kế trong `CLAUDE.md`.
 
@@ -116,4 +116,6 @@ Khắc phục triệt để 6 lỗi UI, PWA offline và lỗi console đã đư�
 * [x] Tạo worktree cách ly `C:/Users/User/Desktop/TJ/_work/wt-debug-plan`
 * [x] Tạo nhánh làm việc `fix/debug-plan` từ `main`
 * [x] Soạn thảo và cam kết hợp đồng thực thi (`PLAN_DEBUG.md`)
-* [ ] **DỪNG TẠI ĐÂY — CHƯA MUTATE CODE ỨNG DỤNG** (Chờ người dùng/PO phê duyệt để bắt đầu áp dụng thay đổi code).
+* [x] Thực thi toàn bộ 6 nhóm sửa lỗi (FIX-01 đến FIX-06) theo kế hoạch
+* [x] Kiểm tra tĩnh `node --check` toàn bộ file `.js` sau sửa đổi
+* [x] Chờ Coordinator audit độc lập trước khi commit
