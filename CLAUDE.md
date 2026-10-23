@@ -8,7 +8,11 @@
   - **Làn N (nội dung) = `main`**: từ vựng, bài đọc, đề thi (nạp đề, lời giải, audio, mốc), bản dịch các ngôn ngữ khác (`i18n` vi/en/zh/es và ngôn ngữ thêm sau), dữ liệu + script công cụ phục vụ nội dung (`data/`, `tools/`), tài liệu. Đi qua nhánh `content/…` hoặc `docs/…` rồi `/ship`.
   - **Làn R (restructure)** = nhánh `feat/restructure-plan`; **làn D (debug)** = nhánh `fix/debug-plan` (FIX-01…06 trong `PLAN_DEBUG.md`) và các `fix/…`. Làm riêng, **xong cả hai làn này rồi mới tính tiếp**; không đẩy lên `main` trước khi TJ quyết.
   - **Làn T (tính năng mới)**: **hoãn** — chờ làn R và D hoàn thành, TJ tính tiếp. Các nhánh `feat/…` đã có giữ nguyên, không mở thêm việc tính năng mới trên `main`.
-  - **Ranh giới:** sửa `js/`, `css/`, `index.html`, `game.html`, `sw.js`, `supabase/` trên `main` chỉ khi phục vụ TRỰC TIẾP dữ liệu nội dung (vd chuỗi hiển thị/khoá i18n cho ngôn ngữ mới). Đổi hành vi, giao diện, logic khác = làn T/D/R. Quy tắc bump `?v=N`/`GAME_VER` vẫn áp dụng cho mọi thay đổi chạm JS/CSS.
+  - **Ranh giới (kiểm theo ĐƯỜNG DẪN và NỘI DUNG diff):**
+    - **Mã ứng dụng — không vào `main` (trừ hotfix bên dưới):** `js/`, `css/`, `index.html`, `game.html`, `sw.js`, `manifest.webmanifest`, `supabase/`, `.github/`, và trong `learn/`: `learn/*.js`, `learn/*.css`, `learn/*/index.html`, `learn/sw/sw.js`, `learn/sw/sw.css`.
+    - **Nội dung — được vào `main`:** `data/`, `tools/` (script nạp/rà nội dung), `learn/*/data/`, `learn/sw/sets.json`, `learn/sw/ielts.json`, tài liệu `*.md`, `.claude/commands/`.
+    - Đường dẫn chỉ là bước lọc đầu: PHẢI đọc cả nội dung `git diff`. File nội dung mà diff thêm/đổi hàm, xử lý sự kiện, logic hiển thị cũng là mã ứng dụng. Ngoại lệ duy nhất trong mã ứng dụng: chuỗi hiển thị/khoá i18n phục vụ trực tiếp ngôn ngữ/dữ liệu mới.
+    - Quy tắc bump `?v=N`/`GAME_VER` vẫn áp dụng cho mọi thay đổi chạm JS/CSS.
   - **Hotfix tối thiểu trên `main`** chỉ khi một bug code chặn đúng việc nội dung: sửa nhỏ nhất, commit message ghi `hotfix-nội-dung: <lý do>`, ghi vào `PLAN_DEBUG.md`/README để làn D biết. Không dùng để lách thêm tính năng.
   - Hai commit `4708ba9`/`6c7b66b` (chống ô đáp án trùng nghĩa, sửa `js/game.js`, `js/detail.js`, `js/wordset.js`) lên `main` trước quy tắc này — ghi nhận, không hoàn lại.
   - **Mâu thuẫn cần xử lý ở nhánh R (chưa sửa):** `WORKTREE_ANCHOR.md`/`ROADMAP_RESTRUCTURE.md` trên `feat/restructure-plan` còn ghi "`main` đóng băng, thay `main` bằng fast-forward" — lỗi thời vì `main` vẫn tiến. Cách đưa restructure vào `main` (rebase nhánh R lên `main` trước khi freeze?) do TJ quyết lại.

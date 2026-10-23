@@ -45,7 +45,7 @@ Nguồn quy tắc: [CLAUDE.md](CLAUDE.md) mục “Làn làm việc”. Tóm t�
 | R restructure | tái cấu trúc codebase (`PLAN_RESTRUCTURE.md`) | `feat/restructure-plan` | Không, tới khi TJ quyết |
 | T tính năng | tính năng mới | `feat/…` | Hoãn: chờ D và R xong rồi TJ tính tiếp |
 
-- Builder gán làn TRƯỚC khi làm. Nếu diff của việc làn N đụng `js/`/`css/`/HTML ngoài chuỗi/khoá nội dung thật cần cho dữ liệu → dừng, chuyển làn hoặc hỏi TJ (hotfix nội dung: xem CLAUDE.md).
+- Builder gán làn TRƯỚC khi làm. Nếu diff của việc làn N đụng mã ứng dụng (danh sách đường dẫn + xét nội dung diff: CLAUDE.md, mục "Làn làm việc" › Ranh giới; gồm cả `learn/*.js`, `learn/*/index.html`, `learn/sw/sw.js`) ngoài chuỗi/khoá nội dung thật cần cho dữ liệu → dừng, chuyển làn hoặc hỏi TJ (hotfix nội dung: xem CLAUDE.md).
 - QA hậu kiểm kiểm cả ranh giới làn (`git diff --stat origin/main...HEAD`), không chỉ kiểm chức năng.
 - `WORKTREE_ANCHOR.md`/`ROADMAP_RESTRUCTURE.md` ở nhánh R còn ghi “`main` đóng băng”: lỗi thời, cần sửa trên nhánh đó; cách đưa restructure vào `main` TJ quyết lại.
 
