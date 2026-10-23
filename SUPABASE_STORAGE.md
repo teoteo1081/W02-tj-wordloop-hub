@@ -46,3 +46,11 @@
 - **Nạp đề mới:** `tools/ets2023/deploy_test.py` / `deploy_lc2.py` gọi `tools/game-worker/upload_audio.py` (mp3 → R2); ảnh vẫn lên Supabase.
 - **Xoá bản Supabase:** TJ tự xoá `listening/TEST_*_LC.mp3` trên Dashboard SAU KHI thử nghe trong game (xem `tools/game-worker/README.md`).
 - Chi tiết 3 bucket R2 (game / sách tham khảo / sách soạn bài): `R2_BUCKETS.md`.
+
+## 2026-10-24 — xoá bản mp3 trùng ở Supabase (TJ tự xoá, Claude kiểm lại)
+- **Xoá:** 20 file `listening/TEST_*_LC.mp3` (TEST_1…10 và TEST_2023-1…10), ~371 MB. Bản phát nằm ở R2 `tj-game`.
+- **Kiểm trước:** 20/20 file trên Worker `tj-game` đúng kích thước theo `W08-infra-report/infra-report/game_manifest.json`, đúng content-type audio, Range 206 hoạt động; `main` trên GitHub có `AUDIO_BASE` trỏ vào Worker.
+- **Kiểm sau:** Storage 429,2 MB (379 file) → **58,1 MB (359 file)**; không còn `.mp3`; `listening/img` còn đủ 220 ảnh (tải thử 1 ảnh: 200 `image/jpeg`); `sw`, `sw-audio`, `lib` còn nguyên; R2 vẫn 20/20.
+- **Lưu ý:** gọi Worker bằng script phải gửi `User-Agent`, không có thì Cloudflare trả 403 (trình duyệt luôn gửi nên người chơi không gặp).
+- **Hết đường dự phòng Supabase:** nếu xoá `AUDIO_BASE` trong `js/config.js` thì game không còn nguồn mp3 dự phòng.
+- Database cùng ngày: 58,1 MB / 500 MB (báo cáo `W08-infra-report`). Chưa đo R2/Cloudflare (thiếu `R2_SECRET_ACCESS_KEY`, mục Worker báo lỗi).
