@@ -328,8 +328,15 @@ def enrich(ctx):
         vocab = rec.get("vocab", [])
         require(isinstance(vocab, list) and all(isinstance(v, dict) and v.get("t") and v.get("vi") for v in vocab),
                 "INVALID_VOCAB", f"Invalid vocab: {n}")
-        row.update(explain=rec["explain"], stem_vi=rec.get("stem_vi"), vocab=vocab,
-                   i18n={"vi": {"explain": rec["explain"]}})
+        i18n = {"vi": {"explain": rec["explain"]}}
+        if isinstance(rec.get("stem_vi"), str) and rec["stem_vi"].strip():
+            i18n["vi"]["stem"] = rec["stem_vi"]
+        extra = rec.get("i18n", {})
+        require(isinstance(extra, dict) and not {"vi", "scr"} & set(extra) and
+                all(re.fullmatch(r"[a-z]{2}", k) and isinstance(v, dict) and isinstance(v.get("explain"), str) and v["explain"].strip()
+                    for k, v in extra.items()), "INVALID_I18N", f"Translated explanations must be {{lang: {{explain}}}}: {n}")
+        i18n.update(deepcopy(extra))
+        row.update(explain=rec["explain"], stem_vi=rec.get("stem_vi"), vocab=vocab, i18n=i18n)
         if n <= 100:
             scr = deepcopy(transcripts.get(n, rec.get("scr")))
             require(isinstance(scr, dict) and isinstance(scr.get("lines"), list) and scr["lines"],

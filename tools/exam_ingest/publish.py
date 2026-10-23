@@ -113,6 +113,10 @@ def make_plan(bundle_path, profile, approval, snapshot, mode="insert"):
             snapshot.get("target_hash") == digest(profile.data["target"]) and snapshot.get("test") == test and
             bool(snapshot.get("protected_hash")), "INVALID_SNAPSHOT", "Complete scoped target snapshot required")
     check_preflight(snapshot, bundle["media"], digest(profile.data["target"]))
+    pending = checks.i18n_missing(bundle["items"])
+    require(not pending or approval.get("accept_i18n_pending") is True, "I18N_INCOMPLETE",
+            "Explanations lack " + ",".join(pending) + "; translate them or approve vi-only with accept_i18n_pending=true "
+            "and run the i18n step afterwards (mode enrich)")
     rows = snapshot.get("rows", [])
     require(len({r["id"] for r in rows}) == len(rows) and all(r.get("test") == test for r in rows),
             "INVALID_SNAPSHOT", "Duplicate/out-of-scope rows in snapshot")
@@ -143,7 +147,7 @@ def make_plan(bundle_path, profile, approval, snapshot, mode="insert"):
     plan = {"schema_version": 1, "mode": mode, "target_hash": digest(profile.data["target"]),
             "test": test, "artifact": str(bundle_path), "artifact_sha256": file_hash(bundle_path),
             "content_hash": bundle["content_hash"], "approval": approval, "snapshot": snapshot,
-            "operations": operations, "status": "PLANNED", "writes_performed": 0}
+            "operations": operations, "i18n_pending": pending, "status": "PLANNED", "writes_performed": 0}
     plan["plan_hash"] = digest(plan)
     return plan
 
@@ -183,15 +187,17 @@ def apply_plan(plan, profile, client, backup_root, approved_plan_hash=None, appl
 
 def _apply_plan(plan, profile, client, backup_root, approved_plan_hash=None, apply=False):
     require(plan.get("plan_hash") == _seal(plan), "PLAN_CHANGED", "Publication plan was modified")
-    if not apply:
-        return {"status": "DRY_RUN", "plan_hash": plan["plan_hash"],
-                "operations": len(plan["operations"]), "writes_performed": 0}
-    require(approved_plan_hash == plan["plan_hash"], "BLOCKED_APPROVAL", "Explicit approval of this plan hash required")
+    if apply:
+        require(approved_plan_hash == plan["plan_hash"], "BLOCKED_APPROVAL", "Explicit approval of this plan hash required")
     require(plan["target_hash"] == digest(profile.data["target"]), "PLAN_SCOPE", "Target changed")
     require(profile.year not in (2023, 2024), "PROTECTED_YEAR", "Protected reference year")
     require(file_hash(plan["artifact"]) == plan["artifact_sha256"], "ARTIFACT_CHANGED", "Bundle file changed")
     rebuilt = make_plan(plan["artifact"], profile, plan["approval"], plan["snapshot"], plan["mode"])
     require(rebuilt == plan, "PLAN_CHANGED", "Operations no longer match validated artifact/review/snapshot")
+    if not apply:
+        # Same validation as apply (no backend contact): DRY_RUN means "would pass the offline gates".
+        return {"status": "DRY_RUN", "plan_hash": plan["plan_hash"], "operations": len(plan["operations"]),
+                "i18n_pending": plan.get("i18n_pending", []), "validated": True, "writes_performed": 0}
     bundle = read_json(plan["artifact"])
     require(validate_bundle(bundle, profile) == plan["test"], "PLAN_SCOPE", "Wrong target Test")
     require(client is not None, "BLOCKED_AUTH", "Explicit publication client required")

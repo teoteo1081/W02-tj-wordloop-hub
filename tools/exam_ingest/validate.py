@@ -132,6 +132,23 @@ def rows(items, profile, number, keys):
                 require("[img] " in item.get("passage", ""), "MISSING_IMAGE", f"Missing question image: {n}")
 
 
+I18N_REQUIRED = ("vi", "en", "zh", "es")
+
+
+def i18n_missing(items):
+    """Languages (of vi/en/zh/es) still lacking an explanation, or vocab glosses for zh/es, on any row."""
+    missing = set()
+    for row in items:
+        data = row.get("i18n") or {}
+        for lang in I18N_REQUIRED:
+            block = data.get(lang)
+            if not (isinstance(block, dict) and isinstance(block.get("explain"), str) and block["explain"].strip()):
+                missing.add(lang)
+            elif lang in ("zh", "es") and not all(isinstance(v, dict) and v.get(lang) for v in row.get("vocab", [])):
+                missing.add(lang)
+    return [lang for lang in I18N_REQUIRED if lang in missing]
+
+
 def enrichment_rows(items, cue_map, duration):
     for row in items:
         n = row["num"]
@@ -140,6 +157,10 @@ def enrichment_rows(items, cue_map, duration):
                 "BLOCKED_ENRICHMENT", f"Vietnamese explanation mismatch: {n}")
         require(isinstance(row.get("vocab"), list) and all(isinstance(v, dict) and v.get("t") and v.get("vi") for v in row["vocab"]),
                 "INVALID_VOCAB", f"Invalid vocab: {n}")
+        for lang, block in row["i18n"].items():
+            if lang != "scr":
+                require(isinstance(block, dict) and all(isinstance(x, str) for x in block.values()),
+                        "INVALID_I18N", f"i18n.{lang} must map fields to strings: {n}")
         if n > 100:
             continue
         scr = row.get("i18n", {}).get("scr", {})

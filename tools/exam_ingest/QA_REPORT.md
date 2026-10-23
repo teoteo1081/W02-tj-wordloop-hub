@@ -39,3 +39,8 @@ Kết luận: **PASS có điều kiện** cho ING-01..09 offline. Không có l�
 
 ### Cập nhật sau QA (commit `b318d24`)
 Đã sửa cả 8 nhóm MINOR: ledger AI theo năm/edition/Test (không theo run-id); lỗi cấu hình provider không ăn budget; fingerprint có size+mtime công cụ (invalidate theo từng stage vẫn là giới hạn đã biết); CLI bắt `AttributeError`; `publish --apply` bắt buộc `--preflight` và `--approved-plan-hash` trước khi dựng client; cổng SQL enrich dùng `=` thay `@>`; nguồn trong Git checkout bị chặn (`UNSAFE_SOURCE`) + `.gitignore` chặn pdf/mp3/wav; khóa publish thêm theo target+Test (thư mục temp); URL ảnh có `?v=1`; 2024 chỉ còn mã legacy. Test: 41 pass (thêm 3). **Chưa sửa (ngoài yêu cầu):** MAJOR-1 i18n chỉ `vi`, MAJOR-2 dry-run chỉ kiểm seal.
+
+### Đã sửa 2 MAJOR (sau QA)
+- MAJOR-1: enrich giữ `vi.stem`, nhận `i18n.en/zh/es` từ nguồn enrichment; thêm `validate.i18n_missing` (vi/en/zh/es + vocab zh/es); plan ghi `i18n_pending`, thiếu ngôn ngữ mà approval không có `accept_i18n_pending=true` -> `I18N_INCOMPLETE`. **Chưa có bước dịch tự động** — vẫn dùng `tools/toeic_i18n_add.js` (OpenAI gpt-4o, cần TJ duyệt chi phí) sau khi publish `vi`, hoặc cung cấp i18n trong enrichment.
+- MAJOR-2: DRY_RUN kiểm target/năm bảo vệ/artifact hash/rebuild plan; trả `validated:true`.
+- Test: 44 pass (thêm 3). QA độc lập chưa chạy lại cho 2 sửa này; kiểm bởi coordinator.

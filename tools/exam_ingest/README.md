@@ -48,7 +48,7 @@ Nguồn xử lý có thể đã được người rà chuẩn hóa thành JSON:
 | `structured` | `items` đủ câu 32–200; mỗi item có `num`, `part`, `stem`, `opts`; Reading Part 6/7 có `passage` và `group:[first,last]`. Các câu cùng nhóm giữ cùng passage/group; Part 6 giữ mọi blank `(num)`. `flags` phải rỗng |
 | `cues` | `items` map chuỗi `1..100` → `{q:[a,b],g:[a,b]}`; `g` bắt buộc Part 3/4, cùng nhóm có cùng mốc. Giây nằm trong audio duration và mốc câu không chồng nhau |
 | `whisper` | `words:[{a,b,t}]` đã rà, để dựng cues hoặc căn transcript |
-| `enrichment` | `items` đủ 1–200: `num,answer,explain,stem_vi,vocab:[{t,vi}]`; câu Listening có `scr` hoặc lấy từ role `transcript` |
+| `enrichment` | `items` đủ 1–200: `num,answer,explain,stem_vi,vocab:[{t,vi}]`, tùy chọn `i18n:{en|zh|es:{explain}}` (vocab cần thêm khoá `zh`/`es` tương ứng); câu Listening có `scr` hoặc lấy từ role `transcript` |
 | `transcript` | `items:[{num,scr:{lines:[{sp,t,vi,a,b}],ev:{"num":"source excerpt"}}}]`. `t` là chữ gốc theo schema game. Nếu a/b thiếu, cần Whisper words để căn; coverage dưới 85% phải rà |
 | `lc_book`, `rc_book` | PDF sách chữa + map trang từng Test. Nếu thiếu JSON enrichment, adapter trích text/tables và yêu cầu provider chuẩn hóa; scan chưa có text phải cung cấp OCR đã rà |
 
@@ -87,9 +87,12 @@ Sau khi rà Part 1/graphic, mốc audio, đáp án và mẫu transcript/lời gi
   "approved": true,
   "reviewer": "TJ",
   "content_hash": "COPY_FROM_REVIEW_BUNDLE",
+  "accept_i18n_pending": false,
   "checks": ["Part 1 images", "graphics", "audio boundaries", "official keys", "transcript and explanation samples"]
 }
 ```
+
+`test_items.i18n` phải đủ vi+en+zh+es (CLAUDE.md). Nếu bundle còn thiếu ngôn ngữ, `plan-publish` báo `I18N_INCOMPLETE` trừ khi approval đặt `accept_i18n_pending=true` (chỉ nên dùng khi đã định chạy bước dịch sau bằng `--mode enrich`); plan ghi `i18n_pending`. `publish` không `--apply` (DRY_RUN) giờ chạy lại toàn bộ cổng offline (bundle/hash/target/năm bảo vệ/rebuild plan), không chỉ kiểm dấu hash; vẫn không tạo client.
 
 Approval là biên bản vận hành cho đúng nội dung, không phải hệ thống xác thực/chữ ký điện tử. Target cấu hình phải chỉ rõ `project_ref`, `supabase_url`, `image_base`, `audio_base`, `r2_endpoint`, `r2_bucket`; URL Supabase và project phải khớp nhau. Không điền credential vào profile.
 

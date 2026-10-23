@@ -1,6 +1,6 @@
 # WL-12 — Kế hoạch pipeline TOEIC nhiều năm
 
-Trạng thái: **M1–M3 đã triển khai offline, QA độc lập PASS có điều kiện (2026-10-22), 8 lỗi MINOR đã sửa (`b318d24`); còn 2 MAJOR (i18n chỉ `vi`; dry-run chỉ kiểm seal). M4 đã kiểm nguồn thật nhưng vẫn BLOCKED (xem “Kiểm nguồn thật” bên dưới)**. ID `ets<yy>_`; chưa ghi cloud hoặc đổi mã ứng dụng.
+Trạng thái: **M1–M3 đã triển khai offline, QA độc lập PASS có điều kiện (2026-10-22), 8 lỗi MINOR đã sửa (`b318d24`) và 2 MAJOR đã sửa (cổng i18n vi/en/zh/es, dry-run kiểm đủ cổng offline; chưa có bước dịch tự động). M4 đã kiểm nguồn thật nhưng vẫn BLOCKED (xem “Kiểm nguồn thật” bên dưới)**. ID `ets<yy>_`; chưa ghi cloud hoặc đổi mã ứng dụng.
 
 ## Tiến độ implementation
 

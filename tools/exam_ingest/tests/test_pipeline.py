@@ -252,6 +252,36 @@ class EndToEndTests(unittest.TestCase):
         self.assertEqual(result["status"], "DRY_RUN")
         self.assertEqual(before, (self.backend.reads, self.backend.writes))
 
+    def test_dry_run_rejects_target_or_protected_scope_changes(self):
+        plan = self.plan()
+        self.assertTrue(apply_plan(plan, self.profile, None, None)["validated"])
+        other = deepcopy(plan)
+        other["target_hash"] = "0" * 64
+        other["plan_hash"] = digest({k: v for k, v in other.items() if k != "plan_hash"})
+        with self.assertRaisesRegex(IngestError, "Target changed"):
+            apply_plan(other, self.profile, None, None)
+        other = deepcopy(plan)
+        other["operations"] = other["operations"][:-1]
+        other["plan_hash"] = digest({k: v for k, v in other.items() if k != "plan_hash"})
+        with self.assertRaises(IngestError) as caught:
+            apply_plan(other, self.profile, None, None)
+        self.assertEqual(caught.exception.code, "PLAN_CHANGED")
+
+    def test_vi_only_explanations_need_explicit_ack_and_are_reported(self):
+        self.assertEqual(self.bundle["items"][0]["i18n"]["vi"]["explain"], self.bundle["items"][0]["explain"])
+        self.assertEqual(self.plan()["i18n_pending"], ["en", "zh", "es"])
+        weak = dict(approval(self.bundle), accept_i18n_pending=False)
+        with self.assertRaises(IngestError) as caught:
+            make_plan(self.bundle_path, self.profile, weak, self.backend.snapshot("2019-9", self.bundle["media"]))
+        self.assertEqual(caught.exception.code, "I18N_INCOMPLETE")
+
+    def test_i18n_missing_detects_languages_and_vocab_glosses(self):
+        full = {"vi": {"explain": "a"}, "en": {"explain": "b"}, "zh": {"explain": "c"}, "es": {"explain": "d"}}
+        good = {"i18n": full, "vocab": [{"t": "x", "vi": "v", "zh": "z", "es": "e"}]}
+        self.assertEqual(validate.i18n_missing([good]), [])
+        self.assertEqual(validate.i18n_missing([dict(good, vocab=[{"t": "x", "vi": "v", "zh": "z"}])]), ["es"])
+        self.assertEqual(validate.i18n_missing([{"i18n": {"vi": full["vi"]}, "vocab": []}]), ["en", "zh", "es"])
+
     def test_apply_requires_exact_approval_before_reading_backend(self):
         plan = self.plan()
         before = self.backend.reads

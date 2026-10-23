@@ -76,7 +76,7 @@ def make_fixture(root, year=2019, number=9):
 
 def approval(bundle):
     return {"approved": True, "content_hash": bundle["content_hash"], "reviewer": "offline-fixture-reviewer",
-            "checks": bundle["review"]["required_checks"]}
+            "checks": bundle["review"]["required_checks"], "accept_i18n_pending": True}
 
 
 class FakeBackend:
