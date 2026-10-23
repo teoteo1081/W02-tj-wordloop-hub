@@ -1,0 +1,18 @@
+[
+ {
+  "avatar_emoji": "🧭",
+  "can_edit_passage": true,
+  "display_name": "Host Giả",
+  "id": "f3fd95c9-06e8-4d39-b6f2-efc113d436cf",
+  "is_admin": true,
+  "lang": "vi"
+ },
+ {
+  "avatar_emoji": "🐣",
+  "can_edit_passage": false,
+  "display_name": "Người Chơi Giả",
+  "id": "00000000-0000-4000-8000-0000000000a2",
+  "is_admin": false,
+  "lang": "vi"
+ }
+]

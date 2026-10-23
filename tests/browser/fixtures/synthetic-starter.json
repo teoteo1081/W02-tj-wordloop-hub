@@ -1,0 +1,555 @@
+{
+ "batches": [
+  {
+   "created_at": 1792000000000,
+   "id": "bt_syn_1",
+   "name": "Batch 1",
+   "page_id": "pg_syn_1",
+   "sort": 1
+  },
+  {
+   "created_at": 1792000000000,
+   "id": "bt_syn_2",
+   "name": "Batch 2",
+   "page_id": "pg_syn_2",
+   "sort": 1
+  }
+ ],
+ "block_progress": [],
+ "blocks": [
+  {
+   "batch_id": "bt_syn_1",
+   "context_passage": "The old ship dropped its [anchor] near the edge of the bay. A narrow [bridge] connected the dock to the fishing town. Every evening someone placed a [candle] in the window of the lighthouse keeper's house.\n\nThe [harbor] was quiet at dawn, and the water looked like glass. A worker leaned a wooden [ladder] against the wall to repair the roof. Beyond the road, a wide [meadow] stretched toward the hills.\n\nAt the far end grew an [orchard] full of ripe apples. A child picked up a smooth [pebble] and threw it into the stream. The stone [quarry] above the valley had been closed for many years. Soon the whole [village] gathered in the square to share a simple meal.\n<<<TJWL_META>>>\n{\"title\":\"Bến cảng buổi sớm\",\"source\":\"Bài đọc tổng hợp cho kiểm thử A0\",\"vi\":{\"anchor\":\"Con tàu cũ thả neo gần rìa vịnh.\",\"bridge\":\"Một cây cầu hẹp nối bến tàu với thị trấn đánh cá.\",\"candle\":\"Mỗi tối có người đặt một cây nến ở cửa sổ nhà người giữ hải đăng.\",\"harbor\":\"Bến cảng yên ắng lúc bình minh, mặt nước phẳng như gương.\",\"ladder\":\"Một người thợ dựa chiếc thang gỗ vào tường để sửa mái nhà.\",\"meadow\":\"Bên kia con đường, một đồng cỏ rộng trải dài về phía đồi.\",\"orchard\":\"Ở tận cuối có một vườn cây đầy táo chín.\",\"pebble\":\"Một đứa trẻ nhặt viên sỏi nhẵn và ném xuống dòng suối.\",\"quarry\":\"Mỏ đá phía trên thung lũng đã đóng cửa nhiều năm.\",\"village\":\"Chẳng bao lâu cả ngôi làng tụ họp ở quảng trường để chia sẻ bữa ăn giản dị.\"},\"claude\":true}",
+   "context_passage_candidates": [
+    "The old ship dropped its [anchor] near the edge of the bay. A narrow [bridge] connected the dock to the fishing town. Every evening someone placed a [candle] in the window of the lighthouse keeper's house.\n\nThe [harbor] was quiet at dawn, and the water looked like glass. A worker leaned a wooden [ladder] against the wall to repair the roof. Beyond the road, a wide [meadow] stretched toward the hills.\n\nAt the far end grew an [orchard] full of ripe apples. A child picked up a smooth [pebble] and threw it into the stream. The stone [quarry] above the valley had been closed for many years. Soon the whole [village] gathered in the square to share a simple meal.\n<<<TJWL_META>>>\n{\"title\":\"Dán tổng hợp\",\"source\":\"Bài đọc tổng hợp cho kiểm thử A0\",\"vi\":{\"anchor\":\"Con tàu cũ thả neo gần rìa vịnh.\",\"bridge\":\"Một cây cầu hẹp nối bến tàu với thị trấn đánh cá.\",\"candle\":\"Mỗi tối có người đặt một cây nến ở cửa sổ nhà người giữ hải đăng.\",\"harbor\":\"Bến cảng yên ắng lúc bình minh, mặt nước phẳng như gương.\",\"ladder\":\"Một người thợ dựa chiếc thang gỗ vào tường để sửa mái nhà.\",\"meadow\":\"Bên kia con đường, một đồng cỏ rộng trải dài về phía đồi.\",\"orchard\":\"Ở tận cuối có một vườn cây đầy táo chín.\",\"pebble\":\"Một đứa trẻ nhặt viên sỏi nhẵn và ném xuống dòng suối.\",\"quarry\":\"Mỏ đá phía trên thung lũng đã đóng cửa nhiều năm.\",\"village\":\"Chẳng bao lâu cả ngôi làng tụ họp ở quảng trường để chia sẻ bữa ăn giản dị.\"},\"pasted\":true}",
+    "The old ship dropped its [anchor] near the edge of the bay. A narrow [bridge] connected the dock to the fishing town. Every evening someone placed a [candle] in the window of the lighthouse keeper's house.\n\nThe [harbor] was quiet at dawn, and the water looked like glass. A worker leaned a wooden [ladder] against the wall to repair the roof. Beyond the road, a wide [meadow] stretched toward the hills.\n\nAt the far end grew an [orchard] full of ripe apples. A child picked up a smooth [pebble] and threw it into the stream. The stone [quarry] above the valley had been closed for many years. Soon the whole [village] gathered in the square to share a simple meal.\n<<<TJWL_META>>>\n{\"title\":\"Claude tổng hợp\",\"source\":\"Bài đọc tổng hợp cho kiểm thử A0\",\"vi\":{\"anchor\":\"Con tàu cũ thả neo gần rìa vịnh.\",\"bridge\":\"Một cây cầu hẹp nối bến tàu với thị trấn đánh cá.\",\"candle\":\"Mỗi tối có người đặt một cây nến ở cửa sổ nhà người giữ hải đăng.\",\"harbor\":\"Bến cảng yên ắng lúc bình minh, mặt nước phẳng như gương.\",\"ladder\":\"Một người thợ dựa chiếc thang gỗ vào tường để sửa mái nhà.\",\"meadow\":\"Bên kia con đường, một đồng cỏ rộng trải dài về phía đồi.\",\"orchard\":\"Ở tận cuối có một vườn cây đầy táo chín.\",\"pebble\":\"Một đứa trẻ nhặt viên sỏi nhẵn và ném xuống dòng suối.\",\"quarry\":\"Mỏ đá phía trên thung lũng đã đóng cửa nhiều năm.\",\"village\":\"Chẳng bao lâu cả ngôi làng tụ họp ở quảng trường để chia sẻ bữa ăn giản dị.\"},\"claude\":true}",
+    "The old ship dropped its [anchor] near the edge of the bay. A narrow [bridge] connected the dock to the fishing town. Every evening someone placed a [candle] in the window of the lighthouse keeper's house.\n\nThe [harbor] was quiet at dawn, and the water looked like glass. A worker leaned a wooden [ladder] against the wall to repair the roof. Beyond the road, a wide [meadow] stretched toward the hills.\n\nAt the far end grew an [orchard] full of ripe apples. A child picked up a smooth [pebble] and threw it into the stream. The stone [quarry] above the valley had been closed for many years. Soon the whole [village] gathered in the square to share a simple meal.\n<<<TJWL_META>>>\n{\"title\":\"OpenAI tổng hợp\",\"source\":\"Bài đọc tổng hợp cho kiểm thử A0\",\"vi\":{\"anchor\":\"Con tàu cũ thả neo gần rìa vịnh.\",\"bridge\":\"Một cây cầu hẹp nối bến tàu với thị trấn đánh cá.\",\"candle\":\"Mỗi tối có người đặt một cây nến ở cửa sổ nhà người giữ hải đăng.\",\"harbor\":\"Bến cảng yên ắng lúc bình minh, mặt nước phẳng như gương.\",\"ladder\":\"Một người thợ dựa chiếc thang gỗ vào tường để sửa mái nhà.\",\"meadow\":\"Bên kia con đường, một đồng cỏ rộng trải dài về phía đồi.\",\"orchard\":\"Ở tận cuối có một vườn cây đầy táo chín.\",\"pebble\":\"Một đứa trẻ nhặt viên sỏi nhẵn và ném xuống dòng suối.\",\"quarry\":\"Mỏ đá phía trên thung lũng đã đóng cửa nhiều năm.\",\"village\":\"Chẳng bao lâu cả ngôi làng tụ họp ở quảng trường để chia sẻ bữa ăn giản dị.\"},\"ai\":true,\"provider\":\"openai\",\"origin\":\"openai\",\"cost_usd\":0.0021}",
+    "The old ship dropped its [anchor] near the edge of the bay. A narrow [bridge] connected the dock to the fishing town. Every evening someone placed a [candle] in the window of the lighthouse keeper's house.\n\nThe [harbor] was quiet at dawn, and the water looked like glass. A worker leaned a wooden [ladder] against the wall to repair the roof. Beyond the road, a wide [meadow] stretched toward the hills.\n\nAt the far end grew an [orchard] full of ripe apples. A child picked up a smooth [pebble] and threw it into the stream. The stone [quarry] above the valley had been closed for many years. Soon the whole [village] gathered in the square to share a simple meal.\n<<<TJWL_META>>>\n{\"title\":\"Gemini tổng hợp\",\"source\":\"Bài đọc tổng hợp cho kiểm thử A0\",\"vi\":{\"anchor\":\"Con tàu cũ thả neo gần rìa vịnh.\",\"bridge\":\"Một cây cầu hẹp nối bến tàu với thị trấn đánh cá.\",\"candle\":\"Mỗi tối có người đặt một cây nến ở cửa sổ nhà người giữ hải đăng.\",\"harbor\":\"Bến cảng yên ắng lúc bình minh, mặt nước phẳng như gương.\",\"ladder\":\"Một người thợ dựa chiếc thang gỗ vào tường để sửa mái nhà.\",\"meadow\":\"Bên kia con đường, một đồng cỏ rộng trải dài về phía đồi.\",\"orchard\":\"Ở tận cuối có một vườn cây đầy táo chín.\",\"pebble\":\"Một đứa trẻ nhặt viên sỏi nhẵn và ném xuống dòng suối.\",\"quarry\":\"Mỏ đá phía trên thung lũng đã đóng cửa nhiều năm.\",\"village\":\"Chẳng bao lâu cả ngôi làng tụ họp ở quảng trường để chia sẻ bữa ăn giản dị.\"},\"ai\":true,\"provider\":\"gemini\",\"origin\":\"gemini\"}"
+   ],
+   "global_index": 1,
+   "id": "bl_syn_1",
+   "name": "Block 1",
+   "sort": 1
+  },
+  {
+   "batch_id": "bt_syn_1",
+   "context_passage": "",
+   "global_index": 2,
+   "id": "bl_syn_2",
+   "name": "Block 2",
+   "sort": 2
+  },
+  {
+   "batch_id": "bt_syn_1",
+   "context_passage": "",
+   "global_index": 3,
+   "id": "bl_syn_3",
+   "name": "Block 3",
+   "sort": 3
+  },
+  {
+   "batch_id": "bt_syn_2",
+   "context_passage": "",
+   "global_index": 4,
+   "id": "bl_syn_4",
+   "name": "Block 4",
+   "sort": 1
+  }
+ ],
+ "hubs": [
+  {
+   "code": "SYN",
+   "id": "hub_syn",
+   "name": "SYNTHETIC HUB",
+   "sort": 1
+  }
+ ],
+ "notebooks": [
+  {
+   "hub_id": "hub_syn",
+   "icon": "🧭",
+   "id": "nb_syn_survival",
+   "name": "SURVIVAL",
+   "sort": 1
+  },
+  {
+   "hub_id": "hub_syn",
+   "icon": "📎",
+   "id": "nb_syn_office",
+   "name": "OFFICE WORDS",
+   "sort": 2
+  }
+ ],
+ "pages": [
+  {
+   "id": "pg_syn_1",
+   "name": "Page 1",
+   "section_id": "sec_syn_1",
+   "sort": 1
+  },
+  {
+   "id": "pg_syn_2",
+   "name": "Page 2",
+   "section_id": "sec_syn_2",
+   "sort": 1
+  }
+ ],
+ "sections": [
+  {
+   "id": "sec_syn_1",
+   "name": "Section A",
+   "notebook_id": "nb_syn_survival",
+   "sort": 1
+  },
+  {
+   "id": "sec_syn_2",
+   "name": "Section B",
+   "notebook_id": "nb_syn_office",
+   "sort": 1
+  }
+ ],
+ "version": "synthetic-a0-browser-01",
+ "word_progress": [],
+ "words": [
+  {
+   "block_id": "bl_syn_1",
+   "def_en": "a heavy object that keeps a ship in place",
+   "id": "w_syn_1_01",
+   "ipa": "/ˈæŋkər/",
+   "level": "B1",
+   "meaning_vi": "cái neo",
+   "pos": "n",
+   "sort": 1,
+   "term": "anchor"
+  },
+  {
+   "block_id": "bl_syn_1",
+   "def_en": "a structure carrying a road over water",
+   "id": "w_syn_1_02",
+   "ipa": "/brɪdʒ/",
+   "level": "A2",
+   "meaning_vi": "cây cầu",
+   "pos": "n",
+   "sort": 2,
+   "term": "bridge"
+  },
+  {
+   "block_id": "bl_syn_1",
+   "def_en": "a stick of wax that burns to give light",
+   "id": "w_syn_1_03",
+   "ipa": "/ˈkændl/",
+   "level": "A2",
+   "meaning_vi": "cây nến",
+   "pos": "n",
+   "sort": 3,
+   "term": "candle"
+  },
+  {
+   "block_id": "bl_syn_1",
+   "def_en": "a sheltered place where ships stay",
+   "id": "w_syn_1_04",
+   "ipa": "/ˈhɑːrbər/",
+   "level": "B1",
+   "meaning_vi": "bến cảng",
+   "pos": "n",
+   "sort": 4,
+   "term": "harbor"
+  },
+  {
+   "block_id": "bl_syn_1",
+   "def_en": "steps used to climb up or down",
+   "id": "w_syn_1_05",
+   "ipa": "/ˈlædər/",
+   "level": "A2",
+   "meaning_vi": "cái thang",
+   "pos": "n",
+   "sort": 5,
+   "term": "ladder"
+  },
+  {
+   "block_id": "bl_syn_1",
+   "def_en": "a field of grass and wild flowers",
+   "id": "w_syn_1_06",
+   "ipa": "/ˈmedoʊ/",
+   "level": "B1",
+   "meaning_vi": "đồng cỏ",
+   "pos": "n",
+   "sort": 6,
+   "term": "meadow"
+  },
+  {
+   "block_id": "bl_syn_1",
+   "def_en": "a garden where fruit trees grow",
+   "id": "w_syn_1_07",
+   "ipa": "/ˈɔːrtʃərd/",
+   "level": "B2",
+   "meaning_vi": "vườn cây ăn quả",
+   "pos": "n",
+   "sort": 7,
+   "term": "orchard"
+  },
+  {
+   "block_id": "bl_syn_1",
+   "def_en": "a small smooth stone",
+   "id": "w_syn_1_08",
+   "ipa": "/ˈpebl/",
+   "level": "B2",
+   "meaning_vi": "viên sỏi",
+   "pos": "n",
+   "sort": 8,
+   "term": "pebble"
+  },
+  {
+   "block_id": "bl_syn_1",
+   "def_en": "a place where stone is cut from the ground",
+   "id": "w_syn_1_09",
+   "ipa": "/ˈkwɔːri/",
+   "level": "C1",
+   "meaning_vi": "mỏ đá",
+   "pos": "n",
+   "sort": 9,
+   "term": "quarry"
+  },
+  {
+   "block_id": "bl_syn_1",
+   "def_en": "a small group of houses in the country",
+   "id": "w_syn_1_10",
+   "ipa": "/ˈvɪlɪdʒ/",
+   "level": "A2",
+   "meaning_vi": "ngôi làng",
+   "pos": "n",
+   "sort": 10,
+   "term": "village"
+  },
+  {
+   "block_id": "bl_syn_2",
+   "def_en": "a warm cover for a bed",
+   "id": "w_syn_2_01",
+   "ipa": "/ˈblæŋkɪt/",
+   "level": "A2",
+   "meaning_vi": "cái chăn",
+   "pos": "n",
+   "sort": 1,
+   "term": "blanket"
+  },
+  {
+   "block_id": "bl_syn_2",
+   "def_en": "a tool that shows direction",
+   "id": "w_syn_2_02",
+   "ipa": "/ˈkʌmpəs/",
+   "level": "B1",
+   "meaning_vi": "la bàn",
+   "pos": "n",
+   "sort": 2,
+   "term": "compass"
+  },
+  {
+   "block_id": "bl_syn_2",
+   "def_en": "a lamp with a protective case",
+   "id": "w_syn_2_03",
+   "ipa": "/ˈlæntərn/",
+   "level": "B1",
+   "meaning_vi": "đèn lồng",
+   "pos": "n",
+   "sort": 3,
+   "term": "lantern"
+  },
+  {
+   "block_id": "bl_syn_2",
+   "def_en": "a place that protects from weather",
+   "id": "w_syn_2_04",
+   "ipa": "/ˈʃeltər/",
+   "level": "B1",
+   "meaning_vi": "nơi trú ẩn",
+   "pos": "n",
+   "sort": 4,
+   "term": "shelter"
+  },
+  {
+   "block_id": "bl_syn_2",
+   "def_en": "thick strong cord",
+   "id": "w_syn_2_05",
+   "ipa": "/roʊp/",
+   "level": "A2",
+   "meaning_vi": "sợi dây thừng",
+   "pos": "n",
+   "sort": 5,
+   "term": "rope"
+  },
+  {
+   "block_id": "bl_syn_2",
+   "def_en": "a small container for water",
+   "id": "w_syn_2_06",
+   "ipa": "/kænˈtiːn/",
+   "level": "C1",
+   "meaning_vi": "bình nước",
+   "pos": "n",
+   "sort": 6,
+   "term": "canteen"
+  },
+  {
+   "block_id": "bl_syn_2",
+   "def_en": "a path through the countryside",
+   "id": "w_syn_2_07",
+   "ipa": "/treɪl/",
+   "level": "B1",
+   "meaning_vi": "lối mòn",
+   "pos": "n",
+   "sort": 7,
+   "term": "trail"
+  },
+  {
+   "block_id": "bl_syn_2",
+   "def_en": "the highest point of a mountain",
+   "id": "w_syn_2_08",
+   "ipa": "/ˈsʌmɪt/",
+   "level": "B2",
+   "meaning_vi": "đỉnh núi",
+   "pos": "n",
+   "sort": 8,
+   "term": "summit"
+  },
+  {
+   "block_id": "bl_syn_2",
+   "def_en": "a fixed amount of food",
+   "id": "w_syn_2_09",
+   "ipa": "/ˈræʃn/",
+   "level": "C1",
+   "meaning_vi": "khẩu phần",
+   "pos": "n",
+   "sort": 9,
+   "term": "ration"
+  },
+  {
+   "block_id": "bl_syn_2",
+   "def_en": "a bright light used as a signal",
+   "id": "w_syn_2_10",
+   "ipa": "/fler/",
+   "level": "C1",
+   "meaning_vi": "pháo sáng",
+   "pos": "n",
+   "sort": 10,
+   "term": "flare"
+  },
+  {
+   "block_id": "bl_syn_3",
+   "def_en": "a sheltered place where ships stay",
+   "id": "w_syn_3_01",
+   "ipa": "/ˈhɑːrbər/",
+   "level": "B1",
+   "meaning_vi": "bến cảng",
+   "pos": "n",
+   "sort": 1,
+   "term": "Harbor"
+  },
+  {
+   "block_id": "bl_syn_3",
+   "def_en": "a heavy object that keeps a ship in place",
+   "id": "w_syn_3_02",
+   "ipa": "/ˈæŋkər/",
+   "level": "B1",
+   "meaning_vi": "cái neo",
+   "pos": "n",
+   "sort": 2,
+   "term": "anchor,"
+  },
+  {
+   "block_id": "bl_syn_3",
+   "def_en": "a cupboard with shelves or drawers",
+   "id": "w_syn_3_03",
+   "ipa": "/ˈkæbɪnət/",
+   "level": "B2",
+   "meaning_vi": "tủ có ngăn",
+   "pos": "n",
+   "sort": 3,
+   "term": "cabinet"
+  },
+  {
+   "block_id": "bl_syn_3",
+   "def_en": "making you feel very happy and excited",
+   "id": "w_syn_3_04",
+   "ipa": "/ɪɡˈzɪləreɪtɪŋ/",
+   "level": "C1",
+   "meaning_vi": "phấn khích",
+   "pos": "adj",
+   "sort": 4,
+   "term": "exhilarating"
+  },
+  {
+   "block_id": "bl_syn_3",
+   "def_en": "extremely large",
+   "id": "w_syn_3_05",
+   "ipa": "/ɪˈmens/",
+   "level": "B2",
+   "meaning_vi": "to lớn",
+   "pos": "adj",
+   "sort": 5,
+   "term": "immense"
+  },
+  {
+   "block_id": "bl_syn_3",
+   "def_en": "a very brief look",
+   "id": "w_syn_3_06",
+   "ipa": "/ɡlɪmps/",
+   "level": "B2",
+   "meaning_vi": "cái nhìn thoáng qua",
+   "pos": "n",
+   "sort": 6,
+   "term": "glimpse"
+  },
+  {
+   "block_id": "bl_syn_3",
+   "def_en": "easily broken",
+   "id": "w_syn_3_07",
+   "ipa": "/ˈfrædʒl/",
+   "level": "B2",
+   "meaning_vi": "dễ vỡ",
+   "pos": "adj",
+   "sort": 7,
+   "term": "fragile"
+  },
+  {
+   "block_id": "bl_syn_3",
+   "def_en": "to come or bring together",
+   "id": "w_syn_3_08",
+   "ipa": "/ˈɡæðər/",
+   "level": "A2",
+   "meaning_vi": "tập hợp",
+   "pos": "v",
+   "sort": 8,
+   "term": "gather"
+  },
+  {
+   "block_id": "bl_syn_3",
+   "def_en": "firm and not shaking",
+   "id": "w_syn_3_09",
+   "ipa": "/ˈstedi/",
+   "level": "B1",
+   "meaning_vi": "vững vàng",
+   "pos": "adj",
+   "sort": 9,
+   "term": "steady"
+  },
+  {
+   "block_id": "bl_syn_3",
+   "def_en": "to speak very quietly",
+   "id": "w_syn_3_10",
+   "ipa": "/ˈwɪspər/",
+   "level": "B1",
+   "meaning_vi": "thì thầm",
+   "pos": "v",
+   "sort": 10,
+   "term": "whisper"
+  },
+  {
+   "block_id": "bl_syn_4",
+   "def_en": "a list of items to discuss",
+   "id": "w_syn_4_01",
+   "ipa": "/əˈdʒendə/",
+   "level": "B2",
+   "meaning_vi": "chương trình họp",
+   "pos": "n",
+   "sort": 1,
+   "term": "agenda"
+  },
+  {
+   "block_id": "bl_syn_4",
+   "def_en": "the latest time to finish something",
+   "id": "w_syn_4_02",
+   "ipa": "/ˈdedlaɪn/",
+   "level": "B1",
+   "meaning_vi": "hạn chót",
+   "pos": "n",
+   "sort": 2,
+   "term": "deadline"
+  },
+  {
+   "block_id": "bl_syn_4",
+   "def_en": "a bill for goods or services",
+   "id": "w_syn_4_03",
+   "ipa": "/ˈɪnvɔɪs/",
+   "level": "B2",
+   "meaning_vi": "hóa đơn",
+   "pos": "n",
+   "sort": 3,
+   "term": "invoice"
+  },
+  {
+   "block_id": "bl_syn_4",
+   "def_en": "a plan for how to spend money",
+   "id": "w_syn_4_04",
+   "ipa": "/ˈbʌdʒɪt/",
+   "level": "B1",
+   "meaning_vi": "ngân sách",
+   "pos": "n",
+   "sort": 4,
+   "term": "budget"
+  },
+  {
+   "block_id": "bl_syn_4",
+   "def_en": "a person you work with",
+   "id": "w_syn_4_05",
+   "ipa": "/ˈkɑːliːɡ/",
+   "level": "B1",
+   "meaning_vi": "đồng nghiệp",
+   "pos": "n",
+   "sort": 5,
+   "term": "colleague"
+  },
+  {
+   "block_id": "bl_syn_4",
+   "def_en": "a rough guess of a cost",
+   "id": "w_syn_4_06",
+   "ipa": "/ˈestɪmət/",
+   "level": "B2",
+   "meaning_vi": "bản ước tính",
+   "pos": "n",
+   "sort": 6,
+   "term": "estimate"
+  },
+  {
+   "block_id": "bl_syn_4",
+   "def_en": "goods sent together",
+   "id": "w_syn_4_07",
+   "ipa": "/ˈʃɪpmənt/",
+   "level": "B2",
+   "meaning_vi": "lô hàng",
+   "pos": "n",
+   "sort": 7,
+   "term": "shipment"
+  },
+  {
+   "block_id": "bl_syn_4",
+   "def_en": "a company that sells goods",
+   "id": "w_syn_4_08",
+   "ipa": "/ˈvendər/",
+   "level": "C1",
+   "meaning_vi": "nhà cung cấp",
+   "pos": "n",
+   "sort": 8,
+   "term": "vendor"
+  },
+  {
+   "block_id": "bl_syn_4",
+   "def_en": "a promise to repair a product",
+   "id": "w_syn_4_09",
+   "ipa": "/ˈwɔːrənti/",
+   "level": "C1",
+   "meaning_vi": "bảo hành",
+   "pos": "n",
+   "sort": 9,
+   "term": "warranty"
+  },
+  {
+   "block_id": "bl_syn_4",
+   "def_en": "money given back to a customer",
+   "id": "w_syn_4_10",
+   "ipa": "/ˈriːfʌnd/",
+   "level": "B1",
+   "meaning_vi": "tiền hoàn lại",
+   "pos": "n",
+   "sort": 10,
+   "term": "refund"
+  }
+ ]
+}

@@ -1,0 +1,1742 @@
+{
+ "comparison": {
+  "differences": []
+ },
+ "coverageGaps": [
+  {
+   "id": "CALL-W01",
+   "reason": "chưa chạy: cần Cloud mode + supabase giả"
+  },
+  {
+   "id": "CALL-W02",
+   "reason": "chưa chạy: cần Cloud mode + supabase giả"
+  },
+  {
+   "id": "CALL-W03",
+   "reason": "chưa chạy: cần Cloud mode + supabase giả"
+  },
+  {
+   "id": "CALL-W04",
+   "reason": "chưa chạy: cần Cloud mode + supabase giả"
+  },
+  {
+   "id": "FLW-07",
+   "reason": "chưa chạy: bộ chọn nguồn bài chỉ hiện cho admin/người có quyền sửa bài → cần Cloud mode"
+  },
+  {
+   "id": "MP-15",
+   "reason": "chưa chạy: bảo vệ phòng thật TJ"
+  },
+  {
+   "id": "MP-01",
+   "reason": "chưa chạy: tạo/vào phòng ZZ_"
+  },
+  {
+   "id": "MP-02",
+   "reason": "chưa chạy: ván điền từ hai client"
+  },
+  {
+   "id": "MP-03",
+   "reason": "chưa chạy: host tải lại giữa ván"
+  },
+  {
+   "id": "MP-04",
+   "reason": "chưa chạy: người chơi tải lại giữa ván"
+  },
+  {
+   "id": "CALL-G01",
+   "reason": "chưa chạy: host tạo phòng → ván → kết thúc"
+  },
+  {
+   "id": "CALL-G02",
+   "reason": "chưa chạy: người chơi vào phòng, trả lời"
+  },
+  {
+   "id": "VIS-W02",
+   "reason": "chưa chạy"
+  },
+  {
+   "id": "VIS-W03",
+   "reason": "chưa chạy"
+  },
+  {
+   "id": "VIS-W06",
+   "reason": "chưa chạy"
+  },
+  {
+   "id": "VIS-G01",
+   "reason": "chưa chạy"
+  },
+  {
+   "id": "VIS-G02",
+   "reason": "chưa chạy"
+  },
+  {
+   "id": "SHOT-STABLE",
+   "reason": "chưa chạy: hai lượt độc lập phải cho ảnh giống hệt sau mask có lý do"
+  }
+ ],
+ "declaredOutOfScope": {
+  "BCK-*": "cần backend đã đổi (luồng B); chưa có",
+  "M0.8/CI": "phụ thuộc G2 handoff/gate; PLAN §0.2 loại khỏi cycle",
+  "MP-18": "hỗn hợp phiên bản baseline+nhánh: chỉ có ý nghĩa khi mã nhánh khác baseline",
+  "supabase-js thật": "không có bản supabase-js cục bộ và plan cấm tải gói mới; Cloud mode dùng bản giả ở ranh giới thư viện"
+ },
+ "ranAtNote": "đồng hồ app cố định 1792700000000 (UTC); thời gian thật không ghi để báo cáo tái lập",
+ "sources": {
+  "baseline": {
+   "appCodeDirty": false,
+   "commit": "e324beb54b29ddfa055956c756a4ceba2676dfa1",
+   "expectedCommit": "e324beb54b29ddfa055956c756a4ceba2676dfa1",
+   "matchesExpected": true,
+   "ok": true,
+   "tree": "9de0480570b1c95c85912d685626891ba142b825"
+  },
+  "branch": {
+   "appCodeChangedVsBaseline": [],
+   "appCodeDirty": false,
+   "commit": "003f82796d06c109edd53335b342d64e3bc61b07",
+   "ok": true,
+   "tree": "69c3f8ec89c5dfcb3a6adf6ca112a9f59dcd46bd"
+  }
+ },
+ "status": "PARTIAL",
+ "targets": {
+  "baseline": {
+   "guard": {
+    "blockedExpected": [
+     {
+      "method": "GET",
+      "resource": "fetch",
+      "url": "https://pqarpszsipbdugrumhfy.supabase.co/rest/v1/hubs"
+     },
+     {
+      "method": "GET",
+      "resource": "fetch",
+      "url": "https://pqarpszsipbdugrumhfy.supabase.co/functions/v1/gemini-proxy"
+     },
+     {
+      "method": "GET",
+      "resource": "fetch",
+      "url": "https://example.com/a0-probe"
+     }
+    ],
+    "blockedUnexpected": [],
+    "contexts": 10,
+    "localRequests": 275,
+    "mocked": [
+     "/data/starter.json",
+     "/data/starter.version.json",
+     "/js/config.js"
+    ],
+    "stubbedExternal": [
+     "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js",
+     "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/legacy/build/pdf.min.js",
+     "https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"
+    ],
+    "websocketBlocked": [
+     "wss://pqarpszsipbdugrumhfy.supabase.co/realtime/v1/websocket"
+    ],
+    "websocketBlockedUnexpected": [],
+    "websocketLeaked": []
+   },
+   "knownResource404": [
+    "/js/keys.local.js"
+   ],
+   "scenarios": [
+    {
+     "checks": [
+      {
+       "msg": "fetch tới pqarpszsipbdugrumhfy.supabase.co/rest/v1 bị từ chối",
+       "ok": true
+      },
+      {
+       "msg": "fetch tới pqarpszsipbdugrumhfy.supabase.co/functio bị từ chối",
+       "ok": true
+      },
+      {
+       "msg": "fetch tới example.com/a0-probe bị từ chối",
+       "ok": true
+      },
+      {
+       "detail": {
+        "result": "ERROR"
+       },
+       "msg": "WebSocket tới Supabase Realtime thật không mở được",
+       "ok": true
+      },
+      {
+       "msg": "request bị chặn xuất hiện trong báo cáo guard: pqarpszsipbdugrumhfy.supabase.co/rest/v1",
+       "ok": true
+      },
+      {
+       "msg": "request bị chặn xuất hiện trong báo cáo guard: pqarpszsipbdugrumhfy.supabase.co/functio",
+       "ok": true
+      },
+      {
+       "msg": "request bị chặn xuất hiện trong báo cáo guard: example.com/a0-probe",
+       "ok": true
+      },
+      {
+       "msg": "WebSocket bị chặn được ghi nhận",
+       "ok": true
+      },
+      {
+       "msg": "không có WebSocket nào lọt xuống tầng mạng",
+       "ok": true
+      },
+      {
+       "msg": "origin cục bộ vẫn phục vụ, starter là bản TỔNG HỢP (mock khai báo), không phải thư viện thật",
+       "ok": true
+      },
+      {
+       "detail": {
+        "mocked": [
+         "/data/starter.json",
+         "/data/starter.version.json",
+         "/js/config.js"
+        ]
+       },
+       "msg": "các mock được khai báo và dùng thật",
+       "ok": true
+      },
+      {
+       "msg": "Local mode: không có URL Supabase nào trong cấu hình đang chạy",
+       "ok": true
+      },
+      {
+       "msg": "thư viện supabase-js không được nạp (CDN bị stub rỗng)",
+       "ok": true
+      },
+      {
+       "msg": "app chạy Local mode",
+       "ok": true
+      }
+     ],
+     "error": null,
+     "evidence": {},
+     "fn": "network_isolation",
+     "ids": [
+      "NET-01"
+     ],
+     "name": "Chặn mạng: endpoint không khai báo (Supabase thật, miền lạ, WebSocket) bị từ chối và được ghi nhận; origin cục bộ và mock vẫn chạy",
+     "notes": [],
+     "status": "PASS"
+    },
+    {
+     "checks": [
+      {
+       "msg": "ban đầu nút Fix báo 0 từ sai",
+       "ok": true
+      },
+      {
+       "msg": "bấm ⭐: số trên nút Ôn riêng đổi NGAY (<1 giây, trước lần đọc lại DB nền 1,5 giây)",
+       "ok": true
+      },
+      {
+       "msg": "trả lời sai → wrong_open=true",
+       "ok": true
+      },
+      {
+       "detail": {
+        "wrong_ctx": {
+         "answer": "cái neo",
+         "given": "mỏ đá",
+         "lang": "vi",
+         "opts": [
+          "mỏ đá",
+          "cái neo",
+          "vườn cây ăn quả",
+          "đồng cỏ"
+         ],
+         "t": "meaning"
+        }
+       },
+       "msg": "wrong_ctx lưu loại 'meaning', đáp án, đúng 4 lựa chọn, câu đã chọn sai",
+       "ok": true
+      },
+      {
+       "msg": "trả lời sai: số ❌ nhảy lên 1 từ sai NGAY (<1 giây)",
+       "ok": true
+      },
+      {
+       "msg": "từ vừa ⭐ lưu bookmarked=true",
+       "ok": true
+      },
+      {
+       "msg": "các từ trả lời đúng không bị đánh wrong_open",
+       "ok": true
+      },
+      {
+       "msg": "đúng ở loại KHÁC (điền từ) không gỡ khỏi Fix",
+       "ok": true
+      },
+      {
+       "msg": "màn Fix hỏi lại ĐÚNG từ đã sai",
+       "ok": true
+      },
+      {
+       "msg": "màn Fix dựng lại ĐÚNG 4 đáp án của câu đã sai",
+       "ok": true
+      },
+      {
+       "msg": "đúng trong màn Fix → wrong_open=false",
+       "ok": true
+      },
+      {
+       "msg": "console không lỗi",
+       "ok": true
+      },
+      {
+       "msg": "nộp Phiếu bỏ trống hoàn toàn: không từ nào bị đánh wrong_open",
+       "ok": true
+      },
+      {
+       "msg": "số ❌ trên thanh trên cùng vẫn 0 từ sai",
+       "ok": true
+      }
+     ],
+     "error": null,
+     "evidence": {
+      "anchor_row": {
+       "attempts": 3,
+       "correct": 2,
+       "last_reviewed_at": 1792700000000,
+       "mastered": false,
+       "user_id": "us_mvjzaku8_00al7o",
+       "word_id": "w_syn_1_01",
+       "wrong_ctx": null,
+       "wrong_open": false
+      }
+     },
+     "fn": "bookmark_and_fix",
+     "ids": [
+      "FLW-15",
+      "DB-05",
+      "DB-06",
+      "DB-07"
+     ],
+     "name": "⭐ và ❌ nhảy ngay; wrong_open/wrong_ctx đúng; đúng ở LOẠI KHÁC không gỡ, đúng trong màn Fix thì gỡ; câu bỏ trống không tính sai",
+     "notes": [],
+     "status": "PASS"
+    },
+    {
+     "checks": [
+      {
+       "msg": "có ô gõ lại câu nghe được",
+       "ok": true
+      },
+      {
+       "msg": "block_progress không đổi sau khi dùng Dictation",
+       "ok": true
+      },
+      {
+       "msg": "word_progress không đổi sau khi dùng Dictation",
+       "ok": true
+      },
+      {
+       "msg": "không có lần ghi tjwl_db_v1 nào trong lúc dùng Dictation",
+       "ok": true
+      },
+      {
+       "detail": {
+        "speaks": 3
+       },
+       "msg": "nút 'Nghe câu' gọi speechSynthesis (stub ghi lại)",
+       "ok": true
+      },
+      {
+       "msg": "console không lỗi",
+       "ok": true
+      }
+     ],
+     "error": null,
+     "evidence": {},
+     "fn": "dictation_pure",
+     "ids": [
+      "FLW-06"
+     ],
+     "name": "Dictation là luyện tập thuần túy: không ghi block_progress/word_progress, không đổi SRS",
+     "notes": [],
+     "status": "PASS"
+    },
+    {
+     "checks": [
+      {
+       "msg": "block_progress giữ nguyên sau khi tải lại",
+       "ok": true
+      },
+      {
+       "msg": "word_progress giữ nguyên sau khi tải lại",
+       "ok": true
+      },
+      {
+       "msg": "số ⭐/❌ trên thanh trên cùng giống hệt sau khi tải lại",
+       "ok": true
+      },
+      {
+       "detail": {
+        "card": "SURVIVAL › Section A › Page 1 › Batch 1 › Block 1Block 14 A23 B12 B21 C1⭐ 1❌ 1⋯🟢 Ôn sau 1 ngày🧑‍🏫 Claude · Free✓ Done · "
+       },
+       "msg": "thẻ Block 1 không còn 'Chưa học' sau khi tải lại",
+       "ok": true
+      },
+      {
+       "msg": "tải lại: app mở lại đúng Block và tab đang học dở (tjwl_last_block_v1), không về danh sách",
+       "ok": true
+      },
+      {
+       "msg": "console không lỗi sau khi tải lại",
+       "ok": true
+      },
+      {
+       "detail": {
+        "keys": [
+         "tjwl_current_user_v1",
+         "tjwl_daily_log_v1",
+         "tjwl_db_v1",
+         "tjwl_last_block_v1",
+         "tjwl_starter_ver_v1",
+         "tjwl_users_v1"
+        ]
+       },
+       "msg": "các khóa nền có mặt",
+       "ok": true
+      }
+     ],
+     "error": null,
+     "evidence": {
+      "badges": [
+       "⭐ Ôn riêng\n0/1 từ thuộc",
+       "❌ Fix lỗi sai\n1 từ sai"
+      ],
+      "ls_keys_final": [
+       "tjwl_current_user_v1",
+       "tjwl_daily_log_v1",
+       "tjwl_db_v1",
+       "tjwl_last_block_v1",
+       "tjwl_starter_ver_v1",
+       "tjwl_users_v1"
+      ],
+      "ls_ops_during_answer": [
+       [
+        "localStorage",
+        "getItem",
+        "tjwl_bookmarks_v1",
+        null
+       ],
+       [
+        "localStorage",
+        "setItem",
+        "tjwl_db_v1",
+        "json-object"
+       ],
+       [
+        "localStorage",
+        "getItem",
+        "tjwl_wrong_open_v1",
+        null
+       ],
+       [
+        "localStorage",
+        "getItem",
+        "tjwl_meaning_lang_v1",
+        null
+       ],
+       [
+        "localStorage",
+        "getItem",
+        "tjwl_quiz_muted_v1",
+        null
+       ],
+       [
+        "localStorage",
+        "getItem",
+        "tjwl_daily_log_v1",
+        null
+       ],
+       [
+        "localStorage",
+        "setItem",
+        "tjwl_daily_log_v1",
+        "json-object"
+       ],
+       [
+        "localStorage",
+        "getItem",
+        "tjwl_vocab_collapsed_v1",
+        null
+       ],
+       [
+        "localStorage",
+        "getItem",
+        "tjwl_passage_collapsed_v1",
+        null
+       ]
+      ]
+     },
+     "fn": "persistence_reload",
+     "ids": [
+      "LS-01",
+      "FLW-15"
+     ],
+     "name": "Lưu và tải lại: tiến trình, ⭐/❌ và Block Done còn nguyên sau reload; ghi nhật ký khóa localStorage",
+     "notes": [],
+     "status": "PASS"
+    },
+    {
+     "checks": [
+      {
+       "msg": "tab Nghĩa không có nút Nộp bài (tự chấm ở câu cuối)",
+       "ok": true
+      },
+      {
+       "msg": "10/10 ở thẻ Nghĩa đẩy bp.passed (cả ba thẻ đẩy chu kỳ thật)",
+       "ok": true
+      },
+      {
+       "msg": "lần đạt đầu: cycle=1, ôn tiếp sau đúng 24 giờ (đồng hồ giả)",
+       "ok": true
+      },
+      {
+       "msg": "review_history có đúng một mục {step:1, at:T0}",
+       "ok": true
+      },
+      {
+       "msg": "meaning_passed/meaning_best được ghi",
+       "ok": true
+      },
+      {
+       "msg": "học sớm (trước hạn) KHÔNG đẩy chu kỳ, không thêm review_history",
+       "ok": true
+      },
+      {
+       "msg": "học sớm vẫn ghi điểm: attempts của từ tăng lên 2",
+       "ok": true
+      },
+      {
+       "msg": "sớm hơn hạn 2 giờ (ngoài nới 1 giờ): không đẩy",
+       "ok": true
+      },
+      {
+       "msg": "sớm hơn hạn 30 phút (≤1 giờ nới): tính đúng hạn, cycle=2",
+       "ok": true
+      },
+      {
+       "msg": "review_history thêm {step:2, at:lúc ôn} và giữ mục cũ",
+       "ok": true
+      },
+      {
+       "msg": "bước 2 → chờ 1 tuần kể từ lúc ôn",
+       "ok": true
+      },
+      {
+       "detail": {
+        "rows": 10
+       },
+       "msg": "sau 4 lần đạt: cả 10 từ attempts=4, mastered=true",
+       "ok": true
+      },
+      {
+       "msg": "bộ đếm 'đã thuộc / tổng' = 10/38 sau khi tải lại (tổng đếm theo chữ khác nhau, không phải 40 dòng)",
+       "ok": true
+      }
+     ],
+     "error": null,
+     "evidence": {
+      "counter_in_detail": "📚 0 / 38",
+      "progress_timeline": {
+       "after_2h_early": {
+        "best_score": 100,
+        "block_id": "bl_syn_1",
+        "cycle": 1,
+        "easy_passed_at": 1792700000000,
+        "last_exam_at": 1792779200000,
+        "last_reviewed_at": 1792700000000,
+        "meaning_best": 100,
+        "meaning_passed": true,
+        "next_review_at": 1792786400000,
+        "passed": true,
+        "review_history": [
+         {
+          "at": 1792700000000,
+          "step": 1
+         }
+        ],
+        "user_id": "us_mvjzaku8_00al7o"
+       },
+       "after_early": {
+        "best_score": 100,
+        "block_id": "bl_syn_1",
+        "cycle": 1,
+        "easy_passed_at": 1792700000000,
+        "last_exam_at": 1792700000000,
+        "last_reviewed_at": 1792700000000,
+        "meaning_best": 100,
+        "meaning_passed": true,
+        "next_review_at": 1792786400000,
+        "passed": true,
+        "review_history": [
+         {
+          "at": 1792700000000,
+          "step": 1
+         }
+        ],
+        "user_id": "us_mvjzaku8_00al7o"
+       },
+       "after_first_pass": {
+        "best_score": 100,
+        "block_id": "bl_syn_1",
+        "cycle": 1,
+        "easy_passed_at": 1792700000000,
+        "last_exam_at": 1792700000000,
+        "last_reviewed_at": 1792700000000,
+        "meaning_best": 100,
+        "meaning_passed": true,
+        "next_review_at": 1792786400000,
+        "passed": true,
+        "review_history": [
+         {
+          "at": 1792700000000,
+          "step": 1
+         }
+        ],
+        "user_id": "us_mvjzaku8_00al7o"
+       },
+       "after_grace": {
+        "best_score": 100,
+        "block_id": "bl_syn_1",
+        "cycle": 2,
+        "easy_passed_at": 1792700000000,
+        "last_exam_at": 1792784600000,
+        "last_reviewed_at": 1792784600000,
+        "meaning_best": 100,
+        "meaning_passed": true,
+        "next_review_at": 1793389400000,
+        "passed": true,
+        "review_history": [
+         {
+          "at": 1792700000000,
+          "step": 1
+         },
+         {
+          "at": 1792784600000,
+          "step": 2
+         }
+        ],
+        "user_id": "us_mvjzaku8_00al7o"
+       }
+      }
+     },
+     "fn": "srs_timeline",
+     "ids": [
+      "FLW-03",
+      "FLW-04",
+      "FLW-05",
+      "SRS-01"
+     ],
+     "name": "Done qua Nghĩa đẩy SRS thật; học sớm ghi điểm nhưng không đẩy; ôn sớm ≤1 giờ tính đúng hạn",
+     "notes": [],
+     "status": "PASS"
+    },
+    {
+     "checks": [
+      {
+       "msg": "không có thanh đánh máy #word-ticker/.wt-*",
+       "ok": true
+      },
+      {
+       "detail": {
+        "buttons": [
+         "⭐ Từ đã lưu 0",
+         "❌ Fix lỗi sai 0",
+         "🔊 Đọc cả Batch",
+         "🔊 + định nghĩa"
+        ]
+       },
+       "msg": "không có mũi tên Batch ở .screen-head",
+       "ok": true
+      },
+      {
+       "detail": {
+        "buttons": [
+         "← Quay lại danh sách Block",
+         "←",
+         "→",
+         "⋯"
+        ]
+       },
+       "msg": "mũi tên Batch trước/sau nằm trong .batches-bar",
+       "ok": true
+      },
+      {
+       "msg": "không có nút chọn độ khó Dễ/Vừa/Khó",
+       "ok": true
+      },
+      {
+       "msg": "tab study bật đúng #pane-study, các pane khác tắt",
+       "ok": true
+      },
+      {
+       "msg": "nút tab study ở trạng thái active",
+       "ok": true
+      },
+      {
+       "msg": "tab meaning bật đúng #pane-meaning, các pane khác tắt",
+       "ok": true
+      },
+      {
+       "msg": "nút tab meaning ở trạng thái active",
+       "ok": true
+      },
+      {
+       "msg": "tab quiz bật đúng #pane-quiz, các pane khác tắt",
+       "ok": true
+      },
+      {
+       "msg": "nút tab quiz ở trạng thái active",
+       "ok": true
+      },
+      {
+       "msg": "tab dictation bật đúng #pane-dictation, các pane khác tắt",
+       "ok": true
+      },
+      {
+       "msg": "nút tab dictation ở trạng thái active",
+       "ok": true
+      },
+      {
+       "msg": "tab sheet bật đúng #pane-sheet, các pane khác tắt",
+       "ok": true
+      },
+      {
+       "msg": "nút tab sheet ở trạng thái active",
+       "ok": true
+      },
+      {
+       "msg": "tab single bật đúng #pane-single, các pane khác tắt",
+       "ok": true
+      },
+      {
+       "msg": "nút tab single ở trạng thái active",
+       "ok": true
+      },
+      {
+       "msg": "tab progress bật đúng #pane-progress, các pane khác tắt",
+       "ok": true
+      },
+      {
+       "msg": "nút tab progress ở trạng thái active",
+       "ok": true
+      },
+      {
+       "msg": "không tồn tại #pane-final",
+       "ok": true
+      },
+      {
+       "msg": "console/pageerror không có lỗi mới trong lúc chuyển tab",
+       "ok": true
+      },
+      {
+       "msg": "'Hiểu rồi, vào kiểm tra →' mở tab Nghĩa",
+       "ok": true
+      }
+     ],
+     "error": null,
+     "evidence": {
+      "tabs": [
+       "study",
+       "meaning",
+       "quiz",
+       "dictation",
+       "sheet",
+       "single",
+       "progress"
+      ]
+     },
+     "fn": "tabs_and_negatives",
+     "ids": [
+      "FLW-01",
+      "FLW-02",
+      "FLW-08",
+      "FLW-09"
+     ],
+     "name": "Chuyển 7 tab, 'Hiểu rồi' mở Nghĩa, các thành phần đã bỏ hẳn không quay lại",
+     "notes": [],
+     "status": "PASS"
+    },
+    {
+     "checks": [
+      {
+       "detail": {
+        "bp": {
+         "best_score": 100,
+         "block_id": "bl_syn_1",
+         "cycle": 1,
+         "easy_passed_at": 1792700000000,
+         "last_exam_at": 1792700000000,
+         "last_reviewed_at": 1792700000000,
+         "meaning_best": 100,
+         "meaning_passed": true,
+         "next_review_at": 1792786400000,
+         "passed": true,
+         "review_history": [
+          {
+           "at": 1792700000000,
+           "step": 1
+          }
+         ],
+         "user_id": "us_mvjzaku8_00al7o"
+        }
+       },
+       "msg": "thẻ meaning đạt ≥80% → passed, cycle=1, review_history 1 mục",
+       "ok": true
+      },
+      {
+       "msg": "thẻ meaning: console không lỗi",
+       "ok": true
+      },
+      {
+       "msg": "Từng câu không có nút Nộp bài",
+       "ok": true
+      },
+      {
+       "detail": {
+        "bp": {
+         "best_score": 100,
+         "block_id": "bl_syn_1",
+         "cycle": 1,
+         "hard_passed_at": 1792700000000,
+         "last_exam_at": 1792700000000,
+         "last_reviewed_at": 1792700000000,
+         "next_review_at": 1792786400000,
+         "passed": true,
+         "review_history": [
+          {
+           "at": 1792700000000,
+           "step": 1
+          }
+         ],
+         "user_id": "us_mvjzaku8_00al7o"
+        }
+       },
+       "msg": "thẻ single đạt ≥80% → passed, cycle=1, review_history 1 mục",
+       "ok": true
+      },
+      {
+       "msg": "thẻ single: console không lỗi",
+       "ok": true
+      },
+      {
+       "msg": "Phiếu đầy đủ có nút 'Nộp bài' tường minh",
+       "ok": true
+      },
+      {
+       "msg": "Phiếu chưa nộp thì chưa ghi tiến trình",
+       "ok": true
+      },
+      {
+       "detail": {
+        "bp": {
+         "best_score": 100,
+         "block_id": "bl_syn_1",
+         "cycle": 1,
+         "hard_passed_at": 1792700000000,
+         "last_exam_at": 1792700000000,
+         "last_reviewed_at": 1792700000000,
+         "next_review_at": 1792786400000,
+         "passed": true,
+         "review_history": [
+          {
+           "at": 1792700000000,
+           "step": 1
+          }
+         ],
+         "user_id": "us_mvjzaku8_00al7o"
+        }
+       },
+       "msg": "thẻ sheet đạt ≥80% → passed, cycle=1, review_history 1 mục",
+       "ok": true
+      },
+      {
+       "msg": "thẻ sheet: console không lỗi",
+       "ok": true
+      }
+     ],
+     "error": null,
+     "evidence": {
+      "per_card": {
+       "meaning": {
+        "best_score": 100,
+        "cycle": 1,
+        "next_review_at": 1792786400000,
+        "passed": true,
+        "review_history": [
+         {
+          "at": 1792700000000,
+          "step": 1
+         }
+        ]
+       },
+       "sheet": {
+        "best_score": 100,
+        "cycle": 1,
+        "next_review_at": 1792786400000,
+        "passed": true,
+        "review_history": [
+         {
+          "at": 1792700000000,
+          "step": 1
+         }
+        ]
+       },
+       "single": {
+        "best_score": 100,
+        "cycle": 1,
+        "next_review_at": 1792786400000,
+        "passed": true,
+        "review_history": [
+         {
+          "at": 1792700000000,
+          "step": 1
+         }
+        ]
+       }
+      }
+     },
+     "fn": "three_cards_advance_srs",
+     "ids": [
+      "FLW-03",
+      "FLW-04"
+     ],
+     "name": "Ba thẻ bài tập (Nghĩa / Từng câu / Phiếu đầy đủ) đều đẩy chu kỳ thật; Từng câu và Nghĩa tự chấm, Phiếu có nút Nộp bài",
+     "notes": [],
+     "status": "PASS"
+    }
+   ],
+   "servedCount": 20,
+   "servedMismatch": []
+  },
+  "branch": {
+   "guard": {
+    "blockedExpected": [
+     {
+      "method": "GET",
+      "resource": "fetch",
+      "url": "https://pqarpszsipbdugrumhfy.supabase.co/rest/v1/hubs"
+     },
+     {
+      "method": "GET",
+      "resource": "fetch",
+      "url": "https://pqarpszsipbdugrumhfy.supabase.co/functions/v1/gemini-proxy"
+     },
+     {
+      "method": "GET",
+      "resource": "fetch",
+      "url": "https://example.com/a0-probe"
+     }
+    ],
+    "blockedUnexpected": [],
+    "contexts": 10,
+    "localRequests": 275,
+    "mocked": [
+     "/data/starter.json",
+     "/data/starter.version.json",
+     "/js/config.js"
+    ],
+    "stubbedExternal": [
+     "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js",
+     "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/legacy/build/pdf.min.js",
+     "https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"
+    ],
+    "websocketBlocked": [
+     "wss://pqarpszsipbdugrumhfy.supabase.co/realtime/v1/websocket"
+    ],
+    "websocketBlockedUnexpected": [],
+    "websocketLeaked": []
+   },
+   "knownResource404": [
+    "/js/keys.local.js"
+   ],
+   "scenarios": [
+    {
+     "checks": [
+      {
+       "msg": "fetch tới pqarpszsipbdugrumhfy.supabase.co/rest/v1 bị từ chối",
+       "ok": true
+      },
+      {
+       "msg": "fetch tới pqarpszsipbdugrumhfy.supabase.co/functio bị từ chối",
+       "ok": true
+      },
+      {
+       "msg": "fetch tới example.com/a0-probe bị từ chối",
+       "ok": true
+      },
+      {
+       "detail": {
+        "result": "ERROR"
+       },
+       "msg": "WebSocket tới Supabase Realtime thật không mở được",
+       "ok": true
+      },
+      {
+       "msg": "request bị chặn xuất hiện trong báo cáo guard: pqarpszsipbdugrumhfy.supabase.co/rest/v1",
+       "ok": true
+      },
+      {
+       "msg": "request bị chặn xuất hiện trong báo cáo guard: pqarpszsipbdugrumhfy.supabase.co/functio",
+       "ok": true
+      },
+      {
+       "msg": "request bị chặn xuất hiện trong báo cáo guard: example.com/a0-probe",
+       "ok": true
+      },
+      {
+       "msg": "WebSocket bị chặn được ghi nhận",
+       "ok": true
+      },
+      {
+       "msg": "không có WebSocket nào lọt xuống tầng mạng",
+       "ok": true
+      },
+      {
+       "msg": "origin cục bộ vẫn phục vụ, starter là bản TỔNG HỢP (mock khai báo), không phải thư viện thật",
+       "ok": true
+      },
+      {
+       "detail": {
+        "mocked": [
+         "/data/starter.json",
+         "/data/starter.version.json",
+         "/js/config.js"
+        ]
+       },
+       "msg": "các mock được khai báo và dùng thật",
+       "ok": true
+      },
+      {
+       "msg": "Local mode: không có URL Supabase nào trong cấu hình đang chạy",
+       "ok": true
+      },
+      {
+       "msg": "thư viện supabase-js không được nạp (CDN bị stub rỗng)",
+       "ok": true
+      },
+      {
+       "msg": "app chạy Local mode",
+       "ok": true
+      }
+     ],
+     "error": null,
+     "evidence": {},
+     "fn": "network_isolation",
+     "ids": [
+      "NET-01"
+     ],
+     "name": "Chặn mạng: endpoint không khai báo (Supabase thật, miền lạ, WebSocket) bị từ chối và được ghi nhận; origin cục bộ và mock vẫn chạy",
+     "notes": [],
+     "status": "PASS"
+    },
+    {
+     "checks": [
+      {
+       "msg": "ban đầu nút Fix báo 0 từ sai",
+       "ok": true
+      },
+      {
+       "msg": "bấm ⭐: số trên nút Ôn riêng đổi NGAY (<1 giây, trước lần đọc lại DB nền 1,5 giây)",
+       "ok": true
+      },
+      {
+       "msg": "trả lời sai → wrong_open=true",
+       "ok": true
+      },
+      {
+       "detail": {
+        "wrong_ctx": {
+         "answer": "cái neo",
+         "given": "mỏ đá",
+         "lang": "vi",
+         "opts": [
+          "mỏ đá",
+          "cái neo",
+          "vườn cây ăn quả",
+          "đồng cỏ"
+         ],
+         "t": "meaning"
+        }
+       },
+       "msg": "wrong_ctx lưu loại 'meaning', đáp án, đúng 4 lựa chọn, câu đã chọn sai",
+       "ok": true
+      },
+      {
+       "msg": "trả lời sai: số ❌ nhảy lên 1 từ sai NGAY (<1 giây)",
+       "ok": true
+      },
+      {
+       "msg": "từ vừa ⭐ lưu bookmarked=true",
+       "ok": true
+      },
+      {
+       "msg": "các từ trả lời đúng không bị đánh wrong_open",
+       "ok": true
+      },
+      {
+       "msg": "đúng ở loại KHÁC (điền từ) không gỡ khỏi Fix",
+       "ok": true
+      },
+      {
+       "msg": "màn Fix hỏi lại ĐÚNG từ đã sai",
+       "ok": true
+      },
+      {
+       "msg": "màn Fix dựng lại ĐÚNG 4 đáp án của câu đã sai",
+       "ok": true
+      },
+      {
+       "msg": "đúng trong màn Fix → wrong_open=false",
+       "ok": true
+      },
+      {
+       "msg": "console không lỗi",
+       "ok": true
+      },
+      {
+       "msg": "nộp Phiếu bỏ trống hoàn toàn: không từ nào bị đánh wrong_open",
+       "ok": true
+      },
+      {
+       "msg": "số ❌ trên thanh trên cùng vẫn 0 từ sai",
+       "ok": true
+      }
+     ],
+     "error": null,
+     "evidence": {
+      "anchor_row": {
+       "attempts": 3,
+       "correct": 2,
+       "last_reviewed_at": 1792700000000,
+       "mastered": false,
+       "user_id": "us_mvjzaku8_00al7o",
+       "word_id": "w_syn_1_01",
+       "wrong_ctx": null,
+       "wrong_open": false
+      }
+     },
+     "fn": "bookmark_and_fix",
+     "ids": [
+      "FLW-15",
+      "DB-05",
+      "DB-06",
+      "DB-07"
+     ],
+     "name": "⭐ và ❌ nhảy ngay; wrong_open/wrong_ctx đúng; đúng ở LOẠI KHÁC không gỡ, đúng trong màn Fix thì gỡ; câu bỏ trống không tính sai",
+     "notes": [],
+     "status": "PASS"
+    },
+    {
+     "checks": [
+      {
+       "msg": "có ô gõ lại câu nghe được",
+       "ok": true
+      },
+      {
+       "msg": "block_progress không đổi sau khi dùng Dictation",
+       "ok": true
+      },
+      {
+       "msg": "word_progress không đổi sau khi dùng Dictation",
+       "ok": true
+      },
+      {
+       "msg": "không có lần ghi tjwl_db_v1 nào trong lúc dùng Dictation",
+       "ok": true
+      },
+      {
+       "detail": {
+        "speaks": 3
+       },
+       "msg": "nút 'Nghe câu' gọi speechSynthesis (stub ghi lại)",
+       "ok": true
+      },
+      {
+       "msg": "console không lỗi",
+       "ok": true
+      }
+     ],
+     "error": null,
+     "evidence": {},
+     "fn": "dictation_pure",
+     "ids": [
+      "FLW-06"
+     ],
+     "name": "Dictation là luyện tập thuần túy: không ghi block_progress/word_progress, không đổi SRS",
+     "notes": [],
+     "status": "PASS"
+    },
+    {
+     "checks": [
+      {
+       "msg": "block_progress giữ nguyên sau khi tải lại",
+       "ok": true
+      },
+      {
+       "msg": "word_progress giữ nguyên sau khi tải lại",
+       "ok": true
+      },
+      {
+       "msg": "số ⭐/❌ trên thanh trên cùng giống hệt sau khi tải lại",
+       "ok": true
+      },
+      {
+       "detail": {
+        "card": "SURVIVAL › Section A › Page 1 › Batch 1 › Block 1Block 14 A23 B12 B21 C1⭐ 1❌ 1⋯🟢 Ôn sau 1 ngày🧑‍🏫 Claude · Free✓ Done · "
+       },
+       "msg": "thẻ Block 1 không còn 'Chưa học' sau khi tải lại",
+       "ok": true
+      },
+      {
+       "msg": "tải lại: app mở lại đúng Block và tab đang học dở (tjwl_last_block_v1), không về danh sách",
+       "ok": true
+      },
+      {
+       "msg": "console không lỗi sau khi tải lại",
+       "ok": true
+      },
+      {
+       "detail": {
+        "keys": [
+         "tjwl_current_user_v1",
+         "tjwl_daily_log_v1",
+         "tjwl_db_v1",
+         "tjwl_last_block_v1",
+         "tjwl_starter_ver_v1",
+         "tjwl_users_v1"
+        ]
+       },
+       "msg": "các khóa nền có mặt",
+       "ok": true
+      }
+     ],
+     "error": null,
+     "evidence": {
+      "badges": [
+       "⭐ Ôn riêng\n0/1 từ thuộc",
+       "❌ Fix lỗi sai\n1 từ sai"
+      ],
+      "ls_keys_final": [
+       "tjwl_current_user_v1",
+       "tjwl_daily_log_v1",
+       "tjwl_db_v1",
+       "tjwl_last_block_v1",
+       "tjwl_starter_ver_v1",
+       "tjwl_users_v1"
+      ],
+      "ls_ops_during_answer": [
+       [
+        "localStorage",
+        "getItem",
+        "tjwl_bookmarks_v1",
+        null
+       ],
+       [
+        "localStorage",
+        "setItem",
+        "tjwl_db_v1",
+        "json-object"
+       ],
+       [
+        "localStorage",
+        "getItem",
+        "tjwl_wrong_open_v1",
+        null
+       ],
+       [
+        "localStorage",
+        "getItem",
+        "tjwl_meaning_lang_v1",
+        null
+       ],
+       [
+        "localStorage",
+        "getItem",
+        "tjwl_quiz_muted_v1",
+        null
+       ],
+       [
+        "localStorage",
+        "getItem",
+        "tjwl_daily_log_v1",
+        null
+       ],
+       [
+        "localStorage",
+        "setItem",
+        "tjwl_daily_log_v1",
+        "json-object"
+       ],
+       [
+        "localStorage",
+        "getItem",
+        "tjwl_vocab_collapsed_v1",
+        null
+       ],
+       [
+        "localStorage",
+        "getItem",
+        "tjwl_passage_collapsed_v1",
+        null
+       ]
+      ]
+     },
+     "fn": "persistence_reload",
+     "ids": [
+      "LS-01",
+      "FLW-15"
+     ],
+     "name": "Lưu và tải lại: tiến trình, ⭐/❌ và Block Done còn nguyên sau reload; ghi nhật ký khóa localStorage",
+     "notes": [],
+     "status": "PASS"
+    },
+    {
+     "checks": [
+      {
+       "msg": "tab Nghĩa không có nút Nộp bài (tự chấm ở câu cuối)",
+       "ok": true
+      },
+      {
+       "msg": "10/10 ở thẻ Nghĩa đẩy bp.passed (cả ba thẻ đẩy chu kỳ thật)",
+       "ok": true
+      },
+      {
+       "msg": "lần đạt đầu: cycle=1, ôn tiếp sau đúng 24 giờ (đồng hồ giả)",
+       "ok": true
+      },
+      {
+       "msg": "review_history có đúng một mục {step:1, at:T0}",
+       "ok": true
+      },
+      {
+       "msg": "meaning_passed/meaning_best được ghi",
+       "ok": true
+      },
+      {
+       "msg": "học sớm (trước hạn) KHÔNG đẩy chu kỳ, không thêm review_history",
+       "ok": true
+      },
+      {
+       "msg": "học sớm vẫn ghi điểm: attempts của từ tăng lên 2",
+       "ok": true
+      },
+      {
+       "msg": "sớm hơn hạn 2 giờ (ngoài nới 1 giờ): không đẩy",
+       "ok": true
+      },
+      {
+       "msg": "sớm hơn hạn 30 phút (≤1 giờ nới): tính đúng hạn, cycle=2",
+       "ok": true
+      },
+      {
+       "msg": "review_history thêm {step:2, at:lúc ôn} và giữ mục cũ",
+       "ok": true
+      },
+      {
+       "msg": "bước 2 → chờ 1 tuần kể từ lúc ôn",
+       "ok": true
+      },
+      {
+       "detail": {
+        "rows": 10
+       },
+       "msg": "sau 4 lần đạt: cả 10 từ attempts=4, mastered=true",
+       "ok": true
+      },
+      {
+       "msg": "bộ đếm 'đã thuộc / tổng' = 10/38 sau khi tải lại (tổng đếm theo chữ khác nhau, không phải 40 dòng)",
+       "ok": true
+      }
+     ],
+     "error": null,
+     "evidence": {
+      "counter_in_detail": "📚 0 / 38",
+      "progress_timeline": {
+       "after_2h_early": {
+        "best_score": 100,
+        "block_id": "bl_syn_1",
+        "cycle": 1,
+        "easy_passed_at": 1792700000000,
+        "last_exam_at": 1792779200000,
+        "last_reviewed_at": 1792700000000,
+        "meaning_best": 100,
+        "meaning_passed": true,
+        "next_review_at": 1792786400000,
+        "passed": true,
+        "review_history": [
+         {
+          "at": 1792700000000,
+          "step": 1
+         }
+        ],
+        "user_id": "us_mvjzaku8_00al7o"
+       },
+       "after_early": {
+        "best_score": 100,
+        "block_id": "bl_syn_1",
+        "cycle": 1,
+        "easy_passed_at": 1792700000000,
+        "last_exam_at": 1792700000000,
+        "last_reviewed_at": 1792700000000,
+        "meaning_best": 100,
+        "meaning_passed": true,
+        "next_review_at": 1792786400000,
+        "passed": true,
+        "review_history": [
+         {
+          "at": 1792700000000,
+          "step": 1
+         }
+        ],
+        "user_id": "us_mvjzaku8_00al7o"
+       },
+       "after_first_pass": {
+        "best_score": 100,
+        "block_id": "bl_syn_1",
+        "cycle": 1,
+        "easy_passed_at": 1792700000000,
+        "last_exam_at": 1792700000000,
+        "last_reviewed_at": 1792700000000,
+        "meaning_best": 100,
+        "meaning_passed": true,
+        "next_review_at": 1792786400000,
+        "passed": true,
+        "review_history": [
+         {
+          "at": 1792700000000,
+          "step": 1
+         }
+        ],
+        "user_id": "us_mvjzaku8_00al7o"
+       },
+       "after_grace": {
+        "best_score": 100,
+        "block_id": "bl_syn_1",
+        "cycle": 2,
+        "easy_passed_at": 1792700000000,
+        "last_exam_at": 1792784600000,
+        "last_reviewed_at": 1792784600000,
+        "meaning_best": 100,
+        "meaning_passed": true,
+        "next_review_at": 1793389400000,
+        "passed": true,
+        "review_history": [
+         {
+          "at": 1792700000000,
+          "step": 1
+         },
+         {
+          "at": 1792784600000,
+          "step": 2
+         }
+        ],
+        "user_id": "us_mvjzaku8_00al7o"
+       }
+      }
+     },
+     "fn": "srs_timeline",
+     "ids": [
+      "FLW-03",
+      "FLW-04",
+      "FLW-05",
+      "SRS-01"
+     ],
+     "name": "Done qua Nghĩa đẩy SRS thật; học sớm ghi điểm nhưng không đẩy; ôn sớm ≤1 giờ tính đúng hạn",
+     "notes": [],
+     "status": "PASS"
+    },
+    {
+     "checks": [
+      {
+       "msg": "không có thanh đánh máy #word-ticker/.wt-*",
+       "ok": true
+      },
+      {
+       "detail": {
+        "buttons": [
+         "⭐ Từ đã lưu 0",
+         "❌ Fix lỗi sai 0",
+         "🔊 Đọc cả Batch",
+         "🔊 + định nghĩa"
+        ]
+       },
+       "msg": "không có mũi tên Batch ở .screen-head",
+       "ok": true
+      },
+      {
+       "detail": {
+        "buttons": [
+         "← Quay lại danh sách Block",
+         "←",
+         "→",
+         "⋯"
+        ]
+       },
+       "msg": "mũi tên Batch trước/sau nằm trong .batches-bar",
+       "ok": true
+      },
+      {
+       "msg": "không có nút chọn độ khó Dễ/Vừa/Khó",
+       "ok": true
+      },
+      {
+       "msg": "tab study bật đúng #pane-study, các pane khác tắt",
+       "ok": true
+      },
+      {
+       "msg": "nút tab study ở trạng thái active",
+       "ok": true
+      },
+      {
+       "msg": "tab meaning bật đúng #pane-meaning, các pane khác tắt",
+       "ok": true
+      },
+      {
+       "msg": "nút tab meaning ở trạng thái active",
+       "ok": true
+      },
+      {
+       "msg": "tab quiz bật đúng #pane-quiz, các pane khác tắt",
+       "ok": true
+      },
+      {
+       "msg": "nút tab quiz ở trạng thái active",
+       "ok": true
+      },
+      {
+       "msg": "tab dictation bật đúng #pane-dictation, các pane khác tắt",
+       "ok": true
+      },
+      {
+       "msg": "nút tab dictation ở trạng thái active",
+       "ok": true
+      },
+      {
+       "msg": "tab sheet bật đúng #pane-sheet, các pane khác tắt",
+       "ok": true
+      },
+      {
+       "msg": "nút tab sheet ở trạng thái active",
+       "ok": true
+      },
+      {
+       "msg": "tab single bật đúng #pane-single, các pane khác tắt",
+       "ok": true
+      },
+      {
+       "msg": "nút tab single ở trạng thái active",
+       "ok": true
+      },
+      {
+       "msg": "tab progress bật đúng #pane-progress, các pane khác tắt",
+       "ok": true
+      },
+      {
+       "msg": "nút tab progress ở trạng thái active",
+       "ok": true
+      },
+      {
+       "msg": "không tồn tại #pane-final",
+       "ok": true
+      },
+      {
+       "msg": "console/pageerror không có lỗi mới trong lúc chuyển tab",
+       "ok": true
+      },
+      {
+       "msg": "'Hiểu rồi, vào kiểm tra →' mở tab Nghĩa",
+       "ok": true
+      }
+     ],
+     "error": null,
+     "evidence": {
+      "tabs": [
+       "study",
+       "meaning",
+       "quiz",
+       "dictation",
+       "sheet",
+       "single",
+       "progress"
+      ]
+     },
+     "fn": "tabs_and_negatives",
+     "ids": [
+      "FLW-01",
+      "FLW-02",
+      "FLW-08",
+      "FLW-09"
+     ],
+     "name": "Chuyển 7 tab, 'Hiểu rồi' mở Nghĩa, các thành phần đã bỏ hẳn không quay lại",
+     "notes": [],
+     "status": "PASS"
+    },
+    {
+     "checks": [
+      {
+       "detail": {
+        "bp": {
+         "best_score": 100,
+         "block_id": "bl_syn_1",
+         "cycle": 1,
+         "easy_passed_at": 1792700000000,
+         "last_exam_at": 1792700000000,
+         "last_reviewed_at": 1792700000000,
+         "meaning_best": 100,
+         "meaning_passed": true,
+         "next_review_at": 1792786400000,
+         "passed": true,
+         "review_history": [
+          {
+           "at": 1792700000000,
+           "step": 1
+          }
+         ],
+         "user_id": "us_mvjzaku8_00al7o"
+        }
+       },
+       "msg": "thẻ meaning đạt ≥80% → passed, cycle=1, review_history 1 mục",
+       "ok": true
+      },
+      {
+       "msg": "thẻ meaning: console không lỗi",
+       "ok": true
+      },
+      {
+       "msg": "Từng câu không có nút Nộp bài",
+       "ok": true
+      },
+      {
+       "detail": {
+        "bp": {
+         "best_score": 100,
+         "block_id": "bl_syn_1",
+         "cycle": 1,
+         "hard_passed_at": 1792700000000,
+         "last_exam_at": 1792700000000,
+         "last_reviewed_at": 1792700000000,
+         "next_review_at": 1792786400000,
+         "passed": true,
+         "review_history": [
+          {
+           "at": 1792700000000,
+           "step": 1
+          }
+         ],
+         "user_id": "us_mvjzaku8_00al7o"
+        }
+       },
+       "msg": "thẻ single đạt ≥80% → passed, cycle=1, review_history 1 mục",
+       "ok": true
+      },
+      {
+       "msg": "thẻ single: console không lỗi",
+       "ok": true
+      },
+      {
+       "msg": "Phiếu đầy đủ có nút 'Nộp bài' tường minh",
+       "ok": true
+      },
+      {
+       "msg": "Phiếu chưa nộp thì chưa ghi tiến trình",
+       "ok": true
+      },
+      {
+       "detail": {
+        "bp": {
+         "best_score": 100,
+         "block_id": "bl_syn_1",
+         "cycle": 1,
+         "hard_passed_at": 1792700000000,
+         "last_exam_at": 1792700000000,
+         "last_reviewed_at": 1792700000000,
+         "next_review_at": 1792786400000,
+         "passed": true,
+         "review_history": [
+          {
+           "at": 1792700000000,
+           "step": 1
+          }
+         ],
+         "user_id": "us_mvjzaku8_00al7o"
+        }
+       },
+       "msg": "thẻ sheet đạt ≥80% → passed, cycle=1, review_history 1 mục",
+       "ok": true
+      },
+      {
+       "msg": "thẻ sheet: console không lỗi",
+       "ok": true
+      }
+     ],
+     "error": null,
+     "evidence": {
+      "per_card": {
+       "meaning": {
+        "best_score": 100,
+        "cycle": 1,
+        "next_review_at": 1792786400000,
+        "passed": true,
+        "review_history": [
+         {
+          "at": 1792700000000,
+          "step": 1
+         }
+        ]
+       },
+       "sheet": {
+        "best_score": 100,
+        "cycle": 1,
+        "next_review_at": 1792786400000,
+        "passed": true,
+        "review_history": [
+         {
+          "at": 1792700000000,
+          "step": 1
+         }
+        ]
+       },
+       "single": {
+        "best_score": 100,
+        "cycle": 1,
+        "next_review_at": 1792786400000,
+        "passed": true,
+        "review_history": [
+         {
+          "at": 1792700000000,
+          "step": 1
+         }
+        ]
+       }
+      }
+     },
+     "fn": "three_cards_advance_srs",
+     "ids": [
+      "FLW-03",
+      "FLW-04"
+     ],
+     "name": "Ba thẻ bài tập (Nghĩa / Từng câu / Phiếu đầy đủ) đều đẩy chu kỳ thật; Từng câu và Nghĩa tự chấm, Phiếu có nút Nộp bài",
+     "notes": [],
+     "status": "PASS"
+    }
+   ],
+   "servedCount": 20,
+   "servedMismatch": []
+  }
+ },
+ "tool": {
+  "chromePath": "ms-playwright/chromium-1248/chrome-win64/chrome.exe",
+  "chromium": "156.0.8078.4",
+  "playwright": "1.64.0",
+  "python": "3.12.10"
+ }
+}
