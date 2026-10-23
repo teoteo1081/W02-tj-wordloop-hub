@@ -35,6 +35,20 @@
 - Nguồn thật = **file văn bản trong git** (`README.md` "Việc còn dang dở" hiện tại; có thể thêm `PROGRESS.md`), KHÔNG dùng Excel/Supabase làm nguồn chung (ghi đè nhau / tốn Storage). Excel chỉ là bản xem tự sinh: `python3 tools/readme_to_xlsx.py` (cần `pip install openpyxl`) -> `TJ_CongViec.xlsx` gồm sheet Tóm tắt / Việc còn dang dở / Đã xong gần đây (không commit file .xlsx; Ưu tiên/Trạng thái là script ĐOÁN từ README).
 - Phiên sắp hết token: ghi checkpoint vào `HANDOFF.md` rồi dọn khi xong (luật trong file đó).
 
+## 3b. Làn và nhánh (TJ chốt 2026-10-22)
+Nguồn quy tắc: [CLAUDE.md](CLAUDE.md) mục “Làn làm việc”. Tóm tắt:
+
+| Làn | Việc | Nhánh | Lên `main`? |
+|---|---|---|---|
+| N nội dung | từ vựng, bài đọc, đề thi, ngôn ngữ khác, dữ liệu/công cụ nội dung, tài liệu | `content/…`, `docs/…` | Có, qua `/ship` |
+| D debug | sửa lỗi theo `PLAN_DEBUG.md` và các `fix/…` | `fix/debug-plan`, `fix/…` | Không, tới khi TJ quyết |
+| R restructure | tái cấu trúc codebase (`PLAN_RESTRUCTURE.md`) | `feat/restructure-plan` | Không, tới khi TJ quyết |
+| T tính năng | tính năng mới | `feat/…` | Hoãn: chờ D và R xong rồi TJ tính tiếp |
+
+- Builder gán làn TRƯỚC khi làm. Nếu diff của việc làn N đụng `js/`/`css/`/HTML ngoài chuỗi/khoá nội dung thật cần cho dữ liệu → dừng, chuyển làn hoặc hỏi TJ (hotfix nội dung: xem CLAUDE.md).
+- QA hậu kiểm kiểm cả ranh giới làn (`git diff --stat origin/main...HEAD`), không chỉ kiểm chức năng.
+- `WORKTREE_ANCHOR.md`/`ROADMAP_RESTRUCTURE.md` ở nhánh R còn ghi “`main` đóng băng”: lỗi thời, cần sửa trên nhánh đó; cách đưa restructure vào `main` TJ quyết lại.
+
 ## 4. Ghi nhận TJ chờ ngày 2026-10-06 (lịch sử; ưu tiên khi đó: EA + Digital Marketing)
 
 Không dùng danh sách này làm lịch triển khai hiện tại; đối chiếu [roadmap WL](README.md#việc-còn-dang-dở), đặc biệt WL-07/WL-18, trước khi đổi dịch vụ/repo/token.

@@ -5,6 +5,7 @@
 ## Hiện trạng có bằng chứng code/Git
 
 - `main` = ref cục bộ `origin/main` = `e324beb54b29ddfa055956c756a4ceba2676dfa1`; tích hợp 19/10 đã ở cả hai ref. Không fetch, không xác nhận Pages/deploy.
+- **Cập nhật 2026-10-22:** sau `git fetch`, `origin/main` = `6c7b66b` (hơn `e324beb` hai commit nội dung/game). `main` nay chỉ nhận nội dung (làn N, [CLAUDE.md](CLAUDE.md) mục “Làn làm việc”); mốc `e324beb` ở dòng trên là của 20/10.
 - TOEIC Speaking/Writing, IELTS Speaking/Writing và chế độ lớp có code: [js/learn.js](js/learn.js) PAGES, [learn/sw/sw.js](learn/sw/sw.js) FORMAT3/TIME3W/loadSets, [js/swclass.js](js/swclass.js) routing `exam=ielts`. Bộ đề trong repo: [sets.json](learn/sw/sets.json), [ielts.json](learn/sw/ielts.json); không dùng chúng suy ra DB/cloud inventory. Việc tiếp là QA/nguồn/quota (WL-05), không dựng lại màn “sắp có”.
 - Gate có implementation/test ở `handoff/gate` / `origin/handoff/gate` `4c43c50`; chưa thuộc lịch sử main. Audit/integration theo WL-02, không tự merge.
 - `js/gamelayer.js` đã có receiver `tjwl-game-show`; ghi chú “thiếu receiver” trong kế hoạch 08/10 là lịch sử, cần tái hiện luồng (WL-06).
@@ -20,6 +21,8 @@
 | EA, Marketing và khung khoá học | WL-06, WL-07, WL-13 | [PLAN_LUONG_HOC](PLAN_LUONG_HOC.md) |
 | Phòng, Bảng, Correct | WL-08…WL-11 | Chi tiết dated backlog ở README |
 | Nạp đề / nội dung / việc còn lại | WL-12…WL-18 | README và lịch sử dưới đây |
+
+Làn của từng WL (N nội dung / T tính năng, hoãn / D debug / R restructure): cột “Làn” trong [README](README.md#việc-còn-dang-dở). Thiết kế restructure, debug và Netlify nằm ở nhánh riêng (`feat/restructure-plan`, `fix/debug-plan`, `feat/netlify-frontend-plan`), không có trên `main`.
 
 ## Quyết định còn cần TJ
 

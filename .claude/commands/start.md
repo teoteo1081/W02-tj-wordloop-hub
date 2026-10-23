@@ -9,4 +9,4 @@ Khởi động phiên làm việc cho repo TJ WordLoop Hub. Làm theo thứ tự
 4. Tóm tắt bằng tiếng Việt dễ hiểu, ít thuật ngữ: ưu tiên hiện tại của TJ, việc dang dở, câu hỏi đang chờ TJ chốt.
 5. Hỏi TJ muốn làm gì trước. Đừng tự bắt tay vào việc tốn tiền/lớn khi chưa được duyệt.
 
-Nhắc luật: không dán API key vào file client; không commit file đề ETS; test game chỉ dùng phòng `ZZ_QA_*`, không vào phòng "TJ".
+Nhắc luật: `main` chỉ nhận việc NỘI DUNG (làn N, xem mục "Làn làm việc" trong CLAUDE.md; tính năng hoãn, debug/restructure ở nhánh riêng); không dán API key vào file client; không commit file đề ETS; test game chỉ dùng phòng `ZZ_QA_*`, không vào phòng "TJ".

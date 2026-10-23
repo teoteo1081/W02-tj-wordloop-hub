@@ -10,7 +10,7 @@
 
 ## Trạng thái hiện tại
 
-Backlog sống và hành động hiện tại: [README — roadmap WL](README.md#việc-còn-dang-dở). Không có tác vụ app dở giữa chừng được xác nhận bởi lần rà tài liệu 2026-10-20. `main` và ref cục bộ `origin/main` cùng `e324beb54b29ddfa055956c756a4ceba2676dfa1` (không fetch); tích hợp game399/CSS285 đã có ở đó, trạng thái deploy chưa kiểm. Báo cáo QA lịch sử ở `C:/Users/User/Desktop/TJ/_work/merge-final-20261019/` chỉ là đường dẫn ghi nhận, lần này không xác minh lại artifact.
+Backlog sống và hành động hiện tại: [README — roadmap WL](README.md#việc-còn-dang-dở). Không có tác vụ app dở giữa chừng được xác nhận bởi lần rà tài liệu 2026-10-20. Mốc 20/10: `main` và `origin/main` cùng `e324beb54b29ddfa055956c756a4ceba2676dfa1` (không fetch). **Cập nhật 2026-10-22:** sau `git fetch`, `origin/main` = `6c7b66b` (hơn `e324beb` hai commit: chống ô trùng nghĩa + công cụ rà bẫy từ); `main` nay chỉ nhận nội dung theo [quy tắc làn](CLAUDE.md). Tích hợp game399/CSS285 vẫn nằm trong lịch sử `main`, trạng thái deploy chưa kiểm. Báo cáo QA lịch sử ở `C:/Users/User/Desktop/TJ/_work/merge-final-20261019/` chỉ là đường dẫn ghi nhận, lần này không xác minh lại artifact.
 
 `handoff/gate` / `origin/handoff/gate` ở `4c43c50b98bcfd0fe0cf448d7e0e4afc4dc2f7fa` đã có implementation + test (`tools/handoff/`), không còn là kế hoạch thuần và chưa thuộc lịch sử main. Việc audit/sửa gate do chủ việc riêng giữ tại worktree `C:/Users/User/Desktop/TJ/_work/wt-handoff-gate`; tài liệu này không xác nhận kết quả sửa chưa commit, không cho phép tự merge/push. Theo dõi WL-02; đọc bằng `git show origin/handoff/gate:tools/handoff/README.md` khi ở main.
 

@@ -11,6 +11,7 @@ Làm tiếp việc dang dở trong repo. Yêu cầu thêm của TJ (nếu có): 
 
 ## Bước 2 — Chọn việc
 - Ưu tiên hiện tại của TJ (ghi đầu mục backlog) đứng trước; việc ghi "ưu tiên THẤP" đứng sau. Nếu `$ARGUMENTS` có chỉ rõ việc nào thì làm việc đó.
+- **Lọc theo làn (TJ chốt 2026-10-22):** chỉ tự chọn việc làn N (cột Làn ở bảng WL: nội dung/tài liệu). Việc làn T/D/R KHÔNG tự làm trên `main`: T đang hoãn chờ R+D xong; D/R có nhánh riêng, chỉ làm khi TJ chỉ định rõ. Nếu `$ARGUMENTS` chỉ việc làn khác → báo rồi hỏi TJ.
 - BỎ QUA việc ghi "chờ TJ chốt/duyệt/brainstorm", việc cần PAT/token mới, việc của người khác (TJ tự làm: bật Pages, GA4, revoke token…).
 - Lập danh sách ngắn (3–5 việc) theo thứ tự, mỗi việc 1 dòng: việc gì · vì sao chọn · ước tính chi phí (token/USD/dung lượng Supabase) · rủi ro.
 
