@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "year": 2023,
+  "edition": "reference-unconfigured",
+  "source_status": "not_found",
+  "source_root": null,
+  "structure_verified": false,
+  "tests": [],
+  "tools": {},
+  "provider": {},
+  "target": {}
+}

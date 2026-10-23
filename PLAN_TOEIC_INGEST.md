@@ -1,6 +1,18 @@
 # WL-12 — Kế hoạch pipeline TOEIC nhiều năm
 
-Trạng thái: **đã tiền kiểm, mới lập kế hoạch; chưa triển khai pipeline mới**.
+Trạng thái: **đã triển khai nền M1 và các adapter M2/M3, kiểm offline bằng fixture; chờ QA độc lập và nguồn thật M4**. Implementation theo sửa đổi `8e3b059`, dùng ID `ets<yy>_`; chưa ghi cloud hoặc đổi mã ứng dụng.
+
+## Tiến độ implementation
+
+| Phạm vi | Kết quả có bằng chứng | Còn thiếu |
+|---|---|---|
+| ING-01..03 / M1 | Có CLI, schema/profile, codec ID, doctor, source inventory, runner DAG/lock/hash/resume | Nguồn thật chưa có; template 2019–2022 báo `BLOCKED_SOURCE` |
+| ING-04..06 / M2 | Có adapter audio/OCR/structure/crop/cues/build/enrich/transcript; fixture 4 năm, mỗi case Test 9 đủ 200 câu và có graphic | Chưa kiểm sách/PDF/audio thật từng bản; chưa chạy model Whisper hoặc provider live |
+| ING-07..08 / M3 | Có plan/hash/review, snapshot conflict, capacity preflight, backup/receipt/resume; fake backend chứng minh no-write dry-run và verify sau ghi; quota/attempt ledger giữ qua resume | SQL/R2/Storage live adapter mới kiểm bằng mock; cần quyền và integration pilot riêng |
+| ING-09 | Có test suite, dependency lock, tài liệu Windows và artifact demo ngoài repo | **QA độc lập chưa thực hiện**; kiểm nội bộ không thay thế cổng này |
+| ING-10 / M4 | `BLOCKED_SOURCE` — không tìm thấy nguồn 2019–2022 trong phạm vi đã rà | Inventory thật, map nguồn, mẫu TJ duyệt, quyền/quota, publish và hậu kiểm live |
+
+Lệnh, ca kiểm và giới hạn: [README công cụ](tools/exam_ingest/README.md), [báo cáo implementation](tools/exam_ingest/QA_REPORT.md). Chưa công nhận pipeline đã sẵn sàng nạp đề thật. Những mục bên dưới giữ tiêu chí kế hoạch, không tự đổi trạng thái thành DONE chỉ vì có code.
 
 ## 1. Mục tiêu, phạm vi và điểm gốc
 
@@ -9,7 +21,7 @@ Trạng thái: **đã tiền kiểm, mới lập kế hoạch; chưa triển kha
 - Điểm gốc thực tế: `f785ae17232f611f8b92fc660c37e4b8d38ddcc5`. Khi tiền kiểm Git, `origin/main` là `7c51d37`; một phiên khác push trong lúc tạo worktree. Đã xác minh remote `main` và worktree cùng `f785ae1`; các script ETS được rà không đổi giữa hai mốc.
 - Kết quả mong muốn: một CLI chạy theo năm/Test, có kiểm nguồn, artifact truy vết được, chạy lại an toàn, báo cáo chất lượng và bước xuất bản tách biệt; giữ payload tương thích `test_items` hiện tại.
 - 2023 là bộ tham chiếu để đối chiếu; dữ liệu 2023/2024 đang có không được đổi tên hoặc ghi lại trong dự án này. Thiết kế cho phép thêm profile 2025/2026 sau; chưa xác nhận có nguồn hoặc đã hỗ trợ hai năm đó.
-- Lượt hiện tại chỉ tạo worktree, kế hoạch và liên kết backlog. Các bước implementation, gọi AI, upload, SQL và deploy được ghi là việc tương lai; không coi kế hoạch là bằng chứng đã chạy.
+- Mốc lập kế hoạch `75e8143` chỉ tạo worktree/tài liệu; sửa đổi `8e3b059` chốt codec và ranh giới làn. Sau khi TJ giao implementation, mã công cụ được xây ở nhánh này; việc gọi AI/upload/SQL/deploy thật vẫn là bước riêng.
 
 ## 2. Bằng chứng tiền kiểm
 
@@ -32,7 +44,7 @@ Nguồn cho các kết luận: [quy trình 2023](tools/ets2023/QUY_TRINH_NAP_DE.
 
 ## 3. Thiết kế cần build
 
-Đặt mã mới trong `tools/exam_ingest/`, có entrypoint `python -m tools.exam_ingest`. Đây là giao diện **dự kiến**, hiện chưa tồn tại. Không import trực tiếp các script cũ có tác dụng phụ ở top level; tách hàm tái sử dụng hoặc dùng adapter có hợp đồng input/output rõ ràng.
+Mã mới ở `tools/exam_ingest/`, entrypoint `python -B -m tools.exam_ingest` đã có. Không import trực tiếp các script cũ có tác dụng phụ ở top level. Trong implementation, trách nhiệm manifest nằm trong `sources.py`/`common.py`, state trong `runner.py`, và các stage trong `stages.py`; không cần tách mỗi trách nhiệm thành đúng một filename dự kiến.
 
 | Thành phần dự kiến | Trách nhiệm |
 |---|---|
@@ -90,7 +102,7 @@ Các stage CPU có thể chạy local sau khi implementation được giao. Stag
 
 ## 5. Danh sách build theo thứ tự
 
-Mọi mục dưới đây đang **TODO**, chưa phải implementation đã có.
+Bảng dưới giữ thứ tự phụ thuộc và tiêu chí gốc; trạng thái implementation/kiểm chứng từng nhóm được ghi ở bảng tiến độ đầu file.
 
 | ID | Việc và deliverable | Phụ thuộc | Tiêu chí nghiệm thu |
 |---|---|---|---|
@@ -140,6 +152,6 @@ Chi phí lượt lập kế hoạch: không gọi AI API, không chạy Whisper/
 - **Lượt kế hoạch hoàn tất khi:** worktree/nhánh riêng tồn tại; kế hoạch bao phủ mọi thiếu sót đã tìm được; README WL-12 trỏ tới đây; diff chỉ có tài liệu; có commit local giữ checkpoint. Chưa push/merge/deploy.
 - **Pipeline build hoàn tất khi:** ING-01..09 đạt bằng chứng offline và QA; không còn đường chạy vô tình gán năm 2023 hoặc ghi live trong chế độ kiểm; hướng dẫn chạy được theo entrypoint mới.
 - **Một năm hoàn tất khi:** ING-10 xác nhận mọi Test trong inventory nguồn thật, các phần thiếu được giải quyết hoặc được TJ chấp thuận là phạm vi riêng; có artifact/receipt/kiểm live. Không dùng mốc “4 năm = 40 đề” nếu chưa biết nguồn.
-- Việc kế tiếp được đề xuất: build **M1** trong worktree này khi TJ giao implementation. Việc tìm nguồn 2019–2022 ghi **không tìm thấy** cho tới khi có đường dẫn mới; không chặn xây nền offline và không giả vờ đã kiểm bản nguồn.
+- Việc kế tiếp: QA độc lập M1–M3 từ báo cáo/test/artifact; khi có nguồn thật mới mở M4. Việc tìm nguồn 2019–2022 ghi **không tìm thấy** cho tới khi có đường dẫn mới; không giả vờ đã kiểm bản nguồn.
 
 Quy trình tham chiếu: [ETS 2023](tools/ets2023/QUY_TRINH_NAP_DE.md). Roadmap sống: [README — WL-12](README.md#việc-còn-dang-dở). Phạm vi làn: [CLAUDE.md](CLAUDE.md), [TEAM_PROCESS.md](TEAM_PROCESS.md).
