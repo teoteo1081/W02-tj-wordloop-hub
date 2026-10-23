@@ -39,3 +39,27 @@ DECLARED_OUT = {
     "MP-18": "hỗn hợp phiên bản baseline+nhánh: chỉ có ý nghĩa khi mã nhánh khác baseline",
     "supabase-js thật": "không có bản supabase-js cục bộ và plan cấm tải gói mới; Cloud mode dùng bản giả ở ranh giới thư viện",
 }
+
+# ID đã có kịch bản đạt nhưng CHỈ phủ MỘT PHẦN yêu cầu của TEST_REGRESSION_RESTRUCTURE.md (QA độc lập 2026-10-22 chỉ ra matrix
+# trước đó ghi 'đã phủ' quá tay). Phần chưa phủ được nêu rõ để không suy ra nhiều hơn bằng chứng.
+PARTIAL = {
+    "DB-05": "CHỈ: bấm ⭐ → bookmarked=true (Local + Cloud upsert). CHƯA: null=chưa bấm, mặc định ⭐ của batch '⭐ Từ đã lưu' (cần có dòng word_progress của chính user), bỏ ⭐ ghi false, người khác không thấy ⭐",
+    "DB-06": "CHỈ: sai→wrong_open, câu bỏ trống không sai. CHƯA: thiếu cột → rơi về lưu tạm mà điểm vẫn lưu (UI)",
+    "DB-07": "CHỈ: dựng lại đúng câu + 4 đáp án; đúng ở loại KHÁC (điền từ) không gỡ; đúng trong màn Fix thì gỡ. CHƯA: nghĩa↔nghĩa khác ngôn ngữ",
+    "FLW-15": "CHỈ: ⭐/❌ nhảy ngay (<1 giây). CHƯA: phạm vi Block/Batch/Page/Section/Notebook/Hub, thoát giữa bài không mất (instantFix)",
+    "SRS-01": "CHỈ: bước 1→2, học sớm, nới 1 giờ, review_history, last_reviewed_at. CHƯA: demote (lùi bậc), trạng thái 💎 dài hạn, bước 3–6",
+    "LS-01": "CHỈ: tập khóa GHI khi học (tjwl_db_v1, tjwl_daily_log_v1) và các khóa đọc đã biết trong luồng Nghĩa/⭐. CHƯA: 16 file dùng localStorage, khóa game/voice/CC/chat",
+    "CALL-G01": "CHỈ: bắt đầu → trả lời → kết thúc → ghi game_matches/game_results/game_answers. CHƯA: host TẠO phòng, chọn chủ đề trong UI (phòng ZZ được seed sẵn), ván đề thi, kệ sách, chia sẻ tệp",
+    "CALL-G02": "CHỈ: người chơi vào, trả lời, tải lại. CHƯA: rời phòng (untrack/removeChannel khi pagehide)",
+    "MP-01": "CHỈ: presence + hello→state trong phòng seed sẵn. CHƯA: tạo phòng bằng UI",
+    "MP-04": "CHỈ: nối lại đúng ván, điểm trước khi tải lại không mất (>= đã trả lời - 1). Chưa phủ: host mất mạng (MP-05) và relay",
+    "FLW-07": "CHỈ: nhóm tab theo nguồn, xem trước + chi phí, Dùng bài này lưu. CHƯA: Tạo lại bằng AI, Xoá bài này, không giới hạn số bài, bài mới nối cuối",
+}
+
+# Lỗi do QA độc lập cài vào bản chép mà bộ kiểm HIỆN VẪN KHÔNG bắt (còn sống sót) — nói thẳng, không che.
+SURVIVING_MUTATIONS = {
+    "Q2 js/db.js bmState": "mặc định ⭐ bỏ điều kiện 'user có dòng tiến trình' (liên quan DB-05 chưa phủ)",
+    "Q5 js/wordset.js skipFix=false": "quy tắc của màn Fix (gỡ khỏi Fix) ở tầng WordSet chưa được kiểm riêng",
+    "Q7 js/game.js host bỏ qua hello": "MP-04 vẫn xanh; CHƯA điều tra nguyên nhân (giả thuyết chưa kiểm: người chơi nhận lại state qua nhịp push của host chứ không qua phản hồi hello)",
+    "Q8 js/game.js bỏ khử trùng id câu trả lời": "chưa có ca gửi câu trả lời trùng id",
+}

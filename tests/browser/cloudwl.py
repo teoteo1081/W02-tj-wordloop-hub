@@ -25,7 +25,7 @@ def fixture_tables():
 
 
 def app_config(root):
-    txt = open(os.path.join(root, "js", "config.js"), encoding="utf-8").read()
+    txt = bw.committed_text(root, "js/config.js")
     g = lambda k: (re.search(k + r':\s*"([^"]*)"', txt) or [None, ""])[1]
     return {"SUPABASE_URL": g("SUPABASE_URL").rstrip("/"), "AUDIO_BASE": g("AUDIO_BASE").rstrip("/")}
 

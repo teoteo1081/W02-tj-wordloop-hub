@@ -138,7 +138,7 @@ def mp02_full_game(sc, env):
     lobby_ready(cl, host, player)
     host.page.click("#l-start")
     wait_screen(cl, host, "s-play"); wait_screen(cl, player, "s-play")
-    sc.check(True, "bấm ▶ Bắt đầu: cả hai sang màn chơi")
+    sc.waited("bấm ▶ Bắt đầu: cả hai sang màn chơi")
     start_calls = len(be.log)
     seen = play(cl, host, player, wrong_player={2, 5})
     wait_screen(cl, host, "s-end", timeout=30000); wait_screen(cl, player, "s-end", timeout=30000)
@@ -165,6 +165,11 @@ def mp02_full_game(sc, env):
         sc.eq({r["match_id"] for r in res.values()}, {matches[0]["id"]}, "game_results trỏ đúng ván vừa ghi")
     ans = be.tables["game_answers"]
     sc.eq(len(ans), 2 * n, "game_answers ghi câu trả lời của CẢ HAI cho từng câu (2 × số câu)")
+    wrong_rows = [a for a in ans if a.get("correct") is False]
+    sc.check(len(wrong_rows) == 2 and all(a["player_id"] == ALICE_PID for a in wrong_rows),
+             "game_answers.correct=false đúng 2 dòng và đều của Alice (đúng 2 câu cố ý sai)", wrong=len(wrong_rows))
+    sc.check(all(a.get("match_id") == matches[0]["id"] and a.get("room_id") == ROOM_ID and a.get("term") for a in ans),
+             "mọi dòng game_answers gắn đúng ván, đúng phòng và có từ (term)")
     clean(sc, be, cl, host, player)
     sc.ev("calls", cloudwl.canon_by_client(be))
     sc.ev("stored", {"results": sorted(({k: r.get(k) for k in ("correct", "wrong", "rank")} for r in be.tables["game_results"]), key=lambda x: x["rank"]),
@@ -225,7 +230,7 @@ def mp04_player_reload(sc, env):
     answered_before = len(seen["player"])
     player.page.reload(wait_until="load")
     cl.settle(lambda: "s-play" in screens(player), timeout_ms=20000, step=250, what="người chơi nối lại màn chơi")
-    sc.check(True, "sau tải lại người chơi quay lại màn chơi (không kẹt ở phòng chờ)")
+    sc.waited("sau tải lại người chơi quay lại màn chơi (không kẹt ở phòng chờ)")
     sc.check(not host.page.evaluate("document.querySelector('#g-room-badge').hidden"), "host không bị ảnh hưởng, vẫn là host")
     rt = [(e["client"], e["op"], e.get("event")) for e in be.log if e["ch"] == "realtime"]
     sc.check(rt.count(("player", "send", "hello")) >= 2, "người chơi gửi hello lần nữa sau khi tải lại", hello=rt.count(("player", "send", "hello")))

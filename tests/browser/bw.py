@@ -85,6 +85,17 @@ def git(root, *args):
     return subprocess.run(["git", "-C", root] + list(args), capture_output=True, check=True).stdout
 
 
+def committed_text(root, rel):
+    """Nội dung tệp theo blob git HEAD của `root`; chỉ khi `root` KHÔNG phải repo git (bản chép của selftest) mới đọc từ đĩa."""
+    try:
+        return git(root, "show", "HEAD:" + rel).decode("utf-8")
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        if os.path.isdir(os.path.join(root, ".git")) or os.path.isfile(os.path.join(root, ".git")):
+            raise
+        with open(os.path.join(root, rel), encoding="utf-8") as f:
+            return f.read()
+
+
 def source_identity(root, expected_commit=None):
     """SHA/cây/trạng thái của thư mục mã nguồn. Dùng để chứng minh không chạy nhầm checkout."""
     head = git(root, "rev-parse", "HEAD").decode().strip()
@@ -225,7 +236,15 @@ INIT_BASE = r"""
   window.SpeechRecognition = window.webkitSpeechRecognition = function () {
     this.start = () => logS('rec.start'); this.stop = () => logS('rec.stop'); this.abort = () => logS('rec.abort');
   };
-  try { navigator.mediaDevices.getUserMedia = () => { logS('getUserMedia'); return Promise.reject(new DOMException('stub', 'NotAllowedError')); };
+  // --- Worker / SharedWorker / RTCPeerConnection: init script không chạy trong worker và RTC thu candidate qua STUN mà route() không
+  //     thấy (QA độc lập), nên KHÔNG cho tạo; ghi nhận để báo cáo. App hiện không dùng Worker; RTC chỉ dựng sau getUserMedia/getDisplayMedia (đã stub từ chối).
+  const blockedAPI = (kind) => function (...a) {
+    try { window.__a0_ws_blocked(kind + ':' + String(a[0] && a[0].iceServers ? 'rtc' : a[0])); } catch (e) {}
+    throw new DOMException('A0: ' + kind + ' blocked', 'NotSupportedError');
+  };
+  for (const k of ['Worker', 'SharedWorker']) { try { window[k] = blockedAPI(k.toLowerCase()); } catch (e) {} }
+  for (const k of ['RTCPeerConnection', 'webkitRTCPeerConnection']) { try { window[k] = blockedAPI('rtc'); } catch (e) {} }
+  try { navigator.mediaDevices.getUserMedia =() => { logS('getUserMedia'); return Promise.reject(new DOMException('stub', 'NotAllowedError')); };
         navigator.mediaDevices.getDisplayMedia = () => { logS('getDisplayMedia'); return Promise.reject(new DOMException('stub', 'NotAllowedError')); }; } catch (e) {}
   // --- tắt animation/transition để ảnh và đo không phụ thuộc thời gian ---
   const css = document.createElement('style');
@@ -246,7 +265,9 @@ class Browser:
                                                       # render tiền định cho ảnh chuẩn: không GPU, không raster/compositor đa luồng
                                                       "--disable-gpu", "--disable-gpu-compositing", "--disable-gpu-rasterization",
                                                       "--disable-partial-raster", "--disable-lcd-text",
-                                                      "--font-render-hinting=none", "--force-color-profile=srgb"])
+                                                      "--font-render-hinting=none", "--force-color-profile=srgb",
+                                                      # WebRTC không được thu candidate ra ngoài kể cả khi có đường lách khỏi stub
+                                                      "--force-webrtc-ip-handling-policy=disable_non_proxied_udp"])
 
     def close(self):
         self.browser.close(); self._pw.stop()

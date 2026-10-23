@@ -9,6 +9,19 @@
   "MP-18": "hỗn hợp phiên bản baseline+nhánh: chỉ có ý nghĩa khi mã nhánh khác baseline",
   "supabase-js thật": "không có bản supabase-js cục bộ và plan cấm tải gói mới; Cloud mode dùng bản giả ở ranh giới thư viện"
  },
+ "partialCoverage": {
+  "CALL-G01": "CHỈ: bắt đầu → trả lời → kết thúc → ghi game_matches/game_results/game_answers. CHƯA: host TẠO phòng, chọn chủ đề trong UI (phòng ZZ được seed sẵn), ván đề thi, kệ sách, chia sẻ tệp",
+  "CALL-G02": "CHỈ: người chơi vào, trả lời, tải lại. CHƯA: rời phòng (untrack/removeChannel khi pagehide)",
+  "DB-05": "CHỈ: bấm ⭐ → bookmarked=true (Local + Cloud upsert). CHƯA: null=chưa bấm, mặc định ⭐ của batch '⭐ Từ đã lưu' (cần có dòng word_progress của chính user), bỏ ⭐ ghi false, người khác không thấy ⭐",
+  "DB-06": "CHỈ: sai→wrong_open, câu bỏ trống không sai. CHƯA: thiếu cột → rơi về lưu tạm mà điểm vẫn lưu (UI)",
+  "DB-07": "CHỈ: dựng lại đúng câu + 4 đáp án; đúng ở loại KHÁC (điền từ) không gỡ; đúng trong màn Fix thì gỡ. CHƯA: nghĩa↔nghĩa khác ngôn ngữ",
+  "FLW-07": "CHỈ: nhóm tab theo nguồn, xem trước + chi phí, Dùng bài này lưu. CHƯA: Tạo lại bằng AI, Xoá bài này, không giới hạn số bài, bài mới nối cuối",
+  "FLW-15": "CHỈ: ⭐/❌ nhảy ngay (<1 giây). CHƯA: phạm vi Block/Batch/Page/Section/Notebook/Hub, thoát giữa bài không mất (instantFix)",
+  "LS-01": "CHỈ: tập khóa GHI khi học (tjwl_db_v1, tjwl_daily_log_v1) và các khóa đọc đã biết trong luồng Nghĩa/⭐. CHƯA: 16 file dùng localStorage, khóa game/voice/CC/chat",
+  "MP-01": "CHỈ: presence + hello→state trong phòng seed sẵn. CHƯA: tạo phòng bằng UI",
+  "MP-04": "CHỈ: nối lại đúng ván, điểm trước khi tải lại không mất (>= đã trả lời - 1). Chưa phủ: host mất mạng (MP-05) và relay",
+  "SRS-01": "CHỈ: bước 1→2, học sớm, nới 1 giờ, review_history, last_reviewed_at. CHƯA: demote (lùi bậc), trạng thái 💎 dài hạn, bước 3–6"
+ },
  "ranAtNote": "đồng hồ app cố định 1792700000000 (UTC); thời gian thật không ghi để báo cáo tái lập",
  "selfTest": {
   "identityCounterproof": {
@@ -58,13 +71,34 @@
     "caught": true,
     "controlStatus": "PASS",
     "firstFailures": [
-     "đã LƯU word_progress cho 10 từ (attempts=1, correct=1)",
-     "upsert word_progress dùng onConflict=user_id,word_id"
+     "KeyError: 'attempts'"
     ],
     "id": "M-ONCONFLICT",
     "mutantStatus": "FAIL",
     "scenario": "call_w02",
     "what": "đổi onConflict của lưu tiến trình từ (Cloud)"
+   },
+   {
+    "caught": true,
+    "controlStatus": "PASS",
+    "firstFailures": [
+     "last_reviewed_at của Block và của từ = đúng thời điểm làm bài (đồng hồ giả)"
+    ],
+    "id": "M-LAST-REVIEWED",
+    "mutantStatus": "FAIL",
+    "scenario": "srs_timeline",
+    "what": "mọi nơi ghi last_reviewed_at trong Chi tiết ghi 0 (QA độc lập từng làm sống sót)"
+   },
+   {
+    "caught": true,
+    "controlStatus": "PASS",
+    "firstFailures": [
+     "game_answers.correct=false đúng 2 dòng và đều của Alice (đúng 2 câu cố ý sai)"
+    ],
+    "id": "M-GAME-ANSWER",
+    "mutantStatus": "FAIL",
+    "scenario": "mp02_full_game",
+    "what": "game_answers.correct luôn true (QA độc lập từng làm sống sót)"
    },
    {
     "caught": true,
@@ -449,12 +483,18 @@
   "branch": {
    "appCodeChangedVsBaseline": [],
    "appCodeDirty": false,
-   "commit": "b5887ea6dc011466e29516877214ef86fa3d2856",
+   "commit": "c7277e5c2f45de13206962f91da11530e0c57ed9",
    "ok": true,
-   "tree": "6e13a42a6f7271b9634f58bc7f80de50f641b930"
+   "tree": "821fb29bb540091017f9f56ba6a4c7061929280a"
   }
  },
  "status": "CYCLE_SCOPE_EVIDENCED__A0_STILL_PARTIAL",
+ "survivingMutationsFromIndependentQA": {
+  "Q2 js/db.js bmState": "mặc định ⭐ bỏ điều kiện 'user có dòng tiến trình' (liên quan DB-05 chưa phủ)",
+  "Q5 js/wordset.js skipFix=false": "quy tắc của màn Fix (gỡ khỏi Fix) ở tầng WordSet chưa được kiểm riêng",
+  "Q7 js/game.js host bỏ qua hello": "MP-04 vẫn xanh; CHƯA điều tra nguyên nhân (giả thuyết chưa kiểm: người chơi nhận lại state qua nhịp push của host chứ không qua phản hồi hello)",
+  "Q8 js/game.js bỏ khử trùng id câu trả lời": "chưa có ca gửi câu trả lời trùng id"
+ },
  "targets": {
   "baseline": {
    "guard": {
@@ -473,10 +513,25 @@
       "method": "GET",
       "resource": "fetch",
       "url": "https://example.com/a0-probe"
+     },
+     {
+      "method": "POST",
+      "resource": "ping",
+      "url": "https://example.com/a0-beacon"
+     },
+     {
+      "method": "GET",
+      "resource": "document",
+      "url": "https://example.com/a0-frame"
+     },
+     {
+      "method": "GET",
+      "resource": "eventsource",
+      "url": "https://example.com/a0-sse"
      }
     ],
     "blockedUnexpected": [],
-    "contexts": 24,
+    "contexts": 25,
     "localPathsServed": [
      "/css/app.css",
      "/css/game.css",
@@ -527,6 +582,9 @@
      "https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"
     ],
     "websocketBlocked": [
+     "rtc:rtc",
+     "sharedworker:blob:http://127.0.0.1:51941/412853fd-f26f-45be-a40a-79beaf6e2516",
+     "worker:blob:http://127.0.0.1:51941/e5a21f0f-27da-4fca-a60b-30d5337757c7",
      "wss://pqarpszsipbdugrumhfy.supabase.co/realtime/v1/websocket"
     ],
     "websocketBlockedUnexpected": [],
@@ -613,18 +671,65 @@
      ],
      "name": "Chặn mạng: endpoint không khai báo (Supabase thật, miền lạ, WebSocket) bị từ chối và được ghi nhận; origin cục bộ và mock vẫn chạy",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": []
     },
     {
      "checks": [
       {
-       "msg": "ban đầu nút Fix báo 0 từ sai",
+       "msg": "Worker, SharedWorker, RTCPeerConnection không tạo được",
        "ok": true
       },
       {
-       "msg": "bấm ⭐: số trên nút Ôn riêng đổi NGAY (<1 giây, trước lần đọc lại DB nền 1,5 giây)",
+       "detail": {
+        "seen": [
+         "worker:blob:http://127.0.0.1:51941/e5a21f0f-27da-4fca-a60b-30d5337757c7",
+         "sharedworker:blob:http://127.0.0.1:51941/412853fd-f26f-45be-a40a-79beaf6e2516",
+         "rtc:rtc"
+        ]
+       },
+       "msg": "ba đường lách được ghi nhận trong báo cáo guard",
        "ok": true
       },
+      {
+       "detail": {
+        "blocked": 3
+       },
+       "msg": "request bị chặn và ghi nhận: a0-beacon",
+       "ok": true
+      },
+      {
+       "detail": {
+        "blocked": 3
+       },
+       "msg": "request bị chặn và ghi nhận: a0-frame",
+       "ok": true
+      },
+      {
+       "detail": {
+        "blocked": 3
+       },
+       "msg": "request bị chặn và ghi nhận: a0-sse",
+       "ok": true
+      },
+      {
+       "msg": "không có WebSocket nào lọt xuống tầng mạng",
+       "ok": true
+      }
+     ],
+     "error": null,
+     "evidence": {},
+     "fn": "network_isolation_bypasses",
+     "ids": [
+      "NET-02"
+     ],
+     "name": "Chặn mạng, đường lách (QA độc lập): Worker/SharedWorker, RTCPeerConnection, sendBeacon, iframe, EventSource không ra khỏi máy và được ghi nhận",
+     "notes": [],
+     "status": "PASS",
+     "waits": []
+    },
+    {
+     "checks": [
       {
        "msg": "trả lời sai → wrong_open=true",
        "ok": true
@@ -645,10 +750,6 @@
         }
        },
        "msg": "wrong_ctx lưu loại 'meaning', đáp án, đúng 4 lựa chọn, câu đã chọn sai",
-       "ok": true
-      },
-      {
-       "msg": "trả lời sai: số ❌ nhảy lên 1 từ sai NGAY (<1 giây)",
        "ok": true
       },
       {
@@ -682,10 +783,6 @@
       {
        "msg": "nộp Phiếu bỏ trống hoàn toàn: không từ nào bị đánh wrong_open",
        "ok": true
-      },
-      {
-       "msg": "số ❌ trên thanh trên cùng vẫn 0 từ sai",
-       "ok": true
       }
      ],
      "error": null,
@@ -711,7 +808,13 @@
      ],
      "name": "⭐ và ❌ nhảy ngay; wrong_open/wrong_ctx đúng; đúng ở LOẠI KHÁC không gỡ, đúng trong màn Fix thì gỡ; câu bỏ trống không tính sai",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": [
+      "ban đầu nút Fix báo 0 từ sai",
+      "bấm ⭐: số trên nút Ôn riêng đổi NGAY (<1 giây, trước lần đọc lại DB nền 1,5 giây)",
+      "trả lời sai: số ❌ nhảy lên 1 từ sai NGAY (<1 giây)",
+      "số ❌ trên thanh trên cùng vẫn 0 từ sai"
+     ]
     },
     {
      "checks": [
@@ -751,7 +854,8 @@
      ],
      "name": "Dictation là luyện tập thuần túy: không ghi block_progress/word_progress, không đổi SRS",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": []
     },
     {
      "checks": [
@@ -794,6 +898,25 @@
         ]
        },
        "msg": "các khóa nền có mặt",
+       "ok": true
+      },
+      {
+       "msg": "LS-01: khi ⭐ + làm bài, app GHI đúng hai khóa localStorage này (không khóa lạ)",
+       "ok": true
+      },
+      {
+       "detail": {
+        "reads": [
+         "tjwl_bookmarks_v1",
+         "tjwl_daily_log_v1",
+         "tjwl_meaning_lang_v1",
+         "tjwl_passage_collapsed_v1",
+         "tjwl_quiz_muted_v1",
+         "tjwl_vocab_collapsed_v1",
+         "tjwl_wrong_open_v1"
+        ]
+       },
+       "msg": "LS-01: các khóa đã biết được ĐỌC (bookmarks, wrong_open, daily_log)",
        "ok": true
       }
      ],
@@ -875,7 +998,8 @@
      ],
      "name": "Lưu và tải lại: tiến trình, ⭐/❌ và Block Done còn nguyên sau reload; ghi nhật ký khóa localStorage",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": []
     },
     {
      "checks": [
@@ -897,6 +1021,10 @@
       },
       {
        "msg": "meaning_passed/meaning_best được ghi",
+       "ok": true
+      },
+      {
+       "msg": "last_reviewed_at của Block và của từ = đúng thời điểm làm bài (đồng hồ giả)",
        "ok": true
       },
       {
@@ -928,10 +1056,6 @@
         "rows": 10
        },
        "msg": "sau 4 lần đạt: cả 10 từ attempts=4, mastered=true",
-       "ok": true
-      },
-      {
-       "msg": "bộ đếm 'đã thuộc / tổng' = 10/38 sau khi tải lại (tổng đếm theo chữ khác nhau, không phải 40 dòng)",
        "ok": true
       }
      ],
@@ -1030,7 +1154,10 @@
      ],
      "name": "Done qua Nghĩa đẩy SRS thật; học sớm ghi điểm nhưng không đẩy; ôn sớm ≤1 giờ tính đúng hạn",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": [
+      "bộ đếm 'đã thuộc / tổng' = 10/38 sau khi tải lại (tổng đếm theo chữ khác nhau, không phải 40 dòng)"
+     ]
     },
     {
      "checks": [
@@ -1156,7 +1283,8 @@
      ],
      "name": "Chuyển 7 tab, 'Hiểu rồi' mở Nghĩa, các thành phần đã bỏ hẳn không quay lại",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": []
     },
     {
      "checks": [
@@ -1304,7 +1432,8 @@
      ],
      "name": "Ba thẻ bài tập (Nghĩa / Từng câu / Phiếu đầy đủ) đều đẩy chu kỳ thật; Từng câu và Nghĩa tự chấm, Phiếu có nút Nộp bài",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": []
     },
     {
      "checks": [
@@ -2604,7 +2733,8 @@
      ],
      "name": "Khởi động Cloud với hồ sơ host giả: DB.init → Auth.init → nạp Hub/Notebook → Journey (nhật ký lời gọi)",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": []
     },
     {
      "checks": [
@@ -3414,7 +3544,8 @@
      ],
      "name": "Mở Block → tab Nghĩa → trả lời hết → tự chấm → ghi tiến trình lên backend; tải lại vẫn còn",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": []
     },
     {
      "checks": [
@@ -3995,7 +4126,8 @@
      ],
      "name": "Phiếu đầy đủ: nộp bài đạt ≥80% → bp.passed và review_history lưu lên backend; bỏ trống không phải câu sai",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": []
     },
     {
      "checks": [
@@ -4275,7 +4407,8 @@
      ],
      "name": "⭐ một từ → Ôn riêng → làm một câu sai → Fix lỗi sai làm lại: lời gọi và dữ liệu đã lưu",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": []
     },
     {
      "checks": [
@@ -4379,7 +4512,8 @@
      ],
      "name": "Bộ chọn nguồn bài (admin, Cloud): nhóm theo nguồn thật, xem trước có chi phí, 'Dùng bài này' áp dụng và lưu, không mất bài nào",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": []
     },
     {
      "checks": [
@@ -4941,14 +5075,11 @@
      ],
      "name": "Host + người chơi vào phòng ZZ: thấy nhau qua presence; hello → state đồng bộ; chỉ kênh ZZ",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": []
     },
     {
      "checks": [
-      {
-       "msg": "bấm ▶ Bắt đầu: cả hai sang màn chơi",
-       "ok": true
-      },
       {
        "detail": {
         "questions": 25
@@ -5010,6 +5141,17 @@
       },
       {
        "msg": "game_answers ghi câu trả lời của CẢ HAI cho từng câu (2 × số câu)",
+       "ok": true
+      },
+      {
+       "detail": {
+        "wrong": 2
+       },
+       "msg": "game_answers.correct=false đúng 2 dòng và đều của Alice (đúng 2 câu cố ý sai)",
+       "ok": true
+      },
+      {
+       "msg": "mọi dòng game_answers gắn đúng ván, đúng phòng và có từ (term)",
        "ok": true
       },
       {
@@ -7120,7 +7262,10 @@
      ],
      "name": "Ván điền/chọn từ trọn vẹn: bắt đầu → hai bên cùng câu → trả lời → điểm hai bên khớp → kết thúc → ghi kết quả",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": [
+      "bấm ▶ Bắt đầu: cả hai sang màn chơi"
+     ]
     },
     {
      "checks": [
@@ -7213,14 +7358,11 @@
      ],
      "name": "Host tải lại giữa ván: không bị hạ vai (relay chặn trước khối nhường host); ván tiếp tục tới kết quả",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": []
     },
     {
      "checks": [
-      {
-       "msg": "sau tải lại người chơi quay lại màn chơi (không kẹt ở phòng chờ)",
-       "ok": true
-      },
       {
        "msg": "host không bị ảnh hưởng, vẫn là host",
        "ok": true
@@ -7293,7 +7435,10 @@
      ],
      "name": "Người chơi tải lại giữa ván: hello → host trả state → nối lại đúng ván, điểm đã chơi không mất",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": [
+      "sau tải lại người chơi quay lại màn chơi (không kẹt ở phòng chờ)"
+     ]
     },
     {
      "checks": [
@@ -7331,7 +7476,8 @@
      ],
      "name": "Phản chứng bảo vệ phòng thật: một client cố vào phòng 'TJ' (backend GIẢ) bị ghi nhận là vi phạm, không có gì rời máy",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": []
     }
    ],
    "servedCount": 35,
@@ -7354,10 +7500,25 @@
       "method": "GET",
       "resource": "fetch",
       "url": "https://example.com/a0-probe"
+     },
+     {
+      "method": "POST",
+      "resource": "ping",
+      "url": "https://example.com/a0-beacon"
+     },
+     {
+      "method": "GET",
+      "resource": "eventsource",
+      "url": "https://example.com/a0-sse"
+     },
+     {
+      "method": "GET",
+      "resource": "document",
+      "url": "https://example.com/a0-frame"
      }
     ],
     "blockedUnexpected": [],
-    "contexts": 24,
+    "contexts": 25,
     "localPathsServed": [
      "/css/app.css",
      "/css/game.css",
@@ -7408,6 +7569,9 @@
      "https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"
     ],
     "websocketBlocked": [
+     "rtc:rtc",
+     "sharedworker:blob:http://127.0.0.1:57745/06d26382-5424-40b5-867c-c196b14ac4e8",
+     "worker:blob:http://127.0.0.1:57745/63b2f5e8-00b1-455c-b589-ca7ff1fec92a",
      "wss://pqarpszsipbdugrumhfy.supabase.co/realtime/v1/websocket"
     ],
     "websocketBlockedUnexpected": [],
@@ -7494,18 +7658,65 @@
      ],
      "name": "Chặn mạng: endpoint không khai báo (Supabase thật, miền lạ, WebSocket) bị từ chối và được ghi nhận; origin cục bộ và mock vẫn chạy",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": []
     },
     {
      "checks": [
       {
-       "msg": "ban đầu nút Fix báo 0 từ sai",
+       "msg": "Worker, SharedWorker, RTCPeerConnection không tạo được",
        "ok": true
       },
       {
-       "msg": "bấm ⭐: số trên nút Ôn riêng đổi NGAY (<1 giây, trước lần đọc lại DB nền 1,5 giây)",
+       "detail": {
+        "seen": [
+         "worker:blob:http://127.0.0.1:57745/63b2f5e8-00b1-455c-b589-ca7ff1fec92a",
+         "sharedworker:blob:http://127.0.0.1:57745/06d26382-5424-40b5-867c-c196b14ac4e8",
+         "rtc:rtc"
+        ]
+       },
+       "msg": "ba đường lách được ghi nhận trong báo cáo guard",
        "ok": true
       },
+      {
+       "detail": {
+        "blocked": 3
+       },
+       "msg": "request bị chặn và ghi nhận: a0-beacon",
+       "ok": true
+      },
+      {
+       "detail": {
+        "blocked": 3
+       },
+       "msg": "request bị chặn và ghi nhận: a0-frame",
+       "ok": true
+      },
+      {
+       "detail": {
+        "blocked": 3
+       },
+       "msg": "request bị chặn và ghi nhận: a0-sse",
+       "ok": true
+      },
+      {
+       "msg": "không có WebSocket nào lọt xuống tầng mạng",
+       "ok": true
+      }
+     ],
+     "error": null,
+     "evidence": {},
+     "fn": "network_isolation_bypasses",
+     "ids": [
+      "NET-02"
+     ],
+     "name": "Chặn mạng, đường lách (QA độc lập): Worker/SharedWorker, RTCPeerConnection, sendBeacon, iframe, EventSource không ra khỏi máy và được ghi nhận",
+     "notes": [],
+     "status": "PASS",
+     "waits": []
+    },
+    {
+     "checks": [
       {
        "msg": "trả lời sai → wrong_open=true",
        "ok": true
@@ -7526,10 +7737,6 @@
         }
        },
        "msg": "wrong_ctx lưu loại 'meaning', đáp án, đúng 4 lựa chọn, câu đã chọn sai",
-       "ok": true
-      },
-      {
-       "msg": "trả lời sai: số ❌ nhảy lên 1 từ sai NGAY (<1 giây)",
        "ok": true
       },
       {
@@ -7563,10 +7770,6 @@
       {
        "msg": "nộp Phiếu bỏ trống hoàn toàn: không từ nào bị đánh wrong_open",
        "ok": true
-      },
-      {
-       "msg": "số ❌ trên thanh trên cùng vẫn 0 từ sai",
-       "ok": true
       }
      ],
      "error": null,
@@ -7592,7 +7795,13 @@
      ],
      "name": "⭐ và ❌ nhảy ngay; wrong_open/wrong_ctx đúng; đúng ở LOẠI KHÁC không gỡ, đúng trong màn Fix thì gỡ; câu bỏ trống không tính sai",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": [
+      "ban đầu nút Fix báo 0 từ sai",
+      "bấm ⭐: số trên nút Ôn riêng đổi NGAY (<1 giây, trước lần đọc lại DB nền 1,5 giây)",
+      "trả lời sai: số ❌ nhảy lên 1 từ sai NGAY (<1 giây)",
+      "số ❌ trên thanh trên cùng vẫn 0 từ sai"
+     ]
     },
     {
      "checks": [
@@ -7632,7 +7841,8 @@
      ],
      "name": "Dictation là luyện tập thuần túy: không ghi block_progress/word_progress, không đổi SRS",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": []
     },
     {
      "checks": [
@@ -7675,6 +7885,25 @@
         ]
        },
        "msg": "các khóa nền có mặt",
+       "ok": true
+      },
+      {
+       "msg": "LS-01: khi ⭐ + làm bài, app GHI đúng hai khóa localStorage này (không khóa lạ)",
+       "ok": true
+      },
+      {
+       "detail": {
+        "reads": [
+         "tjwl_bookmarks_v1",
+         "tjwl_daily_log_v1",
+         "tjwl_meaning_lang_v1",
+         "tjwl_passage_collapsed_v1",
+         "tjwl_quiz_muted_v1",
+         "tjwl_vocab_collapsed_v1",
+         "tjwl_wrong_open_v1"
+        ]
+       },
+       "msg": "LS-01: các khóa đã biết được ĐỌC (bookmarks, wrong_open, daily_log)",
        "ok": true
       }
      ],
@@ -7756,7 +7985,8 @@
      ],
      "name": "Lưu và tải lại: tiến trình, ⭐/❌ và Block Done còn nguyên sau reload; ghi nhật ký khóa localStorage",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": []
     },
     {
      "checks": [
@@ -7778,6 +8008,10 @@
       },
       {
        "msg": "meaning_passed/meaning_best được ghi",
+       "ok": true
+      },
+      {
+       "msg": "last_reviewed_at của Block và của từ = đúng thời điểm làm bài (đồng hồ giả)",
        "ok": true
       },
       {
@@ -7809,10 +8043,6 @@
         "rows": 10
        },
        "msg": "sau 4 lần đạt: cả 10 từ attempts=4, mastered=true",
-       "ok": true
-      },
-      {
-       "msg": "bộ đếm 'đã thuộc / tổng' = 10/38 sau khi tải lại (tổng đếm theo chữ khác nhau, không phải 40 dòng)",
        "ok": true
       }
      ],
@@ -7911,7 +8141,10 @@
      ],
      "name": "Done qua Nghĩa đẩy SRS thật; học sớm ghi điểm nhưng không đẩy; ôn sớm ≤1 giờ tính đúng hạn",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": [
+      "bộ đếm 'đã thuộc / tổng' = 10/38 sau khi tải lại (tổng đếm theo chữ khác nhau, không phải 40 dòng)"
+     ]
     },
     {
      "checks": [
@@ -8037,7 +8270,8 @@
      ],
      "name": "Chuyển 7 tab, 'Hiểu rồi' mở Nghĩa, các thành phần đã bỏ hẳn không quay lại",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": []
     },
     {
      "checks": [
@@ -8185,7 +8419,8 @@
      ],
      "name": "Ba thẻ bài tập (Nghĩa / Từng câu / Phiếu đầy đủ) đều đẩy chu kỳ thật; Từng câu và Nghĩa tự chấm, Phiếu có nút Nộp bài",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": []
     },
     {
      "checks": [
@@ -9485,7 +9720,8 @@
      ],
      "name": "Khởi động Cloud với hồ sơ host giả: DB.init → Auth.init → nạp Hub/Notebook → Journey (nhật ký lời gọi)",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": []
     },
     {
      "checks": [
@@ -10295,7 +10531,8 @@
      ],
      "name": "Mở Block → tab Nghĩa → trả lời hết → tự chấm → ghi tiến trình lên backend; tải lại vẫn còn",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": []
     },
     {
      "checks": [
@@ -10876,7 +11113,8 @@
      ],
      "name": "Phiếu đầy đủ: nộp bài đạt ≥80% → bp.passed và review_history lưu lên backend; bỏ trống không phải câu sai",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": []
     },
     {
      "checks": [
@@ -11156,7 +11394,8 @@
      ],
      "name": "⭐ một từ → Ôn riêng → làm một câu sai → Fix lỗi sai làm lại: lời gọi và dữ liệu đã lưu",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": []
     },
     {
      "checks": [
@@ -11260,7 +11499,8 @@
      ],
      "name": "Bộ chọn nguồn bài (admin, Cloud): nhóm theo nguồn thật, xem trước có chi phí, 'Dùng bài này' áp dụng và lưu, không mất bài nào",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": []
     },
     {
      "checks": [
@@ -11822,14 +12062,11 @@
      ],
      "name": "Host + người chơi vào phòng ZZ: thấy nhau qua presence; hello → state đồng bộ; chỉ kênh ZZ",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": []
     },
     {
      "checks": [
-      {
-       "msg": "bấm ▶ Bắt đầu: cả hai sang màn chơi",
-       "ok": true
-      },
       {
        "detail": {
         "questions": 25
@@ -11891,6 +12128,17 @@
       },
       {
        "msg": "game_answers ghi câu trả lời của CẢ HAI cho từng câu (2 × số câu)",
+       "ok": true
+      },
+      {
+       "detail": {
+        "wrong": 2
+       },
+       "msg": "game_answers.correct=false đúng 2 dòng và đều của Alice (đúng 2 câu cố ý sai)",
+       "ok": true
+      },
+      {
+       "msg": "mọi dòng game_answers gắn đúng ván, đúng phòng và có từ (term)",
        "ok": true
       },
       {
@@ -14001,7 +14249,10 @@
      ],
      "name": "Ván điền/chọn từ trọn vẹn: bắt đầu → hai bên cùng câu → trả lời → điểm hai bên khớp → kết thúc → ghi kết quả",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": [
+      "bấm ▶ Bắt đầu: cả hai sang màn chơi"
+     ]
     },
     {
      "checks": [
@@ -14094,14 +14345,11 @@
      ],
      "name": "Host tải lại giữa ván: không bị hạ vai (relay chặn trước khối nhường host); ván tiếp tục tới kết quả",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": []
     },
     {
      "checks": [
-      {
-       "msg": "sau tải lại người chơi quay lại màn chơi (không kẹt ở phòng chờ)",
-       "ok": true
-      },
       {
        "msg": "host không bị ảnh hưởng, vẫn là host",
        "ok": true
@@ -14174,7 +14422,10 @@
      ],
      "name": "Người chơi tải lại giữa ván: hello → host trả state → nối lại đúng ván, điểm đã chơi không mất",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": [
+      "sau tải lại người chơi quay lại màn chơi (không kẹt ở phòng chờ)"
+     ]
     },
     {
      "checks": [
@@ -14212,7 +14463,8 @@
      ],
      "name": "Phản chứng bảo vệ phòng thật: một client cố vào phòng 'TJ' (backend GIẢ) bị ghi nhận là vi phạm, không có gì rời máy",
      "notes": [],
-     "status": "PASS"
+     "status": "PASS",
+     "waits": []
     }
    ],
    "servedCount": 35,

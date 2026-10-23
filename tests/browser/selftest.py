@@ -20,6 +20,10 @@ MUTATIONS = [
      scn_learn.bookmark_and_fix, "câu sai không bao giờ vào Fix lỗi sai (Local)"),
     ("M-ONCONFLICT", "js/db.js", 'DB.sb.from("word_progress").upsert(row, { onConflict: "user_id,word_id" })',
      'DB.sb.from("word_progress").upsert(row, { onConflict: "user_id" })', scn_cloud.call_w02, "đổi onConflict của lưu tiến trình từ (Cloud)"),
+    ("M-LAST-REVIEWED", "js/detail.js", "last_reviewed_at: Date.now()", "last_reviewed_at: 0", scn_learn.srs_timeline,
+     "mọi nơi ghi last_reviewed_at trong Chi tiết ghi 0 (QA độc lập từng làm sống sót)", True),
+    ("M-GAME-ANSWER", "js/game.js", "correct: a.ok, ms: a.ms || null,", "correct: true, ms: a.ms || null,", scn_game.mp02_full_game,
+     "game_answers.correct luôn true (QA độc lập từng làm sống sót)"),
     ("M-RELAY", "js/game.js", "if (d.relay && (G.isHost || G.st)) return;", "", scn_game.mp03_host_reload,
      "bỏ chặn relay trước khối nhường host: host tải lại giữa ván bị hạ vai (MP-03)"),
 ]
@@ -35,14 +39,14 @@ def _copy_app(src, dst):
             shutil.copy2(s, d)
 
 
-def _mutate(root, rel, old, new):
+def _mutate(root, rel, old, new, replace_all=False):
     p = os.path.join(root, rel)
     with open(p, "r", encoding="utf-8", newline="") as f:
         text = f.read()
     if text.count(old) < 1:
         raise AssertionError("mỏ neo lỗi không còn trong %s: %r" % (rel, old[:60]))
     with open(p, "w", encoding="utf-8", newline="") as f:
-        f.write(text.replace(old, new, 1))
+        f.write(text.replace(old, new) if replace_all else text.replace(old, new, 1))
 
 
 def run_selftest(browser, repo_root, log=print):
@@ -53,14 +57,14 @@ def run_selftest(browser, repo_root, log=print):
         control = os.path.join(tmp, "control"); os.makedirs(control)
         _copy_app(repo_root, control)
         cache = {}
-        for mid, rel, old, new, fn, desc in MUTATIONS:
+        for mid, rel, old, new, fn, desc, *opt in MUTATIONS:
             if fn.__name__ not in cache:
                 site = bw.Site(control, "control")
                 cache[fn.__name__] = wl.run_scenario(fn, scn_env(browser, site))["status"]
                 site.close()
             root = os.path.join(tmp, mid); os.makedirs(root)
             _copy_app(repo_root, root)
-            _mutate(root, rel, old, new)
+            _mutate(root, rel, old, new, bool(opt and opt[0]))
             site = bw.Site(root, mid)
             r = wl.run_scenario(fn, scn_env(browser, site))
             site.close()

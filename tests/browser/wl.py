@@ -14,7 +14,7 @@ class Scenario:
 
     def __init__(self, ids, name):
         self.ids, self.name = ids, name
-        self.checks, self.evidence, self.notes = [], {}, []
+        self.checks, self.evidence, self.notes, self.waits = [], {}, [], []
 
     def check(self, cond, msg, **detail):
         self.checks.append({"ok": bool(cond), "msg": msg, **({"detail": detail} if detail else {})})
@@ -24,6 +24,10 @@ class Scenario:
         ok = actual == expected
         self.checks.append({"ok": ok, "msg": msg, **({} if ok else {"actual": actual, "expected": expected})})
         return ok
+
+    def waited(self, msg):
+        """Ghi chú rằng một lệnh chờ đã thành công (lệnh chờ ném lỗi nếu thất bại). KHÔNG tính vào số assertion."""
+        self.waits.append(msg)
 
     def ev(self, key, value):
         self.evidence[key] = value
@@ -40,7 +44,7 @@ def run_scenario(fn, env):
     except Exception as e:   # lỗi hạ tầng/UI không như mong đợi = FAIL, không nuốt
         status, err = "FAIL", "".join(traceback.format_exception_only(type(e), e)).strip()[:600]
     return {"fn": fn.__name__, "ids": sc.ids, "name": sc.name, "status": status, "error": err,
-            "checks": sc.checks, "evidence": sc.evidence, "notes": sc.notes}
+            "checks": sc.checks, "evidence": sc.evidence, "notes": sc.notes, "waits": sc.waits}
 
 
 def scenario(ids, title):
@@ -54,7 +58,8 @@ def scenario(ids, title):
 def local_mocks(root):
     """Mock KHAI BÁO cho Local mode: config không URL Supabase (đúng như bản không cấu hình Cloud),
     starter tổng hợp thay thư viện thật, version khớp starter."""
-    cfg = open(os.path.join(root, "js", "config.js"), encoding="utf-8").read()
+    # lấy từ BLOB git HEAD của nguồn (không từ working tree) để cấu hình mock luôn bám mã đã commit (QA độc lập)
+    cfg = bw.committed_text(root, "js/config.js")
     cfg = re.sub(r'SUPABASE_URL:\s*"[^"]*"', 'SUPABASE_URL: ""', cfg)
     cfg = re.sub(r'SUPABASE_ANON_KEY:\s*"[^"]*"', 'SUPABASE_ANON_KEY: ""', cfg)
     starter = bw.read_fixture("synthetic-starter.json")

@@ -24,7 +24,14 @@ UNIQUE = {   # ràng buộc duy nhất ngoài khóa chính id (dùng cho insert;
     "block_progress": [["user_id", "block_id"]],
     "site_visits": [["user_id", "date_key"]],
     "notebook_access": [["notebook_id", "user_id"]],
+    "game_results": [["match_id", "player_id"]],
+    "vocab_saves": [["player_id", "word_id"]],
+    "daily_log": [["user_id", "date"]],
+    "game_gap_sentences": [["word_id"]],
 }
+# onConflict hợp lệ cho upsert (lấy từ mã app 2026-10-22: quét `.from(T).upsert(..., {onConflict})`); bảng khác: khóa chính `id`.
+# Cột ngoài ràng buộc duy nhất thật → PostgREST trả 42P10; fake trước đây chấp nhận mọi giá trị (QA độc lập).
+UPSERT_CONFLICT = {t: ",".join(u[0]) for t, u in UNIQUE.items() if t != "game_rooms"}
 REAL_ROOM_CODES = {"TJ"}     # MP-15: không bao giờ được chạm phòng thật
 # Quan hệ cho embed kiểu PostgREST (select("*, pages(*, ...)")): (bảng cha, tên quan hệ) -> (hướng, cột khóa ngoại)
 ONE_TO_MANY = {("hubs", "notebooks"): "hub_id", ("notebooks", "sections"): "notebook_id", ("sections", "pages"): "section_id",
@@ -299,6 +306,8 @@ class Backend:
             if len(keysets) > 1:   # CLAUDE.md "Lỗi đã sửa": PGRST102 khi bộ khóa các object khác nhau
                 return self._err("PGRST102", "All object keys must match")
             conflict = [c for c in (opts.get("onConflict") or "").split(",") if c] if op == "upsert" else []
+            if op == "upsert" and conflict and ",".join(conflict) != UPSERT_CONFLICT.get(t, "id"):
+                return self._err("42P10", "there is no unique or exclusion constraint matching the ON CONFLICT specification (A0: %s onConflict=%s)" % (t, ",".join(conflict)), 400)
             out = []
             for r in rows_in:
                 r = copy.deepcopy(r)

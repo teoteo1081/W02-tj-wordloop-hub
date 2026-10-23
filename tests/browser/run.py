@@ -53,9 +53,15 @@ def run_target(B, target, root, fns):
     env = Env(B, site, target)
     t0 = time.time()
     results = []
+    import faulthandler
     for fn in fns:
         print("  ... %s %s" % (target, fn.__name__), flush=True)
-        results.append(wl.run_scenario(fn, env))
+        # watchdog: một kịch bản treo > 15 phút → in stack của mọi luồng và thoát mã khác 0 (không để cả bộ treo im lặng)
+        faulthandler.dump_traceback_later(900, exit=True)
+        try:
+            results.append(wl.run_scenario(fn, env))
+        finally:
+            faulthandler.cancel_dump_traceback_later()
     guards = [c.guard for c in B.contexts if c.guard.site is site]
     served_bad = bw.verify_served(root, site)
     print("  (%s: %.1fs)" % (target, time.time() - t0), flush=True)      # thời gian thật chỉ in, không ghi vào báo cáo tái lập
@@ -207,6 +213,8 @@ def main():
     report["coverageGaps"] = gaps
     import coverage
     report["declaredOutOfScope"] = coverage.DECLARED_OUT
+    report["partialCoverage"] = coverage.PARTIAL
+    report["survivingMutationsFromIndependentQA"] = coverage.SURVIVING_MUTATIONS
     print("\nkhoảng trống độ phủ còn lại (chưa chạy): %d" % len(gaps))
     # Không bao giờ in SUCCESS: hết khoảng trống chỉ nghĩa là PHẠM VI CAM KẾT của cycle này đã có bằng chứng. Còn thiếu: verdict QA độc
     # lập, PO duyệt ảnh/nhật ký candidate, và các mục DECLARED_OUT (CI/G2, supabase-js thật) — nên A0 tổng thể vẫn PARTIAL.

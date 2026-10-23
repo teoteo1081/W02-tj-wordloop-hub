@@ -66,6 +66,8 @@ def srs_timeline(sc, env):
     sc.eq((bp["cycle"], bp["next_review_at"]), (1, T0 + DAY), "lần đạt đầu: cycle=1, ôn tiếp sau đúng 24 giờ (đồng hồ giả)")
     sc.eq([(h["step"], h["at"]) for h in bp["review_history"]], [(1, T0)], "review_history có đúng một mục {step:1, at:T0}")
     sc.eq((bp.get("meaning_passed"), bp.get("meaning_best")), (True, 100), "meaning_passed/meaning_best được ghi")
+    a0 = word_rows(pg, "anchor")[0]
+    sc.eq((bp.get("last_reviewed_at"), a0.get("last_reviewed_at")), (T0, T0), "last_reviewed_at của Block và của từ = đúng thời điểm làm bài (đồng hồ giả)")
     ev = {"after_first_pass": bp}
 
     # học sớm: làm lại ngay, cùng đồng hồ
@@ -102,7 +104,7 @@ def srs_timeline(sc, env):
     pg.reload(wait_until="load")
     pg.wait_for_function("window.DB && DB.ready && document.querySelector('.block-card')", timeout=15000)
     pg.wait_for_function(r"/10\s*\/\s*38/.test(document.body.innerText)", timeout=8000)
-    sc.check(True, "bộ đếm 'đã thuộc / tổng' = 10/38 sau khi tải lại (tổng đếm theo chữ khác nhau, không phải 40 dòng)")
+    sc.waited("bộ đếm 'đã thuộc / tổng' = 10/38 sau khi tải lại (tổng đếm theo chữ khác nhau, không phải 40 dòng)")
 
 
 # ──────────────────────────────────────────────────────────────────────────
@@ -148,14 +150,14 @@ def bookmark_and_fix(sc, env):
     ctx, pg = boot_local(env)
     open_block(pg, "bl_syn_1", "meaning")
     pg.wait_for_function("document.querySelector('#btn-fixwrong').innerText.includes('0 từ sai')", timeout=8000)
-    sc.check(True, "ban đầu nút Fix báo 0 từ sai")
+    sc.waited("ban đầu nút Fix báo 0 từ sai")
     # ⭐ từ đang hiện, rồi trả lời sai đúng từ 'anchor' (nếu chưa tới thì trả đúng)
     first = pg.evaluate("document.querySelector('#meaning-card [data-quiz-say]').dataset.quizSay")
     pg.click("#meaning-card [data-bm]")
     # NGAY = trong <1 giây, nhanh hơn lần đọc lại DB nền 1,5 giây (CLAUDE.md "real time")
     try:
         pg.wait_for_function(r"/0\/1/.test(document.querySelector('#btn-wordset').innerText)", timeout=1000)
-        sc.check(True, "bấm ⭐: số trên nút Ôn riêng đổi NGAY (<1 giây, trước lần đọc lại DB nền 1,5 giây)")
+        sc.waited("bấm ⭐: số trên nút Ôn riêng đổi NGAY (<1 giây, trước lần đọc lại DB nền 1,5 giây)")
     except Exception:
         sc.check(False, "bấm ⭐: số trên nút Ôn riêng đổi NGAY", text=pg.inner_text("#btn-wordset"))
     asked = answer_meaning(pg, wrong_terms={"anchor"})
@@ -166,7 +168,7 @@ def bookmark_and_fix(sc, env):
              "wrong_ctx lưu loại 'meaning', đáp án, đúng 4 lựa chọn, câu đã chọn sai", wrong_ctx=ctxrow)
     try:
         pg.wait_for_function("document.querySelector('#btn-fixwrong').innerText.includes('1 từ sai')", timeout=1000)
-        sc.check(True, "trả lời sai: số ❌ nhảy lên 1 từ sai NGAY (<1 giây)")
+        sc.waited("trả lời sai: số ❌ nhảy lên 1 từ sai NGAY (<1 giây)")
     except Exception:
         sc.check(False, "trả lời sai: số ❌ nhảy lên 1 từ sai NGAY", text=pg.inner_text("#btn-fixwrong"))
     bm = word_rows(pg, first)[0]
@@ -205,7 +207,7 @@ def bookmark_and_fix(sc, env):
     wrong = [r for r in db_state(pg).get("word_progress", []) if r.get("wrong_open")]
     sc.eq(len(wrong), 0, "nộp Phiếu bỏ trống hoàn toàn: không từ nào bị đánh wrong_open")
     pg.wait_for_function("document.querySelector('#btn-fixwrong').innerText.includes('0 từ sai')", timeout=8000)
-    sc.check(True, "số ❌ trên thanh trên cùng vẫn 0 từ sai")
+    sc.waited("số ❌ trên thanh trên cùng vẫn 0 từ sai")
     ctx.close()
 
 
@@ -264,6 +266,11 @@ def persistence_reload(sc, env):
     keys = bw.ls_keys(pg)
     sc.check({"tjwl_db_v1", "tjwl_users_v1", "tjwl_current_user_v1"} <= set(keys), "các khóa nền có mặt", keys=keys)
     sc.ev("ls_keys_final", keys)
+    ops = bw.shape_summary(log)
+    writes = sorted({o[2] for o in ops if o[1] == "setItem" and o[0] == "localStorage"})
+    reads = {o[2] for o in ops if o[1] == "getItem" and o[0] == "localStorage"}
+    sc.eq(writes, ["tjwl_daily_log_v1", "tjwl_db_v1"], "LS-01: khi ⭐ + làm bài, app GHI đúng hai khóa localStorage này (không khóa lạ)")
+    sc.check({"tjwl_bookmarks_v1", "tjwl_wrong_open_v1", "tjwl_daily_log_v1"} <= reads, "LS-01: các khóa đã biết được ĐỌC (bookmarks, wrong_open, daily_log)", reads=sorted(reads))
     sc.ev("ls_ops_during_answer", bw.shape_summary(log))
     sc.ev("badges", badge_after)
     ctx.close()
