@@ -71,7 +71,7 @@ Tên gọi/khung khoá học và EA hay CIA làm mẫu; đồng bộ tiến đ�
 
 ## 6. Nội dung và quy trình nạp đề
 - **Bộ skill `exam-ingest`:** gom công cụ Python (`tools/ets2023/`) thành các bước (stage) chạy độc lập, có cấu hình theo kỳ thi (TOEIC, sau này IELTS…), README tự chạy tay khi hết token; Claude chỉ chạy lệnh + đọc báo cáo ngắn.
-- **ETS 2025:** nạp bằng skill trên (nguồn đặt ở `Desktop\TJ\_staging\ETS 2025\TEST N\`, cùng cách đặt tên như 2023).
+- **ETS 2025:** nạp bằng skill trên (nguồn đặt ở `Desktop\TJ\_staging\ETS 2025\TEST N\`, cùng cách đặt tên như 2023). **Cập nhật 2026-10-22:** thứ tự nạp hiện hành là ETS 2019–2022 theo [PLAN_TOEIC_INGEST.md](PLAN_TOEIC_INGEST.md) (WL-12, package `tools/exam_ingest/` thay cho "skill"); 2025/2026 thêm sau bằng profile, chưa xác nhận có nguồn.
 - Việc nội dung: EA Part I SU04–14; PDF English File lên bucket `library`; hub IELTS/English File đang trống.
 
 ## 7. Thứ tự đề xuất ngày 14/10 (đã cũ, không dùng để triển khai)

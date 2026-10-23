@@ -49,7 +49,8 @@ Nguồn cho các kết luận: [quy trình 2023](tools/ets2023/QUY_TRINH_NAP_DE.
 ### Hợp đồng dữ liệu
 
 - `year`, `test_number`, `edition` và provenance có trường rõ ràng trong cấu hình/manifest local. Giữ schema DB hiện tại; chưa cần thêm cột năm hoặc đổi mã ứng dụng.
-- Mã đề mới dự kiến: `2019-1`; ID câu mới: `ets2019_t1_p5_101`; audio: `TEST_2019-1_LC.mp3`; ảnh: `T2019-1_q1.jpg` hoặc tên graphic có group. Cùng quy tắc cho 2020–2022. Mọi nơi đọc/ghi phải dùng cùng bộ dựng ID.
+- Mã đề mới dự kiến: `2019-1`; ID câu mới: `ets19_t1_p5_101`; audio: `TEST_2019-1_LC.mp3`; ảnh: `T2019-1_q1.jpg` hoặc tên graphic có group. Cùng quy tắc cho 2020–2022 (`ets20_`…`ets22_`). Mọi nơi đọc/ghi phải dùng cùng bộ dựng ID.
+- **Tiền tố ID dùng 2 chữ số năm** (`ets<yy>_`), khớp dữ liệu 2023 đang có (`ets23_*`) và chú thích `ets25_t3_p5_101` ở `js/game.js` (kiểm trên `origin/main` `f785ae1`). Không dùng dạng 4 chữ số (`ets2019_`): trộn hai kiểu làm truy vấn theo tiền tố (`like 'ets20%'`) khớp nhầm. Cột `test` vẫn dùng 4 chữ số (`2019-1`) vì app tách năm từ đó (`tBook`/`tNum`); không code nào parse tiền tố ID. Một hàm dựng/parse ID duy nhất (ING-01) chịu trách nhiệm cho cả hai dạng.
 - Adapter chỉ đọc dữ liệu cũ hiểu `2023-N`/`ets23_*` và mã `1..10` mà app hiện ánh xạ sang 2024. Không tự chuẩn hóa lại 4.000 dòng cũ.
 - Mỗi run nằm ngoài repo: `<work-root>/<year>/<edition>/test-<N>/<run-id>/`. Không tái dùng `key_1.json`, `cues_1.json` hoặc cache của năm khác.
 - Lưu nguồn cho từng câu, đáp án và media: file/hash/trang hoặc đoạn audio. Chưa có nguồn thì ghi rõ thiếu; không lấy đề AI sinh để điền vào đề ETS có năm.
@@ -93,7 +94,7 @@ Mọi mục dưới đây đang **TODO**, chưa phải implementation đã có.
 
 | ID | Việc và deliverable | Phụ thuộc | Tiêu chí nghiệm thu |
 |---|---|---|---|
-| ING-01 | CLI + schema config/manifest; template rỗng 2019–2022, profile 2023 tham chiếu; doctor | Không cần nguồn thật | Báo đúng năm/Test; `not_found` rõ ràng; parse config không gọi mạng hay tạo dữ liệu đề |
+| ING-01 | CLI + schema config/manifest; template rỗng 2019–2022, profile 2023 tham chiếu; doctor | Không cần nguồn thật | Báo đúng năm/Test; `not_found` rõ ràng; parse config không gọi mạng hay tạo dữ liệu đề; một hàm dựng/parse `test` + ID (`2019-1` ↔ `ets19_t1_…`) có ca kiểm không va chạm giữa 2019–2023 và với mã cũ `1..10`/`ets_t*` |
 | ING-02 | Runner, work-root riêng, stage DAG, hash/cache/resume và log | ING-01 | Hai năm cùng Test 1 không dùng chung artifact; nguồn đổi làm invalidate đúng stage; stage lỗi không ghi done |
 | ING-03 | Inventory PDF/audio/key và giao diện map trang/key JSON | ING-01/02 | Fixture đủ/thiếu/trùng/sai bản được phát hiện; file encrypted/không đọc được báo lỗi; không sửa PDF gốc |
 | ING-04 | Chuyển adapter OCR/audio/LC/RC/crop/cues sang cấu hình nhiều năm | ING-02/03 | Fixture mô phỏng 2019–2022 đi qua được từng stage; không phát sinh mã `2023` cho run năm khác; dùng lại thuật toán phù hợp |
@@ -121,6 +122,14 @@ Có thể build ING-01..09 bằng fixture tự tạo dù nguồn chưa có; comp
 2. **M2 — Xử lý và chất lượng:** ING-04..06; giao artifact fixture và report, chưa xuất bản.
 3. **M3 — Publish có kiểm soát:** ING-07..09; giao dry-run plan và bằng chứng fake-client, tài liệu thao tác, audit độc lập.
 4. **M4 — Nguồn thật:** ING-10; chọn một năm/Test có nguồn đầy đủ làm mẫu trước, chưa chốt là năm nào khi chưa có inventory.
+
+### Giới hạn ngoài làn N (ghi cho làn D, không sửa ở nhánh này)
+
+Kiểm trên `origin/main` `f785ae1`, không thuộc phạm vi kế hoạch vì là mã ứng dụng (`js/`), không được vào `main` theo ranh giới làn:
+
+- `js/game.js` `tSaveKey` (màn sửa đáp án) hardcode id `"ets_t" + test + "_p" + part + "_" + num`. Đề có mã năm (`2019-1`, id `ets19_…`) không khớp dòng nào; `update` không trả lỗi nên màn có thể báo đã lưu mà không lưu gì (đã đúng với đề 2023 từ trước). Pipeline mới không phụ thuộc màn này vì ghi `answer_src=key` ngay lúc nạp; không dùng màn này để sửa đáp án đề có năm cho tới khi làn D sửa. Cần TJ cho ghi vào `PLAN_DEBUG.md` ở nhánh làn D.
+- Chuỗi tĩnh còn ghi "ETS 2024" (`js/game.js` ~dòng 3953, `js/db.js` ~dòng 63, `js/app.js` ~dòng 4537): chỉ lỗi hiển thị cũ, không chặn nạp đề.
+- Chưa kiểm cách app lấy URL ảnh `T2019-1_q1.jpg` (dự đoán URL nằm sẵn trong dòng dữ liệu); ING-10 phải thử trên một Part mẫu trước khi nạp cả Test.
 
 Ước lượng sơ bộ M1–M3: **6–10 ngày công**, bao gồm tái cấu trúc script, kiểm lỗi và tài liệu; điều chỉnh sau M1. Đây không phải thời hạn cam kết hay chi phí API. M4 chưa ước lượng khi thiếu số Test, chất lượng scan/audio và sách chữa.
 
