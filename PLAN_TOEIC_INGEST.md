@@ -1,6 +1,6 @@
 # WL-12 — Kế hoạch pipeline TOEIC nhiều năm
 
-Trạng thái: **đã triển khai nền M1 và các adapter M2/M3, kiểm offline bằng fixture; chờ QA độc lập và nguồn thật M4**. Implementation theo sửa đổi `8e3b059`, dùng ID `ets<yy>_`; chưa ghi cloud hoặc đổi mã ứng dụng.
+Trạng thái: **M1–M3 đã triển khai offline, QA độc lập PASS có điều kiện (2026-10-22), 8 lỗi MINOR đã sửa (`b318d24`); còn 2 MAJOR (i18n chỉ `vi`; dry-run chỉ kiểm seal). M4 đã kiểm nguồn thật nhưng vẫn BLOCKED (xem “Kiểm nguồn thật” bên dưới)**. ID `ets<yy>_`; chưa ghi cloud hoặc đổi mã ứng dụng.
 
 ## Tiến độ implementation
 
@@ -11,6 +11,22 @@ Trạng thái: **đã triển khai nền M1 và các adapter M2/M3, kiểm offli
 | ING-07..08 / M3 | Có plan/hash/review, snapshot conflict, capacity preflight, backup/receipt/resume; fake backend chứng minh no-write dry-run và verify sau ghi; quota/attempt ledger giữ qua resume | SQL/R2/Storage live adapter mới kiểm bằng mock; cần quyền và integration pilot riêng |
 | ING-09 | Có test suite, dependency lock, tài liệu Windows và artifact demo ngoài repo | **QA độc lập chưa thực hiện**; kiểm nội bộ không thay thế cổng này |
 | ING-10 / M4 | `BLOCKED_SOURCE` — không tìm thấy nguồn 2019–2022 trong phạm vi đã rà | Inventory thật, map nguồn, mẫu TJ duyệt, quyền/quota, publish và hậu kiểm live |
+
+
+### Kiểm nguồn thật (2026-10-22, thư mục ngoài repo `C:\Materials`)
+
+Commit `44f32a4` (ETS Official Sample) **chỉ chứa ~36 câu mẫu** (Listening 18 + Reading 18 mục có đáp án trong `answer_keys_extracted.txt`), không phải đề 200 câu → **không dùng được làm Test cho pipeline** (profile bắt buộc 200 câu). Các nguồn đã đo bằng PyMuPDF/ffprobe (chỉ đọc):
+
+| Nguồn | Thực tế đo được | Dùng cho pipeline? |
+|---|---|---|
+| `ETS_2019_Listening_1000_Full_Tests.pdf` (771 tr.) + `ETS_2019_Reading_1000_Full_Tests.pdf` (1202 tr.) | **Tên file gây hiểu nhầm**: trang bản quyền ghi “托业全真模拟1000题”, Jim Lee & Park Byung-jae, 群言出版社, 2019-01-01 — sách luyện thi mô phỏng Hàn/Trung, **không phải đề ETS chính thức**. Có lớp chữ; 10 Test LC (đề tr.24, 42, 60, 77, 94, 111, 128, 145, 163, 180; đáp án tr.197+) và 10 Test RC (đề tr.15, 61, 105, 148, 190, 234, 278, 320, 363, 405); Part 1 có ảnh | Có thể làm nguồn `lc_pdf`/`rc_pdf` + một nguồn đáp án. **Chưa có** nguồn đáp án độc lập thứ hai (`reference_key`), chưa thấy lời giải tiếng Việt/script đủ cho `enrichment` |
+| `toeic-listening-test-01.mp3` (2962 s), `-02.mp3` (2763 s) | Chỉ 2 file, chưa biết thuộc sách/Test nào | Chưa map được; 10 Test LC cần 10 audio |
+| `TOEIC_New_Format_Full_Tests_*` (473 tr.), `ETS - Full Test - Ms Hoa Toeic.pdf` (137 tr.) | Sách Nhật “至高の模試600問” (ALC) và tài liệu lớp học; không phải ETS năm 2019–2022 | Không thuộc phạm vi 4 năm ETS |
+| `ETS_Official_TOEIC_LR_Sample_Test.pdf` (34 tr.) | Mẫu chính thức nhưng không đủ 200 câu | Chỉ tham khảo |
+
+Môi trường: ffmpeg/ffprobe/PyMuPDF/Pillow/faster-whisper có; **Tesseract không ở PATH, chưa có model Whisper local** (`doctor` = BLOCKED_ENV). Nguồn có lớp chữ nên OCR không bắt buộc; Whisper cần để dựng mốc audio và để xác định mp3 thuộc Test nào.
+
+**Việc cần TJ quyết trước M4:** (1) nhãn ID cho sách này (dùng `ets19_` như “ETS 2019” hay tiền tố/exam khác vì không phải ETS chính thức — ảnh hưởng ID, tên file media, hiển thị “ETS”); (2) cung cấp/khớp audio 10 Test LC; (3) nguồn đáp án thứ hai; (4) cho tải model Whisper local (dung lượng + thời gian) và cấp quyền/quota nếu dùng AI; (5) thứ tự mẫu: 1 Test (LC+RC) làm pilot TJ duyệt trước khi chạy cả 10.
 
 Lệnh, ca kiểm và giới hạn: [README công cụ](tools/exam_ingest/README.md), [báo cáo implementation](tools/exam_ingest/QA_REPORT.md). Chưa công nhận pipeline đã sẵn sàng nạp đề thật. Những mục bên dưới giữ tiêu chí kế hoạch, không tự đổi trạng thái thành DONE chỉ vì có code.
 

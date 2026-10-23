@@ -36,3 +36,6 @@ Kết luận: **PASS có điều kiện** cho ING-01..09 offline. Không có l�
 6. Cổng enrich SQL dùng `@>` thay vì so bằng (`storage.py:173-179`).
 7. Chưa chặn đường dẫn nguồn nằm trong repo; `.gitignore` chưa có `*.pdf/*.mp3/*.wav`.
 8. Lock publish theo `backup_root/plan_hash`; URL ảnh thiếu `?v=1`; `ets24_` parse ra `2024-1` (2024 có 2 cách mã hóa, publish vẫn khóa).
+
+### Cập nhật sau QA (commit `b318d24`)
+Đã sửa cả 8 nhóm MINOR: ledger AI theo năm/edition/Test (không theo run-id); lỗi cấu hình provider không ăn budget; fingerprint có size+mtime công cụ (invalidate theo từng stage vẫn là giới hạn đã biết); CLI bắt `AttributeError`; `publish --apply` bắt buộc `--preflight` và `--approved-plan-hash` trước khi dựng client; cổng SQL enrich dùng `=` thay `@>`; nguồn trong Git checkout bị chặn (`UNSAFE_SOURCE`) + `.gitignore` chặn pdf/mp3/wav; khóa publish thêm theo target+Test (thư mục temp); URL ảnh có `?v=1`; 2024 chỉ còn mã legacy. Test: 41 pass (thêm 3). **Chưa sửa (ngoài yêu cầu):** MAJOR-1 i18n chỉ `vi`, MAJOR-2 dry-run chỉ kiểm seal.
