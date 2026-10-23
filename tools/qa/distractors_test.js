@@ -33,6 +33,10 @@ async function all(p) { const o = []; for (let f = 0; ; f += 1000) { const r = a
       ['vi', 'zh', 'es', 'en'].forEach(l => { if (/[(（]/.test(mm[l] || '') && last[norm(o)]) leak = true; });
       if (/\bsai\b/i.test(mm.vi || '') && last[norm(o)]) leak = true;
     });
+    // chữ thực sự hiển thị: trùng tên ô, hoặc trùng nghĩa hiển thị (sau quizForm) ở bất kỳ tiếng nào
+    if (new Set(opts.map(norm)).size !== opts.length) dupT = true;
+    ['vi', 'zh', 'es', 'en'].forEach(l => { const shown = opts.map(o => norm(env.quizForm(m(o)[l] || ''))).filter(Boolean); if (new Set(shown).size < shown.length) dupT = true; });
+    if (dupT) { bad.dupText++; if (ex.length < 5) ex.push([w.term, mode, opts, 'dupText']); }
     if (dup) { bad.dupMean++; if (ex.length < 5) ex.push([w.term, mode, opts, opts.map(o => { const mm = m(o); return mm.vi + ' / ' + mm.zh + ' / ' + mm.es; })]); } if (leak) bad.leak++;
   }
   console.log('mô phỏng', N, 'câu ->', bad);
