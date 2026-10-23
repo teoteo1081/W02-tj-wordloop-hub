@@ -62,7 +62,7 @@ Nó tồn tại vì:
 
 ## Trạng thái hiện tại
 
-Giai đoạn **A0 — lưới an toàn (đang thực thi)**. Chưa có dòng mã ứng dụng nào bị đổi; chỉ có tài liệu và `tests/`. Đã xong: M0.1 (baseline) và M0.5a (thu lời gọi backend, xem `tests/README.md`). Việc kế tiếp theo `ROADMAP_RESTRUCTURE.md` mục 4 (M0.2 số liệu gốc, M0.3 test Node, M0.7b ngoại lệ baseline…). Các câu 3–7 và 9–12 ở mục 9 của plan vẫn mở và chặn các bước sau A0.
+Giai đoạn **A0 — lưới an toàn (đang thực thi)**. Chưa có dòng mã ứng dụng nào bị đổi; chỉ có tài liệu và `tests/`. Đã xong: M0.1 (baseline) và M0.5a (thu lời gọi backend, xem `tests/README.md`). Việc kế tiếp theo `ROADMAP_RESTRUCTURE.md` mục 4 (M0.2 số liệu gốc, M0.3 test Node, M0.7b ngoại lệ baseline…). `origin/main` đã tiến 2 commit sau baseline (2026-10-22): fast-forward không còn đúng nguyên trạng, PO chọn cách tiếp nhận trước tích hợp cuối (PLAN 0.1); cycle A0 tiếp theo chưa khởi chạy. Các câu 3–7 và 9–12 ở mục 9 của plan vẫn mở và chặn các bước sau A0.
 
 Khi trạng thái đổi (bắt đầu A0, hoàn thành một pha, freeze, hủy), sửa đúng mục này trong cùng commit.
 
@@ -70,9 +70,10 @@ Khi trạng thái đổi (bắt đầu A0, hoàn thành một pha, freeze, hủy
 
 ```
 git -C C:/Users/User/Desktop/TJ/_work/wt-restructure-plan status -sb          # phải là ## feat/restructure-plan (không có ...origin/main)
-git -C C:/Users/User/Desktop/TJ/_work/wt-restructure-plan diff --stat origin/main -- js css index.html game.html sw.js   # phải trống khi còn ở giai đoạn lập kế hoạch
-git rev-parse --short origin/main                                              # phải vẫn là e324beb (main đóng băng, chưa ai push)
-git merge-base --is-ancestor origin/main feat/restructure-plan && echo ff-ok    # phải in ff-ok: còn fast-forward được
+git -C C:/Users/User/Desktop/TJ/_work/wt-restructure-plan diff --stat e324beb -- js css index.html game.html sw.js   # phải trống (mã ứng dụng chưa đổi so với baseline)
+git rev-parse --short origin/main                                              # hiện 6c7b66b (đã ghi nhận ở PLAN 0.1); giá trị khác = main tiến thêm, báo PO
+git merge-base --is-ancestor e324beb origin/main && echo baseline-ok           # phải in baseline-ok: baseline vẫn là tổ tiên của main
+git rev-list --count e324beb..origin/main                                      # hiện 2 (4708ba9, 6c7b66b); số khác = main tiến thêm, báo PO
 ```
 
 ## Khi nào dọn worktree

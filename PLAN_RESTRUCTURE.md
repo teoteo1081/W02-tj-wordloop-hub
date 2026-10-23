@@ -1,8 +1,31 @@
 # PLAN_RESTRUCTURE — tái cấu trúc codebase (giữ nguyên logic sản phẩm + giao diện)
 
-> Trạng thái: **ĐỀ XUẤT, CHƯA DUYỆT, CHƯA ĐỔI CODE.** Bản 2.2 (2026-10-20): đã đối chiếu với `AUDIT_INFRA_ADVISOR.md` (commit `d281196`), sửa theo 5 góp ý review, và áp **mô hình vận hành do TJ chốt** (mục 5): `main` đóng băng, mọi việc chỉ trong worktree này, Netlify phục vụ nhánh restructure song song với GitHub Pages phục vụ `main`, cuối cùng thay `main`.
+> Trạng thái: **ĐỀ XUẤT; chỉ A0 đã được duyệt; CHƯA ĐỔI MÃ ỨNG DỤNG.** Bản 2.2 (2026-10-20): đã đối chiếu với `AUDIT_INFRA_ADVISOR.md` (commit `d281196`), sửa theo 5 góp ý review, và áp **mô hình vận hành do TJ chốt** (mục 5): `main` đóng băng, mọi việc chỉ trong worktree này, Netlify phục vụ nhánh restructure song song với GitHub Pages phục vụ `main`, cuối cùng thay `main`.
 > Số liệu đo từ repo tại `e324beb` (nhánh này) và kiểm lại bằng đọc code ở mục 3; chưa chạy app.
-> A0 đã được duyệt theo `WORKTREE_ANCHOR.md`; các phần còn lại vẫn theo cổng quyết định ở mục 9. Cycle kế tiếp và quyền tự chủ được chốt ở mục 0.1 dưới đây.
+> A0 đã được duyệt theo `WORKTREE_ANCHOR.md`; các phần còn lại vẫn theo cổng quyết định ở mục 9. Cycle kế tiếp và quyền tự chủ được chốt ở mục 0.1 bên dưới (sau mục 0).
+
+## 0. Thay đổi so với bản 1
+
+**Bản 2.2 — mô hình vận hành TJ chốt (2026-10-20):**
+- `main` **đóng băng**; mọi việc chỉ làm trên `feat/restructure-plan` (một dòng tích hợp, không nhánh `fix/…` riêng cho việc thuộc restructure).
+- Baseline **giữ `e324beb`**, không merge `main`; lấy commit từ nơi khác bằng cherry-pick (đã đưa kế hoạch Netlify vào: `9ce51fd`). Câu 2 và câu 8 ở mục 9 đã được trả lời.
+- **Hai dòng song song:** `main` → GitHub Pages (TJ dùng), `feat/restructure-plan` → Netlify (kiểm thử), cho tới khi worktree **freeze** rồi thay hẳn `main` bằng fast-forward, không force-push (mục 5). **Điều kiện fast-forward đã lệch từ 2026-10-22 (`origin/main` = `6c7b66b`), xem mục 0.1; cách tích hợp cuối do PO chọn lại.**
+- Thêm **luồng H (hosting)** và các hệ quả của việc hai dòng **dùng chung backend production** (mục 5.1, luồng H, mục 8): tương thích ngược schema/giao thức/Edge Function với bản `main` đóng băng, và quy tắc ghi dữ liệu từ bản mới.
+- Bỏ quy trình "mỗi bước merge vào `main`" ở mọi tài liệu; thay bằng "mỗi bước commit vào dòng tích hợp, kiểm trên Netlify".
+
+**Bản 2.1 — sửa theo review (đã kiểm từng điểm bằng code, cả 5 đều đúng):**
+- **B1:** sổ chi tiêu riêng, giữ trước nguyên tử, dùng chung hai provider, đóng khi không đọc/ghi được, không dính khoá ngoại `blocks` (mục 6, B1). Bỏ ý dùng `ai_usage_daily` làm trần.
+- **A0:** thêm khung Playwright với Supabase giả + Realtime giả, nhật ký lời gọi chuẩn, kịch bản hai client, cố định dữ liệu/thời gian/random trước khi đòi "sai khác = 0" (mục 6, A0).
+- **A2:** thêm cổng version cho cả đồ thị import, cập nhật `/bump`, kiểm Service Worker/offline (mục 6, A2).
+- **C2:** hợp đồng RPC trả cả `total_words` lẫn `mastered`, quy tắc chuẩn hoá bám đúng `normalizeAnswer` (mục 6, C2).
+- **Baseline:** `origin/main` (`e324beb`) đã là tổ tiên nên rebase lên nó vô nghĩa; `8b071e6` chỉ có ở `main` cục bộ chưa push (mục 5).
+
+**Bản 2 so với bản 1:**
+
+- Thêm mục 3: đối chiếu từng phát hiện của audit với code thật (có 1 phát hiện sai, 2 phát hiện đúng nhưng cách vá đề xuất không hiệu quả hoặc làm hỏng tính năng đang chạy).
+- Tách việc thành **3 luồng** vì tính chất khác nhau: A = restructure (giữ nguyên hành vi), B = vá bảo mật (đổi hành vi, deploy ngoài git), C = tối ưu dữ liệu/hiệu năng (đổi cách tải, phải làm sau A1).
+- Đánh số lại pha để không trùng "Pha 0" của audit (audit: vá bảo mật; bản 1: lưới an toàn).
+- Sửa số liệu tải trang (xem 3.4), thêm chỉ số đo trước/sau, thứ tự với nhánh `handoff/gate`, tiêu chí nghiệm thu và cách quay lại từng bước.
 
 ## 0.1 Cycle A0 tiếp theo — tự thực hiện kỹ thuật, dừng ở quyết định PO
 
@@ -25,29 +48,6 @@
 **Lệch main đã quan sát:** lần fetch ngày 2026-10-22 cho thấy `origin/main` tại `6c7b66b`, có hai commit `4708ba9` và `6c7b66b` sau baseline. Mô tả lịch sử rằng `origin/main = e324beb` và có thể thay main bằng fast-forward trực tiếp không còn đúng tại checkpoint này. Giữ baseline; không tự merge/cherry-pick hay chọn cách tích hợp thay PO. Lệch này chưa chặn test Node, nhưng cần PO chọn phạm vi tiếp nhận thay đổi trước tích hợp cuối và đánh giá lại tương thích với bản đang dùng.
 
 **Bàn giao cuối cycle:** nêu kết quả, bằng chứng, SHA checkpoint, giới hạn độ phủ và quyết định PO theo dạng tác động người dùng / phương án / đề xuất. Tiêu chí nghiệm thu cụ thể ở SPEC §1.1. Không tuyên bố A0 hoàn tất khi chưa có bằng chứng trình duyệt, ảnh chuẩn và hai client.
-
-## 0. Thay đổi so với bản 1
-
-**Bản 2.2 — mô hình vận hành TJ chốt (2026-10-20):**
-- `main` **đóng băng**; mọi việc chỉ làm trên `feat/restructure-plan` (một dòng tích hợp, không nhánh `fix/…` riêng cho việc thuộc restructure).
-- Baseline **giữ `e324beb`**, không merge `main`; lấy commit từ nơi khác bằng cherry-pick (đã đưa kế hoạch Netlify vào: `9ce51fd`). Câu 2 và câu 8 ở mục 9 đã được trả lời.
-- **Hai dòng song song:** `main` → GitHub Pages (TJ dùng), `feat/restructure-plan` → Netlify (kiểm thử), cho tới khi worktree **freeze** rồi thay hẳn `main` bằng fast-forward, không force-push (mục 5).
-- Thêm **luồng H (hosting)** và các hệ quả của việc hai dòng **dùng chung backend production** (mục 5.1, luồng H, mục 8): tương thích ngược schema/giao thức/Edge Function với bản `main` đóng băng, và quy tắc ghi dữ liệu từ bản mới.
-- Bỏ quy trình "mỗi bước merge vào `main`" ở mọi tài liệu; thay bằng "mỗi bước commit vào dòng tích hợp, kiểm trên Netlify".
-
-**Bản 2.1 — sửa theo review (đã kiểm từng điểm bằng code, cả 5 đều đúng):**
-- **B1:** sổ chi tiêu riêng, giữ trước nguyên tử, dùng chung hai provider, đóng khi không đọc/ghi được, không dính khoá ngoại `blocks` (mục 6, B1). Bỏ ý dùng `ai_usage_daily` làm trần.
-- **A0:** thêm khung Playwright với Supabase giả + Realtime giả, nhật ký lời gọi chuẩn, kịch bản hai client, cố định dữ liệu/thời gian/random trước khi đòi "sai khác = 0" (mục 6, A0).
-- **A2:** thêm cổng version cho cả đồ thị import, cập nhật `/bump`, kiểm Service Worker/offline (mục 6, A2).
-- **C2:** hợp đồng RPC trả cả `total_words` lẫn `mastered`, quy tắc chuẩn hoá bám đúng `normalizeAnswer` (mục 6, C2).
-- **Baseline:** `origin/main` (`e324beb`) đã là tổ tiên nên rebase lên nó vô nghĩa; `8b071e6` chỉ có ở `main` cục bộ chưa push (mục 5).
-
-**Bản 2 so với bản 1:**
-
-- Thêm mục 3: đối chiếu từng phát hiện của audit với code thật (có 1 phát hiện sai, 2 phát hiện đúng nhưng cách vá đề xuất không hiệu quả hoặc làm hỏng tính năng đang chạy).
-- Tách việc thành **3 luồng** vì tính chất khác nhau: A = restructure (giữ nguyên hành vi), B = vá bảo mật (đổi hành vi, deploy ngoài git), C = tối ưu dữ liệu/hiệu năng (đổi cách tải, phải làm sau A1).
-- Đánh số lại pha để không trùng "Pha 0" của audit (audit: vá bảo mật; bản 1: lưới an toàn).
-- Sửa số liệu tải trang (xem 3.4), thêm chỉ số đo trước/sau, thứ tự với nhánh `handoff/gate`, tiêu chí nghiệm thu và cách quay lại từng bước.
 
 ## 1. Mục tiêu và ranh giới
 
@@ -122,7 +122,7 @@ Giữ lại: `game.html` là entry riêng (iframe + `postMessage` là seam sẵn
 ## 5. Trạng thái nhánh và thứ tự với việc khác (kiểm 2026-10-20)
 
 - **Baseline ĐÃ CHỐT: `e324beb` (= `origin/main`).** `origin/main` là tổ tiên của nhánh này nên rebase lên nó không lấy thêm gì và không cần làm. Commit `8b071e6` (chỉ sửa 6 file `.md`) nằm ở `main` cục bộ, **chưa push và không vào nhánh này** (không merge, không rebase lên `main` cục bộ). Hệ quả khi thay `main` ở cuối: phần chỉnh tài liệu trong `8b071e6` không đi theo; nếu cần giữ phần nào thì chuyển tay vào lúc tách tài liệu (M1.7). A0 ghi SHA baseline vào bảng số liệu gốc.
-- **Điều kiện để thay `main` bằng fast-forward ở cuối:** `origin/main` không tiến thêm so với `e324beb`. Vì vậy không ai push gì lên `origin/main` trong thời gian này, kể cả `8b071e6`. Lệnh kiểm có trong `WORKTREE_ANCHOR.md`.
+- **Điều kiện để thay `main` bằng fast-forward ở cuối:** `origin/main` không tiến thêm so với `e324beb`. *Điều kiện này đã bị phá ngày 2026-10-22:* `origin/main` = `6c7b66b` (hơn baseline hai commit `4708ba9`, `6c7b66b`). Fast-forward không còn đúng nguyên trạng; PO chọn cách tiếp nhận hai commit đó (mục 0.1) trước tích hợp cuối. Lệnh kiểm đã cập nhật trong `WORKTREE_ANCHOR.md`.
 - Nhánh `handoff/gate` (chưa vào `main`) **sửa `js/game.js` (28 dòng)** và thêm `tools/handoff/` (Python + test). Phải quyết định merge hay bỏ nó **trước khi cắt `game.js` ở A3**, nếu không sẽ xung đột nặng. Thêm: CI ở A0 nên chạy được cả test của nó nếu nó được giữ.
 - `AUDIT_INFRA_ADVISOR.md` đang nằm trong commit của nhánh này; giữ nguyên làm tài liệu tham chiếu.
 - `PLAN_NETLIFY_FRONTEND.md` được cherry-pick vào nhánh này (`9ce51fd` ← `e94e086`); nó viết cho "chuyển frontend sang Netlify" nói chung, còn trong mô hình này Netlify phục vụ **dòng restructure** và `main` ở lại Pages (luồng H).
@@ -146,7 +146,7 @@ Vì backend dùng chung, nên:
 6. **Đừng dùng hồ sơ thật ở bản xem thử trên github.io của nhánh restructure** (đường dẫn `…/preview/feat-restructure-plan/`): nó cùng origin với `main` nên dùng chung `localStorage` với `main`. Dùng Netlify (origin riêng) để kiểm thử.
 
 **Freeze và thay `main`.** Freeze = hoàn tất cột mốc cần thiết, đạt tiêu chí nghiệm thu của spec §9, và TJ đồng ý. Trình tự thay `main` (mỗi bước là một lệnh/quyết định riêng của TJ, không tự động):
-1. Kiểm `origin/main` vẫn `e324beb` và còn fast-forward được.
+1. Kiểm `origin/main` so với baseline `e324beb` (từ 2026-10-22 là `6c7b66b`, +2 commit đã ghi nhận ở mục 0.1) và xác định lại có còn fast-forward được không; nếu không, dừng và trình PO.
 2. Lưu `main` cũ: nhánh/tag `archive/main-before-restructure-<ngày>` trên `origin` (tiền lệ: `archive/main-before-20261019`).
 3. `git push origin <đầu nhánh restructure>:main` (fast-forward, không force); GitHub Pages tự build lại.
 4. Cập nhật `CLAUDE.md`/`README.md` (hosting, quy trình, các quy ước đã đổi).
@@ -291,14 +291,14 @@ Mỗi bước A được commit vào dòng tích hợp (`feat/restructure-plan`)
 | Deploy backend (B1/B2/C2) làm hỏng bản `main` đóng băng | Cao | Tương thích ngược bắt buộc (I9), test BCK-*, mỗi lần deploy TJ đồng ý |
 | Hai phiên bản client cùng phòng game trong nhiều tuần | Trung bình | Giao thức đóng băng (I4), MP-18 tầng B |
 | Hết credit Netlify làm pause cả tài khoản | Trung bình | Branch deploy (0 credit), chốt ngân sách ở N0 (câu 10) |
-| `origin/main` bị ai đó push → mất khả năng fast-forward | Trung bình | Không push `origin/main`; kiểm bằng lệnh trong anchor trước mỗi phiên |
+| `origin/main` bị ai đó push → mất khả năng fast-forward | **Đã xảy ra (2026-10-22, +2 commit)** | Phát hiện bằng lệnh trong anchor trước mỗi phiên; PO chọn cách tiếp nhận (mục 0.1) trước tích hợp cuối |
 | Thay `main` rồi hỏng, cần quay lại | Trung bình | Lưu archive; ưu tiên **commit khôi phục** (cây = cây archive, fast-forward, không force, giữ URL) đã diễn tập (HST-10) và kiểm BCK-* trên backend hiện hành (mục 5.1 bước 6, câu 12) |
 | Deploy backend trước khi có baseline lời gọi → "tương thích ngược" chỉ là giả định | Cao | Cổng deploy B: M0.5a + BCK-* đạt + TJ đồng ý (luồng B) |
 | Chỉnh tài liệu trong `8b071e6` thất lạc khi thay `main` | Thấp | Chuyển tay ở M1.7 nếu TJ muốn giữ |
 
 ## 9. Cần TJ quyết
 
-*Đã chốt (TJ 2026-10-20):* câu 2 (`main` đóng băng, mọi việc chỉ trong worktree này, một dòng tích hợp, kể cả luồng B), câu 8 (baseline `e324beb`, cherry-pick không merge), cách thay `main` ở cuối (fast-forward, không force), hai dòng song song Pages/Netlify. Các câu còn mở: 1, 3–7, 9–12.
+*Đã chốt (TJ 2026-10-20):* câu 2 (`main` đóng băng, mọi việc chỉ trong worktree này, một dòng tích hợp, kể cả luồng B), câu 8 (baseline `e324beb`, cherry-pick không merge), cách thay `main` ở cuối (fast-forward, không force; *điều kiện ff đã lệch 2026-10-22, xem 0.1*), hai dòng song song Pages/Netlify. Các câu còn mở: 1, 3–7, 9–12.
 
 1. Chấp nhận A0 (lưới an toàn) trước khi đụng code?
 2. ✔ **Đã chốt:** `main` đóng băng; mọi việc chỉ trong worktree này; một dòng tích hợp duy nhất.

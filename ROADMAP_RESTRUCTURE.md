@@ -66,7 +66,7 @@ Viết mã B1, B2, B3 không phụ thuộc M0–M3 và chạy song song ngay khi
 | Việc | Đầu ra | Ghi chú |
 |---|---|---|
 | M0.1 Chốt baseline | Xác nhận đầu nhánh dẫn xuất từ `e324beb`; ghi SHA baseline vào bảng số liệu gốc; phục vụ một bản baseline (worktree thứ hai tại `e324beb`) để dùng cho MP-18 và BCK-* | |
-| M0.2 Đo số liệu gốc | Bảng plan mục 7 điền đủ cột "Hiện tại" | gồm danh sách hàm `App.*` bị gọi ngược (SPEC §4.2) |
+| M0.2 Đo số liệu gốc | Bảng plan mục 7 điền đủ cột "Hiện tại" | gồm danh sách hàm `App.*` bị gọi ngược (SPEC §4, quy tắc 2–3) |
 | M0.3 Test Node | Bộ test `context`, `srs`, `util`, `readalong`, adapter local `db`; kiểm tĩnh | TEST §3, §4.1 |
 | M0.4 Khung Playwright | Mock REST/Storage/Functions; **broker Realtime giả trong tiến trình test, mỗi client một context** (không dùng `BroadcastChannel` để nối client); cố định dữ liệu/đồng hồ/random (hạt giống random khác nhau giữa các context) | TEST §7, §12 |
 | **M0.5a Baseline lời gọi backend (làm sớm, tách riêng)** | Bộ lời gọi baseline tới **Edge Function AI** (WordLoop, CC, chấm câu, tra nghĩa) và **Worker `tj-shelf`** (`list`/`PUT`/`DELETE`), chụp ở `e324beb`; là đầu vào của BCK-01..03 và là **điều kiện deploy B1/B2** | TEST §9.5, §13.7 |
@@ -172,7 +172,7 @@ Lưu ý nhịp: nếu (trái đề xuất) đặt nhánh restructure làm produc
 
 Mỗi bước restructure (một hoặc vài commit trên dòng tích hợp) PHẢI đạt trước khi báo xong:
 
-1. Đang ở worktree này, nhánh `feat/restructure-plan`; chạy lệnh kiểm trong `WORKTREE_ANCHOR.md` (`origin/main` vẫn `e324beb`, còn fast-forward được). Không `git push origin main`, không merge `main`.
+1. Đang ở worktree này, nhánh `feat/restructure-plan`; chạy lệnh kiểm trong `WORKTREE_ANCHOR.md` (baseline `e324beb`; `origin/main` hiện `6c7b66b` = +2 commit đã ghi nhận ở PLAN 0.1, không còn fast-forward nguyên trạng). Không `git push origin main`, không merge `main`.
 2. `node --check` mọi file đã sửa, nối bằng `&&`; dừng nếu lỗi.
 3. Test Node + kiểm tĩnh xanh.
 4. Playwright: nhóm PHẢI-chặn-merge xanh; ảnh sai khác = 0; nhật ký lời gọi khớp chuẩn (khác thì liệt kê từng dòng khác và lý do để TJ duyệt).
@@ -190,7 +190,7 @@ Mỗi bước restructure (một hoặc vài commit trên dòng tích hợp) PH�
 
 | Cột mốc | Trạng thái | Cổng đang chờ | Ghi chú |
 |---|---|---|---|
-| G1 (baseline), câu 2 | ✔ Đã chốt 2026-10-20 | — | `e324beb`; `main` đóng băng; fast-forward ở cuối |
+| G1 (baseline), câu 2 | ✔ Đã chốt 2026-10-20 | — | `e324beb`; `main` đóng băng; fast-forward ở cuối *(lệch từ 2026-10-22: `origin/main` = `6c7b66b`, PO chọn cách tiếp nhận, PLAN 0.1)* |
 | G0 ✔ (2026-10-20); G2–G10 | G0 đã duyệt, còn lại chưa mở | TJ trả lời plan mục 9 | |
 | H0–H2 | Chưa bắt đầu | G8 (+ G7 cho H2) | |
 | M0 | **Đang làm** (G0 ✔ duyệt A0 2026-10-20; G2 chưa) | G2 cho M0.8 (CI) | Xong: M0.1 (worktree baseline `wt-baseline-e324beb`), M0.5a (xem `tests/README.md`). Còn: M0.2, M0.3, M0.4, M0.5, M0.6, M0.7, M0.7b, M0.8 |
