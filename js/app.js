@@ -227,10 +227,16 @@
     EA1_SU01_Filing_Requirements: 1, EA1_SU02_Gross_Income_I: 2, EA1_SU03_Gross_Income_II: 2,
     Entity_Types_to_Other_Deductions: 15, Basis_to_Partnership_Operations: 20,
     Disposition_of_Partners_Interest_to_Corporate_Formation: 25, Corporate_Income_to_Redemptions_and_Liquidations: 33,
+    S_Corporations_to_Exempt_Organizations: 43,   /* chương này nằm ở Notebook Part III dù file ghi Part II -> boot() tra chéo Notebook */
     EA3_SU01_Practice_before_the_IRS: 53, EA3_SU02_Tax_Preparers_and_Penalties: 60, EA3_SU03_Representation: 64,
     EA3_SU04_Examination_of_Returns_and_Appeals_Process: 66, EA3_SU05_The_Collection_Process: 70,
     EA3_SU06_Tax_Authority: 74, EA3_SU07_Recordkeeping_and_Electronic_Filing: 78
   };
+  /* #hash -> regex tên Page "Ch.NN" của bài EA (null nếu không phải bài trong bảng) */
+  function hashChapterRe(hashRaw) {
+    var ch = hashRaw && EA_LESSON_CH[hashRaw.split("/").pop().replace(/\.html$/i, "")];
+    return ch ? new RegExp("^Ch[.]0*" + ch + "(?![0-9])", "i") : null;
+  }
   /* #hash (tên file bài học) -> hàm kiểm tên Section/Page có khớp không; null nếu hash rỗng */
   function hashNameTest(hashRaw) {
     if (!hashRaw) return null;
@@ -5349,6 +5355,22 @@
       }
       S.notebookId = pick(S.notebooks, sel.notebookId);
       if (S.notebookId) await loadNotebook(S.notebookId);
+      /* Hash bài EA mà Notebook theo "Part X" không có chương đó (dữ liệu đặt lệch Notebook) -> tra chéo
+         các Notebook còn lại, chỉ khi KHÔNG có ?sel= chỉ định page và chỉ tốn thêm lượt tải khi hụt. */
+      var chRe = sel.hubId === "hub_ea2025" && !sel.pageId && location.hash ? hashChapterRe(decodeURIComponent(location.hash.slice(1)).trim()) : null;
+      if (chRe && S.notebookId && !(S.pages || []).some(function (p) { return p && chRe.test(p.name || ""); })) {
+        for (var ni = 0; ni < S.notebooks.length; ni++) {
+          var nb = S.notebooks[ni];
+          if (!nb || nb.id === S.notebookId) continue;
+          var nd = null;
+          try { nd = await w.DB.loadNotebook(nb.id); } catch (e) {}
+          if (nd && (nd.pages || []).some(function (p) { return p && chRe.test(p.name || ""); })) {
+            S.notebookId = nb.id;
+            await loadNotebook(nb.id);
+            break;
+          }
+        }
+      }
     }
 
     renderAll();
