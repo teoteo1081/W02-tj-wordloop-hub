@@ -1,0 +1,175 @@
+{
+ "chromium": "156.0.8078.4",
+ "images": [
+  {
+   "bytes": 104378,
+   "file": "G01_lobby_host__desktop.png",
+   "id": "VIS-G01",
+   "sha256": "9c743c1786fea371147b26e22e37bed62b95d10dd980d06d8057093bb719abee",
+   "viewport": [
+    1280,
+    800
+   ]
+  },
+  {
+   "bytes": 59361,
+   "file": "G01_lobby_host__mobile.png",
+   "id": "VIS-G01",
+   "sha256": "1fe2421ef0ae7f2ca8ad7923c2390a231efdbb6d76a72d575ea5059afbf6ede7",
+   "viewport": [
+    390,
+    844
+   ]
+  },
+  {
+   "bytes": 80563,
+   "file": "G01_lobby_player__desktop.png",
+   "id": "VIS-G01",
+   "sha256": "3fdaeea312e32c90fa71ecc46d0a3501f1643bfb7064fb63c38d9571e0855ca2",
+   "viewport": [
+    1280,
+    800
+   ]
+  },
+  {
+   "bytes": 62709,
+   "file": "G01_lobby_player__mobile.png",
+   "id": "VIS-G01",
+   "sha256": "7df924867da8e43c9f910582d56d86bfdb94440071564a43187a6ee24d3b8f16",
+   "viewport": [
+    390,
+    844
+   ]
+  },
+  {
+   "bytes": 43894,
+   "file": "G02_play_host__desktop.png",
+   "id": "VIS-G02",
+   "sha256": "066ce3e5359107655b808320b9b8339279228734d37257fa3c2a41faa43feb49",
+   "viewport": [
+    1280,
+    800
+   ]
+  },
+  {
+   "bytes": 39595,
+   "file": "G02_play_host__mobile.png",
+   "id": "VIS-G02",
+   "sha256": "c1b8abbac4cf1fe74d9d497abc3e06cf6c15c473c67ce62a166c482d87a75851",
+   "viewport": [
+    390,
+    844
+   ]
+  },
+  {
+   "bytes": 41975,
+   "file": "G02_play_player__desktop.png",
+   "id": "VIS-G02",
+   "sha256": "aef12d8021ef960d7b9801dcd863f2c8e59a03688e9c28446d41e77e5a4f8fa7",
+   "viewport": [
+    1280,
+    800
+   ]
+  },
+  {
+   "bytes": 38203,
+   "file": "G02_play_player__mobile.png",
+   "id": "VIS-G02",
+   "sha256": "02051e1aed7f18182f9cfd1eb607a73517bd8db2c48aede34f40610a501f9d36",
+   "viewport": [
+    390,
+    844
+   ]
+  },
+  {
+   "bytes": 116408,
+   "file": "W02_blocks__desktop.png",
+   "id": "VIS-W02",
+   "sha256": "615740ace4b303fc75e60798dcab5144b2b6cfd91b930db513ca85fb3fe64838",
+   "viewport": [
+    1280,
+    800
+   ]
+  },
+  {
+   "bytes": 52468,
+   "file": "W02_blocks__mobile.png",
+   "id": "VIS-W02",
+   "sha256": "33d06745912df4a9f6d561dccc214a652d7290b6f2295876858424b5630ab7ce",
+   "viewport": [
+    390,
+    844
+   ]
+  },
+  {
+   "bytes": 84004,
+   "file": "W03_meaning__desktop.png",
+   "id": "VIS-W03",
+   "sha256": "797e46e7949c665fe62d5abb1d4807261f17cb7f159fce75ea4133183d9ae57c",
+   "viewport": [
+    1280,
+    800
+   ]
+  },
+  {
+   "bytes": 46098,
+   "file": "W03_meaning__mobile.png",
+   "id": "VIS-W03",
+   "sha256": "55b3d5b2e09740d9e762db79eeb51958accedf0d455e0cd5901f0836f5ff8afd",
+   "viewport": [
+    390,
+    844
+   ]
+  },
+  {
+   "bytes": 110228,
+   "file": "W03_study__desktop.png",
+   "id": "VIS-W03",
+   "sha256": "d63f0587c61a86e8032b7e90f1d8be1b44214a8e29084173fa519b2dcc182a2d",
+   "viewport": [
+    1280,
+    800
+   ]
+  },
+  {
+   "bytes": 60512,
+   "file": "W03_study__mobile.png",
+   "id": "VIS-W03",
+   "sha256": "64fccfa4f5dee376f1d688e682cdb490f9b686b7f1a9d4dbe4125ffbb3616e5f",
+   "viewport": [
+    390,
+    844
+   ]
+  },
+  {
+   "bytes": 99754,
+   "file": "W06_fix__desktop.png",
+   "id": "VIS-W06",
+   "sha256": "ac21b68db09fe2fd02fae1f8640933448388d6b496336f277b68be6276df073e",
+   "viewport": [
+    1280,
+    800
+   ]
+  },
+  {
+   "bytes": 60293,
+   "file": "W06_fix__mobile.png",
+   "id": "VIS-W06",
+   "sha256": "9cfa8a68bc454c06572621cf4e3c1fb4587b005cdc17a7e97c0c8324e6187d0d",
+   "viewport": [
+    390,
+    844
+   ]
+  }
+ ],
+ "problems": [],
+ "servedMismatch": [],
+ "source": {
+  "appCodeDirty": false,
+  "commit": "e324beb54b29ddfa055956c756a4ceba2676dfa1",
+  "expectedCommit": "e324beb54b29ddfa055956c756a4ceba2676dfa1",
+  "matchesExpected": true,
+  "tree": "9de0480570b1c95c85912d685626891ba142b825"
+ },
+ "target": "baseline"
+}

@@ -66,7 +66,9 @@ class Site:
                     site.served[p] = {"sha256_lf": None, "status": 404}
                 return super().do_GET()
 
-        self._srv = socketserver.ThreadingTCPServer(("127.0.0.1", 0), functools.partial(H, directory=self.root))
+        class _Srv(socketserver.ThreadingTCPServer):
+            request_queue_size = 256      # mặc định 5: trình duyệt mở ~40 kết nối song song → đôi khi ERR_CONNECTION_REFUSED
+        self._srv = _Srv(("127.0.0.1", 0), functools.partial(H, directory=self.root))
         self._srv.daemon_threads = True
         self.port = self._srv.server_address[1]
         threading.Thread(target=self._srv.serve_forever, daemon=True).start()
@@ -123,6 +125,8 @@ class Guard:
         self.site, self.name = site, name
         self.mocks, self.stubs = mocks or {}, stubs or {}
         self.blocked, self.stubbed, self.mocked, self.ws_blocked, self.local_requests = [], [], [], [], []
+        self.handled = []           # request ngoài do handler khai báo xử lý
+        self.handlers = []          # [(url_prefix, fn(req, client_label) -> (status, content_type, body, headers))]
         self.ws_leaked = []         # WebSocket tới được tầng mạng dù đã ghi đè trong trang (phải luôn rỗng)
         self.expected = []          # tiền tố URL mà kịch bản phản chứng CHỦ Ý gọi để chứng minh bị chặn
 
@@ -151,10 +155,19 @@ class Guard:
         if url.startswith("data:") or url.startswith("blob:") or url.startswith("about:"):
             return route.fallback()
         base = url.split("?")[0]
-        for key, (st, ct, body) in self.stubs.items():
+        for key, val in self.stubs.items():
             if url == key or base == key:
                 self.stubbed.append(url)
-                return route.fulfill(status=st, content_type=ct, body=body)
+                st, ct, body = val[0], val[1], val[2]
+                return route.fulfill(status=st, content_type=ct, body=body, headers=val[3] if len(val) > 3 else None)
+        for prefix, fn in self.handlers:                    # endpoint ngoài có HANDLER khai báo (Edge Function, Worker...)
+            if url.startswith(prefix):
+                self.handled.append(url)
+                if req.method == "OPTIONS":
+                    return route.fulfill(status=204, headers={"access-control-allow-origin": "*", "access-control-allow-headers": "*",
+                                                              "access-control-allow-methods": "*"})
+                st, ct, body, headers = fn(req, self.name)
+                return route.fulfill(status=st, content_type=ct, body=body, headers=headers)
         self.blocked.append({"method": req.method, "url": url, "resource": req.resource_type})
         return route.abort("blockedbyclient")
 
@@ -166,7 +179,11 @@ class Guard:
 INIT_BASE = r"""
 (() => {
   // --- Math.random gieo cố định, KHÁC nhau theo context (TEST §7: G.tab sinh từ Math.random) ---
-  let s = (window.__A0_SEED__ >>> 0) || 29;
+  // Hạt giống đổi theo SỐ LẦN NẠP TRANG trong tab (sessionStorage, đặt trước khi bọc nhật ký): tải lại ra mã tab mới như
+  // trình duyệt thật (G.tab sinh từ Math.random) nhưng vẫn tiền định theo (hạt giống context, số lần nạp).
+  let loads = 0;
+  try { loads = (+sessionStorage.getItem('__a0_loads') || 0) + 1; sessionStorage.setItem('__a0_loads', String(loads)); } catch (e) {}
+  let s = ((((window.__A0_SEED__ >>> 0) || 29) + loads * 104729) % 2147483647) || 29;
   Math.random = function () { s = (s * 16807) % 2147483647; return s / 2147483647; };
   // --- WebSocket: không bao giờ tạo kết nối thật; báo về harness rồi tự đóng với lỗi ---
   const mkWS = function (url) {
@@ -225,7 +242,11 @@ class Browser:
         self.contexts = []
         self.browser = self._pw.chromium.launch(executable_path=CHROME, headless=True,
                                                 args=["--disable-background-networking", "--disable-component-update",
-                                                      "--no-first-run", "--disable-sync"])
+                                                      "--no-first-run", "--disable-sync",
+                                                      # render tiền định cho ảnh chuẩn: không GPU, không raster/compositor đa luồng
+                                                      "--disable-gpu", "--disable-gpu-compositing", "--disable-gpu-rasterization",
+                                                      "--disable-partial-raster", "--disable-lcd-text",
+                                                      "--font-render-hinting=none", "--force-color-profile=srgb"])
 
     def close(self):
         self.browser.close(); self._pw.stop()
@@ -245,7 +266,8 @@ class Browser:
         ctx.add_init_script(INIT_BASE)
         if init_extra:
             ctx.add_init_script(init_extra)
-        ctx.clock.set_fixed_time(now_ms / 1000.0)   # API Python nhận GIÂY (nhận MILI-giây làm Date.now() lệch x1000)
+        if now_ms is not None:      # None = đồng hồ ảo do Cluster điều khiển (install + pause_at + run_for)
+            ctx.clock.set_fixed_time(now_ms / 1000.0)   # API Python nhận GIÂY (nhận MILI-giây làm Date.now() lệch x1000)
         ctx.guard = g
         ctx.errors = []
         self.contexts.append(ctx)

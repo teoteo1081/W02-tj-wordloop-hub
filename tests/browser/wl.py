@@ -114,7 +114,21 @@ def visible_screens(pg):
     return pg.evaluate("[...document.querySelectorAll('section[id^=screen-]')].filter(s=>!s.hidden).map(s=>s.id)")
 
 
-def answer_meaning(pg, wrong=(), wrong_terms=()):
+def wait_js(pg, js, pump=None, timeout=8000):
+    """Chờ biểu thức JS đúng. Có `pump` (đồng hồ ảo dừng) thì vừa chờ vừa gọi pump() để timer/tin của app tiến."""
+    if pump is None:
+        return pg.wait_for_function(js, timeout=timeout)
+    for _ in range(max(1, timeout // 100)):
+        if pg.evaluate(js):
+            return True
+        pump()
+    raise TimeoutError("wait_js: không đạt: " + js[:80])
+
+
+RESULT_RX = r"/Đúng \d+\/\d+/"
+
+
+def answer_meaning(pg, wrong=(), wrong_terms=(), pump=None):
     """Trả lời hết câu ở tab Nghĩa. `wrong` = tập chỉ số câu (0-based), `wrong_terms` = tập từ, cố ý chọn sai.
     Chọn bằng cách CLICK đáp án; đáp án đúng suy từ fixture (meaning_vi của từ hiển thị), không đọc cờ của app."""
     pg.wait_for_selector("#meaning-card .exam-idx")
@@ -129,7 +143,7 @@ def answer_meaning(pg, wrong=(), wrong_terms=()):
         pg.click('#meaning-card .opt[data-pick="%s"]' % pick)
         if i < n - 1:
             pg.click("#mn-next")
-    pg.wait_for_function(r"/Đúng \d+\/\d+ câu/.test(document.querySelector('#meaning-card').innerText)", timeout=8000)
+    wait_js(pg, RESULT_RX + ".test(document.querySelector('#meaning-card').innerText)", pump)
     return asked
 
 
@@ -158,16 +172,23 @@ def _term_for_row(row_text):
 
 
 def fill_sheet(pg, wrong=()):
-    """Điền Phiếu đầy đủ bằng cách click chip vào ô trống đang active; `wrong` = tập chỉ số ô cố ý điền từ khác.
+    """Điền Phiếu đầy đủ bằng cách click chip vào ô trống. `wrong` = tập chỉ số ô cố ý điền SAI (cần >=2): các ô sai
+    nhận từ của ô sai kế tiếp (hoán vòng) nên mỗi chip chỉ dùng một lần và đúng `len(wrong)` ô sai.
     Đáp án đúng suy từ câu trong fixture, không đọc cờ đúng/sai của app. Chưa bấm Nộp bài."""
     n = pg.evaluate("document.querySelectorAll('#sheet-card .slot').length")
+    truth = []
     for i in range(n):
         row = pg.evaluate("document.querySelectorAll('#sheet-card .ex-q')[%d].innerText" % i)
-        term = _term_for_row(row)
-        chips = pg.evaluate("[...document.querySelectorAll('#sheet-card .wb-chip')].filter(c=>!c.disabled && !c.classList.contains('used')).map(c=>c.dataset.bank)")
-        pick = term if i not in wrong else next(c for c in chips if c != term)
+        truth.append(_term_for_row(row))
+    wl = sorted(wrong)
+    if wl and len(wl) < 2:
+        raise ValueError("wrong cần >= 2 ô để hoán vòng")
+    give = list(truth)
+    for k, idx in enumerate(wl):
+        give[idx] = truth[wl[(k + 1) % len(wl)]]
+    for i in range(n):
         pg.click('#sheet-card .slot[data-gap="%d"]' % i)
-        pg.click('#sheet-card .wb-chip[data-bank="%s"]' % pick)
+        pg.click('#sheet-card .wb-chip[data-bank="%s"]' % give[i])
     return n
 
 

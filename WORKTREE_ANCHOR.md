@@ -62,7 +62,7 @@ Nó tồn tại vì:
 
 ## Trạng thái hiện tại
 
-Giai đoạn **A0 — lưới an toàn (đang thực thi)**. Đã xong M0.1 (baseline) và đầu vào M0.5a (xem `tests/README.md`). Mã ứng dụng giữ nguyên. `origin/main` đã tiến hai commit sau baseline tới `6c7b66b`; PO chọn cách tiếp nhận trước tích hợp cuối. Các câu 3–7 và 9–12 của plan vẫn mở và chặn phần tương ứng sau A0.
+Giai đoạn **A0 — lưới an toàn (đang thực thi)**. Đã xong M0.1 (baseline) và đầu vào M0.5a (xem `tests/README.md`). Mã ứng dụng giữ nguyên. `origin/main` đã tiến sau baseline: hai commit `4708ba9`, `6c7b66b` (đổi mã app) rồi ba commit tài liệu/lệnh `58eafb3`, `72c5407`, `7c51d37` (kiểm lại 2026-10-22: 5 commit); PO chọn cách tiếp nhận trước tích hợp cuối. Cycle trình duyệt A0 đã chạy (`tests/browser/`, mã app không đổi; chờ QA độc lập và PO duyệt candidate). Các câu 3–7 và 9–12 của plan vẫn mở và chặn phần tương ứng sau A0.
 
 **Checkpoint lịch sử `d1e793c` — cycle Node 2026-10-22:** TJ đã cho chạy sau audit `a0e08ac`. Đã sửa ancestry gate và mô tả fast-forward; chạy cycle tới điểm PO, **PARTIAL**: unit baseline/current cùng 54 đạt/1 lỗi đặc tả (CTX-09, TJ OpenAI trước); kiểm tĩnh 6 đạt/2 pending (version baseline + scope CSS); phản chứng mới 6/6, capture cũ 65/65. Báo cáo và lệnh tái lập ở `tests/a0/README.md`. Không sửa app/không cài gói/không mạng production. Chờ PO xác nhận ngoại lệ TJ và ngoại lệ version; Playwright vẫn cần quyền cài gói riêng. Không merge, không push trong cycle này.
 
@@ -75,10 +75,10 @@ Khi trạng thái đổi (bắt đầu A0, hoàn thành một pha, freeze, hủy
 ```
 git -C C:/Users/User/Desktop/TJ/_work/wt-restructure-plan status -sb          # phải là ## feat/restructure-plan (không có ...origin/main)
 git -C C:/Users/User/Desktop/TJ/_work/wt-restructure-plan diff --stat e324beb -- js css index.html game.html sw.js data learn supabase tools   # phải trống (mã ứng dụng chưa đổi so với baseline)
-git rev-parse --short origin/main                                              # hiện 6c7b66b (đã ghi nhận ở PLAN 0.1); giá trị khác = main tiến thêm, báo PO
+git rev-parse --short origin/main                                              # hiện 7c51d37 (PLAN 0.1 ghi 6c7b66b; 3 commit sau chỉ tài liệu/lệnh); giá trị khác = main tiến thêm, báo PO
 git merge-base --is-ancestor e324beb origin/main && echo baseline-ok           # phải in baseline-ok: baseline vẫn là tổ tiên của main
 git merge-base --is-ancestor e324beb HEAD && echo restructure-baseline-ok      # phải in restructure-baseline-ok: nhánh đang làm vẫn chứa baseline
-git rev-list --count e324beb..origin/main                                      # hiện 2 (4708ba9, 6c7b66b); số khác = main tiến thêm, báo PO
+git rev-list --count e324beb..origin/main                                      # hiện 5 (4708ba9, 6c7b66b, 58eafb3, 72c5407, 7c51d37); số khác = main tiến thêm, báo PO
 ```
 
 ## Khi nào dọn worktree

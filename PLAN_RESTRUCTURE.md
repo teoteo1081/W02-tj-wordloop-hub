@@ -55,6 +55,8 @@
 
 ## 0.2 Cycle tiếp theo — A0 trong trình duyệt (plan-only sau `0d22ae2`)
 
+**Cập nhật trạng thái (2026-10-22, sau chỉ đạo "Làm claude" của TJ):** đã thực hiện trong phạm vi bên dưới, chỉ thêm `tests/browser/` và tài liệu, mã ứng dụng không đổi. Bằng chứng, giới hạn và việc cần PO ở `tests/browser/README.md` + `report.json`. Trạng thái: **bằng chứng đủ phạm vi cam kết của cycle, A0 tổng thể vẫn PARTIAL** (chờ verdict QA độc lập, PO duyệt ảnh/nhật ký candidate, `supabase-js` thật cần quyền tải gói, M0.8/CI chờ G2). Các đoạn dưới giữ nguyên làm lịch sử của kế hoạch.
+
 **Chỉ đạo hiện tại của TJ:** commit plan cycle vào nhánh, không mutate. Checkpoint này chỉ thay đổi tài liệu; **chưa chạy cycle, chưa tạo/sửa test, fixture hay mã ứng dụng**. Không suy ra quyền bắt đầu thực hiện từ việc commit kế hoạch; dừng sau commit tài liệu và chờ chỉ đạo tiếp tục.
 
 **Mục tiêu khi được tiếp tục:** dựng bằng chứng hành vi trong trình duyệt cho phần A0 còn thiếu: luồng học chính, nhật ký backend/storage, hai client độc lập và ảnh desktop/mobile ổn định. Đây là cycle kiểm thử, không phải bắt đầu restructure mã ứng dụng hay nghiệm thu preview.

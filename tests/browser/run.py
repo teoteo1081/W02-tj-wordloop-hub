@@ -13,11 +13,11 @@ import argparse, json, os, platform, sys, time
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import bw, wl                                        # noqa: E402
-import scn_guard, scn_learn                          # noqa: E402
+import scn_guard, scn_learn, scn_cloud, scn_game    # noqa: E402
 
 REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
 BASELINE_DIR = os.path.abspath(os.path.join(REPO, "..", "wt-baseline-e324beb"))
-MODULES = [scn_guard, scn_learn]
+MODULES = [scn_guard, scn_learn, scn_cloud, scn_game]
 APP_PATHS = ["js", "css", "index.html", "game.html", "sw.js", "data", "learn", "supabase", "tools"]
 
 
@@ -63,7 +63,7 @@ def run_target(B, target, root, fns):
             "servedMismatch": served_bad,
             "servedCount": len(site.served),
             "guard": {"contexts": len(guards),
-                      "localRequests": sum(len(g.local_requests) for g in guards),
+                      "localPathsServed": sorted({p for g in guards for p in g.local_requests}),   # số lượt thô không ổn định (thời điểm tải) nên chỉ ghi tập đường dẫn
                       "mocked": sorted({p for g in guards for p in g.mocked}),
                       "stubbedExternal": sorted({u for g in guards for u in g.stubbed}),
                       "blockedExpected": [b for g in guards for b in g.blocked if g.is_expected(b["url"])],
@@ -93,11 +93,57 @@ def compare(base, branch):
     return diffs
 
 
+CANDIDATE_DIR = os.path.join(HERE, "shots-candidate")
+SHOT_IDS = ["VIS-W02", "VIS-W03", "VIS-W06", "VIS-G01", "VIS-G02", "SHOT-STABLE"]
+
+
+def shots_stage(targets, write_candidate=False):
+    """M0.6: mỗi nguồn chụp HAI lượt độc lập; hai lượt phải giống hệt từng byte (không mask), baseline và nhánh cũng vậy;
+    nếu đã có ảnh candidate trong repo thì so tiếp (đổi chuẩn cần quyết định riêng, TEST §1.3)."""
+    import shutil, tempfile
+    import shots
+    tmp = tempfile.mkdtemp(prefix="a0shots_")
+    out, dirs = {"targets": {}, "problems": []}, {}
+    try:
+        for t in targets:
+            for k in (1, 2):
+                d = os.path.join(tmp, "%s%d" % (t, k))
+                m = shots.capture(t, d)
+                dirs[(t, k)] = d
+                if m["problems"] or m["servedMismatch"]:
+                    out["problems"].append({"target": t, "run": k, "problems": m["problems"], "servedMismatch": m["servedMismatch"]})
+                if k == 1:
+                    out["targets"][t] = {"chromium": m["chromium"], "images": [{x: i[x] for x in ("file", "id", "viewport", "sha256", "bytes")} for i in m["images"]]}
+            same = shots.compare(dirs[(t, 1)], dirs[(t, 2)])
+            out["targets"][t]["repeatRuns"] = same
+        if len(targets) == 2:
+            out["baselineVsBranch"] = shots.compare(dirs[("baseline", 1)], dirs[("branch", 1)])
+        ref = dirs.get(("baseline", 1)) or dirs.get(("branch", 1))
+        if write_candidate:
+            if os.path.isdir(CANDIDATE_DIR):
+                shutil.rmtree(CANDIDATE_DIR)
+            shutil.copytree(ref, CANDIDATE_DIR)
+        if os.path.isfile(os.path.join(CANDIDATE_DIR, "manifest.json")):
+            out["vsCommittedCandidate"] = shots.compare(CANDIDATE_DIR, ref)
+        else:
+            out["vsCommittedCandidate"] = "chưa có ảnh candidate đã commit (chạy --write-candidate)"
+        shutil.rmtree(tmp, ignore_errors=True)
+    except Exception:
+        shutil.rmtree(tmp, ignore_errors=True)
+        raise
+    ok = not out["problems"] and all(not v["repeatRuns"]["different"] for v in out["targets"].values())         and not out.get("baselineVsBranch", {}).get("different")         and (isinstance(out["vsCommittedCandidate"], str) or not out["vsCommittedCandidate"]["different"])
+    out["stable"] = bool(ok)
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--target", choices=["baseline", "branch", "both"], default="both")
     ap.add_argument("--only")
     ap.add_argument("--write-report", action="store_true")
+    ap.add_argument("--selftest", action="store_true", help="phản chứng: cài lỗi có chủ đích vào BẢN CHÉP mã app, kịch bản tương ứng phải FAIL")
+    ap.add_argument("--shots", action="store_true", help="thêm bước M0.6: ảnh 1280×800 và 390×844, hai lượt độc lập (chậm ~8 phút)")
+    ap.add_argument("--write-candidate", action="store_true", help="ghi ảnh candidate vào tests/browser/shots-candidate (chỉ khi được review)")
     a = ap.parse_args()
     fns = scenarios(a.only)
     targets = ["baseline", "branch"] if a.target == "both" else [a.target]
@@ -116,6 +162,12 @@ def main():
             if not idn["ok"]:
                 failed = True
             report["targets"][t] = run_target(B, t, roots[t], fns)
+        if a.selftest:
+            import selftest
+            print("\n== PHẢN CHỨNG (lỗi cài vào bản chép, repo không bị sửa) ...", flush=True)
+            report["selfTest"] = selftest.run_selftest(B, REPO, print)
+            if not report["selfTest"]["ok"]:
+                failed = True
     finally:
         B.close()
     if len(targets) == 2:
@@ -133,8 +185,8 @@ def main():
                 if not c["ok"]:
                     print("        x", c["msg"], json.dumps({k: v for k, v in c.items() if k not in ("ok", "msg")}, ensure_ascii=False)[:300])
         g = tr["guard"]
-        print("  guard: %d context, %d request cục bộ, chặn ngoài-khai-báo=%d, chặn-có-chủ-ý=%d, ws=%d" % (
-            g["contexts"], g["localRequests"], len(g["blockedUnexpected"]), len(g["blockedExpected"]), len(g["websocketBlocked"])))
+        print("  guard: %d context, %d đường dẫn cục bộ khác nhau, chặn ngoài-khai-báo=%d, chặn-có-chủ-ý=%d, ws=%d" % (
+            g["contexts"], len(g["localPathsServed"]), len(g["blockedUnexpected"]), len(g["blockedExpected"]), len(g["websocketBlocked"])))
         if tr["servedMismatch"]:
             print("  !! mã phục vụ khác git HEAD:", tr["servedMismatch"])
         if any(r["status"] != "PASS" for r in tr["scenarios"]) or g["blockedUnexpected"] or tr["servedMismatch"]                 or g["websocketLeaked"] or g["websocketBlockedUnexpected"]:
@@ -143,12 +195,22 @@ def main():
         d = report["comparison"]["differences"]
         print("\nso sánh baseline/nhánh: %s" % ("giống hệt" if not d else "%d khác biệt: %s" % (len(d), d)))
         failed = failed or bool(d)
+    if a.shots:
+        print("\n== ẢNH (M0.6): hai lượt độc lập mỗi nguồn ...", flush=True)
+        report["shots"] = shots_stage(targets, a.write_candidate)
+        sh = report["shots"]
+        print("  ổn định (hai lượt giống hệt, baseline=nhánh, khớp candidate): %s" % sh["stable"])
+        if not sh["stable"]:
+            failed = True
+            print("  !!", json.dumps({k: v for k, v in sh.items() if k != "targets"}, ensure_ascii=False)[:600])
     gaps = coverage_gaps(report, fns)
     report["coverageGaps"] = gaps
     import coverage
     report["declaredOutOfScope"] = coverage.DECLARED_OUT
     print("\nkhoảng trống độ phủ còn lại (chưa chạy): %d" % len(gaps))
-    status = "FAIL" if failed else ("PARTIAL" if gaps else "SUCCESS")
+    # Không bao giờ in SUCCESS: hết khoảng trống chỉ nghĩa là PHẠM VI CAM KẾT của cycle này đã có bằng chứng. Còn thiếu: verdict QA độc
+    # lập, PO duyệt ảnh/nhật ký candidate, và các mục DECLARED_OUT (CI/G2, supabase-js thật) — nên A0 tổng thể vẫn PARTIAL.
+    status = "FAIL" if failed else ("PARTIAL" if gaps else "CYCLE_SCOPE_EVIDENCED__A0_STILL_PARTIAL")
     report["status"] = status
     print("TRẠNG THÁI:", status)
     if a.write_report:
@@ -166,6 +228,8 @@ def _pw_version():
 def coverage_gaps(report, fns):
     import coverage
     ran = {i for r in report["targets"][next(iter(report["targets"]))]["scenarios"] if r["status"] == "PASS" for i in r["ids"]}
+    if report.get("shots", {}).get("stable"):
+        ran |= set(SHOT_IDS)
     return [{"id": i, "reason": why} for i, why in coverage.IN_SCOPE.items() if i not in ran]
 
 

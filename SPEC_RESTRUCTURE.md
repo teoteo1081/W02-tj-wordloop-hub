@@ -33,7 +33,7 @@ Phần này cụ thể hoá cycle trong PLAN §0.1, không mở quyền sửa �
 
 ### 1.2 Nghiệm thu cycle A0 trong trình duyệt (PLAN §0.2)
 
-**Trạng thái: kế hoạch, chưa thực hiện.** TJ chỉ yêu cầu commit plan và không mutate. Mục này định nghĩa bằng chứng cần có khi được chỉ đạo chạy, không xác nhận test/ảnh/multiplayer đã đạt và không mở quyền sửa ứng dụng/deploy/cài mới.
+**Trạng thái (cập nhật 2026-10-22): đã thực hiện theo chỉ đạo của TJ; đối chiếu từng tiêu chí ở `tests/browser/README.md` và `report.json`.** Bản gốc: kế hoạch, TJ chỉ yêu cầu commit plan và không mutate; mục này định nghĩa bằng chứng cần có, không mở quyền sửa ứng dụng/deploy/cài mới. Tiêu chí "Hành vi", "Nhật ký", "Hai client" và "Ảnh ổn định" có bằng chứng; **"Nhật ký" ở ranh giới thư viện (bản giả của `supabase-js`), chưa phải URL/header thật** — xem phạm vi trung thực trong README. "QA và phạm vi": chờ verdict QA độc lập; ảnh/nhật ký là candidate chưa được PO duyệt.
 
 | Tiêu chí | Bằng chứng phải quan sát được |
 |---|---|
