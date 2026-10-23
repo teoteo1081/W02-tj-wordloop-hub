@@ -2,7 +2,29 @@
 
 > Trạng thái: **ĐỀ XUẤT, CHƯA DUYỆT, CHƯA ĐỔI CODE.** Bản 2.2 (2026-10-20): đã đối chiếu với `AUDIT_INFRA_ADVISOR.md` (commit `d281196`), sửa theo 5 góp ý review, và áp **mô hình vận hành do TJ chốt** (mục 5): `main` đóng băng, mọi việc chỉ trong worktree này, Netlify phục vụ nhánh restructure song song với GitHub Pages phục vụ `main`, cuối cùng thay `main`.
 > Số liệu đo từ repo tại `e324beb` (nhánh này) và kiểm lại bằng đọc code ở mục 3; chưa chạy app.
-> Cần TJ trả lời mục 9 trước khi bắt đầu.
+> A0 đã được duyệt theo `WORKTREE_ANCHOR.md`; các phần còn lại vẫn theo cổng quyết định ở mục 9. Cycle kế tiếp và quyền tự chủ được chốt ở mục 0.1 dưới đây.
+
+## 0.1 Cycle A0 tiếp theo — tự thực hiện kỹ thuật, dừng ở quyết định PO
+
+**Chỉ đạo TJ ngày 2026-10-22:** lập cycle dài hơn vì TJ không can thiệp kỹ thuật code; cycle dừng khi cần PO quyết định. Sau đó TJ yêu cầu **commit plan/spec trước khi làm và dừng sau commit**. Vì vậy checkpoint tài liệu này chưa khởi chạy cycle; không được tự tiếp tục triển khai sau commit trong phiên này.
+
+**Kết quả dự kiến khi được tiếp tục:** hoàn thiện phần A0 kiểm được bằng Node trên baseline ghim `e324beb54b29ddfa055956c756a4ceba2676dfa1`, có số liệu gốc, test hồi quy, kiểm tĩnh, ma trận độ phủ và checkpoint commit trên `feat/restructure-plan`. Không đồng nghĩa đã qua toàn bộ cổng M0.
+
+**Phạm vi:** thêm bộ kiểm thử/báo cáo trong `tests/` và cập nhật tài liệu trên worktree hiện tại. Giữ nguyên mã ứng dụng và baseline; không cài gói từ mạng, gọi dịch vụ thật, sửa dữ liệu thật hay deploy. Việc chọn cấu trúc test, shim, dữ liệu giả, cách đo và sửa lỗi của chính bộ test do agent tự xử lý trong phạm vi này.
+
+| Chặng | Kết quả và bằng chứng |
+|---|---|
+| M0.2 — số liệu gốc | Đo lại chỉ số mục 7, ghi lệnh/cách đếm, SHA nguồn, bản đồ phụ thuộc và các điểm truy cập dữ liệu; phân biệt số đo tĩnh với số đo cần trình duyệt |
+| M0.3 — test Node | Test hồi quy `context`, `srs`, `util`, `readalong` và adapter local `db` theo TEST §3–4.1; chạy trên baseline trước, rồi trên nhánh làm việc; không sửa ứng dụng để ép test xanh |
+| M0.7b — kiểm tĩnh | Kiểm cú pháp, version/cache, ASSETS, file cấm và các ca tĩnh áp dụng trước M2; đo và công khai ngoại lệ baseline, không tự duyệt ngoại lệ mới |
+| Đối chiếu và QA | Đối chiếu ma trận truy vết với test thực chạy, kiểm độc lập diff/kết quả; phân biệt đạt, lỗi baseline, chưa phủ và cần trình duyệt |
+| Checkpoint | Cập nhật trạng thái/tài liệu, lệnh tái lập, kết quả QA và các khoảng trống; commit cục bộ trên nhánh hiện tại |
+
+**Điểm dừng PO:** cần đổi hành vi sản phẩm/phạm vi; phát sinh chi phí hoặc quyền cài gói; tác động hosting/backend/dữ liệu thật; baseline khác đặc tả mà phải chọn giữ hay sửa; cần duyệt ngoại lệ/golden mới. Không hỏi TJ chọn cách viết code hoặc xử lý lỗi kỹ thuật thông thường. Nếu một quyết định chỉ chặn một chặng, tiếp tục phần độc lập còn được phép trước khi bàn giao.
+
+**Lệch main đã quan sát:** lần fetch ngày 2026-10-22 cho thấy `origin/main` tại `6c7b66b`, có hai commit `4708ba9` và `6c7b66b` sau baseline. Mô tả lịch sử rằng `origin/main = e324beb` và có thể thay main bằng fast-forward trực tiếp không còn đúng tại checkpoint này. Giữ baseline; không tự merge/cherry-pick hay chọn cách tích hợp thay PO. Lệch này chưa chặn test Node, nhưng cần PO chọn phạm vi tiếp nhận thay đổi trước tích hợp cuối và đánh giá lại tương thích với bản đang dùng.
+
+**Bàn giao cuối cycle:** nêu kết quả, bằng chứng, SHA checkpoint, giới hạn độ phủ và quyết định PO theo dạng tác động người dùng / phương án / đề xuất. Tiêu chí nghiệm thu cụ thể ở SPEC §1.1. Không tuyên bố A0 hoàn tất khi chưa có bằng chứng trình duyệt, ảnh chuẩn và hai client.
 
 ## 0. Thay đổi so với bản 1
 

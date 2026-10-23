@@ -10,6 +10,25 @@
 
 **Ngoài phạm vi:** tính năng mới, đổi giao diện, đổi schema Supabase ngoài việc THÊM hàm/bảng đã nêu trong plan (B1, C2), đổi cơ chế đăng nhập `?u=`/RLS `shared_all`, thay WebRTC mesh, bật TURN.
 
+### 1.1 Nghiệm thu cycle A0 chạy bằng Node (2026-10-22)
+
+Phần này cụ thể hoá cycle trong PLAN §0.1, không mở quyền sửa ứng dụng hay triển khai các luồng sau A0. **Checkpoint hiện tại chỉ commit plan/spec rồi dừng theo yêu cầu TJ; chưa thực hiện cycle.** Các tiêu chí dưới đây là mục tiêu cần chứng minh khi tiếp tục, không phải kết quả đã đạt.
+
+| Tiêu chí bắt buộc | Bằng chứng nghiệm thu |
+|---|---|
+| Đúng nguồn và an toàn | Ghi SHA baseline `e324beb54b29ddfa055956c756a4ceba2676dfa1`, SHA nhánh được kiểm và trạng thái nguồn; baseline không bị sửa; mọi đường mạng trong test được giả lập hoặc chặn |
+| Số liệu tái lập được | Bảng M0.2 có cách đo/lệnh, phạm vi file, đơn vị và kết quả; chỉ số cần trình duyệt được ghi chưa đo, không suy diễn thành số đã xác minh |
+| Test bám hành vi thật | Các ca Node theo TEST §3–4.1 có ID truy vết, đầu vào và kỳ vọng cụ thể; chạy trên baseline và nhánh làm việc. Không sửa ứng dụng hoặc nới kỳ vọng chỉ để xanh |
+| Công khai khả năng kiểm `readalong` | Nếu không truy cập được điểm chấm qua API hiện tại, ghi RA-01 cần trình duyệt và chưa phủ; không sửa IIFE để lộ hàm, không tính ca chưa chạy là đạt |
+| Kiểm tĩnh có ranh giới | Áp dụng các ca trước M2; báo riêng ca chưa áp dụng. Ngoại lệ có sẵn phải có vị trí/lý do và chờ duyệt nếu chưa được duyệt; test không được âm thầm bỏ qua vi phạm hoặc tự tăng allowlist |
+| Kết quả đủ kiểm lại | Có lệnh chạy, tổng đạt/lỗi/chưa phủ, trạng thái trả về thất bại khi assertion hỏng; ca bị skip hoặc chưa chạy phải hiện trong báo cáo độ phủ |
+| QA độc lập | Người kiểm độc lập đối chiếu diff, nguồn baseline, tính an toàn và ma trận test với tiêu chí này; ghi rõ verdict và phần chưa đủ bằng chứng |
+| Bảo toàn phạm vi và checkpoint | Diff chỉ gồm `tests/` và tài liệu; có commit SHA trên `feat/restructure-plan`, không push main, không deploy; backlog và điểm dừng PO được ghi lại |
+
+**Phân loại kết quả cycle:** `SUCCESS` khi mọi tiêu chí bắt buộc được chứng minh; `PARTIAL` khi mới đạt một phần và liệt kê chính xác phần còn thiếu; `FAILURE` khi có lỗi trọng yếu hoặc tác động ngoài phạm vi; `BLOCKED` khi phụ thuộc ngoài ngăn hoàn thành. Verdict QA là `AUDIT_PASS`, `AUDIT_FAIL` hoặc `INSUFFICIENT_EVIDENCE`, tách khỏi trạng thái thực hiện. `SUCCESS` của cycle Node không chứng minh đã hoàn thành M0: M0.4–M0.8 và các ca phụ thuộc trình duyệt vẫn theo cổng riêng.
+
+**Quy tắc quyết định:** agent tự giải quyết kỹ thuật trong phạm vi. Khi cần thay đổi sản phẩm, duyệt chuẩn/ngoại lệ, cấp quyền cài gói/chi phí hoặc tác động hệ thống thật, trình PO quyết định bằng ảnh hưởng và phương án; không tự chọn thay. Hai commit trên main sau baseline nêu ở PLAN §0.1 không được tự nhập vào cycle này; tương thích với main hiện hành và cách tích hợp cuối phải được đánh giá lại trước cổng liên quan.
+
 ## 2. Bất biến (hợp đồng "giữ nguyên")
 
 Sau mỗi bước restructure, các điều sau PHẢI vẫn đúng. Đây là tiêu chí nghiệm thu chung, bổ sung cho tiêu chí riêng từng bước.
