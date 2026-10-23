@@ -149,7 +149,7 @@
   }
   function showTable(id) {   /* bảng từ vựng của 1 module: thuật ngữ · nghe · nghĩa tiếng Việt · link đọc bài học */
     var l = lessonsList().filter(function (x) { return x.id === id; })[0] || { id: id, title: id }, vs = (DATA.vocab || []).filter(function (v) { return v.lesson === id; });
-    var base = (window.QUEST_CONFIG && QUEST_CONFIG.lessonBase) || "", link = l.file && /^https?:/.test(base) ? base + l.file : "";
+    var base = (window.QUEST_CONFIG && QUEST_CONFIG.lessonBase) || "", link = l.file && base ? base + l.file : "";
     var h = '<div class="qw"><div class="qtop"><button class="qx" data-q="back">←</button><span class="qn">📖 ' + esc(String(l.title || id)) + '</span></div><div class="tbl">' +
       vs.map(function (v, k) { return '<div class="tr"><span class="n">' + (k + 1) + '</span><span class="te"><b>' + esc(v.en) + '</b></span><button class="qx sm" data-q="sayw" data-w="' + esc(v.en) + '" title="Nghe">🔊</button><span class="tv">' + esc(v.vi) + "</span></div>"; }).join("") + "</div>" +
       '<div class="grow"><button class="qb soft" data-q="back">← Quay lại</button>' + (link ? '<button class="qb soft" data-q="lesson" data-u="' + esc(link) + '">📘 Đọc bài học</button>' : "") + '<button class="qb" data-q="one" data-id="' + esc(id) + '">🎮 Chơi bài này</button></div></div>';

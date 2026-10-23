@@ -25,7 +25,7 @@
 <link rel="manifest" href="manifest.webmanifest?v=1">
 <link rel="icon" href="icon.svg?v=1" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon.svg?v=1">
-<link rel="stylesheet" href="css/app.css?v=72">
+<link rel="stylesheet" href="css/app.css?v=73">
 </head>
 <body>
 
@@ -1225,9 +1225,9 @@ mitigate | giảm nhẹ"></textarea>
 <script>
   (function () {
     var h = typeof location !== "undefined" && location.hostname;
-    var cfg = window.APP_CONFIG || {};
-    if ((h === "localhost" || h === "127.0.0.1") && (!cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY)) {
+    if (!h || h === "localhost" || h === "127.0.0.1" || h === "[::1]") {
       var s = document.createElement("script");
+      s.async = false;
       s.src = "js/keys.local.js?v=1";
       s.onerror = function () { this.remove(); };
       document.head.appendChild(s);
@@ -1247,7 +1247,7 @@ mitigate | giảm nhẹ"></textarea>
 <script src="js/journey.js?v=9"></script>
 <script src="js/home.js?v=4"></script>
 <script src="js/wordset.js?v=11"></script>
-<script src="js/app.js?v=69"></script>
+<script src="js/app.js?v=70"></script>
 <script src="js/gamelayer.js?v=39"></script>
 <script src="js/hubpage.js?v=2"></script>
 </body>

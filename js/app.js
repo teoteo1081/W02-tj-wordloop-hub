@@ -236,8 +236,58 @@
     S.batches = d.batches; S.blocks = d.blocks; S.words = d.words;
 
     var sel = readSel();
+    var hashRaw = (location.hash ? decodeURIComponent(location.hash.slice(1)) : "").trim();
+    if (hashRaw && (!sel.sectionId || !sel.pageId)) {
+      var baseName = hashRaw.split("/").pop().replace(/\.html$/i, "");
+      var suMatch = baseName.match(/SU\d+/i);
+      var suCode = suMatch ? suMatch[0].toUpperCase() : "";
+      var cleanWords = baseName.replace(/^(EA\d+_)?(SU\d+_)?/i, "").replace(/[_-]+/g, " ").trim().toLowerCase();
+
+      if (!sel.sectionId && S.sections) {
+        var hitSec = S.sections.find(function (s) {
+          if (!s || !s.name) return false;
+          var nm = s.name.toUpperCase();
+          if (suCode && nm.indexOf(suCode) >= 0) return true;
+          if (cleanWords && cleanWords.length > 3 && s.name.toLowerCase().indexOf(cleanWords) >= 0) return true;
+          return false;
+        });
+        if (hitSec) sel.sectionId = hitSec.id;
+      }
+    }
+
     S.sectionId = pick(S.sections, sel.sectionId);
     var pgs = S.sectionId ? pagesOfSection(S.sectionId) : [];
+
+    if (hashRaw && !sel.pageId && pgs.length) {
+      var baseName = hashRaw.split("/").pop().replace(/\.html$/i, "");
+      var suMatch = baseName.match(/SU\d+/i);
+      var suCode = suMatch ? suMatch[0].toUpperCase() : "";
+      var cleanWords = baseName.replace(/^(EA\d+_)?(SU\d+_)?/i, "").replace(/[_-]+/g, " ").trim().toLowerCase();
+
+      var hitPage = pgs.find(function (p) {
+        if (!p || !p.name) return false;
+        var nm = p.name.toUpperCase();
+        if (suCode && nm.indexOf(suCode) >= 0) return true;
+        if (cleanWords && cleanWords.length > 3 && p.name.toLowerCase().indexOf(cleanWords) >= 0) return true;
+        return false;
+      });
+      if (!hitPage && S.pages) {
+        var anyPage = S.pages.find(function (p) {
+          if (!p || !p.name) return false;
+          var nm = p.name.toUpperCase();
+          if (suCode && nm.indexOf(suCode) >= 0) return true;
+          if (cleanWords && cleanWords.length > 3 && p.name.toLowerCase().indexOf(cleanWords) >= 0) return true;
+          return false;
+        });
+        if (anyPage) {
+          S.sectionId = anyPage.section_id;
+          pgs = pagesOfSection(S.sectionId);
+          hitPage = anyPage;
+        }
+      }
+      if (hitPage) sel.pageId = hitPage.id;
+    }
+
     S.pageId = pick(pgs, sel.pageId);
     var bts = S.pageId ? batchesOfPage(S.pageId) : [];
     S.batchId = pick(bts, sel.batchId);
@@ -1330,8 +1380,10 @@
   App.toggleStudyBars = function (show) {
     var crumb = w.$("#crumb");
     var bbar = w.$(".batches-bar");
+    var sbar = w.$(".section-bar");
     if (crumb) crumb.hidden = !show;
     if (bbar) bbar.hidden = !show;
+    if (sbar) sbar.hidden = !show;
   };
 
   /* ══════════════ BỘ ĐẾM TỔNG SỐ TỪ (góc phải thanh trên cùng) ══════════════
@@ -5270,10 +5322,31 @@
     try { await refreshVisibleHubIds(); } catch (e) {}   /* lần đầu: Notebook Ôn riêng vừa tạo -> hiện tab Hub ngay, khỏi phải tải lại (QA) */
     S.hubs = await getHubsForUser();
     var sel = readSel();
+    if (sel.hubId === "hub_ea2025" && !S.hubs.some(function (h) { return h.id === sel.hubId; })) {
+      var eaHub = S.hubs.find(function (h) {
+        return (h.id && h.id.indexOf("ea2025") >= 0) || (h.code && h.code.toUpperCase().indexOf("EA") >= 0);
+      });
+      if (eaHub) sel.hubId = eaHub.id;
+    }
     S.hubId = pick(S.hubs, sel.hubId);
 
     if (S.hubId) {
       S.notebooks = await loadNotebooksFiltered(S.hubId);
+      if (sel.hubId === "hub_ea2025" && !sel.notebookId && location.hash) {
+        var hRaw = decodeURIComponent(location.hash.slice(1));
+        var partMatch = hRaw.match(/Part\s*(I{1,3}|1|2|3)\b/i);
+        if (partMatch) {
+          var partStr = partMatch[1].toUpperCase();
+          if (partStr === "1") partStr = "I";
+          else if (partStr === "2") partStr = "II";
+          else if (partStr === "3") partStr = "III";
+          var targetNb = S.notebooks.find(function (n) {
+            var nm = (n.name || "").toUpperCase();
+            return nm.indexOf("PART " + partStr) >= 0 || nm.indexOf("PART" + partStr) >= 0;
+          });
+          if (targetNb) sel.notebookId = targetNb.id;
+        }
+      }
       S.notebookId = pick(S.notebooks, sel.notebookId);
       if (S.notebookId) await loadNotebook(S.notebookId);
     }
