@@ -1,0 +1,49 @@
+{
+  "command": "node tests/a0/static.js . --current --preview",
+  "exitCode": 1,
+  "cacheGate": {
+    "id": "STA-03",
+    "status": "failed",
+    "issues": [
+      {
+        "file": "learn/sw/index.html",
+        "line": 15,
+        "resource": "../../js/config.js",
+        "reason": "Local script/link has no ?v="
+      }
+    ],
+    "note": "Approved baseline ratchet; until-preview config exception cannot pass --preview. GAME_VER derives from game.js query string.",
+    "accepted": [
+      {
+        "file": "game.html",
+        "line": 7,
+        "resource": "icon.svg",
+        "reason": "Local script/link has no ?v=",
+        "kind": "metadata"
+      },
+      {
+        "file": "index.html",
+        "line": 25,
+        "resource": "manifest.webmanifest",
+        "reason": "Local script/link has no ?v=",
+        "kind": "metadata"
+      },
+      {
+        "file": "index.html",
+        "line": 26,
+        "resource": "icon.svg",
+        "reason": "Local script/link has no ?v=",
+        "kind": "metadata"
+      },
+      {
+        "file": "index.html",
+        "line": 27,
+        "resource": "icon.svg",
+        "reason": "Local script/link has no ?v=",
+        "kind": "metadata"
+      }
+    ],
+    "newIssues": []
+  },
+  "expected": "Preview blocked by known baseline config debt until repaired"
+}

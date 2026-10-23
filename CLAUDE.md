@@ -4,6 +4,8 @@
 
 ## Nguyên tắc chung khi sửa app này
 
+- **PO chốt 2026-10-22 trong dòng restructure:** giữ thứ tự provider đang chạy: riêng tài khoản TJ OpenAI trước, Gemini dự phòng; người khác Gemini trước, OpenAI dự phòng. Tạm ghi nhận cache cấu hình Speaking/Writing, bắt buộc sửa trước nghiệm thu preview. Không đổi mã app trong bước ghi quyết định; không coi Node suite xanh là đã qua cổng preview.
+
 - **Tích hợp UI ngày2026-10-19:** giữ hành vi của nền mới (host TJ đúng danh tính, `?sel=`, bố cục nhóm theo container, `topPin`/`admPin`, fit cả nhóm, `tTop`, audio R2, lớp Speaking/Writing). `tPassHTML` bọc mỗi ảnh trong `.g-timgbox`; `fitTImg` giữ chỗ trước khi tải, dùng offset layout để tránh animation làm sai phép đo và chia ngân sách đều nếu nhiều ảnh. Khi sửa hàm này phải thử ảnh tải chậm/ảnh đứng-ngang/nhiều ảnh/câu không ảnh và Xem lại; không hồi lại `fitQBox` cũ tính riêng câu đầu. Câu không ảnh vẫn gọn, không thêm request preload. Font settings desktop chỉ áp từ521px, giữ mobile17px/50px. Các cơ chế `adminBypass`, state ghim và `?go=` của nhánh cũ không được đưa lại chỉ để giải quyết conflict.
 
 - **Làm việc theo đội (2026-10-05)**: đọc `TEAM_PROCESS.md` — 3 cổng tiền kiểm / làm / hậu kiểm (có Agent QA độc lập, chi phí nói trước, trình mẫu cho TJ duyệt trước khi làm hàng loạt), trích đúng lời TJ dặn.

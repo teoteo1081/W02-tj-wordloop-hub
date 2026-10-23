@@ -64,7 +64,9 @@ Nó tồn tại vì:
 
 Giai đoạn **A0 — lưới an toàn (đang thực thi)**. Đã xong M0.1 (baseline) và đầu vào M0.5a (xem `tests/README.md`). Mã ứng dụng giữ nguyên. `origin/main` đã tiến hai commit sau baseline tới `6c7b66b`; PO chọn cách tiếp nhận trước tích hợp cuối. Các câu 3–7 và 9–12 của plan vẫn mở và chặn phần tương ứng sau A0.
 
-**Checkpoint mới — cycle Node 2026-10-22:** TJ đã cho chạy sau audit `a0e08ac`. Đã sửa ancestry gate và mô tả fast-forward; chạy cycle tới điểm PO, **PARTIAL**: unit baseline/current cùng 54 đạt/1 lỗi đặc tả (CTX-09, TJ OpenAI trước); kiểm tĩnh 6 đạt/2 pending (version baseline + scope CSS); phản chứng mới 6/6, capture cũ 65/65. Báo cáo và lệnh tái lập ở `tests/a0/README.md`. Không sửa app/không cài gói/không mạng production. Chờ PO xác nhận ngoại lệ TJ và ngoại lệ version; Playwright vẫn cần quyền cài gói riêng. Không merge, không push trong cycle này.
+**Checkpoint lịch sử `d1e793c` — cycle Node 2026-10-22:** TJ đã cho chạy sau audit `a0e08ac`. Đã sửa ancestry gate và mô tả fast-forward; chạy cycle tới điểm PO, **PARTIAL**: unit baseline/current cùng 54 đạt/1 lỗi đặc tả (CTX-09, TJ OpenAI trước); kiểm tĩnh 6 đạt/2 pending (version baseline + scope CSS); phản chứng mới 6/6, capture cũ 65/65. Báo cáo và lệnh tái lập ở `tests/a0/README.md`. Không sửa app/không cài gói/không mạng production. Chờ PO xác nhận ngoại lệ TJ và ngoại lệ version; Playwright vẫn cần quyền cài gói riêng. Không merge, không push trong cycle này.
+
+**Quyết định PO mới nhất:** giữ ưu tiên AI hiện tại và sửa cache trước nghiệm thu preview. Đã ghi ngoại lệ TJ và policy cache; unit 56/56, static 8/8, self-test 17/17. Cổng A0 vẫn PARTIAL; preview cache gate hiện phải đỏ tới khi config được sửa. Cài Playwright/G2/tích hợp main vẫn theo quyền riêng; không tự nhập nhánh debug hay lane-policy.
 
 Khi trạng thái đổi (bắt đầu A0, hoàn thành một pha, freeze, hủy), sửa đúng mục này trong cùng commit.
 

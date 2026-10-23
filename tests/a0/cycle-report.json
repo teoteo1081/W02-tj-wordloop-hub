@@ -1,14 +1,14 @@
 {
   "status": "PARTIAL",
   "scope": "A0 Node cycle; no application changes or production calls",
-  "checkpointBeforeCycle": "a0e08ac6d9721d95e692fd723658e5cb98e9915a",
+  "checkpointBeforeCycle": "d1e793ccbd7972145a6873d8e56ebf35366e6833",
   "baseline": {
     "commit": "e324beb54b29ddfa055956c756a4ceba2676dfa1",
     "tree": "9de0480570b1c95c85912d685626891ba142b825",
     "clean": true,
     "pinned": true
   },
-  "originMainObserved": "6c7b66bb75ba752c0f726efffacf98a2cd1acaa4",
+  "originMainObserved": "7c51d375fc68595492848c055968c612ca14664b",
   "sourceHashes": {
     "js/util.js": {
       "baseline": "ec178cdbdff4116db2f4a07b2c351117b058f7de85820370e81a3b752a0e88df",
@@ -38,8 +38,8 @@
   "sourceEqual": true,
   "changedOutsideDocsTests": [],
   "baselineUnit": {
-    "passed": 54,
-    "failed": 1,
+    "passed": 56,
+    "failed": 0,
     "results": [
       {
         "id": "CTX-01",
@@ -113,9 +113,13 @@
       },
       {
         "id": "CTX-09",
-        "name": "spec Gemini first also for TJ identity",
-        "status": "FAIL",
-        "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'https://example.invalid/functions/v1/openai-proxy'\n- 'https://example.invalid/functions/v1/gemini-proxy'\n"
+        "name": "PO-approved TJ exception: OpenAI first",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-09",
+        "name": "TJ falls back to Gemini if OpenAI fails",
+        "status": "PASS"
       },
       {
         "id": "CTX-10",
@@ -320,7 +324,7 @@
     ],
     "storageTrace": [
       {
-        "scenario": 38,
+        "scenario": 39,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -340,7 +344,7 @@
         }
       },
       {
-        "scenario": 38,
+        "scenario": 39,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -360,12 +364,12 @@
         }
       },
       {
-        "scenario": 38,
+        "scenario": 39,
         "op": "get",
         "key": "tjwl_deleted_ids_v1"
       },
       {
-        "scenario": 38,
+        "scenario": 39,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -385,7 +389,7 @@
         }
       },
       {
-        "scenario": 38,
+        "scenario": 39,
         "op": "set",
         "key": "tjwl_starter_ver_v1",
         "shape": "string",
@@ -394,7 +398,7 @@
         }
       },
       {
-        "scenario": 39,
+        "scenario": 40,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -414,7 +418,7 @@
         }
       },
       {
-        "scenario": 39,
+        "scenario": 40,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -434,7 +438,7 @@
         }
       },
       {
-        "scenario": 39,
+        "scenario": 40,
         "op": "get",
         "key": "tjwl_deleted_ids_v1",
         "finalValueShape": {
@@ -445,26 +449,6 @@
         }
       },
       {
-        "scenario": 39,
-        "op": "set",
-        "key": "tjwl_db_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "batches",
-            "block_progress",
-            "blocks",
-            "hubs",
-            "notebooks",
-            "pages",
-            "sections",
-            "word_progress",
-            "words"
-          ]
-        }
-      },
-      {
         "scenario": 40,
         "op": "set",
         "key": "tjwl_db_v1",
@@ -485,7 +469,7 @@
         }
       },
       {
-        "scenario": 40,
+        "scenario": 41,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -505,171 +489,31 @@
         }
       },
       {
-        "scenario": 40,
+        "scenario": 41,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 41,
         "op": "get",
         "key": "tjwl_deleted_ids_v1"
       },
       {
-        "scenario": 40,
-        "op": "set",
-        "key": "tjwl_db_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "batches",
-            "block_progress",
-            "blocks",
-            "hubs",
-            "notebooks",
-            "pages",
-            "sections",
-            "word_progress",
-            "words"
-          ]
-        }
-      },
-      {
-        "scenario": 41,
-        "op": "set",
-        "key": "tjwl_db_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "batches",
-            "block_progress",
-            "blocks",
-            "hubs",
-            "notebooks",
-            "pages",
-            "sections",
-            "word_progress",
-            "words"
-          ]
-        }
-      },
-      {
-        "scenario": 41,
-        "op": "set",
-        "key": "tjwl_db_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "batches",
-            "block_progress",
-            "blocks",
-            "hubs",
-            "notebooks",
-            "pages",
-            "sections",
-            "word_progress",
-            "words"
-          ]
-        }
-      },
-      {
-        "scenario": 41,
-        "op": "set",
-        "key": "tjwl_db_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "batches",
-            "block_progress",
-            "blocks",
-            "hubs",
-            "notebooks",
-            "pages",
-            "sections",
-            "word_progress",
-            "words"
-          ]
-        }
-      },
-      {
-        "scenario": 41,
-        "op": "set",
-        "key": "tjwl_db_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "batches",
-            "block_progress",
-            "blocks",
-            "hubs",
-            "notebooks",
-            "pages",
-            "sections",
-            "word_progress",
-            "words"
-          ]
-        }
-      },
-      {
-        "scenario": 41,
-        "op": "set",
-        "key": "tjwl_db_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "batches",
-            "block_progress",
-            "blocks",
-            "hubs",
-            "notebooks",
-            "pages",
-            "sections",
-            "word_progress",
-            "words"
-          ]
-        }
-      },
-      {
-        "scenario": 41,
-        "op": "set",
-        "key": "tjwl_db_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "batches",
-            "block_progress",
-            "blocks",
-            "hubs",
-            "notebooks",
-            "pages",
-            "sections",
-            "word_progress",
-            "words"
-          ]
-        }
-      },
-      {
-        "scenario": 41,
-        "op": "set",
-        "key": "tjwl_db_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "batches",
-            "block_progress",
-            "blocks",
-            "hubs",
-            "notebooks",
-            "pages",
-            "sections",
-            "word_progress",
-            "words"
-          ]
-        }
-      },
-      {
         "scenario": 41,
         "op": "set",
         "key": "tjwl_db_v1",
@@ -850,47 +694,7 @@
         }
       },
       {
-        "scenario": 42,
-        "op": "set",
-        "key": "tjwl_db_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "batches",
-            "block_progress",
-            "blocks",
-            "hubs",
-            "notebooks",
-            "pages",
-            "sections",
-            "word_progress",
-            "words"
-          ]
-        }
-      },
-      {
-        "scenario": 42,
-        "op": "set",
-        "key": "tjwl_db_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "batches",
-            "block_progress",
-            "blocks",
-            "hubs",
-            "notebooks",
-            "pages",
-            "sections",
-            "word_progress",
-            "words"
-          ]
-        }
-      },
-      {
-        "scenario": 42,
+        "scenario": 43,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -1091,6 +895,146 @@
       },
       {
         "scenario": 43,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 44,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 44,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 44,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 44,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 44,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 44,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 44,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -1171,8 +1115,9 @@
       },
       {
         "scenario": 45,
-        "op": "get",
+        "op": "set",
         "key": "tjwl_db_v1",
+        "shape": "string",
         "finalValueShape": {
           "type": "object",
           "keys": [
@@ -1189,7 +1134,27 @@
         }
       },
       {
-        "scenario": 46,
+        "scenario": 45,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 45,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -1211,28 +1176,7 @@
       {
         "scenario": 46,
         "op": "get",
-        "key": "tjwl_bookmarks_v1"
-      },
-      {
-        "scenario": 46,
-        "op": "get",
-        "key": "tjwl_bookmarks_v1"
-      },
-      {
-        "scenario": 46,
-        "op": "get",
-        "key": "tjwl_bookmarks_v1"
-      },
-      {
-        "scenario": 46,
-        "op": "get",
-        "key": "tjwl_bookmarks_v1"
-      },
-      {
-        "scenario": 46,
-        "op": "set",
         "key": "tjwl_db_v1",
-        "shape": "string",
         "finalValueShape": {
           "type": "object",
           "keys": [
@@ -1270,6 +1214,26 @@
       },
       {
         "scenario": 47,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 47,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 47,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 47,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 47,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -1289,7 +1253,27 @@
         }
       },
       {
-        "scenario": 47,
+        "scenario": 48,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 48,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -1349,31 +1333,6 @@
         }
       },
       {
-        "scenario": 49,
-        "op": "set",
-        "key": "tjwl_db_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "batches",
-            "block_progress",
-            "blocks",
-            "hubs",
-            "notebooks",
-            "pages",
-            "sections",
-            "word_progress",
-            "words"
-          ]
-        }
-      },
-      {
-        "scenario": 49,
-        "op": "get",
-        "key": "tjwl_wrong_open_v1"
-      },
-      {
         "scenario": 50,
         "op": "set",
         "key": "tjwl_db_v1",
@@ -1554,22 +1513,67 @@
         "key": "tjwl_wrong_open_v1"
       },
       {
-        "scenario": 53,
+        "scenario": 54,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 54,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 54,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1"
+      },
+      {
+        "scenario": 54,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 53,
+        "scenario": 54,
         "op": "get",
         "key": "tjwl_wrong_ctx_v1"
       },
       {
-        "scenario": 53,
+        "scenario": 54,
         "op": "get",
         "key": "tjwl_wrong_ctx_v1"
       },
       {
-        "scenario": 54,
+        "scenario": 55,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -1589,30 +1593,7 @@
         }
       },
       {
-        "scenario": 54,
-        "op": "get",
-        "key": "tjwl_bookmarks_v1",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "u1"
-          ]
-        }
-      },
-      {
-        "scenario": 54,
-        "op": "set",
-        "key": "tjwl_bookmarks_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "u1"
-          ]
-        }
-      },
-      {
-        "scenario": 54,
+        "scenario": 55,
         "op": "get",
         "key": "tjwl_bookmarks_v1",
         "finalValueShape": {
@@ -1625,61 +1606,7 @@
       {
         "scenario": 55,
         "op": "set",
-        "key": "tjwl_db_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "batches",
-            "block_progress",
-            "blocks",
-            "hubs",
-            "notebooks",
-            "pages",
-            "sections",
-            "word_progress",
-            "words"
-          ]
-        }
-      },
-      {
-        "scenario": 55,
-        "op": "get",
-        "key": "tjwl_wrong_open_v1",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "u1"
-          ]
-        }
-      },
-      {
-        "scenario": 55,
-        "op": "get",
-        "key": "tjwl_wrong_ctx_v1",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "u1"
-          ]
-        }
-      },
-      {
-        "scenario": 55,
-        "op": "set",
-        "key": "tjwl_wrong_open_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "u1"
-          ]
-        }
-      },
-      {
-        "scenario": 55,
-        "op": "set",
-        "key": "tjwl_wrong_ctx_v1",
+        "key": "tjwl_bookmarks_v1",
         "shape": "string",
         "finalValueShape": {
           "type": "object",
@@ -1691,64 +1618,7 @@
       {
         "scenario": 55,
         "op": "get",
-        "key": "tjwl_wrong_ctx_v1",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "u1"
-          ]
-        }
-      },
-      {
-        "scenario": 55,
-        "op": "get",
-        "key": "tjwl_wrong_open_v1",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "u1"
-          ]
-        }
-      },
-      {
-        "scenario": 55,
-        "op": "get",
-        "key": "tjwl_wrong_ctx_v1",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "u1"
-          ]
-        }
-      },
-      {
-        "scenario": 55,
-        "op": "set",
-        "key": "tjwl_wrong_open_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "u1"
-          ]
-        }
-      },
-      {
-        "scenario": 55,
-        "op": "set",
-        "key": "tjwl_wrong_ctx_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "u1"
-          ]
-        }
-      },
-      {
-        "scenario": 55,
-        "op": "get",
-        "key": "tjwl_wrong_ctx_v1",
+        "key": "tjwl_bookmarks_v1",
         "finalValueShape": {
           "type": "object",
           "keys": [
@@ -1778,6 +1648,120 @@
       },
       {
         "scenario": 56,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "get",
+        "key": "tjwl_wrong_ctx_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "set",
+        "key": "tjwl_wrong_open_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "set",
+        "key": "tjwl_wrong_ctx_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "get",
+        "key": "tjwl_wrong_ctx_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "get",
+        "key": "tjwl_wrong_ctx_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "set",
+        "key": "tjwl_wrong_open_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "set",
+        "key": "tjwl_wrong_ctx_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "get",
+        "key": "tjwl_wrong_ctx_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 57,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -1797,7 +1781,7 @@
         }
       },
       {
-        "scenario": 56,
+        "scenario": 57,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -1817,17 +1801,37 @@
         }
       },
       {
-        "scenario": 56,
+        "scenario": 57,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 57,
         "op": "get",
         "key": "tjwl_wrong_open_v1"
       },
       {
-        "scenario": 56,
+        "scenario": 57,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 56,
+        "scenario": 57,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -1847,7 +1851,7 @@
         }
       },
       {
-        "scenario": 56,
+        "scenario": 57,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -1867,12 +1871,12 @@
         }
       },
       {
-        "scenario": 56,
+        "scenario": 57,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 56,
+        "scenario": 57,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -1892,34 +1896,14 @@
         }
       },
       {
-        "scenario": 56,
+        "scenario": 57,
         "op": "get",
         "key": "tjwl_wrong_open_v1"
       },
       {
-        "scenario": 56,
+        "scenario": 57,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
-      },
-      {
-        "scenario": 56,
-        "op": "set",
-        "key": "tjwl_db_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "batches",
-            "block_progress",
-            "blocks",
-            "hubs",
-            "notebooks",
-            "pages",
-            "sections",
-            "word_progress",
-            "words"
-          ]
-        }
       },
       {
         "scenario": 57,
@@ -1962,7 +1946,7 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -1982,7 +1966,7 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -2002,17 +1986,37 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_wrong_open_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -2032,12 +2036,12 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -2057,12 +2061,12 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -2082,17 +2086,17 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_wrong_open_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -2112,12 +2116,12 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -2137,12 +2141,12 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -2162,12 +2166,12 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -2187,12 +2191,12 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -2212,12 +2216,12 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -2237,12 +2241,12 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -2262,12 +2266,12 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -2287,12 +2291,12 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -2312,12 +2316,12 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -2337,17 +2341,17 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_wrong_open_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -2370,8 +2374,8 @@
     "storageTraceScope": "Only synthetic Node scenarios in unit.js; not all UI workflows or all storage files. Final value shape, not a golden snapshot at each operation."
   },
   "currentUnit": {
-    "passed": 54,
-    "failed": 1,
+    "passed": 56,
+    "failed": 0,
     "results": [
       {
         "id": "CTX-01",
@@ -2445,9 +2449,13 @@
       },
       {
         "id": "CTX-09",
-        "name": "spec Gemini first also for TJ identity",
-        "status": "FAIL",
-        "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'https://example.invalid/functions/v1/openai-proxy'\n- 'https://example.invalid/functions/v1/gemini-proxy'\n"
+        "name": "PO-approved TJ exception: OpenAI first",
+        "status": "PASS"
+      },
+      {
+        "id": "CTX-09",
+        "name": "TJ falls back to Gemini if OpenAI fails",
+        "status": "PASS"
       },
       {
         "id": "CTX-10",
@@ -2652,7 +2660,7 @@
     ],
     "storageTrace": [
       {
-        "scenario": 38,
+        "scenario": 39,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -2672,7 +2680,7 @@
         }
       },
       {
-        "scenario": 38,
+        "scenario": 39,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -2692,12 +2700,12 @@
         }
       },
       {
-        "scenario": 38,
+        "scenario": 39,
         "op": "get",
         "key": "tjwl_deleted_ids_v1"
       },
       {
-        "scenario": 38,
+        "scenario": 39,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -2717,7 +2725,7 @@
         }
       },
       {
-        "scenario": 38,
+        "scenario": 39,
         "op": "set",
         "key": "tjwl_starter_ver_v1",
         "shape": "string",
@@ -2726,7 +2734,7 @@
         }
       },
       {
-        "scenario": 39,
+        "scenario": 40,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -2746,7 +2754,7 @@
         }
       },
       {
-        "scenario": 39,
+        "scenario": 40,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -2766,7 +2774,7 @@
         }
       },
       {
-        "scenario": 39,
+        "scenario": 40,
         "op": "get",
         "key": "tjwl_deleted_ids_v1",
         "finalValueShape": {
@@ -2777,26 +2785,6 @@
         }
       },
       {
-        "scenario": 39,
-        "op": "set",
-        "key": "tjwl_db_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "batches",
-            "block_progress",
-            "blocks",
-            "hubs",
-            "notebooks",
-            "pages",
-            "sections",
-            "word_progress",
-            "words"
-          ]
-        }
-      },
-      {
         "scenario": 40,
         "op": "set",
         "key": "tjwl_db_v1",
@@ -2817,7 +2805,7 @@
         }
       },
       {
-        "scenario": 40,
+        "scenario": 41,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -2837,171 +2825,31 @@
         }
       },
       {
-        "scenario": 40,
+        "scenario": 41,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 41,
         "op": "get",
         "key": "tjwl_deleted_ids_v1"
       },
       {
-        "scenario": 40,
-        "op": "set",
-        "key": "tjwl_db_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "batches",
-            "block_progress",
-            "blocks",
-            "hubs",
-            "notebooks",
-            "pages",
-            "sections",
-            "word_progress",
-            "words"
-          ]
-        }
-      },
-      {
-        "scenario": 41,
-        "op": "set",
-        "key": "tjwl_db_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "batches",
-            "block_progress",
-            "blocks",
-            "hubs",
-            "notebooks",
-            "pages",
-            "sections",
-            "word_progress",
-            "words"
-          ]
-        }
-      },
-      {
-        "scenario": 41,
-        "op": "set",
-        "key": "tjwl_db_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "batches",
-            "block_progress",
-            "blocks",
-            "hubs",
-            "notebooks",
-            "pages",
-            "sections",
-            "word_progress",
-            "words"
-          ]
-        }
-      },
-      {
-        "scenario": 41,
-        "op": "set",
-        "key": "tjwl_db_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "batches",
-            "block_progress",
-            "blocks",
-            "hubs",
-            "notebooks",
-            "pages",
-            "sections",
-            "word_progress",
-            "words"
-          ]
-        }
-      },
-      {
-        "scenario": 41,
-        "op": "set",
-        "key": "tjwl_db_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "batches",
-            "block_progress",
-            "blocks",
-            "hubs",
-            "notebooks",
-            "pages",
-            "sections",
-            "word_progress",
-            "words"
-          ]
-        }
-      },
-      {
-        "scenario": 41,
-        "op": "set",
-        "key": "tjwl_db_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "batches",
-            "block_progress",
-            "blocks",
-            "hubs",
-            "notebooks",
-            "pages",
-            "sections",
-            "word_progress",
-            "words"
-          ]
-        }
-      },
-      {
-        "scenario": 41,
-        "op": "set",
-        "key": "tjwl_db_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "batches",
-            "block_progress",
-            "blocks",
-            "hubs",
-            "notebooks",
-            "pages",
-            "sections",
-            "word_progress",
-            "words"
-          ]
-        }
-      },
-      {
-        "scenario": 41,
-        "op": "set",
-        "key": "tjwl_db_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "batches",
-            "block_progress",
-            "blocks",
-            "hubs",
-            "notebooks",
-            "pages",
-            "sections",
-            "word_progress",
-            "words"
-          ]
-        }
-      },
-      {
         "scenario": 41,
         "op": "set",
         "key": "tjwl_db_v1",
@@ -3182,47 +3030,7 @@
         }
       },
       {
-        "scenario": 42,
-        "op": "set",
-        "key": "tjwl_db_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "batches",
-            "block_progress",
-            "blocks",
-            "hubs",
-            "notebooks",
-            "pages",
-            "sections",
-            "word_progress",
-            "words"
-          ]
-        }
-      },
-      {
-        "scenario": 42,
-        "op": "set",
-        "key": "tjwl_db_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "batches",
-            "block_progress",
-            "blocks",
-            "hubs",
-            "notebooks",
-            "pages",
-            "sections",
-            "word_progress",
-            "words"
-          ]
-        }
-      },
-      {
-        "scenario": 42,
+        "scenario": 43,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -3423,6 +3231,146 @@
       },
       {
         "scenario": 43,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 44,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 44,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 44,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 44,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 44,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 44,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 44,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -3503,8 +3451,9 @@
       },
       {
         "scenario": 45,
-        "op": "get",
+        "op": "set",
         "key": "tjwl_db_v1",
+        "shape": "string",
         "finalValueShape": {
           "type": "object",
           "keys": [
@@ -3521,7 +3470,27 @@
         }
       },
       {
-        "scenario": 46,
+        "scenario": 45,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 45,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -3543,28 +3512,7 @@
       {
         "scenario": 46,
         "op": "get",
-        "key": "tjwl_bookmarks_v1"
-      },
-      {
-        "scenario": 46,
-        "op": "get",
-        "key": "tjwl_bookmarks_v1"
-      },
-      {
-        "scenario": 46,
-        "op": "get",
-        "key": "tjwl_bookmarks_v1"
-      },
-      {
-        "scenario": 46,
-        "op": "get",
-        "key": "tjwl_bookmarks_v1"
-      },
-      {
-        "scenario": 46,
-        "op": "set",
         "key": "tjwl_db_v1",
-        "shape": "string",
         "finalValueShape": {
           "type": "object",
           "keys": [
@@ -3602,6 +3550,26 @@
       },
       {
         "scenario": 47,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 47,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 47,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 47,
+        "op": "get",
+        "key": "tjwl_bookmarks_v1"
+      },
+      {
+        "scenario": 47,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -3621,7 +3589,27 @@
         }
       },
       {
-        "scenario": 47,
+        "scenario": 48,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 48,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -3681,31 +3669,6 @@
         }
       },
       {
-        "scenario": 49,
-        "op": "set",
-        "key": "tjwl_db_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "batches",
-            "block_progress",
-            "blocks",
-            "hubs",
-            "notebooks",
-            "pages",
-            "sections",
-            "word_progress",
-            "words"
-          ]
-        }
-      },
-      {
-        "scenario": 49,
-        "op": "get",
-        "key": "tjwl_wrong_open_v1"
-      },
-      {
         "scenario": 50,
         "op": "set",
         "key": "tjwl_db_v1",
@@ -3886,22 +3849,67 @@
         "key": "tjwl_wrong_open_v1"
       },
       {
-        "scenario": 53,
+        "scenario": 54,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 54,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 54,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1"
+      },
+      {
+        "scenario": 54,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 53,
+        "scenario": 54,
         "op": "get",
         "key": "tjwl_wrong_ctx_v1"
       },
       {
-        "scenario": 53,
+        "scenario": 54,
         "op": "get",
         "key": "tjwl_wrong_ctx_v1"
       },
       {
-        "scenario": 54,
+        "scenario": 55,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -3921,30 +3929,7 @@
         }
       },
       {
-        "scenario": 54,
-        "op": "get",
-        "key": "tjwl_bookmarks_v1",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "u1"
-          ]
-        }
-      },
-      {
-        "scenario": 54,
-        "op": "set",
-        "key": "tjwl_bookmarks_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "u1"
-          ]
-        }
-      },
-      {
-        "scenario": 54,
+        "scenario": 55,
         "op": "get",
         "key": "tjwl_bookmarks_v1",
         "finalValueShape": {
@@ -3957,61 +3942,7 @@
       {
         "scenario": 55,
         "op": "set",
-        "key": "tjwl_db_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "batches",
-            "block_progress",
-            "blocks",
-            "hubs",
-            "notebooks",
-            "pages",
-            "sections",
-            "word_progress",
-            "words"
-          ]
-        }
-      },
-      {
-        "scenario": 55,
-        "op": "get",
-        "key": "tjwl_wrong_open_v1",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "u1"
-          ]
-        }
-      },
-      {
-        "scenario": 55,
-        "op": "get",
-        "key": "tjwl_wrong_ctx_v1",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "u1"
-          ]
-        }
-      },
-      {
-        "scenario": 55,
-        "op": "set",
-        "key": "tjwl_wrong_open_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "u1"
-          ]
-        }
-      },
-      {
-        "scenario": 55,
-        "op": "set",
-        "key": "tjwl_wrong_ctx_v1",
+        "key": "tjwl_bookmarks_v1",
         "shape": "string",
         "finalValueShape": {
           "type": "object",
@@ -4023,64 +3954,7 @@
       {
         "scenario": 55,
         "op": "get",
-        "key": "tjwl_wrong_ctx_v1",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "u1"
-          ]
-        }
-      },
-      {
-        "scenario": 55,
-        "op": "get",
-        "key": "tjwl_wrong_open_v1",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "u1"
-          ]
-        }
-      },
-      {
-        "scenario": 55,
-        "op": "get",
-        "key": "tjwl_wrong_ctx_v1",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "u1"
-          ]
-        }
-      },
-      {
-        "scenario": 55,
-        "op": "set",
-        "key": "tjwl_wrong_open_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "u1"
-          ]
-        }
-      },
-      {
-        "scenario": 55,
-        "op": "set",
-        "key": "tjwl_wrong_ctx_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "u1"
-          ]
-        }
-      },
-      {
-        "scenario": 55,
-        "op": "get",
-        "key": "tjwl_wrong_ctx_v1",
+        "key": "tjwl_bookmarks_v1",
         "finalValueShape": {
           "type": "object",
           "keys": [
@@ -4110,6 +3984,120 @@
       },
       {
         "scenario": 56,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "get",
+        "key": "tjwl_wrong_ctx_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "set",
+        "key": "tjwl_wrong_open_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "set",
+        "key": "tjwl_wrong_ctx_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "get",
+        "key": "tjwl_wrong_ctx_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "get",
+        "key": "tjwl_wrong_open_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "get",
+        "key": "tjwl_wrong_ctx_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "set",
+        "key": "tjwl_wrong_open_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "set",
+        "key": "tjwl_wrong_ctx_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 56,
+        "op": "get",
+        "key": "tjwl_wrong_ctx_v1",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "u1"
+          ]
+        }
+      },
+      {
+        "scenario": 57,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -4129,7 +4117,7 @@
         }
       },
       {
-        "scenario": 56,
+        "scenario": 57,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -4149,17 +4137,37 @@
         }
       },
       {
-        "scenario": 56,
+        "scenario": 57,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 57,
         "op": "get",
         "key": "tjwl_wrong_open_v1"
       },
       {
-        "scenario": 56,
+        "scenario": 57,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 56,
+        "scenario": 57,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -4179,7 +4187,7 @@
         }
       },
       {
-        "scenario": 56,
+        "scenario": 57,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -4199,12 +4207,12 @@
         }
       },
       {
-        "scenario": 56,
+        "scenario": 57,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 56,
+        "scenario": 57,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -4224,34 +4232,14 @@
         }
       },
       {
-        "scenario": 56,
+        "scenario": 57,
         "op": "get",
         "key": "tjwl_wrong_open_v1"
       },
       {
-        "scenario": 56,
+        "scenario": 57,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
-      },
-      {
-        "scenario": 56,
-        "op": "set",
-        "key": "tjwl_db_v1",
-        "shape": "string",
-        "finalValueShape": {
-          "type": "object",
-          "keys": [
-            "batches",
-            "block_progress",
-            "blocks",
-            "hubs",
-            "notebooks",
-            "pages",
-            "sections",
-            "word_progress",
-            "words"
-          ]
-        }
       },
       {
         "scenario": 57,
@@ -4294,7 +4282,7 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -4314,7 +4302,7 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -4334,17 +4322,37 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
+        "op": "set",
+        "key": "tjwl_db_v1",
+        "shape": "string",
+        "finalValueShape": {
+          "type": "object",
+          "keys": [
+            "batches",
+            "block_progress",
+            "blocks",
+            "hubs",
+            "notebooks",
+            "pages",
+            "sections",
+            "word_progress",
+            "words"
+          ]
+        }
+      },
+      {
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_wrong_open_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -4364,12 +4372,12 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -4389,12 +4397,12 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -4414,17 +4422,17 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_wrong_open_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -4444,12 +4452,12 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -4469,12 +4477,12 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -4494,12 +4502,12 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -4519,12 +4527,12 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -4544,12 +4552,12 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -4569,12 +4577,12 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -4594,12 +4602,12 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -4619,12 +4627,12 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -4644,12 +4652,12 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -4669,17 +4677,17 @@
         }
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_wrong_open_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "get",
         "key": "tjwl_bookmarks_v1"
       },
       {
-        "scenario": 58,
+        "scenario": 59,
         "op": "set",
         "key": "tjwl_db_v1",
         "shape": "string",
@@ -4708,9 +4716,9 @@
       "clean": true,
       "pinned": true
     },
-    "passed": 6,
+    "passed": 8,
     "failed": 0,
-    "pending": 2,
+    "pending": 0,
     "details": [
       {
         "id": "STA-01",
@@ -4726,40 +4734,46 @@
       },
       {
         "id": "STA-03",
-        "status": "pending",
-        "issues": [
+        "status": "passed",
+        "issues": [],
+        "note": "Approved baseline ratchet; until-preview config exception cannot pass --preview. GAME_VER derives from game.js query string.",
+        "accepted": [
           {
             "file": "game.html",
             "line": 7,
             "resource": "icon.svg",
-            "reason": "Local script/link has no ?v=; no PO-approved allowlist loaded"
+            "reason": "Local script/link has no ?v=",
+            "kind": "metadata"
           },
           {
             "file": "index.html",
             "line": 25,
             "resource": "manifest.webmanifest",
-            "reason": "Local script/link has no ?v=; no PO-approved allowlist loaded"
+            "reason": "Local script/link has no ?v=",
+            "kind": "metadata"
           },
           {
             "file": "index.html",
             "line": 26,
             "resource": "icon.svg",
-            "reason": "Local script/link has no ?v=; no PO-approved allowlist loaded"
+            "reason": "Local script/link has no ?v=",
+            "kind": "metadata"
           },
           {
             "file": "index.html",
             "line": 27,
             "resource": "icon.svg",
-            "reason": "Local script/link has no ?v=; no PO-approved allowlist loaded"
+            "reason": "Local script/link has no ?v=",
+            "kind": "metadata"
           },
           {
             "file": "learn/sw/index.html",
             "line": 15,
             "resource": "../../js/config.js",
-            "reason": "Local script/link has no ?v=; no PO-approved allowlist loaded"
+            "reason": "Local script/link has no ?v=",
+            "kind": "until-preview"
           }
-        ],
-        "note": "All local script/link tags; GAME_VER derives from game.js query string."
+        ]
       },
       {
         "id": "STA-04",
@@ -4793,22 +4807,25 @@
       },
       {
         "id": "STA-07",
-        "status": "pending",
-        "issues": [
+        "status": "passed",
+        "issues": [],
+        "note": "Conservative wrapping scan; only two exact reviewed menu/admin selectors are out of scope, all other candidates remain pending.",
+        "outOfScope": [
           {
             "file": "css/app.css",
             "line": 220,
+            "selector": ".menu-sub",
             "property": "word-break:break-all",
-            "reason": "Candidate forbidden wrapping rule; determine reading/vocabulary scope and approve any baseline exception"
+            "reason": "Reviewed menu/admin rule outside reading/vocabulary scope, not a baseline violation exception"
           },
           {
             "file": "css/app.css",
             "line": 1574,
+            "selector": ".admin-new-link code",
             "property": "word-break:break-all",
-            "reason": "Candidate forbidden wrapping rule; determine reading/vocabulary scope and approve any baseline exception"
+            "reason": "Reviewed menu/admin rule outside reading/vocabulary scope, not a baseline violation exception"
           }
-        ],
-        "note": "Conservative CSS candidate scan includes comments; selector/context must be reviewed before exceptions."
+        ]
       },
       {
         "id": "STA-08",
@@ -4822,9 +4839,9 @@
     "source": {
       "pinned": false
     },
-    "passed": 6,
+    "passed": 8,
     "failed": 0,
-    "pending": 2,
+    "pending": 0,
     "details": [
       {
         "id": "STA-01",
@@ -4842,40 +4859,46 @@
       },
       {
         "id": "STA-03",
-        "status": "pending",
-        "issues": [
+        "status": "passed",
+        "issues": [],
+        "note": "Approved baseline ratchet; until-preview config exception cannot pass --preview. GAME_VER derives from game.js query string.",
+        "accepted": [
           {
             "file": "game.html",
             "line": 7,
             "resource": "icon.svg",
-            "reason": "Local script/link has no ?v=; no PO-approved allowlist loaded"
+            "reason": "Local script/link has no ?v=",
+            "kind": "metadata"
           },
           {
             "file": "index.html",
             "line": 25,
             "resource": "manifest.webmanifest",
-            "reason": "Local script/link has no ?v=; no PO-approved allowlist loaded"
+            "reason": "Local script/link has no ?v=",
+            "kind": "metadata"
           },
           {
             "file": "index.html",
             "line": 26,
             "resource": "icon.svg",
-            "reason": "Local script/link has no ?v=; no PO-approved allowlist loaded"
+            "reason": "Local script/link has no ?v=",
+            "kind": "metadata"
           },
           {
             "file": "index.html",
             "line": 27,
             "resource": "icon.svg",
-            "reason": "Local script/link has no ?v=; no PO-approved allowlist loaded"
+            "reason": "Local script/link has no ?v=",
+            "kind": "metadata"
           },
           {
             "file": "learn/sw/index.html",
             "line": 15,
             "resource": "../../js/config.js",
-            "reason": "Local script/link has no ?v=; no PO-approved allowlist loaded"
+            "reason": "Local script/link has no ?v=",
+            "kind": "until-preview"
           }
         ],
-        "note": "All local script/link tags; GAME_VER derives from game.js query string.",
         "newIssues": []
       },
       {
@@ -4913,22 +4936,25 @@
       },
       {
         "id": "STA-07",
-        "status": "pending",
-        "issues": [
+        "status": "passed",
+        "issues": [],
+        "note": "Conservative wrapping scan; only two exact reviewed menu/admin selectors are out of scope, all other candidates remain pending.",
+        "outOfScope": [
           {
             "file": "css/app.css",
             "line": 220,
+            "selector": ".menu-sub",
             "property": "word-break:break-all",
-            "reason": "Candidate forbidden wrapping rule; determine reading/vocabulary scope and approve any baseline exception"
+            "reason": "Reviewed menu/admin rule outside reading/vocabulary scope, not a baseline violation exception"
           },
           {
             "file": "css/app.css",
             "line": 1574,
+            "selector": ".admin-new-link code",
             "property": "word-break:break-all",
-            "reason": "Candidate forbidden wrapping rule; determine reading/vocabulary scope and approve any baseline exception"
+            "reason": "Reviewed menu/admin rule outside reading/vocabulary scope, not a baseline violation exception"
           }
         ],
-        "note": "Conservative CSS candidate scan includes comments; selector/context must be reviewed before exceptions.",
         "newIssues": []
       },
       {
@@ -4941,7 +4967,7 @@
     ]
   },
   "counterexamples": {
-    "passed": 6,
+    "passed": 17,
     "failed": 0,
     "results": [
       {
@@ -4979,6 +5005,62 @@
         "status": "PASS",
         "controlFailures": 0,
         "mutantFailures": 1
+      },
+      {
+        "id": "CTX-09",
+        "status": "PASS",
+        "controlFailures": 0,
+        "mutantFailures": 2
+      },
+      {
+        "id": "CACHE-preview",
+        "name": "CACHE-preview",
+        "status": "PASS"
+      },
+      {
+        "id": "CACHE-no-expansion",
+        "name": "CACHE-no-expansion",
+        "status": "PASS"
+      },
+      {
+        "id": "CACHE-no-deadline-removal",
+        "name": "CACHE-no-deadline-removal",
+        "status": "PASS"
+      },
+      {
+        "id": "CACHE-no-duplicates",
+        "name": "CACHE-no-duplicates",
+        "status": "PASS"
+      },
+      {
+        "id": "CACHE-removal-allowed",
+        "name": "CACHE-removal-allowed",
+        "status": "PASS"
+      },
+      {
+        "id": "CACHE-new-issue-blocked",
+        "name": "CACHE-new-issue-blocked",
+        "status": "PASS"
+      },
+      {
+        "id": "CACHE-no-readd-after-removal",
+        "name": "CACHE-no-readd-after-removal",
+        "status": "PASS"
+      },
+      {
+        "id": "CACHE-committed-readd-rejected",
+        "name": "CACHE-committed-readd-rejected",
+        "status": "PASS"
+      },
+      {
+        "id": "CSS-menu-scope",
+        "name": "CSS-menu-scope",
+        "status": "PASS"
+      },
+      {
+        "id": "CSS-reading-not-exempt",
+        "name": "CSS-reading-not-exempt",
+        "status": "PASS"
       }
     ]
   },
@@ -5036,9 +5118,7 @@
       "UTL-01",
       "UTL-02"
     ],
-    "failingIds": [
-      "CTX-09"
-    ],
+    "failingIds": [],
     "partial": {
       "CTX-05": "Valid single-source metadata flags tested; malformed/conflicting flags not tested.",
       "CTX-12": "Node lookup tested; game/CC contract assertions remain static M0.5a, not DOM execution.",
@@ -5153,14 +5233,21 @@
     ],
     "baselineAndCurrentAppMeasurementsEqual": true
   },
+  "approvedDecisions": [
+    "TJ 2026-10-22: preserve existing AI priority (TJ OpenAI first, others Gemini first).",
+    "Acknowledge cache debt temporarily and fix before preview acceptance; tests/a0/STA-03.allow.json records the five reviewed baseline entries, with config explicitly until-preview."
+  ],
+  "previewCacheGate": {
+    "ready": false,
+    "command": "node tests/a0/static.js . --current --preview",
+    "requirement": "Config must carry a version before preview acceptance; ordinary A0 ratchet pass is insufficient."
+  },
   "poDecisions": [
-    "CTX-09: baseline TJ profile chooses OpenAI first; TEST §3.1 requires Gemini first without specifying the TJ exception. Confirm existing exception or authorize separate behavior fix.",
-    "STA-03: approve the five measured baseline version exceptions or authorize a separate application fix; no allowlist has been approved by this cycle.",
     "Before browser work: authorize Playwright package installation. G2 still needed for final CI integration; main drift decision needed before final integration."
   ],
   "notes": [
-    "STA-07 conservatively reports two non-reading CSS candidates for technical scope review, not as a confirmed product violation.",
+    "STA-07 excludes two exact reviewed menu/admin selectors outside reading/vocabulary scope, not a relaxation of reading typography requirements.",
     "Legacy Context.generate still exists but no caller was found in application JS; CTX-13 is tested through Detail.generatePassage instead.",
-    "No automatic acceptance of failures or golden updates; runner exits 1 while assertions fail or static review is pending."
+    "Runner exits 1 while assertions fail or static review is pending; exit 0 is not full A0 completion because coverage remains PARTIAL and preview cache gate is separate."
   ]
 }

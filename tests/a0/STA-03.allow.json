@@ -1,0 +1,10 @@
+{
+  "decision": "TJ 2026-10-22: Giữ ưu tiên AI hiện tại; ghi nhận vấn đề cache và sửa trước nghiệm thu preview.",
+  "entries": [
+    { "file": "game.html", "line": 7, "resource": "icon.svg", "kind": "metadata" },
+    { "file": "index.html", "line": 25, "resource": "manifest.webmanifest", "kind": "metadata" },
+    { "file": "index.html", "line": 26, "resource": "icon.svg", "kind": "metadata" },
+    { "file": "index.html", "line": 27, "resource": "icon.svg", "kind": "metadata" },
+    { "file": "learn/sw/index.html", "line": 15, "resource": "../../js/config.js", "kind": "until-preview" }
+  ]
+}

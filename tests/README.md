@@ -2,7 +2,7 @@
 
 ## Cycle Node ngày 2026-10-22
 
-Đã thực hiện cycle M0.2/M0.3/M0.7b tới điểm cần PO, kết quả **PARTIAL**. Chạy `node tests/a0/run.js` (exit 1 khi còn lỗi đặc tả hoặc pending). Bằng chứng, ma trận độ phủ và hướng dẫn tái lập ở [`a0/README.md`](a0/README.md); nguồn máy đọc ở `a0/cycle-report.json`, số liệu baseline ở `a0/metrics-baseline.json`. Đây là báo cáo quan sát, không phải golden/allowlist đã được PO duyệt. Không có thay đổi mã ứng dụng.
+Đã thực hiện cycle M0.2/M0.3/M0.7b tới điểm cần PO, kết quả **PARTIAL**. Chạy `node tests/a0/run.js` (exit 1 khi còn lỗi đặc tả hoặc pending). Bằng chứng, ma trận độ phủ và hướng dẫn tái lập ở [`a0/README.md`](a0/README.md); nguồn máy đọc ở `a0/cycle-report.json`, số liệu baseline ở `a0/metrics-baseline.json`. Đây là báo cáo quan sát; PO đã chốt giữ ưu tiên AI và tạm nhận cache trước preview. Allowlist hẹp ở `a0/STA-03.allow.json`, preview gate riêng vẫn chặn config chưa sửa. Không có thay đổi mã ứng dụng.
 
 Phần của `ROADMAP_RESTRUCTURE.md` M0. Mục đích: có **bằng chứng về hành vi của bản baseline `e324beb`** để sau này chứng minh restructure và các thay đổi backend không làm hỏng bản `main` đóng băng (`SPEC_RESTRUCTURE.md` I2, I9; `TEST_REGRESSION_RESTRUCTURE.md` §5, §9.5).
 

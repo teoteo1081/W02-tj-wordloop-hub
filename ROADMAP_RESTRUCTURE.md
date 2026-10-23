@@ -193,7 +193,7 @@ Mỗi bước restructure (một hoặc vài commit trên dòng tích hợp) PH�
 | G1 (baseline), câu 2 | ✔ Đã chốt 2026-10-20 | — | `e324beb`; `main` đóng băng; fast-forward ở cuối *(lệch từ 2026-10-22: `origin/main` = `6c7b66b`, PO chọn cách tiếp nhận, PLAN 0.1)* |
 | G0 ✔ (2026-10-20); G2–G10 | G0 đã duyệt, còn lại chưa mở | TJ trả lời plan mục 9 | |
 | H0–H2 | Chưa bắt đầu | G8 (+ G7 cho H2) | |
-| M0 | **Đang làm; cycle Node PARTIAL** | CTX-09, duyệt ngoại lệ version; cài Playwright; G2 cho M0.8 | Xong M0.1, đầu vào M0.5a. M0.2 có số liệu tĩnh, chưa đủ đồ thị closure/browser. M0.3 có 54 đạt/1 lỗi đặc tả; M0.7b có 6 đạt/2 pending. Coverage và QA ở `tests/a0/README.md`; M0.4–M0.8 chưa qua cổng |
+| M0 | **Đang làm; cycle Node PARTIAL** | Cài Playwright; G2 cho M0.8; sửa cache trước nghiệm thu preview | Xong M0.1, đầu vào M0.5a. M0.2 có số liệu tĩnh, chưa đủ đồ thị closure/browser. Sau PO, M0.3 có 56/56; M0.7b có 8/8 với cache policy tạm, preview gate vẫn chặn config chưa sửa. Coverage và QA ở `tests/a0/README.md`; M0.4–M0.8 chưa qua cổng |
 | M1 | Chưa bắt đầu | M0, G4 | |
 | M2 | Chưa bắt đầu | M1, G3 | |
 | M3 | Chưa bắt đầu | M2, G2 | |

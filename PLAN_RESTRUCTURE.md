@@ -33,6 +33,8 @@
 
 **Chỉ đạo tiếp theo (2026-10-22, sau audit `a0e08ac`):** TJ yêu cầu sửa file, chạy cycle ngay rồi commit tác vụ trên nhánh, không merge. Lệnh dừng sau commit plan/spec ở trên là checkpoint lịch sử, đã được thay bởi chỉ đạo tiếp tục này. Kết quả cycle ghi ở `tests/a0/README.md` và `tests/a0/cycle-report.json`: **PARTIAL**, chưa qua cổng M0. Mã ứng dụng giữ nguyên. Có lệch CTX-09 (ngoại lệ TJ dùng OpenAI trước) cần PO xác nhận; không sửa ứng dụng để ép test xanh.
 
+**PO đã chốt sau checkpoint `d1e793c`:** "Giữ ưu tiên AI hiện tại; ghi nhận vấn đề cache và sửa trước nghiệm thu preview." Giữ TJ OpenAI trước/Gemini dự phòng, người thường Gemini trước/OpenAI dự phòng; cập nhật CTX-09 theo hành vi này. Ghi 5 mục baseline trong `tests/a0/STA-03.allow.json`: 4 metadata theo TEST §3.3, cấu hình learn/sw chỉ tạm tới nghiệm thu preview. Lệnh `node tests/a0/static.js . --current --preview` phải chặn config chưa có version. Chưa sửa app hoặc mở quyền deploy/cài gói. Kết quả áp dụng: unit 56/56, tĩnh 8/8, self-test 17/17; toàn bộ A0 vẫn PARTIAL vì thiếu browser/coverage. Hai quyết định này đã đóng, không hỏi PO chọn lại.
+
 **Kết quả dự kiến khi được tiếp tục:** hoàn thiện phần A0 kiểm được bằng Node trên baseline ghim `e324beb54b29ddfa055956c756a4ceba2676dfa1`, có số liệu gốc, test hồi quy, kiểm tĩnh, ma trận độ phủ và checkpoint commit trên `feat/restructure-plan`. Không đồng nghĩa đã qua toàn bộ cổng M0.
 
 **Phạm vi:** thêm bộ kiểm thử/báo cáo trong `tests/` và cập nhật tài liệu trên worktree hiện tại. Giữ nguyên mã ứng dụng và baseline; không cài gói từ mạng, gọi dịch vụ thật, sửa dữ liệu thật hay deploy. Việc chọn cấu trúc test, shim, dữ liệu giả, cách đo và sửa lỗi của chính bộ test do agent tự xử lý trong phạm vi này.
@@ -268,7 +270,7 @@ Cache: Netlify và Pages có thể đặt `Cache-Control` mặc định khác nh
 | Định nghĩa `esc()` | 7 candidate định nghĩa | 1 |
 | File JS lớn nhất | `js/game.js`: 5.598 dòng LF | dưới ~800 dòng |
 | Global `window.X` do app tự đặt | 51 candidate phép gán / 47 tên; có alias `w` cục bộ và chuỗi/comment nên chưa có số global ngữ nghĩa đáng tin | 0 (sau A2, trừ điểm vào) |
-| Test tự động | Cycle Node: 54 đạt / 1 lỗi đặc tả trên cả baseline và nhánh; self-test phản chứng mới 6/6; capture cũ 65/65 | `context`, `srs`, `db` local + Playwright với Supabase/Realtime giả, nhật ký lời gọi chuẩn, kịch bản hai client |
+| Test tự động | Sau PO: 56/56 trên cả baseline và nhánh; self-test 17/17; capture cũ 65/65 | `context`, `srs`, `db` local + Playwright với Supabase/Realtime giả, nhật ký lời gọi chuẩn, kịch bản hai client |
 | Ổn định của ảnh chuẩn | chưa đo | hai lần chạy liên tiếp giống hệt nhau trước khi dùng làm chuẩn |
 | Version module | `?v=N` thủ công trên thẻ HTML | giữ đến khi A2 có cơ chế cho cả đồ thị import (một URL/module, `/bump` bắc cầu); sau A4 không còn |
 | JS nạp ở `index.html` (không tính CDN) | 983.647 byte UTF-8 LF của script tracked hiện hữu; thiếu `keys.local.js` untracked, chưa phải transfer size | không tăng; mục tiêu giảm sau A3/C1 |
@@ -302,7 +304,7 @@ Mỗi bước A được commit vào dòng tích hợp (`feat/restructure-plan`)
 
 ## 9. Cần TJ quyết
 
-*Đã chốt:* câu 1 (A0 đã duyệt 2026-10-20 và tiếp tục cycle 2026-10-22), câu 2 (`main` đóng băng, mọi việc chỉ trong worktree này, một dòng tích hợp, kể cả luồng B), câu 8 (baseline `e324beb`, cherry-pick không merge), cách thay `main` ban đầu (fast-forward, không force; điều kiện đã lệch, xem 0.1), hai dòng song song Pages/Netlify. Các câu còn mở: 3–7, 9–12; thêm quyết định CTX-09 và ngoại lệ version baseline ở báo cáo cycle.
+*Đã chốt:* câu 1 (A0 đã duyệt 2026-10-20 và tiếp tục cycle 2026-10-22), câu 2 (`main` đóng băng, mọi việc chỉ trong worktree này, một dòng tích hợp, kể cả luồng B), câu 8 (baseline `e324beb`, cherry-pick không merge), cách thay `main` ban đầu (fast-forward, không force; điều kiện đã lệch, xem 0.1), hai dòng song song Pages/Netlify. Các câu còn mở: 3–7, 9–12; CTX-09 và việc tạm nhận cache đã chốt theo đoạn PO ở §0.1; cache phải sửa trước nghiệm thu preview.
 
 1. ✔ **Đã duyệt A0:** test và tài liệu; chưa mở quyền sửa mã ứng dụng.
 2. ✔ **Đã chốt:** `main` đóng băng; mọi việc chỉ trong worktree này; một dòng tích hợp duy nhất.

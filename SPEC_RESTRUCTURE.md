@@ -14,7 +14,7 @@
 
 Phần này cụ thể hoá cycle trong PLAN §0.1, không mở quyền sửa ứng dụng hay triển khai các luồng sau A0. **Checkpoint kế hoạch ban đầu (`f79eaa7`) chỉ commit plan/spec rồi dừng.** Tiêu chí dưới đây là chuẩn nghiệm thu; trạng thái thực hiện cập nhật ngay bên dưới.
 
-**Cập nhật sau audit `a0e08ac`:** TJ đã yêu cầu chạy cycle và commit trên nhánh, không merge. Chỉ đạo dừng ở checkpoint plan/spec phía trên là lịch sử. Cycle hiện có kết quả **PARTIAL** tại `tests/a0/cycle-report.json`, độ phủ/giới hạn ở `tests/a0/README.md`; không tuyên bố mọi tiêu chí dưới đây đã đạt. Đặc tả CTX-09 vẫn giữ nguyên trong lúc chờ PO xác nhận ngoại lệ TJ, không tự cập nhật kỳ vọng để bỏ lỗi.
+**Cập nhật sau audit `a0e08ac`:** TJ đã yêu cầu chạy cycle và commit trên nhánh, không merge. Chỉ đạo dừng ở checkpoint plan/spec phía trên là lịch sử. Cycle hiện có kết quả **PARTIAL** tại `tests/a0/cycle-report.json`, độ phủ/giới hạn ở `tests/a0/README.md`; không tuyên bố mọi tiêu chí dưới đây đã đạt. Tại checkpoint ban đầu CTX-09 còn chờ PO. Sau đó PO đã chốt giữ ưu tiên AI hiện tại: đặc tả/test nay ghi ngoại lệ TJ OpenAI trước; người thường Gemini trước. Cache cấu hình tạm nhận ở A0 nhưng phải sửa trước nghiệm thu preview; cổng `static.js . --current --preview` phải đỏ khi cấu hình chưa được version. Đây là tiêu chí riêng bắt buộc, không được dùng kết quả Node xanh để suy ra preview đủ điều kiện.
 
 | Tiêu chí bắt buộc | Bằng chứng nghiệm thu |
 |---|---|

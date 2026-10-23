@@ -47,7 +47,7 @@ Ba bậc ưu tiên (cột "Tầng"): **B** = chặn merge; **N** = chạy hằng
 | CTX-06 | C | B | Vòng tròn: `parseMeta(marked + META_SEP + JSON.stringify(meta)).marked === marked` |
 | CTX-07 | C | B | `translate(g.text, g.term, null, meta.vi)` khác rỗng cho mọi gap khi `meta.vi` đủ khoá (chữ thường) |
 | CTX-08 | R | B | `splitChapters`: cắt theo tầng đoạn → câu → dòng → từ; văn bản **không dấu câu** dài 30.000 ký tự: mọi phần ≤ giới hạn; khi phát hiện không dấu câu dùng `MAX=5000` (có dấu câu: 11.000/12.000) |
-| CTX-09 | C | B | `_callProvider` ở Cloud: thử Gemini trước, Gemini lỗi mới sang OpenAI; gọi qua `…/functions/v1/gemini-proxy` và `…/openai-proxy`, **không** gọi thẳng Google/OpenAI; không có `GEMINI_API_KEY` ở client |
+| CTX-09 | C | B | `_callProvider` ở Cloud: tài khoản thường Gemini trước, Gemini lỗi mới sang OpenAI; riêng TJ OpenAI trước, lỗi mới sang Gemini (PO xác nhận giữ nguyên 2026-10-22); gọi qua `…/functions/v1/gemini-proxy` và `…/openai-proxy`, **không** gọi thẳng Google/OpenAI; không có `GEMINI_API_KEY` ở client |
 | CTX-10 | C | B | Timeout cứng 25 giây (đồng hồ giả): sau 25s huỷ bằng `AbortController`, báo lỗi đúng loại |
 | CTX-11 | C | B | 403 `{kind:"quota_user"}` từ proxy được báo thành thông điệp hết lượt, không thử nhà cung cấp kia để lách |
 | CTX-12 | C | B | `lookupWord` (và `quotaCtx = null`): body gửi `user_id:null, block_id:null` (không ăn quota 3 Block). Cùng kiểm cho chấm câu, tra nghĩa trên bảng, dịch CC (nối với I2) |
@@ -74,8 +74,8 @@ Kiểm đo trên baseline (2026-10-20, `e324beb`) cho STA-03: có 5 mục cục 
 
 | Mục | Xử lý | Lý do |
 |---|---|---|
-| `manifest.webmanifest`, `icon.svg` (3 chỗ) | Ngoại lệ **vĩnh viễn** trong `STA-03.allow` | Tài nguyên hầu như không đổi, không phải mã; thêm `?v=` không có lợi |
-| `learn/sw/index.html` → `../../js/config.js` | Ngoại lệ **tạm** trong `STA-03.allow` + commit riêng sau M0 thêm `?v=` đúng số của `index.html` và xoá dòng khỏi danh sách | Có rủi ro thật (cache cũ của cấu hình), nhưng đổi nó là sửa mã ngoài phạm vi M0; không gộp vào restructure |
+| `manifest.webmanifest`, `icon.svg` (3 chỗ) | Ngoại lệ **vĩnh viễn** trong `tests/a0/STA-03.allow.json` | Tài nguyên hầu như không đổi, không phải mã; thêm `?v=` không có lợi |
+| `learn/sw/index.html` → `../../js/config.js` | Ngoại lệ **tạm** trong `tests/a0/STA-03.allow.json` + sửa trong commit ứng dụng riêng trước nghiệm thu preview, thêm `?v=` đúng số của `index.html` và xoá dòng khỏi danh sách (PO chốt 2026-10-22) | Có rủi ro thật (cache cũ của cấu hình), nhưng đổi nó là sửa mã ngoài phạm vi M0; không gộp vào restructure |
 
 Mọi danh sách ngoại lệ nằm cạnh bộ test và chỉ được sửa bởi PR có TJ duyệt.
 
@@ -83,7 +83,7 @@ Mọi danh sách ngoại lệ nằm cạnh bộ test và chỉ được sửa b�
 |---|---|---|---|
 | STA-01 | C | B | `node --check` mọi `.js` đã theo dõi |
 | STA-02 | R | B | `data/starter.json` `version` **trùng ký tự** với `data/starter.version.json` (lỗi vòng lặp "Thư viện có bản mới") |
-| STA-03 | R | B | **Kiểu ratchet (chỉ được giảm):** mọi `<script src>`/`<link href>` cục bộ trong `index.html`, `game.html`, `learn/*/index.html` phải có `?v=`, *ngoại trừ* các mục trong danh sách ngoại lệ baseline `STA-03.allow` (đo ở M0, xem dưới). Thêm mục mới vào danh sách = đỏ; bớt mục = được. `GAME_VER` (từ `game.js?v=` trong `game.html`) trùng `game-version.json`. Sau M2: thay bằng STA-10 |
+| STA-03 | R | B | **Kiểu ratchet (chỉ được giảm):** mọi `<script src>`/`<link href>` cục bộ trong `index.html`, `game.html`, `learn/*/index.html` phải có `?v=`, *ngoại trừ* các mục trong danh sách ngoại lệ baseline `tests/a0/STA-03.allow.json` (đo ở M0, xem dưới). Thêm mục mới vào danh sách = đỏ; bớt mục = được. `GAME_VER` (từ `game.js?v=` trong `game.html`) trùng `game-version.json`. Sau M2: thay bằng STA-10 |
 | STA-04 | R | B | Không chuỗi `GEMINI_API_KEY=`/`sb_secret_`/`sbp_` trong `js/`, `supabase/`, `*.html`, `tools/**/*.js` (trừ ví dụ có chú thích rõ) |
 | STA-05 | C | B | `SUPABASE_ANON_KEY` trong `js/config.js` giải mã ra `role: "anon"` (lỗi cũ: nhầm `service_role`) |
 | STA-06 | C | B | Không file đề ETS bị theo dõi: danh sách `git ls-files` không chứa `*.pdf`, `*.mp3` ngoài danh sách cho phép (liệt kê ở A0) |
@@ -368,7 +368,7 @@ Nguồn: `CLAUDE.md`. Cột "Phủ" là ID ca; "—" nghĩa là chưa có ca t�
 | Quyết định | Phủ |
 |---|---|
 | Không dùng mảng cố định chọn theo seed cho nội dung hiển thị | CTX-13 |
-| Gemini trước, OpenAI dự phòng; hai proxy dùng chung quota | CTX-09, CTX-11 |
+| Người thường Gemini trước, riêng TJ OpenAI trước; hai proxy dùng chung quota | CTX-09, CTX-11 |
 | Bộ chọn nguồn bài, không giới hạn, xoá tay | FLW-07 |
 | Không UI độ khó; không tự luân phiên; không dashboard lọc; không ticker; không mũi tên Batch ở đầu màn | FLW-08, FLW-09 |
 | `global_index` Block không trùng xuyên Notebook | thêm vào DB-03/CALL-W02 (kiểm `global_index` tăng liên tục) |
