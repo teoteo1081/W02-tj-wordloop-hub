@@ -1,6 +1,6 @@
 # PLAN_BARRON600.md — thêm "600 Essential Words for the TOEIC" (Barron) vào WordLoop (lập 2026-10-24, cập nhật cùng ngày)
 
-> Trạng thái: **KẾ HOẠCH, chưa làm gì ở Supabase/code.** Số liệu là quan sát ngày 2026-10-24, chưa kiểm đủ 50 bài. Mục "Quyết định đã chốt" là lời TJ; mục khác là đề xuất.
+> Đã audit commit 2161c2 và sửa theo audit (2026-10-24). Trạng thái: **KẾ HOẠCH, chưa làm gì ở Supabase/code.** Số liệu là quan sát ngày 2026-10-24, chưa kiểm đủ 50 bài. Mục "Quyết định đã chốt" là lời TJ; mục khác là đề xuất.
 
 ## 1. Tài liệu nguồn (`L07-toeic/Barron 600 TOEIC/`)
 
@@ -20,7 +20,7 @@
 3. Chỉ lấy **từ vựng + bài tập chọn từ/word form + bài dịch** (Words in Context, Reading Part 5, Part 6). Listening Part 1–4 để sau; **Part 7 đề xuất đưa vào bản đầy đủ, chờ TJ chốt**.
 4. Từ vựng sau khi tạo Notebook tự học/chơi theo cơ chế game sẵn có.
 5. Làm **tab "Barron 600 TOEIC"** giống Hub thi TOEIC nhưng theo cấu trúc sách; chế độ **Full bài** hoặc **Từng câu**.
-6. **Tiến độ:** mọi game từ vựng chơi trong tab đều ghi chu kỳ Tony Buzan. Cơ chế game hiện tại (`js/game.js` ~2664–2695) đã đẩy `block_progress` khi làm ≥80% từ của Block và đúng ≥80%, chỉ cho hồ sơ TJ (`HOST_PROFILE_ID`), chưa tới hạn thì không đẩy, "Ván thử" tắt ghi. Words in Context/Part 5/Part 6 không gắn Block → không ghi chu kỳ.
+6. **Tiến độ:** mọi game từ vựng chơi trong tab đều ghi chu kỳ Tony Buzan. Cơ chế game hiện tại (`js/game.js` ~2664–2695) đã đẩy `block_progress` khi làm ≥80% từ của Block và đúng ≥80%, ghi vào hồ sơ TJ (`HOST_PROFILE_ID`) — người chơi tên TJ hoặc Thảo trong phòng đều được ghi vào hồ sơ này (`progName`, `js/game.js:62`; TJ xác nhận cố ý 2026-10-24); chưa tới hạn thì không đẩy; "Ván thử" (`tjwl_game_trial_v1`, theo máy) tắt ghi. Words in Context/Part 5/Part 6 không gắn Block → không ghi chu kỳ.
 7. Làm tiết kiệm token Claude: việc lặp (nghĩa vi/zh/es, ipa, def_en, gắn CEFR, rà OCR) giao Gemini/AGY/Codex theo brief; TJ cần Supabase thì **Claude báo TJ cấp token**, không tự làm.
 
 ## 3. Thiết kế
@@ -34,7 +34,7 @@
 | 3 | Reading Part 5 | Có | Từng câu; Full = 6 câu liên tiếp |
 | 4 | Reading Part 6 | Có | Full: cả đoạn 3 chỗ; Từng câu: từng chỗ |
 | 5 | Listening Part 1–4 | Sau | cần audio/ảnh → R2 |
-| 6 | Reading Part 7 | Đề xuất đợt này, chờ TJ chốt | Cả bài đọc / Từng câu |
+| 6 | Reading Part 7 | Đề xuất đợt này, CHƯA vào phạm vi tới khi TJ chốt | Cả bài đọc / Từng câu |
 
 Tab Từ vựng giữ nguyên (Notebook → Page → Batch → Block).
 
@@ -46,7 +46,7 @@ Tab Từ vựng giữ nguyên (Notebook → Page → Batch → Block).
 
 - **G0 Kiểm kê (chỉ đọc):** OCR thử Lesson 1–3 + đáp án; trích thử bản dịch Lesson 1–3; kiểm `part`/game với Words in Context; kiểm game với Block 12 từ chính và Block tối đa 10 từ của Word Family/B1+ (`Context.gapSentences === 10`); chốt phương án dữ liệu. Cần token Supabase khi cần.
 - **G1 Trích xuất** (script cục bộ, JSON trung gian trong khu material riêng tư, mỗi Lesson 1 file). Kiểm: đủ 50 bài × 12 từ, 12 chỗ trống, 6 câu Part 5, 3 câu Part 6; đáp án Part 5/6 thuộc A–D và từng đáp án phải khớp đáp án chính thức trong sách. Words in Context phải đối chiếu từng chỗ trống với đáp án chính thức, giữ đúng dạng từ trong word bank. Ghi nguồn kiểm chứng (Lesson, số câu/chỗ trống, trang đáp án) trong JSON trung gian trong khu material riêng tư; khi OCR mơ hồ phải kiểm trực tiếp ảnh trang gốc. **Chặn nhập Lesson ở G3/G4 nếu còn đáp án sai lệch hoặc chưa xác minh; không dùng việc đáp án thuộc A–D hay AI tự giải làm bằng chứng thay cho đối chiếu sách.**
-- **G2 Bổ sung từ** (Gemini/Codex theo brief `tools/barron/AGENT_BRIEF.md`: JSON cố định, **không giữ khoá Supabase**, không commit nội dung sách; mỗi lô có checker).
+- **G2 Bổ sung từ** (Gemini/Codex theo brief `tools/barron/AGENT_BRIEF.md` (sẽ tạo ở G2): JSON cố định, **không giữ khoá Supabase**, không commit nội dung sách; mỗi lô có checker).
 - **G3 Mẫu Lesson 1–2:** ghi lên Supabase (báo TJ trước, backup bằng `export_vocab.py`), TJ duyệt rồi mới làm tiếp (`TEAM_PROCESS.md`).
 - **G4 Nạp 48 Lesson còn lại + bài tập + QA độc lập** (đếm số, trùng, đáp án, Block rỗng; phòng `ZZ_QA_*`, bật Ván thử).
 - **G5 Tab Barron 600 TOEIC:** nhánh `feat/barron600-tab` (tính năng mới là làn T đang hoãn — TJ cần cho ngoại lệ); bump `?v=N`; QA Playwright.
@@ -64,7 +64,7 @@ Tab Từ vựng giữ nguyên (Notebook → Page → Batch → Block).
 - Đã chốt giữ từ B1+ trùng giữa các Lesson. Còn chọn lưu dạng gốc (đề xuất) hay dạng xuất hiện.
 - Nguồn danh sách CEFR muốn dùng; chọn AI làm việc lặp (Codex hay AGY).
 - Cho ngoại lệ làm tab ở nhánh `feat/…`; token Supabase (đọc/ghi) khi tới G0/G3; bộ audio đầy đủ nếu muốn Listening.
-- Đã chốt game từ vựng ghi tiến độ theo cơ chế hiện tại cho TJ; không mở rộng đối tượng ghi tiến độ trong phạm vi này.
+- Đã chốt game từ vựng ghi tiến độ theo cơ chế hiện tại (hồ sơ TJ; người chơi tên TJ hoặc Thảo đều ghi vào đó, cố ý); không mở rộng đối tượng ghi tiến độ trong phạm vi này.
 ## 7. Tổng hợp phiên chốt ngày 2026-10-24
 
 Các quyết định mới nhất dưới đây thay thế nội dung cũ nếu có mâu thuẫn:
@@ -80,7 +80,7 @@ Các quyết định mới nhất dưới đây thay thế nội dung cũ nếu 
 - Bao gồm Reading Part 7 có trong sách cùng Words in Context, Part 5 và Part 6. Kiểm kê số bài/câu Part 7 thực tế, không áp số lượng giả định. Đối chiếu đáp án chính thức và giữ liên kết bài đọc–câu hỏi.
 - Listening Part 1–4 để sau do bộ audio hiện mới ghi nhận Track 1 và 12; cần kiểm kê lại nguồn.
 - Lưu từ gốc để học, giữ dạng xuất hiện ở câu/bài gốc. CEFR dùng nguồn tham chiếu có tên/phiên bản; AI đề xuất phần thiếu và đánh dấu cần rà.
-- Kế hoạch cũ hoãn Part 7; bản đầy đủ hiện tại đề xuất đưa Part 7 vào, chờ TJ xác nhận rõ.
+- Kế hoạch cũ hoãn Part 7; bản đầy đủ hiện tại đề xuất đưa Part 7 vào, chờ TJ xác nhận rõ. Part 7 chưa nằm trong phạm vi cho tới khi TJ xác nhận.
 
 ### Đề xuất lưu trữ phục vụ game
 | Loại dữ liệu | Nơi lưu đề xuất | Cách dùng |
