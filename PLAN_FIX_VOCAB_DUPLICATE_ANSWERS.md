@@ -6,7 +6,7 @@ Mỗi câu có các lựa chọn phân biệt rõ để người chơi không b�
 
 ## Bằng chứng Git
 
-- Checkout được kiểm tra: `fix/board-mobile-bottom-padding`, `f3dbe3e`, sạch trước khi lưu kế hoạch.
+- Lúc lập kế hoạch, checkout là `fix/board-mobile-bottom-padding` (`f3dbe3e`). Nay làm việc trên `fix/vocab-dup-answers`, đã chứa `4708ba9`.
 - Đã có bản sửa cũ `5492386` trong checkout.
 - Bản sửa bổ sung `4708ba9` có trên `origin/main` và `origin/fix/game-trap-dup`, chưa có trong checkout.
 - Sau fetch, `origin/main` tại `f785ae1`. Chưa xác nhận phiên bản website đang chạy.
@@ -21,7 +21,7 @@ Mỗi câu có các lựa chọn phân biệt rõ để người chơi không b�
 
 ## Tiêu chí hoàn thành
 
-- Không trùng chữ/nghĩa theo quy tắc chuẩn hóa ở vi/en/es/zh.
+- Không trùng chữ/nghĩa GIỐNG HỆT sau chuẩn hóa ở vi/en/es/zh. Ô gần nghĩa (không giống hệt) vẫn có thể xuất hiện (~12,85% câu gap, đo 24/10); TJ quyết giữ nguyên (WL-19).
 - Đáp án đúng xuất hiện đúng một lần.
 - Có bốn lựa chọn khi kho có đủ ứng viên hợp lệ.
 - Đổi ngôn ngữ vẫn hiển thị đúng nghĩa đã dùng để lọc.
@@ -35,4 +35,4 @@ Khi thực thi, báo một trạng thái `SUCCESS`, `PARTIAL`, `FAILURE` hoặc 
 
 ## Trạng thái
 
-Đã lập kế hoạch. Chưa thực thi sửa code, chạy kiểm thử hoặc triển khai.
+Đã chạy kiểm thử 24/10: `N=10000 node tools/qa/distractors_test.js` ra dupText/dupMean/leak/noCorrect/size = 0; well-balanced và self-centred 300 lần bốc đều 0 ô trùng. Chưa làm: thử UI từng chế độ, phòng nhiều người, kiểm phiên bản web đang chạy.
