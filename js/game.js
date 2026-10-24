@@ -1079,7 +1079,7 @@
     var k = "toeic:" + t.test + ":" + parts.join(",") + ":" + (t.from || "") + "-" + (t.to || "") + ":" + (t.tag || "") + ":" + (t.only ? t.only.join(",") : "");
     if (G.poolKey === k && (G.tItems || []).length) return;
     G.poolKey = k; decks = {};
-    var cols = "id,num,part,stem,stem_vi,opts,answer,tag,explain,passage,answer_src,vocab", q0 = function (c) { return sb.from("test_items").select(c).eq("exam", "toeic").eq("test", String(t.test)).in("part", parts).order("num"); };
+    var cols = "id,num,part,stem,stem_vi,opts,answer,tag,explain,passage,answer_src,vocab", q0 = function (c) { return sb.from("test_items").select(c).eq("exam", tExam(t.test)).eq("test", tDbTest(t.test)).in("part", parts).order("num"); };
     var r = await q0(cols + ",i18n");
     if (r.error) r = await q0(cols);   /* bảng chưa có cột i18n (chưa chạy ALTER) -> vẫn chơi được, chỉ có lời giải tiếng Việt */
     if (G.poolKey !== k) return;
@@ -3130,7 +3130,7 @@
     if (!q.audl) { var it0 = (G.tItems || []).filter(function (x) { return x.num === q.num && String(x.test || q.test) === String(q.test); })[0]; if (it0) q.audl = (String(it0.passage || "").match(/^\[aud\][^\n]*/m) || [""])[0]; }   /* ván cũ chưa lưu mốc audio -> lấy từ đề */
     if (!q.audl && !q.audTried && q.test != null && q.num != null) {   /* trang vừa tải (chưa có G.tItems): hỏi thẳng kho đề rồi vẽ lại thanh nghe — kể cả "Cả bài nói" của Part 3–4 */
       q.audTried = true;
-      sb.from("test_items").select("passage").eq("exam", "toeic").eq("test", String(q.test)).eq("num", q.num).limit(1).then(function (r) {
+      sb.from("test_items").select("passage").eq("exam", tExam(q.test)).eq("test", tDbTest(q.test)).eq("part", q.part).eq("num", q.num).limit(1).then(function (r) {
         var p = r && r.data && r.data[0] && r.data[0].passage; if (!p) return;
         q.audl = (String(p).match(/^\[aud\][^\n]*/m) || [""])[0];
         if (q.audl && rvCur() && rvCur().tq === q && !$("#rv-ap")) apReview(rvCur());
@@ -3156,7 +3156,7 @@
     var k = q.test + ":" + q.num; if (SCR[k] !== undefined) return SCR[k];
     var it = (G.tItems || []).filter(function (x) { return x.num === q.num && String(x.test || q.test) === String(q.test); })[0];
     if (it && it.i18n && it.i18n.scr) return (SCR[k] = it.i18n.scr);
-    try { var r = await sb.from("test_items").select("i18n").eq("exam", "toeic").eq("test", String(q.test)).eq("num", q.num).maybeSingle(); SCR[k] = (r.data && r.data.i18n && r.data.i18n.scr) || null; } catch (e) { SCR[k] = null; }
+    try { var r = await sb.from("test_items").select("i18n").eq("exam", tExam(q.test)).eq("test", tDbTest(q.test)).eq("part", q.part).eq("num", q.num).maybeSingle(); SCR[k] = (r.data && r.data.i18n && r.data.i18n.scr) || null; } catch (e) { SCR[k] = null; }
     return SCR[k];
   }
   function scrNorm(t) { return String(t || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
@@ -3255,7 +3255,7 @@
     return Object.keys(out).map(Number).sort(function (a, b) { return a - b; });
   }
   /* 🧭 đường dẫn của câu đang làm, hiện đầu ô đen (TJ 2026-10-13): "ETS 2023 › Test 5 › Listening › Part 4 · Short Talks" */
-  var T_PARTNAME = { 1: "Photographs", 2: "Question-Response", 3: "Conversations", 4: "Short Talks", 5: "Incomplete Sentences", 6: "Text Completion", 7: "Reading Comprehension" };
+  var T_PARTNAME = { 1: "Photographs", 2: "Question-Response", 3: "Conversations", 4: "Short Talks", 5: "Incomplete Sentences", 6: "Text Completion", 7: "Reading Comprehension", 8: "Words in Context" };
   function tCrumb(q) {
     var t = q && (q.test || (G.st && G.st.test && G.st.test.test)), pt = q && (q.part || (G.st && G.st.test && G.st.test.part)); if (!t || !pt) return "";
     return '<div class="g-tcrumb">' + esc(tName(t)) + " › " + (+pt <= 4 ? "Listening" : "Reading") + " › Part " + pt + " · " + esc(T_PARTNAME[pt] || "") + "</div>";
@@ -3784,7 +3784,7 @@
     for (var ti = 0; ti < tests.length; ti++) {
       var t = tests[ti], nums = Object.keys(byTest[t]).map(Number), items = [];
       for (var i = 0; i < nums.length; i += 150) {
-        var q0 = function (c) { return sb.from("test_items").select(c).eq("exam", "toeic").eq("test", String(t)).in("num", nums.slice(i, i + 150)); };
+        var q0 = function (c) { return sb.from("test_items").select(c).eq("exam", tExam(t)).eq("test", tDbTest(t)).in("num", nums.slice(i, i + 150)); };
         var rr = await q0(cols + ",i18n"); if (rr.error) rr = await q0(cols);   /* bảng chưa có cột i18n -> vẫn xem được */
         if (rr.error) { alert(rr.error.message); return; }
         items = items.concat(rr.data || []);
@@ -3993,7 +3993,7 @@
     if (!box) { box = document.createElement("div"); box.id = "t-statsbox"; box.className = "g-tstats"; document.body.appendChild(box); }
     box.hidden = false; box.innerHTML = '<div class="g-tsin"><p class="g-sub">⏳ Đang tính điểm…</p></div>';
     var pids = [pid || G.me.id];
-    var L = await tAnswers(pids);
+    var L = (await tAnswers(pids)).filter(function (x) { return tExam(x.test) === "toeic"; });
     var tags = {}, LL = effLang(G.myLang, G.st, "toeic");   /* phân trang: máy chủ trả tối đa 1000 dòng/lần (QA) */
     for (var fr0 = 0; ; fr0 += 1000) { var ti = await sb.from("test_items").select("test,part,num,tag,i18n").eq("exam", "toeic").range(fr0, fr0 + 999); (ti.data || []).forEach(function (x) { var I = x.i18n || {}; tags[x.test + ":" + x.num] = (I[LL] && I[LL].tag) || x.tag || ""; }); if (!ti.data || ti.data.length < 1000) break; }
     var by = {};   /* đề -> part -> {k,n} */
@@ -4114,25 +4114,27 @@
   async function loadTestList() {
     var sel = $("#t-test"); if (!sel) return;
     var r = { data: [] }, from = 0;   /* > 1000 câu (nhiều đề) -> tải theo trang */
-    for (;;) { var rr = await sb.from("test_items").select("test,part,num,tag,answer_src").eq("exam", "toeic").order("id").range(from, from + 999); if (rr.error) { r = rr; break; } r.data = r.data.concat(rr.data || []); if ((rr.data || []).length < 1000) break; from += 1000; }
+    for (;;) { var rr = await sb.from("test_items").select("exam,test,part,num,tag,answer_src").in("exam", ["toeic", "barron600"]).order("id").range(from, from + 999); if (rr.error) { r = rr; break; } r.data = r.data.concat(rr.data || []); if ((rr.data || []).length < 1000) break; from += 1000; }
     if (r.error) { sel.innerHTML = '<option value="">—</option>'; $("#t-info").textContent = "Chưa có bảng đề (cần chạy tools/toeic_items.sql)."; return; }
     var cnt = {}, cl = {}; G.tMeta = {};
     var nk = {};
-    (r.data || []).forEach(function (x) { var k = x.test + "|" + x.part; cnt[k] = (cnt[k] || 0) + 1; if (x.answer_src === "claude") cl[k] = 1; if (!x.answer_src) nk[k] = 1;
+    (r.data || []).forEach(function (x) { var test = x.exam === "barron600" ? "barron600-" + x.test : x.test; var k = test + "|" + x.part; cnt[k] = (cnt[k] || 0) + 1; if (x.answer_src === "claude") cl[k] = 1; if (!x.answer_src) nk[k] = 1;
       var m = G.tMeta[k] = G.tMeta[k] || { min: 999, max: 0, tags: {} }; m.min = Math.min(m.min, x.num); m.max = Math.max(m.max, x.num); if (x.tag) m.tags[x.tag] = (m.tags[x.tag] || 0) + 1; });
     var keys = Object.keys(cnt).sort(function (a, b) { var A = a.split("|"), B = b.split("|"); return tNum(A[0]) - tNum(B[0]) || (+A[1] - +B[1]); });
     G.tCnt = cnt; G.tCl = cl; G.tNk = nk; G.tKeys = keys; paintBooks();   /* chọn Bộ đề -> Đề -> Phạm vi (paintBooks/paintTests/paintParts) */
   }
   /* 📚 BỘ ĐỀ (TJ 2026-10-04: "đề sau này có năm 2023, 24, 25, 26"): test_items.test = "<số>" (bộ ETS 2024 có sẵn, giữ mã cũ khỏi đổi dữ liệu)
      hoặc "<năm>-<số>" cho bộ mới (vd "2025-3", id ets25_t3_p5_101). */
-  function tBook(t) { t = String(t); return t.indexOf("-") > 0 ? t.split("-")[0] : "2024"; }
+  function tExam(t) { return /^barron600-\d+$/.test(String(t)) ? "barron600" : "toeic"; }
+  function tDbTest(t) { return tExam(t) === "barron600" ? String(t).slice(10) : String(t); }
+  function tBook(t) { t = String(t); return tExam(t) === "barron600" ? "barron600" : t.indexOf("-") > 0 ? t.split("-")[0] : "2024"; }
   function tNum(t) { t = String(t); return +(t.indexOf("-") > 0 ? t.split("-")[1] : t); }
-  function tName(t) { return "ETS " + tBook(t) + " · Test " + tNum(t); }
+  function tName(t) { return tExam(t) === "barron600" ? "Barron 600 · Lesson " + tNum(t) : "ETS " + tBook(t) + " · Test " + tNum(t); }
   function tPartsOf(test) { return (G.tKeys || []).filter(function (k) { return k.split("|")[0] === String(test); }).map(function (k) { return +k.split("|")[1]; }); }
   function paintBooks() {
     var bs = {}; (G.tKeys || []).forEach(function (k) { bs[tBook(k.split("|")[0])] = 1; });
     var bsel = $("#t-book"); if (!bsel) return;
-    var keep = bsel.value; bsel.innerHTML = Object.keys(bs).sort().reverse().map(function (b) { return '<option value="' + b + '">ETS ' + b + "</option>"; }).join("") || '<option value="">Chưa có đề nào</option>';
+    var keep = bsel.value; bsel.innerHTML = Object.keys(bs).sort().reverse().map(function (b) { return '<option value="' + b + '">' + (b === "barron600" ? "Barron 600 TOEIC" : "ETS " + b) + "</option>"; }).join("") || '<option value="">Chưa có đề nào</option>';
     if (keep && bs[keep]) bsel.value = keep;
     paintTests();
   }
@@ -4142,13 +4144,14 @@
     var keep = tsel.value;
     tsel.innerHTML = Object.keys(tests).sort(function (a, c) { return tNum(a) - tNum(c); }).map(function (t) {
       var n = tests[t], lc = tPartsOf(t).filter(function (p) { return p <= 4; }).length, rc = tPartsOf(t).filter(function (p) { return p >= 5; }).length;
+      if (tExam(t) === "barron600") return '<option value="' + t + '">Lesson ' + tNum(t) + " — " + n + " câu</option>";
       return '<option value="' + t + '">Test ' + tNum(t) + " — " + (n >= 200 ? "✅ đủ 200 câu" : "⏳ " + n + " câu" + (lc ? "" : " (chưa có Listening)") + (rc ? "" : " (chưa có Reading)")) + "</option>"; }).join("");
     if (keep && tests[keep]) tsel.value = keep;
     paintParts();
   }
   function paintParts() {
     var t = $("#t-tnum").value, ps = tPartsOf(t), sel = $("#t-test"), keep = sel.value;
-    sel.innerHTML = ps.map(function (p) { var k = t + "|" + p; return '<option value="' + k + '">Part ' + p + " — " + G.tCnt[k] + " câu" + (G.tCl[k] ? " (đáp án Claude giải)" : G.tNk[k] ? " (chưa có đáp án)" : "") + "</option>"; }).join("");
+    sel.innerHTML = ps.map(function (p) { var k = t + "|" + p; return '<option value="' + k + '">' + (p === 8 ? "Words in Context" : "Part " + p) + " — " + G.tCnt[k] + " câu" + (G.tCl[k] ? " (đáp án Claude giải)" : G.tNk[k] ? " (chưa có đáp án)" : "") + "</option>"; }).join("");
     if (keep && ps.indexOf(+keep.split("|")[1]) >= 0) sel.value = t + "|" + keep.split("|")[1];   /* đổi Đề: giữ Part đang chọn (QA v127 #3) */
     $$(".t-pck").forEach(function (c) { c.disabled = ps.indexOf(+c.value) < 0; if (c.disabled) c.checked = false; });
     paintScope();
@@ -4163,6 +4166,8 @@
     return [+String($("#t-test").value).split("|")[1]].filter(Boolean);
   }
   function paintScope() {
+    var barron = tExam($("#t-tnum").value) === "barron600";
+    if (barron) $("#t-scope").value = "part";
     var sc = $("#t-scope").value, one = sc === "part", ps = tScopeParts();
     $$(".t-onlypart").forEach(function (x) { x.hidden = !(one || (sc === "custom" && x.querySelector("#t-tag"))); });
     $$(".t-onlycustom").forEach(function (x) { x.hidden = sc !== "custom"; });
@@ -4174,7 +4179,11 @@
     if (tmo && multi && (sc === "full" || sc === "lc" || sc === "rc") && tmo.value !== "exam" && !tmo.dataset.user) tmo.value = "exam";
     if (tmo && one && tmo.value === "exam" && !tmo.dataset.user) tmo.value = ps[0] <= 4 ? "audio" : "free";   /* QA v127 #4: về Từng Part thì bỏ Thi thật */
     var all = tPartsOf($("#t-tnum").value), hasL = all.some(function (p) { return p <= 4; }), hasR = all.some(function (p) { return p >= 5; });
-    $$("#t-scope option").forEach(function (o) { o.disabled = (o.value === "lc" && !hasL) || (o.value === "rc" && !hasR) || (o.value === "full" && !(hasL && hasR)); });
+    $$("#t-scope option").forEach(function (o) { o.disabled = barron ? o.value !== "part" : (o.value === "lc" && !hasL) || (o.value === "rc" && !hasR) || (o.value === "full" && !(hasL && hasR)); });
+    if (tmo) {
+      [].slice.call(tmo.options).forEach(function (o) { o.disabled = barron && (o.value === "exam" || o.value === "audio"); });
+      if (barron && (tmo.value === "exam" || tmo.value === "audio")) tmo.value = "free";
+    }
   }
   document.addEventListener("change", function (e) {
     var id = e.target && e.target.id;
@@ -4208,7 +4217,7 @@
     var fr = one || sc === "custom" ? +$("#t-from").value || 0 : 0, to = one || sc === "custom" ? +$("#t-to").value || 0 : 0, tg = one || sc === "custom" ? $("#t-tag").value || "" : "";
     if (!one) { fr = 0; to = 0; }
     st.qtype = "toeic"; st.test = { test: tt, part: parts[0], parts: parts, from: fr, to: to, tag: tg }; st.race = false; st.auto = true;
-    var tm = $("#t-mode").value; st.exam = tm === "exam"; if (st.exam) tm = "free"; st.race = tm === "race"; st.hostpace = tm === "audio"; st.taud = $("#t-aud") ? $("#t-aud").value : "host"; if (st.exam && st.taud === "host") st.taud = "all"; st.tplay = st.taud !== "off"; G.tLastG = ""; st.mode = st.race ? "free" : st.hostpace ? "kahoot" : tm;
+    var tm = $("#t-mode").value; if (tExam(tt) === "barron600" && (tm === "exam" || tm === "audio")) tm = "free"; st.exam = tm === "exam"; if (st.exam) tm = "free"; st.race = tm === "race"; st.hostpace = tm === "audio"; st.taud = $("#t-aud") ? $("#t-aud").value : "host"; if (st.exam && st.taud === "host") st.taud = "all"; st.tplay = st.taud !== "off"; if (tExam(tt) === "barron600") st.tplay = false; G.tLastG = ""; st.mode = st.race ? "free" : st.hostpace ? "kahoot" : tm;
     if (st.hostpace || +a[1] <= 4 || parts.length > 1 || st.exam) { st.auto = false; st.minutes = 120; $("#l-min").value = 120; }   /* Listening: audio dẫn nhịp, ván dài đủ cả đề; hết câu tự kết thúc */   /* không đếm giờ từng câu; ván dài đủ cả đề nghe, hết câu tự kết thúc */ st.qs = Math.max(5, Math.min(300, +$("#t-qs").value || 20));
     if ($("#t-wrong") && $("#t-wrong").checked) {   /* ❌ chỉ câu từng sai: lần làm GẦN NHẤT của từng người đang trong phòng còn sai */
       var W = []; for (var pi = 0; pi < parts.length; pi++) W = W.concat(await tWrongNums(tt, parts[pi], G.online.map(function (p) { return p.id; })));
