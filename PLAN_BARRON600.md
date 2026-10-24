@@ -116,3 +116,14 @@ Nguồn tư vấn kỹ thuật: https://supabase.com/docs/guides/database/overvi
 - **Bản sách giữ riêng tư trên máy TJ** (`D:\Python\Git\_work_barron600\` và thư mục material): ảnh, OCR, `key_rc.json` (đáp án Part 5/6/7, đã tách từ OCR, CHƯA đối chiếu ảnh). TJ tự dùng để đối chiếu/học; không commit.
 - **Hệ quả cho các bước cũ:** bỏ G1 (trích Part 5/6/7, Words in Context), bỏ tab "Barron 600 TOEIC" (G5) vì game từ vựng sẵn có đã chơi được Notebook — **không cần ngoại lệ làn T nữa**. Part 7 và Listening không làm trên web. Nếu sau này muốn có bài tập: viết bài MỚI (không chép sách).
 - **Còn lại:** Batch 2 (Word Family) và Batch 3 (từ B1+) chỉ lấy DANH SÁCH TỪ (không chép câu/đoạn); G3 ghi mẫu Lesson 1–2 lên Supabase sau khi TJ duyệt; G4 nạp 48 Lesson còn lại + QA.
+
+## 10. Tiến độ 2026-10-25: đã nạp 50 Lesson lên Supabase (chỉ từ vựng)
+
+- **Vị trí:** Section "50 Lesson" (id `e4fcb998-67eb-4d60-a2c4-a881db95c037`, Notebook `7c3db651-bc1e-4e7f-84a1-ea1748e0c27a`). Mỗi Lesson = 1 Page, 3 Batch: "Từ chủ chốt (12 từ)" (1 Block), "Word Family" và "Từ B1+ trong bài" (Block tối đa 10 từ, Block cuối giữ phần dư).
+- **Số liệu sau khi đọc lại từ Supabase:** 50 Page, 150 Batch, 283 Block (`global_index` 9543–9825, không trùng), 2.346 từ (600 chủ chốt + Word Family + B1+). Từ B1+ lặp giữa các Lesson được giữ theo quyết định cũ; cùng term + pos dùng chung một bản ghi (IPA, CEFR, nghĩa giống nhau ở mọi bài).
+- **Nguồn:** danh sách từ lấy từ trang từng Lesson (chỉ lấy TỪ, không chép câu/đoạn/đáp án/bài dịch của sách); toàn bộ thông tin từ (pos, IPA, `def_en`, CEFR, nghĩa vi/zh/es) do AI tự viết qua `gemini-proxy`. CEFR do AI gán, chưa có danh sách chuẩn đối chiếu.
+- **QA độc lập 2 lượt (agent chỉ đọc):** lượt 1 trên 600 từ chủ chốt (sửa 4 từ OCR theo ảnh trang, ~46 lỗi nghĩa, IPA, CEFR, định dạng); lượt 1 và 2 trên Word Family + B1+ (xoá 59 từ rác, ~1.700 dòng sửa nghĩa/IPA/định nghĩa, thống nhất bản ghi chuẩn cho từ lặp). Kiểm tự động cuối trên dữ liệu đọc thẳng Supabase: 0 lỗi định dạng, 0 nhóm term+pos không nhất quán.
+- **Còn mở:** (1) QA đề nghị loại thêm 17 từ (`courier`/`deadline`/`owe`/`penalty` trùng từ chủ chốt cùng bài; `memorial`, `basement`, `judicial`, `material`, `materialize`, `suitor`, `skilful`, `wrinkly`, `outdate`, `conduce`, `yielding`, `diagnostician` không đúng họ từ/quá hiếm) — chờ TJ duyệt, chưa xoá; (2) lỗi mức thấp về văn phong định nghĩa và dấu câu trong nghĩa; (3) CEFR cần TJ rà mẫu; (4) 44 Lesson có danh sách từ lấy từ OCR chưa đối chiếu ảnh từng trang.
+- **Rollback:** chỉ INSERT dòng mới; xoá theo id trong các file kế hoạch ở `D:\Python\Git\_work_barron600\json\` (`g3_plan_L1_2.json`, `g5_plan_all.json`); các dòng đã xoá được lưu ở `backup_deleted_words.keep.json` (ngoài repo).
+- **Không thuộc phần này:** bài dịch/đối chiếu song ngữ phần review đáp án do Codex phụ trách trên nhánh riêng; mục này không đụng tới.
+- **Việc còn lại:** thu hồi Supabase PAT và token Cloudflare khi xong việc (PAT tạm).
