@@ -30,8 +30,8 @@ window.EA_LESSONS = {
    "part": 1,
    "title": "EA Part I – SU04: Business Deductions",
    "file": "Part I/Lessons/EA1_SU04_Business_Deductions.html",
-   "vocabCount": 32,
-   "quizCount": 19
+   "vocabCount": 34,
+   "quizCount": 20
   },
   {
    "id": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
@@ -86,16 +86,16 @@ window.EA_LESSONS = {
    "part": 1,
    "title": "EA Part I – SU11: Nonrecognition Property Transactions",
    "file": "Part I/Lessons/EA1_SU11_Nonrecognition_Property_Transactions.html",
-   "vocabCount": 32,
-   "quizCount": 20
+   "vocabCount": 39,
+   "quizCount": 25
   },
   {
    "id": "EA1_SU12_Individual_Retirement_Accounts",
    "part": 1,
    "title": "EA Part I – SU12: Individual Retirement Accounts",
    "file": "Part I/Lessons/EA1_SU12_Individual_Retirement_Accounts.html",
-   "vocabCount": 32,
-   "quizCount": 20
+   "vocabCount": 40,
+   "quizCount": 25
   },
   {
    "id": "EA1_SU13_Gift_Tax",
@@ -110,8 +110,8 @@ window.EA_LESSONS = {
    "part": 1,
    "title": "EA Part I – SU14: Estate Tax",
    "file": "Part I/Lessons/EA1_SU14_Estate_Tax.html",
-   "vocabCount": 32,
-   "quizCount": 20
+   "vocabCount": 40,
+   "quizCount": 25
   },
   {
    "id": "Basis_to_Partnership_Operations",
@@ -1224,6 +1224,20 @@ window.EA_LESSONS = {
   {
    "en": "commuting",
    "vi": "đi lại nhà – nơi làm việc (không deductible)",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.2 — CHI PHÍ KINH DOANH THƯỜNG GẶP — MEALS, GIFTS, TRAVEL, VEHICLE"
+  },
+  {
+   "en": "hours-of-service rules",
+   "vi": "quy định giờ làm việc của DOT (meals 80%)",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.2 — CHI PHÍ KINH DOANH THƯỜNG GẶP — MEALS, GIFTS, TRAVEL, VEHICLE"
+  },
+  {
+   "en": "12-month rule",
+   "vi": "quy tắc 12 tháng cho prepaid rent/ chi phí trả trước",
    "kind": "term",
    "lesson": "EA1_SU04_Business_Deductions",
    "section": "4.2 — CHI PHÍ KINH DOANH THƯỜNG GẶP — MEALS, GIFTS, TRAVEL, VEHICLE"
@@ -2664,228 +2678,277 @@ window.EA_LESSONS = {
    "section": "10.4 — BÁN DOANH NGHIỆP (§1060) & TỔNG HỢP FORM 4797"
   },
   {
+   "en": "principal residence",
+   "vi": "nhà ở chính",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.1 — SALE OF A PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "en": "ownership and use tests",
+   "vi": "điều kiện sở hữu và sử dụng (2/5 năm)",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.1 — SALE OF A PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "en": "nonqualified use",
+   "vi": "thời gian không dùng làm nhà chính (sau 2008, trước lần ở cuối)",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.1 — SALE OF A PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "en": "partial exclusion",
+   "vi": "loại trừ một phần theo tỷ lệ tháng",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.1 — SALE OF A PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "en": "depreciation recapture (home office)",
+   "vi": "khấu hao home office không được loại trừ (sau 6/5/1997)",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.1 — SALE OF A PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "en": "incident to divorce",
+   "vi": "liên quan đến ly hôn",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.1 — SALE OF A PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "en": "suspension of 5-year test",
+   "vi": "kéo dài tới 10 năm cho quân nhân/ ngoại giao",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.1 — SALE OF A PRINCIPAL RESIDENCE (§121)"
+  },
+  {
    "en": "like-kind exchange",
    "vi": "trao đổi tài sản cùng loại",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.1 — LIKE-KIND EXCHANGES (§1031)"
+   "section": "11.2 — LIKE-KIND EXCHANGES (§1031)"
   },
   {
    "en": "§1031",
    "vi": "điều luật hoãn gain khi đổi real property (sau 2017)",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.1 — LIKE-KIND EXCHANGES (§1031)"
+   "section": "11.2 — LIKE-KIND EXCHANGES (§1031)"
   },
   {
    "en": "qualified intermediary (QI)",
    "vi": "bên trung gian giữ tiền khi exchange",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.1 — LIKE-KIND EXCHANGES (§1031)"
+   "section": "11.2 — LIKE-KIND EXCHANGES (§1031)"
   },
   {
    "en": "boot",
    "vi": "tiền/tài sản không cùng loại nhận thêm (bị tính thuế)",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.1 — LIKE-KIND EXCHANGES (§1031)"
+   "section": "11.2 — LIKE-KIND EXCHANGES (§1031)"
   },
   {
    "en": "relinquished property",
    "vi": "tài sản đem đi đổi",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.1 — LIKE-KIND EXCHANGES (§1031)"
+   "section": "11.2 — LIKE-KIND EXCHANGES (§1031)"
   },
   {
    "en": "replacement property",
    "vi": "tài sản nhận được",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.1 — LIKE-KIND EXCHANGES (§1031)"
+   "section": "11.2 — LIKE-KIND EXCHANGES (§1031)"
   },
   {
    "en": "net liability relief",
    "vi": "giải trừ nợ ròng (coi là boot)",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.1 — LIKE-KIND EXCHANGES (§1031)"
+   "section": "11.2 — LIKE-KIND EXCHANGES (§1031)"
   },
   {
    "en": "reverse exchange",
    "vi": "đổi ngược (mua replacement trước)",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.1 — LIKE-KIND EXCHANGES (§1031)"
+   "section": "11.2 — LIKE-KIND EXCHANGES (§1031)"
   },
   {
    "en": "Form 8824",
    "vi": "mẫu khai like-kind exchange",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.1 — LIKE-KIND EXCHANGES (§1031)"
+   "section": "11.2 — LIKE-KIND EXCHANGES (§1031)"
   },
   {
    "en": "involuntary conversion",
    "vi": "chuyển đổi không tự nguyện (cháy, trưng dụng…)",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.2 — INVOLUNTARY CONVERSIONS (§1033)"
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
   },
   {
    "en": "condemnation",
    "vi": "trưng dụng đất bởi nhà nước",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.2 — INVOLUNTARY CONVERSIONS (§1033)"
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
   },
   {
    "en": "§1033",
    "vi": "điều luật hoãn gain khi tài sản bị chuyển đổi không tự nguyện",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.2 — INVOLUNTARY CONVERSIONS (§1033)"
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
   },
   {
    "en": "replacement period",
    "vi": "thời hạn mua tài sản thay thế",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.2 — INVOLUNTARY CONVERSIONS (§1033)"
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
   },
   {
    "en": "similar or related in service or use",
    "vi": "tương tự hoặc liên quan về chức năng/sử dụng",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.2 — INVOLUNTARY CONVERSIONS (§1033)"
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
   },
   {
    "en": "functional use test",
    "vi": "test chức năng (owner-user)",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.2 — INVOLUNTARY CONVERSIONS (§1033)"
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
   },
   {
    "en": "taxpayer use test",
    "vi": "test theo cách taxpayer sử dụng (investor)",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.2 — INVOLUNTARY CONVERSIONS (§1033)"
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
   },
   {
    "en": "direct conversion",
    "vi": "nhận tài sản thay thế trực tiếp",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.2 — INVOLUNTARY CONVERSIONS (§1033)"
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
   },
   {
    "en": "indirect conversion",
    "vi": "nhận tiền rồi mua tài sản thay thế",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.2 — INVOLUNTARY CONVERSIONS (§1033)"
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
   },
   {
    "en": "proceeds",
    "vi": "số tiền thu được (bảo hiểm/ bồi thường)",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.2 — INVOLUNTARY CONVERSIONS (§1033)"
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
   },
   {
    "en": "§1041",
    "vi": "giao dịch giữa vợ chồng/ ex-spouse không gain/loss",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.3 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
+   "section": "11.4 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
   },
   {
    "en": "incident to a divorce",
    "vi": "liên quan đến ly hôn (trong 1 năm hoặc 6 năm)",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.3 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
+   "section": "11.4 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
   },
   {
    "en": "property settlement",
    "vi": "phân chia tài sản khi ly hôn",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.3 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
+   "section": "11.4 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
   },
   {
    "en": "§1035",
    "vi": "đổi hợp đồng bảo hiểm/annuity không tính gain",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.3 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
+   "section": "11.4 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
   },
   {
    "en": "qualified opportunity fund (QOF)",
    "vi": "quỹ cơ hội đủ điều kiện (hoãn capital gain)",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.3 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
+   "section": "11.4 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
   },
   {
    "en": "nonresident alien spouse",
    "vi": "vợ/chồng không cư trú (không áp dụng §1041)",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.3 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
+   "section": "11.4 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
   },
   {
    "en": "carryover basis",
    "vi": "basis kế thừa",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.3 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
+   "section": "11.4 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
   },
   {
    "en": "Form 4684",
    "vi": "mẫu khai casualty & theft",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.4 — SO SÁNH & BÁO CÁO"
+   "section": "11.5 — SO SÁNH & BÁO CÁO"
   },
   {
    "en": "Form 8949",
    "vi": "mẫu liệt kê giao dịch chứng khoán/ tài sản vốn",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.4 — SO SÁNH & BÁO CÁO"
+   "section": "11.5 — SO SÁNH & BÁO CÁO"
   },
   {
    "en": "exchanged basis",
    "vi": "basis nhận được từ giao dịch exchange",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.4 — SO SÁNH & BÁO CÁO"
+   "section": "11.5 — SO SÁNH & BÁO CÁO"
   },
   {
    "en": "deferral vs exclusion",
    "vi": "hoãn thuế vs loại trừ vĩnh viễn",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.4 — SO SÁNH & BÁO CÁO"
+   "section": "11.5 — SO SÁNH & BÁO CÁO"
   },
   {
    "en": "election (nonrecognition)",
    "vi": "lựa chọn áp dụng nonrecognition",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.4 — SO SÁNH & BÁO CÁO"
+   "section": "11.5 — SO SÁNH & BÁO CÁO"
   },
   {
    "en": "holding period tacking",
    "vi": "nối tiếp holding period",
    "kind": "term",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.4 — SO SÁNH & BÁO CÁO"
+   "section": "11.5 — SO SÁNH & BÁO CÁO"
   },
   {
    "en": "individual retirement account (IRA)",
@@ -3000,6 +3063,13 @@ window.EA_LESSONS = {
    "section": "12.2 — ROTH IRA & ROTH CONVERSION"
   },
   {
+   "en": "plan loan (§72(p))",
+   "vi": "khoản vay từ qualified plan ($50,000 hoặc ½ vested)",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.3 — DISTRIBUTIONS, EARLY-WITHDRAWAL PENALTY & RMD"
+  },
+  {
    "en": "required minimum distribution (RMD)",
    "vi": "mức rút tối thiểu bắt buộc",
    "kind": "term",
@@ -3110,6 +3180,55 @@ window.EA_LESSONS = {
    "kind": "term",
    "lesson": "EA1_SU12_Individual_Retirement_Accounts",
    "section": "12.4 — ROLLOVERS, INHERITED IRA & PROHIBITED TRANSACTIONS"
+  },
+  {
+   "en": "Section 529 plan",
+   "vi": "quỹ giáo dục 529 (rút đúng mục đích miễn thuế)",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.5 — SECTION 529 QUALIFIED TUITION PROGRAMS"
+  },
+  {
+   "en": "designated beneficiary",
+   "vi": "người thụ hưởng được chỉ định",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.5 — SECTION 529 QUALIFIED TUITION PROGRAMS"
+  },
+  {
+   "en": "qualified higher education expenses",
+   "vi": "chi phí giáo dục đại học đủ điều kiện",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.5 — SECTION 529 QUALIFIED TUITION PROGRAMS"
+  },
+  {
+   "en": "eligible educational institution",
+   "vi": "cơ sở giáo dục đủ điều kiện",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.5 — SECTION 529 QUALIFIED TUITION PROGRAMS"
+  },
+  {
+   "en": "superfunding",
+   "vi": "đóng 529 cho 5 năm một lần ($95,000)",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.5 — SECTION 529 QUALIFIED TUITION PROGRAMS"
+  },
+  {
+   "en": "apprenticeship program",
+   "vi": "chương trình học nghề đăng ký",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.5 — SECTION 529 QUALIFIED TUITION PROGRAMS"
+  },
+  {
+   "en": "student loan repayment (529)",
+   "vi": "dùng 529 trả nợ học tối đa $10,000 lifetime",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.5 — SECTION 529 QUALIFIED TUITION PROGRAMS"
   },
   {
    "en": "gift tax",
@@ -3551,6 +3670,62 @@ window.EA_LESSONS = {
    "kind": "term",
    "lesson": "EA1_SU14_Estate_Tax",
    "section": "14.4 — EXECUTOR, PAYMENT RELIEF & ESTATE PLANNING OVERVIEW"
+  },
+  {
+   "en": "generation-skipping transfer tax (GSTT)",
+   "vi": "thuế chuyển giao bỏ cách thế hệ",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.5 — GENERATION-SKIPPING TRANSFER TAX (GSTT)"
+  },
+  {
+   "en": "skip person",
+   "vi": "người ≥ 2 thế hệ dưới transferor",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.5 — GENERATION-SKIPPING TRANSFER TAX (GSTT)"
+  },
+  {
+   "en": "direct skip",
+   "vi": "chuyển trực tiếp cho skip person",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.5 — GENERATION-SKIPPING TRANSFER TAX (GSTT)"
+  },
+  {
+   "en": "taxable distribution",
+   "vi": "phân phối từ trust cho skip person",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.5 — GENERATION-SKIPPING TRANSFER TAX (GSTT)"
+  },
+  {
+   "en": "taxable termination",
+   "vi": "chấm dứt quyền non-skip person trong trust",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.5 — GENERATION-SKIPPING TRANSFER TAX (GSTT)"
+  },
+  {
+   "en": "GST exemption",
+   "vi": "mức miễn GSTT ($13.99 triệu 2025)",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.5 — GENERATION-SKIPPING TRANSFER TAX (GSTT)"
+  },
+  {
+   "en": "inclusion ratio",
+   "vi": "tỷ lệ bao gồm (quyết định phần chịu GSTT)",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.5 — GENERATION-SKIPPING TRANSFER TAX (GSTT)"
+  },
+  {
+   "en": "DSGT / DSET",
+   "vi": "thuế direct skip cho gift / cho estate",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.5 — GENERATION-SKIPPING TRANSFER TAX (GSTT)"
   },
   {
    "en": "dual basis rule",
@@ -7421,6 +7596,19 @@ window.EA_LESSONS = {
    "section": "4.2 — CHI PHÍ KINH DOANH THƯỜNG GẶP — MEALS, GIFTS, TRAVEL, VEHICLE"
   },
   {
+   "q": "Business meals of an employee subject to Department of Transportation hours-of-service rules (e.g., long-haul truck driver) are deductible at:",
+   "opts": [
+    "50%",
+    "65%",
+    "80%",
+    "100%"
+   ],
+   "a": 2,
+   "exp": "80%",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.2 — CHI PHÍ KINH DOANH THƯỜNG GẶP — MEALS, GIFTS, TRAVEL, VEHICLE"
+  },
+  {
    "q": "Receipts are required for travel, meals and gift expenses of at least:",
    "opts": [
     "$25",
@@ -9111,6 +9299,71 @@ window.EA_LESSONS = {
    "section": "10.4 — BÁN DOANH NGHIỆP (§1060) & TỔNG HỢP FORM 4797"
   },
   {
+   "q": "To exclude gain on a principal residence, the taxpayer must have owned and used it as a principal residence for at least:",
+   "opts": [
+    "1 of the last 3 years",
+    "2 of the last 5 years",
+    "3 of the last 5 years",
+    "5 of the last 10 years"
+   ],
+   "a": 1,
+   "exp": "2 of the last 5 years",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.1 — SALE OF A PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "q": "A taxpayer lived in a home for 18 months and sold it due to a job change. The maximum exclusion (Single) is:",
+   "opts": [
+    "$0",
+    "$125,000",
+    "$187,500",
+    "$250,000"
+   ],
+   "a": 2,
+   "exp": "$187,500",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.1 — SALE OF A PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "q": "A residence acquired in a §1031 exchange within the prior 5 years:",
+   "opts": [
+    "Qualifies for §121 immediately",
+    "Does not qualify for the §121 exclusion",
+    "Qualifies for a $125,000 exclusion",
+    "Is always taxed at 15%"
+   ],
+   "a": 1,
+   "exp": "Does not qualify for the §121 exclusion",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.1 — SALE OF A PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "q": "Depreciation allowed or allowable on a home office after May 6, 1997:",
+   "opts": [
+    "Is excluded under §121",
+    "May not be excluded and is taxed",
+    "Reduces the exclusion limit to $125,000",
+    "Is ignored"
+   ],
+   "a": 1,
+   "exp": "May not be excluded and is taxed",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.1 — SALE OF A PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "q": "A loss on the sale of a personal residence is:",
+   "opts": [
+    "Deductible as a capital loss",
+    "Deductible as an ordinary loss",
+    "Not recognized",
+    "Deductible up to $3,000"
+   ],
+   "a": 2,
+   "exp": "Not recognized",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.1 — SALE OF A PRINCIPAL RESIDENCE (§121)"
+  },
+  {
    "q": "After 2017, Section 1031 like-kind exchange treatment is available for:",
    "opts": [
     "Personal property only",
@@ -9121,7 +9374,7 @@ window.EA_LESSONS = {
    "a": 1,
    "exp": "Real property only",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.1 — LIKE-KIND EXCHANGES (§1031)"
+   "section": "11.2 — LIKE-KIND EXCHANGES (§1031)"
   },
   {
    "q": "A taxpayer must identify replacement property within ___ days and complete the exchange within ___ days of transfer.",
@@ -9134,7 +9387,7 @@ window.EA_LESSONS = {
    "a": 1,
    "exp": "45 / 180",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.1 — LIKE-KIND EXCHANGES (§1031)"
+   "section": "11.2 — LIKE-KIND EXCHANGES (§1031)"
   },
   {
    "q": "In a like-kind exchange, recognized gain equals:",
@@ -9147,7 +9400,7 @@ window.EA_LESSONS = {
    "a": 2,
    "exp": "The lesser of gain realized or boot received",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.1 — LIKE-KIND EXCHANGES (§1031)"
+   "section": "11.2 — LIKE-KIND EXCHANGES (§1031)"
   },
   {
    "q": "A taxpayer's basis in replacement property is generally:",
@@ -9160,7 +9413,7 @@ window.EA_LESSONS = {
    "a": 1,
    "exp": "Adjusted basis of old property plus boot paid and gain recognized, less boot received",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.1 — LIKE-KIND EXCHANGES (§1031)"
+   "section": "11.2 — LIKE-KIND EXCHANGES (§1031)"
   },
   {
    "q": "Which property does NOT qualify for like-kind treatment?",
@@ -9173,7 +9426,7 @@ window.EA_LESSONS = {
    "a": 2,
    "exp": "A personal residence",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.1 — LIKE-KIND EXCHANGES (§1031)"
+   "section": "11.2 — LIKE-KIND EXCHANGES (§1031)"
   },
   {
    "q": "A gain from an involuntary conversion may be postponed if the taxpayer:",
@@ -9187,7 +9440,7 @@ window.EA_LESSONS = {
    "a": 0,
    "exp": "Reinvests the proceeds in similar property within the replacement period",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.2 — INVOLUNTARY CONVERSIONS (§1033)"
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
   },
   {
    "q": "The standard replacement period for a casualty (non-condemnation) is:",
@@ -9200,7 +9453,7 @@ window.EA_LESSONS = {
    "a": 1,
    "exp": "2 years after the close of the first year in which gain is realized",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.2 — INVOLUNTARY CONVERSIONS (§1033)"
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
   },
   {
    "q": "The replacement period for condemned business real property is:",
@@ -9213,7 +9466,7 @@ window.EA_LESSONS = {
    "a": 2,
    "exp": "3 years",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.2 — INVOLUNTARY CONVERSIONS (§1033)"
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
   },
   {
    "q": "Losses from involuntary conversions are:",
@@ -9226,7 +9479,7 @@ window.EA_LESSONS = {
    "a": 1,
    "exp": "Not deferred",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.2 — INVOLUNTARY CONVERSIONS (§1033)"
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
   },
   {
    "q": "Gain recognized on an involuntary conversion equals the lesser of gain realized or:",
@@ -9239,7 +9492,7 @@ window.EA_LESSONS = {
    "a": 1,
    "exp": "Proceeds not reinvested in replacement property",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.2 — INVOLUNTARY CONVERSIONS (§1033)"
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
   },
   {
    "q": "A transfer of property between spouses (both U.S. citizens) is:",
@@ -9252,7 +9505,7 @@ window.EA_LESSONS = {
    "a": 1,
    "exp": "Nonrecognition with carryover basis",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.3 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
+   "section": "11.4 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
   },
   {
    "q": "A transfer incident to a divorce must occur within how long after the marriage ends (or be under the divorce instrument within 6 years)?",
@@ -9265,7 +9518,7 @@ window.EA_LESSONS = {
    "a": 1,
    "exp": "1 year",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.3 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
+   "section": "11.4 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
   },
   {
    "q": "Section 1041 does NOT apply if the recipient spouse is:",
@@ -9278,7 +9531,7 @@ window.EA_LESSONS = {
    "a": 2,
    "exp": "A nonresident alien",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.3 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
+   "section": "11.4 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
   },
   {
    "q": "Under §1035, which exchange is tax-free?",
@@ -9291,7 +9544,7 @@ window.EA_LESSONS = {
    "a": 0,
    "exp": "Life insurance policy for annuity contract Life insurance → annuity được phép; annuity → life insurance thì không.",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.3 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
+   "section": "11.4 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
   },
   {
    "q": "A taxpayer's recognized gain in a QOF deferral election is deferred until the earlier of the sale of the QOF investment or:",
@@ -9304,7 +9557,7 @@ window.EA_LESSONS = {
    "a": 1,
    "exp": "December 31, 2026",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.3 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
+   "section": "11.4 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
   },
   {
    "q": "Which of the following is a permanent exclusion (not just deferral) of gain?",
@@ -9317,7 +9570,7 @@ window.EA_LESSONS = {
    "a": 2,
    "exp": "§121",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.4 — SO SÁNH & BÁO CÁO"
+   "section": "11.5 — SO SÁNH & BÁO CÁO"
   },
   {
    "q": "Which form reports a like-kind exchange?",
@@ -9330,7 +9583,7 @@ window.EA_LESSONS = {
    "a": 1,
    "exp": "Form 8824",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.4 — SO SÁNH & BÁO CÁO"
+   "section": "11.5 — SO SÁNH & BÁO CÁO"
   },
   {
    "q": "A rental building destroyed by fire, with insurance proceeds exceeding basis. The taxpayer wants to defer the gain. The most appropriate provision is:",
@@ -9343,7 +9596,7 @@ window.EA_LESSONS = {
    "a": 1,
    "exp": "§1033",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.4 — SO SÁNH & BÁO CÁO"
+   "section": "11.5 — SO SÁNH & BÁO CÁO"
   },
   {
    "q": "Which transaction does NOT permit recognition of a loss?",
@@ -9356,7 +9609,7 @@ window.EA_LESSONS = {
    "a": 0,
    "exp": "Like-kind exchange",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.4 — SO SÁNH & BÁO CÁO"
+   "section": "11.5 — SO SÁNH & BÁO CÁO"
   },
   {
    "q": "Basis of replacement property in a §1033 conversion generally equals:",
@@ -9369,7 +9622,7 @@ window.EA_LESSONS = {
    "a": 1,
    "exp": "Cost of replacement less deferred gain",
    "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
-   "section": "11.4 — SO SÁNH & BÁO CÁO"
+   "section": "11.5 — SO SÁNH & BÁO CÁO"
   },
   {
    "q": "The 2025 IRA contribution limit for a taxpayer age 52 with sufficient compensation is:",
@@ -9630,6 +9883,71 @@ window.EA_LESSONS = {
    "exp": "May not be rolled over",
    "lesson": "EA1_SU12_Individual_Retirement_Accounts",
    "section": "12.4 — ROLLOVERS, INHERITED IRA & PROHIBITED TRANSACTIONS"
+  },
+  {
+   "q": "Contributions to a Section 529 plan are:",
+   "opts": [
+    "Deductible for federal income tax",
+    "Not deductible for federal income tax, and earnings grow tax-free if used for qualified expenses",
+    "Taxable when received by the beneficiary",
+    "Limited to $2,000 per year"
+   ],
+   "a": 1,
+   "exp": "Not deductible for federal income tax, and earnings grow tax-free if used for qualified expenses",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.5 — SECTION 529 QUALIFIED TUITION PROGRAMS"
+  },
+  {
+   "q": "The maximum 2025 superfunding contribution to a 529 plan for one beneficiary without gift tax is:",
+   "opts": [
+    "$19,000",
+    "$38,000",
+    "$95,000",
+    "$190,000"
+   ],
+   "a": 2,
+   "exp": "$95,000",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.5 — SECTION 529 QUALIFIED TUITION PROGRAMS"
+  },
+  {
+   "q": "The lifetime limit for using 529 funds to repay a beneficiary's student loans is:",
+   "opts": [
+    "$2,500",
+    "$5,000",
+    "$10,000",
+    "$20,000"
+   ],
+   "a": 2,
+   "exp": "$10,000",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.5 — SECTION 529 QUALIFIED TUITION PROGRAMS"
+  },
+  {
+   "q": "Qualified 529 expenses for elementary or secondary school tuition are limited (2025) to:",
+   "opts": [
+    "$2,000 per student per year",
+    "$5,000 per student per year",
+    "$10,000 per student per year",
+    "No limit"
+   ],
+   "a": 2,
+   "exp": "$10,000 per student per year",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.5 — SECTION 529 QUALIFIED TUITION PROGRAMS"
+  },
+  {
+   "q": "If a donor who superfunded a 529 dies within the 5-year period:",
+   "opts": [
+    "Nothing happens",
+    "The portion allocated to the remaining years is added back to the donor's estate",
+    "The entire contribution is added back",
+    "The beneficiary pays the tax"
+   ],
+   "a": 1,
+   "exp": "The portion allocated to the remaining years is added back to the donor's estate",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.5 — SECTION 529 QUALIFIED TUITION PROGRAMS"
   },
   {
    "q": "Gift tax is generally the liability of:",
@@ -10150,6 +10468,71 @@ window.EA_LESSONS = {
    "exp": "The trust assets are included in the gross estate",
    "lesson": "EA1_SU14_Estate_Tax",
    "section": "14.4 — EXECUTOR, PAYMENT RELIEF & ESTATE PLANNING OVERVIEW"
+  },
+  {
+   "q": "A skip person is a person assigned to a generation that is at least how many generations below the transferor?",
+   "opts": [
+    "1",
+    "2",
+    "3",
+    "4"
+   ],
+   "a": 1,
+   "exp": "2",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.5 — GENERATION-SKIPPING TRANSFER TAX (GSTT)"
+  },
+  {
+   "q": "The 2025 GST exemption per individual is:",
+   "opts": [
+    "$5,000,000",
+    "$13,990,000",
+    "$19,000",
+    "$27,980,000"
+   ],
+   "a": 1,
+   "exp": "$13,990,000",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.5 — GENERATION-SKIPPING TRANSFER TAX (GSTT)"
+  },
+  {
+   "q": "The person liable for GSTT on a taxable termination is:",
+   "opts": [
+    "The transferor",
+    "The skip person",
+    "The trustee",
+    "The IRS"
+   ],
+   "a": 2,
+   "exp": "The trustee",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.5 — GENERATION-SKIPPING TRANSFER TAX (GSTT)"
+  },
+  {
+   "q": "For an unrelated person, an individual born between 37½ and 62½ years after the transferor is assigned to:",
+   "opts": [
+    "The same generation",
+    "One generation below",
+    "Two generations below",
+    "Three generations below"
+   ],
+   "a": 2,
+   "exp": "Two generations below",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.5 — GENERATION-SKIPPING TRANSFER TAX (GSTT)"
+  },
+  {
+   "q": "The maximum GSTT rate applies the inclusion ratio to which federal rate?",
+   "opts": [
+    "28%",
+    "35%",
+    "40%",
+    "55%"
+   ],
+   "a": 2,
+   "exp": "40%",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.5 — GENERATION-SKIPPING TRANSFER TAX (GSTT)"
   },
   {
    "q": "A taxpayer receives gifted property with a donor's basis of $40,000 and FMV at the date of gift of $10,000. If the taxpayer later sells it for $9,500, the result is:",
