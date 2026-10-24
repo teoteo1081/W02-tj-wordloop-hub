@@ -4467,22 +4467,34 @@
     return '<div class="g-ttraps"><div class="g-ttrh">🪤 ' + esc(T("t_traps")) + (first.x.trap_type ? ' <span class="g-ttag">' + esc(first.x.trap_type) + "</span>" : "") + "</div>" + list(first.x) +
       (a && b ? '<details class="g-tren"><summary>' + FLAG.en + " English</summary>" + list(b.x) + "</details>" : "") + "</div>";
   }
+  /* Explicit alignment for bilingual review. Never guess sentence boundaries from punctuation. */
+  function toeicBilingual(q) {
+    var vi = q && q.i18n && q.i18n.vi, pairs = vi && vi.passage_pairs;
+    if (!Array.isArray(pairs) || !pairs.length || !pairs.every(function (p) {
+      return p && typeof p.en === "string" && p.en.trim() && typeof p.vi === "string" && p.vi.trim();
+    })) return "";
+    return '<div class="g-tbilingual">' + pairs.map(function (p) {
+      return '<div class="g-tpair"><div class="g-tpair-en" lang="en">' + esc(p.en) +
+        '</div><div class="g-tpair-vi" lang="vi">' + esc(p.vi) + "</div></div>";
+    }).join("") + "</div>";
+  }
   function toeicExpl(q) {
     if (!q || q.type !== "toeic" || !q.ans) return "";
     /* TJ: CẢ HAI — tiếng mẹ đẻ TRƯỚC rồi tới tiếng Anh (người xem tiếng Anh thì chỉ tiếng Anh) */
+    var bilingual = toeicBilingual(q);
     var L = effLang(G.myLang, G.st, "toeic"), I = q.i18n || {}, vi = { tag: q.tag, explain: q.expl, stem: q.vi };
     var first = I[L] || (L === "vi" ? vi : null), en = I.en || null, out = [];
     if (first && first.explain && L !== "en") out.push({ l: L, x: first });
     if (en && en.explain) out.push({ l: "en", x: en });
     if (!out.length) out.push({ l: "vi", x: vi });
-    if (!out[0].x.explain) return "";
+    if (!out[0].x.explain) return bilingual;
     return '<div class="g-texpl"><b>' + esc(q.ans) + "</b>" + (out[0].x.tag ? ' <span class="g-ttag">' + esc(out[0].x.tag) + "</span>" : "") +
       (out[1] && out[1].x.tag && out[1].x.tag !== out[0].x.tag ? ' <span class="g-ttag">' + esc(out[1].x.tag) + "</span>" : "") +
       out.map(function (o) {
         return (o.x.stem ? '<div class="g-tvi">' + (FLAG[o.l] || "") + " " + esc(o.x.stem) + "</div>" : "") +
           '<div class="g-tex">💡 ' + (out.length > 1 ? (FLAG[o.l] || "") + " " : "") + esc(o.x.explain) + "</div>";
       }).join("") + toeicTraps(q, out) +
-      (out[0].l !== "en" && out[0].x.passage ? '<details class="g-tpdet"><summary>' + esc(T("t_ptr")) + "</summary>" + '<div class="g-tpass">' + esc(out[0].x.passage) + "</div></details>" : "") +
+      (bilingual || (out[0].l !== "en" && out[0].x.passage ? '<details class="g-tpdet"><summary>' + esc(T("t_ptr")) + "</summary>" + '<div class="g-tpass">' + esc(out[0].x.passage) + "</div></details>" : "")) +
       (q.asrc === "claude" ? '<div class="g-sub">⚠️ ' + esc(T("t_claude")) + "</div>" : "") + "</div>";
   }
   /* TS-012: dữ liệu DỰ PHÒNG cho avatar+tên người đã chọn — chụp ngay lúc lộ đáp án (bộ nhớ ván), không chờ game_answers (host chỉ ghi lúc HẾT ván,
