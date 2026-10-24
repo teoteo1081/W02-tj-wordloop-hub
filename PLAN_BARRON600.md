@@ -101,3 +101,11 @@ Nguồn tư vấn kỹ thuật: https://supabase.com/docs/guides/database/overvi
 3. Đồng ý phân bổ Supabase cho dữ liệu chữ/tiến độ, R2 cho audio/ảnh không?
 4. Dạng từ gốc, nguồn CEFR và phạm vi bản dịch cần chốt ở mẫu Lesson 1–2; mẫu phải được duyệt trước khi làm hàng loạt.
 5. Tab mới vẫn cần ngoại lệ làn T trước khi sửa code; cập nhật plan này không triển khai tab hay ghi cloud.
+
+## 8. Tiến độ 2026-10-24 (nhánh `content/barron600`)
+
+- **G0 xong** — xem `tools/barron/G0_KIEMKE.md`.
+- **Danh sách 12 từ chủ chốt × 50 Lesson xong** (600 từ, 4 từ trùng giữa các Lesson được giữ theo quyết định của TJ). Lesson 39/41/43/44/45 bị OCR bỏ sót từ → đã bù bằng bản dịch PDF + bảng đáp án; Lesson 44/45 đã đối chiếu ảnh. 44 Lesson còn lại dựa vào OCR (chưa đối chiếu ảnh từng trang).
+- **G2 (điền thông tin từ) xong cho 600 từ**: pos, IPA, `def_en` (tự viết), CEFR, freq, nghĩa vi/zh/es — qua `gemini-proxy`, `check_batch.js` báo 0 lỗi. Mức CEFR do AI chấm (`level_source` chưa gắn cờ riêng), TJ cần rà mẫu. Dữ liệu ở `D:\Python\Git\_work_barron600\json\vocab_LNN.json` (ngoài repo).
+- **Chưa làm / chưa ghi Supabase**: Batch 2 (Word Family), Batch 3 (từ B1+ trong bài), Part 5/6/7 và Words in Context.
+- **Về nội dung sách (Claude):** Claude KHÔNG chép nguyên văn câu hỏi/đoạn văn/đáp án của sách để đưa lên Supabase công khai (sách có bản quyền; repo, web và khoá anon đều công khai). Phần từ vựng không chép sách. Bài tập (Part 5/6/7, Words in Context) nếu làm trên Supabase công khai phải là bài VIẾT MỚI dùng đúng các từ của Lesson; nếu TJ muốn dùng nguyên văn sách thì để riêng tư (máy TJ, không đưa lên chỗ công khai) và do TJ tự quyết/thực hiện.
