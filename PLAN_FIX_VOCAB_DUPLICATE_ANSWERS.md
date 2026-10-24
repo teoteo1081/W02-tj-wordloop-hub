@@ -8,7 +8,7 @@ Mỗi câu có các lựa chọn phân biệt rõ để người chơi không b�
 
 - Lúc lập kế hoạch, checkout là `fix/board-mobile-bottom-padding` (`f3dbe3e`). Nay làm việc trên `fix/vocab-dup-answers`, đã chứa `4708ba9`.
 - Đã có bản sửa cũ `5492386` trong checkout.
-- Bản sửa bổ sung `4708ba9` có trên `origin/main` và `origin/fix/game-trap-dup`, chưa có trong checkout.
+- Bản sửa bổ sung `4708ba9` có trên `origin/main` và `origin/fix/game-trap-dup`; lúc lập kế hoạch chưa có trong checkout, nay nhánh `fix/vocab-dup-answers` đã chứa nó (xác nhận bằng `git merge-base --is-ancestor`).
 - Sau fetch, `origin/main` tại `f785ae1`. Chưa xác nhận phiên bản website đang chạy.
 
 ## Các bước thực hiện
