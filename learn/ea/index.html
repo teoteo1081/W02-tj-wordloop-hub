@@ -19,11 +19,23 @@
 if (window.top === window) document.querySelector(".quest-home").hidden = false;
 window.QUEST_CONFIG = { lessonBase: "../../index.html?sel=hub_ea2025#" };
 </script>
-<script src="data/lessons-data.js?v=4"></script>
-<script src="data/cases.js?v=1"></script>
-<script src="data/research.js?v=1"></script>
-<script src="../quest.js?v=3"></script>
-<script>window.QUEST_CLASS_ID="ea";</script>
-<script src="../qclass.js?v=31"></script>
+<script>
+/* TJ 2026-10-25: dữ liệu game EA tải từ Supabase Storage (bucket "ea"); lỗi mạng/không tải được thì dùng bản chép trong data/.
+   lessons-data + research dùng chung với repo L04 (ea/data/); cases.js bản W02 (tên khách riêng) ở ea/data-w02/.
+   Cập nhật bucket: python3 tools/upload_ea_data.py trong repo L04-ea-2025 (2 file chung) + upload cases.js W02 vào ea/data-w02/. */
+(function () {
+  var R = "https://pqarpszsipbdugrumhfy.supabase.co/storage/v1/object/public/ea/";
+  var DATA = [["data/lessons-data.js?v=4", R + "data/lessons-data.js"], ["data/cases.js?v=1", R + "data-w02/cases.js"], ["data/research.js?v=1", R + "data/research.js"]];
+  function add(src, ok, bad) { var s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = bad || ok; document.body.appendChild(s); }
+  function tail() { add("../quest.js?v=3", function () { window.QUEST_CLASS_ID = "ea"; add("../qclass.js?v=31"); }); }
+  function load(i, remote) {
+    if (i >= DATA.length) return tail();
+    var next = function () { load(i + 1, remote); };
+    if (remote) add(DATA[i][1], next, function () { load(0, false); });
+    else add(DATA[i][0], next);
+  }
+  load(0, location.protocol !== "file:");
+})();
+</script>
 </body>
 </html>
