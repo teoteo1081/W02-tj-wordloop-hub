@@ -38,3 +38,7 @@ Build thiếu bất kỳ Lesson/đáp án/cặp đoạn nào sẽ báo lỗi và
 - QA độc lập đọc toàn bộ156 cặp đoạn, kiểm600 chỗ trống theo key/gạch chân và rà lỗi dịch có ý nghĩa. Các kết quả chỉ phản ánh bộ dữ liệu đã kiểm; không tuyên bố nguồn sách/bản dịch hoàn hảo.
 
 Bản renderer/selector đang dở từ `feat/barron-bilingual-review` vẫn nằm trên nhánh tính năng. Không nhập nội dung sách vào Supabase public để kích hoạt selector đó. Đưa phần tính năng vào production cần được xử lý riêng theo quy tắc làn của dự án.
+
+## Yêu cầu đưa lên Supabase — chờ quyền đọc công khai
+
+TJ yêu cầu đưa tài liệu chơi game lên Supabase sau checkpoint riêng tư. Đã chuẩn bị `upload_supabase.js` cho đủ600 dòng, kiểm tra schema, ID và sao lưu; GET tiền kiểm thấy0 dòng Barron. Bảng `test_items` hiện đọc được bằng anon. Lần chạy `--apply` bị bộ duyệt tự động từ chối vì chưa có xác nhận riêng cho việc công khai nội dung bài đọc/bản dịch. **Chưa ghi dữ liệu cloud.** Cần xác nhận rõ quyền đọc công khai trước khi chạy lại. Script chỉ ghi exam barron600 với id đã kiểm, không đổi cấu trúc/RLS hoặc dữ liệu TOEIC/EA; đọc lại toàn bộ và so sánh nội dung/hash sau ghi.
