@@ -826,6 +826,17 @@
     hostSetScope();
     sideOpen(true);   /* mở cây để chọn lại ngay */
   });
+  /* TJ 2026-10-25: thẻ "📘 Barron 600" (learn.js) -> chọn sẵn Notebook Barron (hub từ vựng) hoặc bộ đề Barron (hub TOEIC) */
+  document.addEventListener("tjwl-pick-scope", function (e) {
+    var d = e.detail || {}; if (!G.isHost || !d.table || !d.id) return;
+    picked = [{ table: d.table, id: d.id, title: d.title || "" }];
+    if (TREE) paintTree(); else paintPicked();
+    hostSetScope();
+  });
+  document.addEventListener("tjwl-pick-book", async function (e) {
+    if (!G.isHost) return;
+    for (var i = 0; i < 50; i++) { var bs = $("#t-book"); if (bs && [].some.call(bs.options, function (o) { return o.value === e.detail; })) { bs.value = e.detail; paintTests(); return; } await new Promise(function (r) { setTimeout(r, 200); }); }
+  });
   /* đường dẫn Hub › Notebook › Section › Page › Batch › Block của mục đã chọn (cần TREE đã tải) */
   function pathOf(p) {
     if (!TREE) return p.title;

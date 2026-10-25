@@ -57,8 +57,29 @@
     if (!key) paintHub();
     nav.classList.remove("open"); paintCur();   /* chọn xong -> thu gọn hàng thẻ (điện thoại) */
   }
+  /* 📘 Barron 600: hộp 2 lựa chọn dưới thanh thẻ. Từ vựng = hub từ vựng + chọn sẵn Notebook "Baron 600 Essential Words for the TOEIC"; Words in Context = hub TOEIC + bộ đề Barron 600. */
+  var BARRON_NB = "7c3db651-bc1e-4e7f-84a1-ea1748e0c27a", bpop = null;
+  function closeBarron() { if (bpop) { bpop.remove(); bpop = null; } }
+  function toggleBarron(btn) {
+    if (bpop) { closeBarron(); return; }
+    bpop = document.createElement("div"); bpop.className = "g-barron";
+    bpop.innerHTML = '<button type="button" data-bw="vocab">🔤 Từ vựng<small>600 từ · 50 Lesson</small></button><button type="button" data-bw="wic">📝 Words in Context<small>50 bài · 600 câu</small></button>';
+    var r = btn.getBoundingClientRect(); bpop.style.top = Math.round(r.bottom + 6) + "px"; bpop.style.left = Math.max(8, Math.round(r.left)) + "px";
+    document.body.appendChild(bpop);
+    bpop.addEventListener("click", function (e) {
+      var o = e.target.closest("[data-bw]"); if (!o) return; var w = o.dataset.bw; closeBarron();
+      hub = w === "wic" ? "test" : "vocab"; show(""); try { sessionStorage.removeItem("tjwl_sw_keep"); } catch (x) {}
+      document.dispatchEvent(new CustomEvent("tjwl-sethub", { detail: hub }));
+      if (w === "wic") document.dispatchEvent(new CustomEvent("tjwl-pick-book", { detail: "barron600" }));
+      else document.dispatchEvent(new CustomEvent("tjwl-pick-scope", { detail: { table: "notebooks", id: BARRON_NB, title: "Barron 600 Essential Words" } }));
+      paintCur();
+    });
+  }
+  document.addEventListener("click", function (e) { if (bpop && !e.target.closest(".g-barron") && !e.target.closest('[data-learn="barron"]')) closeBarron(); });
   nav.addEventListener("click", function (e) {
     var b = e.target.closest("[data-learn]"); if (!b || b.disabled) return;
+    if (b.dataset.learn === "barron") { toggleBarron(b); return; }   /* TJ 2026-10-25: thẻ Barron 600 = hộp 2 lựa chọn (Từ vựng / Words in Context), không đổi thẻ đang mở */
+    closeBarron();
     var k = b.dataset.learn, before = curToken();
     try { if (k === "sp" || k === "wr" || k === "ielts" || k === "ielw" || k === "dm" || k === "ea") sessionStorage.setItem("tjwl_sw_keep", k); else sessionStorage.removeItem("tjwl_sw_keep"); } catch (e) {}   /* chỉ host bấm thẻ (thanh thẻ chỉ có ở host) -> F5 quay lại đúng Speaking/Writing; người chơi bị lớp tự mở thì KHÔNG nhớ */
     if (k === "" || k === "toeic") { hub = k === "toeic" ? "test" : "vocab"; show(""); document.dispatchEvent(new CustomEvent("tjwl-sethub", { detail: k === "toeic" ? "test" : "vocab" })); }   /* cập nhật hub NGAY (nhãn thanh ngữ cảnh không chờ tín hiệu trễ từ game) */
