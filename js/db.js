@@ -360,18 +360,32 @@
        cột "id" (khoá chính là cặp user_id+block_id/word_id), truyền
        "block_id" khi gọi cho bảng đó, không thì PostgREST báo lỗi
        "column ... does not exist". */
-    var PAGE = 1000, out = [];
-    function loop(offset) {
+    var PAGE = 1000, PAR = 4;
+    function fetchPage(offset) {
       var q = DB.sb.from(table).select("*").range(offset, offset + PAGE - 1).order(orderCol || "id");
       if (build) q = build(q);
       return q.then(function (r) {
         if (r.error) throw r.error;
-        var rows = r.data || [];
-        out = out.concat(rows);
-        return rows.length === PAGE ? loop(offset + PAGE) : out;
+        return r.data || [];
       });
     }
-    return loop(0);
+    /* Trang đầu 1 mình (bảng nhỏ chỉ tốn 1 request); nếu đầy thì lấy các
+       trang kế theo từng lượt PAR trang SONG SONG, ghép đúng thứ tự trang,
+       dừng ở trang ngắn đầu tiên. */
+    function more(out, nextOffset) {
+      var jobs = [];
+      for (var i = 0; i < PAR; i++) jobs.push(fetchPage(nextOffset + i * PAGE));
+      return Promise.all(jobs).then(function (pages) {
+        for (var i = 0; i < pages.length; i++) {
+          out = out.concat(pages[i]);
+          if (pages[i].length < PAGE) return out;
+        }
+        return more(out, nextOffset + PAR * PAGE);
+      });
+    }
+    return fetchPage(0).then(function (first) {
+      return first.length < PAGE ? first : more(first, PAGE);
+    });
   }
 
   /* ══════════════ CÂY TOÀN APP (cho màn Journey > 🌳 Chi tiết) ══════════════

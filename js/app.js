@@ -189,11 +189,13 @@
   }
 
   /* ══════════════ HUB "⭐ ÔN RIÊNG" (2026-09-25) — xem DB.syncOnRiengBlocks ══════════════ */
-  App.ensureOnRieng = async function () {
+  /* deferReload = true: boot() tự lo nạp lại quyền (song song với việc tải
+     quyền lần đầu) nên không nạp lại ở đây. */
+  App.ensureOnRieng = async function (deferReload) {
     if (!w.Auth.user) return;
     try {
       await w.DB.ensureOnRieng(w.Auth.user);
-      if (w.DB.progressCloud) await loadNotebookAccess();   /* vừa tự share Notebook cho chính mình */
+      if (w.DB.progressCloud && !deferReload) await loadNotebookAccess();   /* vừa tự share Notebook cho chính mình */
     } catch (e) { console.warn("[App] ensureOnRieng lỗi:", e); }
   };
   /* Hub Ôn riêng chỉ hiện khi user này dùng được (xem DB.canOnRieng). */
@@ -389,7 +391,7 @@
   var notebookAccessAll = [];
   var myGrantedIds = new Set();
 
-  async function loadNotebookAccess() {
+  async function loadNotebookAccess(skipHubIds) {
     try { notebookAccessAll = await w.DB.listAllNotebookAccess(); } catch (e) { notebookAccessAll = []; }
     /* effectiveUserId() trả về ĐÚNG người đang "xem như" nếu Admin bật
        xem thử 1 user cụ thể (xem Auth.setViewAsUser trong auth.js) — để
@@ -397,7 +399,7 @@
        theo Admin thật. */
     var myId = w.Auth.effectiveUserId ? w.Auth.effectiveUserId() : (w.Auth.user && w.Auth.user.id);
     myGrantedIds = new Set(notebookAccessAll.filter(function (r) { return r.user_id === myId; }).map(function (r) { return r.notebook_id; }));
-    await refreshVisibleHubIds();
+    if (!skipHubIds) await refreshVisibleHubIds();   /* boot() tự gọi 1 lần sau khi Ôn riêng đã tạo xong */
   }
 
   /* Hub nào KHÔNG CÓ 1 Notebook nào user hiện tại thấy được thì ẨN LUÔN
@@ -1522,6 +1524,9 @@
       }).join("");
     } catch (e) { body.innerHTML = '<div class="sb-lb-empty">Không tải được xếp hạng game.</div>'; }
   };
+  /* false trong lúc boot(): 2 việc tải cả kho từ (xếp hạng sidebar, bộ đếm
+     đã thuộc) chờ vài giây sau khi trang hiện, khỏi tranh băng thông. */
+  var heavyReady = false;
   App.renderSidebarLbMini = async function (force) {
     var box = w.$("#sidebar-lb-mini");
     var body = w.$("#sidebar-lb-mini-body");
@@ -1535,6 +1540,7 @@
 
     if (force || SB_LB_NB_LOADED !== S.notebookId) {
       body.innerHTML = '<div class="sb-lb-empty">⏳ Đang tải…</div>';
+      if (!heavyReady) return;   /* đang khởi động: để trang chính tải xong trước, boot() sẽ gọi lại sau vài giây */
       try {
         SB_LB_CACHE = await loadLeaderboardData("notebooks", S.notebookId);
         SB_LB_NB_LOADED = S.notebookId;
@@ -5294,7 +5300,17 @@
     await w.Auth.init();
     refreshPinsForUser();   /* nạp đúng cài đặt ẩn/hiện cột của user vừa xác định (xem khai báo ở trên) */
     refreshCollapsedForUser();   /* nạp đúng nhánh Notebook đã thu/bung của user vừa xác định */
-    await loadNotebookAccess();   /* PHẢI xong TRƯỚC lần loadNotebooksFiltered() đầu tiên bên dưới, không thì lọc sai (myGrantedIds rỗng) */
+    /* Tải quyền Notebook và tạo Hub Ôn riêng CHẠY SONG SONG (không phụ thuộc
+       nhau). Quyền PHẢI xong TRƯỚC lần loadNotebooksFiltered() đầu tiên bên
+       dưới, không thì lọc sai (myGrantedIds rỗng). */
+    await Promise.all([loadNotebookAccess(true), App.ensureOnRieng(true)]);
+    var me = w.Auth.user;
+    if (me && w.DB.progressCloud && /^[0-9a-f-]{36}$/i.test(me.id)) {
+      var onrNb = w.DB.onrIds(me.id).nb;
+      if (!notebookAccessAll.some(function (r) { return r.user_id === me.id && r.notebook_id === onrNb; })) {
+        await loadNotebookAccess(true);   /* Ôn riêng vừa tự share cho chính mình -> nạp lại quyền */
+      }
+    }
 
     w.Auth.onChange(async function () {
       await App.ensureOnRieng();
@@ -5318,9 +5334,11 @@
       App.renderSidebarLbMini(true);   /* đổi user -> điểm/quyền thấy khác, tải lại chắc chắn */
     });
 
-    await App.ensureOnRieng();
-    try { await refreshVisibleHubIds(); } catch (e) {}   /* lần đầu: Notebook Ôn riêng vừa tạo -> hiện tab Hub ngay, khỏi phải tải lại (QA) */
-    S.hubs = await getHubsForUser();
+    /* Ôn riêng đã tạo xong ở trên -> tab Hub hiện ngay, khỏi phải tải lại (QA).
+       Danh sách Hub và Hub nhìn thấy được tải song song. */
+    var hubsP = getHubsForUser();
+    try { await refreshVisibleHubIds(); } catch (e) {}
+    S.hubs = await hubsP;
     var sel = readSel();
     if (sel.hubId === "hub_ea2025" && !S.hubs.some(function (h) { return h.id === sel.hubId; })) {
       var eaHub = S.hubs.find(function (h) {
@@ -5353,7 +5371,12 @@
 
     renderAll();
     bind();
-    App.refreshWordCounter();
+    App.refreshWordSetBadges();
+    setTimeout(function () {
+      heavyReady = true;
+      App.renderSidebarLbMini();
+      App.refreshWordCounter();
+    }, 2500);
     App.renderDataUpdated();   /* fire-and-forget, không chặn màn hình chính */
     w.$("#word-counter").onclick = function () { w.Journey.open(); };
 
