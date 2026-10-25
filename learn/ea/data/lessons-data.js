@@ -2,22 +2,6 @@
 window.EA_LESSONS = {
  "lessons": [
   {
-   "id": "Preliminary_Work_to_Estate_Gift_Basics",
-   "part": 1,
-   "title": "EA Exam Part I – Individuals: Chapters 8–14",
-   "file": "Part I/Lessons/Preliminary_Work_to_Estate_Gift_Basics.html",
-   "vocabCount": 42,
-   "quizCount": 25
-  },
-  {
-   "id": "Filing_Status_to_Retirement_Plans",
-   "part": 1,
-   "title": "EA Exam Part I – Individuals: Foundations",
-   "file": "Part I/Lessons/Filing_Status_to_Retirement_Plans.html",
-   "vocabCount": 38,
-   "quizCount": 29
-  },
-  {
    "id": "EA1_SU01_Filing_Requirements",
    "part": 1,
    "title": "EA Part I – SU01: Filing Requirements",
@@ -40,6 +24,94 @@ window.EA_LESSONS = {
    "file": "Part I/Lessons/EA1_SU03_Gross_Income_II.html",
    "vocabCount": 16,
    "quizCount": 12
+  },
+  {
+   "id": "EA1_SU04_Business_Deductions",
+   "part": 1,
+   "title": "EA Part I – SU04: Business Deductions",
+   "file": "Part I/Lessons/EA1_SU04_Business_Deductions.html",
+   "vocabCount": 34,
+   "quizCount": 20
+  },
+  {
+   "id": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "part": 1,
+   "title": "EA Part I – SU05: Above-the-Line Deductions and Losses",
+   "file": "Part I/Lessons/EA1_SU05_Above_the_Line_Deductions_and_Losses.html",
+   "vocabCount": 31,
+   "quizCount": 20
+  },
+  {
+   "id": "EA1_SU06_Itemized_Deductions",
+   "part": 1,
+   "title": "EA Part I – SU06: Itemized Deductions",
+   "file": "Part I/Lessons/EA1_SU06_Itemized_Deductions.html",
+   "vocabCount": 30,
+   "quizCount": 19
+  },
+  {
+   "id": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "part": 1,
+   "title": "EA Part I – SU07: Other Below-the-Line Deductions and Other Taxes",
+   "file": "Part I/Lessons/EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes.html",
+   "vocabCount": 31,
+   "quizCount": 20
+  },
+  {
+   "id": "EA1_SU08_Tax_Credits_and_Payments",
+   "part": 1,
+   "title": "EA Part I – SU08: Tax Credits and Payments",
+   "file": "Part I/Lessons/EA1_SU08_Tax_Credits_and_Payments.html",
+   "vocabCount": 33,
+   "quizCount": 20
+  },
+  {
+   "id": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "part": 1,
+   "title": "EA Part I – SU09: Property Transactions Basis and Dispositions",
+   "file": "Part I/Lessons/EA1_SU09_Property_Transactions_Basis_and_Dispositions.html",
+   "vocabCount": 32,
+   "quizCount": 20
+  },
+  {
+   "id": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "part": 1,
+   "title": "EA Part I – SU10: Related Parties Business Property and Installment Sales",
+   "file": "Part I/Lessons/EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales.html",
+   "vocabCount": 32,
+   "quizCount": 20
+  },
+  {
+   "id": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "part": 1,
+   "title": "EA Part I – SU11: Nonrecognition Property Transactions",
+   "file": "Part I/Lessons/EA1_SU11_Nonrecognition_Property_Transactions.html",
+   "vocabCount": 39,
+   "quizCount": 25
+  },
+  {
+   "id": "EA1_SU12_Individual_Retirement_Accounts",
+   "part": 1,
+   "title": "EA Part I – SU12: Individual Retirement Accounts",
+   "file": "Part I/Lessons/EA1_SU12_Individual_Retirement_Accounts.html",
+   "vocabCount": 40,
+   "quizCount": 25
+  },
+  {
+   "id": "EA1_SU13_Gift_Tax",
+   "part": 1,
+   "title": "EA Part I – SU13: Gift Tax",
+   "file": "Part I/Lessons/EA1_SU13_Gift_Tax.html",
+   "vocabCount": 31,
+   "quizCount": 20
+  },
+  {
+   "id": "EA1_SU14_Estate_Tax",
+   "part": 1,
+   "title": "EA Part I – SU14: Estate Tax",
+   "file": "Part I/Lessons/EA1_SU14_Estate_Tax.html",
+   "vocabCount": 40,
+   "quizCount": 25
   },
   {
    "id": "Basis_to_Partnership_Operations",
@@ -1045,564 +1117,2615 @@ window.EA_LESSONS = {
    "section": "3.3 — INCOME IN RESPECT OF A DECEDENT (IRD)"
   },
   {
-   "en": "qualifying person",
-   "vi": "người đủ điều kiện (để tính HOH)",
+   "en": "Schedule C",
+   "vi": "tờ khai lãi/lỗ kinh doanh của cá nhân",
    "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "1️⃣ FILING STATUS & DEPENDENTS"
-  },
-  {
-   "en": "considered unmarried",
-   "vi": "được xem như chưa kết hôn (dù về mặt pháp lý vẫn có vợ/chồng, do sống riêng >6 tháng cuối năm)",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "1️⃣ FILING STATUS & DEPENDENTS"
-  },
-  {
-   "en": "joint and several liability",
-   "vi": "trách nhiệm chung và riêng (cả hai vợ chồng đều chịu trách nhiệm toàn bộ số thuế)",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "1️⃣ FILING STATUS & DEPENDENTS"
-  },
-  {
-   "en": "support test",
-   "vi": "điều kiện về mức hỗ trợ tài chính",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "1️⃣ FILING STATUS & DEPENDENTS"
-  },
-  {
-   "en": "gross income test",
-   "vi": "điều kiện về mức thu nhập tối đa của người phụ thuộc",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "1️⃣ FILING STATUS & DEPENDENTS"
-  },
-  {
-   "en": "multiple support agreement",
-   "vi": "thỏa thuận hỗ trợ nhiều người (khi nhiều người cùng chu cấp cho 1 dependent)",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "1️⃣ FILING STATUS & DEPENDENTS"
-  },
-  {
-   "en": "constructive receipt",
-   "vi": "\"nhận được trên danh nghĩa\" — thu nhập được tính là đã nhận ngay khi có quyền sử dụng, dù chưa thực sự cầm tiền",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "2️⃣ GROSS INCOME"
-  },
-  {
-   "en": "imputed income",
-   "vi": "thu nhập quy đổi (lợi ích không phải tiền mặt nhưng vẫn tính là thu nhập, VD: dùng xe công ty cho việc riêng)",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "2️⃣ GROSS INCOME"
-  },
-  {
-   "en": "alimony",
-   "vi": "tiền cấp dưỡng vợ/chồng cũ (khác với child support)",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "2️⃣ GROSS INCOME"
-  },
-  {
-   "en": "de minimis fringe benefit",
-   "vi": "phúc lợi giá trị rất nhỏ, được miễn thuế (VD: cà phê văn phòng)",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "2️⃣ GROSS INCOME"
-  },
-  {
-   "en": "cancellation of debt (COD) income",
-   "vi": "thu nhập từ việc được xóa/miễn một khoản nợ",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "2️⃣ GROSS INCOME"
-  },
-  {
-   "en": "above-the-line deduction",
-   "vi": "khoản khấu trừ \"phía trên đường\" — trừ trước khi tính AGI",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "3️⃣ ADJUSTMENTS TO INCOME (Schedule 1)"
-  },
-  {
-   "en": "AGI (Adjusted Gross Income)",
-   "vi": "Tổng thu nhập đã điều chỉnh",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "3️⃣ ADJUSTMENTS TO INCOME (Schedule 1)"
-  },
-  {
-   "en": "phase-out",
-   "vi": "giảm dần/loại bỏ dần theo mức thu nhập tăng",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "3️⃣ ADJUSTMENTS TO INCOME (Schedule 1)"
-  },
-  {
-   "en": "self-employment (SE) tax",
-   "vi": "thuế tự doanh (thay cho Social Security/Medicare của người làm công)",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "3️⃣ ADJUSTMENTS TO INCOME (Schedule 1)"
-  },
-  {
-   "en": "HSA (Health Savings Account)",
-   "vi": "Tài khoản tiết kiệm y tế (đi kèm high-deductible health plan)",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "3️⃣ ADJUSTMENTS TO INCOME (Schedule 1)"
-  },
-  {
-   "en": "SALT cap",
-   "vi": "giới hạn khấu trừ thuế tiểu bang & địa phương (tối đa $10,000)",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "4️⃣ STANDARD VS. ITEMIZED DEDUCTIONS (Schedule A)"
-  },
-  {
-   "en": "AGI floor/threshold",
-   "vi": "ngưỡng % của AGI phải vượt qua mới được khấu trừ (VD: medical 7.5%)",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "4️⃣ STANDARD VS. ITEMIZED DEDUCTIONS (Schedule A)"
-  },
-  {
-   "en": "qualified residence interest",
-   "vi": "lãi vay mua nhà đủ điều kiện khấu trừ",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "4️⃣ STANDARD VS. ITEMIZED DEDUCTIONS (Schedule A)"
-  },
-  {
-   "en": "federally declared disaster",
-   "vi": "thảm họa được liên bang công bố chính thức",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "4️⃣ STANDARD VS. ITEMIZED DEDUCTIONS (Schedule A)"
-  },
-  {
-   "en": "bunching (deductions)",
-   "vi": "chiến lược \"dồn\" các khoản khấu trừ vào 1 năm để vượt Standard Deduction",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "4️⃣ STANDARD VS. ITEMIZED DEDUCTIONS (Schedule A)"
-  },
-  {
-   "en": "refundable credit",
-   "vi": "tín dụng thuế được hoàn lại phần dư",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "5️⃣ TAX CREDITS"
-  },
-  {
-   "en": "nonrefundable credit",
-   "vi": "tín dụng thuế không hoàn phần dư (chỉ giảm đến $0)",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "5️⃣ TAX CREDITS"
-  },
-  {
-   "en": "earned income",
-   "vi": "thu nhập từ lao động (wages, self-employment) — khác investment income",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "5️⃣ TAX CREDITS"
-  },
-  {
-   "en": "phase-out threshold",
-   "vi": "ngưỡng thu nhập bắt đầu giảm dần credit",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "5️⃣ TAX CREDITS"
-  },
-  {
-   "en": "Additional Child Tax Credit (ACTC)",
-   "vi": "phần refundable của Child Tax Credit",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "5️⃣ TAX CREDITS"
-  },
-  {
-   "en": "basis",
-   "vi": "cơ sở tính giá (để tính lãi/lỗ vốn)",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "6️⃣ CAPITAL GAINS, LOSSES & BASIS"
-  },
-  {
-   "en": "step-up in basis",
-   "vi": "nâng cơ sở giá lên bằng FMV tại ngày mất (tài sản thừa kế)",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "6️⃣ CAPITAL GAINS, LOSSES & BASIS"
-  },
-  {
-   "en": "carryover basis",
-   "vi": "giữ nguyên cơ sở giá cũ (tài sản được tặng)",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "6️⃣ CAPITAL GAINS, LOSSES & BASIS"
-  },
-  {
-   "en": "holding period",
-   "vi": "thời gian nắm giữ tài sản",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "6️⃣ CAPITAL GAINS, LOSSES & BASIS"
-  },
-  {
-   "en": "wash sale rule",
-   "vi": "quy tắc \"giao dịch giả\" — cấm ghi nhận lỗ nếu mua lại trong 30 ngày",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "6️⃣ CAPITAL GAINS, LOSSES & BASIS"
-  },
-  {
-   "en": "carryforward",
-   "vi": "chuyển tiếp sang năm sau (phần lỗ chưa dùng hết)",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "6️⃣ CAPITAL GAINS, LOSSES & BASIS"
-  },
-  {
-   "en": "qualified distribution",
-   "vi": "khoản rút tiền đủ điều kiện (miễn thuế/không phạt)",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "7️⃣ RETIREMENT PLANS & IRAs"
-  },
-  {
-   "en": "Required Minimum Distribution (RMD)",
-   "vi": "Mức rút tối thiểu bắt buộc",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "7️⃣ RETIREMENT PLANS & IRAs"
-  },
-  {
-   "en": "early withdrawal penalty",
-   "vi": "phạt rút tiền sớm (10%)",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "7️⃣ RETIREMENT PLANS & IRAs"
-  },
-  {
-   "en": "MAGI (Modified AGI)",
-   "vi": "AGI đã điều chỉnh thêm (dùng để tính phase-out của nhiều credit/IRA)",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "7️⃣ RETIREMENT PLANS & IRAs"
-  },
-  {
-   "en": "backdoor Roth",
-   "vi": "chiến lược chuyển đổi Traditional IRA sang Roth để \"lách\" giới hạn thu nhập",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "7️⃣ RETIREMENT PLANS & IRAs"
-  },
-  {
-   "en": "SEPP (72(t))",
-   "vi": "chuỗi thanh toán định kỳ bằng nhau — cách rút sớm không bị phạt",
-   "kind": "term",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "7️⃣ RETIREMENT PLANS & IRAs"
-  },
-  {
-   "en": "statute of limitations",
-   "vi": "thời hạn hiệu lực pháp lý (để audit/amend/refund)",
-   "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "8️⃣ PRELIMINARY WORK & TAXPAYER DATA"
-  },
-  {
-   "en": "failure-to-file penalty",
-   "vi": "phạt do không nộp đúng hạn",
-   "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "8️⃣ PRELIMINARY WORK & TAXPAYER DATA"
-  },
-  {
-   "en": "failure-to-pay penalty",
-   "vi": "phạt do không nộp tiền thuế đúng hạn",
-   "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "8️⃣ PRELIMINARY WORK & TAXPAYER DATA"
-  },
-  {
-   "en": "accuracy-related penalty",
-   "vi": "phạt do khai sai/thiếu chính xác",
-   "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "8️⃣ PRELIMINARY WORK & TAXPAYER DATA"
-  },
-  {
-   "en": "Form 1040-X",
-   "vi": "mẫu khai bổ sung/sửa đổi tờ khai đã nộp",
-   "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "8️⃣ PRELIMINARY WORK & TAXPAYER DATA"
-  },
-  {
-   "en": "reasonable cause",
-   "vi": "lý do hợp lý (để được miễn penalty)",
-   "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "8️⃣ PRELIMINARY WORK & TAXPAYER DATA"
-  },
-  {
-   "en": "sole proprietor",
-   "vi": "chủ doanh nghiệp tư nhân (cá nhân kinh doanh)",
-   "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "9️⃣ SELF-EMPLOYMENT INCOME — SCHEDULE C"
-  },
-  {
-   "en": "disregarded entity",
-   "vi": "thực thể \"bị bỏ qua\" về thuế (single-member LLC bị coi như cá nhân)",
-   "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "9️⃣ SELF-EMPLOYMENT INCOME — SCHEDULE C"
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.1 — BUSINESS VS. HOBBY, SCHEDULE C & SELF-EMPLOYMENT TAX"
   },
   {
    "en": "ordinary and necessary",
-   "vi": "bình thường và cần thiết (tiêu chuẩn để chi phí được khấu trừ)",
+   "vi": "phổ biến và cần thiết (điều kiện để chi phí được khấu trừ)",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "9️⃣ SELF-EMPLOYMENT INCOME — SCHEDULE C"
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.1 — BUSINESS VS. HOBBY, SCHEDULE C & SELF-EMPLOYMENT TAX"
   },
   {
-   "en": "Qualified Business Income (QBI)",
-   "vi": "Thu nhập kinh doanh đủ điều kiện",
+   "en": "trade or business",
+   "vi": "hoạt động thương mại/kinh doanh",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "9️⃣ SELF-EMPLOYMENT INCOME — SCHEDULE C"
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.1 — BUSINESS VS. HOBBY, SCHEDULE C & SELF-EMPLOYMENT TAX"
   },
   {
-   "en": "specified service trade or business (SSTB)",
-   "vi": "ngành nghề dịch vụ đặc thù (luật sư, bác sĩ, tư vấn...) bị hạn chế QBI khi thu nhập cao",
+   "en": "hobby loss rules",
+   "vi": "quy tắc hạn chế khấu trừ cho hoạt động không có mục đích lợi nhuận",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "9️⃣ SELF-EMPLOYMENT INCOME — SCHEDULE C"
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.1 — BUSINESS VS. HOBBY, SCHEDULE C & SELF-EMPLOYMENT TAX"
   },
   {
-   "en": "wage base limit",
-   "vi": "ngưỡng thu nhập tối đa áp dụng Social Security tax",
+   "en": "profit motive",
+   "vi": "động cơ lợi nhuận",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "9️⃣ SELF-EMPLOYMENT INCOME — SCHEDULE C"
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.1 — BUSINESS VS. HOBBY, SCHEDULE C & SELF-EMPLOYMENT TAX"
   },
   {
-   "en": "material participation",
-   "vi": "tham gia đáng kể, thường xuyên, liên tục vào hoạt động kinh doanh",
+   "en": "net earnings from self-employment",
+   "vi": "thu nhập ròng từ tự doanh (căn cứ tính SE tax)",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "RENTAL & PASSIVE ACTIVITIES — SCHEDULE E"
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.1 — BUSINESS VS. HOBBY, SCHEDULE C & SELF-EMPLOYMENT TAX"
+  },
+  {
+   "en": "Schedule SE",
+   "vi": "bảng tính thuế tự doanh",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.1 — BUSINESS VS. HOBBY, SCHEDULE C & SELF-EMPLOYMENT TAX"
+  },
+  {
+   "en": "Additional Medicare Tax",
+   "vi": "thuế Medicare bổ sung 0.9% cho thu nhập cao",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.1 — BUSINESS VS. HOBBY, SCHEDULE C & SELF-EMPLOYMENT TAX"
+  },
+  {
+   "en": "away from home",
+   "vi": "đi công tác qua đêm, ngoài khu vực tax home",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.2 — CHI PHÍ KINH DOANH THƯỜNG GẶP — MEALS, GIFTS, TRAVEL, VEHICLE"
+  },
+  {
+   "en": "tax home",
+   "vi": "nơi làm việc chính (căn cứ tính travel)",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.2 — CHI PHÍ KINH DOANH THƯỜNG GẶP — MEALS, GIFTS, TRAVEL, VEHICLE"
+  },
+  {
+   "en": "standard mileage rate",
+   "vi": "mức tính theo dặm (70¢ business 2025)",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.2 — CHI PHÍ KINH DOANH THƯỜNG GẶP — MEALS, GIFTS, TRAVEL, VEHICLE"
+  },
+  {
+   "en": "substantiation",
+   "vi": "chứng minh chi phí bằng hồ sơ",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.2 — CHI PHÍ KINH DOANH THƯỜNG GẶP — MEALS, GIFTS, TRAVEL, VEHICLE"
+  },
+  {
+   "en": "Cohan rule",
+   "vi": "nguyên tắc cho phép ước tính hợp lý khi mất chứng từ (không dùng cho §274(d))",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.2 — CHI PHÍ KINH DOANH THƯỜNG GẶP — MEALS, GIFTS, TRAVEL, VEHICLE"
+  },
+  {
+   "en": "lavish",
+   "vi": "xa hoa/quá mức",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.2 — CHI PHÍ KINH DOANH THƯỜNG GẶP — MEALS, GIFTS, TRAVEL, VEHICLE"
+  },
+  {
+   "en": "listed property",
+   "vi": "tài sản dễ dùng cá nhân (xe, máy tính… có quy tắc riêng)",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.2 — CHI PHÍ KINH DOANH THƯỜNG GẶP — MEALS, GIFTS, TRAVEL, VEHICLE"
+  },
+  {
+   "en": "commuting",
+   "vi": "đi lại nhà – nơi làm việc (không deductible)",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.2 — CHI PHÍ KINH DOANH THƯỜNG GẶP — MEALS, GIFTS, TRAVEL, VEHICLE"
+  },
+  {
+   "en": "hours-of-service rules",
+   "vi": "quy định giờ làm việc của DOT (meals 80%)",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.2 — CHI PHÍ KINH DOANH THƯỜNG GẶP — MEALS, GIFTS, TRAVEL, VEHICLE"
+  },
+  {
+   "en": "12-month rule",
+   "vi": "quy tắc 12 tháng cho prepaid rent/ chi phí trả trước",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.2 — CHI PHÍ KINH DOANH THƯỜNG GẶP — MEALS, GIFTS, TRAVEL, VEHICLE"
+  },
+  {
+   "en": "home office deduction",
+   "vi": "khấu trừ văn phòng tại nhà",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.3 — HOME OFFICE, EDUCATION, BAD DEBTS & START-UP COSTS"
+  },
+  {
+   "en": "principal place of business",
+   "vi": "nơi kinh doanh chính",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.3 — HOME OFFICE, EDUCATION, BAD DEBTS & START-UP COSTS"
+  },
+  {
+   "en": "exclusive use",
+   "vi": "chỉ dùng riêng cho kinh doanh",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.3 — HOME OFFICE, EDUCATION, BAD DEBTS & START-UP COSTS"
+  },
+  {
+   "en": "simplified method",
+   "vi": "phương pháp đơn giản ($5/sq ft)",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.3 — HOME OFFICE, EDUCATION, BAD DEBTS & START-UP COSTS"
+  },
+  {
+   "en": "specific charge-off method",
+   "vi": "phương pháp xóa nợ xấu cụ thể",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.3 — HOME OFFICE, EDUCATION, BAD DEBTS & START-UP COSTS"
+  },
+  {
+   "en": "wholly worthless",
+   "vi": "hoàn toàn vô giá trị",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.3 — HOME OFFICE, EDUCATION, BAD DEBTS & START-UP COSTS"
+  },
+  {
+   "en": "start-up costs",
+   "vi": "chi phí khởi nghiệp",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.3 — HOME OFFICE, EDUCATION, BAD DEBTS & START-UP COSTS"
+  },
+  {
+   "en": "organizational costs",
+   "vi": "chi phí thành lập pháp nhân",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.3 — HOME OFFICE, EDUCATION, BAD DEBTS & START-UP COSTS"
+  },
+  {
+   "en": "independent contractor",
+   "vi": "nhà thầu độc lập",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.4 — EMPLOYEE VS. INDEPENDENT CONTRACTOR & COST RECOVERY"
+  },
+  {
+   "en": "behavioral control",
+   "vi": "kiểm soát về hành vi/cách làm việc",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.4 — EMPLOYEE VS. INDEPENDENT CONTRACTOR & COST RECOVERY"
+  },
+  {
+   "en": "financial control",
+   "vi": "kiểm soát về tài chính",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.4 — EMPLOYEE VS. INDEPENDENT CONTRACTOR & COST RECOVERY"
+  },
+  {
+   "en": "Form SS-8",
+   "vi": "đơn yêu cầu IRS xác định tình trạng worker",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.4 — EMPLOYEE VS. INDEPENDENT CONTRACTOR & COST RECOVERY"
+  },
+  {
+   "en": "Section 530 relief",
+   "vi": "miễn trách nhiệm phân loại sai cho employer đủ điều kiện",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.4 — EMPLOYEE VS. INDEPENDENT CONTRACTOR & COST RECOVERY"
+  },
+  {
+   "en": "accountable plan",
+   "vi": "kế hoạch hoàn phí có báo cáo (không tính vào income nhân viên)",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.4 — EMPLOYEE VS. INDEPENDENT CONTRACTOR & COST RECOVERY"
+  },
+  {
+   "en": "de minimis safe harbor",
+   "vi": "ngưỡng an toàn expense ngay món nhỏ ($2,500)",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.4 — EMPLOYEE VS. INDEPENDENT CONTRACTOR & COST RECOVERY"
+  },
+  {
+   "en": "Form 1099-NEC",
+   "vi": "báo cáo thù lao cho non-employee",
+   "kind": "term",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.4 — EMPLOYEE VS. INDEPENDENT CONTRACTOR & COST RECOVERY"
+  },
+  {
+   "en": "above-the-line deduction",
+   "vi": "khoản khấu trừ trước khi tính AGI",
+   "kind": "term",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.1 — ADJUSTMENTS TO INCOME (SCHEDULE 1, PART II)"
+  },
+  {
+   "en": "adjusted gross income (AGI)",
+   "vi": "tổng thu nhập điều chỉnh",
+   "kind": "term",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.1 — ADJUSTMENTS TO INCOME (SCHEDULE 1, PART II)"
+  },
+  {
+   "en": "educator expenses",
+   "vi": "chi phí giáo viên (tối đa $300)",
+   "kind": "term",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.1 — ADJUSTMENTS TO INCOME (SCHEDULE 1, PART II)"
+  },
+  {
+   "en": "Health Savings Account (HSA)",
+   "vi": "tài khoản tiết kiệm y tế",
+   "kind": "term",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.1 — ADJUSTMENTS TO INCOME (SCHEDULE 1, PART II)"
+  },
+  {
+   "en": "high-deductible health plan (HDHP)",
+   "vi": "bảo hiểm y tế khấu trừ cao",
+   "kind": "term",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.1 — ADJUSTMENTS TO INCOME (SCHEDULE 1, PART II)"
+  },
+  {
+   "en": "qualified education loan",
+   "vi": "khoản vay giáo dục đủ điều kiện",
+   "kind": "term",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.1 — ADJUSTMENTS TO INCOME (SCHEDULE 1, PART II)"
+  },
+  {
+   "en": "self-employed health insurance deduction",
+   "vi": "khấu trừ bảo hiểm y tế cho người tự doanh",
+   "kind": "term",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.1 — ADJUSTMENTS TO INCOME (SCHEDULE 1, PART II)"
+  },
+  {
+   "en": "early withdrawal penalty",
+   "vi": "phạt rút tiền gửi kỳ hạn sớm (khấu trừ được)",
+   "kind": "term",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.1 — ADJUSTMENTS TO INCOME (SCHEDULE 1, PART II)"
+  },
+  {
+   "en": "at-risk rules",
+   "vi": "quy tắc giới hạn lỗ theo số vốn thực chịu rủi ro",
+   "kind": "term",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.2 — LOSS LIMITATIONS — BASIS, AT-RISK, PASSIVE ACTIVITY"
+  },
+  {
+   "en": "recourse debt",
+   "vi": "nợ có truy đòi (chịu trách nhiệm cá nhân)",
+   "kind": "term",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.2 — LOSS LIMITATIONS — BASIS, AT-RISK, PASSIVE ACTIVITY"
+  },
+  {
+   "en": "qualified nonrecourse financing",
+   "vi": "vay nonrecourse đủ điều kiện cho bất động sản",
+   "kind": "term",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.2 — LOSS LIMITATIONS — BASIS, AT-RISK, PASSIVE ACTIVITY"
   },
   {
    "en": "passive activity loss (PAL)",
    "vi": "lỗ từ hoạt động thụ động",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "RENTAL & PASSIVE ACTIVITIES — SCHEDULE E"
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.2 — LOSS LIMITATIONS — BASIS, AT-RISK, PASSIVE ACTIVITY"
+  },
+  {
+   "en": "material participation",
+   "vi": "tham gia đáng kể/thực chất",
+   "kind": "term",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.2 — LOSS LIMITATIONS — BASIS, AT-RISK, PASSIVE ACTIVITY"
   },
   {
    "en": "active participation",
-   "vi": "tham gia tích cực (mức thấp hơn material participation, dùng cho rental)",
+   "vi": "tham gia tích cực (thấp hơn material)",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "RENTAL & PASSIVE ACTIVITIES — SCHEDULE E"
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.2 — LOSS LIMITATIONS — BASIS, AT-RISK, PASSIVE ACTIVITY"
   },
   {
-   "en": "real estate professional",
-   "vi": "chuyên gia bất động sản (theo định nghĩa thuế, đủ giờ + tỷ lệ thời gian)",
+   "en": "portfolio income",
+   "vi": "thu nhập đầu tư (lãi, cổ tức) — không passive",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "RENTAL & PASSIVE ACTIVITIES — SCHEDULE E"
-  },
-  {
-   "en": "at-risk amount",
-   "vi": "số tiền \"chịu rủi ro\" thực sự trong đầu tư",
-   "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "RENTAL & PASSIVE ACTIVITIES — SCHEDULE E"
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.2 — LOSS LIMITATIONS — BASIS, AT-RISK, PASSIVE ACTIVITY"
   },
   {
    "en": "suspended loss",
-   "vi": "lỗ bị \"treo\" (chưa được trừ, chuyển sang năm sau)",
+   "vi": "lỗ bị treo, chuyển sang năm sau",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "RENTAL & PASSIVE ACTIVITIES — SCHEDULE E"
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.2 — LOSS LIMITATIONS — BASIS, AT-RISK, PASSIVE ACTIVITY"
   },
   {
-   "en": "AMTI (Alternative Minimum Taxable Income)",
-   "vi": "Thu nhập chịu thuế tối thiểu thay thế",
+   "en": "real estate professional",
+   "vi": "chuyên gia bất động sản (thoát PAL)",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣1️⃣ ALTERNATIVE MINIMUM TAX (AMT)"
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.2 — LOSS LIMITATIONS — BASIS, AT-RISK, PASSIVE ACTIVITY"
+  },
+  {
+   "en": "publicly traded partnership (PTP)",
+   "vi": "công ty hợp danh giao dịch công khai",
+   "kind": "term",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.2 — LOSS LIMITATIONS — BASIS, AT-RISK, PASSIVE ACTIVITY"
+  },
+  {
+   "en": "net operating loss (NOL)",
+   "vi": "lỗ hoạt động ròng",
+   "kind": "term",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.3 — NOL, EXCESS BUSINESS LOSS & CAPITAL LOSS"
+  },
+  {
+   "en": "excess business loss",
+   "vi": "lỗ kinh doanh vượt ngưỡng cho phép",
+   "kind": "term",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.3 — NOL, EXCESS BUSINESS LOSS & CAPITAL LOSS"
+  },
+  {
+   "en": "farming loss",
+   "vi": "lỗ nông nghiệp (được carryback 2 năm)",
+   "kind": "term",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.3 — NOL, EXCESS BUSINESS LOSS & CAPITAL LOSS"
+  },
+  {
+   "en": "capital loss carryover",
+   "vi": "lỗ vốn chuyển sang năm sau",
+   "kind": "term",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.3 — NOL, EXCESS BUSINESS LOSS & CAPITAL LOSS"
+  },
+  {
+   "en": "netting",
+   "vi": "bù trừ lãi/lỗ vốn",
+   "kind": "term",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.3 — NOL, EXCESS BUSINESS LOSS & CAPITAL LOSS"
+  },
+  {
+   "en": "carryforward / carryback",
+   "vi": "chuyển sang năm sau / năm trước",
+   "kind": "term",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.3 — NOL, EXCESS BUSINESS LOSS & CAPITAL LOSS"
+  },
+  {
+   "en": "casualty loss",
+   "vi": "lỗ do thiên tai/tai nạn bất ngờ",
+   "kind": "term",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.4 — CASUALTY/THEFT, GAMBLING, §1244 & TỔNG HỢP THỨ TỰ"
+  },
+  {
+   "en": "theft loss",
+   "vi": "lỗ do trộm cắp (deduct năm phát hiện)",
+   "kind": "term",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.4 — CASUALTY/THEFT, GAMBLING, §1244 & TỔNG HỢP THỨ TỰ"
+  },
+  {
+   "en": "federally declared disaster",
+   "vi": "thảm họa được liên bang tuyên bố",
+   "kind": "term",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.4 — CASUALTY/THEFT, GAMBLING, §1244 & TỔNG HỢP THỨ TỰ"
+  },
+  {
+   "en": "Form 4684",
+   "vi": "mẫu khai casualty & theft",
+   "kind": "term",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.4 — CASUALTY/THEFT, GAMBLING, §1244 & TỔNG HỢP THỨ TỰ"
+  },
+  {
+   "en": "gambling losses",
+   "vi": "lỗ cờ bạc (deduct tối đa bằng winnings, itemized)",
+   "kind": "term",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.4 — CASUALTY/THEFT, GAMBLING, §1244 & TỔNG HỢP THỨ TỰ"
+  },
+  {
+   "en": "Section 1244 stock",
+   "vi": "cổ phiếu §1244 (lỗ ordinary tối đa $50,000/$100,000)",
+   "kind": "term",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.4 — CASUALTY/THEFT, GAMBLING, §1244 & TỔNG HỢP THỨ TỰ"
+  },
+  {
+   "en": "Ponzi scheme",
+   "vi": "mô hình lừa đảo kiểu Ponzi",
+   "kind": "term",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.4 — CASUALTY/THEFT, GAMBLING, §1244 & TỔNG HỢP THỨ TỰ"
+  },
+  {
+   "en": "itemized deductions",
+   "vi": "khấu trừ chi tiết (Schedule A)",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.1 — MEDICAL AND DENTAL EXPENSES"
+  },
+  {
+   "en": "standard deduction",
+   "vi": "khấu trừ tiêu chuẩn",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.1 — MEDICAL AND DENTAL EXPENSES"
+  },
+  {
+   "en": "medical expenses",
+   "vi": "chi phí y tế (chỉ phần > 7.5% AGI)",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.1 — MEDICAL AND DENTAL EXPENSES"
+  },
+  {
+   "en": "qualified long-term care",
+   "vi": "bảo hiểm/chăm sóc dài hạn đủ điều kiện",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.1 — MEDICAL AND DENTAL EXPENSES"
+  },
+  {
+   "en": "capital improvement (medical)",
+   "vi": "cải tạo nhà vì lý do y tế",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.1 — MEDICAL AND DENTAL EXPENSES"
+  },
+  {
+   "en": "cosmetic surgery",
+   "vi": "phẫu thuật thẩm mỹ (thường không deductible)",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.1 — MEDICAL AND DENTAL EXPENSES"
+  },
+  {
+   "en": "AGI floor",
+   "vi": "ngưỡng % AGI phải vượt qua mới được khấu trừ",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.1 — MEDICAL AND DENTAL EXPENSES"
+  },
+  {
+   "en": "state and local taxes (SALT)",
+   "vi": "thuế tiểu bang và địa phương",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.2 — TAXES PAID (SALT) & INTEREST"
+  },
+  {
+   "en": "SALT cap",
+   "vi": "giới hạn khấu trừ SALT (2025: $40,000)",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.2 — TAXES PAID (SALT) & INTEREST"
+  },
+  {
+   "en": "ad valorem tax",
+   "vi": "thuế theo giá trị (tài sản)",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.2 — TAXES PAID (SALT) & INTEREST"
+  },
+  {
+   "en": "acquisition indebtedness",
+   "vi": "nợ vay để mua/xây/cải tạo nhà",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.2 — TAXES PAID (SALT) & INTEREST"
+  },
+  {
+   "en": "qualified residence interest",
+   "vi": "lãi vay nhà ở đủ điều kiện",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.2 — TAXES PAID (SALT) & INTEREST"
+  },
+  {
+   "en": "points",
+   "vi": "phí điểm (lãi trả trước khi vay)",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.2 — TAXES PAID (SALT) & INTEREST"
+  },
+  {
+   "en": "investment interest expense",
+   "vi": "lãi vay đầu tư (giới hạn theo net investment income)",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.2 — TAXES PAID (SALT) & INTEREST"
+  },
+  {
+   "en": "Form 4952",
+   "vi": "mẫu tính investment interest",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.2 — TAXES PAID (SALT) & INTEREST"
+  },
+  {
+   "en": "Form 1098",
+   "vi": "mẫu báo lãi vay nhà",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.2 — TAXES PAID (SALT) & INTEREST"
+  },
+  {
+   "en": "qualified organization",
+   "vi": "tổ chức đủ điều kiện nhận donation deductible",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.3 — CHARITABLE CONTRIBUTIONS"
+  },
+  {
+   "en": "contemporaneous written acknowledgment",
+   "vi": "xác nhận bằng văn bản kịp thời của donee",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.3 — CHARITABLE CONTRIBUTIONS"
+  },
+  {
+   "en": "quid pro quo contribution",
+   "vi": "đóng góp có nhận lại giá trị",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.3 — CHARITABLE CONTRIBUTIONS"
+  },
+  {
+   "en": "qualified appraisal",
+   "vi": "thẩm định giá đủ điều kiện (cho > $5,000)",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.3 — CHARITABLE CONTRIBUTIONS"
+  },
+  {
+   "en": "Form 8283",
+   "vi": "mẫu khai đóng góp phi tiền mặt",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.3 — CHARITABLE CONTRIBUTIONS"
+  },
+  {
+   "en": "capital gain property",
+   "vi": "tài sản có thể tạo capital gain (giữ > 1 năm)",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.3 — CHARITABLE CONTRIBUTIONS"
+  },
+  {
+   "en": "carryover (charitable)",
+   "vi": "chuyển phần dư sang 5 năm sau",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.3 — CHARITABLE CONTRIBUTIONS"
+  },
+  {
+   "en": "bargain sale",
+   "vi": "bán dưới giá trị thị trường cho charity",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.3 — CHARITABLE CONTRIBUTIONS"
+  },
+  {
+   "en": "Schedule A",
+   "vi": "bảng khai itemized deductions",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.4 — CÁC KHOẢN ITEMIZED KHÁC & QUY TẮC CHỌN"
+  },
+  {
+   "en": "bunching",
+   "vi": "dồn khoản khấu trừ vào một năm để vượt standard deduction",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.4 — CÁC KHOẢN ITEMIZED KHÁC & QUY TẮC CHỌN"
+  },
+  {
+   "en": "claim of right",
+   "vi": "nguyên tắc quyền nhận (hoàn lại khoản đã tính income)",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.4 — CÁC KHOẢN ITEMIZED KHÁC & QUY TẮC CHỌN"
+  },
+  {
+   "en": "miscellaneous itemized deductions",
+   "vi": "khấu trừ linh tinh (2% floor) — đã bị bãi bỏ",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.4 — CÁC KHOẢN ITEMIZED KHÁC & QUY TẮC CHỌN"
+  },
+  {
+   "en": "Pease limitation",
+   "vi": "giới hạn giảm itemized theo thu nhập (đã bãi bỏ 2018–2025)",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.4 — CÁC KHOẢN ITEMIZED KHÁC & QUY TẮC CHỌN"
+  },
+  {
+   "en": "IRD estate tax deduction",
+   "vi": "khấu trừ thuế estate trên thu nhập truy nhận",
+   "kind": "term",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.4 — CÁC KHOẢN ITEMIZED KHÁC & QUY TẮC CHỌN"
+  },
+  {
+   "en": "Qualified Business Income (QBI)",
+   "vi": "thu nhập kinh doanh đủ điều kiện (20% được khấu trừ)",
+   "kind": "term",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.1 — QUALIFIED BUSINESS INCOME DEDUCTION (§199A)"
+  },
+  {
+   "en": "pass-through entity",
+   "vi": "thực thể chuyển tiếp thu nhập (không chịu thuế cấp công ty)",
+   "kind": "term",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.1 — QUALIFIED BUSINESS INCOME DEDUCTION (§199A)"
+  },
+  {
+   "en": "SSTB",
+   "vi": "ngành dịch vụ đặc thù (bị loại QBID khi thu nhập cao)",
+   "kind": "term",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.1 — QUALIFIED BUSINESS INCOME DEDUCTION (§199A)"
+  },
+  {
+   "en": "W-2 wage limitation",
+   "vi": "giới hạn theo tiền lương W-2",
+   "kind": "term",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.1 — QUALIFIED BUSINESS INCOME DEDUCTION (§199A)"
+  },
+  {
+   "en": "UBIA",
+   "vi": "basis không điều chỉnh của tài sản đủ điều kiện",
+   "kind": "term",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.1 — QUALIFIED BUSINESS INCOME DEDUCTION (§199A)"
+  },
+  {
+   "en": "qualified REIT dividends",
+   "vi": "cổ tức REIT đủ điều kiện (cũng được 20%)",
+   "kind": "term",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.1 — QUALIFIED BUSINESS INCOME DEDUCTION (§199A)"
+  },
+  {
+   "en": "taxable income threshold",
+   "vi": "ngưỡng thu nhập chịu thuế bắt đầu hạn chế",
+   "kind": "term",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.1 — QUALIFIED BUSINESS INCOME DEDUCTION (§199A)"
+  },
+  {
+   "en": "qualified tips",
+   "vi": "tiền tip đủ điều kiện (khấu trừ tối đa $25,000)",
+   "kind": "term",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.2 — KHẤU TRỪ MỚI OBBBA — TIPS, OVERTIME, CAR LOAN, SENIORS"
+  },
+  {
+   "en": "qualified overtime compensation",
+   "vi": "tiền làm thêm giờ đủ điều kiện (phần premium)",
+   "kind": "term",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.2 — KHẤU TRỪ MỚI OBBBA — TIPS, OVERTIME, CAR LOAN, SENIORS"
+  },
+  {
+   "en": "car loan interest deduction",
+   "vi": "khấu trừ lãi vay mua xe mới (tối đa $10,000)",
+   "kind": "term",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.2 — KHẤU TRỪ MỚI OBBBA — TIPS, OVERTIME, CAR LOAN, SENIORS"
+  },
+  {
+   "en": "enhanced deduction for seniors",
+   "vi": "khấu trừ nâng cao cho người ≥ 65 ($6,000)",
+   "kind": "term",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.2 — KHẤU TRỪ MỚI OBBBA — TIPS, OVERTIME, CAR LOAN, SENIORS"
+  },
+  {
+   "en": "phase-out",
+   "vi": "giảm dần theo thu nhập",
+   "kind": "term",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.2 — KHẤU TRỪ MỚI OBBBA — TIPS, OVERTIME, CAR LOAN, SENIORS"
+  },
+  {
+   "en": "MAGI",
+   "vi": "AGI điều chỉnh (dùng cho phase-out)",
+   "kind": "term",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.2 — KHẤU TRỪ MỚI OBBBA — TIPS, OVERTIME, CAR LOAN, SENIORS"
+  },
+  {
+   "en": "FLSA",
+   "vi": "Đạo luật tiêu chuẩn lao động công bằng (căn cứ overtime)",
+   "kind": "term",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.2 — KHẤU TRỪ MỚI OBBBA — TIPS, OVERTIME, CAR LOAN, SENIORS"
+  },
+  {
+   "en": "tax brackets",
+   "vi": "bậc thuế suất lũy tiến",
+   "kind": "term",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.3 — TÍNH THUẾ — BRACKETS, CAPITAL GAIN RATES & AMT"
+  },
+  {
+   "en": "qualified dividends",
+   "vi": "cổ tức đủ điều kiện (thuế suất 0/15/20%)",
+   "kind": "term",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.3 — TÍNH THUẾ — BRACKETS, CAPITAL GAIN RATES & AMT"
+  },
+  {
+   "en": "unrecaptured §1250 gain",
+   "vi": "phần gain từ khấu hao straight-line (tối đa 25%)",
+   "kind": "term",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.3 — TÍNH THUẾ — BRACKETS, CAPITAL GAIN RATES & AMT"
+  },
+  {
+   "en": "collectibles gain",
+   "vi": "gain từ đồ sưu tầm (tối đa 28%)",
+   "kind": "term",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.3 — TÍNH THUẾ — BRACKETS, CAPITAL GAIN RATES & AMT"
+  },
+  {
+   "en": "Alternative Minimum Tax (AMT)",
+   "vi": "thuế tối thiểu thay thế",
+   "kind": "term",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.3 — TÍNH THUẾ — BRACKETS, CAPITAL GAIN RATES & AMT"
+  },
+  {
+   "en": "tentative minimum tax (TMT)",
+   "vi": "thuế tối thiểu tạm tính",
+   "kind": "term",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.3 — TÍNH THUẾ — BRACKETS, CAPITAL GAIN RATES & AMT"
   },
   {
    "en": "AMT exemption",
-   "vi": "Mức miễn trừ AMT (có phase-out theo thu nhập)",
+   "vi": "mức miễn trừ AMT (phase-out theo thu nhập)",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣1️⃣ ALTERNATIVE MINIMUM TAX (AMT)"
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.3 — TÍNH THUẾ — BRACKETS, CAPITAL GAIN RATES & AMT"
   },
   {
-   "en": "Tentative Minimum Tax (TMT)",
-   "vi": "Thuế tối thiểu tạm tính",
+   "en": "ISO bargain element",
+   "vi": "chênh lệch giá khi exercise incentive stock option (là AMT adjustment)",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣1️⃣ ALTERNATIVE MINIMUM TAX (AMT)"
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.3 — TÍNH THUẾ — BRACKETS, CAPITAL GAIN RATES & AMT"
   },
   {
-   "en": "tax preference item",
-   "vi": "khoản mục ưu đãi thuế (phải cộng lại khi tính AMT)",
+   "en": "minimum tax credit",
+   "vi": "tín dụng AMT được dùng lại về sau",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣1️⃣ ALTERNATIVE MINIMUM TAX (AMT)"
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.3 — TÍNH THUẾ — BRACKETS, CAPITAL GAIN RATES & AMT"
   },
   {
-   "en": "Incentive Stock Option (ISO)",
-   "vi": "Quyền chọn mua cổ phiếu ưu đãi (nhân viên)",
+   "en": "Net Investment Income Tax (NIIT)",
+   "vi": "thuế 3.8% trên thu nhập đầu tư ròng",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣1️⃣ ALTERNATIVE MINIMUM TAX (AMT)"
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.4 — NIIT, ADDITIONAL MEDICARE, HOUSEHOLD EMPLOYMENT & OTHER TAXES"
   },
   {
-   "en": "bargain element",
-   "vi": "phần chênh lệch có lợi khi thực hiện quyền chọn mua ISO",
+   "en": "net investment income",
+   "vi": "thu nhập đầu tư ròng (lãi, cổ tức, capital gain…)",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣1️⃣ ALTERNATIVE MINIMUM TAX (AMT)"
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.4 — NIIT, ADDITIONAL MEDICARE, HOUSEHOLD EMPLOYMENT & OTHER TAXES"
   },
   {
-   "en": "unearned income",
-   "vi": "thu nhập không từ lao động (lãi, cổ tức, lãi vốn)",
+   "en": "Additional Medicare Tax",
+   "vi": "thuế Medicare bổ sung 0.9%",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣2️⃣ KIDDIE TAX & EDUCATION SAVINGS"
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.4 — NIIT, ADDITIONAL MEDICARE, HOUSEHOLD EMPLOYMENT & OTHER TAXES"
   },
   {
-   "en": "kiddie tax",
-   "vi": "thuế áp dụng đặc biệt cho thu nhập đầu tư của trẻ em",
+   "en": "Schedule H",
+   "vi": "bảng khai thuế người giúp việc gia đình",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣2️⃣ KIDDIE TAX & EDUCATION SAVINGS"
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.4 — NIIT, ADDITIONAL MEDICARE, HOUSEHOLD EMPLOYMENT & OTHER TAXES"
   },
   {
-   "en": "529 Plan",
-   "vi": "Kế hoạch tiết kiệm giáo dục 529 (tăng trưởng + rút ra miễn thuế nếu đúng mục đích)",
+   "en": "household employee",
+   "vi": "nhân viên làm việc gia đình",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣2️⃣ KIDDIE TAX & EDUCATION SAVINGS"
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.4 — NIIT, ADDITIONAL MEDICARE, HOUSEHOLD EMPLOYMENT & OTHER TAXES"
   },
   {
-   "en": "Coverdell ESA",
-   "vi": "Tài khoản tiết kiệm giáo dục Coverdell",
+   "en": "Form 5329",
+   "vi": "mẫu khai thuế phạt IRA/ plan (rút sớm, excess…)",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣2️⃣ KIDDIE TAX & EDUCATION SAVINGS"
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.4 — NIIT, ADDITIONAL MEDICARE, HOUSEHOLD EMPLOYMENT & OTHER TAXES"
   },
   {
-   "en": "qualified education expenses",
-   "vi": "chi phí giáo dục đủ điều kiện (học phí, sách, thiết bị...)",
+   "en": "Schedule 2",
+   "vi": "bảng \"Additional Taxes\" của Form 1040",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣2️⃣ KIDDIE TAX & EDUCATION SAVINGS"
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.4 — NIIT, ADDITIONAL MEDICARE, HOUSEHOLD EMPLOYMENT & OTHER TAXES"
   },
   {
-   "en": "double-dip (not allowed)",
-   "vi": "dùng 1 khoản chi phí để claim 2 lợi ích thuế cùng lúc (không được phép)",
+   "en": "FUTA",
+   "vi": "thuế thất nghiệp liên bang",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣2️⃣ KIDDIE TAX & EDUCATION SAVINGS"
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.4 — NIIT, ADDITIONAL MEDICARE, HOUSEHOLD EMPLOYMENT & OTHER TAXES"
   },
   {
-   "en": "combined income",
-   "vi": "thu nhập kết hợp (dùng để tính % SS benefits chịu thuế)",
+   "en": "nonrefundable credit",
+   "vi": "tín dụng không hoàn phần dư",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣3️⃣ TAXATION OF SOCIAL SECURITY & OTHER INCOME"
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.1 — CHILD TAX CREDIT, DEPENDENT CARE & EDUCATION CREDITS"
   },
   {
-   "en": "base amount",
-   "vi": "ngưỡng cơ sở theo filing status (để xác định mức thuế SS)",
+   "en": "refundable credit",
+   "vi": "tín dụng được hoàn phần dư",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣3️⃣ TAXATION OF SOCIAL SECURITY & OTHER INCOME"
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.1 — CHILD TAX CREDIT, DEPENDENT CARE & EDUCATION CREDITS"
   },
   {
-   "en": "Form 1099-G",
-   "vi": "mẫu báo cáo thu nhập từ chính phủ (VD: unemployment)",
+   "en": "Child Tax Credit (CTC)",
+   "vi": "tín dụng thuế cho con ($2,200)",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣3️⃣ TAXATION OF SOCIAL SECURITY & OTHER INCOME"
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.1 — CHILD TAX CREDIT, DEPENDENT CARE & EDUCATION CREDITS"
   },
   {
-   "en": "disability benefits",
-   "vi": "trợ cấp mất khả năng lao động",
+   "en": "Additional Child Tax Credit (ACTC)",
+   "vi": "phần refundable của CTC",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣3️⃣ TAXATION OF SOCIAL SECURITY & OTHER INCOME"
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.1 — CHILD TAX CREDIT, DEPENDENT CARE & EDUCATION CREDITS"
   },
   {
-   "en": "qualified adoption assistance",
-   "vi": "hỗ trợ nhận con nuôi đủ điều kiện",
+   "en": "credit for other dependents (ODC)",
+   "vi": "tín dụng cho dependent khác ($500)",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣3️⃣ TAXATION OF SOCIAL SECURITY & OTHER INCOME"
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.1 — CHILD TAX CREDIT, DEPENDENT CARE & EDUCATION CREDITS"
   },
   {
-   "en": "annual exclusion (gift tax)",
-   "vi": "mức miễn khai gift tax mỗi năm cho mỗi người nhận",
+   "en": "American Opportunity Tax Credit (AOTC)",
+   "vi": "tín dụng cơ hội Mỹ (4 năm đầu đại học, 40% refundable)",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣4️⃣ ESTATE/GIFT TAX BASICS & SPECIALIZED SITUATIONS"
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.1 — CHILD TAX CREDIT, DEPENDENT CARE & EDUCATION CREDITS"
   },
   {
-   "en": "gift splitting",
-   "vi": "vợ chồng gộp annual exclusion khi tặng cho chung",
+   "en": "Lifetime Learning Credit (LLC)",
+   "vi": "tín dụng học tập suốt đời ($2,000/return)",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣4️⃣ ESTATE/GIFT TAX BASICS & SPECIALIZED SITUATIONS"
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.1 — CHILD TAX CREDIT, DEPENDENT CARE & EDUCATION CREDITS"
+  },
+  {
+   "en": "Form 1098-T",
+   "vi": "mẫu báo tuition của trường",
+   "kind": "term",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.1 — CHILD TAX CREDIT, DEPENDENT CARE & EDUCATION CREDITS"
+  },
+  {
+   "en": "dependent care benefits",
+   "vi": "phúc lợi chăm sóc con do employer (loại trừ $5,000)",
+   "kind": "term",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.1 — CHILD TAX CREDIT, DEPENDENT CARE & EDUCATION CREDITS"
+  },
+  {
+   "en": "Saver's Credit",
+   "vi": "tín dụng tiết kiệm hưu trí (50/20/10%)",
+   "kind": "term",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.2 — CÁC NONREFUNDABLE CREDITS KHÁC"
+  },
+  {
+   "en": "Foreign Tax Credit",
+   "vi": "tín dụng thuế nước ngoài",
+   "kind": "term",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.2 — CÁC NONREFUNDABLE CREDITS KHÁC"
+  },
+  {
+   "en": "adoption credit",
+   "vi": "tín dụng nhận con nuôi ($17,280)",
+   "kind": "term",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.2 — CÁC NONREFUNDABLE CREDITS KHÁC"
+  },
+  {
+   "en": "Residential Clean Energy Credit",
+   "vi": "tín dụng năng lượng sạch cho nhà ở (kết thúc 2025)",
+   "kind": "term",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.2 — CÁC NONREFUNDABLE CREDITS KHÁC"
+  },
+  {
+   "en": "Schedule R",
+   "vi": "bảng tính credit người cao tuổi/ tàn tật",
+   "kind": "term",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.2 — CÁC NONREFUNDABLE CREDITS KHÁC"
+  },
+  {
+   "en": "general business credit",
+   "vi": "tín dụng kinh doanh tổng hợp",
+   "kind": "term",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.2 — CÁC NONREFUNDABLE CREDITS KHÁC"
+  },
+  {
+   "en": "carryforward",
+   "vi": "chuyển phần credit dư sang năm sau",
+   "kind": "term",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.2 — CÁC NONREFUNDABLE CREDITS KHÁC"
+  },
+  {
+   "en": "Earned Income Tax Credit (EITC)",
+   "vi": "tín dụng thuế thu nhập lao động (refundable)",
+   "kind": "term",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.3 — EARNED INCOME CREDIT & REFUNDABLE CREDITS"
+  },
+  {
+   "en": "Schedule EIC",
+   "vi": "bảng kê qualifying child cho EITC",
+   "kind": "term",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.3 — EARNED INCOME CREDIT & REFUNDABLE CREDITS"
+  },
+  {
+   "en": "investment income limit",
+   "vi": "giới hạn thu nhập đầu tư ($11,950)",
+   "kind": "term",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.3 — EARNED INCOME CREDIT & REFUNDABLE CREDITS"
+  },
+  {
+   "en": "Form 8867",
+   "vi": "bảng kiểm due diligence của preparer",
+   "kind": "term",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.3 — EARNED INCOME CREDIT & REFUNDABLE CREDITS"
+  },
+  {
+   "en": "Form 8862",
+   "vi": "mẫu xin claim lại EITC sau khi bị từ chối",
+   "kind": "term",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.3 — EARNED INCOME CREDIT & REFUNDABLE CREDITS"
+  },
+  {
+   "en": "Premium Tax Credit",
+   "vi": "tín dụng thuế trợ giá bảo hiểm sức khỏe marketplace",
+   "kind": "term",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.3 — EARNED INCOME CREDIT & REFUNDABLE CREDITS"
+  },
+  {
+   "en": "excess Social Security tax",
+   "vi": "SS withheld vượt wage base khi làm nhiều employer",
+   "kind": "term",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.3 — EARNED INCOME CREDIT & REFUNDABLE CREDITS"
+  },
+  {
+   "en": "tie-breaker rule",
+   "vi": "quy tắc phá thế bằng nhau khi nhiều người claim cùng 1 child",
+   "kind": "term",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.3 — EARNED INCOME CREDIT & REFUNDABLE CREDITS"
+  },
+  {
+   "en": "withholding",
+   "vi": "khấu trừ tại nguồn",
+   "kind": "term",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.4 — WITHHOLDING, ESTIMATED TAX & PAYMENTS"
+  },
+  {
+   "en": "Form W-4",
+   "vi": "tờ khai điều chỉnh withholding của nhân viên",
+   "kind": "term",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.4 — WITHHOLDING, ESTIMATED TAX & PAYMENTS"
+  },
+  {
+   "en": "backup withholding",
+   "vi": "khấu trừ dự phòng (24%) khi thiếu TIN",
+   "kind": "term",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.4 — WITHHOLDING, ESTIMATED TAX & PAYMENTS"
+  },
+  {
+   "en": "estimated tax",
+   "vi": "thuế ước tính nộp theo quý",
+   "kind": "term",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.4 — WITHHOLDING, ESTIMATED TAX & PAYMENTS"
+  },
+  {
+   "en": "safe harbor",
+   "vi": "ngưỡng an toàn tránh underpayment penalty",
+   "kind": "term",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.4 — WITHHOLDING, ESTIMATED TAX & PAYMENTS"
+  },
+  {
+   "en": "Form 1040-ES",
+   "vi": "tờ khai thuế ước tính",
+   "kind": "term",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.4 — WITHHOLDING, ESTIMATED TAX & PAYMENTS"
+  },
+  {
+   "en": "Form 2210",
+   "vi": "mẫu tính phạt nộp thiếu estimated tax",
+   "kind": "term",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.4 — WITHHOLDING, ESTIMATED TAX & PAYMENTS"
+  },
+  {
+   "en": "annualized income installment method",
+   "vi": "phương pháp ước tính theo thu nhập thực tế từng kỳ",
+   "kind": "term",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.4 — WITHHOLDING, ESTIMATED TAX & PAYMENTS"
+  },
+  {
+   "en": "Form 4868",
+   "vi": "đơn gia hạn nộp return (không gia hạn nộp thuế)",
+   "kind": "term",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.4 — WITHHOLDING, ESTIMATED TAX & PAYMENTS"
+  },
+  {
+   "en": "amount realized",
+   "vi": "số thực nhận từ bán tài sản",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.1 — BASIS VÀ ADJUSTED BASIS"
+  },
+  {
+   "en": "adjusted basis",
+   "vi": "cơ sở tính giá đã điều chỉnh",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.1 — BASIS VÀ ADJUSTED BASIS"
+  },
+  {
+   "en": "carryover basis",
+   "vi": "basis kế thừa từ người cho (gift)",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.1 — BASIS VÀ ADJUSTED BASIS"
+  },
+  {
+   "en": "dual basis rule",
+   "vi": "quy tắc 2 basis cho gift có FMV thấp hơn basis donor",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.1 — BASIS VÀ ADJUSTED BASIS"
+  },
+  {
+   "en": "step-up in basis",
+   "vi": "nâng basis lên FMV khi thừa kế",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.1 — BASIS VÀ ADJUSTED BASIS"
+  },
+  {
+   "en": "alternate valuation date",
+   "vi": "ngày định giá thay thế (6 tháng sau khi mất)",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.1 — BASIS VÀ ADJUSTED BASIS"
+  },
+  {
+   "en": "allowed or allowable depreciation",
+   "vi": "khấu hao đã/đáng lẽ được khấu trừ (giảm basis)",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.1 — BASIS VÀ ADJUSTED BASIS"
+  },
+  {
+   "en": "tacking",
+   "vi": "cộng nối holding period",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.1 — BASIS VÀ ADJUSTED BASIS"
+  },
+  {
+   "en": "capital asset",
+   "vi": "tài sản vốn",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.2 — CAPITAL GAINS & LOSSES, HOLDING PERIOD, WASH SALE"
+  },
+  {
+   "en": "net capital gain",
+   "vi": "lãi vốn ròng",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.2 — CAPITAL GAINS & LOSSES, HOLDING PERIOD, WASH SALE"
+  },
+  {
+   "en": "Schedule D / Form 8949",
+   "vi": "bảng khai lãi/lỗ vốn",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.2 — CAPITAL GAINS & LOSSES, HOLDING PERIOD, WASH SALE"
+  },
+  {
+   "en": "wash sale",
+   "vi": "bán lỗ rồi mua lại trong 30 ngày (loss bị disallow)",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.2 — CAPITAL GAINS & LOSSES, HOLDING PERIOD, WASH SALE"
+  },
+  {
+   "en": "substantially identical",
+   "vi": "gần như giống hệt (cổ phiếu/ chứng khoán)",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.2 — CAPITAL GAINS & LOSSES, HOLDING PERIOD, WASH SALE"
+  },
+  {
+   "en": "worthless security",
+   "vi": "chứng khoán vô giá trị",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.2 — CAPITAL GAINS & LOSSES, HOLDING PERIOD, WASH SALE"
+  },
+  {
+   "en": "qualified small business stock (QSBS)",
+   "vi": "cổ phiếu doanh nghiệp nhỏ đủ điều kiện (§1202)",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.2 — CAPITAL GAINS & LOSSES, HOLDING PERIOD, WASH SALE"
+  },
+  {
+   "en": "collectibles",
+   "vi": "đồ sưu tầm (thuế tối đa 28%)",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.2 — CAPITAL GAINS & LOSSES, HOLDING PERIOD, WASH SALE"
+  },
+  {
+   "en": "principal residence",
+   "vi": "nhà ở chính",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.3 — SALE OF PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "en": "§121 exclusion",
+   "vi": "loại trừ gain khi bán nhà chính ($250,000/$500,000)",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.3 — SALE OF PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "en": "ownership test",
+   "vi": "điều kiện sở hữu (2/5 năm)",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.3 — SALE OF PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "en": "use test",
+   "vi": "điều kiện sử dụng làm nhà chính (2/5 năm)",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.3 — SALE OF PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "en": "partial exclusion",
+   "vi": "loại trừ một phần (unforeseen circumstances)",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.3 — SALE OF PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "en": "nonqualified use",
+   "vi": "thời gian không dùng làm nhà chính (sau 2008)",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.3 — SALE OF PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "en": "Form 1099-S",
+   "vi": "mẫu báo tiền thu từ bán bất động sản",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.3 — SALE OF PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "en": "unrecaptured §1250 gain",
+   "vi": "gain từ khấu hao straight-line (tối đa 25%)",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.3 — SALE OF PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "en": "bond premium",
+   "vi": "phí bảo hiểm khi mua bond cao hơn face",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.4 — BONDS, OPTIONS, SHORT SALES & FORECLOSURE"
+  },
+  {
+   "en": "market discount",
+   "vi": "chiết khấu khi mua bond trên thị trường thứ cấp",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.4 — BONDS, OPTIONS, SHORT SALES & FORECLOSURE"
+  },
+  {
+   "en": "option holder / writer",
+   "vi": "người mua / người bán option",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.4 — BONDS, OPTIONS, SHORT SALES & FORECLOSURE"
+  },
+  {
+   "en": "short sale",
+   "vi": "bán khống",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.4 — BONDS, OPTIONS, SHORT SALES & FORECLOSURE"
+  },
+  {
+   "en": "constructive sale",
+   "vi": "bán suy định (§1259)",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.4 — BONDS, OPTIONS, SHORT SALES & FORECLOSURE"
+  },
+  {
+   "en": "recourse / nonrecourse debt",
+   "vi": "nợ có/không truy đòi",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.4 — BONDS, OPTIONS, SHORT SALES & FORECLOSURE"
+  },
+  {
+   "en": "foreclosure",
+   "vi": "tịch biên tài sản thế chấp",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.4 — BONDS, OPTIONS, SHORT SALES & FORECLOSURE"
+  },
+  {
+   "en": "abandonment",
+   "vi": "từ bỏ tài sản",
+   "kind": "term",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.4 — BONDS, OPTIONS, SHORT SALES & FORECLOSURE"
+  },
+  {
+   "en": "related party",
+   "vi": "bên liên quan",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.1 — RELATED-PARTY TRANSACTIONS"
+  },
+  {
+   "en": "§267",
+   "vi": "điều luật chặn loss giữa bên liên quan",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.1 — RELATED-PARTY TRANSACTIONS"
+  },
+  {
+   "en": "constructive ownership",
+   "vi": "sở hữu suy định",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.1 — RELATED-PARTY TRANSACTIONS"
+  },
+  {
+   "en": "lineal descendants",
+   "vi": "hậu duệ trực hệ (con, cháu)",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.1 — RELATED-PARTY TRANSACTIONS"
+  },
+  {
+   "en": "ancestors",
+   "vi": "tổ tiên trực hệ (cha mẹ, ông bà)",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.1 — RELATED-PARTY TRANSACTIONS"
+  },
+  {
+   "en": "controlled group",
+   "vi": "nhóm công ty kiểm soát chung",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.1 — RELATED-PARTY TRANSACTIONS"
+  },
+  {
+   "en": "§1239",
+   "vi": "gain từ bán depreciable property cho related party là ordinary",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.1 — RELATED-PARTY TRANSACTIONS"
+  },
+  {
+   "en": "matching rule",
+   "vi": "quy tắc khớp thời điểm deduct/income giữa related party",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.1 — RELATED-PARTY TRANSACTIONS"
+  },
+  {
+   "en": "Section 1231 property",
+   "vi": "tài sản dùng trong kinh doanh giữ > 1 năm",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.2 — BUSINESS PROPERTY — §1231, §1245, §1250"
+  },
+  {
+   "en": "Section 1245 recapture",
+   "vi": "truy thu khấu hao thành ordinary (personal property)",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.2 — BUSINESS PROPERTY — §1231, §1245, §1250"
+  },
+  {
+   "en": "Section 1250 recapture",
+   "vi": "truy thu khấu hao thành ordinary (real property, phần vượt straight-line)",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.2 — BUSINESS PROPERTY — §1231, §1245, §1250"
+  },
+  {
+   "en": "unrecaptured §1250 gain",
+   "vi": "gain từ khấu hao straight-line (≤ 25%)",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.2 — BUSINESS PROPERTY — §1231, §1245, §1250"
+  },
+  {
+   "en": "lookback rule",
+   "vi": "quy tắc nhìn lại 5 năm cho §1231 loss",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.2 — BUSINESS PROPERTY — §1231, §1245, §1250"
+  },
+  {
+   "en": "Form 4797",
+   "vi": "mẫu khai bán tài sản kinh doanh",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.2 — BUSINESS PROPERTY — §1231, §1245, §1250"
+  },
+  {
+   "en": "amortizable intangible (§197)",
+   "vi": "tài sản vô hình amortize 15 năm",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.2 — BUSINESS PROPERTY — §1231, §1245, §1250"
+  },
+  {
+   "en": "netting (§1231)",
+   "vi": "bù trừ lãi/lỗ §1231 trong năm",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.2 — BUSINESS PROPERTY — §1231, §1245, §1250"
+  },
+  {
+   "en": "installment sale",
+   "vi": "bán trả góp",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.3 — INSTALLMENT SALES (§453)"
+  },
+  {
+   "en": "Form 6252",
+   "vi": "mẫu khai installment sale",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.3 — INSTALLMENT SALES (§453)"
+  },
+  {
+   "en": "gross profit percentage",
+   "vi": "tỷ lệ lợi nhuận gộp (dùng để tính gain mỗi năm)",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.3 — INSTALLMENT SALES (§453)"
+  },
+  {
+   "en": "contract price",
+   "vi": "giá hợp đồng (selling price trừ nợ người mua gánh)",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.3 — INSTALLMENT SALES (§453)"
+  },
+  {
+   "en": "qualifying indebtedness",
+   "vi": "nợ người mua gánh được trừ khi tính contract price",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.3 — INSTALLMENT SALES (§453)"
+  },
+  {
+   "en": "dealer disposition",
+   "vi": "bán bởi dealer (không dùng installment)",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.3 — INSTALLMENT SALES (§453)"
+  },
+  {
+   "en": "imputed interest",
+   "vi": "lãi suy đoán trên note không lãi",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.3 — INSTALLMENT SALES (§453)"
+  },
+  {
+   "en": "installment obligation",
+   "vi": "nghĩa vụ trả góp (note)",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.3 — INSTALLMENT SALES (§453)"
+  },
+  {
+   "en": "§453A interest charge",
+   "vi": "lãi tính trên thuế hoãn khi nợ trả góp > $5 triệu",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.3 — INSTALLMENT SALES (§453)"
+  },
+  {
+   "en": "residual method",
+   "vi": "phương pháp phân bổ giá bán theo 7 class",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.4 — BÁN DOANH NGHIỆP (§1060) & TỔNG HỢP FORM 4797"
+  },
+  {
+   "en": "Form 8594",
+   "vi": "mẫu khai phân bổ giá bán khi mua/bán tài sản kinh doanh",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.4 — BÁN DOANH NGHIỆP (§1060) & TỔNG HỢP FORM 4797"
+  },
+  {
+   "en": "goodwill",
+   "vi": "uy tín (thường là capital gain cho người bán)",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.4 — BÁN DOANH NGHIỆP (§1060) & TỔNG HỢP FORM 4797"
+  },
+  {
+   "en": "going concern value",
+   "vi": "giá trị hoạt động liên tục",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.4 — BÁN DOANH NGHIỆP (§1060) & TỔNG HỢP FORM 4797"
+  },
+  {
+   "en": "covenant not to compete",
+   "vi": "cam kết không cạnh tranh (ordinary income cho seller)",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.4 — BÁN DOANH NGHIỆP (§1060) & TỔNG HỢP FORM 4797"
+  },
+  {
+   "en": "Form 4797",
+   "vi": "mẫu khai bán tài sản kinh doanh/§1231",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.4 — BÁN DOANH NGHIỆP (§1060) & TỔNG HỢP FORM 4797"
+  },
+  {
+   "en": "ordinary asset",
+   "vi": "tài sản tạo ordinary income (inventory, A/R)",
+   "kind": "term",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.4 — BÁN DOANH NGHIỆP (§1060) & TỔNG HỢP FORM 4797"
+  },
+  {
+   "en": "principal residence",
+   "vi": "nhà ở chính",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.1 — SALE OF A PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "en": "ownership and use tests",
+   "vi": "điều kiện sở hữu và sử dụng (2/5 năm)",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.1 — SALE OF A PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "en": "nonqualified use",
+   "vi": "thời gian không dùng làm nhà chính (sau 2008, trước lần ở cuối)",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.1 — SALE OF A PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "en": "partial exclusion",
+   "vi": "loại trừ một phần theo tỷ lệ tháng",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.1 — SALE OF A PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "en": "depreciation recapture (home office)",
+   "vi": "khấu hao home office không được loại trừ (sau 6/5/1997)",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.1 — SALE OF A PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "en": "incident to divorce",
+   "vi": "liên quan đến ly hôn",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.1 — SALE OF A PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "en": "suspension of 5-year test",
+   "vi": "kéo dài tới 10 năm cho quân nhân/ ngoại giao",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.1 — SALE OF A PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "en": "like-kind exchange",
+   "vi": "trao đổi tài sản cùng loại",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.2 — LIKE-KIND EXCHANGES (§1031)"
+  },
+  {
+   "en": "§1031",
+   "vi": "điều luật hoãn gain khi đổi real property (sau 2017)",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.2 — LIKE-KIND EXCHANGES (§1031)"
+  },
+  {
+   "en": "qualified intermediary (QI)",
+   "vi": "bên trung gian giữ tiền khi exchange",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.2 — LIKE-KIND EXCHANGES (§1031)"
+  },
+  {
+   "en": "boot",
+   "vi": "tiền/tài sản không cùng loại nhận thêm (bị tính thuế)",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.2 — LIKE-KIND EXCHANGES (§1031)"
+  },
+  {
+   "en": "relinquished property",
+   "vi": "tài sản đem đi đổi",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.2 — LIKE-KIND EXCHANGES (§1031)"
+  },
+  {
+   "en": "replacement property",
+   "vi": "tài sản nhận được",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.2 — LIKE-KIND EXCHANGES (§1031)"
+  },
+  {
+   "en": "net liability relief",
+   "vi": "giải trừ nợ ròng (coi là boot)",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.2 — LIKE-KIND EXCHANGES (§1031)"
+  },
+  {
+   "en": "reverse exchange",
+   "vi": "đổi ngược (mua replacement trước)",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.2 — LIKE-KIND EXCHANGES (§1031)"
+  },
+  {
+   "en": "Form 8824",
+   "vi": "mẫu khai like-kind exchange",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.2 — LIKE-KIND EXCHANGES (§1031)"
+  },
+  {
+   "en": "involuntary conversion",
+   "vi": "chuyển đổi không tự nguyện (cháy, trưng dụng…)",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
+  },
+  {
+   "en": "condemnation",
+   "vi": "trưng dụng đất bởi nhà nước",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
+  },
+  {
+   "en": "§1033",
+   "vi": "điều luật hoãn gain khi tài sản bị chuyển đổi không tự nguyện",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
+  },
+  {
+   "en": "replacement period",
+   "vi": "thời hạn mua tài sản thay thế",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
+  },
+  {
+   "en": "similar or related in service or use",
+   "vi": "tương tự hoặc liên quan về chức năng/sử dụng",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
+  },
+  {
+   "en": "functional use test",
+   "vi": "test chức năng (owner-user)",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
+  },
+  {
+   "en": "taxpayer use test",
+   "vi": "test theo cách taxpayer sử dụng (investor)",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
+  },
+  {
+   "en": "direct conversion",
+   "vi": "nhận tài sản thay thế trực tiếp",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
+  },
+  {
+   "en": "indirect conversion",
+   "vi": "nhận tiền rồi mua tài sản thay thế",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
+  },
+  {
+   "en": "proceeds",
+   "vi": "số tiền thu được (bảo hiểm/ bồi thường)",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
+  },
+  {
+   "en": "§1041",
+   "vi": "giao dịch giữa vợ chồng/ ex-spouse không gain/loss",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.4 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
+  },
+  {
+   "en": "incident to a divorce",
+   "vi": "liên quan đến ly hôn (trong 1 năm hoặc 6 năm)",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.4 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
+  },
+  {
+   "en": "property settlement",
+   "vi": "phân chia tài sản khi ly hôn",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.4 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
+  },
+  {
+   "en": "§1035",
+   "vi": "đổi hợp đồng bảo hiểm/annuity không tính gain",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.4 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
+  },
+  {
+   "en": "qualified opportunity fund (QOF)",
+   "vi": "quỹ cơ hội đủ điều kiện (hoãn capital gain)",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.4 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
+  },
+  {
+   "en": "nonresident alien spouse",
+   "vi": "vợ/chồng không cư trú (không áp dụng §1041)",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.4 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
+  },
+  {
+   "en": "carryover basis",
+   "vi": "basis kế thừa",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.4 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
+  },
+  {
+   "en": "Form 4684",
+   "vi": "mẫu khai casualty & theft",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.5 — SO SÁNH & BÁO CÁO"
+  },
+  {
+   "en": "Form 8949",
+   "vi": "mẫu liệt kê giao dịch chứng khoán/ tài sản vốn",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.5 — SO SÁNH & BÁO CÁO"
+  },
+  {
+   "en": "exchanged basis",
+   "vi": "basis nhận được từ giao dịch exchange",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.5 — SO SÁNH & BÁO CÁO"
+  },
+  {
+   "en": "deferral vs exclusion",
+   "vi": "hoãn thuế vs loại trừ vĩnh viễn",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.5 — SO SÁNH & BÁO CÁO"
+  },
+  {
+   "en": "election (nonrecognition)",
+   "vi": "lựa chọn áp dụng nonrecognition",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.5 — SO SÁNH & BÁO CÁO"
+  },
+  {
+   "en": "holding period tacking",
+   "vi": "nối tiếp holding period",
+   "kind": "term",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.5 — SO SÁNH & BÁO CÁO"
+  },
+  {
+   "en": "individual retirement account (IRA)",
+   "vi": "tài khoản hưu trí cá nhân",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.1 — TRADITIONAL IRA — CONTRIBUTION & DEDUCTION"
+  },
+  {
+   "en": "taxable compensation",
+   "vi": "thu nhập chịu thuế từ lao động (cơ sở contribute)",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.1 — TRADITIONAL IRA — CONTRIBUTION & DEDUCTION"
+  },
+  {
+   "en": "spousal IRA",
+   "vi": "IRA dựa trên thu nhập của vợ/chồng",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.1 — TRADITIONAL IRA — CONTRIBUTION & DEDUCTION"
+  },
+  {
+   "en": "catch-up contribution",
+   "vi": "đóng góp bổ sung cho người ≥ 50 tuổi",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.1 — TRADITIONAL IRA — CONTRIBUTION & DEDUCTION"
+  },
+  {
+   "en": "active participant (covered)",
+   "vi": "người được cover bởi plan nơi làm việc",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.1 — TRADITIONAL IRA — CONTRIBUTION & DEDUCTION"
+  },
+  {
+   "en": "nondeductible contribution",
+   "vi": "đóng góp không được khấu trừ (có basis)",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.1 — TRADITIONAL IRA — CONTRIBUTION & DEDUCTION"
+  },
+  {
+   "en": "Form 8606",
+   "vi": "mẫu theo dõi basis nondeductible IRA và Roth",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.1 — TRADITIONAL IRA — CONTRIBUTION & DEDUCTION"
+  },
+  {
+   "en": "excess contribution",
+   "vi": "đóng góp vượt mức (thuế 6%)",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.1 — TRADITIONAL IRA — CONTRIBUTION & DEDUCTION"
+  },
+  {
+   "en": "Roth IRA",
+   "vi": "IRA đóng bằng tiền sau thuế, rút qualified miễn thuế",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.2 — ROTH IRA & ROTH CONVERSION"
+  },
+  {
+   "en": "qualified distribution (Roth)",
+   "vi": "khoản rút đủ điều kiện miễn thuế/phạt",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.2 — ROTH IRA & ROTH CONVERSION"
+  },
+  {
+   "en": "five-year rule",
+   "vi": "quy tắc 5 năm của Roth",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.2 — ROTH IRA & ROTH CONVERSION"
+  },
+  {
+   "en": "Roth conversion",
+   "vi": "chuyển Traditional sang Roth (chịu thuế)",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.2 — ROTH IRA & ROTH CONVERSION"
+  },
+  {
+   "en": "recharacterization",
+   "vi": "đổi loại contribution Traditional ↔ Roth",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.2 — ROTH IRA & ROTH CONVERSION"
+  },
+  {
+   "en": "backdoor Roth",
+   "vi": "đóng nondeductible rồi convert để vượt income limit",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.2 — ROTH IRA & ROTH CONVERSION"
+  },
+  {
+   "en": "pro-rata rule",
+   "vi": "quy tắc chia basis theo tổng mọi IRA",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.2 — ROTH IRA & ROTH CONVERSION"
+  },
+  {
+   "en": "ordering rules",
+   "vi": "thứ tự rút: contributions → conversions → earnings",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.2 — ROTH IRA & ROTH CONVERSION"
+  },
+  {
+   "en": "plan loan (§72(p))",
+   "vi": "khoản vay từ qualified plan ($50,000 hoặc ½ vested)",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.3 — DISTRIBUTIONS, EARLY-WITHDRAWAL PENALTY & RMD"
+  },
+  {
+   "en": "required minimum distribution (RMD)",
+   "vi": "mức rút tối thiểu bắt buộc",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.3 — DISTRIBUTIONS, EARLY-WITHDRAWAL PENALTY & RMD"
+  },
+  {
+   "en": "uniform lifetime table",
+   "vi": "bảng tuổi thọ chung để tính RMD",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.3 — DISTRIBUTIONS, EARLY-WITHDRAWAL PENALTY & RMD"
+  },
+  {
+   "en": "early distribution penalty",
+   "vi": "phạt rút sớm 10% (trước 59½)",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.3 — DISTRIBUTIONS, EARLY-WITHDRAWAL PENALTY & RMD"
+  },
+  {
+   "en": "SEPP / §72(t)",
+   "vi": "chuỗi phân phối đều (miễn phạt rút sớm)",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.3 — DISTRIBUTIONS, EARLY-WITHDRAWAL PENALTY & RMD"
+  },
+  {
+   "en": "qualified charitable distribution (QCD)",
+   "vi": "rút trực tiếp từ IRA cho charity (≥ 70½, tối đa $108,000)",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.3 — DISTRIBUTIONS, EARLY-WITHDRAWAL PENALTY & RMD"
+  },
+  {
+   "en": "Form 1099-R",
+   "vi": "mẫu báo phân phối hưu trí",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.3 — DISTRIBUTIONS, EARLY-WITHDRAWAL PENALTY & RMD"
+  },
+  {
+   "en": "Form 5329",
+   "vi": "mẫu khai phạt IRA/plan",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.3 — DISTRIBUTIONS, EARLY-WITHDRAWAL PENALTY & RMD"
+  },
+  {
+   "en": "QDRO",
+   "vi": "lệnh phân chia tài sản hưu trí khi ly hôn",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.3 — DISTRIBUTIONS, EARLY-WITHDRAWAL PENALTY & RMD"
+  },
+  {
+   "en": "trustee-to-trustee transfer",
+   "vi": "chuyển trực tiếp giữa 2 institution (không giới hạn)",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.4 — ROLLOVERS, INHERITED IRA & PROHIBITED TRANSACTIONS"
+  },
+  {
+   "en": "60-day rollover",
+   "vi": "rollover trong 60 ngày (1 lần/12 tháng cho IRA)",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.4 — ROLLOVERS, INHERITED IRA & PROHIBITED TRANSACTIONS"
+  },
+  {
+   "en": "inherited IRA",
+   "vi": "IRA thừa kế",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.4 — ROLLOVERS, INHERITED IRA & PROHIBITED TRANSACTIONS"
+  },
+  {
+   "en": "10-year rule",
+   "vi": "phải rút hết trong 10 năm (non-spouse beneficiary)",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.4 — ROLLOVERS, INHERITED IRA & PROHIBITED TRANSACTIONS"
+  },
+  {
+   "en": "eligible designated beneficiary",
+   "vi": "người thừa kế đủ điều kiện (kéo dài theo tuổi thọ)",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.4 — ROLLOVERS, INHERITED IRA & PROHIBITED TRANSACTIONS"
+  },
+  {
+   "en": "prohibited transaction",
+   "vi": "giao dịch bị cấm (IRA mất tư cách)",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.4 — ROLLOVERS, INHERITED IRA & PROHIBITED TRANSACTIONS"
+  },
+  {
+   "en": "collectibles",
+   "vi": "đồ sưu tầm (không được đầu tư trong IRA)",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.4 — ROLLOVERS, INHERITED IRA & PROHIBITED TRANSACTIONS"
+  },
+  {
+   "en": "self-certification",
+   "vi": "tự xác nhận để xin waive 60 ngày",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.4 — ROLLOVERS, INHERITED IRA & PROHIBITED TRANSACTIONS"
+  },
+  {
+   "en": "Section 529 plan",
+   "vi": "quỹ giáo dục 529 (rút đúng mục đích miễn thuế)",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.5 — SECTION 529 QUALIFIED TUITION PROGRAMS"
+  },
+  {
+   "en": "designated beneficiary",
+   "vi": "người thụ hưởng được chỉ định",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.5 — SECTION 529 QUALIFIED TUITION PROGRAMS"
+  },
+  {
+   "en": "qualified higher education expenses",
+   "vi": "chi phí giáo dục đại học đủ điều kiện",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.5 — SECTION 529 QUALIFIED TUITION PROGRAMS"
+  },
+  {
+   "en": "eligible educational institution",
+   "vi": "cơ sở giáo dục đủ điều kiện",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.5 — SECTION 529 QUALIFIED TUITION PROGRAMS"
+  },
+  {
+   "en": "superfunding",
+   "vi": "đóng 529 cho 5 năm một lần ($95,000)",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.5 — SECTION 529 QUALIFIED TUITION PROGRAMS"
+  },
+  {
+   "en": "apprenticeship program",
+   "vi": "chương trình học nghề đăng ký",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.5 — SECTION 529 QUALIFIED TUITION PROGRAMS"
+  },
+  {
+   "en": "student loan repayment (529)",
+   "vi": "dùng 529 trả nợ học tối đa $10,000 lifetime",
+   "kind": "term",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.5 — SECTION 529 QUALIFIED TUITION PROGRAMS"
+  },
+  {
+   "en": "gift tax",
+   "vi": "thuế tặng cho",
+   "kind": "term",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.1 — GIFT TAX BASICS & EXCLUDED TRANSFERS"
+  },
+  {
+   "en": "donor / donee",
+   "vi": "người tặng / người nhận",
+   "kind": "term",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.1 — GIFT TAX BASICS & EXCLUDED TRANSFERS"
+  },
+  {
+   "en": "completed gift",
+   "vi": "gift hoàn tất (donor từ bỏ quyền kiểm soát)",
+   "kind": "term",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.1 — GIFT TAX BASICS & EXCLUDED TRANSFERS"
+  },
+  {
+   "en": "unified credit / applicable exclusion amount",
+   "vi": "mức miễn trừ chung cho gift và estate",
+   "kind": "term",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.1 — GIFT TAX BASICS & EXCLUDED TRANSFERS"
   },
   {
    "en": "Form 709",
-   "vi": "mẫu khai thuế quà tặng (gift tax return)",
+   "vi": "tờ khai gift tax (và GST)",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣4️⃣ ESTATE/GIFT TAX BASICS & SPECIALIZED SITUATIONS"
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.1 — GIFT TAX BASICS & EXCLUDED TRANSFERS"
   },
   {
-   "en": "unified credit / lifetime exemption",
-   "vi": "mức miễn trừ trọn đời (gộp gift + estate tax)",
+   "en": "adequate consideration",
+   "vi": "giá trị tương đương (không phải gift)",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣4️⃣ ESTATE/GIFT TAX BASICS & SPECIALIZED SITUATIONS"
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.1 — GIFT TAX BASICS & EXCLUDED TRANSFERS"
   },
   {
-   "en": "innocent spouse relief",
-   "vi": "miễn trách nhiệm cho vợ/chồng \"vô can\"",
+   "en": "qualified disclaimer",
+   "vi": "từ chối nhận hợp lệ (trong 9 tháng)",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣4️⃣ ESTATE/GIFT TAX BASICS & SPECIALIZED SITUATIONS"
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.1 — GIFT TAX BASICS & EXCLUDED TRANSFERS"
   },
   {
-   "en": "injured spouse (Form 8379)",
-   "vi": "vợ/chồng bị \"liên đới\" mất refund do nợ riêng của người kia",
+   "en": "net gift",
+   "vi": "gift mà donee trả gift tax",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣4️⃣ ESTATE/GIFT TAX BASICS & SPECIALIZED SITUATIONS"
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.1 — GIFT TAX BASICS & EXCLUDED TRANSFERS"
   },
   {
-   "en": "Form 1040-NR",
-   "vi": "mẫu khai thuế cho người nước ngoài không cư trú",
+   "en": "annual exclusion",
+   "vi": "mức miễn trừ hàng năm ($19,000/donee)",
    "kind": "term",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣4️⃣ ESTATE/GIFT TAX BASICS & SPECIALIZED SITUATIONS"
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.2 — ANNUAL EXCLUSION, GIFT SPLITTING & DEDUCTIONS"
+  },
+  {
+   "en": "present interest",
+   "vi": "quyền sử dụng ngay (điều kiện của annual exclusion)",
+   "kind": "term",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.2 — ANNUAL EXCLUSION, GIFT SPLITTING & DEDUCTIONS"
+  },
+  {
+   "en": "future interest",
+   "vi": "quyền trong tương lai (không đủ annual exclusion)",
+   "kind": "term",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.2 — ANNUAL EXCLUSION, GIFT SPLITTING & DEDUCTIONS"
+  },
+  {
+   "en": "Crummey power",
+   "vi": "quyền rút ngắn hạn biến gift thành present interest",
+   "kind": "term",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.2 — ANNUAL EXCLUSION, GIFT SPLITTING & DEDUCTIONS"
+  },
+  {
+   "en": "gift splitting",
+   "vi": "vợ chồng chia đôi gift (gấp đôi exclusion)",
+   "kind": "term",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.2 — ANNUAL EXCLUSION, GIFT SPLITTING & DEDUCTIONS"
+  },
+  {
+   "en": "marital deduction",
+   "vi": "khấu trừ gift/estate cho vợ/chồng",
+   "kind": "term",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.2 — ANNUAL EXCLUSION, GIFT SPLITTING & DEDUCTIONS"
+  },
+  {
+   "en": "QTIP election",
+   "vi": "lựa chọn coi trust thu nhập cho spouse đủ điều kiện marital deduction",
+   "kind": "term",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.2 — ANNUAL EXCLUSION, GIFT SPLITTING & DEDUCTIONS"
+  },
+  {
+   "en": "superfunding (529)",
+   "vi": "đóng 529 5 năm một lần ($95,000)",
+   "kind": "term",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.2 — ANNUAL EXCLUSION, GIFT SPLITTING & DEDUCTIONS"
+  },
+  {
+   "en": "generation-skipping transfer tax (GSTT)",
+   "vi": "thuế chuyển giao bỏ cách thế hệ",
+   "kind": "term",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.2 — ANNUAL EXCLUSION, GIFT SPLITTING & DEDUCTIONS"
+  },
+  {
+   "en": "tentative tax",
+   "vi": "thuế tạm tính (trên tổng taxable gifts tích lũy)",
+   "kind": "term",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.3 — TÍNH GIFT TAX & FORM 709"
+  },
+  {
+   "en": "taxable gifts",
+   "vi": "gift chịu thuế (sau exclusion, deduction)",
+   "kind": "term",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.3 — TÍNH GIFT TAX & FORM 709"
+  },
+  {
+   "en": "applicable credit",
+   "vi": "tín dụng áp dụng ($5,541,800 cho 2025)",
+   "kind": "term",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.3 — TÍNH GIFT TAX & FORM 709"
+  },
+  {
+   "en": "adjusted taxable gifts",
+   "vi": "taxable gifts các năm trước (cộng vào estate)",
+   "kind": "term",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.3 — TÍNH GIFT TAX & FORM 709"
+  },
+  {
+   "en": "adequate disclosure",
+   "vi": "công bố đầy đủ (bắt đầu thời hiệu 3 năm)",
+   "kind": "term",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.3 — TÍNH GIFT TAX & FORM 709"
+  },
+  {
+   "en": "lifetime exemption",
+   "vi": "mức miễn trừ trọn đời cho gift/estate",
+   "kind": "term",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.3 — TÍNH GIFT TAX & FORM 709"
+  },
+  {
+   "en": "cumulative",
+   "vi": "tính tích lũy qua các năm",
+   "kind": "term",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.3 — TÍNH GIFT TAX & FORM 709"
+  },
+  {
+   "en": "carryover basis (gift)",
+   "vi": "basis kế thừa cho gift",
+   "kind": "term",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.4 — BASIS CỦA GIFT, VALUATION & CÁC VẤN ĐỀ KHÁC"
+  },
+  {
+   "en": "gift tax basis adjustment",
+   "vi": "cộng gift tax liên quan phần appreciation vào basis",
+   "kind": "term",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.4 — BASIS CỦA GIFT, VALUATION & CÁC VẤN ĐỀ KHÁC"
+  },
+  {
+   "en": "fair market value (FMV)",
+   "vi": "giá trị thị trường hợp lý",
+   "kind": "term",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.4 — BASIS CỦA GIFT, VALUATION & CÁC VẤN ĐỀ KHÁC"
+  },
+  {
+   "en": "marketability discount",
+   "vi": "chiết khấu thanh khoản",
+   "kind": "term",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.4 — BASIS CỦA GIFT, VALUATION & CÁC VẤN ĐỀ KHÁC"
+  },
+  {
+   "en": "GRAT",
+   "vi": "trust nhận annuity (chuyển giao giá trị tăng thêm với gift tax thấp)",
+   "kind": "term",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.4 — BASIS CỦA GIFT, VALUATION & CÁC VẤN ĐỀ KHÁC"
+  },
+  {
+   "en": "family limited partnership",
+   "vi": "công ty hợp danh gia đình",
+   "kind": "term",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.4 — BASIS CỦA GIFT, VALUATION & CÁC VẤN ĐỀ KHÁC"
+  },
+  {
+   "en": "transferee liability",
+   "vi": "trách nhiệm của người nhận gift nếu donor không trả thuế",
+   "kind": "term",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.4 — BASIS CỦA GIFT, VALUATION & CÁC VẤN ĐỀ KHÁC"
+  },
+  {
+   "en": "gross estate",
+   "vi": "tổng tài sản chịu estate tax",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.1 — GROSS ESTATE (§2031–2044)"
+  },
+  {
+   "en": "decedent",
+   "vi": "người đã mất",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.1 — GROSS ESTATE (§2031–2044)"
+  },
+  {
+   "en": "incidents of ownership",
+   "vi": "quyền sở hữu đối với policy bảo hiểm",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.1 — GROSS ESTATE (§2031–2044)"
+  },
+  {
+   "en": "general power of appointment",
+   "vi": "quyền chỉ định rộng (bị coi là sở hữu)",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.1 — GROSS ESTATE (§2031–2044)"
+  },
+  {
+   "en": "retained life estate",
+   "vi": "quyền sử dụng/ thu nhập giữ lại khi chuyển nhượng",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.1 — GROSS ESTATE (§2031–2044)"
+  },
+  {
+   "en": "qualified joint interest",
+   "vi": "tài sản chung vợ chồng (tính 50%)",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.1 — GROSS ESTATE (§2031–2044)"
+  },
+  {
+   "en": "alternate valuation date",
+   "vi": "ngày định giá thay thế (6 tháng sau khi chết)",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.1 — GROSS ESTATE (§2031–2044)"
+  },
+  {
+   "en": "gross-up",
+   "vi": "cộng lại gift tax đã trả trong 3 năm trước chết",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.1 — GROSS ESTATE (§2031–2044)"
+  },
+  {
+   "en": "taxable estate",
+   "vi": "di sản chịu thuế (sau deductions)",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.2 — DEDUCTIONS & TÍNH ESTATE TAX"
+  },
+  {
+   "en": "marital deduction",
+   "vi": "khấu trừ cho vợ/chồng",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.2 — DEDUCTIONS & TÍNH ESTATE TAX"
+  },
+  {
+   "en": "QTIP",
+   "vi": "trust thu nhập cho vợ/chồng còn sống (marital deduction)",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.2 — DEDUCTIONS & TÍNH ESTATE TAX"
+  },
+  {
+   "en": "QDOT",
+   "vi": "trust nội địa đủ điều kiện (cho spouse không phải citizen)",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.2 — DEDUCTIONS & TÍNH ESTATE TAX"
+  },
+  {
+   "en": "terminable interest rule",
+   "vi": "quy tắc interest chấm dứt (không đủ marital deduction)",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.2 — DEDUCTIONS & TÍNH ESTATE TAX"
+  },
+  {
+   "en": "adjusted taxable gifts",
+   "vi": "taxable gifts sau 1976 cộng vào tax base",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.2 — DEDUCTIONS & TÍNH ESTATE TAX"
+  },
+  {
+   "en": "applicable credit",
+   "vi": "tín dụng ($5,541,800 năm 2025)",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.2 — DEDUCTIONS & TÍNH ESTATE TAX"
+  },
+  {
+   "en": "DSUE",
+   "vi": "phần miễn trừ chưa dùng của vợ/chồng đã mất",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.2 — DEDUCTIONS & TÍNH ESTATE TAX"
+  },
+  {
+   "en": "Form 706",
+   "vi": "tờ khai estate tax (United States Estate Tax Return)",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.3 — FORM 706, PORTABILITY, VALUATION & BASIS"
+  },
+  {
+   "en": "Form 4768",
+   "vi": "đơn gia hạn nộp Form 706 / trả estate tax",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.3 — FORM 706, PORTABILITY, VALUATION & BASIS"
+  },
+  {
+   "en": "portability",
+   "vi": "chuyển phần exclusion chưa dùng cho spouse còn sống",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.3 — FORM 706, PORTABILITY, VALUATION & BASIS"
+  },
+  {
+   "en": "special use valuation",
+   "vi": "định giá theo mục đích sử dụng (farm/business)",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.3 — FORM 706, PORTABILITY, VALUATION & BASIS"
+  },
+  {
+   "en": "executor / personal representative",
+   "vi": "người thi hành di chúc / người đại diện di sản",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.3 — FORM 706, PORTABILITY, VALUATION & BASIS"
+  },
+  {
+   "en": "Form 8971",
+   "vi": "mẫu báo basis cho beneficiary",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.3 — FORM 706, PORTABILITY, VALUATION & BASIS"
+  },
+  {
+   "en": "basis consistency",
+   "vi": "nhất quán basis với giá trị đã khai ở Form 706",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.3 — FORM 706, PORTABILITY, VALUATION & BASIS"
+  },
+  {
+   "en": "§1014",
+   "vi": "điều luật step-up basis khi thừa kế",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.3 — FORM 706, PORTABILITY, VALUATION & BASIS"
+  },
+  {
+   "en": "executor",
+   "vi": "người thi hành di chúc",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.4 — EXECUTOR, PAYMENT RELIEF & ESTATE PLANNING OVERVIEW"
+  },
+  {
+   "en": "Form 56",
+   "vi": "thông báo quan hệ fiduciary",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.4 — EXECUTOR, PAYMENT RELIEF & ESTATE PLANNING OVERVIEW"
+  },
+  {
+   "en": "§6166 installment payment",
+   "vi": "trả estate tax trả góp cho closely held business",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.4 — EXECUTOR, PAYMENT RELIEF & ESTATE PLANNING OVERVIEW"
+  },
+  {
+   "en": "qualified disclaimer",
+   "vi": "từ chối nhận hợp lệ (§2518)",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.4 — EXECUTOR, PAYMENT RELIEF & ESTATE PLANNING OVERVIEW"
+  },
+  {
+   "en": "estate tax lien",
+   "vi": "quyền cầm giữ thuế di sản (10 năm)",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.4 — EXECUTOR, PAYMENT RELIEF & ESTATE PLANNING OVERVIEW"
+  },
+  {
+   "en": "bypass trust (credit shelter trust)",
+   "vi": "trust tận dụng exclusion của người mất",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.4 — EXECUTOR, PAYMENT RELIEF & ESTATE PLANNING OVERVIEW"
+  },
+  {
+   "en": "ILIT",
+   "vi": "trust bảo hiểm nhân thọ bất khả hủy",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.4 — EXECUTOR, PAYMENT RELIEF & ESTATE PLANNING OVERVIEW"
+  },
+  {
+   "en": "inheritance tax",
+   "vi": "thuế thừa kế (cấp bang, người nhận trả)",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.4 — EXECUTOR, PAYMENT RELIEF & ESTATE PLANNING OVERVIEW"
+  },
+  {
+   "en": "generation-skipping transfer tax (GSTT)",
+   "vi": "thuế chuyển giao bỏ cách thế hệ",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.5 — GENERATION-SKIPPING TRANSFER TAX (GSTT)"
+  },
+  {
+   "en": "skip person",
+   "vi": "người ≥ 2 thế hệ dưới transferor",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.5 — GENERATION-SKIPPING TRANSFER TAX (GSTT)"
+  },
+  {
+   "en": "direct skip",
+   "vi": "chuyển trực tiếp cho skip person",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.5 — GENERATION-SKIPPING TRANSFER TAX (GSTT)"
+  },
+  {
+   "en": "taxable distribution",
+   "vi": "phân phối từ trust cho skip person",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.5 — GENERATION-SKIPPING TRANSFER TAX (GSTT)"
+  },
+  {
+   "en": "taxable termination",
+   "vi": "chấm dứt quyền non-skip person trong trust",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.5 — GENERATION-SKIPPING TRANSFER TAX (GSTT)"
+  },
+  {
+   "en": "GST exemption",
+   "vi": "mức miễn GSTT ($13.99 triệu 2025)",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.5 — GENERATION-SKIPPING TRANSFER TAX (GSTT)"
+  },
+  {
+   "en": "inclusion ratio",
+   "vi": "tỷ lệ bao gồm (quyết định phần chịu GSTT)",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.5 — GENERATION-SKIPPING TRANSFER TAX (GSTT)"
+  },
+  {
+   "en": "DSGT / DSET",
+   "vi": "thuế direct skip cho gift / cho estate",
+   "kind": "term",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.5 — GENERATION-SKIPPING TRANSFER TAX (GSTT)"
   },
   {
    "en": "dual basis rule",
@@ -3613,7 +5736,7 @@ window.EA_LESSONS = {
   },
   {
    "en": "Tax evasion",
-   "vi": "$100,000 (cá nhân)/$500,000 (corp), tù tới 5 năm",
+   "vi": "$250,000 (cá nhân)/$500,000 (corp), tù tới 5 năm",
    "kind": "fact",
    "lesson": "EA3_SU02_Tax_Preparers_and_Penalties",
    "section": "2.4 — PENALTIES",
@@ -5369,436 +7492,33 @@ window.EA_LESSONS = {
    "section": "3.3 — INCOME IN RESPECT OF A DECEDENT (IRD)"
   },
   {
-   "q": "Which filing status generally results in the highest standard deduction relative to Single?",
+   "q": "A taxpayer is presumed to have a profit motive if the activity (other than horse activities) produces a profit in at least:",
    "opts": [
-    "Married Filing Separately",
-    "Head of Household",
-    "Single with one dependent",
-    "Married Filing Separately with itemized spouse"
-   ],
-   "a": 1,
-   "exp": "Head of Household HOH có standard deduction cao hơn Single nhưng thấp hơn MFJ. Đây là lựa chọn tốt nhất trong 4 đáp án so với Single.",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "1️⃣ FILING STATUS & DEPENDENTS"
-  },
-  {
-   "q": "To claim Head of Household status, a taxpayer must pay more than what percentage of the costs of keeping up the home?",
-   "opts": [
-    "25%",
-    "50%",
-    "75%",
-    "100%"
-   ],
-   "a": 1,
-   "exp": "50% Phải trả HƠN (more than) 50% chi phí duy trì nhà (tiền thuê/lãi vay, thuế BĐS, điện nước, thực phẩm tiêu thụ trong nhà...).",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "1️⃣ FILING STATUS & DEPENDENTS"
-  },
-  {
-   "q": "Which of the following is NOT a requirement for a Qualifying Child?",
-   "opts": [
-    "Age test",
-    "Residency test",
-    "Gross income test",
-    "Relationship test"
+    "1 of the last 3 years",
+    "2 of the last 5 years",
+    "3 of the last 5 consecutive years",
+    "5 of the last 7 years"
    ],
    "a": 2,
-   "exp": "Gross income test Gross income test chỉ áp dụng cho Qualifying Relative, KHÔNG áp dụng cho Qualifying Child.",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "1️⃣ FILING STATUS & DEPENDENTS"
+   "exp": "3 of the last 5 consecutive years Với đua ngựa/nhân giống là 2 trong 7 năm.",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.1 — BUSINESS VS. HOBBY, SCHEDULE C & SELF-EMPLOYMENT TAX"
   },
   {
-   "q": "A Qualifying Relative's gross income must be below a certain threshold. Which test does this refer to?",
+   "q": "A taxpayer must file Schedule SE if net earnings from self-employment are at least:",
    "opts": [
-    "Support test",
-    "Gross income test",
-    "Joint return test",
-    "Citizenship test"
+    "$100",
+    "$400",
+    "$1,000",
+    "$5,000"
    ],
    "a": 1,
-   "exp": "Gross income test Qualifying Relative phải có thu nhập dưới mức exemption amount quy định hàng năm.",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "1️⃣ FILING STATUS & DEPENDENTS"
+   "exp": "$400",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.1 — BUSINESS VS. HOBBY, SCHEDULE C & SELF-EMPLOYMENT TAX"
   },
   {
-   "q": "If a married couple divorced on December 31, what is their filing status for that tax year (assuming no remarriage)?",
-   "opts": [
-    "Married Filing Jointly",
-    "Married Filing Separately",
-    "Single or Head of Household (as applicable)",
-    "Qualifying Surviving Spouse"
-   ],
-   "a": 2,
-   "exp": "Single or Head of Household Tình trạng hôn nhân được xác định vào NGÀY CUỐI NĂM (Dec 31). Nếu đã ly hôn hợp pháp trước/vào ngày đó, không thể khai MFJ/MFS cho năm đó.",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "1️⃣ FILING STATUS & DEPENDENTS"
-  },
-  {
-   "q": "Which of the following is generally taxable income?",
-   "opts": [
-    "Child support received",
-    "Gift from a parent",
-    "Gambling winnings",
-    "Life insurance proceeds paid due to death"
-   ],
-   "a": 2,
-   "exp": "Gambling winnings Tiền thắng cờ bạc luôn chịu thuế. Child support, gift, và life insurance proceeds (do tử vong) đều miễn thuế.",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "2️⃣ GROSS INCOME"
-  },
-  {
-   "q": "Under the constructive receipt doctrine, income is taxable when:",
-   "opts": [
-    "The taxpayer physically receives cash",
-    "The taxpayer has an unrestricted right to the income, even if not yet collected",
-    "The income is deposited in a foreign account",
-    "The taxpayer files their return"
-   ],
-   "a": 1,
-   "exp": "Constructive receipt: chỉ cần có QUYỀN nhận không hạn chế, không cần thực sự cầm tiền trong tay.",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "2️⃣ GROSS INCOME"
-  },
-  {
-   "q": "Interest earned on municipal bonds is generally:",
-   "opts": [
-    "Fully taxable at the federal level",
-    "Excluded from federal gross income",
-    "Taxable only if held less than a year",
-    "Subject to a flat 10% tax"
-   ],
-   "a": 1,
-   "exp": "Excluded from federal gross income Lãi trái phiếu municipal bond được miễn thuế liên bang (dù có thể vẫn chịu thuế tiểu bang tùy trường hợp).",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "2️⃣ GROSS INCOME"
-  },
-  {
-   "q": "Cancellation of debt (COD) income is:",
-   "opts": [
-    "Always nontaxable",
-    "Generally taxable, with certain exceptions (e.g., insolvency)",
-    "Taxable only for businesses, not individuals",
-    "Treated as a capital gain"
-   ],
-   "a": 1,
-   "exp": "COD income thường chịu thuế, nhưng có ngoại lệ như insolvency (mất khả năng thanh toán) hoặc bankruptcy.",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "2️⃣ GROSS INCOME"
-  },
-  {
-   "q": "Which of the following is an adjustment to income (above-the-line deduction)?",
-   "opts": [
-    "Mortgage interest",
-    "Traditional IRA contribution",
-    "Charitable contribution",
-    "State income tax paid"
-   ],
-   "a": 1,
-   "exp": "Traditional IRA contribution Mortgage interest, charitable, và state tax paid đều là ITEMIZED deductions (Schedule A), không phải adjustment.",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "3️⃣ ADJUSTMENTS TO INCOME (Schedule 1)"
-  },
-  {
-   "q": "A self-employed taxpayer can deduct what percentage of their self-employment tax as an adjustment to income?",
-   "opts": [
-    "25%",
-    "50%",
-    "75%",
-    "100%"
-   ],
-   "a": 1,
-   "exp": "50% Người tự doanh được trừ 50% SE tax đã đóng như một adjustment to income (bù đắp phần \"employer share\" tương đương).",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "3️⃣ ADJUSTMENTS TO INCOME (Schedule 1)"
-  },
-  {
-   "q": "Alimony paid under a divorce agreement executed in 2020 is:",
-   "opts": [
-    "Deductible by the payer as an adjustment to income",
-    "Not deductible by the payer, not taxable to the recipient",
-    "Taxable to the payer",
-    "Deductible only if itemizing"
-   ],
-   "a": 1,
-   "exp": "Theo Tax Cuts and Jobs Act (TCJA), alimony từ thỏa thuận ký sau 31/12/2018 KHÔNG được khấu trừ cho người trả và KHÔNG chịu thuế cho người nhận (ngược với luật cũ).",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "3️⃣ ADJUSTMENTS TO INCOME (Schedule 1)"
-  },
-  {
-   "q": "Adjustments to income reduce which of the following?",
-   "opts": [
-    "Taxable income directly, bypassing AGI",
-    "Gross income to arrive at AGI",
-    "Self-employment tax only",
-    "Only itemized deductions"
-   ],
-   "a": 1,
-   "exp": "Adjustments trừ vào Gross Income để ra AGI — đây là bước tính trước khi áp dụng Standard/Itemized deduction.",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "3️⃣ ADJUSTMENTS TO INCOME (Schedule 1)"
-  },
-  {
-   "q": "Medical expenses are deductible on Schedule A only to the extent they exceed what percentage of AGI?",
-   "opts": [
-    "2%",
-    "5%",
-    "7.5%",
-    "10%"
-   ],
-   "a": 2,
-   "exp": "7.5% Chỉ phần medical expenses VƯỢT 7.5% AGI mới được khấu trừ.",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "4️⃣ STANDARD VS. ITEMIZED DEDUCTIONS (Schedule A)"
-  },
-  {
-   "q": "The deduction for state and local taxes (SALT) is capped at:",
-   "opts": [
-    "$5,000",
-    "$10,000",
-    "$15,000",
-    "No cap"
-   ],
-   "a": 1,
-   "exp": "$10,000 SALT cap áp dụng từ TCJA 2018, giới hạn $10,000/năm cho cả MFJ và Single (MFS: $5,000 mỗi người).",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "4️⃣ STANDARD VS. ITEMIZED DEDUCTIONS (Schedule A)"
-  },
-  {
-   "q": "If a married couple files separately (MFS) and one spouse itemizes deductions, the other spouse:",
-   "opts": [
-    "Must also itemize, even if it results in $0 deduction",
-    "Can freely choose standard deduction",
-    "Must use the standard deduction",
-    "Can only itemize if income is higher"
-   ],
-   "a": 0,
-   "exp": "Quy tắc đặc biệt của MFS: nếu 1 người itemize, người còn lại BUỘC PHẢI itemize (không được dùng Standard), dù kết quả có thể là $0.",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "4️⃣ STANDARD VS. ITEMIZED DEDUCTIONS (Schedule A)"
-  },
-  {
-   "q": "Casualty losses are generally deductible only if:",
-   "opts": [
-    "Caused by normal wear and tear",
-    "Related to a federally declared disaster",
-    "The taxpayer has insurance",
-    "The loss exceeds $10,000"
-   ],
-   "a": 1,
-   "exp": "Sau TCJA 2018–2025, casualty/theft losses cho cá nhân chỉ được khấu trừ nếu thuộc thảm họa được liên bang công bố chính thức.",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "4️⃣ STANDARD VS. ITEMIZED DEDUCTIONS (Schedule A)"
-  },
-  {
-   "q": "Which credit is fully refundable and targeted at low-to-moderate income working taxpayers?",
-   "opts": [
-    "Lifetime Learning Credit",
-    "Child and Dependent Care Credit",
-    "Earned Income Tax Credit",
-    "Foreign Tax Credit"
-   ],
-   "a": 2,
-   "exp": "Earned Income Tax Credit EITC là refundable credit chính dành cho người có earned income thấp/trung bình, đặc biệt có con.",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "5️⃣ TAX CREDITS"
-  },
-  {
-   "q": "A nonrefundable credit can reduce a taxpayer's liability to:",
-   "opts": [
-    "A negative amount (creating a refund)",
-    "Zero, but no further",
-    "50% of the original liability",
-    "It cannot reduce liability at all"
-   ],
-   "a": 1,
-   "exp": "Zero, but no further Nonrefundable credit chỉ giảm thuế đến $0, phần dư (nếu có) bị MẤT, không được hoàn lại.",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "5️⃣ TAX CREDITS"
-  },
-  {
-   "q": "The American Opportunity Tax Credit (AOTC) applies to:",
-   "opts": [
-    "Any graduate-level coursework",
-    "The first four years of post-secondary education",
-    "Only vocational training",
-    "K-12 tuition"
-   ],
-   "a": 1,
-   "exp": "AOTC chỉ áp dụng cho 4 năm đầu tiên của post-secondary education (đại học/cao đẳng), không áp dụng cho graduate school.",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "5️⃣ TAX CREDITS"
-  },
-  {
-   "q": "To qualify for the Child and Dependent Care Credit, the care expenses must generally enable the taxpayer to:",
-   "opts": [
-    "Attend school part-time",
-    "Work or look for work",
-    "Travel for leisure",
-    "Retire early"
-   ],
-   "a": 1,
-   "exp": "Work or look for work Điều kiện cốt lõi của Child and Dependent Care Credit: chi phí chăm sóc phải để taxpayer (và spouse nếu MFJ) có thể làm việc hoặc tìm việc.",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "5️⃣ TAX CREDITS"
-  },
-  {
-   "q": "When property is inherited, the beneficiary's basis is generally:",
-   "opts": [
-    "The decedent's original cost basis (carryover)",
-    "Zero",
-    "The fair market value on the date of the decedent's death (step-up)",
-    "The original purchase price adjusted for inflation"
-   ],
-   "a": 2,
-   "exp": "Step-up to FMV at date of death Đây là điểm khác biệt quan trọng nhất so với gift (carryover basis). Inherited property luôn được step-up (hoặc step-down) theo FMV.",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "6️⃣ CAPITAL GAINS, LOSSES & BASIS"
-  },
-  {
-   "q": "How much net capital loss can an individual taxpayer (Single) deduct against ordinary income per year?",
-   "opts": [
-    "$1,500",
-    "$3,000",
-    "$5,000",
-    "Unlimited"
-   ],
-   "a": 1,
-   "exp": "$3,000 Giới hạn $3,000/năm cho Single/MFJ, $1,500 cho MFS; phần dư carryforward không giới hạn thời gian.",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "6️⃣ CAPITAL GAINS, LOSSES & BASIS"
-  },
-  {
-   "q": "A stock held for exactly 14 months before being sold at a gain is subject to:",
-   "opts": [
-    "Short-term capital gains tax",
-    "Long-term capital gains tax",
-    "Ordinary income tax with a penalty",
-    "No tax"
-   ],
-   "a": 1,
-   "exp": "Long-term Holding period >1 năm (12 tháng) → Long-term. 14 tháng > 12 tháng nên đủ điều kiện long-term.",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "6️⃣ CAPITAL GAINS, LOSSES & BASIS"
-  },
-  {
-   "q": "Under the wash sale rule, a loss is disallowed if substantially identical stock is purchased within how many days before or after the sale?",
-   "opts": [
-    "15 days",
-    "30 days",
-    "60 days",
-    "90 days"
-   ],
-   "a": 1,
-   "exp": "30 days Wash sale window = 30 ngày TRƯỚC + 30 ngày SAU ngày bán (tổng 61 ngày bao gồm ngày bán).",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "6️⃣ CAPITAL GAINS, LOSSES & BASIS"
-  },
-  {
-   "q": "Qualified distributions from a Roth IRA are:",
-   "opts": [
-    "Fully taxable as ordinary income",
-    "Tax-free, including earnings",
-    "Taxed at capital gains rates",
-    "Subject to a flat 10% tax"
-   ],
-   "a": 1,
-   "exp": "Tax-free, including earnings Đây là lợi ích chính của Roth IRA: qualified distribution miễn thuế hoàn toàn, kể cả phần lãi tích lũy (khác Traditional IRA).",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "7️⃣ RETIREMENT PLANS & IRAs"
-  },
-  {
-   "q": "Which of the following is an exception to the 10% early withdrawal penalty on IRA distributions?",
-   "opts": [
-    "Buying a new car",
-    "Paying off credit card debt",
-    "Qualified higher education expenses",
-    "Taking a vacation"
-   ],
-   "a": 2,
-   "exp": "Qualified higher education expenses Đây là 1 trong các ngoại lệ được liệt kê rõ trong luật; mua xe/trả nợ thẻ/du lịch không phải ngoại lệ.",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "7️⃣ RETIREMENT PLANS & IRAs"
-  },
-  {
-   "q": "Roth IRAs are NOT subject to Required Minimum Distributions (RMDs) because:",
-   "opts": [
-    "They are employer-sponsored plans",
-    "Contributions were already taxed and the account owner is not required to withdraw during their lifetime",
-    "They have no contribution limits",
-    "They are only for taxpayers under age 50"
-   ],
-   "a": 1,
-   "exp": "Vì tiền đóng vào Roth IRA đã bị đánh thuế trước, IRS không cần bắt buộc rút ra để thu thuế như với Traditional IRA.",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "7️⃣ RETIREMENT PLANS & IRAs"
-  },
-  {
-   "q": "A first-time homebuyer may withdraw up to what amount from an IRA penalty-free?",
-   "opts": [
-    "$5,000",
-    "$10,000",
-    "$15,000",
-    "$25,000"
-   ],
-   "a": 1,
-   "exp": "$10,000 Giới hạn $10,000 (trọn đời) cho first-time homebuyer exception, chỉ áp dụng cho IRA (không áp dụng 401(k)).",
-   "lesson": "Filing_Status_to_Retirement_Plans",
-   "section": "7️⃣ RETIREMENT PLANS & IRAs"
-  },
-  {
-   "q": "The general statute of limitations for the IRS to audit a return is:",
-   "opts": [
-    "1 year",
-    "3 years",
-    "6 years",
-    "10 years"
-   ],
-   "a": 1,
-   "exp": "3 years Thời hạn chuẩn để IRS audit, tính từ ngày nộp hoặc deadline (tùy cái nào sau).",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "8️⃣ PRELIMINARY WORK & TAXPAYER DATA"
-  },
-  {
-   "q": "If a taxpayer omits more than 25% of gross income from a return, the statute of limitations extends to:",
-   "opts": [
-    "3 years",
-    "4 years",
-    "6 years",
-    "Unlimited"
-   ],
-   "a": 2,
-   "exp": "6 years Bỏ sót >25% gross income → statute mở rộng lên 6 năm.",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "8️⃣ PRELIMINARY WORK & TAXPAYER DATA"
-  },
-  {
-   "q": "There is generally no statute of limitations when:",
-   "opts": [
-    "The taxpayer requests an extension",
-    "The taxpayer commits fraud or fails to file a return",
-    "The refund is under $500",
-    "The taxpayer is self-employed"
-   ],
-   "a": 1,
-   "exp": "Fraud hoặc failure to file → không có statute of limitations, IRS có thể audit bất cứ lúc nào.",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "8️⃣ PRELIMINARY WORK & TAXPAYER DATA"
-  },
-  {
-   "q": "Which form is used to amend a previously filed individual tax return?",
-   "opts": [
-    "Form 1040-X",
-    "Form 4868",
-    "Form 941",
-    "Form 1099-X"
-   ],
-   "a": 0,
-   "exp": "Form 1040-X Form 4868 là xin gia hạn nộp thuế, không phải amend.",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "8️⃣ PRELIMINARY WORK & TAXPAYER DATA"
-  },
-  {
-   "q": "Self-employment tax is calculated on what percentage of net self-employment income?",
+   "q": "Self-employment tax is computed on what percentage of net self-employment earnings?",
    "opts": [
     "100%",
     "92.35%",
@@ -5806,64 +7526,311 @@ window.EA_LESSONS = {
     "50%"
    ],
    "a": 1,
-   "exp": "92.35% Net SE income được nhân với 92.35% trước khi áp thuế suất SE tax (bù trừ phần \"employer half\" tương đương).",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "9️⃣ SELF-EMPLOYMENT INCOME — SCHEDULE C"
+   "exp": "92.35%",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.1 — BUSINESS VS. HOBBY, SCHEDULE C & SELF-EMPLOYMENT TAX"
   },
   {
-   "q": "The Medicare portion of self-employment tax (2.9%) is subject to:",
+   "q": "Expenses of a hobby activity are generally:",
    "opts": [
-    "The same wage base limit as Social Security",
-    "No income limit",
-    "A $50,000 cap",
-    "No tax at all"
+    "Deductible on Schedule C",
+    "Deductible as an adjustment to income",
+    "Not deductible, although hobby income is taxable",
+    "Deductible up to the hobby income on Schedule A"
+   ],
+   "a": 2,
+   "exp": "Not deductible, although hobby income is taxable Hobby income vẫn tính vào gross income; chi phí không được khấu trừ.",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.1 — BUSINESS VS. HOBBY, SCHEDULE C & SELF-EMPLOYMENT TAX"
+  },
+  {
+   "q": "What percentage of a qualifying business meal is generally deductible?",
+   "opts": [
+    "100%",
+    "80%",
+    "50%",
+    "0%"
+   ],
+   "a": 2,
+   "exp": "50%",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.2 — CHI PHÍ KINH DOANH THƯỜNG GẶP — MEALS, GIFTS, TRAVEL, VEHICLE"
+  },
+  {
+   "q": "The deduction for business gifts is limited to:",
+   "opts": [
+    "$10 per recipient per year",
+    "$25 per recipient per year",
+    "$50 per recipient per year",
+    "$100 per recipient per year"
    ],
    "a": 1,
-   "exp": "No income limit Khác với Social Security (12.4%, có wage base limit), Medicare (2.9%) áp dụng không giới hạn thu nhập, cộng thêm 0.9% Additional Medicare Tax ở mức thu nhập cao.",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "9️⃣ SELF-EMPLOYMENT INCOME — SCHEDULE C"
+   "exp": "$25 per recipient per year",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.2 — CHI PHÍ KINH DOANH THƯỜNG GẶP — MEALS, GIFTS, TRAVEL, VEHICLE"
   },
   {
-   "q": "To qualify for the home office deduction, the space must be used:",
+   "q": "The 2025 standard mileage rate for business use is:",
    "opts": [
-    "Occasionally for business",
-    "Regularly and exclusively for business",
-    "Only during tax season",
-    "By employees only"
+    "14 cents",
+    "21 cents",
+    "67 cents",
+    "70 cents"
+   ],
+   "a": 3,
+   "exp": "70 cents",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.2 — CHI PHÍ KINH DOANH THƯỜNG GẶP — MEALS, GIFTS, TRAVEL, VEHICLE"
+  },
+  {
+   "q": "A foreign business trip lasts 10 days with 2 personal days (20% personal). The transportation cost is:",
+   "opts": [
+    "Not deductible",
+    "50% deductible",
+    "Fully deductible, no allocation required",
+    "Deductible only for the 8 business days"
+   ],
+   "a": 2,
+   "exp": "Fully deductible, no allocation required Chuyến > 1 tuần và < 25% thời gian cá nhân → không phân bổ chi phí vận chuyển.",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.2 — CHI PHÍ KINH DOANH THƯỜNG GẶP — MEALS, GIFTS, TRAVEL, VEHICLE"
+  },
+  {
+   "q": "Business meals of an employee subject to Department of Transportation hours-of-service rules (e.g., long-haul truck driver) are deductible at:",
+   "opts": [
+    "50%",
+    "65%",
+    "80%",
+    "100%"
+   ],
+   "a": 2,
+   "exp": "80%",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.2 — CHI PHÍ KINH DOANH THƯỜNG GẶP — MEALS, GIFTS, TRAVEL, VEHICLE"
+  },
+  {
+   "q": "Receipts are required for travel, meals and gift expenses of at least:",
+   "opts": [
+    "$25",
+    "$75",
+    "$250",
+    "$500"
    ],
    "a": 1,
-   "exp": "Regularly and exclusively Đây là 2 điều kiện bắt buộc: sử dụng thường xuyên VÀ độc quyền cho mục đích kinh doanh.",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "9️⃣ SELF-EMPLOYMENT INCOME — SCHEDULE C"
+   "exp": "$75",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.2 — CHI PHÍ KINH DOANH THƯỜNG GẶP — MEALS, GIFTS, TRAVEL, VEHICLE"
   },
   {
-   "q": "The QBI deduction under §199A generally allows a deduction of up to what percentage of qualified business income?",
+   "q": "Under the simplified method, the maximum home office deduction is:",
    "opts": [
+    "$500",
+    "$1,000",
+    "$1,500",
+    "$5,000"
+   ],
+   "a": 2,
+   "exp": "$1,500 $5 × 300 sq ft.",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.3 — HOME OFFICE, EDUCATION, BAD DEBTS & START-UP COSTS"
+  },
+  {
+   "q": "Which taxpayer may NOT claim a home office deduction?",
+   "opts": [
+    "A sole proprietor who meets clients at home",
+    "A W-2 employee who works from home for convenience",
+    "A day-care provider",
+    "A self-employed consultant whose home is the principal place of business"
+   ],
+   "a": 1,
+   "exp": "A W-2 employee who works from home for convenience",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.3 — HOME OFFICE, EDUCATION, BAD DEBTS & START-UP COSTS"
+  },
+  {
+   "q": "Education expenses are deductible as a business expense if they:",
+   "opts": [
+    "Qualify the taxpayer for a new trade or business",
+    "Are needed to meet the minimum requirements of the current job",
+    "Maintain or improve skills required in the current business",
+    "Are for a degree program in any field"
+   ],
+   "a": 2,
+   "exp": "Maintain or improve skills required in the current business",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.3 — HOME OFFICE, EDUCATION, BAD DEBTS & START-UP COSTS"
+  },
+  {
+   "q": "A nonbusiness bad debt is treated as a:",
+   "opts": [
+    "Business ordinary loss",
+    "Short-term capital loss, deductible only when wholly worthless",
+    "Long-term capital loss, deductible when partially worthless",
+    "Itemized deduction"
+   ],
+   "a": 1,
+   "exp": "Short-term capital loss, deductible only when wholly worthless",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.3 — HOME OFFICE, EDUCATION, BAD DEBTS & START-UP COSTS"
+  },
+  {
+   "q": "Start-up costs of $56,000 are incurred. How much may be deducted immediately (before amortization)?",
+   "opts": [
+    "$5,000",
+    "$4,000",
+    "$0",
+    "$56,000"
+   ],
+   "a": 2,
+   "exp": "$0 Vượt $50,000 → giảm dollar-for-dollar; tại $55,000 trở lên deduction = $0, toàn bộ amortize 180 tháng.",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.3 — HOME OFFICE, EDUCATION, BAD DEBTS & START-UP COSTS"
+  },
+  {
+   "q": "Which of the following is NOT one of the three categories of evidence in the common-law test of worker status?",
+   "opts": [
+    "Behavioral control",
+    "Financial control",
+    "Type of relationship",
+    "Educational background"
+   ],
+   "a": 3,
+   "exp": "Educational background",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.4 — EMPLOYEE VS. INDEPENDENT CONTRACTOR & COST RECOVERY"
+  },
+  {
+   "q": "Unreimbursed employee business expenses are deductible by:",
+   "opts": [
+    "Every employee as itemized deductions",
+    "Armed Forces reservists, qualified performing artists, fee-basis officials, and certain disabled employees",
+    "Only employees over 65",
+    "No employees under any circumstances"
+   ],
+   "a": 1,
+   "exp": "Armed Forces reservists, qualified performing artists, fee-basis officials, and certain disabled employees",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.4 — EMPLOYEE VS. INDEPENDENT CONTRACTOR & COST RECOVERY"
+  },
+  {
+   "q": "The 2025 Section 179 maximum deduction (after OBBBA) is:",
+   "opts": [
+    "$1,250,000",
+    "$1,500,000",
+    "$2,500,000",
+    "$5,000,000"
+   ],
+   "a": 2,
+   "exp": "$2,500,000",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.4 — EMPLOYEE VS. INDEPENDENT CONTRACTOR & COST RECOVERY"
+  },
+  {
+   "q": "Under the de minimis safe harbor (no audited financial statements), a taxpayer may expense items costing no more than:",
+   "opts": [
+    "$500 per item",
+    "$2,500 per item or invoice",
+    "$5,000 per item",
+    "$10,000 per item"
+   ],
+   "a": 1,
+   "exp": "$2,500 per item or invoice",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.4 — EMPLOYEE VS. INDEPENDENT CONTRACTOR & COST RECOVERY"
+  },
+  {
+   "q": "An employer may request the IRS to determine whether a worker is an employee or independent contractor by filing:",
+   "opts": [
+    "Form SS-4",
+    "Form SS-5",
+    "Form SS-8",
+    "Form SS-10"
+   ],
+   "a": 2,
+   "exp": "Form SS-8",
+   "lesson": "EA1_SU04_Business_Deductions",
+   "section": "4.4 — EMPLOYEE VS. INDEPENDENT CONTRACTOR & COST RECOVERY"
+  },
+  {
+   "q": "Which of the following is an above-the-line deduction?",
+   "opts": [
+    "Mortgage interest",
+    "Student loan interest",
+    "Charitable contributions",
+    "State income tax"
+   ],
+   "a": 1,
+   "exp": "Student loan interest",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.1 — ADJUSTMENTS TO INCOME (SCHEDULE 1, PART II)"
+  },
+  {
+   "q": "The maximum student loan interest deduction is:",
+   "opts": [
+    "$1,000",
+    "$2,500",
+    "$4,000",
+    "$10,000"
+   ],
+   "a": 1,
+   "exp": "$2,500",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.1 — ADJUSTMENTS TO INCOME (SCHEDULE 1, PART II)"
+  },
+  {
+   "q": "A taxpayer enrolled in Medicare:",
+   "opts": [
+    "May still contribute to an HSA",
+    "Can no longer contribute to an HSA",
+    "May contribute double",
+    "Must close the HSA"
+   ],
+   "a": 1,
+   "exp": "Can no longer contribute to an HSA",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.1 — ADJUSTMENTS TO INCOME (SCHEDULE 1, PART II)"
+  },
+  {
+   "q": "The self-employed health insurance deduction is NOT allowed for any month in which the taxpayer:",
+   "opts": [
+    "Has a net profit",
+    "Is eligible to participate in an employer-subsidized health plan",
+    "Pays premiums by credit card",
+    "Has dependents"
+   ],
+   "a": 1,
+   "exp": "Is eligible to participate in an employer-subsidized health plan",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.1 — ADJUSTMENTS TO INCOME (SCHEDULE 1, PART II)"
+  },
+  {
+   "q": "A nonqualified distribution from an HSA before age 65 is subject to income tax plus an additional tax of:",
+   "opts": [
+    "6%",
     "10%",
-    "15%",
     "20%",
     "25%"
    ],
    "a": 2,
-   "exp": "20% QBI deduction tối đa 20%, có phase-out cho SSTB ở mức thu nhập cao.",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "9️⃣ SELF-EMPLOYMENT INCOME — SCHEDULE C"
+   "exp": "20%",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.1 — ADJUSTMENTS TO INCOME (SCHEDULE 1, PART II)"
   },
   {
-   "q": "Rental real estate losses are generally classified as:",
+   "q": "The correct order in which loss limitations are applied is:",
    "opts": [
-    "Ordinary losses",
-    "Passive losses",
-    "Capital losses",
-    "Nondeductible losses always"
+    "Passive, at-risk, basis",
+    "At-risk, basis, passive",
+    "Basis, at-risk, passive",
+    "Basis, passive, at-risk"
    ],
-   "a": 1,
-   "exp": "Passive losses Rental real estate mặc định passive, trừ khi taxpayer là real estate professional.",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "RENTAL & PASSIVE ACTIVITIES — SCHEDULE E"
+   "a": 2,
+   "exp": "Basis, at-risk, passive",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.2 — LOSS LIMITATIONS — BASIS, AT-RISK, PASSIVE ACTIVITY"
   },
   {
-   "q": "Under the $25,000 special allowance, an actively participating taxpayer's allowance begins to phase out once MAGI exceeds:",
+   "q": "The $25,000 rental loss allowance begins to phase out when MAGI exceeds:",
    "opts": [
     "$50,000",
     "$75,000",
@@ -5871,204 +7838,2701 @@ window.EA_LESSONS = {
     "$150,000"
    ],
    "a": 2,
-   "exp": "$100,000 Phase-out từ $100,000–$150,000 MAGI, mất hoàn toàn $25,000 allowance ở $150,000.",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "RENTAL & PASSIVE ACTIVITIES — SCHEDULE E"
+   "exp": "$100,000",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.2 — LOSS LIMITATIONS — BASIS, AT-RISK, PASSIVE ACTIVITY"
   },
   {
-   "q": "To qualify as a real estate professional, a taxpayer must work more than how many hours per year in real property trades?",
+   "q": "Which test, by itself, establishes material participation?",
    "opts": [
-    "500 hours",
-    "750 hours",
-    "1,000 hours",
-    "1,500 hours"
+    "Participating more than 100 hours and more than any other individual",
+    "Participating 20 hours",
+    "Owning 5% of the activity",
+    "Having a spouse who works full time"
+   ],
+   "a": 0,
+   "exp": "Participating more than 100 hours and more than any other individual",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.2 — LOSS LIMITATIONS — BASIS, AT-RISK, PASSIVE ACTIVITY"
+  },
+  {
+   "q": "A taxpayer has MAGI of $130,000 and active participation in a rental with a $40,000 loss. The deductible rental loss this year is:",
+   "opts": [
+    "$0",
+    "$10,000",
+    "$25,000",
+    "$40,000"
    ],
    "a": 1,
-   "exp": "750 hours Kèm điều kiện thứ hai: >50% tổng thời gian làm việc phải là real property trades.",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "RENTAL & PASSIVE ACTIVITIES — SCHEDULE E"
+   "exp": "$10,000 $25,000 − 50% × ($130,000 − $100,000) = $10,000.",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.2 — LOSS LIMITATIONS — BASIS, AT-RISK, PASSIVE ACTIVITY"
   },
   {
-   "q": "Which limitation is applied FIRST when determining a deductible loss from an activity?",
+   "q": "Which of the following is portfolio income and therefore NOT passive?",
    "opts": [
-    "Passive activity loss limitation",
-    "At-risk limitation",
-    "Basis limitation",
-    "Standard deduction limitation"
+    "Rental income from an apartment",
+    "Dividend income",
+    "Income from a limited partnership in which the taxpayer does not participate",
+    "Income from a trade or business without material participation"
+   ],
+   "a": 1,
+   "exp": "Dividend income",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.2 — LOSS LIMITATIONS — BASIS, AT-RISK, PASSIVE ACTIVITY"
+  },
+  {
+   "q": "An NOL arising in 2025 may generally be:",
+   "opts": [
+    "Carried back 2 years",
+    "Carried back 5 years",
+    "Carried forward indefinitely, limited to 80% of taxable income",
+    "Carried forward 20 years, no limit"
    ],
    "a": 2,
-   "exp": "Basis limitation Thứ tự: Basis → At-risk → Passive activity loss. Đây là chuỗi giới hạn liên tiếp thường bị hỏi trong đề thi.",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "RENTAL & PASSIVE ACTIVITIES — SCHEDULE E"
+   "exp": "Carried forward indefinitely, limited to 80% of taxable income",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.3 — NOL, EXCESS BUSINESS LOSS & CAPITAL LOSS"
   },
   {
-   "q": "Which of the following must be added back when calculating AMTI?",
+   "q": "The 2025 excess business loss threshold for a single taxpayer is:",
    "opts": [
-    "Mortgage interest on a primary residence",
+    "$250,000",
+    "$313,000",
+    "$626,000",
+    "$1,000,000"
+   ],
+   "a": 1,
+   "exp": "$313,000",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.3 — NOL, EXCESS BUSINESS LOSS & CAPITAL LOSS"
+  },
+  {
+   "q": "A taxpayer has a net capital loss of $10,000. The maximum deductible against ordinary income this year (Single) is:",
+   "opts": [
+    "$1,500",
+    "$3,000",
+    "$5,000",
+    "$10,000"
+   ],
+   "a": 1,
+   "exp": "$3,000",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.3 — NOL, EXCESS BUSINESS LOSS & CAPITAL LOSS"
+  },
+  {
+   "q": "An excess business loss disallowed under §461(l) is:",
+   "opts": [
+    "Permanently lost",
+    "Treated as an NOL carryforward",
+    "Carried back 2 years",
+    "Converted to a capital loss"
+   ],
+   "a": 1,
+   "exp": "Treated as an NOL carryforward",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.3 — NOL, EXCESS BUSINESS LOSS & CAPITAL LOSS"
+  },
+  {
+   "q": "The capital loss carryover keeps its character as:",
+   "opts": [
+    "Always short-term",
+    "Always long-term",
+    "Short-term or long-term as originally incurred",
+    "Ordinary"
+   ],
+   "a": 2,
+   "exp": "Short-term or long-term as originally incurred",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.3 — NOL, EXCESS BUSINESS LOSS & CAPITAL LOSS"
+  },
+  {
+   "q": "A personal casualty loss (2025) is generally deductible only if attributable to:",
+   "opts": [
+    "Any casualty",
+    "A federally declared disaster",
+    "Theft only",
+    "Property worth more than $10,000"
+   ],
+   "a": 1,
+   "exp": "A federally declared disaster",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.4 — CASUALTY/THEFT, GAMBLING, §1244 & TỔNG HỢP THỨ TỰ"
+  },
+  {
+   "q": "Personal casualty losses are reduced by $100 per event and then by what percentage of AGI?",
+   "opts": [
+    "2%",
+    "5%",
+    "7.5%",
+    "10%"
+   ],
+   "a": 3,
+   "exp": "10%",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.4 — CASUALTY/THEFT, GAMBLING, §1244 & TỔNG HỢP THỨ TỰ"
+  },
+  {
+   "q": "Gambling losses are deductible:",
+   "opts": [
+    "Above-the-line, without limit",
+    "On Schedule A, up to gambling winnings",
+    "Only by professional gamblers",
+    "With a 3-year carryover"
+   ],
+   "a": 1,
+   "exp": "On Schedule A, up to gambling winnings Professional gambler khai Schedule C (không phải câu hỏi này).",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.4 — CASUALTY/THEFT, GAMBLING, §1244 & TỔNG HỢP THỨ TỰ"
+  },
+  {
+   "q": "The maximum ordinary loss on Section 1244 stock for a Single taxpayer in one year is:",
+   "opts": [
+    "$3,000",
+    "$10,000",
+    "$50,000",
+    "$100,000"
+   ],
+   "a": 2,
+   "exp": "$50,000",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.4 — CASUALTY/THEFT, GAMBLING, §1244 & TỔNG HỢP THỨ TỰ"
+  },
+  {
+   "q": "A theft loss is deductible in the year:",
+   "opts": [
+    "It occurs",
+    "It is discovered",
+    "The police report is filed",
+    "A lawsuit ends"
+   ],
+   "a": 1,
+   "exp": "It is discovered",
+   "lesson": "EA1_SU05_Above_the_Line_Deductions_and_Losses",
+   "section": "5.4 — CASUALTY/THEFT, GAMBLING, §1244 & TỔNG HỢP THỨ TỰ"
+  },
+  {
+   "q": "Medical expenses are deductible only to the extent they exceed what percentage of AGI?",
+   "opts": [
+    "2%",
+    "5%",
+    "7.5%",
+    "10%"
+   ],
+   "a": 2,
+   "exp": "7.5%",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.1 — MEDICAL AND DENTAL EXPENSES"
+  },
+  {
+   "q": "Which of the following is a deductible medical expense?",
+   "opts": [
+    "Health club dues",
+    "Cosmetic surgery for appearance",
+    "Prescription eyeglasses",
+    "Over-the-counter vitamins"
+   ],
+   "a": 2,
+   "exp": "Prescription eyeglasses",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.1 — MEDICAL AND DENTAL EXPENSES"
+  },
+  {
+   "q": "The 2025 medical mileage rate is:",
+   "opts": [
+    "14 cents",
+    "21 cents",
+    "67 cents",
+    "70 cents"
+   ],
+   "a": 1,
+   "exp": "21 cents",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.1 — MEDICAL AND DENTAL EXPENSES"
+  },
+  {
+   "q": "A taxpayer's AGI is $60,000 and unreimbursed medical expenses are $7,500. The medical deduction is:",
+   "opts": [
+    "$0",
+    "$3,000",
+    "$4,500",
+    "$7,500"
+   ],
+   "a": 1,
+   "exp": "$3,000 $7,500 − 7.5% × $60,000 ($4,500) = $3,000.",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.1 — MEDICAL AND DENTAL EXPENSES"
+  },
+  {
+   "q": "Married taxpayers file separately. If one spouse itemizes, the other:",
+   "opts": [
+    "May use the standard deduction",
+    "Must itemize",
+    "Has no deduction at all",
+    "May choose either"
+   ],
+   "a": 1,
+   "exp": "Must itemize",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.1 — MEDICAL AND DENTAL EXPENSES"
+  },
+  {
+   "q": "For tax year 2025, the SALT deduction cap for a married-filing-separately taxpayer (before the high-income phase-down) is:",
+   "opts": [
+    "$5,000",
+    "$10,000",
+    "$20,000",
+    "$40,000"
+   ],
+   "a": 2,
+   "exp": "$20,000",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.2 — TAXES PAID (SALT) & INTEREST"
+  },
+  {
+   "q": "Which tax is NOT deductible on Schedule A?",
+   "opts": [
+    "State income tax",
+    "Real property tax",
+    "Personal property tax based on value",
+    "Federal income tax"
+   ],
+   "a": 3,
+   "exp": "Federal income tax",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.2 — TAXES PAID (SALT) & INTEREST"
+  },
+  {
+   "q": "Mortgage interest on acquisition debt incurred after December 15, 2017 is deductible on debt up to:",
+   "opts": [
+    "$500,000",
+    "$750,000",
+    "$1,000,000",
+    "$1,500,000"
+   ],
+   "a": 1,
+   "exp": "$750,000",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.2 — TAXES PAID (SALT) & INTEREST"
+  },
+  {
+   "q": "Investment interest expense is deductible only up to:",
+   "opts": [
+    "Taxable income",
+    "Net investment income",
+    "50% of AGI",
+    "$3,000"
+   ],
+   "a": 1,
+   "exp": "Net investment income",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.2 — TAXES PAID (SALT) & INTEREST"
+  },
+  {
+   "q": "Interest on credit card debt used for personal purchases is:",
+   "opts": [
+    "Deductible as itemized deduction",
+    "Personal interest, not deductible",
+    "Deductible above-the-line",
+    "Deductible up to $2,500"
+   ],
+   "a": 1,
+   "exp": "Personal interest, not deductible Personal interest không được deduct (ngoại lệ mới: khoản khấu trừ lãi vay mua xe mới sản xuất tại Mỹ — SU07).",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.2 — TAXES PAID (SALT) & INTEREST"
+  },
+  {
+   "q": "Cash contributions to a public charity are generally limited to what percentage of AGI?",
+   "opts": [
+    "20%",
+    "30%",
+    "50%",
+    "60%"
+   ],
+   "a": 3,
+   "exp": "60%",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.3 — CHARITABLE CONTRIBUTIONS"
+  },
+  {
+   "q": "A taxpayer donates long-term appreciated stock (basis $2,000, FMV $10,000) to a public charity. The deduction is generally:",
+   "opts": [
+    "$2,000",
+    "$8,000",
+    "$10,000",
+    "$0"
+   ],
+   "a": 2,
+   "exp": "$10,000",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.3 — CHARITABLE CONTRIBUTIONS"
+  },
+  {
+   "q": "A cash donation of $250 or more requires:",
+   "opts": [
+    "Only a canceled check",
+    "A contemporaneous written acknowledgment from the charity",
+    "Form 8283",
+    "A qualified appraisal"
+   ],
+   "a": 1,
+   "exp": "A contemporaneous written acknowledgment from the charity",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.3 — CHARITABLE CONTRIBUTIONS"
+  },
+  {
+   "q": "Excess charitable contributions may be carried forward for:",
+   "opts": [
+    "1 year",
+    "3 years",
+    "5 years",
+    "Indefinitely"
+   ],
+   "a": 2,
+   "exp": "5 years",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.3 — CHARITABLE CONTRIBUTIONS"
+  },
+  {
+   "q": "A qualified appraisal is required for a noncash contribution (other than certain exceptions) exceeding:",
+   "opts": [
+    "$500",
+    "$1,000",
+    "$5,000",
+    "$25,000"
+   ],
+   "a": 2,
+   "exp": "$5,000",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.3 — CHARITABLE CONTRIBUTIONS"
+  },
+  {
+   "q": "Which of the following is still deductible on Schedule A for 2025?",
+   "opts": [
+    "Tax preparation fees",
+    "Unreimbursed employee business expenses",
+    "Gambling losses up to winnings",
+    "Investment advisory fees"
+   ],
+   "a": 2,
+   "exp": "Gambling losses up to winnings",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.4 — CÁC KHOẢN ITEMIZED KHÁC & QUY TẮC CHỌN"
+  },
+  {
+   "q": "Which taxpayer is NOT allowed to claim the standard deduction?",
+   "opts": [
+    "A Single taxpayer",
+    "A married filing separately taxpayer whose spouse itemizes",
+    "A head of household",
+    "A qualifying surviving spouse"
+   ],
+   "a": 1,
+   "exp": "A married filing separately taxpayer whose spouse itemizes",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.4 — CÁC KHOẢN ITEMIZED KHÁC & QUY TẮC CHỌN"
+  },
+  {
+   "q": "Which of the following is a reason to \"bunch\" itemized deductions into one year?",
+   "opts": [
+    "To exceed the standard deduction in alternating years",
+    "To avoid the SALT cap entirely",
+    "To increase AGI",
+    "To avoid Form 1040"
+   ],
+   "a": 0,
+   "exp": "To exceed the standard deduction in alternating years",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.4 — CÁC KHOẢN ITEMIZED KHÁC & QUY TẮC CHỌN"
+  },
+  {
+   "q": "The tax benefit rule applies when:",
+   "opts": [
+    "A deduction was never claimed",
+    "A recovery of an amount deducted in a prior year produced a tax benefit",
+    "A taxpayer overpays estimated tax",
+    "The IRS audits the return"
+   ],
+   "a": 1,
+   "exp": "A recovery of an amount deducted in a prior year produced a tax benefit",
+   "lesson": "EA1_SU06_Itemized_Deductions",
+   "section": "6.4 — CÁC KHOẢN ITEMIZED KHÁC & QUY TẮC CHỌN"
+  },
+  {
+   "q": "The QBI deduction generally equals the lesser of 20% of QBI or 20% of:",
+   "opts": [
+    "AGI",
+    "Taxable income minus net capital gain",
+    "Gross income",
+    "Wages"
+   ],
+   "a": 1,
+   "exp": "Taxable income minus net capital gain",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.1 — QUALIFIED BUSINESS INCOME DEDUCTION (§199A)"
+  },
+  {
+   "q": "The QBI deduction is:",
+   "opts": [
+    "An adjustment to AGI",
+    "A deduction below the line that reduces taxable income",
+    "Available only to itemizers",
+    "A credit"
+   ],
+   "a": 1,
+   "exp": "A deduction below the line that reduces taxable income",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.1 — QUALIFIED BUSINESS INCOME DEDUCTION (§199A)"
+  },
+  {
+   "q": "Which of the following is excluded from QBI?",
+   "opts": [
+    "Net business income from a sole proprietorship",
+    "Reasonable compensation paid to an S corporation shareholder",
+    "Distributive share of partnership business income",
+    "Income of a rental real estate trade or business"
+   ],
+   "a": 1,
+   "exp": "Reasonable compensation paid to an S corporation shareholder",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.1 — QUALIFIED BUSINESS INCOME DEDUCTION (§199A)"
+  },
+  {
+   "q": "For 2025, a Single taxpayer with a specified service business and taxable income above $247,300:",
+   "opts": [
+    "Gets the full 20%",
+    "Gets 10%",
+    "Gets no QBI deduction for that business",
+    "Gets the deduction only if employees are hired"
+   ],
+   "a": 2,
+   "exp": "Gets no QBI deduction for that business",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.1 — QUALIFIED BUSINESS INCOME DEDUCTION (§199A)"
+  },
+  {
+   "q": "Which of the following is NOT a specified service trade or business?",
+   "opts": [
+    "Law",
+    "Health",
+    "Architecture",
+    "Consulting"
+   ],
+   "a": 2,
+   "exp": "Architecture",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.1 — QUALIFIED BUSINESS INCOME DEDUCTION (§199A)"
+  },
+  {
+   "q": "Which statement about the new OBBBA deductions for qualified tips and overtime is correct?",
+   "opts": [
+    "They are above-the-line and reduce AGI",
+    "They are below-the-line and available to non-itemizers",
+    "They are available only to itemizers",
+    "They are credits"
+   ],
+   "a": 1,
+   "exp": "They are below-the-line and available to non-itemizers",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.2 — KHẤU TRỪ MỚI OBBBA — TIPS, OVERTIME, CAR LOAN, SENIORS"
+  },
+  {
+   "q": "The enhanced deduction for seniors in 2025 is how much per eligible individual age 65 or older?",
+   "opts": [
+    "$1,000",
+    "$2,000",
+    "$6,000",
+    "$12,500"
+   ],
+   "a": 2,
+   "exp": "$6,000",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.2 — KHẤU TRỪ MỚI OBBBA — TIPS, OVERTIME, CAR LOAN, SENIORS"
+  },
+  {
+   "q": "The maximum deduction for qualified tips is:",
+   "opts": [
+    "$2,500",
+    "$10,000",
+    "$25,000",
+    "Unlimited"
+   ],
+   "a": 2,
+   "exp": "$25,000",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.2 — KHẤU TRỪ MỚI OBBBA — TIPS, OVERTIME, CAR LOAN, SENIORS"
+  },
+  {
+   "q": "The phase-out of the car loan interest deduction begins at MAGI of:",
+   "opts": [
+    "$75,000 Single",
+    "$100,000 Single",
+    "$150,000 Single",
+    "$200,000 Single"
+   ],
+   "a": 1,
+   "exp": "$100,000 Single",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.2 — KHẤU TRỪ MỚI OBBBA — TIPS, OVERTIME, CAR LOAN, SENIORS"
+  },
+  {
+   "q": "For qualified overtime, the deductible amount is:",
+   "opts": [
+    "All overtime pay",
+    "Only the premium portion required by the FLSA",
+    "Only double-time pay",
+    "Pay over 60 hours"
+   ],
+   "a": 1,
+   "exp": "Only the premium portion required by the FLSA",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.2 — KHẤU TRỪ MỚI OBBBA — TIPS, OVERTIME, CAR LOAN, SENIORS"
+  },
+  {
+   "q": "For 2025, the Alternative Minimum Tax exemption for a Single taxpayer is:",
+   "opts": [
+    "$50,000",
+    "$75,000",
+    "$88,100",
+    "$137,000"
+   ],
+   "a": 2,
+   "exp": "$88,100",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.3 — TÍNH THUẾ — BRACKETS, CAPITAL GAIN RATES & AMT"
+  },
+  {
+   "q": "Which item is an AMT adjustment requiring add-back to regular taxable income?",
+   "opts": [
+    "Mortgage interest on acquisition debt",
     "State and local taxes deducted on Schedule A",
     "Charitable contributions",
-    "Traditional IRA contributions"
+    "Traditional IRA deduction"
    ],
    "a": 1,
-   "exp": "SALT deducted on Schedule A SALT là add-back kinh điển trong đề thi AMT — không được trừ khi tính AMTI dù đã trừ ở regular tax.",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣1️⃣ ALTERNATIVE MINIMUM TAX (AMT)"
+   "exp": "State and local taxes deducted on Schedule A",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.3 — TÍNH THUẾ — BRACKETS, CAPITAL GAIN RATES & AMT"
   },
   {
-   "q": "A taxpayer owes AMT when:",
+   "q": "The top federal rate on long-term capital gain (2025) is:",
    "opts": [
-    "Regular tax exceeds Tentative Minimum Tax",
-    "Tentative Minimum Tax exceeds regular tax",
+    "15%",
+    "20%",
+    "25%",
+    "28%"
+   ],
+   "a": 1,
+   "exp": "20%",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.3 — TÍNH THUẾ — BRACKETS, CAPITAL GAIN RATES & AMT"
+  },
+  {
+   "q": "The AMT is owed when:",
+   "opts": [
+    "Regular tax exceeds tentative minimum tax",
+    "Tentative minimum tax exceeds regular tax",
     "AMTI is negative",
-    "The taxpayer itemizes deductions"
+    "The taxpayer itemizes"
    ],
    "a": 1,
-   "exp": "AMT = phần TMT vượt quá regular tax; nếu TMT ≤ regular tax, không có AMT bổ sung.",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣1️⃣ ALTERNATIVE MINIMUM TAX (AMT)"
+   "exp": "Tentative minimum tax exceeds regular tax",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.3 — TÍNH THUẾ — BRACKETS, CAPITAL GAIN RATES & AMT"
   },
   {
-   "q": "The AMT exemption amount:",
+   "q": "A Single taxpayer's long-term capital gain is taxed at 15% if taxable income is above $48,350 and up to:",
    "opts": [
-    "Is the same for all taxpayers regardless of income",
-    "Phases out as AMTI increases",
-    "Only applies to businesses",
-    "Was permanently repealed"
+    "$96,700",
+    "$200,000",
+    "$533,400",
+    "$626,350"
+   ],
+   "a": 2,
+   "exp": "$533,400",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.3 — TÍNH THUẾ — BRACKETS, CAPITAL GAIN RATES & AMT"
+  },
+  {
+   "q": "The NIIT rate is:",
+   "opts": [
+    "0.9%",
+    "2.9%",
+    "3.8%",
+    "15.3%"
+   ],
+   "a": 2,
+   "exp": "3.8%",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.4 — NIIT, ADDITIONAL MEDICARE, HOUSEHOLD EMPLOYMENT & OTHER TAXES"
+  },
+  {
+   "q": "The MFJ threshold for NIIT is:",
+   "opts": [
+    "$125,000",
+    "$200,000",
+    "$250,000",
+    "$400,000"
+   ],
+   "a": 2,
+   "exp": "$250,000",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.4 — NIIT, ADDITIONAL MEDICARE, HOUSEHOLD EMPLOYMENT & OTHER TAXES"
+  },
+  {
+   "q": "Which of the following is included in net investment income?",
+   "opts": [
+    "Wages",
+    "Self-employment income",
+    "Capital gains from sale of stock",
+    "Distributions from a qualified retirement plan"
+   ],
+   "a": 2,
+   "exp": "Capital gains from sale of stock",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.4 — NIIT, ADDITIONAL MEDICARE, HOUSEHOLD EMPLOYMENT & OTHER TAXES"
+  },
+  {
+   "q": "A household employer must pay Social Security and Medicare taxes if cash wages paid to a household employee in 2025 are at least:",
+   "opts": [
+    "$500",
+    "$1,000",
+    "$2,800",
+    "$5,000"
+   ],
+   "a": 2,
+   "exp": "$2,800",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.4 — NIIT, ADDITIONAL MEDICARE, HOUSEHOLD EMPLOYMENT & OTHER TAXES"
+  },
+  {
+   "q": "The Additional Medicare Tax rate and the Single threshold are:",
+   "opts": [
+    "0.9% over $125,000",
+    "0.9% over $200,000",
+    "3.8% over $200,000",
+    "1.45% over $250,000"
    ],
    "a": 1,
-   "exp": "Phases out as AMTI increases AMT exemption giảm dần khi AMTI vượt ngưỡng quy định — tương tự các phase-out khác trong luật thuế.",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣1️⃣ ALTERNATIVE MINIMUM TAX (AMT)"
+   "exp": "0.9% over $200,000",
+   "lesson": "EA1_SU07_Other_Below_the_Line_Deductions_and_Other_Taxes",
+   "section": "7.4 — NIIT, ADDITIONAL MEDICARE, HOUSEHOLD EMPLOYMENT & OTHER TAXES"
   },
   {
-   "q": "The kiddie tax applies to which type of income?",
+   "q": "The 2025 Child Tax Credit per qualifying child under age 17 is:",
    "opts": [
-    "Earned income from a part-time job",
-    "Unearned investment income above a threshold",
-    "Gifts received",
-    "Scholarships"
+    "$1,000",
+    "$2,000",
+    "$2,200",
+    "$3,000"
+   ],
+   "a": 2,
+   "exp": "$2,200",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.1 — CHILD TAX CREDIT, DEPENDENT CARE & EDUCATION CREDITS"
+  },
+  {
+   "q": "The AOTC is available for how many years per student?",
+   "opts": [
+    "2",
+    "4",
+    "6",
+    "Unlimited"
    ],
    "a": 1,
-   "exp": "Unearned investment income above a threshold Kiddie tax chỉ áp dụng cho unearned income (lãi, cổ tức, capital gains), không áp dụng earned income từ việc làm.",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣2️⃣ KIDDIE TAX & EDUCATION SAVINGS"
+   "exp": "4",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.1 — CHILD TAX CREDIT, DEPENDENT CARE & EDUCATION CREDITS"
   },
   {
-   "q": "Which education savings vehicle has an annual contribution limit of $2,000 per beneficiary?",
+   "q": "The maximum refundable portion of the AOTC is:",
    "opts": [
-    "529 Plan",
-    "Coverdell ESA",
-    "Roth IRA",
-    "HSA"
+    "$0",
+    "$500",
+    "$1,000",
+    "$2,500"
+   ],
+   "a": 2,
+   "exp": "$1,000",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.1 — CHILD TAX CREDIT, DEPENDENT CARE & EDUCATION CREDITS"
+  },
+  {
+   "q": "The Lifetime Learning Credit equals 20% of up to how much of qualified expenses?",
+   "opts": [
+    "$2,000",
+    "$4,000",
+    "$10,000",
+    "$20,000"
+   ],
+   "a": 2,
+   "exp": "$10,000",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.1 — CHILD TAX CREDIT, DEPENDENT CARE & EDUCATION CREDITS"
+  },
+  {
+   "q": "The child and dependent care credit applies to care of a qualifying child under age:",
+   "opts": [
+    "6",
+    "13",
+    "17",
+    "19"
    ],
    "a": 1,
-   "exp": "Coverdell ESA 529 Plan không có giới hạn liên bang cụ thể (dù có gift tax exclusion áp dụng); Coverdell giới hạn $2,000/năm.",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣2️⃣ KIDDIE TAX & EDUCATION SAVINGS"
+   "exp": "13",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.1 — CHILD TAX CREDIT, DEPENDENT CARE & EDUCATION CREDITS"
   },
   {
-   "q": "Can a taxpayer use the same tuition expenses to claim both the American Opportunity Tax Credit AND a tax-free 529 plan distribution?",
+   "q": "The maximum contribution eligible for the Saver's Credit per person is:",
    "opts": [
-    "Yes, always",
-    "No, this would be double-dipping — the same expense cannot be used for both",
-    "Only if income is below the phase-out",
-    "Only for graduate students"
+    "$1,000",
+    "$2,000",
+    "$5,000",
+    "$7,000"
    ],
    "a": 1,
-   "exp": "Nguyên tắc \"no double benefit\" — phải phân bổ chi phí giáo dục riêng cho từng loại lợi ích thuế, không dùng chung 1 đồng chi phí cho cả 2.",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣2️⃣ KIDDIE TAX & EDUCATION SAVINGS"
+   "exp": "$2,000",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.2 — CÁC NONREFUNDABLE CREDITS KHÁC"
   },
   {
-   "q": "What is the maximum percentage of Social Security benefits that can be subject to federal income tax?",
+   "q": "The maximum Saver's Credit rate is:",
    "opts": [
+    "10%",
+    "20%",
     "50%",
-    "65%",
-    "85%",
     "100%"
    ],
    "a": 2,
-   "exp": "85% Mức tối đa là 85% của Social Security benefits bị đánh thuế, không bao giờ là 100%.",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣3️⃣ TAXATION OF SOCIAL SECURITY & OTHER INCOME"
+   "exp": "50%",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.2 — CÁC NONREFUNDABLE CREDITS KHÁC"
   },
   {
-   "q": "Unemployment compensation is:",
+   "q": "The Foreign Tax Credit de minimis election (no Form 1116 required) applies when creditable foreign taxes are not more than:",
    "opts": [
-    "Fully tax-exempt",
-    "Fully taxable as ordinary income",
-    "Taxed at capital gains rates",
-    "Only taxable above $10,000"
+    "$100 ($200 MFJ)",
+    "$300 ($600 MFJ)",
+    "$500 ($1,000 MFJ)",
+    "$1,000 ($2,000 MFJ)"
    ],
    "a": 1,
-   "exp": "Fully taxable Unemployment compensation chịu thuế liên bang đầy đủ như ordinary income, báo cáo qua Form 1099-G.",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣3️⃣ TAXATION OF SOCIAL SECURITY & OTHER INCOME"
+   "exp": "$300 ($600 MFJ)",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.2 — CÁC NONREFUNDABLE CREDITS KHÁC"
   },
   {
-   "q": "Disability benefits are taxable to the recipient if:",
+   "q": "The Residential Clean Energy Credit (30%) generally ends for expenditures made after:",
    "opts": [
-    "The recipient paid the premiums with after-tax dollars",
-    "The employer paid the premiums (pre-tax) on the recipient's behalf",
-    "The benefits are from a private policy the taxpayer paid for",
-    "Never taxable"
+    "December 31, 2024",
+    "December 31, 2025",
+    "December 31, 2030",
+    "December 31, 2034"
    ],
    "a": 1,
-   "exp": "Nguyên tắc chung: nếu premium được trả bằng tiền TRƯỚC thuế (employer-paid), benefit nhận về sẽ bị đánh thuế; nếu tự trả bằng tiền sau thuế, benefit nhận về miễn thuế.",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣3️⃣ TAXATION OF SOCIAL SECURITY & OTHER INCOME"
+   "exp": "December 31, 2025",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.2 — CÁC NONREFUNDABLE CREDITS KHÁC"
   },
   {
-   "q": "A married couple can double their gift tax annual exclusion to one recipient by using:",
+   "q": "The maximum 2025 adoption credit is:",
    "opts": [
-    "Gift splitting",
-    "Innocent spouse relief",
-    "Injured spouse allocation",
-    "QBI deduction"
+    "$5,000",
+    "$10,000",
+    "$17,280",
+    "$25,000"
+   ],
+   "a": 2,
+   "exp": "$17,280",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.2 — CÁC NONREFUNDABLE CREDITS KHÁC"
+  },
+  {
+   "q": "Which credit is refundable and designed for low-to-moderate income workers?",
+   "opts": [
+    "Lifetime Learning Credit",
+    "Child and Dependent Care Credit",
+    "Earned Income Tax Credit",
+    "Saver's Credit"
+   ],
+   "a": 2,
+   "exp": "Earned Income Tax Credit",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.3 — EARNED INCOME CREDIT & REFUNDABLE CREDITS"
+  },
+  {
+   "q": "The 2025 EITC investment income limit is:",
+   "opts": [
+    "$3,000",
+    "$5,000",
+    "$11,950",
+    "$20,000"
+   ],
+   "a": 2,
+   "exp": "$11,950",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.3 — EARNED INCOME CREDIT & REFUNDABLE CREDITS"
+  },
+  {
+   "q": "A taxpayer whose EITC claim was denied in a prior year (not for math/clerical error) generally must file which form to claim it again?",
+   "opts": [
+    "Form 8863",
+    "Form 8862",
+    "Form 8867",
+    "Form 2441"
+   ],
+   "a": 1,
+   "exp": "Form 8862",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.3 — EARNED INCOME CREDIT & REFUNDABLE CREDITS"
+  },
+  {
+   "q": "A taxpayer with no qualifying children must be which age range to claim the EITC?",
+   "opts": [
+    "18–64",
+    "21–60",
+    "25–64",
+    "30–70"
+   ],
+   "a": 2,
+   "exp": "25–64",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.3 — EARNED INCOME CREDIT & REFUNDABLE CREDITS"
+  },
+  {
+   "q": "An employee who works for two employers and has Social Security tax withheld above the wage base:",
+   "opts": [
+    "Must pay additional tax",
+    "May claim the excess as a credit on Form 1040",
+    "Must request a refund from each employer",
+    "Cannot recover the excess"
+   ],
+   "a": 1,
+   "exp": "May claim the excess as a credit on Form 1040 Nếu cả hai khoản cùng một employer → chỉ employer hoàn lại.",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.3 — EARNED INCOME CREDIT & REFUNDABLE CREDITS"
+  },
+  {
+   "q": "To avoid the underpayment penalty, a taxpayer with prior-year AGI of $200,000 must pay at least the lesser of 90% of the current year's tax or what percentage of the prior year's tax?",
+   "opts": [
+    "90%",
+    "100%",
+    "110%",
+    "125%"
+   ],
+   "a": 2,
+   "exp": "110%",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.4 — WITHHOLDING, ESTIMATED TAX & PAYMENTS"
+  },
+  {
+   "q": "Estimated tax payments for a calendar-year individual are due:",
+   "opts": [
+    "March 15, June 15, September 15, December 15",
+    "April 15, June 15, September 15, January 15",
+    "April 15, July 15, October 15, January 15",
+    "April 15 and October 15"
+   ],
+   "a": 1,
+   "exp": "April 15, June 15, September 15, January 15",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.4 — WITHHOLDING, ESTIMATED TAX & PAYMENTS"
+  },
+  {
+   "q": "The backup withholding rate is:",
+   "opts": [
+    "10%",
+    "22%",
+    "24%",
+    "37%"
+   ],
+   "a": 2,
+   "exp": "24%",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.4 — WITHHOLDING, ESTIMATED TAX & PAYMENTS"
+  },
+  {
+   "q": "Filing Form 4868 (extension) gives a taxpayer extra time to:",
+   "opts": [
+    "File the return only, not pay the tax",
+    "Pay the tax and file the return",
+    "Pay the tax only",
+    "Avoid all interest and penalties"
    ],
    "a": 0,
-   "exp": "Gift splitting Vợ chồng đồng ý gift splitting trên Form 709 để nhân đôi annual exclusion cho 1 người nhận.",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣4️⃣ ESTATE/GIFT TAX BASICS & SPECIALIZED SITUATIONS"
+   "exp": "File the return only, not pay the tax",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.4 — WITHHOLDING, ESTIMATED TAX & PAYMENTS"
   },
   {
-   "q": "A taxpayer whose joint refund was applied to their spouse's separate past-due student loan may file:",
+   "q": "An individual generally does NOT have to make estimated payments if the expected tax after withholding and credits is less than:",
    "opts": [
-    "Form 1040-X",
-    "Form 8379 (Injured Spouse Allocation)",
-    "Form 709",
-    "Form 1040-NR"
+    "$500",
+    "$1,000",
+    "$2,500",
+    "$5,000"
    ],
    "a": 1,
-   "exp": "Form 8379 Injured Spouse Allocation dùng khi refund chung bị giữ lại vì nợ RIÊNG của người còn lại (khác với innocent spouse — liên quan đến khai sai thuế).",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣4️⃣ ESTATE/GIFT TAX BASICS & SPECIALIZED SITUATIONS"
+   "exp": "$1,000",
+   "lesson": "EA1_SU08_Tax_Credits_and_Payments",
+   "section": "8.4 — WITHHOLDING, ESTIMATED TAX & PAYMENTS"
   },
   {
-   "q": "Innocent spouse relief is available when:",
+   "q": "Under the dual basis rule for gifted property, if the donee sells at a price between the donor's basis and the FMV at the date of gift, the result is:",
    "opts": [
-    "Both spouses knowingly underreported income together",
-    "One spouse did not know, and had no reason to know, about the other's understatement of tax",
-    "The couple filed separately",
-    "The refund was seized for child support"
+    "A gain",
+    "A loss",
+    "Neither gain nor loss",
+    "A capital loss"
    ],
-   "a": 1,
-   "exp": "Điều kiện cốt lõi của innocent spouse: không biết và không có lý do để biết về sai sót của người kia trên MFJ return.",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣4️⃣ ESTATE/GIFT TAX BASICS & SPECIALIZED SITUATIONS"
+   "a": 2,
+   "exp": "Neither gain nor loss",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.1 — BASIS VÀ ADJUSTED BASIS"
   },
   {
-   "q": "A nonresident alien generally files which form and is taxed on:",
+   "q": "The holding period of inherited property is:",
    "opts": [
-    "Form 1040; worldwide income",
-    "Form 1040-NR; US-source income only",
-    "Form 1120; worldwide income",
-    "Form 709; gift income only"
+    "Short-term",
+    "Long-term, regardless of actual holding time",
+    "Based on the decedent's holding period",
+    "Zero"
    ],
    "a": 1,
-   "exp": "Form 1040-NR; US-source income only Nonresident alien chỉ chịu thuế Mỹ trên thu nhập có nguồn gốc từ Mỹ, không phải worldwide income như US citizen/resident.",
-   "lesson": "Preliminary_Work_to_Estate_Gift_Basics",
-   "section": "1️⃣4️⃣ ESTATE/GIFT TAX BASICS & SPECIALIZED SITUATIONS"
+   "exp": "Long-term, regardless of actual holding time",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.1 — BASIS VÀ ADJUSTED BASIS"
+  },
+  {
+   "q": "A taxpayer receives property as compensation for services. Its basis is:",
+   "opts": [
+    "Zero",
+    "The employer's basis",
+    "FMV (the amount included in income)",
+    "The taxpayer's cost of services"
+   ],
+   "a": 2,
+   "exp": "FMV (the amount included in income)",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.1 — BASIS VÀ ADJUSTED BASIS"
+  },
+  {
+   "q": "Which of the following INCREASES adjusted basis?",
+   "opts": [
+    "Depreciation",
+    "Casualty loss deducted",
+    "Cost of a new roof",
+    "Return of capital distribution"
+   ],
+   "a": 2,
+   "exp": "Cost of a new roof",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.1 — BASIS VÀ ADJUSTED BASIS"
+  },
+  {
+   "q": "When personal-use property is converted to business use, the basis for depreciation is:",
+   "opts": [
+    "Original cost always",
+    "FMV always",
+    "The lesser of adjusted basis or FMV on the conversion date",
+    "The greater of adjusted basis or FMV"
+   ],
+   "a": 2,
+   "exp": "The lesser of adjusted basis or FMV on the conversion date",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.1 — BASIS VÀ ADJUSTED BASIS"
+  },
+  {
+   "q": "A taxpayer sells stock at a loss on December 10 and repurchases substantially identical stock on December 28. The loss is:",
+   "opts": [
+    "Fully deductible",
+    "Deductible up to $3,000",
+    "Disallowed and added to the basis of the new stock",
+    "Disallowed permanently"
+   ],
+   "a": 2,
+   "exp": "Disallowed and added to the basis of the new stock",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.2 — CAPITAL GAINS & LOSSES, HOLDING PERIOD, WASH SALE"
+  },
+  {
+   "q": "A taxpayer has STCG $3,000, STCL $(5,000), LTCG $1,000. The result is:",
+   "opts": [
+    "Net short-term capital loss of $1,000",
+    "Net long-term capital gain of $2,000",
+    "Net short-term capital gain of $2,000",
+    "Net long-term capital loss of $1,000"
+   ],
+   "a": 0,
+   "exp": "Net short-term capital loss of $1,000 Net ST $(2,000) bù với LT $1,000 → net STCL $(1,000); deductible $1,000 vào ordinary income.",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.2 — CAPITAL GAINS & LOSSES, HOLDING PERIOD, WASH SALE"
+  },
+  {
+   "q": "Which of the following is NOT a capital asset?",
+   "opts": [
+    "A personal residence",
+    "Stock held for investment",
+    "Inventory held for sale",
+    "A personal car"
+   ],
+   "a": 2,
+   "exp": "Inventory held for sale",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.2 — CAPITAL GAINS & LOSSES, HOLDING PERIOD, WASH SALE"
+  },
+  {
+   "q": "A worthless security is treated as sold on:",
+   "opts": [
+    "The date the company declared bankruptcy",
+    "The last day of the tax year",
+    "The date it became worthless",
+    "The date the return is filed"
+   ],
+   "a": 1,
+   "exp": "The last day of the tax year",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.2 — CAPITAL GAINS & LOSSES, HOLDING PERIOD, WASH SALE"
+  },
+  {
+   "q": "The maximum rate on collectibles gain is:",
+   "opts": [
+    "15%",
+    "20%",
+    "25%",
+    "28%"
+   ],
+   "a": 3,
+   "exp": "28%",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.2 — CAPITAL GAINS & LOSSES, HOLDING PERIOD, WASH SALE"
+  },
+  {
+   "q": "The maximum §121 exclusion for a married couple filing jointly is:",
+   "opts": [
+    "$125,000",
+    "$250,000",
+    "$500,000",
+    "$750,000"
+   ],
+   "a": 2,
+   "exp": "$500,000",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.3 — SALE OF PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "q": "To qualify for §121, the taxpayer must have owned and used the home as the principal residence for at least 2 of the last:",
+   "opts": [
+    "3 years",
+    "4 years",
+    "5 years",
+    "10 years"
+   ],
+   "a": 2,
+   "exp": "5 years",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.3 — SALE OF PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "q": "A loss on the sale of a personal residence is:",
+   "opts": [
+    "Fully deductible",
+    "Deductible as a capital loss up to $3,000",
+    "Not deductible",
+    "Deductible as an itemized deduction"
+   ],
+   "a": 2,
+   "exp": "Not deductible",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.3 — SALE OF PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "q": "Depreciation claimed (or allowable) on a home office after May 6, 1997 is:",
+   "opts": [
+    "Excluded under §121",
+    "Not eligible for the exclusion and taxed up to 25%",
+    "Added to basis",
+    "Ignored"
+   ],
+   "a": 1,
+   "exp": "Not eligible for the exclusion and taxed up to 25%",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.3 — SALE OF PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "q": "A surviving spouse may still use the $500,000 exclusion if the home is sold within what period after the spouse's death?",
+   "opts": [
+    "1 year",
+    "2 years",
+    "3 years",
+    "5 years"
+   ],
+   "a": 1,
+   "exp": "2 years",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.3 — SALE OF PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "q": "The writer of an option that expires unexercised recognizes the premium as:",
+   "opts": [
+    "Ordinary income when received",
+    "Short-term capital gain when the option expires",
+    "Long-term capital gain",
+    "Tax-exempt income"
+   ],
+   "a": 1,
+   "exp": "Short-term capital gain when the option expires",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.4 — BONDS, OPTIONS, SHORT SALES & FORECLOSURE"
+  },
+  {
+   "q": "On foreclosure of property subject to nonrecourse debt, the amount realized equals:",
+   "opts": [
+    "FMV of the property",
+    "Adjusted basis",
+    "The outstanding debt",
+    "Zero"
+   ],
+   "a": 2,
+   "exp": "The outstanding debt",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.4 — BONDS, OPTIONS, SHORT SALES & FORECLOSURE"
+  },
+  {
+   "q": "Gain on a short sale is recognized:",
+   "opts": [
+    "When the stock is borrowed",
+    "When the short position is closed",
+    "At the end of the year",
+    "Never"
+   ],
+   "a": 1,
+   "exp": "When the short position is closed",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.4 — BONDS, OPTIONS, SHORT SALES & FORECLOSURE"
+  },
+  {
+   "q": "An option holder whose option expires worthless has a:",
+   "opts": [
+    "Ordinary loss",
+    "Capital loss on the expiration date",
+    "Nondeductible loss",
+    "Capital gain"
+   ],
+   "a": 1,
+   "exp": "Capital loss on the expiration date",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.4 — BONDS, OPTIONS, SHORT SALES & FORECLOSURE"
+  },
+  {
+   "q": "Market discount on a bond is generally treated, on sale, as:",
+   "opts": [
+    "Long-term capital gain",
+    "Ordinary income up to the accrued discount",
+    "Tax-exempt",
+    "Basis only"
+   ],
+   "a": 1,
+   "exp": "Ordinary income up to the accrued discount",
+   "lesson": "EA1_SU09_Property_Transactions_Basis_and_Dispositions",
+   "section": "9.4 — BONDS, OPTIONS, SHORT SALES & FORECLOSURE"
+  },
+  {
+   "q": "A loss on a sale between related parties is:",
+   "opts": [
+    "Fully deductible",
+    "Disallowed to the seller",
+    "Deductible as capital loss up to $3,000",
+    "Converted to ordinary"
+   ],
+   "a": 1,
+   "exp": "Disallowed to the seller",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.1 — RELATED-PARTY TRANSACTIONS"
+  },
+  {
+   "q": "Which of the following is NOT a related party under §267?",
+   "opts": [
+    "Sibling",
+    "Spouse",
+    "Grandparent",
+    "Cousin"
+   ],
+   "a": 3,
+   "exp": "Cousin Ancestors (gồm ông bà) và lineal descendants đều related; cousin thì không.",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.1 — RELATED-PARTY TRANSACTIONS"
+  },
+  {
+   "q": "Taxpayer A sells property (basis $10,000) to related party B for $7,000. B later sells to an unrelated party for $9,500. A's disallowed loss is $3,000. B recognizes:",
+   "opts": [
+    "A loss of $500",
+    "A gain of $2,500",
+    "A gain of $0",
+    "A gain of $6,500"
+   ],
+   "a": 2,
+   "exp": "A gain of $0 Gain thực của B = $9,500 − $7,000 = $2,500 < disallowed loss $3,000 → không ghi nhận gain.",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.1 — RELATED-PARTY TRANSACTIONS"
+  },
+  {
+   "q": "Gain on the sale of depreciable property between an individual and a corporation the individual owns more than 50% is:",
+   "opts": [
+    "Capital gain",
+    "Section 1231 gain",
+    "Ordinary income",
+    "Tax-free"
+   ],
+   "a": 2,
+   "exp": "Ordinary income",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.1 — RELATED-PARTY TRANSACTIONS"
+  },
+  {
+   "q": "An accrual-basis payor owes interest to a cash-basis related payee. The payor may deduct the interest:",
+   "opts": [
+    "When accrued",
+    "When paid and included in the payee's income",
+    "Never",
+    "At the end of the year"
+   ],
+   "a": 1,
+   "exp": "When paid and included in the payee's income",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.1 — RELATED-PARTY TRANSACTIONS"
+  },
+  {
+   "q": "A net Section 1231 gain is treated as:",
+   "opts": [
+    "Ordinary income",
+    "Long-term capital gain (subject to lookback)",
+    "Short-term capital gain",
+    "Tax-exempt"
+   ],
+   "a": 1,
+   "exp": "Long-term capital gain (subject to lookback)",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.2 — BUSINESS PROPERTY — §1231, §1245, §1250"
+  },
+  {
+   "q": "A net Section 1231 loss is treated as:",
+   "opts": [
+    "A capital loss",
+    "An ordinary loss",
+    "Nondeductible",
+    "A short-term capital loss"
+   ],
+   "a": 1,
+   "exp": "An ordinary loss",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.2 — BUSINESS PROPERTY — §1231, §1245, §1250"
+  },
+  {
+   "q": "Section 1245 recapture applies to gain up to the lesser of the gain or:",
+   "opts": [
+    "Original cost",
+    "FMV at sale",
+    "Total depreciation and §179 deductions taken",
+    "Adjusted basis"
+   ],
+   "a": 2,
+   "exp": "Total depreciation and §179 deductions taken",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.2 — BUSINESS PROPERTY — §1231, §1245, §1250"
+  },
+  {
+   "q": "Unrecaptured §1250 gain for an individual is taxed at a maximum rate of:",
+   "opts": [
+    "15%",
+    "20%",
+    "25%",
+    "28%"
+   ],
+   "a": 2,
+   "exp": "25%",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.2 — BUSINESS PROPERTY — §1231, §1245, §1250"
+  },
+  {
+   "q": "The 5-year lookback rule for Section 1231 treats net §1231 gain as ordinary income to the extent of:",
+   "opts": [
+    "All prior capital losses",
+    "Non-recaptured net §1231 losses from the prior 5 years",
+    "Depreciation taken",
+    "Nothing"
+   ],
+   "a": 1,
+   "exp": "Non-recaptured net §1231 losses from the prior 5 years",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.2 — BUSINESS PROPERTY — §1231, §1245, §1250"
+  },
+  {
+   "q": "Under the installment method, gain is recognized in proportion to:",
+   "opts": [
+    "The selling price",
+    "Payments received",
+    "The adjusted basis",
+    "The contract price only in year 1"
+   ],
+   "a": 1,
+   "exp": "Payments received",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.3 — INSTALLMENT SALES (§453)"
+  },
+  {
+   "q": "Depreciation recapture on an installment sale is recognized:",
+   "opts": [
+    "Over the installment period",
+    "In the year of sale",
+    "When the final payment is received",
+    "Never"
+   ],
+   "a": 1,
+   "exp": "In the year of sale",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.3 — INSTALLMENT SALES (§453)"
+  },
+  {
+   "q": "An installment sale of land has selling price $100,000, basis $40,000, no mortgage. The gross profit percentage is:",
+   "opts": [
+    "40%",
+    "50%",
+    "60%",
+    "100%"
+   ],
+   "a": 2,
+   "exp": "60%",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.3 — INSTALLMENT SALES (§453)"
+  },
+  {
+   "q": "Which of the following cannot use the installment method?",
+   "opts": [
+    "Sale of rental real estate at a gain",
+    "Sale of publicly traded stock",
+    "Sale of land used in business",
+    "Sale of equipment at a gain"
+   ],
+   "a": 1,
+   "exp": "Sale of publicly traded stock",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.3 — INSTALLMENT SALES (§453)"
+  },
+  {
+   "q": "If a taxpayer wants to recognize the entire gain in the year of sale, the taxpayer:",
+   "opts": [
+    "Files Form 6252",
+    "Elects out of installment reporting on a timely return",
+    "Cannot",
+    "Must pay the buyer's tax"
+   ],
+   "a": 1,
+   "exp": "Elects out of installment reporting on a timely return",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.3 — INSTALLMENT SALES (§453)"
+  },
+  {
+   "q": "In the sale of a business, the gain on inventory and accounts receivable is generally:",
+   "opts": [
+    "Capital gain",
+    "Section 1231 gain",
+    "Ordinary income",
+    "Exempt"
+   ],
+   "a": 2,
+   "exp": "Ordinary income",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.4 — BÁN DOANH NGHIỆP (§1060) & TỔNG HỢP FORM 4797"
+  },
+  {
+   "q": "Under the residual method, which class receives the residual (last) allocation?",
+   "opts": [
+    "Class I",
+    "Class V",
+    "Class VI",
+    "Class VII (goodwill and going concern)"
+   ],
+   "a": 3,
+   "exp": "Class VII (goodwill and going concern)",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.4 — BÁN DOANH NGHIỆP (§1060) & TỔNG HỢP FORM 4797"
+  },
+  {
+   "q": "A payment to the seller for a covenant not to compete is generally:",
+   "opts": [
+    "Capital gain",
+    "Ordinary income to the seller",
+    "Section 1231 gain",
+    "Tax-free"
+   ],
+   "a": 1,
+   "exp": "Ordinary income to the seller",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.4 — BÁN DOANH NGHIỆP (§1060) & TỔNG HỢP FORM 4797"
+  },
+  {
+   "q": "Both buyer and seller of business assets must file:",
+   "opts": [
+    "Form 4797",
+    "Form 6252",
+    "Form 8594",
+    "Form 4562"
+   ],
+   "a": 2,
+   "exp": "Form 8594",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.4 — BÁN DOANH NGHIỆP (§1060) & TỔNG HỢP FORM 4797"
+  },
+  {
+   "q": "Section 1245 recapture is reported on which part of Form 4797?",
+   "opts": [
+    "Part I",
+    "Part II",
+    "Part III",
+    "Part IV"
+   ],
+   "a": 2,
+   "exp": "Part III",
+   "lesson": "EA1_SU10_Related_Parties_Business_Property_and_Installment_Sales",
+   "section": "10.4 — BÁN DOANH NGHIỆP (§1060) & TỔNG HỢP FORM 4797"
+  },
+  {
+   "q": "To exclude gain on a principal residence, the taxpayer must have owned and used it as a principal residence for at least:",
+   "opts": [
+    "1 of the last 3 years",
+    "2 of the last 5 years",
+    "3 of the last 5 years",
+    "5 of the last 10 years"
+   ],
+   "a": 1,
+   "exp": "2 of the last 5 years",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.1 — SALE OF A PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "q": "A taxpayer lived in a home for 18 months and sold it due to a job change. The maximum exclusion (Single) is:",
+   "opts": [
+    "$0",
+    "$125,000",
+    "$187,500",
+    "$250,000"
+   ],
+   "a": 2,
+   "exp": "$187,500",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.1 — SALE OF A PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "q": "A residence acquired in a §1031 exchange within the prior 5 years:",
+   "opts": [
+    "Qualifies for §121 immediately",
+    "Does not qualify for the §121 exclusion",
+    "Qualifies for a $125,000 exclusion",
+    "Is always taxed at 15%"
+   ],
+   "a": 1,
+   "exp": "Does not qualify for the §121 exclusion",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.1 — SALE OF A PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "q": "Depreciation allowed or allowable on a home office after May 6, 1997:",
+   "opts": [
+    "Is excluded under §121",
+    "May not be excluded and is taxed",
+    "Reduces the exclusion limit to $125,000",
+    "Is ignored"
+   ],
+   "a": 1,
+   "exp": "May not be excluded and is taxed",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.1 — SALE OF A PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "q": "A loss on the sale of a personal residence is:",
+   "opts": [
+    "Deductible as a capital loss",
+    "Deductible as an ordinary loss",
+    "Not recognized",
+    "Deductible up to $3,000"
+   ],
+   "a": 2,
+   "exp": "Not recognized",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.1 — SALE OF A PRINCIPAL RESIDENCE (§121)"
+  },
+  {
+   "q": "After 2017, Section 1031 like-kind exchange treatment is available for:",
+   "opts": [
+    "Personal property only",
+    "Real property only",
+    "Both real and personal property",
+    "Stocks and bonds"
+   ],
+   "a": 1,
+   "exp": "Real property only",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.2 — LIKE-KIND EXCHANGES (§1031)"
+  },
+  {
+   "q": "A taxpayer must identify replacement property within ___ days and complete the exchange within ___ days of transfer.",
+   "opts": [
+    "30 / 90",
+    "45 / 180",
+    "60 / 120",
+    "90 / 180"
+   ],
+   "a": 1,
+   "exp": "45 / 180",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.2 — LIKE-KIND EXCHANGES (§1031)"
+  },
+  {
+   "q": "In a like-kind exchange, recognized gain equals:",
+   "opts": [
+    "Gain realized",
+    "Boot received",
+    "The lesser of gain realized or boot received",
+    "The greater of gain realized or boot received"
+   ],
+   "a": 2,
+   "exp": "The lesser of gain realized or boot received",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.2 — LIKE-KIND EXCHANGES (§1031)"
+  },
+  {
+   "q": "A taxpayer's basis in replacement property is generally:",
+   "opts": [
+    "FMV",
+    "Adjusted basis of old property plus boot paid and gain recognized, less boot received",
+    "Zero",
+    "Adjusted basis of the old property only"
+   ],
+   "a": 1,
+   "exp": "Adjusted basis of old property plus boot paid and gain recognized, less boot received",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.2 — LIKE-KIND EXCHANGES (§1031)"
+  },
+  {
+   "q": "Which property does NOT qualify for like-kind treatment?",
+   "opts": [
+    "A rental building",
+    "A raw land held for investment",
+    "A personal residence",
+    "Farm land used in business"
+   ],
+   "a": 2,
+   "exp": "A personal residence",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.2 — LIKE-KIND EXCHANGES (§1031)"
+  },
+  {
+   "q": "A gain from an involuntary conversion may be postponed if the taxpayer:",
+   "opts": [
+    "Reinvests the proceeds in similar property within the replacement period",
+    "Pays tax on 50%",
+    "Sells the replacement within 1 year",
+    "Holds cash",
+    "Elects capital gain"
+   ],
+   "a": 0,
+   "exp": "Reinvests the proceeds in similar property within the replacement period",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
+  },
+  {
+   "q": "The standard replacement period for a casualty (non-condemnation) is:",
+   "opts": [
+    "1 year",
+    "2 years after the close of the first year in which gain is realized",
+    "3 years",
+    "5 years"
+   ],
+   "a": 1,
+   "exp": "2 years after the close of the first year in which gain is realized",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
+  },
+  {
+   "q": "The replacement period for condemned business real property is:",
+   "opts": [
+    "1 year",
+    "2 years",
+    "3 years",
+    "5 years"
+   ],
+   "a": 2,
+   "exp": "3 years",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
+  },
+  {
+   "q": "Losses from involuntary conversions are:",
+   "opts": [
+    "Deferred under §1033",
+    "Not deferred",
+    "Always capital",
+    "Never deductible"
+   ],
+   "a": 1,
+   "exp": "Not deferred",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
+  },
+  {
+   "q": "Gain recognized on an involuntary conversion equals the lesser of gain realized or:",
+   "opts": [
+    "Total proceeds",
+    "Proceeds not reinvested in replacement property",
+    "Adjusted basis",
+    "Replacement cost"
+   ],
+   "a": 1,
+   "exp": "Proceeds not reinvested in replacement property",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.3 — INVOLUNTARY CONVERSIONS (§1033)"
+  },
+  {
+   "q": "A transfer of property between spouses (both U.S. citizens) is:",
+   "opts": [
+    "A taxable sale",
+    "Nonrecognition with carryover basis",
+    "A gift only if over $19,000",
+    "Taxable at capital gains rates"
+   ],
+   "a": 1,
+   "exp": "Nonrecognition with carryover basis",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.4 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
+  },
+  {
+   "q": "A transfer incident to a divorce must occur within how long after the marriage ends (or be under the divorce instrument within 6 years)?",
+   "opts": [
+    "6 months",
+    "1 year",
+    "2 years",
+    "5 years"
+   ],
+   "a": 1,
+   "exp": "1 year",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.4 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
+  },
+  {
+   "q": "Section 1041 does NOT apply if the recipient spouse is:",
+   "opts": [
+    "A U.S. citizen",
+    "A resident alien",
+    "A nonresident alien",
+    "Divorced"
+   ],
+   "a": 2,
+   "exp": "A nonresident alien",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.4 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
+  },
+  {
+   "q": "Under §1035, which exchange is tax-free?",
+   "opts": [
+    "Life insurance policy for annuity contract",
+    "Stock for bonds",
+    "Car for truck",
+    "Land for stock"
+   ],
+   "a": 0,
+   "exp": "Life insurance policy for annuity contract Life insurance → annuity được phép; annuity → life insurance thì không.",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.4 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
+  },
+  {
+   "q": "A taxpayer's recognized gain in a QOF deferral election is deferred until the earlier of the sale of the QOF investment or:",
+   "opts": [
+    "December 31, 2023",
+    "December 31, 2026",
+    "December 31, 2030",
+    "Ten years"
+   ],
+   "a": 1,
+   "exp": "December 31, 2026",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.4 — TRANSFERS BETWEEN SPOUSES (§1041) & NONRECOGNITION KHÁC"
+  },
+  {
+   "q": "Which of the following is a permanent exclusion (not just deferral) of gain?",
+   "opts": [
+    "§1031",
+    "§1033",
+    "§121",
+    "§1035"
+   ],
+   "a": 2,
+   "exp": "§121",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.5 — SO SÁNH & BÁO CÁO"
+  },
+  {
+   "q": "Which form reports a like-kind exchange?",
+   "opts": [
+    "Form 4797",
+    "Form 8824",
+    "Form 6252",
+    "Form 8594"
+   ],
+   "a": 1,
+   "exp": "Form 8824",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.5 — SO SÁNH & BÁO CÁO"
+  },
+  {
+   "q": "A rental building destroyed by fire, with insurance proceeds exceeding basis. The taxpayer wants to defer the gain. The most appropriate provision is:",
+   "opts": [
+    "§1031",
+    "§1033",
+    "§121",
+    "§1041"
+   ],
+   "a": 1,
+   "exp": "§1033",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.5 — SO SÁNH & BÁO CÁO"
+  },
+  {
+   "q": "Which transaction does NOT permit recognition of a loss?",
+   "opts": [
+    "Like-kind exchange",
+    "Sale of stock to a stranger",
+    "Sale of a rental to a stranger",
+    "Abandonment of business property"
+   ],
+   "a": 0,
+   "exp": "Like-kind exchange",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.5 — SO SÁNH & BÁO CÁO"
+  },
+  {
+   "q": "Basis of replacement property in a §1033 conversion generally equals:",
+   "opts": [
+    "Insurance proceeds",
+    "Cost of replacement less deferred gain",
+    "Original basis only",
+    "FMV of old property"
+   ],
+   "a": 1,
+   "exp": "Cost of replacement less deferred gain",
+   "lesson": "EA1_SU11_Nonrecognition_Property_Transactions",
+   "section": "11.5 — SO SÁNH & BÁO CÁO"
+  },
+  {
+   "q": "The 2025 IRA contribution limit for a taxpayer age 52 with sufficient compensation is:",
+   "opts": [
+    "$6,500",
+    "$7,000",
+    "$8,000",
+    "$23,500"
+   ],
+   "a": 2,
+   "exp": "$8,000",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.1 — TRADITIONAL IRA — CONTRIBUTION & DEDUCTION"
+  },
+  {
+   "q": "The deadline to make a 2025 IRA contribution is:",
+   "opts": [
+    "December 31, 2025",
+    "April 15, 2026 (not extended)",
+    "October 15, 2026",
+    "Date of filing the extended return"
+   ],
+   "a": 1,
+   "exp": "April 15, 2026 (not extended)",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.1 — TRADITIONAL IRA — CONTRIBUTION & DEDUCTION"
+  },
+  {
+   "q": "An excess IRA contribution that is not corrected is subject to:",
+   "opts": [
+    "A 6% excise tax each year",
+    "A 10% penalty once",
+    "A 20% penalty",
+    "No tax"
+   ],
+   "a": 0,
+   "exp": "A 6% excise tax each year",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.1 — TRADITIONAL IRA — CONTRIBUTION & DEDUCTION"
+  },
+  {
+   "q": "A single taxpayer covered by an employer plan has 2025 MAGI of $95,000. The traditional IRA deduction is:",
+   "opts": [
+    "Fully deductible",
+    "Partially deductible",
+    "Not deductible",
+    "$200 only"
+   ],
+   "a": 2,
+   "exp": "Not deductible MAGI vượt $89,000 → không deductible (vẫn contribute được, nondeductible).",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.1 — TRADITIONAL IRA — CONTRIBUTION & DEDUCTION"
+  },
+  {
+   "q": "Which form tracks basis in nondeductible IRA contributions?",
+   "opts": [
+    "Form 5498",
+    "Form 8606",
+    "Form 1099-R",
+    "Form 5329"
+   ],
+   "a": 1,
+   "exp": "Form 8606",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.1 — TRADITIONAL IRA — CONTRIBUTION & DEDUCTION"
+  },
+  {
+   "q": "The 2025 Roth IRA contribution phase-out for a Single taxpayer is:",
+   "opts": [
+    "$79,000–$89,000",
+    "$126,000–$146,000",
+    "$150,000–$165,000",
+    "$236,000–$246,000"
+   ],
+   "a": 2,
+   "exp": "$150,000–$165,000",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.2 — ROTH IRA & ROTH CONVERSION"
+  },
+  {
+   "q": "A Roth IRA distribution is a qualified distribution if the 5-year period is met and the owner is:",
+   "opts": [
+    "Age 55",
+    "Age 59½ or older",
+    "Age 62",
+    "Under 50 with hardship"
+   ],
+   "a": 1,
+   "exp": "Age 59½ or older",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.2 — ROTH IRA & ROTH CONVERSION"
+  },
+  {
+   "q": "Which is TRUE of the owner of a Roth IRA?",
+   "opts": [
+    "RMDs are required at age 73",
+    "No RMDs are required during the owner's lifetime",
+    "Contributions are deductible",
+    "Contributions must stop at 70½"
+   ],
+   "a": 1,
+   "exp": "No RMDs are required during the owner's lifetime",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.2 — ROTH IRA & ROTH CONVERSION"
+  },
+  {
+   "q": "A Roth conversion of pre-tax Traditional IRA funds is:",
+   "opts": [
+    "Tax-free",
+    "Taxable as ordinary income",
+    "Taxable as capital gain",
+    "Subject to a 10% penalty"
+   ],
+   "a": 1,
+   "exp": "Taxable as ordinary income",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.2 — ROTH IRA & ROTH CONVERSION"
+  },
+  {
+   "q": "For non-qualified Roth distributions, the first amounts withdrawn are considered:",
+   "opts": [
+    "Earnings",
+    "Conversions",
+    "Regular contributions",
+    "Pro rata of all three"
+   ],
+   "a": 2,
+   "exp": "Regular contributions",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.2 — ROTH IRA & ROTH CONVERSION"
+  },
+  {
+   "q": "The early withdrawal penalty on IRA distributions before age 59½ is:",
+   "opts": [
+    "6%",
+    "10%",
+    "20%",
+    "25%"
+   ],
+   "a": 1,
+   "exp": "10%",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.3 — DISTRIBUTIONS, EARLY-WITHDRAWAL PENALTY & RMD"
+  },
+  {
+   "q": "Which of the following is an exception to the 10% penalty that applies to IRAs but NOT to 401(k) plans?",
+   "opts": [
+    "Death",
+    "Disability",
+    "Qualified higher education expenses",
+    "Qualified domestic relations order"
+   ],
+   "a": 2,
+   "exp": "Qualified higher education expenses",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.3 — DISTRIBUTIONS, EARLY-WITHDRAWAL PENALTY & RMD"
+  },
+  {
+   "q": "The RMD age for a person born in 1962 is:",
+   "opts": [
+    "70½",
+    "72",
+    "73",
+    "75"
+   ],
+   "a": 3,
+   "exp": "75",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.3 — DISTRIBUTIONS, EARLY-WITHDRAWAL PENALTY & RMD"
+  },
+  {
+   "q": "The penalty for failing to take an RMD is generally:",
+   "opts": [
+    "10% of the shortfall",
+    "25% of the shortfall (10% if corrected within 2 years)",
+    "50% of the shortfall",
+    "100% of the shortfall"
+   ],
+   "a": 1,
+   "exp": "25% of the shortfall (10% if corrected within 2 years)",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.3 — DISTRIBUTIONS, EARLY-WITHDRAWAL PENALTY & RMD"
+  },
+  {
+   "q": "A qualified charitable distribution (QCD) from an IRA may be made beginning at age:",
+   "opts": [
+    "59½",
+    "65",
+    "70½",
+    "73"
+   ],
+   "a": 2,
+   "exp": "70½",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.3 — DISTRIBUTIONS, EARLY-WITHDRAWAL PENALTY & RMD"
+  },
+  {
+   "q": "A taxpayer may make one IRA-to-IRA 60-day rollover in any ___ period.",
+   "opts": [
+    "30-day",
+    "6-month",
+    "12-month",
+    "24-month"
+   ],
+   "a": 2,
+   "exp": "12-month",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.4 — ROLLOVERS, INHERITED IRA & PROHIBITED TRANSACTIONS"
+  },
+  {
+   "q": "A non-spouse designated beneficiary of an IRA (not an eligible designated beneficiary) generally must withdraw the entire account within:",
+   "opts": [
+    "1 year",
+    "5 years",
+    "10 years",
+    "Over lifetime"
+   ],
+   "a": 2,
+   "exp": "10 years",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.4 — ROLLOVERS, INHERITED IRA & PROHIBITED TRANSACTIONS"
+  },
+  {
+   "q": "An IRA owner borrows money from the IRA. This is:",
+   "opts": [
+    "Allowed up to $50,000",
+    "A prohibited transaction that disqualifies the IRA",
+    "Treated as a tax-free loan",
+    "Allowed if repaid in 60 days"
+   ],
+   "a": 1,
+   "exp": "A prohibited transaction that disqualifies the IRA",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.4 — ROLLOVERS, INHERITED IRA & PROHIBITED TRANSACTIONS"
+  },
+  {
+   "q": "A direct trustee-to-trustee transfer of an IRA:",
+   "opts": [
+    "Is limited to once per 12 months",
+    "Is subject to 20% withholding",
+    "Is not subject to the once-per-year limit",
+    "Is taxable"
+   ],
+   "a": 2,
+   "exp": "Is not subject to the once-per-year limit",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.4 — ROLLOVERS, INHERITED IRA & PROHIBITED TRANSACTIONS"
+  },
+  {
+   "q": "A required minimum distribution:",
+   "opts": [
+    "May be rolled over to another IRA",
+    "May not be rolled over",
+    "Is exempt from tax",
+    "Is required from Roth IRAs during the owner's lifetime"
+   ],
+   "a": 1,
+   "exp": "May not be rolled over",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.4 — ROLLOVERS, INHERITED IRA & PROHIBITED TRANSACTIONS"
+  },
+  {
+   "q": "Contributions to a Section 529 plan are:",
+   "opts": [
+    "Deductible for federal income tax",
+    "Not deductible for federal income tax, and earnings grow tax-free if used for qualified expenses",
+    "Taxable when received by the beneficiary",
+    "Limited to $2,000 per year"
+   ],
+   "a": 1,
+   "exp": "Not deductible for federal income tax, and earnings grow tax-free if used for qualified expenses",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.5 — SECTION 529 QUALIFIED TUITION PROGRAMS"
+  },
+  {
+   "q": "The maximum 2025 superfunding contribution to a 529 plan for one beneficiary without gift tax is:",
+   "opts": [
+    "$19,000",
+    "$38,000",
+    "$95,000",
+    "$190,000"
+   ],
+   "a": 2,
+   "exp": "$95,000",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.5 — SECTION 529 QUALIFIED TUITION PROGRAMS"
+  },
+  {
+   "q": "The lifetime limit for using 529 funds to repay a beneficiary's student loans is:",
+   "opts": [
+    "$2,500",
+    "$5,000",
+    "$10,000",
+    "$20,000"
+   ],
+   "a": 2,
+   "exp": "$10,000",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.5 — SECTION 529 QUALIFIED TUITION PROGRAMS"
+  },
+  {
+   "q": "Qualified 529 expenses for elementary or secondary school tuition are limited (2025) to:",
+   "opts": [
+    "$2,000 per student per year",
+    "$5,000 per student per year",
+    "$10,000 per student per year",
+    "No limit"
+   ],
+   "a": 2,
+   "exp": "$10,000 per student per year",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.5 — SECTION 529 QUALIFIED TUITION PROGRAMS"
+  },
+  {
+   "q": "If a donor who superfunded a 529 dies within the 5-year period:",
+   "opts": [
+    "Nothing happens",
+    "The portion allocated to the remaining years is added back to the donor's estate",
+    "The entire contribution is added back",
+    "The beneficiary pays the tax"
+   ],
+   "a": 1,
+   "exp": "The portion allocated to the remaining years is added back to the donor's estate",
+   "lesson": "EA1_SU12_Individual_Retirement_Accounts",
+   "section": "12.5 — SECTION 529 QUALIFIED TUITION PROGRAMS"
+  },
+  {
+   "q": "Gift tax is generally the liability of:",
+   "opts": [
+    "The donee",
+    "The donor",
+    "The estate",
+    "The trustee"
+   ],
+   "a": 1,
+   "exp": "The donor",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.1 — GIFT TAX BASICS & EXCLUDED TRANSFERS"
+  },
+  {
+   "q": "A transfer paid directly to an educational institution for a donee's tuition is:",
+   "opts": [
+    "Subject to gift tax",
+    "Not a gift for gift tax purposes",
+    "Subject only if > $19,000",
+    "A charitable deduction"
+   ],
+   "a": 1,
+   "exp": "Not a gift for gift tax purposes",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.1 — GIFT TAX BASICS & EXCLUDED TRANSFERS"
+  },
+  {
+   "q": "A gift tax return (Form 709) is due:",
+   "opts": [
+    "January 15",
+    "March 15",
+    "April 15 of the year after the gift",
+    "December 31 of the gift year"
+   ],
+   "a": 2,
+   "exp": "April 15 of the year after the gift",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.1 — GIFT TAX BASICS & EXCLUDED TRANSFERS"
+  },
+  {
+   "q": "Which of the following is a completed gift?",
+   "opts": [
+    "Transfer to a revocable trust",
+    "Outright transfer of stock to an adult child",
+    "A promise to give",
+    "A will bequest"
+   ],
+   "a": 1,
+   "exp": "Outright transfer of stock to an adult child",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.1 — GIFT TAX BASICS & EXCLUDED TRANSFERS"
+  },
+  {
+   "q": "The 2025 lifetime gift/estate exclusion (basic exclusion amount) is:",
+   "opts": [
+    "$5,490,000",
+    "$11,700,000",
+    "$13,990,000",
+    "$15,000,000"
+   ],
+   "a": 2,
+   "exp": "$13,990,000 $15,000,000 áp dụng từ 2026 (OBBBA).",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.1 — GIFT TAX BASICS & EXCLUDED TRANSFERS"
+  },
+  {
+   "q": "The 2025 gift tax annual exclusion per donee is:",
+   "opts": [
+    "$15,000",
+    "$17,000",
+    "$18,000",
+    "$19,000"
+   ],
+   "a": 3,
+   "exp": "$19,000",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.2 — ANNUAL EXCLUSION, GIFT SPLITTING & DEDUCTIONS"
+  },
+  {
+   "q": "Gift splitting requires that:",
+   "opts": [
+    "The donor is single",
+    "Both spouses consent and both file Form 709",
+    "The gift is to a charity",
+    "The gift is more than $100,000"
+   ],
+   "a": 1,
+   "exp": "Both spouses consent and both file Form 709",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.2 — ANNUAL EXCLUSION, GIFT SPLITTING & DEDUCTIONS"
+  },
+  {
+   "q": "A gift of a future interest:",
+   "opts": [
+    "Qualifies for the annual exclusion",
+    "Does not qualify for the annual exclusion",
+    "Is always taxable",
+    "Is always exempt"
+   ],
+   "a": 1,
+   "exp": "Does not qualify for the annual exclusion",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.2 — ANNUAL EXCLUSION, GIFT SPLITTING & DEDUCTIONS"
+  },
+  {
+   "q": "The gift tax annual exclusion for gifts to a non-citizen spouse (2025) is:",
+   "opts": [
+    "$19,000",
+    "$38,000",
+    "$190,000",
+    "Unlimited"
+   ],
+   "a": 2,
+   "exp": "$190,000",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.2 — ANNUAL EXCLUSION, GIFT SPLITTING & DEDUCTIONS"
+  },
+  {
+   "q": "A taxpayer wants to contribute a lump sum to a 529 plan for a grandchild using 5-year averaging. The 2025 maximum is:",
+   "opts": [
+    "$19,000",
+    "$38,000",
+    "$95,000",
+    "$190,000"
+   ],
+   "a": 2,
+   "exp": "$95,000",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.2 — ANNUAL EXCLUSION, GIFT SPLITTING & DEDUCTIONS"
+  },
+  {
+   "q": "Which of the following is reported on Form 709?",
+   "opts": [
+    "Taxable gifts over the annual exclusion",
+    "Charitable contributions deducted on Schedule A",
+    "Inheritances received",
+    "Income from gifted property"
+   ],
+   "a": 0,
+   "exp": "Taxable gifts over the annual exclusion",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.3 — TÍNH GIFT TAX & FORM 709"
+  },
+  {
+   "q": "Who must file Form 709 when spouses gift-split?",
+   "opts": [
+    "Only the donor spouse",
+    "Both spouses",
+    "Only the lower earner",
+    "Neither"
+   ],
+   "a": 1,
+   "exp": "Both spouses",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.3 — TÍNH GIFT TAX & FORM 709"
+  },
+  {
+   "q": "The top gift tax rate is:",
+   "opts": [
+    "28%",
+    "35%",
+    "37%",
+    "40%"
+   ],
+   "a": 3,
+   "exp": "40%",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.3 — TÍNH GIFT TAX & FORM 709"
+  },
+  {
+   "q": "A donor makes gifts of $25,000 to one donee in 2025 and no other gifts. The taxable gift is:",
+   "opts": [
+    "$0",
+    "$6,000",
+    "$19,000",
+    "$25,000"
+   ],
+   "a": 1,
+   "exp": "$6,000",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.3 — TÍNH GIFT TAX & FORM 709"
+  },
+  {
+   "q": "The statute of limitations on gift tax after a return with adequate disclosure is filed is:",
+   "opts": [
+    "1 year",
+    "3 years",
+    "6 years",
+    "Unlimited"
+   ],
+   "a": 1,
+   "exp": "3 years",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.3 — TÍNH GIFT TAX & FORM 709"
+  },
+  {
+   "q": "The donee's basis in gifted property, if sold at a gain, is generally:",
+   "opts": [
+    "FMV at date of gift",
+    "The donor's adjusted basis (plus any gift tax attributable to appreciation)",
+    "Zero",
+    "FMV at the donor's death"
+   ],
+   "a": 1,
+   "exp": "The donor's adjusted basis (plus any gift tax attributable to appreciation)",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.4 — BASIS CỦA GIFT, VALUATION & CÁC VẤN ĐỀ KHÁC"
+  },
+  {
+   "q": "Gift tax paid by the donor increases the donee's basis only to the extent attributable to:",
+   "opts": [
+    "The entire FMV",
+    "Net appreciation of the gift",
+    "Adjusted basis",
+    "Annual exclusion"
+   ],
+   "a": 1,
+   "exp": "Net appreciation of the gift",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.4 — BASIS CỦA GIFT, VALUATION & CÁC VẤN ĐỀ KHÁC"
+  },
+  {
+   "q": "If a donor dies before filing the gift tax return, who must file Form 709?",
+   "opts": [
+    "The donee",
+    "The executor",
+    "The IRS",
+    "No one"
+   ],
+   "a": 1,
+   "exp": "The executor",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.4 — BASIS CỦA GIFT, VALUATION & CÁC VẤN ĐỀ KHÁC"
+  },
+  {
+   "q": "For publicly traded stock, FMV for gift tax purposes is generally:",
+   "opts": [
+    "Closing price",
+    "Average of the highest and lowest quoted selling prices on the date of gift",
+    "Opening price",
+    "The donor's basis"
+   ],
+   "a": 1,
+   "exp": "Average of the highest and lowest quoted selling prices on the date of gift",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.4 — BASIS CỦA GIFT, VALUATION & CÁC VẤN ĐỀ KHÁC"
+  },
+  {
+   "q": "Which of the following is NOT a completed gift?",
+   "opts": [
+    "Outright gift of cash to a child",
+    "Transfer to an irrevocable trust with no retained powers",
+    "Transfer to a revocable trust",
+    "Gift of stock to a friend"
+   ],
+   "a": 2,
+   "exp": "Transfer to a revocable trust",
+   "lesson": "EA1_SU13_Gift_Tax",
+   "section": "13.4 — BASIS CỦA GIFT, VALUATION & CÁC VẤN ĐỀ KHÁC"
+  },
+  {
+   "q": "The gross estate of a U.S. citizen includes:",
+   "opts": [
+    "Only U.S. property",
+    "Worldwide property",
+    "Only property passing by will",
+    "Only real property"
+   ],
+   "a": 1,
+   "exp": "Worldwide property",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.1 — GROSS ESTATE (§2031–2044)"
+  },
+  {
+   "q": "For a married couple (qualified joint interest), the amount included in the first spouse's gross estate is generally:",
+   "opts": [
+    "0%",
+    "50%",
+    "100%",
+    "Based on contribution"
+   ],
+   "a": 1,
+   "exp": "50%",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.1 — GROSS ESTATE (§2031–2044)"
+  },
+  {
+   "q": "Life insurance proceeds are included in the gross estate if:",
+   "opts": [
+    "The policy is payable to a charity only",
+    "The decedent held incidents of ownership or proceeds are payable to the estate",
+    "Premiums were paid by the beneficiary",
+    "The policy is a term policy"
+   ],
+   "a": 1,
+   "exp": "The decedent held incidents of ownership or proceeds are payable to the estate",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.1 — GROSS ESTATE (§2031–2044)"
+  },
+  {
+   "q": "The alternate valuation date is:",
+   "opts": [
+    "The date of the will",
+    "6 months after the date of death",
+    "1 year after death",
+    "The date the executor is appointed"
+   ],
+   "a": 1,
+   "exp": "6 months after the date of death",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.1 — GROSS ESTATE (§2031–2044)"
+  },
+  {
+   "q": "A completed gift made 5 years before death (with no retained interest) is:",
+   "opts": [
+    "Included in the gross estate",
+    "Not included in the gross estate, but included in adjusted taxable gifts",
+    "Taxed twice",
+    "Ignored for all purposes"
+   ],
+   "a": 1,
+   "exp": "Not included in the gross estate, but included in adjusted taxable gifts",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.1 — GROSS ESTATE (§2031–2044)"
+  },
+  {
+   "q": "The basic exclusion amount for estates of decedents dying in 2025 is:",
+   "opts": [
+    "$5,000,000",
+    "$11,180,000",
+    "$13,990,000",
+    "$15,000,000"
+   ],
+   "a": 2,
+   "exp": "$13,990,000",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.2 — DEDUCTIONS & TÍNH ESTATE TAX"
+  },
+  {
+   "q": "The marital deduction is available for property passing to:",
+   "opts": [
+    "Any spouse regardless of citizenship, unrestricted",
+    "A U.S. citizen spouse, subject to terminable interest rules (or QTIP/QDOT)",
+    "Children",
+    "Charities only"
+   ],
+   "a": 1,
+   "exp": "A U.S. citizen spouse, subject to terminable interest rules (or QTIP/QDOT)",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.2 — DEDUCTIONS & TÍNH ESTATE TAX"
+  },
+  {
+   "q": "Administration expenses of an estate may be deducted:",
+   "opts": [
+    "On both Form 706 and Form 1041",
+    "On Form 706 or Form 1041, but not both",
+    "Only on Form 1041",
+    "Only on Form 706"
+   ],
+   "a": 1,
+   "exp": "On Form 706 or Form 1041, but not both",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.2 — DEDUCTIONS & TÍNH ESTATE TAX"
+  },
+  {
+   "q": "The top federal estate tax rate is:",
+   "opts": [
+    "28%",
+    "35%",
+    "37%",
+    "40%"
+   ],
+   "a": 3,
+   "exp": "40%",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.2 — DEDUCTIONS & TÍNH ESTATE TAX"
+  },
+  {
+   "q": "State death taxes paid by an estate are:",
+   "opts": [
+    "A credit against federal estate tax",
+    "A deduction from the gross estate",
+    "Ignored",
+    "Added to the gross estate"
+   ],
+   "a": 1,
+   "exp": "A deduction from the gross estate",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.2 — DEDUCTIONS & TÍNH ESTATE TAX"
+  },
+  {
+   "q": "Form 706 is generally due:",
+   "opts": [
+    "3 months after death",
+    "6 months after death",
+    "9 months after death",
+    "12 months after death"
+   ],
+   "a": 2,
+   "exp": "9 months after death",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.3 — FORM 706, PORTABILITY, VALUATION & BASIS"
+  },
+  {
+   "q": "Portability allows a surviving spouse to use:",
+   "opts": [
+    "The deceased spouse's unused exclusion (DSUE) if elected on a timely Form 706",
+    "Double the annual exclusion",
+    "The deceased spouse's GST exemption automatically",
+    "A second marital deduction"
+   ],
+   "a": 0,
+   "exp": "The deceased spouse's unused exclusion (DSUE) if elected on a timely Form 706",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.3 — FORM 706, PORTABILITY, VALUATION & BASIS"
+  },
+  {
+   "q": "The basis of inherited property to the beneficiary is generally:",
+   "opts": [
+    "Decedent's adjusted basis",
+    "FMV at date of death (or alternate valuation date)",
+    "Zero",
+    "Date-of-sale FMV"
+   ],
+   "a": 1,
+   "exp": "FMV at date of death (or alternate valuation date)",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.3 — FORM 706, PORTABILITY, VALUATION & BASIS"
+  },
+  {
+   "q": "Which of the following does NOT receive a step-up in basis at death?",
+   "opts": [
+    "Publicly traded stock",
+    "Real estate",
+    "IRD (e.g., unpaid wages, traditional IRA)",
+    "Community property"
+   ],
+   "a": 2,
+   "exp": "IRD (e.g., unpaid wages, traditional IRA)",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.3 — FORM 706, PORTABILITY, VALUATION & BASIS"
+  },
+  {
+   "q": "The executor may elect the alternate valuation date only if it:",
+   "opts": [
+    "Increases the gross estate",
+    "Decreases both the gross estate and the estate tax",
+    "Decreases only estate tax",
+    "Is approved by the court"
+   ],
+   "a": 1,
+   "exp": "Decreases both the gross estate and the estate tax",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.3 — FORM 706, PORTABILITY, VALUATION & BASIS"
+  },
+  {
+   "q": "The IRS gives estates with a closely held business installment payment relief under §6166 if the business interest exceeds what percent of the adjusted gross estate?",
+   "opts": [
+    "20%",
+    "35%",
+    "50%",
+    "75%"
+   ],
+   "a": 1,
+   "exp": "35%",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.4 — EXECUTOR, PAYMENT RELIEF & ESTATE PLANNING OVERVIEW"
+  },
+  {
+   "q": "A qualified disclaimer must be made within how many months of the transfer (death)?",
+   "opts": [
+    "3",
+    "6",
+    "9",
+    "12"
+   ],
+   "a": 2,
+   "exp": "9",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.4 — EXECUTOR, PAYMENT RELIEF & ESTATE PLANNING OVERVIEW"
+  },
+  {
+   "q": "The executor of an estate should file which form to notify the IRS of the fiduciary relationship?",
+   "opts": [
+    "Form 56",
+    "Form 706",
+    "Form 4768",
+    "Form 709"
+   ],
+   "a": 0,
+   "exp": "Form 56",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.4 — EXECUTOR, PAYMENT RELIEF & ESTATE PLANNING OVERVIEW"
+  },
+  {
+   "q": "An estate tax lien lasts generally:",
+   "opts": [
+    "3 years",
+    "5 years",
+    "10 years",
+    "15 years"
+   ],
+   "a": 2,
+   "exp": "10 years",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.4 — EXECUTOR, PAYMENT RELIEF & ESTATE PLANNING OVERVIEW"
+  },
+  {
+   "q": "Which statement about a revocable living trust is correct?",
+   "opts": [
+    "The trust assets are excluded from the gross estate",
+    "The trust assets are included in the gross estate",
+    "The trust assets are taxed only for income purposes",
+    "The trust has no tax effects"
+   ],
+   "a": 1,
+   "exp": "The trust assets are included in the gross estate",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.4 — EXECUTOR, PAYMENT RELIEF & ESTATE PLANNING OVERVIEW"
+  },
+  {
+   "q": "A skip person is a person assigned to a generation that is at least how many generations below the transferor?",
+   "opts": [
+    "1",
+    "2",
+    "3",
+    "4"
+   ],
+   "a": 1,
+   "exp": "2",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.5 — GENERATION-SKIPPING TRANSFER TAX (GSTT)"
+  },
+  {
+   "q": "The 2025 GST exemption per individual is:",
+   "opts": [
+    "$5,000,000",
+    "$13,990,000",
+    "$19,000",
+    "$27,980,000"
+   ],
+   "a": 1,
+   "exp": "$13,990,000",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.5 — GENERATION-SKIPPING TRANSFER TAX (GSTT)"
+  },
+  {
+   "q": "The person liable for GSTT on a taxable termination is:",
+   "opts": [
+    "The transferor",
+    "The skip person",
+    "The trustee",
+    "The IRS"
+   ],
+   "a": 2,
+   "exp": "The trustee",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.5 — GENERATION-SKIPPING TRANSFER TAX (GSTT)"
+  },
+  {
+   "q": "For an unrelated person, an individual born between 37½ and 62½ years after the transferor is assigned to:",
+   "opts": [
+    "The same generation",
+    "One generation below",
+    "Two generations below",
+    "Three generations below"
+   ],
+   "a": 2,
+   "exp": "Two generations below",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.5 — GENERATION-SKIPPING TRANSFER TAX (GSTT)"
+  },
+  {
+   "q": "The maximum GSTT rate applies the inclusion ratio to which federal rate?",
+   "opts": [
+    "28%",
+    "35%",
+    "40%",
+    "55%"
+   ],
+   "a": 2,
+   "exp": "40%",
+   "lesson": "EA1_SU14_Estate_Tax",
+   "section": "14.5 — GENERATION-SKIPPING TRANSFER TAX (GSTT)"
   },
   {
    "q": "A taxpayer receives gifted property with a donor's basis of $40,000 and FMV at the date of gift of $10,000. If the taxpayer later sells it for $9,500, the result is:",
@@ -6594,12 +11058,12 @@ window.EA_LESSONS = {
    "q": "Which of the following is NOT considered a related party for purposes of the loss disallowance rules?",
    "opts": [
     "An individual's spouse",
-    "An individual's grandparent",
+    "An individual's cousin",
     "A corporation more than 50%-owned by the individual",
     "An individual's sibling"
    ],
    "a": 1,
-   "exp": "Grandparent Related party (cho cá nhân) gồm spouse, con cháu (lineal descendants), cha mẹ/ông bà (ancestors), anh chị em — nhưng LƯU Ý: quy tắc \"related parties\" ở §267 KHÔNG gồm ông bà/grandparents trong danh sách attribution — chỉ brothers/sisters, spouse, ancestors, và lineal descendants mới thuộc §267(b), còn constructive ownership riêng (SU16) loại trừ cả siblings VÀ grandparents.",
+   "exp": "Cousin §267(b)/(c)(4): người thân gồm vợ/chồng, anh chị em (brothers/sisters), tổ tiên trực hệ (cha mẹ, ông bà — ancestors) và con cháu (lineal descendants), cộng corporation do cá nhân đó sở hữu >50% giá trị. Anh/chị/em họ (cousin), cô/dì/chú/bác và thông gia KHÔNG thuộc danh sách. (Việc ông bà và anh chị em KHÔNG bị attribute trong redemption là quy tắc §318 khác — xem SU16.)",
    "lesson": "Corporate_Income_to_Redemptions_and_Liquidations",
    "section": "D — NET OPERATING LOSS (NOL), CAPITAL LOSSES & RELATED PARTY TRANSACTIONS"
   },
