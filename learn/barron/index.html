@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'none'; img-src 'self' data:; font-src 'self'; base-uri 'none'; form-action 'none'">
+<title>Barron 600 · Bài đọc song ngữ riêng tư</title>
+<link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+<main>
+<header><div class="eyebrow">WORDLOOP · HỌC RIÊNG TRÊN MÁY</div><h1>Barron 600 <span>Words in Context</span></h1><p class="intro">Làm bài tiếng Anh, rồi đối chiếu từng đoạn Anh–Việt.</p></header>
+<section class="import-card" aria-label="Mở dữ liệu riêng tư">
+<label class="file-label" for="data-file">Mở bộ 50 bài JSON<input id="data-file" type="file" accept="application/json,.json"></label>
+<p>File chỉ được đọc trên máy này. Nội dung bài học không được gửi lên mạng.</p>
+<p id="file-status" role="status" aria-live="polite">Chọn bộ dữ liệu để bắt đầu.</p>
+</section>
+<section id="workspace" hidden>
+<div class="toolbar"><label>Bài học<select id="lesson" aria-label="Chọn bài học"></select></label><label>Cách làm<select id="mode"><option value="full">Cả bài · 12 câu</option><option value="single">Từng câu</option></select></label></div>
+<div class="lesson-heading"><div><div id="lesson-label" class="eyebrow"></div><h2 id="lesson-title"></h2></div><span id="progress" class="progress"></span></div>
+<div class="lesson-nav"><button id="previous" type="button">← Bài trước</button><button id="next" type="button">Bài tiếp →</button></div>
+<section class="reading-card" aria-label="Bài đọc tiếng Anh"><h3>Đọc và chọn từ phù hợp</h3><p class="hint">Các số trong bài tương ứng với câu hỏi bên dưới. Bản dịch hiện sau khi nộp bài.</p><div id="passage" lang="en"></div></section>
+<div id="question-nav" class="question-nav" hidden><button id="previous-question" type="button">← Câu trước</button><span id="question-position"></span><button id="next-question" type="button">Câu tiếp →</button></div>
+<form id="answers"><div id="questions"></div><div class="actions"><button id="submit" class="primary" type="submit">Nộp bài và xem bản dịch</button><button id="reset" type="button">Làm lại bài này</button></div></form>
+<section id="result" class="result-card" hidden aria-live="polite"><h3 id="score"></h3><p id="result-detail"></p><label class="filter"><input id="mistakes" type="checkbox"> Chỉ xem câu sai hoặc chưa trả lời</label><div id="answer-review"></div><h3>Đối chiếu Anh–Việt</h3><p class="hint">Bản dịch từ tài liệu bạn cung cấp, đã hiệu đính các lỗi rõ nghĩa.</p><div id="bilingual"></div></section>
+</section>
+<footer>Học riêng tư · Không đồng bộ điểm, không ghi nội dung bài vào bộ nhớ trình duyệt.</footer>
+</main>
+<script src="player.js?v=1"></script>
+</body>
+</html>

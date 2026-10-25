@@ -4,7 +4,7 @@
 ## Đang làm
 | Việc | Ai | Nhánh | File được đụng | Cập nhật | Trạng thái |
 |---|---|---|---|---|---|
-| (trống: phiên 2026-10-06 đã đẩy hết lên main, không còn việc dở trong cây làm việc) | | | | 2026-10-06 | — |
+| Barron: hoàn thiện 50 bài song ngữ riêng tư + kiểm thử | Codex | feat/barron-bilingual-50 | tools/barron/, learn/barron/, BOARD.md, tài liệu tiến độ | 2026-10-25 | Hoàn tất bản riêng tư50 bài/600 câu; QA độc lập PASS; không ghi cloud/main |
 
 ## Việc kế tiếp (theo thứ tự)
 1. Công cụ Text: kéo vẽ ô, chữ tự co giãn vừa ô, avatar người gõ, kéo di chuyển, kéo góc đổi cỡ (spec chi tiết trong HANDOFF.md).
