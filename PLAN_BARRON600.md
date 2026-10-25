@@ -127,3 +127,7 @@ Nguồn tư vấn kỹ thuật: https://supabase.com/docs/guides/database/overvi
 - **Rollback:** chỉ INSERT dòng mới; xoá theo id trong các file kế hoạch ở `D:\Python\Git\_work_barron600\json\` (`g3_plan_L1_2.json`, `g5_plan_all.json`); các dòng đã xoá được lưu ở `backup_deleted_words*.json` (ngoài repo).
 - **Không thuộc phần này:** bài dịch/đối chiếu song ngữ phần review đáp án do Codex phụ trách trên nhánh riêng; mục này không đụng tới.
 - **Token:** TJ quyết định chưa thu hồi Supabase PAT và token Cloudflare (nhớ thu hồi PAT tạm khi xong hẳn).
+
+## 11. Bài dịch Words in Context — checkpoint riêng tư2026-10-25
+
+Theo yêu cầu TJ làm hết50 bài, nhánh `feat/barron-bilingual-50` đã xử lý50 Lesson×12 câu,156 cặp đoạn Anh–Việt, có hiệu đính nguồn và QA độc lập. Trình chơi/đóng gói local hoàn tất; nội dung sách không commit và không ghi Supabase public. Bản riêng tư có Cả bài/Từng câu, chấm điểm và xem lại Anh rồi Việt; điểm/tiến độ không đồng bộ Notebook. Không bao gồm Part5/6/7/Listening. Xem `tools/barron/BILINGUAL_REVIEW.md`.

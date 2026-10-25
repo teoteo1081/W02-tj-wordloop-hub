@@ -1,5 +1,7 @@
 # TJ WordLoop Hub
 
+> **Barron song ngữ — 2026-10-25, nhánh `feat/barron-bilingual-50`:** hoàn thiện bộ riêng tư50 Words in Context,600 câu,156 cặp đoạn Anh–Việt và QA độc lập. Trình chơi generic ở `learn/barron/`; dữ liệu/HTML chứa sách chỉ ở `_private/barron600` ngoài repo public. Chưa ghi Supabase hoặc deploy main; không ghi điểm/chu kỳ ôn từ bản riêng tư. Xem [chi tiết và bằng chứng](tools/barron/BILINGUAL_REVIEW.md).
+
 App học từ vựng tiếng Anh cá nhân, dùng phương pháp lặp lại ngắt quãng (spaced repetition) theo mô hình Tony Buzan. Plain HTML/CSS/JS, không build step, không framework.
 
 ## Mục lục
