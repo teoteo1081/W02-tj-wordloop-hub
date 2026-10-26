@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<!-- Google tag (gtag.js) — GA4 chung của TJ, nhãn site=ea -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'ea'});</script>
+
+<meta charset="UTF-8">
+<title>EA Part II – SU14–16: Corporate Income to Redemptions and Liquidations</title>
+<style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  body { font-family:'Segoe UI','Calibri',Arial,sans-serif; color:#33322f; font-size:15px; line-height:1.5; background:#fdfcfa; margin:0; }
+  .cover { background: linear-gradient(120deg,#bfe4ff 0%,#d6ecff 30%,#e6def7 65%,#fbe6f4 100%); border-radius:20px; padding:40px 30px; text-align:center; margin-bottom:10px; box-shadow:0 6px 18px rgba(120,130,180,.25); border:1px solid #dfe8f5; }
+  .cover .tag { display:inline-block; background:#33314a; color:#d6ecff; font-weight:700; letter-spacing:2px; font-size:13px; padding:5px 14px; border-radius:20px; margin-bottom:14px; }
+  .cover h1 { font-size:28px; margin:6px 0; color:#3170a8; }
+  .cover h2 { font-size:15px; font-weight:500; margin:4px 0 0; opacity:.9; color:#33314a; }
+  .cover .books { margin-top:16px; font-size:13px; background:rgba(255,255,255,.55); display:inline-block; padding:8px 16px; border-radius:10px; color:#33314a; }
+  .toc { background:#fff; border:1.5px solid #dfe8f5; border-radius:14px; padding:18px 26px; margin-bottom:30px; }
+  .toc h3 { margin-top:0; color:#3170a8; }
+  .toc ol { margin:0; padding-left:22px; } .toc li{ margin-bottom:6px; }
+  h2.section { font-size:21px; color:#33314a; padding:12px 18px; border-radius:12px; margin:34px 0 14px; border-left:10px solid var(--accent,#5aa9d6); background:var(--bg,#eaf6fd); }
+  h3.lesson { font-size:18px; color:var(--accent-dark,#276a91); border-left:6px solid var(--accent,#5aa9d6); background:var(--bg-soft,#f3fafd); padding:8px 14px; border-radius:6px; margin:22px 0 10px; }
+  .c1{--accent:#5aa9d6;--accent-dark:#276a91;--bg:#eaf6fd;--bg-soft:#f3fafd;--head:#a9d4ec;}
+  .c2{--accent:#a892d9;--accent-dark:#5c4696;--bg:#f1ecfb;--bg-soft:#f8f5fd;--head:#cabdec;}
+  .c3{--accent:#f0a66e;--accent-dark:#b8620b;--bg:#fdeee2;--bg-soft:#fff8f0;--head:#f4c299;}
+  .c4{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
+  .c5{--accent:#e07b9b;--accent-dark:#a3335a;--bg:#fbe9f0;--bg-soft:#fdf5f8;--head:#f3b6c9;}
+  .c6{--accent:#5bb8b0;--accent-dark:#1f7a72;--bg:#e5f7f5;--bg-soft:#f2fbfa;--head:#a6e3dd;}
+  .c7{--accent:#c9a13a;--accent-dark:#8a6c14;--bg:#fbf3de;--bg-soft:#fdf9ee;--head:#e9cd7c;}
+  .c8{--accent:#8697d6;--accent-dark:#4453a0;--bg:#eceffc;--bg-soft:#f6f7fd;--head:#c1c9ef;}
+  .cKey{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
+  table.vocab { width:100%; border-collapse:collapse; margin-bottom:18px; font-size:.94em; box-shadow:0 2px 8px rgba(0,0,0,.05); border-radius:10px; overflow:hidden; }
+  table.vocab th { background:var(--head,#5aa9d6); color:#2d2d2d; padding:8px; text-align:left; }
+  table.vocab td { padding:7px 8px; border-bottom:1px solid var(--bg,#eaf6fd); vertical-align:top; }
+  table.vocab tr:nth-child(even) td { background:var(--bg-soft,#faf6f0); }
+  table.vocab tr:nth-child(odd) td { background:#fff; }
+  table.vocab td.word { font-weight:800; color:var(--accent-dark,#276a91); }
+  table.vocab td.vn { font-weight:700; color:#3d6ba8; }
+  .rule-box { background:var(--bg,#eaf6fd); border-left:6px solid var(--accent,#5aa9d6); border-radius:8px; padding:12px 18px; margin:10px 0; }
+  .rule-box table { width:100%; border-collapse:collapse; margin:8px 0 4px; }
+  .rule-box table td, .rule-box table th { padding:6px 8px; border-bottom:1px solid rgba(0,0,0,.08); text-align:left; font-size:.92em; }
+  .rule-box table th { color:var(--accent-dark,#276a91); }
+  .rule-box ul, .rule-box ol { margin:6px 0; padding-left:22px; } .rule-box li{ margin-bottom:5px; }
+  .struct { font-weight:800; color:#b8620b; font-family:'Consolas','Courier New',monospace; }
+  .example-box { background:#fff; border:1.5px dashed var(--accent,#5aa9d6); border-radius:8px; padding:10px 16px; margin:8px 0; font-size:.92em; }
+  .example-box b.ex-tag { color:var(--accent-dark,#276a91); }
+  .mcq { background:#fff; border:1.5px solid var(--accent,#5aa9d6); border-radius:10px; padding:12px 18px; margin-bottom:12px; }
+  .mcq .q { color:#3d6ba8; font-weight:700; margin-bottom:6px; }
+  .mcq .opt { margin:2px 0 2px 10px; }
+  .content-block { background:#fff; border:2px dashed var(--accent,#5aa9d6); border-radius:12px; padding:16px 20px; margin-bottom:18px; }
+  .key-grid { column-count:1; } .key-grid div{ margin-bottom:9px; }
+  .key-ans { color:#20824f; font-weight:800; }
+  .key-exp { color:#555; font-size:.92em; }
+  .pagebreak { page-break-before: always; }
+  .note { font-size:.85em; color:#8a8a8a; font-style:italic; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="tag">EA EXAM PREP • PART II — BUSINESSES • SU14–16</div>
+  <h1>📘 SU14–16 — CORPORATE INCOME, DISTRIBUTIONS, REDEMPTIONS &amp; LIQUIDATIONS</h1>
+  <h2>Bản song ngữ Việt–Anh, bám sát giáo trình Gleim 2026 (SU14 Corporate Income/Losses/Deductions · SU15 Corporate Distributions · SU16 Corporate Redemptions &amp; Liquidations)</h2>
+  <div class="books">📖 Khái niệm · 🔤 Thuật ngữ · 📌 Ví dụ · ❓ Trắc nghiệm · 🔑 Đáp án trang sau</div>
+</div>
+
+<div class="toc">
+<h3>📑 Mục lục SU14–16 (chia 10 phần nhỏ, ký hiệu tiếp nối A→J)</h3>
+<ol>
+<li>A. Thuế suất Corporate &amp; Đối chiếu Sổ sách với Thu nhập chịu thuế (Schedule M-1/M-2/M-3) — SU14</li>
+<li>B. Dividends-Received Deduction (DRD) — SU14</li>
+<li>C. Charitable Contributions &amp; Các khoản khấu trừ khác của Corporation — SU14</li>
+<li>D. Net Operating Loss (NOL), Capital Losses &amp; Related Party Transactions — SU14</li>
+<li>E. Earnings and Profits (E&amp;P) — cách tính — SU15</li>
+<li>F. Shareholder Treatment of Distributions — Dividend, Constructive Dividend, Capital Recovery — SU15</li>
+<li>G. Stock Distributions &amp; Stock Rights — SU15</li>
+<li>H. Stock Redemptions — Sale vs. Dividend Treatment — SU16</li>
+<li>I. Complete Liquidation — SU16</li>
+<li>J. Partial Liquidation — SU16</li>
+</ol>
+<p class="note">Nguồn: Gleim EA Review, Study Units 14–16 (Corporate Income, Losses, and Deductions / Corporate Distributions / Corporate Redemptions and Liquidations), 2026. Số liệu $ theo năm 2025.</p>
+</div>
+
+<!-- A -->
+<div class="c1">
+<h2 class="section">A — THUẾ SUẤT CORPORATE &amp; ĐỐI CHIẾU SỔ SÁCH VỚI THU NHẬP CHỊU THUẾ (SCHEDULE M-1/M-2/M-3)</h2>
+<div class="rule-box">
+<p><b>§11 — Thuế suất Corporate:</b> mọi thu nhập chịu thuế của corporation (kể cả ordinary income, capital gains, personal service corporation, controlled group) đều bị đánh thuế theo mức FLAT <b>21%</b> — KHÔNG có mức lũy tiến, KHÔNG có preferential rate cho long-term capital gain (khác với cá nhân).</p>
+<p>Corporation khai thuế bằng <b>Form 1120</b> (U.S. Corporation Income Tax Return). Nếu total assets &lt;$250,000 VÀ gross receipts &lt;$250,000 → KHÔNG cần đính kèm Schedule L (balance sheet), M-1 (đối chiếu sổ sách), M-2 (retained earnings).</p>
+<p><b>Schedule M-1:</b> đối chiếu net income (loss) theo SỔ SÁCH với income (loss) theo TỜ KHAI THUẾ. <b>Schedule M-3</b> BẮT BUỘC nếu total assets ≥$10 triệu (có thể dùng thay M-1 nếu &lt;$10 triệu) — chi tiết hơn, tách riêng temporary/permanent differences theo từng khoản mục.</p>
+</div>
+
+<h3 class="lesson">Công thức đối chiếu Book-to-Tax (tương tự Schedule M-1)</h3>
+<div class="rule-box">
+<p class="struct">Net income (loss) per books<br>+ Federal income tax<br>+ Excess of capital losses over capital gains<br>+ Income subject to tax KHÔNG ghi trên sổ sách<br>+ Expenses ghi trên sổ sách nhưng KHÔNG được deduct trên tờ khai (VD: book depreciation &gt; tax depreciation, fines/penalties)<br>− Income ghi trên sổ sách nhưng KHÔNG chịu thuế (VD: municipal bond interest, life insurance proceeds)<br>− Deductions trên tờ khai KHÔNG trừ vào book income (VD: tax depreciation &gt; book depreciation)<br>= Taxable income TRƯỚC NOL và DRD</p>
+<p class="note">LƯU Ý QUAN TRỌNG: M-1 adjustments xảy ra TRƯỚC khi trừ DRD và NOL — câu "book income và taxable income chỉ khác nhau bởi M-1 adjustments" là SAI.</p>
+<p><b>Temporary differences</b> (timing — phát sinh 1 năm, đảo ngược năm sau): prepaid/advanced rental income, installment sale income, accelerated depreciation (Sec. 179, 100%-expensing, MACRS), bad debt reserve (allowance method sổ sách vs. specific write-off thuế), NOL/capital loss carryover, charitable contribution carryover.</p>
+<p><b>Permanent differences</b> (KHÔNG bao giờ đảo ngược): tax-exempt interest, life insurance proceeds (key-person, công ty là beneficiary), DRD, nondeductible meals 50%/entertainment, fines/penalties, lobbying/political expenditures, club dues.</p>
+<p><b>Deferred Tax Liability (DTL)</b> phát sinh khi Income theo GAAP &gt; Taxable income (taxable temporary difference — VD tax depreciation nhanh hơn book). <b>Deferred Tax Asset (DTA)</b> phát sinh khi Income theo GAAP &lt; Taxable income (deductible temporary difference/carryforward).</p>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 14-1 (Tax rate):</b> Little Corp có $175,000 taxable income từ hoạt động kinh doanh (chưa gồm $30,000 capital gain). Thuế = ($175,000×21%) + ($30,000×21%) = $36,750 + $6,300 = <b>$43,050</b> — capital gain KHÔNG có rate ưu đãi.</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 14-2 (M-1, rút gọn — MEEN Corp):</b> Net income sổ sách $51,007,500. Điều chỉnh: −$24,000 tax-exempt municipal bond interest; +$200,000 prepaid rent (taxable ngay khi nhận theo thuế dù chưa earned theo sổ sách); +$23,000 capital loss vượt capital gain (không được deduct); +$60,000 bad debt (allowance $170,000 sổ sách vs. specific write-off $110,000 thuế); −$10,000,000 (tax depreciation &gt; book depreciation: tờ khai được khấu trừ nhiều hơn sổ sách); +$100,250 (50% của $200,500 business meals không được trừ); +$19,000 key-person life insurance premium (công ty là beneficiary → không deductible). Sau M-1: Taxable income trước NOL/DRD = $41,385,750. Trừ tiếp NOL carryforward $12,040,000 (giới hạn 80% TI, ở đây đủ điều kiện dùng hết) và DRD $24,000 (50%×$48,000 dividend, do sở hữu 18% &lt;20%) → Taxable income = $29,321,750 × 21% = <b>$6,157,568</b> thuế phải nộp.</div>
+
+<h3 class="lesson">Thuật ngữ Phần A</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">flat rate (21%)</td><td class="vn">thuế suất cố định 21% cho corporation (không lũy tiến)</td></tr>
+<tr><td class="word">Schedule M-1 / M-3</td><td class="vn">bảng đối chiếu thu nhập sổ sách với thu nhập chịu thuế</td></tr>
+<tr><td class="word">temporary difference</td><td class="vn">chênh lệch tạm thời (đảo ngược trong tương lai)</td></tr>
+<tr><td class="word">permanent difference</td><td class="vn">chênh lệch vĩnh viễn (không bao giờ đảo ngược)</td></tr>
+<tr><td class="word">deferred tax liability (DTL) / asset (DTA)</td><td class="vn">nợ thuế hoãn lại / tài sản thuế hoãn lại</td></tr>
+<tr><td class="word">Schedule M-2</td><td class="vn">bảng theo dõi biến động retained earnings chưa phân bổ</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm Phần A</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. A corporation's regular federal income tax is computed by applying a flat rate of:</div>
+<div class="opt">A. 15%</div><div class="opt">B. 21%</div><div class="opt">C. A graduated rate up to 35%</div><div class="opt">D. 21% on ordinary income only, with capital gains taxed at 20%</div></div>
+<div class="mcq"><div class="q">2. Schedule M-3 is generally required for a corporation with total assets of at least:</div>
+<div class="opt">A. $250,000</div><div class="opt">B. $1 million</div><div class="opt">C. $10 million</div><div class="opt">D. $50 million</div></div>
+<div class="mcq"><div class="q">3. Which of the following is a PERMANENT (not temporary) book-to-tax difference?</div>
+<div class="opt">A. Accelerated tax depreciation</div><div class="opt">B. Installment sale income</div><div class="opt">C. Tax-exempt municipal bond interest</div><div class="opt">D. Net operating loss carryover</div></div>
+<div class="mcq"><div class="q">4. On the Schedule M-1 reconciliation, the dividends-received deduction and NOL deduction are:</div>
+<div class="opt">A. Applied before computing the M-1 adjustments</div><div class="opt">B. Not applied at all for corporations</div><div class="opt">C. Applied AFTER the M-1 adjustments, to arrive at final taxable income</div><div class="opt">D. Only relevant for S corporations</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — Phần A</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — 21%</span><br><span class="key-exp">§11 áp dụng flat 21% cho MỌI loại thu nhập corporate, kể cả capital gain.</span></div>
+<div><b>2.</b> <span class="key-ans">C — $10 million</span></div>
+<div><b>3.</b> <span class="key-ans">C — Tax-exempt municipal bond interest</span><br><span class="key-exp">Đây là khoản không bao giờ chịu thuế — permanent difference. Các lựa chọn khác đều là temporary (timing) differences.</span></div>
+<div><b>4.</b> <span class="key-ans">C — Applied after M-1 adjustments</span></div>
+</div>
+</div>
+
+<!-- B -->
+<div class="c2 pagebreak">
+<h2 class="section">B — DIVIDENDS-RECEIVED DEDUCTION (DRD)</h2>
+<div class="rule-box">
+<p>Corporation nhận dividend từ corporation khác được khấu trừ ĐẶC BIỆT — <b>DRD</b> — dù toàn bộ dividend VẪN tính vào gross income trước. Mức khấu trừ phụ thuộc % sở hữu (theo voting + value) của cổ phiếu công ty trả dividend:</p>
+<table>
+<tr><th>% Ownership</th><th>% Dividend được khấu trừ</th><th>Giới hạn: % Taxable Income (TI)</th></tr>
+<tr><td>&lt;20%</td><td>50%</td><td>50% TI</td></tr>
+<tr><td>≥20%, &lt;80%</td><td>65%</td><td>65% TI</td></tr>
+<tr><td>≥80% &amp; affiliated group</td><td>100%</td><td>N/A (không giới hạn)</td></tr>
+</table>
+<p><b>Điều kiện holding period:</b> phải giữ cổ phiếu ÍT NHẤT 46 ngày trong giai đoạn 91 ngày bắt đầu 45 ngày TRƯỚC ngày ex-dividend. Không được DRD nếu có short position với chứng khoán tương tự.</p>
+<p><b>Giới hạn Taxable Income (TI):</b> DRD 50%/65% bị giới hạn theo % TI (tính TRƯỚC DRD, NOL deduction, capital loss carryback). Nếu nhận dividend từ CẢ 20%-owned VÀ non-20%-owned → tính giới hạn cho nhóm ≥20% TRƯỚC. Giới hạn TI KHÔNG áp dụng nếu DRD tạo ra hoặc làm tăng NOL.</p>
+<p>Foreign corporation dividend: được DRD NẾU domestic corp sở hữu ≥10%, foreign corp chịu US federal tax, có income effectively connected với US trade/business, và KHÔNG phải foreign personal holding company — chỉ áp dụng cho phần dividend gắn với effectively connected income.</p>
+<p><b>Dividend KHÔNG được DRD (disqualified):</b> mutual savings banks, REITs, DISCs, public utility preferred stock, tổ chức exempt theo §501/§521. S corporation KHÔNG được claim DRD.</p>
+</div>
+
+<h3 class="lesson">Ví dụ tính DRD &amp; ảnh hưởng NOL</h3>
+<div class="example-box"><b class="ex-tag">Ví dụ 14-4:</b> Alpha sở hữu 10% Beta, có $200,000 ordinary income + $100,000 dividend từ Beta. DRD = $100,000×50% = $50,000. So với giới hạn 50%×$300,000 TI (trước DRD) = $150,000 → $50,000 &lt; $150,000 nên KHÔNG bị giới hạn, được khấu trừ đủ $50,000.</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 14-5 (DRD tạo NOL):</b> Taxable income $1,000 (gồm $10,000 dividend từ công ty sở hữu &lt;20%) TRƯỚC DRD. DRD trước giới hạn = $10,000×50% = $5,000. Vì DRD này TẠO RA NOL nên KHÔNG bị giới hạn 50%×$1,000=$500 — được khấu trừ TOÀN BỘ $5,000, kết quả NOL = $4,000.</div>
+
+<h3 class="lesson">Thuật ngữ Phần B</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">Dividends-Received Deduction (DRD)</td><td class="vn">khấu trừ đặc biệt cho dividend nhận được giữa các corporation</td></tr>
+<tr><td class="word">ex-dividend date</td><td class="vn">ngày giao dịch không còn kèm quyền nhận dividend</td></tr>
+<tr><td class="word">affiliated group</td><td class="vn">nhóm công ty liên kết (≥80% sở hữu, được DRD 100%)</td></tr>
+<tr><td class="word">effectively connected income</td><td class="vn">thu nhập gắn liền hiệu quả với hoạt động kinh doanh tại Mỹ</td></tr>
+<tr><td class="word">disqualified dividends</td><td class="vn">dividend không đủ điều kiện DRD (REIT, mutual savings bank...)</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm Phần B</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. A corporation owning 30% of the distributing corporation's stock is generally entitled to a DRD of:</div>
+<div class="opt">A. 50%</div><div class="opt">B. 65%</div><div class="opt">C. 80%</div><div class="opt">D. 100%</div></div>
+<div class="mcq"><div class="q">2. To be eligible for the DRD, a corporation must hold the stock for at least how many days during the 91-day period beginning 45 days before the ex-dividend date?</div>
+<div class="opt">A. 15 days</div><div class="opt">B. 30 days</div><div class="opt">C. 46 days</div><div class="opt">D. 91 days</div></div>
+<div class="mcq"><div class="q">3. The taxable-income limitation on the 50%/65% DRD does NOT apply when:</div>
+<div class="opt">A. The corporation owns less than 5% of the payor</div><div class="opt">B. The DRD produces or increases a net operating loss</div><div class="opt">C. The dividend is from a foreign corporation</div><div class="opt">D. The recipient is an S corporation</div></div>
+<div class="mcq"><div class="q">4. Which type of corporation may NOT claim a dividends-received deduction?</div>
+<div class="opt">A. A C corporation owning 15% of the payor</div><div class="opt">B. An S corporation</div><div class="opt">C. A member of an affiliated group</div><div class="opt">D. A small business investment company</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — Phần B</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — 65%</span><br><span class="key-exp">30% thuộc nhóm ≥20% và &lt;80% → DRD 65%, giới hạn 65% TI.</span></div>
+<div><b>2.</b> <span class="key-ans">C — 46 days</span></div>
+<div><b>3.</b> <span class="key-ans">B — DRD produces/increases an NOL</span></div>
+<div><b>4.</b> <span class="key-ans">B — An S corporation</span></div>
+</div>
+</div>
+
+<!-- C -->
+<div class="c3 pagebreak">
+<h2 class="section">C — CHARITABLE CONTRIBUTIONS &amp; CÁC KHOẢN KHẤU TRỪ KHÁC CỦA CORPORATION</h2>
+<div class="rule-box">
+<p><b>Charitable Contributions:</b> chỉ deductible nếu trả cho qualified organization VÀ trả TRONG năm thuế (accrual-method corp có thể bầu chọn deduct khoản trả trước ngày due date tờ khai, KHÔNG kể extension).</p>
+<p><b>Ordinary income property</b> (VD inventory): deduct = adjusted basis (AB). <b>Capital gain property</b> (long-term): deduct = FMV (trừ phần ordinary income nếu giả định đã bán) — điều kiện FMV deduction cho tangible personal property: phải dùng liên quan đến exempt purpose của tổ chức nhận, KHÔNG được bán lại lấy tiền.</p>
+<p><b>Giới hạn 2025:</b> tổng deduction ≤10% Taxable Income (TI) TRƯỚC charitable contribution, DRD, capital loss carryback, Sec. 249 bond premium deduction. Phần vượt được carryover 5 năm tới (KHÔNG carryback), FIFO, năm hiện tại dùng trước; carryover KHÔNG được dùng nếu làm TĂNG NOL carryover năm sau.</p>
+<p style="background:#fff7e0;border-left:4px solid #e0a800;padding:6px 10px;border-radius:6px;margin:8px 0">⚠️ <b>Luật hiện hành (kiểm 2026-10-25):</b> OBBBA thêm <b>sàn 1% taxable income</b> cho charitable contribution của corporation, áp dụng từ <b>năm thuế 2026</b> (phần dưới sàn không được trừ). Năm 2025 chưa có sàn này.</p>
+</div>
+
+<h3 class="lesson">Compensation, Gifts, Travel/Meals, Interest, Casualty</h3>
+<div class="rule-box">
+<p><b>Gifts kinh doanh:</b> deduct tối đa <b>$25/người nhận/năm</b> (không tính promotional items hoặc vật phẩm &lt;$4 có khắc tên công ty).</p>
+<p><b>Compensation:</b> deductible trừ khi mang tính capital. Accrued compensation phải trả trong <b>2½ tháng</b> sau năm kết thúc mới được deduct năm đó; nếu trả trễ hơn → coi là deferred compensation, deduct khi TRẢ.</p>
+<p><b>Publicly held corporation — giới hạn $1 triệu/covered employee:</b> "covered employee" = CEO/CFO tại bất kỳ thời điểm nào trong năm, hoặc 1 trong 3 highest compensated officers (khác CEO/CFO) phải báo cáo theo Exchange Act. Pension/annuity/tax-free benefits KHÔNG tính vào giới hạn $1 triệu. "Parachute payment" cho officer/shareholder/highly compensated KHÔNG được deduct dù bao nhiêu.</p>
+<p><b>Travel &amp; Meals:</b> meal khi công tác/tại cơ sở kinh doanh deduct <b>50%</b>. Entertainment expense nói chung KHÔNG deductible — nhưng nếu tách riêng meal ra khỏi entertainment thì phần meal vẫn deduct 50%.</p>
+<p><b>Bad debts:</b> corporation PHẢI dùng direct charge-off method hoặc nonaccrual-experience method — KHÔNG được dùng allowance method (trừ tổ chức tài chính).</p>
+<p><b>Worthless securities:</b> lỗ coi là capital loss (bị giới hạn) — TRỪ security của affiliated corporation → có thể coi là ordinary loss.</p>
+<p><b>Interest expense:</b> giới hạn = business interest income + 30% adjusted taxable income + floor plan financing interest. Phần bị disallow carryforward VÔ THỜI HẠN. KHÔNG áp dụng giới hạn cho small business gross receipts trung bình ≤<b>$31 triệu</b>.</p>
+<p><b>Casualty losses:</b> corporation KHÔNG bị giới hạn $100/loss như cá nhân. Hư hại 1 phần: deduct = số NHỎ HƠN giữa giảm FMV hoặc AB trước tổn thất. Hư hại toàn phần: deduct = AB trước tổn thất.</p>
+<p><b>Related-party accrued expenses:</b> nếu 2 bên khác accounting method VÀ payee (related, cash-method) sẽ ghi nhận thu nhập TRỄ hơn payor (accrual) đã deduct → payor KHÔNG được deduct cho đến khi thực trả.</p>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 14-6:</b> CEO David nhận $3 triệu lương + $500,000 bonus + $10,000 fringe benefit tax-free. Davidson &amp; Sons chỉ được deduct <b>$1,010,000</b> ($1,000,000 giới hạn + $10,000 fringe benefit) dù David phải khai đủ $3.5 triệu vào income.</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 14-9:</b> Joe mời khách ăn tối + xem show, tổng $1,000 ($800 show + $200 meal). Nếu KHÔNG tách riêng → $0 deductible. Nếu tách riêng → deduct 50%×$200 = <b>$100</b> (chỉ phần meal).</div>
+
+<h3 class="lesson">Thuật ngữ Phần C</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">qualified organization</td><td class="vn">tổ chức đủ điều kiện nhận charitable contribution</td></tr>
+<tr><td class="word">covered employee</td><td class="vn">nhân viên thuộc diện giới hạn deduct compensation $1 triệu</td></tr>
+<tr><td class="word">parachute payment</td><td class="vn">khoản trả "dù vàng" (khi sáp nhập/thay đổi kiểm soát) — không được deduct</td></tr>
+<tr><td class="word">nonaccrual-experience method</td><td class="vn">phương pháp không ghi nhận thu nhập dự kiến không thu được</td></tr>
+<tr><td class="word">business interest limitation (30% ATI)</td><td class="vn">giới hạn deduct lãi vay kinh doanh (30% thu nhập chịu thuế điều chỉnh)</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm Phần C</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. In 2025, a corporation's charitable contribution deduction is generally limited to what percentage of taxable income (before certain adjustments)?</div>
+<div class="opt">A. 10%</div><div class="opt">B. 15%</div><div class="opt">C. 25%</div><div class="opt">D. 50%</div></div>
+<div class="mcq"><div class="q">2. Excess charitable contributions over the taxable income limit may be carried forward for how many years?</div>
+<div class="opt">A. 2 years</div><div class="opt">B. 3 years</div><div class="opt">C. 5 years</div><div class="opt">D. Indefinitely</div></div>
+<div class="mcq"><div class="q">3. A publicly held corporation generally may not deduct compensation paid to a covered employee in excess of:</div>
+<div class="opt">A. $500,000</div><div class="opt">B. $1 million</div><div class="opt">C. $2 million</div><div class="opt">D. There is no limit</div></div>
+<div class="mcq"><div class="q">4. For bad debts, a corporation (other than a financial institution) must use:</div>
+<div class="opt">A. The allowance method only</div><div class="opt">B. The direct charge-off or nonaccrual-experience method</div><div class="opt">C. Either method freely chosen each year</div><div class="opt">D. The reserve method</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — Phần C</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">A — 10%</span></div>
+<div><b>2.</b> <span class="key-ans">C — 5 years</span><br><span class="key-exp">Không có carryback, chỉ carryforward 5 năm, FIFO.</span></div>
+<div><b>3.</b> <span class="key-ans">B — $1 million</span></div>
+<div><b>4.</b> <span class="key-ans">B — Direct charge-off or nonaccrual-experience method</span></div>
+</div>
+</div>
+
+<!-- D -->
+<div class="c4 pagebreak">
+<h2 class="section">D — NET OPERATING LOSS (NOL), CAPITAL LOSSES &amp; RELATED PARTY TRANSACTIONS</h2>
+<div class="rule-box">
+<p><b>NOL của corporation:</b> = excess của deductions so với gross income (dùng modified deductions riêng — NOL carryover từ năm khác KHÔNG được tính vào NOL hiện tại). DRD KHÔNG bị giới hạn TI khi tính NOL — DRD có thể làm TĂNG NOL. Charitable contributions, FDII, QBI KHÔNG được trừ khi tính NOL hiện tại.</p>
+<p><b>Carryforward:</b> NOL phát sinh từ 2021 trở đi → carryforward VÔ THỜI HẠN (không hết hạn), KHÔNG được carryback. Mỗi năm sử dụng bị giới hạn <b>80% TI</b> của năm carryover đó; phần dư tiếp tục carry tới năm sau. NOL cũ nhất dùng TRƯỚC (FIFO).</p>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 14-11 (NOL):</b> Gross income từ operations $98,000 + dividend (từ công ty sở hữu &lt;20%) $100,000 = $198,000. Trừ business expenses $160,000 và DRD ($100,000×50%=$50,000) → Taxable income (NOL) = <b>$(12,000)</b>.</div>
+
+<h3 class="lesson">Capital Gains &amp; Losses của Corporation (khác cá nhân)</h3>
+<div class="rule-box">
+<p>Corporation KHÔNG có preferential rate cho long-term capital gain — Net Capital Gain (NCG) đánh thuế CÙNG mức 21% như thu nhập khác. Khác cá nhân (được deduct $3,000 net capital loss/năm), <b>corporation KHÔNG được deduct Net Capital Loss (NCL)</b> — capital loss chỉ offset được capital gain, phần dư KHÔNG deductible năm hiện tại.</p>
+<p>NCL nondeductible được <b>carryback 3 năm, carryforward 5 năm</b> — KHÔNG được bầu bỏ carryback. Không carry từ/tới năm là S corporation. Dùng năm sớm nhất trước (oldest first). Trong năm carryover, NCL coi như STCL — chỉ offset NCG, KHÔNG được tạo/tăng NCL hay NOL năm đó.</p>
+</div>
+
+<h3 class="lesson">Related Party Transactions — Hạn chế tránh thuế</h3>
+<div class="rule-box">
+<p>Lỗ thực hiện khi BÁN/TRAO ĐỔI tài sản cho related party → <b>KHÔNG được deduct</b>. Bên nhận (transferee) lấy cost basis = giá mua, KHÔNG cộng holding period của bên bán.</p>
+<p>Nếu bên nhận sau đó BÁN LẠI cho bên KHÔNG liên quan: gain chỉ recognize phần VƯỢT disallowed loss trước đó; nếu gain &lt; disallowed loss → KHÔNG recognize gain; nếu bán lỗ tiếp → chỉ recognize lỗ THỰC TẾ của giao dịch sau, KHÔNG cộng thêm disallowed loss cũ.</p>
+<p>Ngoại lệ (tài sản mua từ 1/1/2016 trở đi): nếu bên chuyển nhượng gốc là "tax-indifferent party" (không chịu thuế liên bang Mỹ — VD non-U.S. person, tổ chức tax-exempt, chính phủ) → disallowed loss KHÔNG được dùng để offset gain khi bán lại cho bên thứ ba.</p>
+<p><b>Related parties bao gồm:</b> anh chị em ruột (kể cả cùng cha khác mẹ...), vợ/chồng, ông bà/cha mẹ, con cháu; cá nhân và corporation cá nhân đó CONTROL (sở hữu &gt;50% giá trị); 2 corporation cùng controlled group; partnership và corporation sở hữu bởi cùng 1 người (&gt;50% mỗi bên); S corp và C corp cùng chủ sở hữu; personal service corporation và employee-owner.</p>
+<p>Corporation KHÔNG được: deduct lỗ bán/trao đổi tài sản với related party; deduct unpaid business expense/interest accrual với related party; coi trao đổi property giữa related taxpayers là like-kind exchange nếu 1 trong 2 bên bán tài sản trong vòng 2 năm.</p>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 14-12:</b> A bán stock basis $100,000 cho related party B với giá $80,000 → disallowed loss $20,000 cho A. B lấy basis $80,000. Nếu B bán lại cho bên KHÔNG liên quan giá $130,000: gain thực = $50,000, recognize = $50,000−$20,000 = <b>$30,000</b>. Nếu bán $90,000: gain thực $10,000 &lt; $20,000 disallowed loss → recognize $0. Nếu bán $65,000 (lỗ thêm $15,000): chỉ recognize lỗ <b>$15,000</b> (KHÔNG cộng thêm $20,000 cũ).</div>
+
+<h3 class="lesson">Thuật ngữ Phần D</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">Net Operating Loss (NOL)</td><td class="vn">lỗ hoạt động ròng — carryforward vô thời hạn, giới hạn 80% TI</td></tr>
+<tr><td class="word">Net Capital Loss (NCL)</td><td class="vn">lỗ vốn ròng — corporation không được deduct trực tiếp, chỉ carryback/forward</td></tr>
+<tr><td class="word">controlled group</td><td class="vn">nhóm công ty bị kiểm soát chung (liên kết cổ phần)</td></tr>
+<tr><td class="word">tax-indifferent party</td><td class="vn">bên "vô cảm với thuế" (không chịu thuế Mỹ)</td></tr>
+<tr><td class="word">disallowed loss</td><td class="vn">khoản lỗ không được công nhận (giao dịch related party)</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm Phần D</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. NOLs arising in tax years 2021 and later may be carried forward:</div>
+<div class="opt">A. For 20 years only</div><div class="opt">B. Indefinitely, limited to 80% of taxable income in the carryover year</div><div class="opt">C. For 5 years only</div><div class="opt">D. Indefinitely, with no limitation</div></div>
+<div class="mcq"><div class="q">2. A corporation's net capital losses in excess of capital gains for the year are:</div>
+<div class="opt">A. Deductible up to $3,000 against ordinary income</div><div class="opt">B. Fully deductible against ordinary income</div><div class="opt">C. Nondeductible currently; carried back 3 years and forward 5 years</div><div class="opt">D. Permanently lost</div></div>
+<div class="mcq"><div class="q">3. Taxpayer A sells property with a basis of $100,000 to related party B for $80,000 (a disallowed $20,000 loss). B later sells to an unrelated party for $90,000. How much gain does B recognize?</div>
+<div class="opt">A. $10,000</div><div class="opt">B. $0</div><div class="opt">C. $20,000</div><div class="opt">D. $30,000</div></div>
+<div class="mcq"><div class="q">4. Which of the following is NOT considered a related party for purposes of the loss disallowance rules?</div>
+<div class="opt">A. An individual's spouse</div><div class="opt">B. An individual's cousin</div><div class="opt">C. A corporation more than 50%-owned by the individual</div><div class="opt">D. An individual's sibling</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — Phần D</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — Indefinitely, limited to 80% TI</span></div>
+<div><b>2.</b> <span class="key-ans">C — Nondeductible currently; carried back 3 / forward 5 years</span></div>
+<div><b>3.</b> <span class="key-ans">B — $0</span><br><span class="key-exp">Gain thực $10,000 &lt; $20,000 disallowed loss → không recognize gain nào.</span></div>
+<div><b>4.</b> <span class="key-ans">B — Cousin</span><br><span class="key-exp">§267(b)/(c)(4): người thân gồm vợ/chồng, anh chị em (brothers/sisters), tổ tiên trực hệ (cha mẹ, ông bà — ancestors) và con cháu (lineal descendants), cộng corporation do cá nhân đó sở hữu &gt;50% giá trị. Anh/chị/em họ (cousin), cô/dì/chú/bác và thông gia KHÔNG thuộc danh sách. (Việc ông bà và anh chị em KHÔNG bị attribute trong redemption là quy tắc §318 khác — xem SU16.)</span></div>
+</div>
+</div>
+
+<!-- E -->
+<div class="c5 pagebreak">
+<h2 class="section">E — EARNINGS AND PROFITS (E&amp;P) — CÁCH TÍNH</h2>
+<div class="rule-box">
+<p><b>Ý nghĩa E&amp;P:</b> mọi distribution được GIẢ ĐỊNH đến từ E&amp;P (trừ khi E&amp;P = 0). E&amp;P đo lường khả năng "trả dividend" thực tế của corporation — KHÁC với retained earnings kế toán. Corporate shareholder thích được coi là DIVIDEND (vì có DRD); cá nhân shareholder thích phần KHÔNG phải dividend (return of capital không chịu thuế; phần vượt basis → LTCG, rate 0/15/20%).</p>
+<p><b>Công thức:</b> bắt đầu từ Taxable Income (TI), điều chỉnh theo 5 nhóm:</p>
+<ol>
+<li><b>Income excluded khỏi TI</b> → CỘNG vào TI (VD: tax-exempt interest, refund thuế liên bang năm trước, phần life insurance proceeds loại trừ, recovery khoản đã deduct không tạo tax benefit).</li>
+<li><b>Expenses/losses KHÔNG deductible cho TI</b> → TRỪ khỏi TI (VD: federal income tax, fines/penalties, political contributions, charitable contribution vượt 10% TI, disallowed related-party loss, life insurance premium phần không deduct).</li>
+<li><b>Deferred income recognition items</b> → CỘNG hoặc TRỪ (VD: installment sale — E&amp;P tính NGAY phần gain chưa recognize cho TI purposes).</li>
+<li><b>Accelerated deduction items</b> → CỘNG hoặc TRỪ (VD: chênh lệch Sec. 179/MACRS/percentage depletion so với cách tính chậm hơn cho E&amp;P — như ADS straight-line).</li>
+<li><b>Deductions KHÔNG cho phép trừ E&amp;P</b> → LUÔN CỘNG lại vào TI (charitable contribution carryover, NOL carryover, capital loss carryover, DRD — vì các khoản này đã ảnh hưởng E&amp;P năm phát sinh gốc, không nên trừ lại).</li>
+</ol>
+</div>
+
+<h3 class="lesson">Phân phối tài sản appreciated &amp; 4 kịch bản Current/Accumulated E&amp;P</h3>
+<div class="rule-box">
+<p>Khi corporation phân phối tài sản ĐÃ TĂNG GIÁ (appreciated property), phải ghi nhận GAIN như thể BÁN tài sản đó theo FMV — nhưng KHÔNG BAO GIỜ ghi nhận LOSS trên phân phối (dù giá giảm). E&amp;P phải TĂNG theo (FMV − AB) TRƯỚC khi trừ E&amp;P cho phân phối. Nếu liability &gt; FMV → coi giá bán = liability.</p>
+<p>Sau khi xác định thuế cho shareholder, E&amp;P GIẢM theo giá trị phân phối (tiền mặt, FMV tài sản appreciated trừ liability, hoặc AB tài sản không appreciated trừ liability) — nhưng KHÔNG BAO GIỜ giảm current E&amp;P xuống dưới 0.</p>
+<p><b>4 kịch bản Current E&amp;P (CE&amp;P) vs. Accumulated E&amp;P (AE&amp;P):</b></p>
+<table>
+<tr><th>Kịch bản</th><th>Xử lý</th></tr>
+<tr><td>CE&amp;P (+) và AE&amp;P (+)</td><td>Phân bổ CE&amp;P đều cho MỌI distribution trong năm; áp dụng AE&amp;P theo thứ tự thời gian</td></tr>
+<tr><td>CE&amp;P (−) và AE&amp;P (−)</td><td>Toàn bộ distribution (đến mức basis) = return of basis; vượt basis = capital gain</td></tr>
+<tr><td>CE&amp;P (+) và AE&amp;P (−)</td><td>KHÔNG netting — distribution đến mức CE&amp;P là dividend, còn lại = return of basis</td></tr>
+<tr><td>CE&amp;P (−) và AE&amp;P (+)</td><td>Prorate CE&amp;P âm đến thời điểm distribution, NET với AE&amp;P, phần dương = dividend</td></tr>
+</table>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 15-2:</b> AE&amp;P đầu năm $100,000, lỗ năm hiện tại $80,000 (prorate đều cả năm). Phân phối $90,000 ngày 1/4. Tại thời điểm đó AE&amp;P = $100,000 − ($80,000×1/4) = $80,000 → chỉ <b>$80,000</b> là dividend, phần còn lại $10,000 là return of basis/capital gain. AE&amp;P cuối năm 31/12 = $(60,000).</div>
+
+<h3 class="lesson">Thuật ngữ Phần E</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">Earnings and Profits (E&amp;P)</td><td class="vn">lợi nhuận tích lũy đo khả năng chi trả dividend (khác kế toán GAAP)</td></tr>
+<tr><td class="word">current E&amp;P (CE&amp;P)</td><td class="vn">E&amp;P phát sinh trong năm hiện tại</td></tr>
+<tr><td class="word">accumulated E&amp;P (AE&amp;P)</td><td class="vn">E&amp;P lũy kế từ các năm trước</td></tr>
+<tr><td class="word">Form 5452</td><td class="vn">tờ khai báo cáo nondividend distributions của corporation</td></tr>
+<tr><td class="word">appreciated property</td><td class="vn">tài sản đã tăng giá trị (FMV &gt; adjusted basis)</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm Phần E</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. When computing E&P, tax-exempt interest income is:</div>
+<div class="opt">A. Subtracted from taxable income</div><div class="opt">B. Added to taxable income</div><div class="opt">C. Ignored entirely</div><div class="opt">D. Only relevant for AE&P, not CE&P</div></div>
+<div class="mcq"><div class="q">2. When a corporation distributes appreciated property, it must:</div>
+<div class="opt">A. Recognize neither gain nor loss</div><div class="opt">B. Recognize gain as if sold at FMV, but never recognize loss</div><div class="opt">C. Recognize loss but not gain</div><div class="opt">D. Recognize gain only if the shareholder is unrelated</div></div>
+<div class="mcq"><div class="q">3. If current E&P is negative and accumulated E&P is positive, the corporation:</div>
+<div class="opt">A. Nets the two figures without proration</div><div class="opt">B. Ignores current E&P entirely</div><div class="opt">C. Prorates the negative current E&P to the distribution date and nets it with AE&P</div><div class="opt">D. Treats all distributions as capital gain automatically</div></div>
+<div class="mcq"><div class="q">4. Deductions such as NOL carryovers, capital loss carryovers, and the DRD, though deductible for taxable income, are:</div>
+<div class="opt">A. Also deductible again in computing E&P</div><div class="opt">B. Added back to taxable income when computing E&P</div><div class="opt">C. Irrelevant to E&P computations</div><div class="opt">D. Subtracted twice from E&P</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — Phần E</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — Added to taxable income</span></div>
+<div><b>2.</b> <span class="key-ans">B — Recognize gain as if sold at FMV, never loss</span></div>
+<div><b>3.</b> <span class="key-ans">C — Prorate negative CE&P to distribution date, net with AE&P</span></div>
+<div><b>4.</b> <span class="key-ans">B — Added back to taxable income for E&P</span><br><span class="key-exp">Các khoản này đã ảnh hưởng dividend-paying capacity ở năm gốc, không nên trừ lại lần nữa khi tính E&P năm hiện tại.</span></div>
+</div>
+</div>
+
+<!-- F -->
+<div class="c6 pagebreak">
+<h2 class="section">F — SHAREHOLDER TREATMENT OF DISTRIBUTIONS: DIVIDEND, CONSTRUCTIVE DIVIDEND, CAPITAL RECOVERY</h2>
+<div class="rule-box">
+<p>Phân phối cho shareholder = FMV tài sản nhận, TRỪ liability shareholder nhận gánh. Xử lý theo THỨ TỰ: (1) <b>Dividend</b> đến mức current E&amp;P, rồi đến mức accumulated E&amp;P; (2) <b>Capital recovery</b> (tax-free return of capital) đến mức basis cổ phiếu, GIẢM basis (không dưới 0); (3) phần CÒN LẠI = <b>gain bán cổ phiếu</b> (capital gain/loss theo bản chất cổ phiếu).</p>
+<p>Nếu distribution trong năm VƯỢT current E&amp;P: current E&amp;P dương → tính theo tỷ lệ CUỐI năm (không quan tâm thời điểm distribution); current E&amp;P âm → prorate đến từng ngày distribution. AE&amp;P áp dụng SAU khi xử lý xong current E&amp;P — deficit AE&amp;P KHÔNG BAO GIỜ phát sinh TỪ 1 distribution (chỉ từ current E&amp;P âm dồn tích).</p>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 15-3 (Capital Recovery):</b> Corporation phân phối $90,000 khi E&amp;P = $60,000. Shareholder N nhận $30,000 (2/3 là dividend = $20,000), chia đều cho 2 block (mỗi block nhận $15,000). Block 1 (1,000 shares, basis $3,000): $10,000 dividend + $3,000 capital recovery (hết basis) + <b>$2,000 gain</b>. Block 2 (1,000 shares, basis $15,000): $10,000 dividend + $5,000 capital recovery, KHÔNG có gain (basis còn $10,000).</div>
+
+<h3 class="lesson">Constructive Dividend</h3>
+<div class="rule-box">
+<p>Constructive dividend = lợi ích hữu hình cho shareholder KHÔNG qua dividend công bố chính thức, vẫn phải tính vào income shareholder VÀ corporation phải REVERSE khoản deduction tương ứng (tăng E&amp;P). Ví dụ: lương QUÁ CAO bất hợp lý, xóa nợ cho shareholder, dùng tài sản công ty cho mục đích cá nhân, thuê/mua tài sản của shareholder giá QUÁ CAO, chuyển tài sản cho shareholder dưới FMV.</p>
+<p><b>Below-market loan:</b> loan không tính lãi hoặc lãi thấp hơn applicable federal rate (AFR) → coi như: (1) khoản vay với lãi suất AFR, VÀ (2) khoản "trả thêm" (như dividend) = phần lãi bị bỏ qua (forgone interest).</p>
+</div>
+
+<h3 class="lesson">Basis in Distributed Property</h3>
+<div class="rule-box">
+<p>Shareholder nhận property (nonliquidating distribution): basis = FMV tại thời điểm phân phối. Nếu liability &lt; FMV → basis = FMV. Nếu liability &gt; FMV VÀ shareholder chịu trách nhiệm cá nhân → basis = mức liability đó.</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ Phần F</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">constructive dividend</td><td class="vn">dividend ngầm định (lợi ích không qua công bố chính thức)</td></tr>
+<tr><td class="word">below-market loan</td><td class="vn">khoản vay lãi suất thấp hơn thị trường (AFR)</td></tr>
+<tr><td class="word">applicable federal rate (AFR)</td><td class="vn">lãi suất chuẩn liên bang dùng làm mốc so sánh</td></tr>
+<tr><td class="word">capital recovery</td><td class="vn">hoàn vốn gốc, miễn thuế, giảm basis cổ phiếu</td></tr>
+<tr><td class="word">forgone interest</td><td class="vn">phần lãi bị bỏ qua trong below-market loan</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm Phần F</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. A distribution to a shareholder in excess of E&P is treated first as:</div>
+<div class="opt">A. Ordinary income</div><div class="opt">B. A tax-free return of capital to the extent of stock basis</div><div class="opt">C. Immediate capital gain</div><div class="opt">D. A constructive dividend</div></div>
+<div class="mcq"><div class="q">2. Which of the following is an example of a constructive dividend?</div>
+<div class="opt">A. A properly declared cash dividend</div><div class="opt">B. Unreasonably excessive salary paid to a shareholder-employee</div><div class="opt">C. A stock split</div><div class="opt">D. A liquidating distribution</div></div>
+<div class="mcq"><div class="q">3. A below-market loan to a shareholder is treated as a loan at the applicable federal rate plus:</div>
+<div class="opt">A. A additional payment equal to the forgone interest</div><div class="opt">B. A reduction in the shareholder's stock basis only</div><div class="opt">C. No additional consequence</div><div class="opt">D. An automatic capital contribution</div></div>
+<div class="mcq"><div class="q">4. A shareholder's basis in property received in a nonliquidating distribution, where the liability assumed is less than the property's FMV, equals:</div>
+<div class="opt">A. The corporation's adjusted basis</div><div class="opt">B. The FMV of the property</div><div class="opt">C. Zero</div><div class="opt">D. The liability assumed</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — Phần F</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — Tax-free return of capital to extent of basis</span></div>
+<div><b>2.</b> <span class="key-ans">B — Unreasonably excessive salary</span></div>
+<div><b>3.</b> <span class="key-ans">A — Additional payment equal to forgone interest</span></div>
+<div><b>4.</b> <span class="key-ans">B — FMV of the property</span></div>
+</div>
+</div>
+
+<!-- G -->
+<div class="c7 pagebreak">
+<h2 class="section">G — STOCK DISTRIBUTIONS &amp; STOCK RIGHTS</h2>
+<div class="rule-box">
+<p>Corporation KHÔNG ghi nhận gain/loss khi phân phối CHÍNH cổ phiếu của mình. Phân phối cổ phiếu THEO TỶ LỆ (proportionate) cho shareholder nói chung KHÔNG phải gross income — TRỪ 5 trường hợp: (1) phân phối THAY thế tiền mặt; (2) phân phối KHÔNG theo tỷ lệ (disproportionate); (3) phân phối trên preferred stock; (4) phân phối convertible preferred stock; (5) phân phối common+preferred khiến một số shareholder nhận common, số khác nhận preferred.</p>
+<p><b>Stock dividend KHÔNG chịu thuế:</b> basis cổ phiếu CŨ phân bổ sang cổ phiếu MỚI theo tỷ lệ FMV; holding period MỚI "tacking" (nối tiếp) cổ phiếu cũ; E&amp;P KHÔNG thay đổi.</p>
+<p><b>Stock dividend CHỊU THUẾ</b> (1 trong 5 TH trên): tính vào income = FMV cổ phiếu/rights nhận; E&amp;P GIẢM theo FMV; basis cổ phiếu CŨ không đổi, cổ phiếu MỚI có basis = FMV; holding period MỚI bắt đầu lại từ ngày SAU distribution (KHÔNG tacking).</p>
+</div>
+
+<h3 class="lesson">Stock Rights</h3>
+<div class="rule-box">
+<p>Xử lý tương tự stock dividend. Basis phân bổ theo FMV của rights — NẾU aggregate FMV của rights &lt;15% FMV cổ phiếu gốc → basis rights = $0 (trừ khi shareholder BẦU CHỌN phân bổ). Nếu EXERCISE right: basis cổ phiếu mới = basis phân bổ cho right + giá exercise; holding period bắt đầu từ ngày EXERCISE. Nếu right LAPSE (hết hạn không dùng): KHÔNG được deduct, basis vốn đã phân bổ vẫn giữ nguyên trong cổ phiếu gốc.</p>
+</div>
+
+<h3 class="lesson">Stock Split</h3>
+<div class="rule-box">
+<p>Stock split KHÔNG PHẢI là 1 "distribution" theo luật thuế. Basis cổ phiếu cũ được "chia" đều cho cổ phiếu mới; holding period cổ phiếu mới bao gồm (tacking) holding period cổ phiếu cũ.</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ Phần G</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">proportionate stock distribution</td><td class="vn">phân phối cổ phiếu theo đúng tỷ lệ sở hữu hiện có</td></tr>
+<tr><td class="word">stock rights</td><td class="vn">quyền mua thêm cổ phiếu công ty với giá ưu đãi</td></tr>
+<tr><td class="word">tacking (holding period)</td><td class="vn">nối tiếp thời gian nắm giữ từ tài sản cũ sang tài sản mới</td></tr>
+<tr><td class="word">stock split</td><td class="vn">chia tách cổ phiếu — không phải là distribution chịu thuế</td></tr>
+<tr><td class="word">disproportionate distribution</td><td class="vn">phân phối không theo đúng tỷ lệ sở hữu — bị chịu thuế</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm Phần G</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. A pro rata stock dividend of common stock on common stock, with no election of cash, is generally:</div>
+<div class="opt">A. Fully taxable at FMV</div><div class="opt">B. Not included in gross income</div><div class="opt">C. Taxable only to majority shareholders</div><div class="opt">D. Treated as a capital gain distribution</div></div>
+<div class="mcq"><div class="q">2. If the aggregate FMV of distributed stock rights is less than 15% of the FMV of the underlying stock, the basis allocated to the rights is:</div>
+<div class="opt">A. Automatically 100% of their FMV</div><div class="opt">B. Zero, unless the shareholder elects to allocate</div><div class="opt">C. Equal to the exercise price</div><div class="opt">D. Always equal to the underlying stock's basis</div></div>
+<div class="mcq"><div class="q">3. A stock split is treated as:</div>
+<div class="opt">A. A taxable distribution</div><div class="opt">B. Not a distribution at all; old basis is allocated to the new shares</div><div class="opt">C. A return of capital</div><div class="opt">D. A dividend to the extent of E&P</div></div>
+<div class="mcq"><div class="q">4. When a stock dividend IS taxable, the holding period of the new stock:</div>
+<div class="opt">A. Tacks onto the holding period of the old stock</div><div class="opt">B. Begins the day after the distribution (no tacking)</div><div class="opt">C. Is irrelevant since it is always ordinary income</div><div class="opt">D. Begins on the record date</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — Phần G</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — Not included in gross income</span></div>
+<div><b>2.</b> <span class="key-ans">B — Zero, unless shareholder elects to allocate</span></div>
+<div><b>3.</b> <span class="key-ans">B — Not a distribution; old basis allocated to new shares</span></div>
+<div><b>4.</b> <span class="key-ans">B — Begins day after distribution, no tacking</span></div>
+</div>
+</div>
+
+<!-- H -->
+<div class="c8 pagebreak">
+<h2 class="section">H — STOCK REDEMPTIONS: SALE VS. DIVIDEND TREATMENT</h2>
+<div class="rule-box">
+<p>Redemption = corporation MUA LẠI cổ phiếu của chính mình từ shareholder (đổi lấy tiền/tài sản). Mặc định: coi như <b>DIVIDEND</b> — TRỪ KHI thỏa 1 trong 5 điều kiện sau thì được coi như <b>BÁN (sale/exchange)</b>, hưởng capital gain/loss treatment:</p>
+<ol>
+<li><b>Not essentially equivalent to a dividend</b> — có sự GIẢM ĐÁNG KỂ (meaningful reduction) tỷ lệ sở hữu; nếu shareholder đang KIỂM SOÁT (control) phải MẤT quyền kiểm soát; giảm từ &gt;50% xuống 50% (deadlock) ĐỦ điều kiện; cổ đông thiểu số chỉ cần giảm nhẹ cũng có thể đủ "meaningful".</li>
+<li><b>Substantially disproportionate</b> — SAU redemption, shareholder sở hữu: &lt;50% voting power VÀ &lt;80% của (a) % voting stock trước đó VÀ (b) % common stock trước đó.</li>
+<li><b>Complete termination</b> — redeem TOÀN BỘ cổ phần (kể cả qua family attribution) — có thể WAIVE family attribution nếu: (a) không giữ interest nào khác ngoài creditor; (b) không mua lại interest (trừ thừa kế) trong 10 năm; (c) nộp văn bản cam kết báo IRS nếu vi phạm.</li>
+<li><b>Partial liquidation</b> cho noncorporate shareholder (chi tiết Phần J).</li>
+<li><b>Estate redemption để trả death tax</b> — cổ phiếu redeem phải &gt;35% gross estate (sau deduction).</li>
+</ol>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 16-2 (Substantially disproportionate):</b> Carol sở hữu 275/1,000 shares (27.5%). Cần giảm xuống dưới 22% (80%×27.5%) SAU khi công ty redeem 200 shares (còn 800 shares outstanding) → cần sở hữu &lt;176 shares (22%×800). Vậy Carol cần redeem TỐI THIỂU <b>100 shares</b> (275−176=99, nên cần &gt;99, tức ≥100).</div>
+
+<h3 class="lesson">Constructive Ownership (Attribution Rules)</h3>
+<div class="rule-box">
+<p>Shareholder được coi là sở hữu CẢ cổ phần của: (1) vợ/chồng, con, cháu, cha mẹ — <b>KHÔNG</b> gồm anh chị em và ông bà; (2) partnership/S-corp mà mình là partner (2 chiều); (3) estate/trust mà mình là beneficiary/owner; (4) corporation (không phải S-corp) mà mình sở hữu ≥50% giá trị; (5) cổ phiếu mình có OPTION mua.</p>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 16-3:</b> Corporation 100 shares, chồng/vợ/con/cháu mỗi người sở hữu 25 shares. Chồng, vợ, con MỖI NGƯỜI coi như sở hữu <b>100 shares</b> (toàn bộ). Cháu chỉ coi như sở hữu <b>50 shares</b> (25 của cháu + 25 của con — KHÔNG cộng thêm của ông bà vì attribution chỉ 1 chiều lên/xuống liền kề qua cha mẹ).</div>
+
+<h3 class="lesson">Xử lý cho Corporation &amp; Shareholder</h3>
+<div class="rule-box">
+<p><b>Corporation:</b> ghi nhận GAIN như bán tài sản theo FMV (kể cả khi redeem bằng property); ghi nhận ORDINARY income nếu phân phối depreciated property (đến mức thấp hơn giữa depreciation hoặc amount realized). KHÔNG được ghi nhận LOSS — TRỪ redemption trong complete liquidation hoặc cổ phiếu của estate (trả death tax).</p>
+<p style="background:#fff7e0;border-left:4px solid #e0a800;padding:6px 10px;border-radius:6px;margin:8px 0">⚠️ <b>Luật hiện hành (kiểm 2026-10-25):</b> Theo §311(a), corporation <b>không</b> ghi nhận loss khi phân phối property liên quan stock của chính mình; ngoại lệ chắc chắn chỉ là <b>complete liquidation</b> (§336). Gleim nêu thêm trường hợp stock của estate (trả death tax); tôi chưa tìm được căn cứ luật cho ngoại lệ estate đó, nên coi là điểm riêng của Gleim và bám Gleim khi thi.</p>
+<p><b>Shareholder (redemption KHÔNG qualify → dividend treatment):</b> dividend đến mức E&amp;P; basis cổ phiếu redeem CHƯA thu hồi được CỘNG vào basis cổ phiếu GIỮ LẠI. Riêng redeem TOÀN BỘ cổ phần luôn = sale (bất kể E&amp;P).</p>
+<p>Chi phí liên quan đến việc corporation mua lại CHÍNH cổ phiếu mình (hoặc của related person, test 50%) → <b>KHÔNG được deduct</b> (trừ chi phí phân bổ cho khoản vay, amortize theo đời khoản vay).</p>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 16-1:</b> Paige sở hữu 100% (1,010 shares), basis $10,100. E&amp;P công ty $110,000. Công ty redeem 450 shares giá $98,000. Vì Paige VẪN sở hữu 100% trước và SAU (do 1 mình) → giao dịch = <b>dividend TOÀN BỘ $98,000</b> (vì &lt; E&amp;P $110,000), KHÔNG phải sale.</div>
+
+<h3 class="lesson">Thuật ngữ Phần H</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">stock redemption</td><td class="vn">công ty mua lại cổ phiếu của chính mình từ shareholder</td></tr>
+<tr><td class="word">substantially disproportionate</td><td class="vn">giảm sở hữu đáng kể (đủ điều kiện luật định để coi như bán)</td></tr>
+<tr><td class="word">complete termination of interest</td><td class="vn">chấm dứt hoàn toàn quyền sở hữu (redeem 100%)</td></tr>
+<tr><td class="word">constructive ownership / attribution</td><td class="vn">sở hữu suy định qua người thân/tổ chức liên quan</td></tr>
+<tr><td class="word">family attribution waiver</td><td class="vn">miễn trừ quy tắc suy định sở hữu gia đình (3 điều kiện)</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm Phần H</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. By default, a stock redemption is treated as:</div>
+<div class="opt">A. A sale, unless proven otherwise</div><div class="opt">B. A dividend, unless one of the qualifying conditions is met</div><div class="opt">C. Always a capital loss</div><div class="opt">D. Always tax-free</div></div>
+<div class="mcq"><div class="q">2. For a redemption to be "substantially disproportionate," the shareholder must own, immediately after, less than what percentage of voting power?</div>
+<div class="opt">A. 80%</div><div class="opt">B. 65%</div><div class="opt">C. 50%</div><div class="opt">D. 20%</div></div>
+<div class="mcq"><div class="q">3. Under the family attribution rules for stock redemptions, constructive ownership generally does NOT extend to:</div>
+<div class="opt">A. Spouse</div><div class="opt">B. Children</div><div class="opt">C. Siblings and grandparents</div><div class="opt">D. Parents</div></div>
+<div class="mcq"><div class="q">4. A corporation may recognize a LOSS on a stock redemption distribution of property only if:</div>
+<div class="opt">A. The shareholder is unrelated</div><div class="opt">B. The redemption is in complete liquidation or involves estate stock to pay death taxes</div><div class="opt">C. The property was held for more than 1 year</div><div class="opt">D. Losses are never allowed on redemptions</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — Phần H</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — Dividend, unless a qualifying condition is met</span></div>
+<div><b>2.</b> <span class="key-ans">C — 50%</span></div>
+<div><b>3.</b> <span class="key-ans">C — Siblings and grandparents</span></div>
+<div><b>4.</b> <span class="key-ans">B — Complete liquidation or estate stock for death taxes</span></div>
+</div>
+</div>
+
+<!-- I -->
+<div class="c1 pagebreak">
+<h2 class="section">I — COMPLETE LIQUIDATION</h2>
+<div class="rule-box">
+<p>Trong <b>complete liquidation</b>, corporation redeem TOÀN BỘ cổ phiếu qua 1 chuỗi phân phối. Thứ tự trả: <b>Secured creditors</b> trước → <b>Unsecured creditors</b> → <b>Shareholders</b> nhận phần còn lại SAU CÙNG (theo pro rata share).</p>
+<p><b>Corporation — Gain:</b> ghi nhận gain/loss NHƯ THỂ bán từng tài sản theo FMV cho shareholder NGAY TRƯỚC khi phân phối (tính TỪNG tài sản riêng biệt — asset-by-asset). FMV tài sản phân phối được coi KHÔNG THẤP HƠN liability liên quan mà shareholder gánh.</p>
+<p><b>Corporation — Loss:</b> nói chung được ghi nhận lỗ thực hiện — TRỪ khi: (a) shareholder nhận là related party (&gt;50% sở hữu) VÀ tài sản phân phối KHÔNG pro rata hoặc mới góp vốn trong 5 năm (Sec. 351/contribution to capital) → lỗ bị DISALLOW VĨNH VIỄN dù giảm giá xảy ra SAU khi góp vốn; (b) <b>precontribution loss</b>: nếu tài sản góp vào với mục đích CHÍNH là để nhận diện lỗ khi thanh lý (AB &gt; FMV lúc góp) → basis tính lỗ phải GIẢM theo phần lỗ vốn có sẵn lúc góp. NOL, capital loss, charitable contribution carryover CHƯA DÙNG HẾT bị MẤT khi liquidation.</p>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 16-4:</b> Zaige phân phối đất AB $19,000, liability $98,000 (shareholder gánh), FMV $71,000. Vì liability &gt; FMV → coi giá bán = liability. Gain = $98,000 − $19,000 = <b>$79,000</b>.</div>
+
+<h3 class="lesson">Shareholder Treatment &amp; Reporting</h3>
+<div class="rule-box">
+<p>Shareholder coi khoản nhận trong complete liquidation như BÁN cổ phiếu (exchange) — thu hồi basis TRƯỚC, phần vượt = gain/loss. Holding period MỚI KHÔNG kế thừa từ corporation đã giải thể. Nếu phân phối NHIỀU LẦN (series): dùng <b>cost recovery method</b> — mỗi khoản nhận trừ vào basis TRƯỚC, khi basis hết mới ghi nhận gain; character gain/loss theo bản chất TỪNG block cổ phiếu.</p>
+<p><b>Reporting:</b> Corporation nộp <b>Form 966</b> (Corporate Dissolution/Liquidation) trong 30 ngày kể từ khi thông qua kế hoạch giải thể. Nộp <b>Form 1099-DIV</b> mỗi năm dương lịch có phân phối ≥$600. Có thể nộp <b>Form 4810</b> xin prompt assessment (rút ngắn thời hạn IRS xem xét còn 18 tháng) — KHÔNG áp dụng nếu: khai gian, cố tình trốn thuế, không nộp tờ khai, hoặc bỏ sót &gt;25% gross income.</p>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 16-5:</b> Shareholder R nhận $70 tiền mặt + xe FMV $25 (liability $15) → amount realized = $70+($25−$15) = <b>$80</b>. Block A (basis $10): gain $10. Block B (basis $90): loss $(30).</div>
+
+<h3 class="lesson">Thuật ngữ Phần I</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">complete liquidation</td><td class="vn">thanh lý toàn bộ — công ty redeem hết cổ phiếu, giải thể</td></tr>
+<tr><td class="word">precontribution loss</td><td class="vn">lỗ vốn có sẵn từ trước khi góp tài sản vào công ty</td></tr>
+<tr><td class="word">cost recovery method</td><td class="vn">phương pháp thu hồi vốn trước khi ghi nhận gain (phân phối nhiều đợt)</td></tr>
+<tr><td class="word">Form 966</td><td class="vn">mẫu báo cáo giải thể/thanh lý công ty (nộp trong 30 ngày)</td></tr>
+<tr><td class="word">Form 4810</td><td class="vn">mẫu xin IRS đánh giá thuế nhanh (rút ngắn còn 18 tháng)</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm Phần I</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. In a complete liquidation, the order of payment is:</div>
+<div class="opt">A. Shareholders, then unsecured creditors, then secured creditors</div><div class="opt">B. Secured creditors, then unsecured creditors, then shareholders</div><div class="opt">C. All parties paid simultaneously pro rata</div><div class="opt">D. Unsecured creditors, then secured creditors, then shareholders</div></div>
+<div class="mcq"><div class="q">2. A corporation generally recognizes losses on liquidating distributions EXCEPT when:</div>
+<div class="opt">A. The property is cash</div><div class="opt">B. The distributee is an unrelated third party</div><div class="opt">C. The distributee is a more-than-50% related shareholder and the property was contributed within 5 years</div><div class="opt">D. Losses are always disallowed in liquidation</div></div>
+<div class="mcq"><div class="q">3. Unused NOL, capital loss, and charitable contribution carryovers of a liquidating corporation are:</div>
+<div class="opt">A. Transferred to the shareholders</div><div class="opt">B. Lost upon liquidation</div><div class="opt">C. Carried back 3 years automatically</div><div class="opt">D. Converted to capital losses</div></div>
+<div class="mcq"><div class="q">4. A corporation must file Form 966 reporting a plan of complete liquidation within how many days of adoption?</div>
+<div class="opt">A. 10 days</div><div class="opt">B. 30 days</div><div class="opt">C. 60 days</div><div class="opt">D. 90 days</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — Phần I</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — Secured, then unsecured creditors, then shareholders</span></div>
+<div><b>2.</b> <span class="key-ans">C — Related (&gt;50%) shareholder, non-pro-rata/5-year contributed property</span></div>
+<div><b>3.</b> <span class="key-ans">B — Lost upon liquidation</span></div>
+<div><b>4.</b> <span class="key-ans">B — 30 days</span></div>
+</div>
+</div>
+
+<!-- J -->
+<div class="c2 pagebreak">
+<h2 class="section">J — PARTIAL LIQUIDATION</h2>
+<div class="rule-box">
+<p><b>Partial liquidation</b> tập trung vào SỰ THU HẸP hoạt động kinh doanh của CORPORATION — KHÔNG phải vào tỷ lệ sở hữu của shareholder (khác với "substantially disproportionate" ở Phần H). Noncorporate shareholder được hưởng <b>SALE treatment</b> cho phần phân phối liên quan partial liquidation — corporation ghi nhận GAIN nhưng KHÔNG ghi nhận LOSS.</p>
+<p>Corporate shareholder nhận phân phối redemption từ partial liquidation của công ty KHÁC → coi như <b>DIVIDEND</b> đến mức E&amp;P của công ty phân phối (được hưởng DRD tương ứng) — KHÁC hẳn xử lý cho noncorporate shareholder.</p>
+<p><b>Điều kiện:</b> phải theo 1 KẾ HOẠCH (plan), KHÔNG essentially equivalent to a dividend, hoàn tất trong năm thông qua kế hoạch HOẶC năm kế tiếp. Phân phối pro rata VẪN được chấp nhận (không bắt buộc phải mất tỷ lệ sở hữu); shareholder KHÔNG bắt buộc phải nộp lại cổ phiếu.</p>
+<p><b>Safe harbor:</b> corporation phải (1) NGỪNG hẳn 1 trade/business đã hoạt động ÍT NHẤT 5 năm tính đến ngày phân phối (và phân phối phải GẮN với hoạt động ngừng đó), VÀ (2) NGAY SAU phân phối vẫn tiếp tục ÍT NHẤT 1 active trade/business khác đã hoạt động ≥5 năm.</p>
+</div>
+
+<h3 class="lesson">So sánh nhanh: Redemption thường vs. Partial Liquidation</h3>
+<div class="rule-box">
+<table>
+<tr><th>Tiêu chí</th><th>Redemption thường (Phần H)</th><th>Partial Liquidation (Phần J)</th></tr>
+<tr><td>Trọng tâm xét</td><td>Thay đổi tỷ lệ sở hữu của SHAREHOLDER</td><td>Thu hẹp hoạt động của CORPORATION</td></tr>
+<tr><td>Yêu cầu nộp lại cổ phiếu</td><td>Có (theo tỷ lệ redeem)</td><td>KHÔNG bắt buộc</td></tr>
+<tr><td>Corporate shareholder</td><td>Sale nếu qualify</td><td>LUÔN LÀ dividend (có DRD)</td></tr>
+<tr><td>Noncorporate shareholder</td><td>Sale nếu qualify 1 trong 5 test</td><td>Sale (nếu đúng plan + safe harbor)</td></tr>
+</table>
+</div>
+
+<h3 class="lesson">Thuật ngữ Phần J</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">partial liquidation</td><td class="vn">thanh lý một phần — thu hẹp quy mô kinh doanh của công ty</td></tr>
+<tr><td class="word">safe harbor (5-year active trade/business)</td><td class="vn">điều kiện an toàn — ngừng 1 hoạt động ≥5 năm, giữ lại 1 hoạt động ≥5 năm khác</td></tr>
+<tr><td class="word">plan of partial liquidation</td><td class="vn">kế hoạch thanh lý một phần (điều kiện bắt buộc)</td></tr>
+<tr><td class="word">contraction of business</td><td class="vn">thu hẹp quy mô kinh doanh</td></tr>
+<tr><td class="word">noncorporate shareholder</td><td class="vn">cổ đông không phải là pháp nhân (cá nhân, ước tính, v.v.)</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm Phần J</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. A partial liquidation distribution focuses primarily on:</div>
+<div class="opt">A. A meaningful reduction in the individual shareholder's voting interest</div><div class="opt">B. A genuine contraction of the corporation's business</div><div class="opt">C. The shareholder's family attribution status</div><div class="opt">D. Whether the shareholder is a corporation</div></div>
+<div class="mcq"><div class="q">2. Under the safe harbor for partial liquidation, the corporation must have actively conducted the discontinued trade or business for at least:</div>
+<div class="opt">A. 1 year</div><div class="opt">B. 2 years</div><div class="opt">C. 5 years</div><div class="opt">D. 10 years</div></div>
+<div class="mcq"><div class="q">3. A corporate shareholder receiving a partial liquidation distribution from another corporation treats the amount as:</div>
+<div class="opt">A. A capital gain automatically</div><div class="opt">B. A dividend to the extent of the distributing corporation's E&P, eligible for the DRD</div><div class="opt">C. A tax-free return of capital only</div><div class="opt">D. Always fully taxable ordinary income with no DRD</div></div>
+<div class="mcq"><div class="q">4. In a partial liquidation, is the shareholder required to surrender stock to the corporation?</div>
+<div class="opt">A. Yes, always</div><div class="opt">B. No, pro rata distributions do not preclude sale treatment even without stock surrender</div><div class="opt">C. Only if the shareholder is a corporation</div><div class="opt">D. Only if less than 50% of shares are held</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — Phần J</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — Genuine contraction of the corporation's business</span></div>
+<div><b>2.</b> <span class="key-ans">C — 5 years</span></div>
+<div><b>3.</b> <span class="key-ans">B — Dividend to extent of E&P, eligible for DRD</span></div>
+<div><b>4.</b> <span class="key-ans">B — No, pro rata distributions still qualify without stock surrender</span></div>
+</div>
+</div>
+
+</body>
+</html>

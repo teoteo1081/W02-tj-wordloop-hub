@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<!-- Google tag (gtag.js) — GA4 chung của TJ, nhãn site=ea -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'ea'});</script>
+
+<meta charset="UTF-8">
+<title>EA Part I – SU04: Business Deductions</title>
+<style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  body { font-family:'Segoe UI','Calibri',Arial,sans-serif; color:#33322f; font-size:15px; line-height:1.5; background:#fdfcfa; margin:0; }
+  .cover { background: linear-gradient(120deg,#bfe4ff 0%,#d6ecff 30%,#e6def7 65%,#fbe6f4 100%); border-radius:20px; padding:40px 30px; text-align:center; margin-bottom:10px; box-shadow:0 6px 18px rgba(120,130,180,.25); border:1px solid #dfe8f5; }
+  .cover .tag { display:inline-block; background:#33314a; color:#d6ecff; font-weight:700; letter-spacing:2px; font-size:13px; padding:5px 14px; border-radius:20px; margin-bottom:14px; }
+  .cover h1 { font-size:28px; margin:6px 0; color:#3170a8; }
+  .cover h2 { font-size:15px; font-weight:500; margin:4px 0 0; opacity:.9; color:#33314a; }
+  .cover .books { margin-top:16px; font-size:13px; background:rgba(255,255,255,.55); display:inline-block; padding:8px 16px; border-radius:10px; color:#33314a; }
+  .toc { background:#fff; border:1.5px solid #dfe8f5; border-radius:14px; padding:18px 26px; margin-bottom:30px; }
+  .toc h3 { margin-top:0; color:#3170a8; }
+  .toc ol { margin:0; padding-left:22px; } .toc li{ margin-bottom:6px; }
+  h2.section { font-size:21px; color:#33314a; padding:12px 18px; border-radius:12px; margin:34px 0 14px; border-left:10px solid var(--accent,#5aa9d6); background:var(--bg,#eaf6fd); }
+  h3.lesson { font-size:18px; color:var(--accent-dark,#276a91); border-left:6px solid var(--accent,#5aa9d6); background:var(--bg-soft,#f3fafd); padding:8px 14px; border-radius:6px; margin:22px 0 10px; }
+  .c1{--accent:#5aa9d6;--accent-dark:#276a91;--bg:#eaf6fd;--bg-soft:#f3fafd;--head:#a9d4ec;}
+  .c2{--accent:#a892d9;--accent-dark:#5c4696;--bg:#f1ecfb;--bg-soft:#f8f5fd;--head:#cabdec;}
+  .c3{--accent:#f0a66e;--accent-dark:#b8620b;--bg:#fdeee2;--bg-soft:#fff8f0;--head:#f4c299;}
+  .cKey{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
+  table.vocab { width:100%; border-collapse:collapse; margin-bottom:18px; font-size:.94em; box-shadow:0 2px 8px rgba(0,0,0,.05); border-radius:10px; overflow:hidden; }
+  table.vocab th { background:var(--head,#5aa9d6); color:#2d2d2d; padding:8px; text-align:left; }
+  table.vocab td { padding:7px 8px; border-bottom:1px solid var(--bg,#eaf6fd); vertical-align:top; }
+  table.vocab tr:nth-child(even) td { background:var(--bg-soft,#faf6f0); }
+  table.vocab tr:nth-child(odd) td { background:#fff; }
+  table.vocab td.word { font-weight:800; color:var(--accent-dark,#276a91); }
+  table.vocab td.vn { font-weight:700; color:#3d6ba8; }
+  .rule-box { background:var(--bg,#eaf6fd); border-left:6px solid var(--accent,#5aa9d6); border-radius:8px; padding:12px 18px; margin:10px 0; }
+  .rule-box table { width:100%; border-collapse:collapse; margin:8px 0 4px; }
+  .rule-box table td, .rule-box table th { padding:6px 8px; border-bottom:1px solid rgba(0,0,0,.08); text-align:left; font-size:.92em; }
+  .rule-box table th { color:var(--accent-dark,#276a91); }
+  .rule-box ul, .rule-box ol { margin:6px 0; padding-left:22px; } .rule-box li{ margin-bottom:5px; }
+  .struct { font-weight:800; color:#b8620b; font-family:'Consolas','Courier New',monospace; }
+  .example-box { background:#fff; border:1.5px dashed var(--accent,#5aa9d6); border-radius:8px; padding:10px 16px; margin:8px 0; font-size:.92em; }
+  .example-box b.ex-tag { color:var(--accent-dark,#276a91); }
+  .mcq { background:#fff; border:1.5px solid var(--accent,#5aa9d6); border-radius:10px; padding:12px 18px; margin-bottom:12px; }
+  .mcq .q { color:#3d6ba8; font-weight:700; margin-bottom:6px; }
+  .mcq .opt { margin:2px 0 2px 10px; }
+  .content-block { background:#fff; border:2px dashed var(--accent,#5aa9d6); border-radius:12px; padding:16px 20px; margin-bottom:18px; }
+  .key-grid { column-count:1; } .key-grid div{ margin-bottom:9px; }
+  .key-ans { color:#20824f; font-weight:800; }
+  .key-exp { color:#555; font-size:.92em; }
+  .pagebreak { page-break-before: always; }
+  .note { font-size:.85em; color:#8a8a8a; font-style:italic; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="tag">EA EXAM PREP • PART I — INDIVIDUALS • SU04</div>
+  <h1>📗 SU04 — BUSINESS DEDUCTIONS</h1>
+  <h2>Chi phí kinh doanh của cá nhân — Schedule C (Song ngữ Việt–Anh)</h2>
+  <div class="books">📖 Khái niệm · 🔤 Thuật ngữ · 📌 Ví dụ · ❓ Trắc nghiệm · 🔑 Đáp án trang sau</div>
+</div>
+
+<div class="toc">
+<h3>📑 Mục lục SU04</h3>
+<ol>
+<li>4.1 Business vs. Hobby, Schedule C &amp; SE Tax</li>
+<li>4.2 Chi phí kinh doanh thường gặp: meals, gifts, travel, vehicle</li>
+<li>4.3 Home Office, Education, Bad Debts, Start-up Costs</li>
+<li>4.4 Employee vs. Independent Contractor &amp; Cost Recovery</li>
+</ol>
+<p class="note">Soạn theo outline EA Part I — SU04 Business Deductions. Số liệu theo năm thuế 2025 (gồm thay đổi của OBBBA). Chưa đối chiếu giáo trình Gleim — cần kiểm lại số liệu với giáo trình và năm thi thực tế.</p>
+</div>
+
+<!-- 4.1 -->
+<div class="c1">
+<h2 class="section">4.1 — BUSINESS VS. HOBBY, SCHEDULE C &amp; SELF-EMPLOYMENT TAX</h2>
+<div class="rule-box">
+<p>Sole proprietor (và single-member LLC không bầu chọn corporation) khai <b>Schedule C</b> kèm Form 1040: gross receipts − COGS − chi phí = net profit. Net profit chảy sang Schedule 1 (thu nhập) và <b>Schedule SE</b> (thuế tự doanh). Chi phí phải <b>ordinary and necessary</b> (phổ biến + cần thiết cho ngành), <b>reasonable</b>, và phát sinh trong <b>trade or business</b>.</p>
+</div>
+<h3 class="lesson">Business hay Hobby?</h3>
+<div class="rule-box">
+<p>Hoạt động có <b>profit motive</b> mới được khai chi phí. Nếu là hobby: thu nhập vẫn tính vào income (Schedule 1) nhưng chi phí <b>KHÔNG được khấu trừ</b> (miscellaneous itemized deductions bị đình chỉ từ 2018 và OBBBA làm vĩnh viễn).</p>
+<ul><li>Presumption có profit motive: có lãi <b>3 trong 5 năm liên tiếp</b> (<b>2 trong 7 năm</b> với đua ngựa, nhân giống, trình diễn ngựa)</li><li>Có thể nộp <b>Form 5213</b> để hoãn việc xác định</li><li>9 yếu tố (Reg. 1.183-2): cách điều hành, chuyên môn, thời gian/công sức, kỳ vọng tài sản tăng giá, thành công ở hoạt động tương tự, lịch sử lãi/lỗ, số lãi thỉnh thoảng, tình hình tài chính của taxpayer, yếu tố giải trí cá nhân</li></ul>
+</div>
+<h3 class="lesson">Self-Employment (SE) Tax</h3>
+<div class="rule-box">
+<ul><li>Phải nộp Schedule SE nếu <b>net earnings from self-employment ≥ $400</b></li><li>SE tax = <b>15.3%</b> = 12.4% Social Security + 2.9% Medicare, tính trên <b>92.35%</b> của net earnings</li><li>Phần Social Security chỉ áp dụng tới wage base <b>$176,100</b> (2025)</li><li><b>Additional Medicare Tax 0.9%</b> khi vượt $200,000 (single/HOH), $250,000 (MFJ), $125,000 (MFS) — Form 8959</li><li>Được trừ <b>50% SE tax</b> như adjustment above-the-line (Schedule 1) — KHÔNG giảm net earnings dùng tính SE tax</li></ul>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 4-1 (SE tax):</b> Linh có Schedule C net profit $60,000. Net earnings = $60,000 × 92.35% = $55,410. SE tax = $55,410 × 15.3% = <b>$8,478</b> (làm tròn). Adjustment = 50% × $8,478 = <b>$4,239</b>.</div>
+
+<h3 class="lesson">Thuật ngữ 4.1</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">Schedule C</td><td class="vn">tờ khai lãi/lỗ kinh doanh của cá nhân</td></tr>
+<tr><td class="word">ordinary and necessary</td><td class="vn">phổ biến và cần thiết (điều kiện để chi phí được khấu trừ)</td></tr>
+<tr><td class="word">trade or business</td><td class="vn">hoạt động thương mại/kinh doanh</td></tr>
+<tr><td class="word">hobby loss rules</td><td class="vn">quy tắc hạn chế khấu trừ cho hoạt động không có mục đích lợi nhuận</td></tr>
+<tr><td class="word">profit motive</td><td class="vn">động cơ lợi nhuận</td></tr>
+<tr><td class="word">net earnings from self-employment</td><td class="vn">thu nhập ròng từ tự doanh (căn cứ tính SE tax)</td></tr>
+<tr><td class="word">Schedule SE</td><td class="vn">bảng tính thuế tự doanh</td></tr>
+<tr><td class="word">Additional Medicare Tax</td><td class="vn">thuế Medicare bổ sung 0.9% cho thu nhập cao</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 4.1</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. A taxpayer is presumed to have a profit motive if the activity (other than horse activities) produces a profit in at least:</div>
+<div class="opt">A. 1 of the last 3 years</div><div class="opt">B. 2 of the last 5 years</div><div class="opt">C. 3 of the last 5 consecutive years</div><div class="opt">D. 5 of the last 7 years</div></div>
+<div class="mcq"><div class="q">2. A taxpayer must file Schedule SE if net earnings from self-employment are at least:</div>
+<div class="opt">A. $100</div><div class="opt">B. $400</div><div class="opt">C. $1,000</div><div class="opt">D. $5,000</div></div>
+<div class="mcq"><div class="q">3. Self-employment tax is computed on what percentage of net self-employment earnings?</div>
+<div class="opt">A. 100%</div><div class="opt">B. 92.35%</div><div class="opt">C. 85%</div><div class="opt">D. 50%</div></div>
+<div class="mcq"><div class="q">4. Expenses of a hobby activity are generally:</div>
+<div class="opt">A. Deductible on Schedule C</div><div class="opt">B. Deductible as an adjustment to income</div><div class="opt">C. Not deductible, although hobby income is taxable</div><div class="opt">D. Deductible up to the hobby income on Schedule A</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 4.1 BUSINESS VS. HOBBY, SCHEDULE C &amp; SELF-EMPLOYMENT TAX</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">C — 3 of the last 5 consecutive years</span><br><span class="key-exp">Với đua ngựa/nhân giống là 2 trong 7 năm.</span></div>
+<div><b>2.</b> <span class="key-ans">B — $400</span></div>
+<div><b>3.</b> <span class="key-ans">B — 92.35%</span></div>
+<div><b>4.</b> <span class="key-ans">C — Not deductible, although hobby income is taxable</span><br><span class="key-exp">Hobby income vẫn tính vào gross income; chi phí không được khấu trừ.</span></div>
+</div>
+</div>
+
+<!-- 4.2 -->
+<div class="c2 pagebreak">
+<h2 class="section">4.2 — CHI PHÍ KINH DOANH THƯỜNG GẶP — MEALS, GIFTS, TRAVEL, VEHICLE</h2>
+<h3 class="lesson">Meals, Entertainment, Gifts</h3>
+<div class="rule-box">
+<ul><li><b>Business meals: 50%</b> (employee chịu quy định giờ làm việc của DOT, vd tài xế đường dài: <b>80%</b>) deductible nếu không lavish, có mặt taxpayer/nhân viên, với business contact hiện tại/tiềm năng, và tách riêng khỏi entertainment</li><li><b>Entertainment: 0%</b> (từ 2018) — nhưng nếu tách riêng hóa đơn meal khỏi vé giải trí thì phần meal vẫn 50%</li><li>Employer tổ chức tiệc/hoạt động giải trí cho toàn nhân viên (company picnic): 100% deductible</li><li>Meals do employer cung cấp "vì sự thuận tiện của employer": 50% đến hết 2025, <b>0% từ 2026</b></li><li><b>Business gifts: tối đa $25/người nhận/năm</b> (vợ chồng tính là 1 người; chi phí khắc tên, đóng gói, gửi không tính vào $25; vật phẩm quảng cáo giá ≤ <b>$4</b>/món và bảng hiệu/ vật phẩm khuyến mại không bị giới hạn $25)</li></ul>
+</div>
+<h3 class="lesson">Travel</h3>
+<div class="rule-box">
+<ul><li><b>Tax home</b> = nơi làm việc chính (không phải nhà). Travel deduction cần <b>away from home overnight</b> (đủ lâu để cần ngủ/nghỉ)</li><li>Commuting (nhà ↔ nơi làm việc thường xuyên) <b>KHÔNG</b> deductible</li><li>Công tác tạm thời ≤ 1 năm: tax home không đổi; dự kiến &gt; 1 năm → nơi đó thành tax home mới</li><li>Chuyến đi vừa công vừa tư (trong nước): chi phí vận chuyển 100% nếu mục đích chính là business, 0% nếu chủ yếu cá nhân; tiền khách sạn/ăn chỉ tính cho ngày công tác</li><li>Đi nước ngoài &gt; 1 tuần mà &lt; 25% thời gian là cá nhân → không cần phân bổ chi phí vận chuyển</li><li>Đi cùng vợ/chồng: không deductible trừ khi người đó có mục đích kinh doanh thật</li><li>Hội nghị ở ngoài US/Canada/Mexico/Caribbean bị giới hạn; cruise ship convention tối đa $2,000/năm</li></ul>
+</div>
+<h3 class="lesson">Vehicle Expenses</h3>
+<div class="rule-box">
+<ul><li><b>Standard mileage rate 2025: 70¢/dặm</b> (business), 21¢ (medical), 14¢ (charity — do luật quy định)</li><li>Phải chọn standard mileage <b>trong năm đầu</b> dùng xe cho business; sau đó được đổi sang actual (khi đổi từ standard sang actual, depreciation phải tính <b>straight-line</b>); ngược lại (actual → standard) bị hạn chế nếu đã dùng MACRS/§179</li><li>Không dùng standard mileage nếu vận hành <b>&gt; 4 xe cùng lúc</b> (fleet) hoặc xe taxi/cho thuê</li><li>Actual expenses: xăng, bảo hiểm, sửa chữa, <b>depreciation</b> × tỷ lệ business use</li><li>Phải có <b>mileage log</b> (ngày, điểm đến, mục đích, số dặm)</li></ul>
+</div>
+<h3 class="lesson">Substantiation (§274(d))</h3>
+<div class="rule-box">
+<p>Travel, meals, gifts và listed property phải chứng minh: <b>amount, time/place, business purpose, business relationship</b>. Cần <b>receipt cho chi phí ≥ $75</b> (riêng lodging luôn cần receipt). <b>Cohan rule</b> (ước tính hợp lý) KHÔNG áp dụng cho các khoản §274(d).</p>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 4-2 (Vehicle):</b> Hưng lái 12,000 dặm business năm 2025 → standard mileage = 12,000 × $0.70 = <b>$8,400</b>. Parking và tolls cộng thêm (không nằm trong rate).</div>
+
+<h3 class="lesson">Thuật ngữ 4.2</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">away from home</td><td class="vn">đi công tác qua đêm, ngoài khu vực tax home</td></tr>
+<tr><td class="word">tax home</td><td class="vn">nơi làm việc chính (căn cứ tính travel)</td></tr>
+<tr><td class="word">standard mileage rate</td><td class="vn">mức tính theo dặm (70¢ business 2025)</td></tr>
+<tr><td class="word">substantiation</td><td class="vn">chứng minh chi phí bằng hồ sơ</td></tr>
+<tr><td class="word">Cohan rule</td><td class="vn">nguyên tắc cho phép ước tính hợp lý khi mất chứng từ (không dùng cho §274(d))</td></tr>
+<tr><td class="word">lavish</td><td class="vn">xa hoa/quá mức</td></tr>
+<tr><td class="word">listed property</td><td class="vn">tài sản dễ dùng cá nhân (xe, máy tính… có quy tắc riêng)</td></tr>
+<tr><td class="word">commuting</td><td class="vn">đi lại nhà – nơi làm việc (không deductible)</td></tr>
+<tr><td class="word">hours-of-service rules</td><td class="vn">quy định giờ làm việc của DOT (meals 80%)</td></tr>
+<tr><td class="word">12-month rule</td><td class="vn">quy tắc 12 tháng cho prepaid rent/ chi phí trả trước</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 4.2</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. What percentage of a qualifying business meal is generally deductible?</div>
+<div class="opt">A. 100%</div><div class="opt">B. 80%</div><div class="opt">C. 50%</div><div class="opt">D. 0%</div></div>
+<div class="mcq"><div class="q">2. The deduction for business gifts is limited to:</div>
+<div class="opt">A. $10 per recipient per year</div><div class="opt">B. $25 per recipient per year</div><div class="opt">C. $50 per recipient per year</div><div class="opt">D. $100 per recipient per year</div></div>
+<div class="mcq"><div class="q">3. The 2025 standard mileage rate for business use is:</div>
+<div class="opt">A. 14 cents</div><div class="opt">B. 21 cents</div><div class="opt">C. 67 cents</div><div class="opt">D. 70 cents</div></div>
+<div class="mcq"><div class="q">4. A foreign business trip lasts 10 days with 2 personal days (20% personal). The transportation cost is:</div>
+<div class="opt">A. Not deductible</div><div class="opt">B. 50% deductible</div><div class="opt">C. Fully deductible, no allocation required</div><div class="opt">D. Deductible only for the 8 business days</div></div>
+<div class="mcq"><div class="q">5. Business meals of an employee subject to Department of Transportation hours-of-service rules (e.g., long-haul truck driver) are deductible at:</div>
+<div class="opt">A. 50%</div><div class="opt">B. 65%</div><div class="opt">C. 80%</div><div class="opt">D. 100%</div></div>
+<div class="mcq"><div class="q">6. Receipts are required for travel, meals and gift expenses of at least:</div>
+<div class="opt">A. $25</div><div class="opt">B. $75</div><div class="opt">C. $250</div><div class="opt">D. $500</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 4.2 CHI PHÍ KINH DOANH THƯỜNG GẶP — MEALS, GIFTS, TRAVEL, VEHICLE</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">C — 50%</span></div>
+<div><b>2.</b> <span class="key-ans">B — $25 per recipient per year</span></div>
+<div><b>3.</b> <span class="key-ans">D — 70 cents</span></div>
+<div><b>4.</b> <span class="key-ans">C — Fully deductible, no allocation required</span><br><span class="key-exp">Chuyến &gt; 1 tuần và &lt; 25% thời gian cá nhân → không phân bổ chi phí vận chuyển.</span></div>
+<div><b>5.</b> <span class="key-ans">C — 80%</span></div>
+<div><b>6.</b> <span class="key-ans">B — $75</span></div>
+</div>
+</div>
+
+<!-- 4.3 -->
+<div class="c3 pagebreak">
+<h2 class="section">4.3 — HOME OFFICE, EDUCATION, BAD DEBTS &amp; START-UP COSTS</h2>
+<h3 class="lesson">Business Use of Home (Form 8829)</h3>
+<div class="rule-box">
+<ul><li>Phần nhà dùng <b>regularly và exclusively</b> cho business, và là (1) <b>principal place of business</b> (kể cả nơi làm việc hành chính/quản lý nếu không có chỗ cố định khác), (2) nơi gặp khách/bệnh nhân thường xuyên, hoặc (3) cấu trúc riêng biệt</li><li>Ngoại lệ không cần exclusive: kho chứa hàng bán lẻ/sỉ, nhà trẻ (day care)</li><li><b>Employee KHÔNG được</b> home office deduction (2018–2025, OBBBA làm vĩnh viễn)</li><li>Giới hạn: không vượt <b>gross income từ business trừ các chi phí khác</b>; phần dư carryforward</li><li><b>Simplified method: $5/sq ft, tối đa 300 sq ft = $1,500</b> (không khấu hao)</li><li>Actual method: tỷ lệ diện tích × (lãi vay/thuế bất động sản, tiện ích, bảo hiểm, sửa chữa, <b>depreciation</b>)</li><li>Khi bán nhà: khấu hao đã/đáng lẽ được lấy từ 7/5/1997 KHÔNG được loại trừ theo §121</li></ul>
+</div>
+<h3 class="lesson">Education Expenses &amp; Bad Debts</h3>
+<div class="rule-box">
+<ul><li>Chi phí đào tạo deductible nếu <b>duy trì/nâng cao kỹ năng</b> cho nghề hiện tại hoặc do employer/luật yêu cầu</li><li>KHÔNG deductible nếu để đạt <b>yêu cầu tối thiểu</b> của nghề hoặc để <b>chuyển sang nghề mới</b></li><li><b>Business bad debt</b>: chỉ <b>specific charge-off</b> (không dùng reserve); deductible cả khi partially worthless; ordinary loss; chỉ khi khoản phải thu đã tính vào income (cash-method không deduct tiền công chưa thu)</li><li><b>Nonbusiness bad debt</b>: chỉ khi <b>wholly worthless</b>, là <b>short-term capital loss</b> (Form 8949); cho người thân vay mà không kỳ vọng được trả = gift, không phải bad debt</li></ul>
+</div>
+<h3 class="lesson">Start-up &amp; Organizational Costs</h3>
+<div class="rule-box">
+<p>Được khấu trừ ngay <b>$5,000</b> (start-up) và <b>$5,000</b> (organizational), <b>giảm dollar-for-dollar</b> khi tổng chi phí vượt $50,000 (về 0 tại $55,000); phần còn lại <b>amortize 180 tháng</b> từ tháng bắt đầu kinh doanh. Chi phí phát sinh trước khi kinh doanh bắt đầu (nghiên cứu thị trường, đào tạo nhân viên, quảng cáo khai trương) thuộc start-up costs.</p>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 4-3 (Home office):</b> Mai dùng 150 sq ft căn phòng riêng làm văn phòng (simplified method) → deduction = 150 × $5 = <b>$750</b>. Nếu dùng actual method, 150/1,500 sq ft = 10% chi phí nhà.</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 4-4 (Start-up):</b> Chi phí start-up $53,000 → $5,000 − ($53,000 − $50,000) = $2,000 deduct ngay; $51,000 amortize 180 tháng (≈ $283/tháng).</div>
+
+<h3 class="lesson">Thuật ngữ 4.3</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">home office deduction</td><td class="vn">khấu trừ văn phòng tại nhà</td></tr>
+<tr><td class="word">principal place of business</td><td class="vn">nơi kinh doanh chính</td></tr>
+<tr><td class="word">exclusive use</td><td class="vn">chỉ dùng riêng cho kinh doanh</td></tr>
+<tr><td class="word">simplified method</td><td class="vn">phương pháp đơn giản ($5/sq ft)</td></tr>
+<tr><td class="word">specific charge-off method</td><td class="vn">phương pháp xóa nợ xấu cụ thể</td></tr>
+<tr><td class="word">wholly worthless</td><td class="vn">hoàn toàn vô giá trị</td></tr>
+<tr><td class="word">start-up costs</td><td class="vn">chi phí khởi nghiệp</td></tr>
+<tr><td class="word">organizational costs</td><td class="vn">chi phí thành lập pháp nhân</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 4.3</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. Under the simplified method, the maximum home office deduction is:</div>
+<div class="opt">A. $500</div><div class="opt">B. $1,000</div><div class="opt">C. $1,500</div><div class="opt">D. $5,000</div></div>
+<div class="mcq"><div class="q">2. Which taxpayer may NOT claim a home office deduction?</div>
+<div class="opt">A. A sole proprietor who meets clients at home</div><div class="opt">B. A W-2 employee who works from home for convenience</div><div class="opt">C. A day-care provider</div><div class="opt">D. A self-employed consultant whose home is the principal place of business</div></div>
+<div class="mcq"><div class="q">3. Education expenses are deductible as a business expense if they:</div>
+<div class="opt">A. Qualify the taxpayer for a new trade or business</div><div class="opt">B. Are needed to meet the minimum requirements of the current job</div><div class="opt">C. Maintain or improve skills required in the current business</div><div class="opt">D. Are for a degree program in any field</div></div>
+<div class="mcq"><div class="q">4. A nonbusiness bad debt is treated as a:</div>
+<div class="opt">A. Business ordinary loss</div><div class="opt">B. Short-term capital loss, deductible only when wholly worthless</div><div class="opt">C. Long-term capital loss, deductible when partially worthless</div><div class="opt">D. Itemized deduction</div></div>
+<div class="mcq"><div class="q">5. Start-up costs of $56,000 are incurred. How much may be deducted immediately (before amortization)?</div>
+<div class="opt">A. $5,000</div><div class="opt">B. $4,000</div><div class="opt">C. $0</div><div class="opt">D. $56,000</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 4.3 HOME OFFICE, EDUCATION, BAD DEBTS &amp; START-UP COSTS</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">C — $1,500</span><br><span class="key-exp">$5 × 300 sq ft.</span></div>
+<div><b>2.</b> <span class="key-ans">B — A W-2 employee who works from home for convenience</span></div>
+<div><b>3.</b> <span class="key-ans">C — Maintain or improve skills required in the current business</span></div>
+<div><b>4.</b> <span class="key-ans">B — Short-term capital loss, deductible only when wholly worthless</span></div>
+<div><b>5.</b> <span class="key-ans">C — $0</span><br><span class="key-exp">Vượt $50,000 → giảm dollar-for-dollar; tại $55,000 trở lên deduction = $0, toàn bộ amortize 180 tháng.</span></div>
+</div>
+</div>
+
+<!-- 4.4 -->
+<div class="c1 pagebreak">
+<h2 class="section">4.4 — EMPLOYEE VS. INDEPENDENT CONTRACTOR &amp; COST RECOVERY</h2>
+<h3 class="lesson">Phân loại Worker</h3>
+<div class="rule-box">
+<p>Common-law test dùng 3 nhóm bằng chứng: <b>behavioral control</b> (ai chỉ đạo cách làm việc), <b>financial control</b> (đầu tư thiết bị, chi phí được hoàn, cơ hội lãi/lỗ), <b>type of relationship</b> (hợp đồng, phúc lợi, tính lâu dài). IC nhận <b>Form 1099-NEC</b> (≥ $600 — ngưỡng tăng lên $2,000 cho khoản thanh toán từ 2026) và tự nộp SE tax; employee nhận W-2 và employer withhold.</p>
+<ul><li><b>Form SS-8</b>: yêu cầu IRS xác định tình trạng worker</li><li><b>Section 530 relief</b>: employer tránh trách nhiệm nếu có reasonable basis, nhất quán, và nộp 1099</li><li><b>VCSP</b> (Voluntary Classification Settlement Program): tự nguyện phân loại lại với mức phạt giảm</li><li><b>Statutory employee</b> (4 nhóm — xem SU02 mục H): chịu FICA nhưng khai Schedule C</li></ul>
+</div>
+<h3 class="lesson">Unreimbursed Employee Expenses</h3>
+<div class="rule-box">
+<p>Chi phí employee không được hoàn (dụng cụ, đồng phục, home office…) <b>KHÔNG deductible</b> từ 2018 (OBBBA làm vĩnh viễn). Ngoại lệ (deduct above-the-line hoặc ngoài 2% floor cũ): <b>Armed Forces reservists</b> (đi &gt; 100 dặm), <b>qualified performing artists</b>, <b>fee-basis state/local government officials</b>, và <b>impairment-related work expenses</b> của người khuyết tật. Hoàn phí theo <b>accountable plan</b> (có business connection, substantiation, trả lại phần dư) không tính vào income của employee.</p>
+</div>
+<h3 class="lesson">Cost Recovery — Tóm tắt (chi tiết ở Part II SU07)</h3>
+<div class="rule-box">
+<ul><li>Capitalize chi phí mua/cải tạo (BAR: <b>b</b>etterment, <b>a</b>daptation, <b>r</b>estoration); sửa chữa thường (<b>routine maintenance</b>) expense ngay</li><li><b>De minimis safe harbor</b>: expense món &lt; <b>$2,500</b>/item (hoặc invoice) nếu không có audited financial statements ($5,000 nếu có)</li><li><b>Section 179 (2025): tối đa $2,500,000</b>, giảm dollar-for-dollar khi mua vượt $4,000,000; giới hạn bởi business taxable income</li><li><b>Bonus depreciation 100%</b> cho tài sản mua sau 19/1/2025 (OBBBA)</li><li>MACRS: 5 năm (xe, máy tính), 7 năm (nội thất), 27.5 năm (nhà cho thuê), 39 năm (nhà thương mại, straight-line)</li></ul>
+</div>
+<h3 class="lesson">Các điều khoản chi phí khác (Gleim 4.1)</h3>
+<div class="rule-box">
+<ul><li><b>Compensation</b>: employer trả bằng tài sản được deduct theo <b>FMV</b>, và ghi nhận gain (FMV − basis)</li><li><b>Accrual-basis</b>: bonus/ PTO vested cuối năm được deduct năm đó nếu trả trong <b>2½ tháng</b> sau năm; trả muộn hơn = deferred compensation</li><li><b>Prepaid rent</b>: phân bổ theo kỳ áp dụng; <b>12-month rule</b>: hợp đồng ≤ 12 tháng và không kéo dài quá hết năm thuế kế tiếp → deduct hết trong năm trả</li><li><b>Insurance</b>: cash-method không deduct premium trước khi trả; self-employed deduct <b>100%</b> health insurance premiums (above-the-line)</li><li><b>Không deductible</b>: fines/penalties trả chính phủ, hối lộ/kickback, 2/3 bồi thường antitrust, <b>political contributions</b>, lobbying (ngoại lệ de minimis nếu tổng direct cost ≤ <b>$2,000</b>), chi phí tạo tax-exempt income (vd lãi vay mua municipal bonds), nợ của người khác (trừ khi bắt buộc để duy trì business), quà/phạt hợp đồng do quyết định kinh doanh (late shipment fine) thì vẫn deduct</li><li><b>Abandoned assets</b>: loss = adjusted basis năm thực sự bỏ; <b>demolition</b>: chi phí và basis còn lại cộng vào đất</li></ul>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 4-5 (Worker):</b> Phong mở salon, thuê Nga làm tóc theo giờ do Phong xếp, dùng dụng cụ của Phong → <b>employee</b>. Nếu Nga tự mang dụng cụ, tự đặt giá, phục vụ nhiều khách hàng riêng → nghiêng về <b>independent contractor</b>.</div>
+
+<h3 class="lesson">Thuật ngữ 4.4</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">independent contractor</td><td class="vn">nhà thầu độc lập</td></tr>
+<tr><td class="word">behavioral control</td><td class="vn">kiểm soát về hành vi/cách làm việc</td></tr>
+<tr><td class="word">financial control</td><td class="vn">kiểm soát về tài chính</td></tr>
+<tr><td class="word">Form SS-8</td><td class="vn">đơn yêu cầu IRS xác định tình trạng worker</td></tr>
+<tr><td class="word">Section 530 relief</td><td class="vn">miễn trách nhiệm phân loại sai cho employer đủ điều kiện</td></tr>
+<tr><td class="word">accountable plan</td><td class="vn">kế hoạch hoàn phí có báo cáo (không tính vào income nhân viên)</td></tr>
+<tr><td class="word">de minimis safe harbor</td><td class="vn">ngưỡng an toàn expense ngay món nhỏ ($2,500)</td></tr>
+<tr><td class="word">Form 1099-NEC</td><td class="vn">báo cáo thù lao cho non-employee</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 4.4</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. Which of the following is NOT one of the three categories of evidence in the common-law test of worker status?</div>
+<div class="opt">A. Behavioral control</div><div class="opt">B. Financial control</div><div class="opt">C. Type of relationship</div><div class="opt">D. Educational background</div></div>
+<div class="mcq"><div class="q">2. Unreimbursed employee business expenses are deductible by:</div>
+<div class="opt">A. Every employee as itemized deductions</div><div class="opt">B. Armed Forces reservists, qualified performing artists, fee-basis officials, and certain disabled employees</div><div class="opt">C. Only employees over 65</div><div class="opt">D. No employees under any circumstances</div></div>
+<div class="mcq"><div class="q">3. The 2025 Section 179 maximum deduction (after OBBBA) is:</div>
+<div class="opt">A. $1,250,000</div><div class="opt">B. $1,500,000</div><div class="opt">C. $2,500,000</div><div class="opt">D. $5,000,000</div></div>
+<div class="mcq"><div class="q">4. Under the de minimis safe harbor (no audited financial statements), a taxpayer may expense items costing no more than:</div>
+<div class="opt">A. $500 per item</div><div class="opt">B. $2,500 per item or invoice</div><div class="opt">C. $5,000 per item</div><div class="opt">D. $10,000 per item</div></div>
+<div class="mcq"><div class="q">5. An employer may request the IRS to determine whether a worker is an employee or independent contractor by filing:</div>
+<div class="opt">A. Form SS-4</div><div class="opt">B. Form SS-5</div><div class="opt">C. Form SS-8</div><div class="opt">D. Form SS-10</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 4.4 EMPLOYEE VS. INDEPENDENT CONTRACTOR &amp; COST RECOVERY</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">D — Educational background</span></div>
+<div><b>2.</b> <span class="key-ans">B — Armed Forces reservists, qualified performing artists, fee-basis officials, and certain disabled employees</span></div>
+<div><b>3.</b> <span class="key-ans">C — $2,500,000</span></div>
+<div><b>4.</b> <span class="key-ans">B — $2,500 per item or invoice</span></div>
+<div><b>5.</b> <span class="key-ans">C — Form SS-8</span></div>
+</div>
+</div>
+
+</body>
+</html>

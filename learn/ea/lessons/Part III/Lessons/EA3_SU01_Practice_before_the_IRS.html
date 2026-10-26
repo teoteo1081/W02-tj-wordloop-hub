@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<!-- Google tag (gtag.js) — GA4 chung của TJ, nhãn site=ea -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'ea'});</script>
+
+<meta charset="UTF-8">
+<title>EA Part III – SU01: Practice before the IRS</title>
+<style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  body { font-family:'Segoe UI','Calibri',Arial,sans-serif; color:#33322f; font-size:15.5px; line-height:1.5; background:#fdfcfa; margin:0; }
+  .cover { background: linear-gradient(120deg,#bfe4ff 0%,#d6ecff 30%,#e6def7 65%,#fbe6f4 100%); border-radius:20px; padding:40px 30px; text-align:center; margin-bottom:10px; box-shadow:0 6px 18px rgba(120,130,180,.25); border:1px solid #dfe8f5; }
+  .cover .tag { display:inline-block; background:#33314a; color:#d6ecff; font-weight:700; letter-spacing:2px; font-size:13px; padding:5px 14px; border-radius:20px; margin-bottom:14px; }
+  .cover h1 { font-size:30px; margin:6px 0; color:#3170a8; }
+  .cover h2 { font-size:16px; font-weight:500; margin:4px 0 0; opacity:.9; color:#33314a; }
+  .cover .books { margin-top:16px; font-size:13.5px; background:rgba(255,255,255,.55); display:inline-block; padding:8px 16px; border-radius:10px; color:#33314a; }
+  .toc { background:#fff; border:1.5px solid #dfe8f5; border-radius:14px; padding:18px 26px; margin-bottom:30px; }
+  .toc h3 { margin-top:0; color:#3170a8; }
+  .toc ol { margin:0; padding-left:22px; } .toc li{ margin-bottom:6px; }
+  h2.section { font-size:23px; color:#33314a; padding:12px 18px; border-radius:12px; margin:34px 0 14px; border-left:10px solid var(--accent,#5aa9d6); background:var(--bg,#eaf6fd); }
+  h3.lesson { font-size:19px; color:var(--accent-dark,#276a91); border-left:6px solid var(--accent,#5aa9d6); background:var(--bg-soft,#f3fafd); padding:8px 14px; border-radius:6px; margin:22px 0 10px; }
+  .c1{--accent:#5aa9d6;--accent-dark:#276a91;--bg:#eaf6fd;--bg-soft:#f3fafd;--head:#a9d4ec;}
+  .c2{--accent:#a892d9;--accent-dark:#5c4696;--bg:#f1ecfb;--bg-soft:#f8f5fd;--head:#cabdec;}
+  .c3{--accent:#f0a66e;--accent-dark:#b8620b;--bg:#fdeee2;--bg-soft:#fff8f0;--head:#f4c299;}
+  .c4{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
+  .c5{--accent:#e07b9b;--accent-dark:#a3335a;--bg:#fbe9f0;--bg-soft:#fdf5f8;--head:#f3b6c9;}
+  .c6{--accent:#5bb8b0;--accent-dark:#1f7a72;--bg:#e5f7f5;--bg-soft:#f2fbfa;--head:#a6e3dd;}
+  .cKey{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
+  table.vocab { width:100%; border-collapse:collapse; margin-bottom:20px; font-size:.96em; box-shadow:0 2px 8px rgba(0,0,0,.05); border-radius:10px; overflow:hidden; }
+  table.vocab th { background:var(--head,#5aa9d6); color:#2d2d2d; padding:9px 8px; text-align:left; }
+  table.vocab td { padding:8px 8px; border-bottom:1px solid var(--bg,#eaf6fd); vertical-align:top; }
+  table.vocab tr:nth-child(even) td { background:var(--bg-soft,#faf6f0); }
+  table.vocab tr:nth-child(odd) td { background:#fff; }
+  table.vocab td.word { font-weight:800; color:var(--accent-dark,#276a91); }
+  table.vocab td.vn { font-weight:700; color:#3d6ba8; }
+  .rule-box { background:var(--bg,#eaf6fd); border-left:6px solid var(--accent,#5aa9d6); border-radius:8px; padding:12px 18px; margin:10px 0; }
+  .rule-box table { width:100%; border-collapse:collapse; margin:8px 0 4px; }
+  .rule-box table td, .rule-box table th { padding:6px 8px; border-bottom:1px solid rgba(0,0,0,.08); text-align:left; font-size:.94em; }
+  .rule-box table th { color:var(--accent-dark,#276a91); }
+  .rule-box ul, .rule-box ol { margin:6px 0; padding-left:22px; } .rule-box li{ margin-bottom:5px; }
+  .struct { font-weight:800; color:#b8620b; font-family:'Consolas','Courier New',monospace; }
+  .example-box { background:#fff; border:1.5px dashed var(--accent,#5aa9d6); border-radius:8px; padding:10px 16px; margin:10px 0; font-size:.95em; }
+  .example-box b.ex-tag { color:var(--accent-dark,#276a91); }
+  .mcq { background:#fff; border:1.5px solid var(--accent,#5aa9d6); border-radius:10px; padding:12px 18px; margin-bottom:12px; }
+  .mcq .q { color:#3d6ba8; font-weight:700; margin-bottom:6px; }
+  .mcq .opt { margin:2px 0 2px 10px; }
+  .content-block { background:#fff; border:2px dashed var(--accent,#5aa9d6); border-radius:12px; padding:16px 20px; margin-bottom:18px; }
+  .key-grid { column-count:1; } .key-grid div{ margin-bottom:10px; }
+  .key-ans { color:#20824f; font-weight:800; }
+  .key-exp { color:#555; font-size:.95em; }
+  .pagebreak { page-break-before: always; }
+  .note { font-size:.85em; color:#8a8a8a; font-style:italic; }
+  .source-tag { font-size:.8em; color:#999; font-style:italic; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="tag">EA EXAM PREP • PART III — REPRESENTATION, PRACTICES & PROCEDURES • SU01</div>
+  <h1>📗 SU01 — PRACTICE BEFORE THE IRS</h1>
+  <h2>Bản song ngữ Việt–Anh, bám sát giáo trình Gleim 2026 (Circular 230)</h2>
+  <div class="books">📖 Khái niệm · 🔤 Thuật ngữ · 📌 Ví dụ minh họa · ❓ Câu hỏi trắc nghiệm · 🔑 Đáp án trang sau</div>
+</div>
+
+<div class="toc">
+<h3>📑 Mục lục SU01</h3>
+<ol>
+<li>1.1 Authority to Practice (Thẩm quyền hành nghề trước IRS)</li>
+<li>1.2 Conduct of Practice (Chuẩn mực hành nghề)</li>
+<li>1.3 Best Practices for Tax Advisors (Thực hành tốt nhất cho tư vấn thuế)</li>
+<li>1.4 Supervisor Responsibility (Trách nhiệm người giám sát)</li>
+<li>1.5 Sanctions and Disciplinary Proceedings (Chế tài & thủ tục kỷ luật)</li>
+<li>1.6 Renewal (Gia hạn giấy phép EA)</li>
+<li>1.7 Identity Theft (Đánh cắp danh tính)</li>
+</ol>
+<p class="note">Nguồn: Gleim EA Review, Study Unit 1 — Practice before the IRS (2026), dựa trên Circular 230. Số liệu ($ threshold, năm renewal...) theo bản 2025/2026, cần đối chiếu năm thi thực tế nếu có cập nhật.</p>
+</div>
+
+<!-- ============================================================ 1.1 AUTHORITY TO PRACTICE ============================================================ -->
+<div class="c1">
+<h2 class="section">1.1 — AUTHORITY TO PRACTICE</h2>
+<div class="rule-box">
+<p><b>Circular 230</b> (Treasury Department Circular 230, <i>Regulations Governing Practice before the Internal Revenue Service</i>) là văn bản quy định toàn bộ luật lệ về hành nghề trước IRS.</p>
+<p><b>Practice before the IRS (Hành nghề trước IRS)</b> = trình bày với IRS (hoặc nhân viên IRS) bất kỳ vấn đề nào liên quan đến quyền, đặc quyền, hay nghĩa vụ của taxpayer theo luật/quy định do IRS quản lý. Bao gồm: giao tiếp với IRS thay taxpayer; đại diện taxpayer tại hội nghị/điều trần/cuộc họp với IRS; chuẩn bị & nộp hồ sơ cho taxpayer; đưa ra written advice liên quan đến entity/transaction có khả năng tax avoidance/evasion.</p>
+<p><b>KHÔNG</b> được xem là "practice before the IRS": chuẩn bị tờ khai thuế/tờ khai sửa đổi/claim for refund; cung cấp thông tin theo yêu cầu IRS; làm nhân chứng cho taxpayer.</p>
+</div>
+
+<h3 class="lesson">Ai được hành nghề trước IRS (Who May Practice)</h3>
+<table class="vocab">
+<tr><th>Nhóm</th><th>Điều kiện chính</th></tr>
+<tr><td class="word">Attorney</td><td class="vn">Thành viên tốt (good standing) của đoàn luật sư bất kỳ tiểu bang/lãnh thổ/DC</td></tr>
+<tr><td class="word">CPA</td><td class="vn">Không bị đình chỉ bởi Office of Professional Responsibility (OPR), đang đủ điều kiện hành nghề CPA tại bất kỳ bang nào</td></tr>
+<tr><td class="word">Enrolled Agent (EA)</td><td class="vn">Được IRS cấp phép qua thi hoặc kinh nghiệm làm việc tại IRS</td></tr>
+<tr><td class="word">Enrolled actuary / Enrolled retirement plan agent</td><td class="vn">Chỉ hành nghề giới hạn theo Sec. 10.3(d)/(e) Circular 230</td></tr>
+<tr><td class="word">Annual Filing Season Program (AFSP) participant</td><td class="vn">Non-credentialed preparer tham gia AFSP, chỉ đại diện cho return chính mình đã chuẩn bị</td></tr>
+<tr><td class="word">Unenrolled individual / Appraiser</td><td class="vn">Chỉ khi được cho phép cụ thể</td></tr>
+</table>
+<div class="rule-box">
+<table>
+<tr><th></th><th>Attorney / CPA / EA</th><th>AFSP / Others giới hạn</th></tr>
+<tr><td><b>Quyền hành nghề</b></td><td>Unlimited</td><td>Limited</td></tr>
+<tr><td><b>Đại diện trước</b></td><td>Bất kỳ ai tại IRS; examination & appeals; mọi return</td><td>Chỉ revenue agents/customer service reps; chỉ trong examination; chỉ return tự ký</td></tr>
+<tr><td><b>Tax advice</b></td><td>Unlimited kể cả tax planning</td><td>Giới hạn ở chuẩn bị return/refund</td></tr>
+</table>
+</div>
+
+<h3 class="lesson">Enrolled Agent — điều kiện & thủ tục</h3>
+<div class="rule-box">
+<p><b>Enrolled agent</b> là người được cấp đặc quyền đại diện taxpayer trước IRS qua: (1) đậu <b>3-part Special Enrollment Exam (SEE)</b> về individual & business tax returns, hoặc (2) kinh nghiệm làm cựu nhân viên IRS. Đây là chứng chỉ cao nhất mà IRS cấp. EA phải tuân thủ chuẩn mực đạo đức và hoàn thành <b>72 giờ continuing education mỗi 3 năm</b>.</p>
+<p>EA có <b>unlimited practice rights</b> giống attorney/CPA — không giới hạn taxpayer đại diện, loại vấn đề thuế, hay văn phòng IRS. Đại diện được thực hiện khi nộp written declaration là qualified & authorized.</p>
+<p>Chỉ <b>natural person (cá nhân)</b> mới được là EA — không yêu cầu quốc tịch Mỹ. Attorney/CPA không bắt buộc phải đăng ký EA vì đã tự động được hành nghề.</p>
+<p><b>Eligibility:</b> hạnh kiểm không dẫn đến suspension/disbarment; đậu SEE; HOẶC có kinh nghiệm IRS tối thiểu <b>5 năm liên tục</b> (xét theo thời lượng, phạm vi công việc, và đề xuất của cấp trên).</p>
+<p><b>Application:</b> có thể được cấp <i>temporary recognition</i> trong trường hợp đặc biệt (không phải finding of eligibility, có thể bị rút bất cứ lúc nào). IRS có thể yêu cầu nộp thêm thông tin/thi viết-vấn đáp dưới lời thề. Nếu bị từ chối, applicant có <b>30 ngày</b> để appeal bằng văn bản.</p>
+</div>
+
+<h3 class="lesson">Non-1040 Series Preparers & Limited Practice</h3>
+<div class="rule-box">
+<p><b>Non-1040 series preparer:</b> người xác nhận KHÔNG chuẩn bị Form 1040 series (trừ 1040-PR/1040-SS) để nhận thù lao. Được ký return tự chuẩn bị và đại diện taxpayer trước revenue agents/customer service reps (kể cả Taxpayer Advocate Service) trong examination, nếu chính mình đã ký return năm bị examine.</p>
+<p><b>Limited practice (không cần enrollment):</b> Family (đại diện người thân trực hệ, miễn phí); Employee (đại diện employer full-time); Partnership (general partner/full-time employee); Corporation (officer/full-time employee); Fiduciary (trustee, receiver, guardian, administrator, executor); Overseas (đại diện ngoài lãnh thổ Mỹ); Qualifying Student (law student/CPA student theo Sec. 10.7(d)); Others (do Commissioner cho phép riêng).</p>
+</div>
+
+<h3 class="lesson">Ai KHÔNG được hành nghề (Who May Not Practice)</h3>
+<div class="rule-box">
+<ul>
+<li>Thành viên Quốc hội (Member of Congress) nếu nhận/tìm kiếm thù lao cho vấn đề đó.</li>
+<li>Nhân viên/quan chức chính phủ Mỹ (lập pháp, hành pháp, tư pháp) — trừ đại diện thân nhân trực hệ hoặc fiduciary cá nhân.</li>
+<li>Nhân viên bang xử lý thuế bang, nếu có thể tiết lộ thông tin liên quan thuế liên bang.</li>
+<li>Người bị kết án tội liên quan đến sự trung thực/vi phạm lòng tin (dishonesty/breach of trust).</li>
+</ul>
+<p><b>Limited practice (unenrolled preparer):</b> chỉ đại diện trước revenue agents & customer service reps (KHÔNG được trước appeals officers, revenue officers, hay counsel), và chỉ cho return chính mình ký/chuẩn bị.</p>
+</div>
+
+<h3 class="lesson">Oversight & PTIN</h3>
+<div class="rule-box">
+<p><b>Commissioner of Internal Revenue</b> (hoặc delegate): xét đơn enrollment, điều tra các vấn đề thuộc thẩm quyền, khởi xướng thủ tục kỷ luật, thực hiện nhiệm vụ do Secretary of Treasury giao.</p>
+<p><b>PTIN (Preparer Tax Identification Number):</b> bắt buộc với bất kỳ ai chuẩn bị/hỗ trợ chuẩn bị all/substantially all của federal tax return hoặc claim for refund để nhận thù lao. Đăng ký online hoặc paper, phải <b>renew hàng năm</b>.</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ 1.1</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">Circular 230</td><td class="vn">Bộ quy định của Bộ Tài chính về hành nghề trước IRS</td></tr>
+<tr><td class="word">practice before the IRS</td><td class="vn">hành nghề đại diện/trình bày vấn đề thuế trước IRS</td></tr>
+<tr><td class="word">enrolled agent (EA)</td><td class="vn">đại lý thuế được IRS cấp phép (chứng chỉ cao nhất của IRS)</td></tr>
+<tr><td class="word">Special Enrollment Exam (SEE)</td><td class="vn">Kỳ thi cấp phép EA (3 phần)</td></tr>
+<tr><td class="word">Annual Filing Season Program (AFSP)</td><td class="vn">Chương trình tự nguyện cho preparer không có chứng chỉ</td></tr>
+<tr><td class="word">Preparer Tax Identification Number (PTIN)</td><td class="vn">Mã số thuế của người chuẩn bị tờ khai</td></tr>
+<tr><td class="word">temporary recognition</td><td class="vn">công nhận tạm thời (chưa phải enrollment chính thức)</td></tr>
+<tr><td class="word">limited practice</td><td class="vn">hành nghề giới hạn không cần enrollment</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 1.1</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. To become an enrolled agent through IRS experience, an individual generally needs a minimum of how many continuous years of qualifying employment?</div>
+<div class="opt">A. 2 years</div><div class="opt">B. 3 years</div><div class="opt">C. 5 years</div><div class="opt">D. 10 years</div></div>
+<div class="mcq"><div class="q">2. Which of the following is NOT considered "practice before the IRS"?</div>
+<div class="opt">A. Representing a taxpayer at an IRS conference</div><div class="opt">B. Preparing a tax return for a client</div><div class="opt">C. Rendering written advice on a tax-avoidance arrangement</div><div class="opt">D. Filing documents with the IRS on behalf of a taxpayer</div></div>
+<div class="mcq"><div class="q">3. An unenrolled return preparer who is not an AFSP participant may represent a client only:</div>
+<div class="opt">A. Before appeals officers</div><div class="opt">B. Before revenue officers</div><div class="opt">C. Before revenue agents and customer service representatives, for the return (s)he signed</div><div class="opt">D. In any IRS matter, without restriction</div></div>
+<div class="mcq"><div class="q">4. Enrolled agent status may be obtained by:</div>
+<div class="opt">A. U.S. citizenship alone</div><div class="opt">B. Passing the 3-part Special Enrollment Exam or through qualifying IRS experience</div><div class="opt">C. Being a CPA in any one state</div><div class="opt">D. Completing a 4-year accounting degree only</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 1.1 Authority to Practice</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">C — 5 years</span><br><span class="key-exp">Kinh nghiệm làm cựu nhân viên IRS làm căn cứ enrollment cần tối thiểu 5 năm liên tục.</span></div>
+<div><b>2.</b> <span class="key-ans">B — Preparing a tax return</span><br><span class="key-exp">Chuẩn bị return/refund KHÔNG được xem là "practice before the IRS" theo định nghĩa Circular 230.</span></div>
+<div><b>3.</b> <span class="key-ans">C</span><br><span class="key-exp">Unenrolled preparer (không AFSP) chỉ được limited practice: trước revenue agents/customer service reps, chỉ cho return tự ký.</span></div>
+<div><b>4.</b> <span class="key-ans">B</span><br><span class="key-exp">Citizenship không bắt buộc; EA có được qua thi SEE hoặc kinh nghiệm IRS.</span></div>
+</div>
+</div>
+
+<!-- ============================================================ 1.2 CONDUCT OF PRACTICE ============================================================ -->
+<div class="c2 pagebreak">
+<h2 class="section">1.2 — CONDUCT OF PRACTICE</h2>
+<div class="rule-box">
+<p>Quy tắc hành xử cho attorney/CPA/EA khi hành nghề trước IRS nằm trong <b>Part 10 của Circular 230</b>. "Practitioner" gồm cả người chuẩn bị tờ khai (attorney, CPA, EA).</p>
+<p><b>Qualified:</b> người đại diện phải qualified (VD: EA) — nghĩa vụ này KHÔNG được ủy quyền cho nhân viên của practitioner. Power of attorney hay ủy quyền viết tay từ taxpayer là KHÔNG đủ.</p>
+<p><b>Declaration:</b> phải nộp written declaration xác nhận qualified & authorized để đại diện cho principal cụ thể.</p>
+</div>
+
+<h3 class="lesson">Dựa vào thông tin của client (Relying on Information Furnished by Clients)</h3>
+<div class="rule-box">
+<p>Practitioner thường được <b>tin tưởng (good faith) mà không cần xác minh</b> thông tin do client cung cấp khi tư vấn vị trí trên return/tài liệu/khai báo IRS.</p>
+<ul>
+<li>KHÔNG được bỏ qua hệ quả (implications) của thông tin.</li>
+<li>Phải đặt câu hỏi hợp lý (reasonable inquiries) nếu thông tin có vẻ không chính xác/thiếu sót.</li>
+<li>Nên hỏi taxpayer về sự tồn tại của chứng từ cho các khoản deduction.</li>
+<li><b>Form 8275 (Disclosure Statement)</b>: dùng để công khai các vị trí/khoản mục chưa được disclose đầy đủ trên return, nhằm tránh một số penalty.</li>
+</ul>
+</div>
+
+<h3 class="lesson">Conflict of Interest (Xung đột lợi ích)</h3>
+<div class="rule-box">
+<p>Theo Sec. 10.29, conflict of interest tồn tại nếu: đại diện 1 client ảnh hưởng tiêu cực đến client khác, HOẶC có rủi ro đáng kể việc đại diện bị giới hạn bởi trách nhiệm với client khác/cựu client/bên thứ 3/lợi ích cá nhân của practitioner.</p>
+<p>Được đại diện xung đột lợi ích CHỈ nếu: (1) tất cả các bên bị ảnh hưởng trực tiếp đồng ý bằng văn bản (informed consent) trong <b>30 ngày</b> kể từ khi biết; (2) việc đại diện không bị luật cấm; (3) practitioner tin hợp lý có thể đại diện competent & diligent cho mỗi client. Bản consent phải giữ <b>tối thiểu 36 tháng</b> sau khi kết thúc đại diện và cung cấp cho IRS khi được yêu cầu.</p>
+<p>Cựu nhân viên chính phủ/IRS từng tham gia 1 vụ việc KHÔNG được đại diện/hỗ trợ bất kỳ bên nào trong vụ đó. Đồng nghiệp trong firm của cựu nhân viên IRS vẫn có thể đại diện nếu người đó được "screened" (cách ly, không tham gia).</p>
+<p>Practitioner KHÔNG được làm notary public/chứng thực giấy tờ trong vụ việc mình là đại diện hoặc có lợi ích.</p>
+</div>
+
+<h3 class="lesson">Diligence, Information, và các nghĩa vụ khác</h3>
+<div class="rule-box">
+<p><b>Diligence (Siêng năng):</b> phải áp dụng khi chuẩn bị/hỗ trợ chuẩn bị/duyệt/nộp return và giấy tờ IRS, và khi xác định tính đúng đắn của các đại diện với Treasury/client. Diligence được coi là đã thực hiện nếu practitioner dựa vào công việc của người khác và dùng reasonable care khi thuê/giám sát/đào tạo/đánh giá người đó. Không được trì hoãn vô lý việc xử lý vấn đề trước IRS.</p>
+<p><b>Information:</b> hồ sơ/thông tin được IRS yêu cầu hợp pháp phải nộp kịp thời — TRỪ khi có cơ sở tin hợp lý (good-faith) rằng thông tin privileged hoặc yêu cầu không hợp lệ. Nếu practitioner không có thông tin, chỉ cần hỏi hợp lý client về ai có thể có (không cần xác minh độc lập).</p>
+<p><b>Suspended/disbarred practitioner:</b> KHÔNG được nhận hỗ trợ từ, hoặc hỗ trợ cho, người bị đình chỉ/tước quyền hành nghề.</p>
+<p><b>Negotiating refund checks:</b> practitioner KHÔNG được thương lượng (kể cả ký hậu/endorse) bất kỳ tấm séc hoàn thuế nào phát cho client.</p>
+<p><b>Client noncompliance:</b> nếu biết client không tuân thủ luật thuế, practitioner phải nhanh chóng thông báo cho client về sự không tuân thủ VÀ hậu quả — Circular 230 KHÔNG bắt buộc báo IRS hay yêu cầu client sửa lỗi.</p>
+<p><b>Fees:</b> KHÔNG được tính phí "unconscionable" (vô lý). Nếu công bố biểu phí (published fee schedule), phải giữ nguyên tối thiểu <b>30 ngày</b>. KHÔNG được tính <b>contingent fee</b> (phí theo kết quả) TRỪ: examination của return, claim for credit/refund (lãi & penalty), và thủ tục tố tụng (judicial proceedings).</p>
+<p><b>Return of client records:</b> phải trả hồ sơ cho client khi yêu cầu, BẤT KỂ có tranh chấp phí hay không — trừ chính bản return/tài liệu practitioner tự chuẩn bị đang giữ lại chờ thanh toán phí (không nằm trong nghĩa vụ trả lại).</p>
+</div>
+
+<h3 class="lesson">Advertising & Solicitation</h3>
+<div class="rule-box">
+<p>Circular 230 CHO PHÉP quảng cáo & chào mời (advertising, solicitation), với điều kiện:</p>
+<ul>
+<li>EA được dùng cụm "enrolled to practice before the IRS", "enrolled to represent taxpayers before the IRS", "admitted to practice before the IRS" — người mới được temporary recognition KHÔNG được dùng các cụm này.</li>
+<li>KHÔNG được ngụ ý quan hệ employer-employee với IRS, KHÔNG được dùng từ "certified" khi mô tả chức danh.</li>
+<li>Cấm mọi tuyên bố false/fraudulent/misleading/deceptive/coercive — các claim phải kiểm chứng được.</li>
+<li>Quảng cáo radio/TV phải được ghi âm/lưu bản ghi. Bản sao mọi communication quảng cáo phải giữ tối thiểu <b>36 tháng</b> từ ngày phát sóng/sử dụng cuối.</li>
+<li>Chào mời không mời (uninvited solicitation) bị cấm nếu vi phạm luật liên bang/bang; mail solicitation đại chúng (general public) thì được phép, nhưng mail nhắm vào hoàn cảnh thuế riêng của 1 người cho dịch vụ non-tax-return thì KHÔNG được phép.</li>
+<li>Được quảng cáo: fixed fee cho dịch vụ routine, khoảng phí (range), phí tư vấn ban đầu, hourly rate, và việc có sẵn biểu phí viết.</li>
+</ul>
+</div>
+
+<h3 class="lesson">Thuật ngữ 1.2</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">Form 8275 (Disclosure Statement)</td><td class="vn">Tờ khai công khai vị trí thuế chưa được disclose đủ</td></tr>
+<tr><td class="word">conflict of interest</td><td class="vn">xung đột lợi ích</td></tr>
+<tr><td class="word">informed written consent</td><td class="vn">sự đồng ý bằng văn bản sau khi được thông báo đầy đủ</td></tr>
+<tr><td class="word">diligence</td><td class="vn">sự siêng năng/cẩn trọng trong nghề nghiệp</td></tr>
+<tr><td class="word">contingent fee</td><td class="vn">phí tính theo kết quả (chỉ được thu trong vài trường hợp nhất định)</td></tr>
+<tr><td class="word">unconscionable fee</td><td class="vn">mức phí vô lý/quá đáng</td></tr>
+<tr><td class="word">solicitation</td><td class="vn">chào mời/quảng cáo dịch vụ</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 1.2</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. A practitioner may charge a contingent fee for:</div>
+<div class="opt">A. Preparing an original Form 1040</div><div class="opt">B. Examination of a return</div><div class="opt">C. Any matter before the IRS</div><div class="opt">D. Preparing an amended return only</div></div>
+<div class="mcq"><div class="q">2. Written consents for representing conflicting interests must be retained for at least:</div>
+<div class="opt">A. 12 months</div><div class="opt">B. 24 months</div><div class="opt">C. 36 months</div><div class="opt">D. 5 years</div></div>
+<div class="mcq"><div class="q">3. If a practitioner publishes a fee schedule, (s)he must adhere to it for at least:</div>
+<div class="opt">A. 10 days</div><div class="opt">B. 30 days</div><div class="opt">C. 90 days</div><div class="opt">D. 1 year</div></div>
+<div class="mcq"><div class="q">4. When a practitioner learns a client has not complied with the revenue laws, Circular 230 requires the practitioner to:</div>
+<div class="opt">A. Notify the IRS immediately</div><div class="opt">B. Promptly advise the client of the noncompliance and its consequences</div><div class="opt">C. Withdraw from all representation immediately</div><div class="opt">D. Do nothing unless asked</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 1.2 Conduct of Practice</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — Examination of a return</span><br><span class="key-exp">Contingent fee chỉ được phép cho: examination, claim for credit/refund, và judicial proceedings.</span></div>
+<div><b>2.</b> <span class="key-ans">C — 36 months</span></div>
+<div><b>3.</b> <span class="key-ans">B — 30 days</span></div>
+<div><b>4.</b> <span class="key-ans">B</span><br><span class="key-exp">Circular 230 chỉ yêu cầu thông báo cho CLIENT, không yêu cầu báo IRS hay bắt client sửa lỗi.</span></div>
+</div>
+</div>
+
+<!-- ============================================================ 1.3 BEST PRACTICES FOR TAX ADVISORS ============================================================ -->
+<div class="c3 pagebreak">
+<h2 class="section">1.3 — BEST PRACTICES FOR TAX ADVISORS</h2>
+<div class="rule-box">
+<p>Tax advisor nên cung cấp đại diện chất lượng cao nhất bằng cách tuân theo "best practices" khi tư vấn và chuẩn bị/hỗ trợ chuẩn bị hồ sơ nộp IRS. <b>4 yếu tố chính:</b></p>
+<ol>
+<li><b>Thực hiện các bước hỗ trợ sự kiện (facts)</b> cho một tax filing: xác lập facts, xác định facts liên quan, đánh giá tính hợp lý của giả định/đại diện, liên hệ luật áp dụng với facts, đi đến kết luận được luật và facts hỗ trợ.</li>
+<li><b>Giao tiếp rõ ràng với client</b> về các điều khoản của hợp đồng dịch vụ (engagement).</li>
+<li><b>Tư vấn client về tầm quan trọng của kết luận</b> đạt được — VD: liệu taxpayer có tránh được accuracy-related penalty theo IRC nếu dựa vào lời khuyên đó.</li>
+<li><b>Hành động công bằng và liêm chính (fairly and with integrity)</b> khi hành nghề trước IRS.</li>
+</ol>
+<p>Tax advisor phải thông báo bản chất của bất kỳ lỗi/thiếu sót nào đã biết, kể cả hậu quả tiềm ẩn theo Code/regulations.</p>
+</div>
+
+<h3 class="lesson">Trách nhiệm người phụ trách firm & Monetary Penalty</h3>
+<div class="rule-box">
+<p>Tax advisor chịu trách nhiệm giám sát việc tư vấn thuế liên bang hoặc chuẩn bị hồ sơ nộp IRS của firm nên có biện pháp hợp lý để đảm bảo quy trình của firm (cho mọi thành viên, associate, nhân viên) phù hợp với best practices.</p>
+<p>Nếu đại diện hành động thay employer/firm/entity liên quan hành vi bị chế tài, <b>Secretary of the Treasury có thể áp monetary penalty lên employer/firm/entity</b> nếu họ biết hoặc lẽ ra phải biết về hành vi đó. Penalty này KHÔNG vượt quá gross income phát sinh (hoặc sẽ phát sinh) từ hành vi đó, và có thể áp dụng THÊM VÀO hoặc THAY THẾ cho suspension/disbarment/censure của đại diện.</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ 1.3</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">best practices</td><td class="vn">thực hành tốt nhất trong tư vấn/đại diện thuế</td></tr>
+<tr><td class="word">engagement</td><td class="vn">hợp đồng/thỏa thuận dịch vụ với client</td></tr>
+<tr><td class="word">accuracy-related penalty</td><td class="vn">phạt liên quan đến độ chính xác của tờ khai</td></tr>
+<tr><td class="word">integrity</td><td class="vn">sự liêm chính, chính trực</td></tr>
+<tr><td class="word">monetary penalty (on firm)</td><td class="vn">phạt tiền áp lên firm/employer</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 1.3</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. Which of the following is one of the four general elements of best practices for tax advisors?</div>
+<div class="opt">A. Guaranteeing a specific refund amount</div><div class="opt">B. Communicating clearly with the client about the terms of the engagement</div><div class="opt">C. Avoiding all written advice</div><div class="opt">D. Delegating all client contact to unenrolled staff</div></div>
+<div class="mcq"><div class="q">2. A monetary penalty imposed on a firm for a representative's sanctionable conduct that the firm knew or should have known about is capped at:</div>
+<div class="opt">A. $10,000</div><div class="opt">B. The gross income derived (or to be derived) from the conduct</div><div class="opt">C. 25% of the firm's annual revenue</div><div class="opt">D. There is no cap</div></div>
+<div class="mcq"><div class="q">3. Can a firm-level monetary penalty be imposed in addition to suspension of the individual representative?</div>
+<div class="opt">A. No, they are mutually exclusive</div><div class="opt">B. Yes, it may be in addition to or in lieu of suspension, disbarment, or censure</div><div class="opt">C. Only if the IRS obtains a court order</div><div class="opt">D. Only for CPAs, not EAs</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 1.3 Best Practices for Tax Advisors</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B</span></div>
+<div><b>2.</b> <span class="key-ans">B — Gross income derived from the conduct</span></div>
+<div><b>3.</b> <span class="key-ans">B — Yes, in addition to or in lieu of</span></div>
+</div>
+</div>
+
+<!-- ============================================================ 1.4 SUPERVISOR RESPONSIBILITY ============================================================ -->
+<div class="c4 pagebreak">
+<h2 class="section">1.4 — SUPERVISOR RESPONSIBILITY</h2>
+<div class="rule-box">
+<p>Practitioner có/chia sẻ <b>principal authority</b> giám sát việc chuẩn bị returns/claims/tài liệu nộp IRS của firm phải có biện pháp hợp lý đảm bảo firm có quy trình đầy đủ để tuân thủ Circular 230 cho mọi thành viên, associate, nhân viên.</p>
+<p>Practitioner này bị kỷ luật nếu:</p>
+<ul>
+<li>Không có biện pháp hợp lý đảm bảo quy trình đầy đủ, VÀ có 1+ người trong firm có pattern/practice không tuân thủ; HOẶC</li>
+<li>Biết hoặc lẽ ra phải biết về pattern/practice không tuân thủ nhưng không hành động khắc phục kịp thời.</li>
+</ul>
+<p>Chỉ chịu trách nhiệm nếu sự không hành động là <b>willful (cố ý), reckless (liều lĩnh), hoặc grossly incompetent (thiếu năng lực nghiêm trọng)</b>.</p>
+</div>
+
+<h3 class="lesson">Requirements for Written Tax Advice</h3>
+<div class="rule-box">
+<p>Khi đưa ra written advice (kể cả qua electronic communication) về federal tax matter, practitioner phải:</p>
+<ul>
+<li>Dựa trên các giả định hợp lý (reasonable assumptions);</li>
+<li>Xem xét hợp lý mọi facts liên quan đã biết hoặc lẽ ra phải biết;</li>
+<li>Dùng nỗ lực hợp lý để xác định facts liên quan.</li>
+</ul>
+<p>KHÔNG được dựa vào các đại diện/statement/finding/agreement KHÔNG hợp lý (được biết là sai, mâu thuẫn, hoặc thiếu sót). KHÔNG được cân nhắc khả năng return sẽ không bị audit hoặc vấn đề sẽ không bị nêu ra khi audit.</p>
+<p>Được dựa (rely in good faith) vào advice của practitioner khác CHỈ nếu advice đó hợp lý trong hoàn cảnh. KHÔNG được dựa vào advice của người mà mình biết/lẽ ra phải biết là không đủ năng lực, hoặc có conflict of interest chưa giải quyết.</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ 1.4</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">principal authority</td><td class="vn">thẩm quyền chính (người phụ trách/giám sát firm)</td></tr>
+<tr><td class="word">pattern or practice of noncompliance</td><td class="vn">mô thức/thói quen không tuân thủ</td></tr>
+<tr><td class="word">willful / reckless / grossly incompetent</td><td class="vn">cố ý / liều lĩnh / thiếu năng lực nghiêm trọng</td></tr>
+<tr><td class="word">written tax advice</td><td class="vn">tư vấn thuế bằng văn bản</td></tr>
+<tr><td class="word">reasonable assumptions</td><td class="vn">giả định hợp lý</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 1.4</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. A supervising practitioner is subject to discipline for a firm's pattern of noncompliance if the inaction is:</div>
+<div class="opt">A. Accidental and immediately corrected</div><div class="opt">B. Willful, reckless, or grossly incompetent</div><div class="opt">C. Based on a single isolated clerical error</div><div class="opt">D. Never a basis for discipline</div></div>
+<div class="mcq"><div class="q">2. When giving written tax advice, a practitioner may consider the possibility that the return will not be audited:</div>
+<div class="opt">A. Always</div><div class="opt">B. Never — this may not be considered in evaluating a tax matter</div><div class="opt">C. Only if the client requests it</div><div class="opt">D. Only for matters under $10,000</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 1.4 Supervisor Responsibility</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B</span></div>
+<div><b>2.</b> <span class="key-ans">B — Never</span><br><span class="key-exp">Written advice không được xét đến khả năng return không bị audit.</span></div>
+</div>
+</div>
+
+<!-- ============================================================ 1.5 SANCTIONS AND DISCIPLINARY PROCEEDINGS ============================================================ -->
+<div class="c5 pagebreak">
+<h2 class="section">1.5 — SANCTIONS AND DISCIPLINARY PROCEEDINGS</h2>
+<div class="rule-box">
+<p>Practitioner có thể bị <b>censure (khiển trách công khai), suspend (đình chỉ), hoặc disbar (tước quyền)</b> khỏi hành nghề trước IRS vì vi phạm cố ý (willful) các quy định Circular 230.</p>
+<p><b>Secretary of the Treasury</b> có thể censure/suspend/disbar practitioner nếu: được chứng minh là incompetent/disreputable; từ chối tuân thủ quy định hành nghề; hoặc cố ý & biết rõ, với ý định lừa dối, deceive/mislead/threaten client.</p>
+</div>
+
+<h3 class="lesson">Ví dụ về Incompetent & Disreputable Conduct (Sec. 10.50)</h3>
+<div class="rule-box">
+<p>Danh sách không giới hạn bao gồm:</p>
+<ul>
+<li>Bị kết án tội hình sự theo luật thuế liên bang, hoặc tội liên quan dishonesty/breach of trust, hoặc felony khiến practitioner không đủ tư cách hành nghề.</li>
+<li>Cố ý cung cấp thông tin sai/gây hiểu lầm cho Treasury/IRS/tòa án thuế.</li>
+<li>Vi phạm quy định solicitation (Sec. 10.30), dùng đại diện sai để lôi kéo client, hoặc ngụ ý có khả năng "chạy" đặc quyền với IRS.</li>
+<li>Cố ý không nộp tờ khai thuế liên bang, hoặc trốn/giúp trốn thuế.</li>
+<li>Cố ý tư vấn/khuyến khích client vi phạm luật thuế liên bang hoặc dùng kế hoạch bất hợp pháp để trốn thuế.</li>
+<li>Biển thủ hoặc không kịp thời nộp lại tiền client đưa để đóng thuế.</li>
+<li>Cố tình gây ảnh hưởng đến hành động chính thức của nhân viên IRS bằng đe dọa, vu khống, ép buộc, hoặc hối lộ (gift/favor/thing of value).</li>
+<li>Bị đình chỉ/tước quyền hành nghề attorney/CPA/actuary bởi bất kỳ cơ quan bang/liên bang nào.</li>
+<li>Cố ý giúp người khác hành nghề trong thời gian họ đang bị suspend/disbar.</li>
+<li>Hành vi khinh miệt (contemptuous conduct): ngôn ngữ lăng mạ, cáo buộc sai sự thật, phát tán tài liệu phỉ báng.</li>
+<li>Cố ý/liều lĩnh/thiếu năng lực nghiêm trọng đưa ra opinion sai lệch, hoặc có pattern đưa opinion không đủ năng lực.</li>
+<li>Cố ý không ký return theo yêu cầu luật (trừ có reasonable cause, không do willful neglect).</li>
+<li>Cố ý tiết lộ/sử dụng return/return information trái phép theo IRC.</li>
+<li>Cố ý không e-file khi luật yêu cầu (trừ reasonable cause).</li>
+<li>Cố ý chuẩn bị/ký return mà không có PTIN hợp lệ.</li>
+<li>Cố ý đại diện taxpayer trước IRS khi không được phép.</li>
+</ul>
+</div>
+<div class="example-box"><b class="ex-tag">Lưu ý:</b> Nhiều hành vi ở trên lặp lại theo mẫu "willfully" (cố ý) — đây là điểm mấu chốt phân biệt sai sót vô ý (có thể có reasonable cause defense) với vi phạm bị chế tài.</div>
+
+<h3 class="lesson">Quy trình tố tụng (Proceedings)</h3>
+<div class="rule-box">
+<p><b>Bắt đầu bằng Complaint:</b> nêu tên respondent, ký bởi đại diện có thẩm quyền của IRS, trình bày rõ ràng & súc tích các cáo buộc (đủ để respondent chuẩn bị biện hộ), kèm đề xuất chế tài và yêu cầu trả lời (demand for answer).</p>
+<p><b>Service of Complaint:</b> giao tận tay, dịch vụ chuyển phát tư nhân, certified mail, first-class mail (nếu certified letter bị từ chối), hoặc phương thức khác do respondent đồng ý.</p>
+<p><b>Compliance Opportunity:</b> thủ tục chưa chính thức bắt đầu cho đến khi complaint được nhận VÀ practitioner được cơ hội chứng minh/đạt được tuân thủ.</p>
+<p><b>Consent to Suspension:</b> practitioner có thể đề nghị đồng ý suspend để tránh khởi xướng thủ tục — nhưng IRS KHÔNG bắt buộc phải chấp nhận.</p>
+</div>
+
+<h3 class="lesson">Complaint Response & Hearing</h3>
+<div class="rule-box">
+<p><b>Trả lời (Answer):</b> practitioner phải có <b>tối thiểu 30 ngày</b> kể từ ngày service để nộp answer (có thể xin gia hạn từ ALJ). Nếu không trả lời, ALJ có thể coi như đã thừa nhận mọi cáo buộc & từ bỏ quyền điều trần, quyết định default chống lại respondent.</p>
+<p>Answer phải nêu facts biện hộ, thừa nhận/phủ nhận từng cáo buộc (hoặc nói thiếu thông tin để xác định). KHÔNG được phủ nhận cáo buộc mà mình biết là đúng, hoặc nói thiếu thông tin khi thực tế có thông tin. Mọi cáo buộc không bị phủ nhận coi như đã thừa nhận & chứng minh.</p>
+<p><b>Hearing:</b> chủ trì bởi <b>Administrative Law Judge (ALJ)</b>, nên diễn ra trong <b>180 ngày</b> sau hạn nộp answer. Mỗi bên nộp prehearing memorandum (exhibits, witnesses, depositions, expert witnesses, undisputed facts). Respondent có thể tự đại diện, nhờ practitioner khác, hoặc attorney (không cần là EA/đã declare hành nghề IRS). Hearing phải được ghi tốc ký & phiên dịch; testimony dưới lời thề. ALJ không nhất thiết theo rules of evidence của tòa án thường, có thể loại bỏ bằng chứng không liên quan/lặp lại.</p>
+<p><b>Standard of proof:</b> Censure hoặc suspension &lt;6 tháng → <b>preponderance of the evidence</b> (ưu thế chứng cứ). Monetary penalty, suspension ≥6 tháng, hoặc disbarment → <b>clear and convincing evidence</b> (bằng chứng rõ ràng & thuyết phục).</p>
+<p><b>Appeal:</b> mỗi bên có thể kháng cáo quyết định ALJ lên Secretary of the Treasury trong <b>30 ngày</b>.</p>
+</div>
+
+<h3 class="lesson">Hậu quả & Records Disclosure</h3>
+<div class="rule-box">
+<p><b>Notice</b> gửi đến: nhân viên IRS, các bộ/phòng ban liên quan, cơ quan liên bang, và cơ quan bang thích hợp.</p>
+<p><b>Censure:</b> khiển trách công khai — có thể kèm điều kiện áp dụng trong thời gian hợp lý tùy mức độ vi phạm.</p>
+<p><b>Suspension:</b> không được hành nghề trong thời gian bị đình chỉ.</p>
+<p><b>Reinstatement sau Disbarment:</b> sau <b>5 năm</b>, IRS có thể xét đơn phục hồi nếu tin practitioner sẽ tuân thủ quy định.</p>
+<p><b>Records Disclosure:</b> IRS công khai danh sách người được enroll, người bị censure/suspend/disbar, và danh sách appraiser bị disqualify.</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ 1.5</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">censure / suspend / disbar</td><td class="vn">khiển trách công khai / đình chỉ / tước quyền hành nghề</td></tr>
+<tr><td class="word">Administrative Law Judge (ALJ)</td><td class="vn">Thẩm phán hành chính (chủ trì hearing kỷ luật)</td></tr>
+<tr><td class="word">preponderance of the evidence</td><td class="vn">ưu thế chứng cứ (tiêu chuẩn chứng minh thấp hơn)</td></tr>
+<tr><td class="word">clear and convincing evidence</td><td class="vn">bằng chứng rõ ràng & thuyết phục (tiêu chuẩn cao hơn)</td></tr>
+<tr><td class="word">reinstatement</td><td class="vn">phục hồi tư cách hành nghề</td></tr>
+<tr><td class="word">respondent</td><td class="vn">bị đơn (practitioner bị khiếu nại)</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 1.5</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. A practitioner must be given at least how many days from service of a complaint to file an answer?</div>
+<div class="opt">A. 10 days</div><div class="opt">B. 15 days</div><div class="opt">C. 30 days</div><div class="opt">D. 60 days</div></div>
+<div class="mcq"><div class="q">2. For a proceeding seeking disbarment, the standard of proof is:</div>
+<div class="opt">A. Preponderance of the evidence</div><div class="opt">B. Clear and convincing evidence</div><div class="opt">C. Beyond a reasonable doubt</div><div class="opt">D. Substantial evidence</div></div>
+<div class="mcq"><div class="q">3. After disbarment, a practitioner may petition for reinstatement after:</div>
+<div class="opt">A. 1 year</div><div class="opt">B. 2 years</div><div class="opt">C. 3 years</div><div class="opt">D. 5 years</div></div>
+<div class="mcq"><div class="q">4. A hearing on a disciplinary complaint should generally occur within how many days after the time for filing the answer?</div>
+<div class="opt">A. 60 days</div><div class="opt">B. 90 days</div><div class="opt">C. 180 days</div><div class="opt">D. 365 days</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 1.5 Sanctions and Disciplinary Proceedings</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">C — 30 days</span></div>
+<div><b>2.</b> <span class="key-ans">B — Clear and convincing evidence</span><br><span class="key-exp">Disbarment, monetary penalty, và suspension ≥6 tháng đều dùng tiêu chuẩn cao hơn.</span></div>
+<div><b>3.</b> <span class="key-ans">D — 5 years</span></div>
+<div><b>4.</b> <span class="key-ans">C — 180 days</span></div>
+</div>
+</div>
+
+<!-- ============================================================ 1.6 RENEWAL ============================================================ -->
+<div class="c6 pagebreak">
+<h2 class="section">1.6 — RENEWAL</h2>
+<div class="rule-box">
+<p>EA phải <b>renew enrollment mỗi 3 năm</b> để duy trì active status. Lịch renewal dựa trên <b>chữ số cuối của SSN/tax ID</b> — chia thành 3 nhóm, mỗi năm khoảng 1/3 số EA renew. Nộp <b>Form 8554</b> (Application for Renewal of Enrollment).</p>
+</div>
+
+<h3 class="lesson">Lịch trình Renewal (ví dụ theo chu kỳ Gleim 2026)</h3>
+<table class="vocab">
+<tr><th>SSN/Tax ID tận cùng bằng</th><th>Thời gian nộp renewal</th><th>Hiệu lực từ</th></tr>
+<tr><td class="word">4, 5, 6</td><td>1/11/2025 – 31/1/2026</td><td>1/4/2026</td></tr>
+<tr><td class="word">7, 8, 9</td><td>1/11/2026 – 31/1/2027</td><td>1/4/2027</td></tr>
+<tr><td class="word">0, 1, 2, 3</td><td>1/11/2027 – 31/1/2028</td><td>1/4/2028</td></tr>
+</table>
+<div class="rule-box">
+<p>EA phải renew trong khoảng <b>1/11 – 31/1</b> của mỗi năm thứ 3. Người mới được enroll SAU 1/11 và TRƯỚC 2/4 của kỳ renewal đó KHÔNG cần renew cho đến kỳ renewal đầy đủ tiếp theo.</p>
+<p>Không nhận được thông báo renewal từ IRS KHÔNG phải lý do chính đáng để không tuân thủ. EA không tuân thủ sẽ có cơ hội giải trình lý do — nếu không đủ, có thể bị đưa vào roster "inactive enrolled agents" trong <b>3 năm</b>.</p>
+</div>
+
+<h3 class="lesson">Continuing Education (CE)</h3>
+<div class="rule-box">
+<p>Renewal đòi hỏi hoàn thành tối thiểu <b>72 giờ CE</b> trong chu kỳ 3 năm, gồm tối thiểu <b>16 giờ mỗi năm enrollment</b> (năm chạy từ 1/1–31/12).</p>
+<ul>
+<li>1 contact hour = 50 phút tham gia liên tục.</li>
+<li>Người mới được enroll giữa chu kỳ: cần <b>2 giờ CE/tháng</b> còn lại của chu kỳ.</li>
+<li>Phải hoàn thành <b>2 giờ ethics/professional conduct mỗi năm enrollment</b> trong chu kỳ. Enroll bất kỳ phần nào của năm = tính cả năm đó.</li>
+<li><b>Qualified CE program:</b> chương trình nâng cao kiến thức chuyên môn về federal tax law, federal tax-related matters, qualified retirement plan matters, hoặc federal tax-related ethics.</li>
+<li><b>Teaching credit:</b> 2 giờ cho chuẩn bị bài giảng (có chứng minh) + 1 giờ làm instructor/discussion leader/speaker cho mỗi contact hour giảng dạy — TỐI ĐA <b>6 giờ/năm</b> cho instruction+preparation.</li>
+<li><b>Publication credit:</b> tối đa <b>25% của yêu cầu CE cả chu kỳ</b>.</li>
+<li>Phải giữ tài liệu chứng minh CE trong <b>4 năm</b> sau ngày renewal.</li>
+</ul>
+</div>
+
+<h3 class="lesson">Thuật ngữ 1.6</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">Form 8554</td><td class="vn">Đơn xin gia hạn enrollment của EA</td></tr>
+<tr><td class="word">continuing education (CE)</td><td class="vn">giáo dục thường xuyên/liên tục</td></tr>
+<tr><td class="word">contact hour</td><td class="vn">giờ tiếp xúc học tập (50 phút liên tục)</td></tr>
+<tr><td class="word">enrollment cycle</td><td class="vn">chu kỳ enrollment (3 năm)</td></tr>
+<tr><td class="word">inactive roster</td><td class="vn">danh sách EA không hoạt động (do không tuân thủ renewal)</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 1.6</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. Enrolled agents must complete a minimum of how many hours of continuing education per 3-year enrollment cycle?</div>
+<div class="opt">A. 24</div><div class="opt">B. 48</div><div class="opt">C. 72</div><div class="opt">D. 96</div></div>
+<div class="mcq"><div class="q">2. Within the 3-year cycle, an enrolled agent must complete at least how many CE hours in EACH enrollment year?</div>
+<div class="opt">A. 8</div><div class="opt">B. 16</div><div class="opt">C. 24</div><div class="opt">D. 30</div></div>
+<div class="mcq"><div class="q">3. An enrolled agent applies for renewal using:</div>
+<div class="opt">A. Form 2848</div><div class="opt">B. Form 8554</div><div class="opt">C. Form 8821</div><div class="opt">D. Form 23</div></div>
+<div class="mcq"><div class="q">4. A practitioner failing to receive an IRS renewal notice:</div>
+<div class="opt">A. Is automatically excused from renewal</div><div class="opt">B. Does not justify failing to comply with the renewal requirement</div><div class="opt">C. Gets an automatic 1-year extension</div><div class="opt">D. Loses enrollment permanently</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 1.6 Renewal</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">C — 72</span></div>
+<div><b>2.</b> <span class="key-ans">B — 16</span></div>
+<div><b>3.</b> <span class="key-ans">B — Form 8554</span></div>
+<div><b>4.</b> <span class="key-ans">B</span></div>
+</div>
+</div>
+
+<!-- ============================================================ 1.7 IDENTITY THEFT ============================================================ -->
+<div class="c1 pagebreak">
+<h2 class="section">1.7 — IDENTITY THEFT</h2>
+<div class="rule-box">
+<p><b>Identity theft</b> = ai đó dùng thông tin cá nhân của người khác (tên, SSN, thông tin nhận dạng khác) không có phép để thực hiện gian lận/tội phạm. Kẻ gian có thể dùng EIN bị đánh cắp để tạo Form W-2 giả nhằm gian lận hoàn thuế. Taxpayer có thể không biết cho đến khi nộp return và phát hiện đã có 2 return dùng cùng SSN.</p>
+<p><b>Online provider</b> bị data breach phải liên hệ IRS trong <b>1 ngày làm việc</b>.</p>
+</div>
+
+<h3 class="lesson">Dấu hiệu cảnh báo (Red Flags)</h3>
+<div class="rule-box">
+<p>Taxpayer nên cảnh giác nếu nhận IRS notice/letter nói: (1) có nhiều hơn 1 return đã nộp dưới tên mình; (2) có balance due/refund offset/collection action cho năm chưa từng nộp return; (3) IRS ghi nhận wages từ employer không quen biết.</p>
+<p><b>Cá nhân:</b> e-file bị từ chối với mã báo SSN đã được dùng; có hoạt động tài khoản/notice sau khi mọi vấn đề thuế đã giải quyết & refund đã nhận; nhận notice về wages từ employer lạ.</p>
+<p><b>Doanh nghiệp:</b> business return bị xử lý như amended return dù chưa nộp return năm đó; nhận notice về nhân viên hư cấu (fictitious employees); phát hiện hoạt động/notice cho business đã đóng cửa/ngừng hoạt động dù đã thanh toán hết.</p>
+</div>
+
+<h3 class="lesson">Hỗ trợ nạn nhân</h3>
+<div class="rule-box">
+<p>Taxpayer bị đánh cắp danh tính điền <b>Form 14039, Identity Theft Affidavit</b> để IRS gắn chỉ báo (indicator) lên hồ sơ thuế cho hoạt động đáng ngờ.</p>
+<p>IRS KHÔNG BAO GIỜ chủ động liên hệ taxpayer qua email để hỏi thông tin cá nhân/tài chính — kể cả text message hay mạng xã hội.</p>
+<p><b>IRS Publication 5199</b> (Tax Preparer Guide to Identity Theft) khuyến nghị theo FTC: khai báo & lấy recovery plan tại www.IdentityTheft.gov; đặt fraud alert với 1 trong 3 credit bureau (Equifax, Experian, TransUnion); xem lại credit report và cân nhắc đóng tài khoản không xác nhận được.</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ 1.7</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">identity theft</td><td class="vn">đánh cắp danh tính</td></tr>
+<tr><td class="word">Form 14039 (Identity Theft Affidavit)</td><td class="vn">Đơn khai báo bị đánh cắp danh tính</td></tr>
+<tr><td class="word">data breach</td><td class="vn">rò rỉ/xâm phạm dữ liệu</td></tr>
+<tr><td class="word">fraud alert</td><td class="vn">cảnh báo gian lận trên hồ sơ tín dụng</td></tr>
+<tr><td class="word">credit bureau</td><td class="vn">cơ quan báo cáo tín dụng (Equifax, Experian, TransUnion)</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 1.7</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. A taxpayer who is a victim of identity theft should file:</div>
+<div class="opt">A. Form 8275</div><div class="opt">B. Form 14039</div><div class="opt">C. Form 8554</div><div class="opt">D. Form 2848</div></div>
+<div class="mcq"><div class="q">2. An online provider that experiences a data breach must contact the IRS within:</div>
+<div class="opt">A. 24 hours (1 business day)</div><div class="opt">B. 5 business days</div><div class="opt">C. 30 days</div><div class="opt">D. There is no specific requirement</div></div>
+<div class="mcq"><div class="q">3. Which is TRUE regarding IRS contact with taxpayers?</div>
+<div class="opt">A. The IRS routinely emails taxpayers to request financial information</div><div class="opt">B. The IRS never initiates contact by email, text, or social media to request personal/financial information</div><div class="opt">C. The IRS only calls taxpayers, never mails notices</div><div class="opt">D. The IRS uses text messages exclusively for identity verification</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 1.7 Identity Theft</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — Form 14039</span></div>
+<div><b>2.</b> <span class="key-ans">A — 1 business day</span></div>
+<div><b>3.</b> <span class="key-ans">B</span></div>
+</div>
+</div>
+
+</body>
+</html>

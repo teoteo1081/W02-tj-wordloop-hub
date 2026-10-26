@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<!-- Google tag (gtag.js) — GA4 chung của TJ, nhãn site=ea -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'ea'});</script>
+
+<meta charset="UTF-8">
+<title>EA Part I – SU11: Nonrecognition Property Transactions</title>
+<style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  body { font-family:'Segoe UI','Calibri',Arial,sans-serif; color:#33322f; font-size:15px; line-height:1.5; background:#fdfcfa; margin:0; }
+  .cover { background: linear-gradient(120deg,#bfe4ff 0%,#d6ecff 30%,#e6def7 65%,#fbe6f4 100%); border-radius:20px; padding:40px 30px; text-align:center; margin-bottom:10px; box-shadow:0 6px 18px rgba(120,130,180,.25); border:1px solid #dfe8f5; }
+  .cover .tag { display:inline-block; background:#33314a; color:#d6ecff; font-weight:700; letter-spacing:2px; font-size:13px; padding:5px 14px; border-radius:20px; margin-bottom:14px; }
+  .cover h1 { font-size:28px; margin:6px 0; color:#3170a8; }
+  .cover h2 { font-size:15px; font-weight:500; margin:4px 0 0; opacity:.9; color:#33314a; }
+  .cover .books { margin-top:16px; font-size:13px; background:rgba(255,255,255,.55); display:inline-block; padding:8px 16px; border-radius:10px; color:#33314a; }
+  .toc { background:#fff; border:1.5px solid #dfe8f5; border-radius:14px; padding:18px 26px; margin-bottom:30px; }
+  .toc h3 { margin-top:0; color:#3170a8; }
+  .toc ol { margin:0; padding-left:22px; } .toc li{ margin-bottom:6px; }
+  h2.section { font-size:21px; color:#33314a; padding:12px 18px; border-radius:12px; margin:34px 0 14px; border-left:10px solid var(--accent,#5aa9d6); background:var(--bg,#eaf6fd); }
+  h3.lesson { font-size:18px; color:var(--accent-dark,#276a91); border-left:6px solid var(--accent,#5aa9d6); background:var(--bg-soft,#f3fafd); padding:8px 14px; border-radius:6px; margin:22px 0 10px; }
+  .c1{--accent:#5aa9d6;--accent-dark:#276a91;--bg:#eaf6fd;--bg-soft:#f3fafd;--head:#a9d4ec;}
+  .c2{--accent:#a892d9;--accent-dark:#5c4696;--bg:#f1ecfb;--bg-soft:#f8f5fd;--head:#cabdec;}
+  .c3{--accent:#f0a66e;--accent-dark:#b8620b;--bg:#fdeee2;--bg-soft:#fff8f0;--head:#f4c299;}
+  .cKey{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
+  table.vocab { width:100%; border-collapse:collapse; margin-bottom:18px; font-size:.94em; box-shadow:0 2px 8px rgba(0,0,0,.05); border-radius:10px; overflow:hidden; }
+  table.vocab th { background:var(--head,#5aa9d6); color:#2d2d2d; padding:8px; text-align:left; }
+  table.vocab td { padding:7px 8px; border-bottom:1px solid var(--bg,#eaf6fd); vertical-align:top; }
+  table.vocab tr:nth-child(even) td { background:var(--bg-soft,#faf6f0); }
+  table.vocab tr:nth-child(odd) td { background:#fff; }
+  table.vocab td.word { font-weight:800; color:var(--accent-dark,#276a91); }
+  table.vocab td.vn { font-weight:700; color:#3d6ba8; }
+  .rule-box { background:var(--bg,#eaf6fd); border-left:6px solid var(--accent,#5aa9d6); border-radius:8px; padding:12px 18px; margin:10px 0; }
+  .rule-box table { width:100%; border-collapse:collapse; margin:8px 0 4px; }
+  .rule-box table td, .rule-box table th { padding:6px 8px; border-bottom:1px solid rgba(0,0,0,.08); text-align:left; font-size:.92em; }
+  .rule-box table th { color:var(--accent-dark,#276a91); }
+  .rule-box ul, .rule-box ol { margin:6px 0; padding-left:22px; } .rule-box li{ margin-bottom:5px; }
+  .struct { font-weight:800; color:#b8620b; font-family:'Consolas','Courier New',monospace; }
+  .example-box { background:#fff; border:1.5px dashed var(--accent,#5aa9d6); border-radius:8px; padding:10px 16px; margin:8px 0; font-size:.92em; }
+  .example-box b.ex-tag { color:var(--accent-dark,#276a91); }
+  .mcq { background:#fff; border:1.5px solid var(--accent,#5aa9d6); border-radius:10px; padding:12px 18px; margin-bottom:12px; }
+  .mcq .q { color:#3d6ba8; font-weight:700; margin-bottom:6px; }
+  .mcq .opt { margin:2px 0 2px 10px; }
+  .content-block { background:#fff; border:2px dashed var(--accent,#5aa9d6); border-radius:12px; padding:16px 20px; margin-bottom:18px; }
+  .key-grid { column-count:1; } .key-grid div{ margin-bottom:9px; }
+  .key-ans { color:#20824f; font-weight:800; }
+  .key-exp { color:#555; font-size:.92em; }
+  .pagebreak { page-break-before: always; }
+  .note { font-size:.85em; color:#8a8a8a; font-style:italic; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="tag">EA EXAM PREP • PART I — INDIVIDUALS • SU11</div>
+  <h1>📗 SU11 — NONRECOGNITION PROPERTY TRANSACTIONS</h1>
+  <h2>Hoãn ghi nhận lãi/lỗ: §1031, §1033, §1041 &amp; các trường hợp khác (Song ngữ Việt–Anh)</h2>
+  <div class="books">📖 Khái niệm · 🔤 Thuật ngữ · 📌 Ví dụ · ❓ Trắc nghiệm · 🔑 Đáp án trang sau</div>
+</div>
+
+<div class="toc">
+<h3>📑 Mục lục SU11</h3>
+<ol>
+<li>11.1 Sale of a Principal Residence (§121)</li>
+<li>11.2 Like-Kind Exchanges (§1031)</li>
+<li>11.3 Involuntary Conversions (§1033)</li>
+<li>11.4 Transfers Between Spouses (§1041) &amp; Nonrecognition khác</li>
+<li>11.5 So sánh &amp; báo cáo</li>
+</ol>
+<p class="note">Soạn theo outline EA Part I — SU11 Nonrecognition Property Transactions. Số liệu theo năm thuế 2025 (gồm thay đổi của OBBBA). Chưa đối chiếu giáo trình Gleim — cần kiểm lại số liệu với giáo trình và năm thi thực tế.</p>
+</div>
+
+<!-- 11.1 -->
+<div class="c1">
+<h2 class="section">11.1 — SALE OF A PRINCIPAL RESIDENCE (§121)</h2>
+<div class="rule-box">
+<p>§121 cho phép <b>loại trừ vĩnh viễn</b> gain khi bán <b>principal residence</b>; <b>loss không được ghi nhận</b>. Là nonrecognition <b>vĩnh viễn</b> (khác §1031/§1033 chỉ hoãn).</p>
+</div>
+<h3 class="lesson">Ownership, Use &amp; Exclusion</h3>
+<div class="rule-box">
+<ul><li><b>Ownership + use test</b>: sở hữu và ở như nhà chính tổng cộng ≥ <b>2 trong 5 năm</b> trước ngày bán (không cần liên tục)</li><li>Chỉ dùng được <b>mỗi 2 năm một lần</b></li><li>Loại trừ tối đa <b>$250,000</b> ($500,000 MFJ)</li><li><b>$500,000 MFJ</b> nếu: một trong hai spouse đạt ownership test, <b>cả hai</b> đạt use test, và không ai bị chặn vì đã dùng exclusion trong 2 năm trước</li><li><b>Surviving spouse</b>: được $500,000 nếu bán trong <b>2 năm</b> sau ngày vợ/chồng mất; thời gian sở hữu của người đã mất được cộng vào</li><li>Exclusion tính <b>theo từng cá nhân</b>: vợ chồng khai chung nhưng không chung nhà → mỗi người $250,000 cho nhà chính của mình</li><li>Người độc thân đủ điều kiện kết hôn với người vừa dùng exclusion trong 2 năm vẫn được $250,000</li><li><b>Ly hôn</b>: thời gian ex-spouse sở hữu được cộng vào; người sở hữu được coi là vẫn ở nếu ex-spouse được cho dùng nhà theo divorce/separation instrument</li><li><b>Không tự chăm sóc được</b> và ở cơ sở có giấy phép: được coi là vẫn ở nếu đã sở hữu/ở ≥ <b>1 năm</b> trong 5 năm</li></ul>
+</div>
+<h3 class="lesson">Prorating, Nonqualified Use, Business Use</h3>
+<div class="rule-box">
+<ul><li><b>Partial exclusion</b>: nếu bán vì <b>đổi nơi làm việc, sức khỏe, hoặc hoàn cảnh bất ngờ</b> → exclusion × (số tháng đủ điều kiện ÷ 24)</li><li><b>Nonqualified use</b> (sau 2008, trước ngày cuối cùng ở): gain phân bổ theo tỷ lệ thời gian nonqualified; thời gian cho thuê <b>sau</b> khi dọn đi <b>không</b> tính là nonqualified use</li><li><b>Quân đội/ ngoại giao/ tình báo</b>: có thể <b>suspend</b> 5-year test tối đa <b>10 năm</b> (tổng 15 năm)</li><li><b>Home office</b> trong nhà: gain bằng <b>depreciation allowed or allowable sau 6/5/1997</b> không được loại trừ; phần <b>tách biệt</b> (căn hộ cho thuê riêng, nông trại) phải phân bổ basis/amount realized và khai <b>Form 4797</b></li><li>Nhà đang cho thuê/ business vào lúc bán vẫn có thể được exclude nếu đạt 2/5 năm (giảm theo nonqualified use)</li><li><b>Selling expenses</b> giảm amount realized; <b>capital improvements</b> cộng vào basis; gain không loại trừ khai <b>Schedule D</b></li><li>Nhà có được qua <b>§1031 trong 5 năm</b> trước → <b>không</b> dùng được §121</li><li>Nếu gain thấp hơn mức exclusion tối đa thì <b>không phải khai</b> trên return</li></ul>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 11-A (Nonqualified use):</b> Trong 5 năm trước khi bán, Mary thuê nhà 3 năm rồi ở 2 năm (cho tới lúc bán): 3 năm thuê nằm <b>trước</b> lần ở cuối → là nonqualified use → chỉ <b>40%</b> gain (2/5) đủ điều kiện, tối đa $250,000. Sharon ở 3 năm rồi cho thuê 2 năm rồi bán: thời gian thuê nằm <b>sau</b> lần ở cuối → toàn bộ gain đủ điều kiện.</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 11-B (Prorate):</b> Chủ nhà sống 18 tháng rồi chuyển việc và bán → exclusion = $250,000 × 18/24 = <b>$187,500</b> (Single).</div>
+
+<h3 class="lesson">Thuật ngữ 11.1</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">principal residence</td><td class="vn">nhà ở chính</td></tr>
+<tr><td class="word">ownership and use tests</td><td class="vn">điều kiện sở hữu và sử dụng (2/5 năm)</td></tr>
+<tr><td class="word">nonqualified use</td><td class="vn">thời gian không dùng làm nhà chính (sau 2008, trước lần ở cuối)</td></tr>
+<tr><td class="word">partial exclusion</td><td class="vn">loại trừ một phần theo tỷ lệ tháng</td></tr>
+<tr><td class="word">depreciation recapture (home office)</td><td class="vn">khấu hao home office không được loại trừ (sau 6/5/1997)</td></tr>
+<tr><td class="word">incident to divorce</td><td class="vn">liên quan đến ly hôn</td></tr>
+<tr><td class="word">suspension of 5-year test</td><td class="vn">kéo dài tới 10 năm cho quân nhân/ ngoại giao</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 11.1</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. To exclude gain on a principal residence, the taxpayer must have owned and used it as a principal residence for at least:</div>
+<div class="opt">A. 1 of the last 3 years</div><div class="opt">B. 2 of the last 5 years</div><div class="opt">C. 3 of the last 5 years</div><div class="opt">D. 5 of the last 10 years</div></div>
+<div class="mcq"><div class="q">2. A taxpayer lived in a home for 18 months and sold it due to a job change. The maximum exclusion (Single) is:</div>
+<div class="opt">A. $0</div><div class="opt">B. $125,000</div><div class="opt">C. $187,500</div><div class="opt">D. $250,000</div></div>
+<div class="mcq"><div class="q">3. A residence acquired in a §1031 exchange within the prior 5 years:</div>
+<div class="opt">A. Qualifies for §121 immediately</div><div class="opt">B. Does not qualify for the §121 exclusion</div><div class="opt">C. Qualifies for a $125,000 exclusion</div><div class="opt">D. Is always taxed at 15%</div></div>
+<div class="mcq"><div class="q">4. Depreciation allowed or allowable on a home office after May 6, 1997:</div>
+<div class="opt">A. Is excluded under §121</div><div class="opt">B. May not be excluded and is taxed</div><div class="opt">C. Reduces the exclusion limit to $125,000</div><div class="opt">D. Is ignored</div></div>
+<div class="mcq"><div class="q">5. A loss on the sale of a personal residence is:</div>
+<div class="opt">A. Deductible as a capital loss</div><div class="opt">B. Deductible as an ordinary loss</div><div class="opt">C. Not recognized</div><div class="opt">D. Deductible up to $3,000</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 11.1 SALE OF A PRINCIPAL RESIDENCE (§121)</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — 2 of the last 5 years</span></div>
+<div><b>2.</b> <span class="key-ans">C — $187,500</span></div>
+<div><b>3.</b> <span class="key-ans">B — Does not qualify for the §121 exclusion</span></div>
+<div><b>4.</b> <span class="key-ans">B — May not be excluded and is taxed</span></div>
+<div><b>5.</b> <span class="key-ans">C — Not recognized</span></div>
+</div>
+</div>
+
+<!-- 11.2 -->
+<div class="c2 pagebreak">
+<h2 class="section">11.2 — LIKE-KIND EXCHANGES (§1031)</h2>
+<div class="rule-box">
+<p><b>Nonrecognition</b> nghĩa là gain/loss <b>realized</b> không bị tính thuế ngay, thường vì basis cũ <b>chuyển sang</b> tài sản mới (hoãn, không miễn). Giao dịch phải đúng điều kiện — nonrecognition thường <b>bắt buộc</b>, không phải lựa chọn.</p>
+</div>
+<h3 class="lesson">Điều kiện §1031 (sau 2017)</h3>
+<div class="rule-box">
+<ul><li><b>CHỈ real property</b> (đất, nhà, cho thuê…) — <b>personal property</b> (máy móc, xe, art, crypto) <b>không còn</b> đủ điều kiện</li><li>Cả relinquished và replacement property phải <b>held for productive use in a trade or business hoặc for investment</b></li><li><b>KHÔNG</b>: nhà ở chính, inventory/ property held for sale, stocks/bonds/partnership interests, real property <b>US ↔ foreign</b></li><li><b>Like-kind</b>: bất kỳ real property nào tại US (đất ↔ nhà ↔ cho thuê)</li><li><b>Exchange</b> phải thực sự là exchange: thường dùng <b>qualified intermediary (QI)</b> giữ tiền — taxpayer <b>không được constructive receipt</b> tiền</li><li><b>45 ngày</b> để <b>identify</b> replacement (3 property theo "3-property rule" hoặc 200% rule) và <b>180 ngày</b> (hoặc due date return kể cả extension, nếu sớm hơn) để <b>nhận</b> replacement</li><li><b>Related-party exchange</b>: mỗi bên giữ property <b>≥ 2 năm</b> (SU10)</li><li><b>Like-kind</b> theo tính chất, không theo chất lượng: đất ↔ nhà, thành phố ↔ nông thôn, có/không cải tạo; <b>lease ≥ 30 năm</b> coi như real property; real property <b>US ↔ foreign KHÔNG</b> like-kind (foreign ↔ foreign thì có)</li><li><b>Chi phí exchange</b> trừ vào boot nhận được (không dưới 0); phần dư cộng vào basis</li><li><b>Multiple parties</b> được phép; thời hạn 180 ngày là sớm hơn giữa 180 ngày và due date return (kể cả extension); identify bằng văn bản ký gửi cho bên kia; có thể identify nhiều property</li><li><b>Loss</b> về qualified property không ghi nhận; loss trên boot trả đi có thể ghi nhận</li></ul>
+</div>
+<h3 class="lesson">Boot, Gain &amp; Basis</h3>
+<div class="rule-box">
+<ul><li><b>Boot</b> = tiền hoặc tài sản <b>không phải like-kind</b> nhận thêm; <b>net liability relief</b> cũng là boot</li><li><b>Recognized gain = lesser of (gain realized, boot received)</b>; <b>loss KHÔNG ghi nhận</b></li><li><b>Boot paid</b> (trả thêm tiền) không tạo gain</li><li><b>Basis tài sản mới</b> = adjusted basis tài sản cũ + boot <b>trả</b> + gain <b>recognized</b> − boot <b>nhận</b></li><li><b>Holding period</b>: tacked (cộng nối)</li><li>Gain hoãn gồm cả phần <b>unrecaptured §1250 gain</b> — được mang theo property mới và bị tính khi bán sau</li><li><b>Reverse exchange</b> (mua replacement trước): dùng <b>EAT</b>, theo Rev. Proc. 2000-37; <b>improvement exchange</b></li><li><b>Form 8824</b> khai mọi like-kind exchange</li></ul>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 11-1 (Basis &amp; gain):</b> Hà đổi lô đất kinh doanh (adjusted basis $100,000, FMV $180,000) lấy đất khác (FMV $160,000) + $20,000 tiền mặt. Realized gain $80,000. Recognized = lesser($80,000, $20,000) = <b>$20,000</b>. Basis đất mới = $100,000 + $0 + $20,000 − $20,000 = <b>$100,000</b>.</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 11-2 (Liability):</b> Đổi nhà cho thuê (AB $220,000, nợ $100,000) lấy nhà (FMV $400,000) với nợ mới $140,000: liability <b>trả thêm</b> $40,000 → không gain; nếu nợ mới thấp hơn nợ cũ → liability relief là boot.</div>
+
+<h3 class="lesson">Thuật ngữ 11.2</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">like-kind exchange</td><td class="vn">trao đổi tài sản cùng loại</td></tr>
+<tr><td class="word">§1031</td><td class="vn">điều luật hoãn gain khi đổi real property (sau 2017)</td></tr>
+<tr><td class="word">qualified intermediary (QI)</td><td class="vn">bên trung gian giữ tiền khi exchange</td></tr>
+<tr><td class="word">boot</td><td class="vn">tiền/tài sản không cùng loại nhận thêm (bị tính thuế)</td></tr>
+<tr><td class="word">relinquished property</td><td class="vn">tài sản đem đi đổi</td></tr>
+<tr><td class="word">replacement property</td><td class="vn">tài sản nhận được</td></tr>
+<tr><td class="word">net liability relief</td><td class="vn">giải trừ nợ ròng (coi là boot)</td></tr>
+<tr><td class="word">reverse exchange</td><td class="vn">đổi ngược (mua replacement trước)</td></tr>
+<tr><td class="word">Form 8824</td><td class="vn">mẫu khai like-kind exchange</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 11.2</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. After 2017, Section 1031 like-kind exchange treatment is available for:</div>
+<div class="opt">A. Personal property only</div><div class="opt">B. Real property only</div><div class="opt">C. Both real and personal property</div><div class="opt">D. Stocks and bonds</div></div>
+<div class="mcq"><div class="q">2. A taxpayer must identify replacement property within ___ days and complete the exchange within ___ days of transfer.</div>
+<div class="opt">A. 30 / 90</div><div class="opt">B. 45 / 180</div><div class="opt">C. 60 / 120</div><div class="opt">D. 90 / 180</div></div>
+<div class="mcq"><div class="q">3. In a like-kind exchange, recognized gain equals:</div>
+<div class="opt">A. Gain realized</div><div class="opt">B. Boot received</div><div class="opt">C. The lesser of gain realized or boot received</div><div class="opt">D. The greater of gain realized or boot received</div></div>
+<div class="mcq"><div class="q">4. A taxpayer's basis in replacement property is generally:</div>
+<div class="opt">A. FMV</div><div class="opt">B. Adjusted basis of old property plus boot paid and gain recognized, less boot received</div><div class="opt">C. Zero</div><div class="opt">D. Adjusted basis of the old property only</div></div>
+<div class="mcq"><div class="q">5. Which property does NOT qualify for like-kind treatment?</div>
+<div class="opt">A. A rental building</div><div class="opt">B. A raw land held for investment</div><div class="opt">C. A personal residence</div><div class="opt">D. Farm land used in business</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 11.2 LIKE-KIND EXCHANGES (§1031)</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — Real property only</span></div>
+<div><b>2.</b> <span class="key-ans">B — 45 / 180</span></div>
+<div><b>3.</b> <span class="key-ans">C — The lesser of gain realized or boot received</span></div>
+<div><b>4.</b> <span class="key-ans">B — Adjusted basis of old property plus boot paid and gain recognized, less boot received</span></div>
+<div><b>5.</b> <span class="key-ans">C — A personal residence</span></div>
+</div>
+</div>
+
+<!-- 11.3 -->
+<div class="c3 pagebreak">
+<h2 class="section">11.3 — INVOLUNTARY CONVERSIONS (§1033)</h2>
+<h3 class="lesson">Khái niệm</h3>
+<div class="rule-box">
+<p><b>Involuntary conversion</b> = tài sản bị phá hủy, trộm cắp, <b>trưng dụng (condemnation)</b> hoặc dưới đe dọa trưng dụng, rồi nhận <b>insurance/ condemnation proceeds</b>. Gain có thể <b>hoãn</b> nếu mua <b>replacement property</b> trong thời hạn quy định; <b>loss KHÔNG hoãn</b> (dùng quy tắc casualty/§165).</p>
+</div>
+<h3 class="lesson">Quy tắc</h3>
+<div class="rule-box">
+<ul><li><b>Gain recognized</b> = lesser(gain realized, proceeds <b>không</b> tái đầu tư vào replacement)</li><li><b>Replacement period</b>: <b>2 năm</b> sau cuối tax year đầu tiên có gain; <b>3 năm</b> nếu <b>condemned business/investment real property</b>; <b>4 năm</b> cho nhà chính ở khu vực federally declared disaster</li><li><b>Replacement test</b>: <b>owner-user</b>: "<b>similar or related in service or use</b>" (<b>functional use test</b> — chức năng của property thay thế giống property cũ); <b>investor/ landlord</b>: <b>taxpayer use test</b> (cùng mối quan hệ dịch vụ/ sử dụng đối với taxpayer, vd tiếp tục cho thuê); <b>condemned real property</b>: <b>like-kind</b> (rộng hơn)</li><li><b>Direct conversion</b> (nhận ngay property thay thế): hoãn <b>bắt buộc</b>; <b>Indirect</b> (nhận tiền): hoãn là <b>election</b></li><li><b>Basis replacement</b> = cost của replacement − gain hoãn (không recognized); holding period <b>tacked</b></li><li><b>Principal residence</b>: có thể dùng <b>§121 trước</b>, rồi §1033 cho gain còn lại; cũng gồm <b>nhà thiệt hại do disaster</b></li><li>Khai nộp: nêu trên return, kèm statement; nếu không mua replacement → <b>amend</b> return và đóng thuế</li></ul>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 11-3 (§1033):</b> Nhà kho (basis $90,000) bị cháy, insurance $150,000; Hưng mua kho mới $130,000 trong thời hạn. Gain realized $60,000; recognized = lesser($60,000, $150,000 − $130,000 = $20,000) = <b>$20,000</b>. Basis kho mới = $130,000 − $40,000 deferred = <b>$90,000</b>.</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 11-4 (Condemnation):</b> Tiểu bang trưng dụng đất cho thuê (basis $50,000), bồi thường $200,000. Hưng mua đất cho thuê khác $200,000 trong 3 năm → <b>không gain</b> (like-kind test).</div>
+
+<h3 class="lesson">Thuật ngữ 11.3</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">involuntary conversion</td><td class="vn">chuyển đổi không tự nguyện (cháy, trưng dụng…)</td></tr>
+<tr><td class="word">condemnation</td><td class="vn">trưng dụng đất bởi nhà nước</td></tr>
+<tr><td class="word">§1033</td><td class="vn">điều luật hoãn gain khi tài sản bị chuyển đổi không tự nguyện</td></tr>
+<tr><td class="word">replacement period</td><td class="vn">thời hạn mua tài sản thay thế</td></tr>
+<tr><td class="word">similar or related in service or use</td><td class="vn">tương tự hoặc liên quan về chức năng/sử dụng</td></tr>
+<tr><td class="word">functional use test</td><td class="vn">test chức năng (owner-user)</td></tr>
+<tr><td class="word">taxpayer use test</td><td class="vn">test theo cách taxpayer sử dụng (investor)</td></tr>
+<tr><td class="word">direct conversion</td><td class="vn">nhận tài sản thay thế trực tiếp</td></tr>
+<tr><td class="word">indirect conversion</td><td class="vn">nhận tiền rồi mua tài sản thay thế</td></tr>
+<tr><td class="word">proceeds</td><td class="vn">số tiền thu được (bảo hiểm/ bồi thường)</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 11.3</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. A gain from an involuntary conversion may be postponed if the taxpayer:</div>
+<div class="opt">A. Reinvests the proceeds in similar property within the replacement period</div><div class="opt">B. Pays tax on 50%</div><div class="opt">C. Sells the replacement within 1 year</div><div class="opt">D. Holds cash</div><div class="opt">E. Elects capital gain</div></div>
+<div class="mcq"><div class="q">2. The standard replacement period for a casualty (non-condemnation) is:</div>
+<div class="opt">A. 1 year</div><div class="opt">B. 2 years after the close of the first year in which gain is realized</div><div class="opt">C. 3 years</div><div class="opt">D. 5 years</div></div>
+<div class="mcq"><div class="q">3. The replacement period for condemned business real property is:</div>
+<div class="opt">A. 1 year</div><div class="opt">B. 2 years</div><div class="opt">C. 3 years</div><div class="opt">D. 5 years</div></div>
+<div class="mcq"><div class="q">4. Losses from involuntary conversions are:</div>
+<div class="opt">A. Deferred under §1033</div><div class="opt">B. Not deferred</div><div class="opt">C. Always capital</div><div class="opt">D. Never deductible</div></div>
+<div class="mcq"><div class="q">5. Gain recognized on an involuntary conversion equals the lesser of gain realized or:</div>
+<div class="opt">A. Total proceeds</div><div class="opt">B. Proceeds not reinvested in replacement property</div><div class="opt">C. Adjusted basis</div><div class="opt">D. Replacement cost</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 11.3 INVOLUNTARY CONVERSIONS (§1033)</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">A — Reinvests the proceeds in similar property within the replacement period</span></div>
+<div><b>2.</b> <span class="key-ans">B — 2 years after the close of the first year in which gain is realized</span></div>
+<div><b>3.</b> <span class="key-ans">C — 3 years</span></div>
+<div><b>4.</b> <span class="key-ans">B — Not deferred</span></div>
+<div><b>5.</b> <span class="key-ans">B — Proceeds not reinvested in replacement property</span></div>
+</div>
+</div>
+
+<!-- 11.4 -->
+<div class="c1 pagebreak">
+<h2 class="section">11.4 — TRANSFERS BETWEEN SPOUSES (§1041) &amp; NONRECOGNITION KHÁC</h2>
+<h3 class="lesson">§1041 — Giao dịch giữa vợ chồng và ex-spouse</h3>
+<div class="rule-box">
+<ul><li><b>Không gain/loss</b> khi chuyển tài sản giữa <b>vợ/chồng</b> hoặc <b>ex-spouse incident to divorce</b> (trong <b>1 năm</b> sau khi cessation of marriage, hoặc theo divorce instrument <b>trong 6 năm</b>) — kể cả bán</li><li>Người nhận có <b>carryover basis</b> (và holding period tacked), <b>kể cả nếu FMV &lt; basis</b> (loss không dùng được)</li><li><b>Không áp dụng</b> nếu người nhận là <b>nonresident alien</b></li><li>Property settlement không phải alimony, không phải gift (không gift tax); transfer qua <b>trust</b> có thể bị gain nếu liability &gt; basis</li><li>Alimony (divorce từ 2019): không deductible/ không taxable (SU02)</li></ul>
+</div>
+<h3 class="lesson">Các nonrecognition khác</h3>
+<div class="rule-box">
+<table>
+<tr><th>Điều luật</th><th>Nội dung</th></tr>
+<tr><td>§1035</td><td>Đổi life insurance/ endowment/ annuity contracts cùng loại (không tính gain)</td></tr>
+<tr><td>§1036</td><td>Đổi stock cùng loại cùng corporation (common ↔ common)</td></tr>
+<tr><td>§351</td><td>Chuyển tài sản cho corporation đổi stock, kiểm soát ≥ 80% (Part II SU13)</td></tr>
+<tr><td>§721</td><td>Góp tài sản vào partnership (Part II SU09)</td></tr>
+<tr><td>§1045</td><td>Rollover QSBS: bán QSBS giữ &gt; 6 tháng, mua QSBS khác trong 60 ngày</td></tr>
+<tr><td>§121</td><td>Bán nhà chính (SU09)</td></tr>
+<tr><td>§1400Z-2 (QOZ)</td><td>Đầu tư capital gain vào <b>Qualified Opportunity Fund trong 180 ngày</b> — hoãn tới sớm hơn giữa bán QOF hoặc 31/12/2026; giữ 10 năm → basis step-up = FMV; OBBBA làm program vĩnh viễn cho đầu tư sau 2026</td></tr>
+<tr><td>§1202</td><td>Loại trừ gain QSBS (SU09)</td></tr>
+<tr><td>Gift</td><td>Không gain/loss cho donor/donee (nhưng không phải nonrecognition theo nghĩa luật)</td></tr>
+</table>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 11-5 (§1041):</b> Chị Thu chuyển cổ phiếu (basis $10,000, FMV $40,000) cho chồng cũ theo ly hôn. Thu <b>không gain</b>. Chồng cũ có basis <b>$10,000</b>; bán $40,000 sau đó → gain $30,000.</div>
+
+<h3 class="lesson">Thuật ngữ 11.4</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">§1041</td><td class="vn">giao dịch giữa vợ chồng/ ex-spouse không gain/loss</td></tr>
+<tr><td class="word">incident to a divorce</td><td class="vn">liên quan đến ly hôn (trong 1 năm hoặc 6 năm)</td></tr>
+<tr><td class="word">property settlement</td><td class="vn">phân chia tài sản khi ly hôn</td></tr>
+<tr><td class="word">§1035</td><td class="vn">đổi hợp đồng bảo hiểm/annuity không tính gain</td></tr>
+<tr><td class="word">qualified opportunity fund (QOF)</td><td class="vn">quỹ cơ hội đủ điều kiện (hoãn capital gain)</td></tr>
+<tr><td class="word">nonresident alien spouse</td><td class="vn">vợ/chồng không cư trú (không áp dụng §1041)</td></tr>
+<tr><td class="word">carryover basis</td><td class="vn">basis kế thừa</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 11.4</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. A transfer of property between spouses (both U.S. citizens) is:</div>
+<div class="opt">A. A taxable sale</div><div class="opt">B. Nonrecognition with carryover basis</div><div class="opt">C. A gift only if over $19,000</div><div class="opt">D. Taxable at capital gains rates</div></div>
+<div class="mcq"><div class="q">2. A transfer incident to a divorce must occur within how long after the marriage ends (or be under the divorce instrument within 6 years)?</div>
+<div class="opt">A. 6 months</div><div class="opt">B. 1 year</div><div class="opt">C. 2 years</div><div class="opt">D. 5 years</div></div>
+<div class="mcq"><div class="q">3. Section 1041 does NOT apply if the recipient spouse is:</div>
+<div class="opt">A. A U.S. citizen</div><div class="opt">B. A resident alien</div><div class="opt">C. A nonresident alien</div><div class="opt">D. Divorced</div></div>
+<div class="mcq"><div class="q">4. Under §1035, which exchange is tax-free?</div>
+<div class="opt">A. Life insurance policy for annuity contract</div><div class="opt">B. Stock for bonds</div><div class="opt">C. Car for truck</div><div class="opt">D. Land for stock</div></div>
+<div class="mcq"><div class="q">5. A taxpayer's recognized gain in a QOF deferral election is deferred until the earlier of the sale of the QOF investment or:</div>
+<div class="opt">A. December 31, 2023</div><div class="opt">B. December 31, 2026</div><div class="opt">C. December 31, 2030</div><div class="opt">D. Ten years</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 11.4 TRANSFERS BETWEEN SPOUSES (§1041) &amp; NONRECOGNITION KHÁC</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — Nonrecognition with carryover basis</span></div>
+<div><b>2.</b> <span class="key-ans">B — 1 year</span></div>
+<div><b>3.</b> <span class="key-ans">C — A nonresident alien</span></div>
+<div><b>4.</b> <span class="key-ans">A — Life insurance policy for annuity contract</span><br><span class="key-exp">Life insurance → annuity được phép; annuity → life insurance thì không.</span></div>
+<div><b>5.</b> <span class="key-ans">B — December 31, 2026</span></div>
+</div>
+</div>
+
+<!-- 11.5 -->
+<div class="c2 pagebreak">
+<h2 class="section">11.5 — SO SÁNH &amp; BÁO CÁO</h2>
+<h3 class="lesson">So sánh nhanh</h3>
+<div class="rule-box">
+<table>
+<tr><th>Giao dịch</th><th>Loại tài sản</th><th>Hoãn</th><th>Boot/proceeds</th><th>Loss</th></tr>
+<tr><td>§1031</td><td>Real property business/investment</td><td>Gain (và basis chuyển)</td><td>Boot recognized đến mức gain</td><td>Không ghi nhận</td></tr>
+<tr><td>§1033</td><td>Mọi property bị conversion</td><td>Gain nếu reinvest</td><td>Proceeds không reinvest recognized</td><td>Casualty/§165 rules</td></tr>
+<tr><td>§1041</td><td>Mọi property giữa vợ chồng</td><td>Gain &amp; loss</td><td>Không</td><td>Không ghi nhận</td></tr>
+<tr><td>§121</td><td>Nhà chính</td><td>Excluded (không hoãn)</td><td>Gain vượt $250k/$500k</td><td>Không deduct</td></tr>
+<tr><td>§1035</td><td>Insurance/annuity</td><td>Gain</td><td>Boot</td><td>Không</td></tr>
+</table>
+</div>
+<h3 class="lesson">Báo cáo</h3>
+<div class="rule-box">
+<ul><li><b>Form 8824</b>: like-kind exchange và involuntary conversion (một phần)</li><li><b>Form 4797</b>: gain/loss từ property kinh doanh, recapture</li><li><b>Form 4684</b>: casualty và theft</li><li><b>Schedule D / Form 8949</b>: capital transactions</li><li>Election §1033: nêu trong return; <b>§1031 không phải election</b> — chỉ cần Form 8824</li></ul>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 11-6 (Chọn công cụ):</b> Anh Long bán nhà cho thuê (basis $200,000) giá $500,000 và muốn hoãn thuế. Có thể dùng <b>§1031</b> (mua rental khác qua QI trong 45/180 ngày). Nếu nhà cho thuê bị cháy và nhận insurance $500,000 → dùng <b>§1033</b> (2 năm).</div>
+
+<h3 class="lesson">Thuật ngữ 11.5</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">Form 4684</td><td class="vn">mẫu khai casualty &amp; theft</td></tr>
+<tr><td class="word">Form 8949</td><td class="vn">mẫu liệt kê giao dịch chứng khoán/ tài sản vốn</td></tr>
+<tr><td class="word">exchanged basis</td><td class="vn">basis nhận được từ giao dịch exchange</td></tr>
+<tr><td class="word">deferral vs exclusion</td><td class="vn">hoãn thuế vs loại trừ vĩnh viễn</td></tr>
+<tr><td class="word">election (nonrecognition)</td><td class="vn">lựa chọn áp dụng nonrecognition</td></tr>
+<tr><td class="word">holding period tacking</td><td class="vn">nối tiếp holding period</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 11.5</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. Which of the following is a permanent exclusion (not just deferral) of gain?</div>
+<div class="opt">A. §1031</div><div class="opt">B. §1033</div><div class="opt">C. §121</div><div class="opt">D. §1035</div></div>
+<div class="mcq"><div class="q">2. Which form reports a like-kind exchange?</div>
+<div class="opt">A. Form 4797</div><div class="opt">B. Form 8824</div><div class="opt">C. Form 6252</div><div class="opt">D. Form 8594</div></div>
+<div class="mcq"><div class="q">3. A rental building destroyed by fire, with insurance proceeds exceeding basis. The taxpayer wants to defer the gain. The most appropriate provision is:</div>
+<div class="opt">A. §1031</div><div class="opt">B. §1033</div><div class="opt">C. §121</div><div class="opt">D. §1041</div></div>
+<div class="mcq"><div class="q">4. Which transaction does NOT permit recognition of a loss?</div>
+<div class="opt">A. Like-kind exchange</div><div class="opt">B. Sale of stock to a stranger</div><div class="opt">C. Sale of a rental to a stranger</div><div class="opt">D. Abandonment of business property</div></div>
+<div class="mcq"><div class="q">5. Basis of replacement property in a §1033 conversion generally equals:</div>
+<div class="opt">A. Insurance proceeds</div><div class="opt">B. Cost of replacement less deferred gain</div><div class="opt">C. Original basis only</div><div class="opt">D. FMV of old property</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 11.5 SO SÁNH &amp; BÁO CÁO</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">C — §121</span></div>
+<div><b>2.</b> <span class="key-ans">B — Form 8824</span></div>
+<div><b>3.</b> <span class="key-ans">B — §1033</span></div>
+<div><b>4.</b> <span class="key-ans">A — Like-kind exchange</span></div>
+<div><b>5.</b> <span class="key-ans">B — Cost of replacement less deferred gain</span></div>
+</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<!-- Google tag (gtag.js) — GA4 chung của TJ, nhãn site=ea -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'ea'});</script>
+
+<meta charset="UTF-8">
+<title>EA Part III – SU06: Tax Authority</title>
+<style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  body { font-family:'Segoe UI','Calibri',Arial,sans-serif; color:#33322f; font-size:15.5px; line-height:1.5; background:#fdfcfa; margin:0; }
+  .cover { background: linear-gradient(120deg,#bfe4ff 0%,#d6ecff 30%,#e6def7 65%,#fbe6f4 100%); border-radius:20px; padding:40px 30px; text-align:center; margin-bottom:10px; box-shadow:0 6px 18px rgba(120,130,180,.25); border:1px solid #dfe8f5; }
+  .cover .tag { display:inline-block; background:#33314a; color:#d6ecff; font-weight:700; letter-spacing:2px; font-size:13px; padding:5px 14px; border-radius:20px; margin-bottom:14px; }
+  .cover h1 { font-size:30px; margin:6px 0; color:#3170a8; }
+  .cover h2 { font-size:16px; font-weight:500; margin:4px 0 0; opacity:.9; color:#33314a; }
+  .cover .books { margin-top:16px; font-size:13.5px; background:rgba(255,255,255,.55); display:inline-block; padding:8px 16px; border-radius:10px; color:#33314a; }
+  .toc { background:#fff; border:1.5px solid #dfe8f5; border-radius:14px; padding:18px 26px; margin-bottom:30px; }
+  .toc h3 { margin-top:0; color:#3170a8; }
+  .toc ol { margin:0; padding-left:22px; } .toc li{ margin-bottom:6px; }
+  h2.section { font-size:23px; color:#33314a; padding:12px 18px; border-radius:12px; margin:34px 0 14px; border-left:10px solid var(--accent,#5aa9d6); background:var(--bg,#eaf6fd); }
+  h3.lesson { font-size:19px; color:var(--accent-dark,#276a91); border-left:6px solid var(--accent,#5aa9d6); background:var(--bg-soft,#f3fafd); padding:8px 14px; border-radius:6px; margin:22px 0 10px; }
+  .c1{--accent:#5aa9d6;--accent-dark:#276a91;--bg:#eaf6fd;--bg-soft:#f3fafd;--head:#a9d4ec;}
+  .c2{--accent:#a892d9;--accent-dark:#5c4696;--bg:#f1ecfb;--bg-soft:#f8f5fd;--head:#cabdec;}
+  .c3{--accent:#f0a66e;--accent-dark:#b8620b;--bg:#fdeee2;--bg-soft:#fff8f0;--head:#f4c299;}
+  .c4{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
+  .c5{--accent:#e07b9b;--accent-dark:#a3335a;--bg:#fbe9f0;--bg-soft:#fdf5f8;--head:#f3b6c9;}
+  .c6{--accent:#5bb8b0;--accent-dark:#1f7a72;--bg:#e5f7f5;--bg-soft:#f2fbfa;--head:#a6e3dd;}
+  .cKey{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
+  table.vocab { width:100%; border-collapse:collapse; margin-bottom:20px; font-size:.96em; box-shadow:0 2px 8px rgba(0,0,0,.05); border-radius:10px; overflow:hidden; }
+  table.vocab th { background:var(--head,#5aa9d6); color:#2d2d2d; padding:9px 8px; text-align:left; }
+  table.vocab td { padding:8px 8px; border-bottom:1px solid var(--bg,#eaf6fd); vertical-align:top; }
+  table.vocab tr:nth-child(even) td { background:var(--bg-soft,#faf6f0); }
+  table.vocab tr:nth-child(odd) td { background:#fff; }
+  table.vocab td.word { font-weight:800; color:var(--accent-dark,#276a91); }
+  table.vocab td.vn { font-weight:700; color:#3d6ba8; }
+  .rule-box { background:var(--bg,#eaf6fd); border-left:6px solid var(--accent,#5aa9d6); border-radius:8px; padding:12px 18px; margin:10px 0; }
+  .rule-box table { width:100%; border-collapse:collapse; margin:8px 0 4px; }
+  .rule-box table td, .rule-box table th { padding:6px 8px; border-bottom:1px solid rgba(0,0,0,.08); text-align:left; font-size:.94em; }
+  .rule-box table th { color:var(--accent-dark,#276a91); }
+  .rule-box ul, .rule-box ol { margin:6px 0; padding-left:22px; } .rule-box li{ margin-bottom:5px; }
+  .struct { font-weight:800; color:#b8620b; font-family:'Consolas','Courier New',monospace; }
+  .example-box { background:#fff; border:1.5px dashed var(--accent,#5aa9d6); border-radius:8px; padding:10px 16px; margin:10px 0; font-size:.95em; }
+  .example-box b.ex-tag { color:var(--accent-dark,#276a91); }
+  .mcq { background:#fff; border:1.5px solid var(--accent,#5aa9d6); border-radius:10px; padding:12px 18px; margin-bottom:12px; }
+  .mcq .q { color:#3d6ba8; font-weight:700; margin-bottom:6px; }
+  .mcq .opt { margin:2px 0 2px 10px; }
+  .content-block { background:#fff; border:2px dashed var(--accent,#5aa9d6); border-radius:12px; padding:16px 20px; margin-bottom:18px; }
+  .key-grid { column-count:1; } .key-grid div{ margin-bottom:10px; }
+  .key-ans { color:#20824f; font-weight:800; }
+  .key-exp { color:#555; font-size:.95em; }
+  .pagebreak { page-break-before: always; }
+  .note { font-size:.85em; color:#8a8a8a; font-style:italic; }
+  .source-tag { font-size:.8em; color:#999; font-style:italic; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="tag">EA EXAM PREP • PART III — REPRESENTATION, PRACTICES & PROCEDURES • SU06</div>
+  <h1>📗 SU06 — TAX AUTHORITY</h1>
+  <h2>Bản song ngữ Việt–Anh, bám sát giáo trình Gleim 2026</h2>
+  <div class="books">📖 Khái niệm · 🔤 Thuật ngữ · 📌 Ví dụ minh họa · ❓ Câu hỏi trắc nghiệm · 🔑 Đáp án trang sau</div>
+</div>
+
+<div class="toc">
+<h3>📑 Mục lục SU06</h3>
+<ol>
+<li>6.1 Statutory Law (Legislative Law) — IRC, Committee Reports, Treaties</li>
+<li>6.2 Regulations, Rules, and Procedures (Administrative Law) — Regulations, Rulings, IRM</li>
+<li>6.3 The Court System (Judicial Law) — Tax Court, District Court, Supreme Court, Acquiescence</li>
+<li>6.4 Tax Research — Primary vs. Secondary Authority</li>
+</ol>
+<p class="note">Nguồn: Gleim EA Review, Study Unit 6 — Tax Authority (2026).</p>
+</div>
+
+<!-- ============================================================ 6.1 STATUTORY LAW ============================================================ -->
+<div class="c1">
+<h2 class="section">6.1 — STATUTORY LAW (LEGISLATIVE LAW)</h2>
+<div class="rule-box">
+<p>Luật thuế gồm 3 nguồn cơ bản: <b>statutory law</b> (luật lập pháp), <b>administrative pronouncements</b> (quy định hành chính), và <b>judicial decisions</b> (án lệ tòa án). Statutory law nằm trong <b>Internal Revenue Code (IRC)</b> — gồm các section quy định vận hành/định nghĩa/thủ tục thuế liên bang.</p>
+</div>
+
+<h3 class="lesson">Internal Revenue Code of 1986</h3>
+<div class="rule-box">
+<p>IRC (Code) là nguồn LUẬT THUẾ LIÊN BANG CHÍNH — áp thuế income, estate, gift, employment, excise + quy định hành chính thuế. IRC nằm trong <b>Title 26</b> của U.S. Code.</p>
+<p>Tòa án coi trọng NGÔN NGỮ NGUYÊN VĂN của Code, nhưng không phải tranh chấp nào cũng giải quyết được chỉ bằng ngôn ngữ Code. Khi ngôn ngữ MƠ HỒ, tòa xem xét: lịch sử section đó (committee report, legislative history), Treasury regulation & guidance khác của IRS diễn giải section đó, và mối quan hệ với các section khác.</p>
+<p>Code LIÊN TỤC THAY ĐỔI — practitioner phải xác định cẩn thận luật áp dụng cho NĂM đang xem xét (có bị sửa đổi không, và ngày hiệu lực).</p>
+</div>
+
+<h3 class="lesson">Committee Reports & Treaties</h3>
+<div class="rule-box">
+<p><b>Committee Reports:</b> công cụ hữu ích xác định Ý ĐỊNH của Quốc hội (Congressional intent) đằng sau 1 luật thuế — giúp examiner áp dụng luật đúng.</p>
+<p><b>Tax Treaty:</b> được xem TƯƠNG ĐƯƠNG statutory law và GHI ĐÈ (overrides) IRC. Mỹ có hiệp định thuế với nhiều nước — theo đó, RESIDENT (không nhất thiết là citizen) của nước ngoài bị đánh thuế mức GIẢM hoặc MIỄN thuế Mỹ với 1 số khoản thu nhập nguồn Mỹ. Mức giảm/miễn khác nhau theo từng nước/loại thu nhập. Treaty thường có tính HỖ TƯƠNG (reciprocal — áp dụng cho cả 2 nước & resident của họ).</p>
+<p style="background:#fff7e0;border-left:4px solid #e0a800;padding:6px 10px;border-radius:6px;margin:8px 0">⚠️ <b>Luật hiện hành (kiểm 2026-10-25):</b> Theo §7852(d), treaty và IRC <b>ngang hàng</b>; khi mâu thuẫn thì <b>văn bản ban hành sau</b> thắng (later-in-time rule). Gleim viết treaty “overrides the IRC” — đề thi theo cách viết của Gleim.</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ 6.1</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">Internal Revenue Code (IRC)</td><td class="vn">Bộ luật thuế thu nhập nội bộ (Title 26 U.S.C.)</td></tr>
+<tr><td class="word">statutory law</td><td class="vn">luật lập pháp (nguồn luật cao nhất)</td></tr>
+<tr><td class="word">committee report</td><td class="vn">báo cáo ủy ban Quốc hội (thể hiện ý định lập pháp)</td></tr>
+<tr><td class="word">tax treaty</td><td class="vn">hiệp định thuế song phương, tương đương statutory law</td></tr>
+<tr><td class="word">reciprocal</td><td class="vn">có tính hỗ tương (áp dụng 2 chiều)</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 6.1</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. The Internal Revenue Code is found in which title of the United States Code?</div>
+<div class="opt">A. Title 15</div><div class="opt">B. Title 26</div><div class="opt">C. Title 31</div><div class="opt">D. Title 42</div></div>
+<div class="mcq"><div class="q">2. A U.S. income tax treaty, relative to the IRC, is treated as:</div>
+<div class="opt">A. Subordinate to the IRC</div><div class="opt">B. Equivalent to statutory law and overrides the IRC</div><div class="opt">C. A secondary authority only</div><div class="opt">D. Irrelevant to U.S. tax law</div></div>
+<div class="mcq"><div class="q">3. When the literal language of the Code is ambiguous, courts may consider all of the following EXCEPT:</div>
+<div class="opt">A. Committee reports and legislative history</div><div class="opt">B. Treasury regulations interpreting the section</div><div class="opt">C. The taxpayer's personal opinion of fairness</div><div class="opt">D. The relationship to other Code sections</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 6.1 Statutory Law</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — Title 26</span></div>
+<div><b>2.</b> <span class="key-ans">B</span></div>
+<div><b>3.</b> <span class="key-ans">C</span></div>
+</div>
+</div>
+
+<!-- ============================================================ 6.2 REGULATIONS ============================================================ -->
+<div class="c2 pagebreak">
+<h2 class="section">6.2 — REGULATIONS, RULES, AND PROCEDURES (ADMINISTRATIVE LAW)</h2>
+<div class="rule-box">
+<p><b>IRC Sec. 7805(a)</b> trao quyền chung cho Secretary of the Treasury "prescribe all needful rules and regulations" để thi hành Code. Mọi regulation do <b>Office of Chief Counsel, IRS</b> soạn thảo và Secretary of the Treasury phê duyệt.</p>
+<p>Regulation được đánh số theo hệ thống tuần tự khớp với Code (số prefix chỉ lĩnh vực thuế liên quan). Treasury Regulations (Income Tax Regulations) ĐƯỢC LUẬT ỦY QUYỀN — nhưng tòa án KHÔNG bắt buộc phải theo nếu mâu thuẫn với Code. <b>IRS bị ràng buộc bởi regulation; tòa án thì KHÔNG.</b> Supreme Court: "Treasury Regulations phải được duy trì trừ khi vô lý và rõ ràng mâu thuẫn với luật thuế."</p>
+</div>
+
+<h3 class="lesson">3 loại Regulation: Legislative, Interpretative, Procedural</h3>
+<div class="rule-box">
+<p><b>Legislative:</b> ban hành theo ỦY QUYỀN CỤ THỂ của Quốc hội trong 1 Code section (không theo Sec. 7805 chung). Khi Treasury ban hành, regulation có HIỆU LỰC PHÁP LUẬT (force of law) nếu: nằm trong phạm vi quyền được ủy quyền; ban hành đúng thủ tục; và HỢP LÝ. Tòa KHÔNG có quyền thay thế phán đoán của mình về nội dung — nhưng CÓ THỂ bị lật nếu vượt phạm vi ủy quyền, trái luật, hoặc vô lý.</p>
+<p><b>Interpretative:</b> giải thích ý nghĩa 1 quy định luật — KHÔNG có ủy quyền cụ thể theo section (chỉ dựa trên thẩm quyền chung Sec. 7805). KHÔNG có hiệu lực pháp luật đầy đủ, nhưng tòa THƯỜNG cho trọng lượng đáng kể — đặc biệt nếu ban hành CÙNG LÚC với luật (thể hiện ý định lập pháp) hoặc đã tồn tại LÂU.</p>
+<p><b>Procedural:</b> ban hành theo quy định thủ tục/hành chính của Code, do <b>Commissioner of the IRS</b> (không phải Secretary of the Treasury) ban hành. Ràng buộc IRS trong phạm vi ảnh hưởng lợi ích thiết yếu/cá nhân của taxpayer — quy định nghĩa vụ nộp form thường có hiệu lực pháp luật.</p>
+</div>
+
+<h3 class="lesson">Proposed, Temporary, Final Regulations</h3>
+<div class="rule-box">
+<p><b>Proposed:</b> ban hành để lấy ý kiến công chúng — hearing công khai nếu có yêu cầu bằng văn bản. Có thể dùng làm căn cứ YẾU cho 1 lập trường thuế (không tự bản thân tuyên bố vậy).</p>
+<p><b>Temporary:</b> hướng dẫn tạm thời cho đến khi có final regulation — CÓ hiệu lực pháp luật NHƯ final regulation cho đến khi final được ban hành. Tối đa hiệu lực <b>3 năm</b>, phải ban hành ĐỒNG THỜI với proposed regulation tương ứng.</p>
+<p><b>Final:</b> ban hành sau khi đánh giá ý kiến công chúng về proposed. Văn bản mô tả việc final hóa/sửa đổi gọi là <b>Treasury Decision (TD)</b>.</p>
+<p>Nếu cả temporary & proposed cùng tồn tại về 1 section với nội dung tương tự → lập trường taxpayer nên dựa trên TEMPORARY (có thể trích dẫn làm authority). Khi KHÔNG có temporary/final, có thể dùng proposed (nêu rõ đó là diễn giải TỐT NHẤT hiện có).</p>
+</div>
+
+<h3 class="lesson">Revenue Rulings, Revenue Procedures & IRB</h3>
+<div class="rule-box">
+<p><b>Revenue Ruling:</b> diễn giải CHÍNH THỨC luật thuế áp dụng cho 1 tình huống cụ thể, do IRS ban hành — đăng trên Internal Revenue Bulletin (IRB) để thống nhất áp dụng luật & giảm số yêu cầu letter ruling. Có thể trích dẫn làm TIỀN LỆ nhưng KHÔNG có hiệu lực như regulation — KHÔNG ràng buộc tòa án.</p>
+<p><b>Revenue Procedure:</b> tuyên bố chính thức của IRS quy định THỦ TỤC ảnh hưởng quyền/nghĩa vụ của 1 nhóm/mọi taxpayer — chủ yếu về vấn đề hành chính/thủ tục. KHÔNG có hiệu lực luật nhưng có thể trích dẫn làm tiền lệ; mang tính CHỈ DẪN chứ không bắt buộc (directive, not mandatory).</p>
+<p><b>Internal Revenue Bulletin (IRB):</b> công cụ chính thức công bố ruling/procedure của Commissioner + Treasury Decisions, Executive Orders, Tax Conventions, luật, án lệ... Xuất bản HÀNG TUẦN. Mọi ruling công bố ÁP DỤNG HỒI TỐ trừ khi ghi khác. Ngoài ruling/procedure, IRB còn có: <b>Announcements</b> (thông báo công khai, đáng tin cậy NHƯ revenue ruling/procedure), <b>Notices</b> (tương tự), <b>Delegation Orders</b> (ủy quyền thực hiện nhiệm vụ cho nhân viên IRS cụ thể — nằm trong Internal Revenue Manual/IRM).</p>
+</div>
+
+<h3 class="lesson">Publications, PLR, TAM, GCM, TM & IRM</h3>
+<div class="rule-box">
+<p><b>IRS Publications:</b> giải thích luật bằng ngôn ngữ đơn giản — KHÔNG ràng buộc IRS, KHÔNG nên trích dẫn để bảo vệ 1 lập trường thuế.</p>
+<p><b>Private Letter Ruling (PLR):</b> kết luận của IRS cho 1 taxpayer CỤ THỂ — chỉ áp dụng cho case đó (trừ khi vấn đề đã được covered bởi statute/regulation/ruling/decision công bố trong IRB).</p>
+<p><b>Technical Advice Memoranda (TAM):</b> IRS area office yêu cầu SAU KHI return đã nộp, thường trong lúc examine — ràng buộc IRS ĐỐI VỚI taxpayer là chủ thể của ruling đó. PLR/TAM KHÔNG được dùng làm tiền lệ cho case khác, nhưng cho thấy LẬP TRƯỜNG của IRS.</p>
+<p><b>CUR/AM/GCM khác:</b> Confidential Unpublished Rulings, Advisory Memoranda, General Counsel Memoranda — KHÔNG dùng làm tiền lệ nhưng có thể dùng làm hướng dẫn nghiên cứu. <b>GCM</b> = memo pháp lý từ Office of Chief Counsel khi review các ruling đề xuất — giúp hiểu lý luận đằng sau ruling.</p>
+<p><b>Technical Memoranda (TM):</b> tài liệu chuyển giao (transmittal) cho Treasury Decision/NPRM — tóm tắt/giải thích regulation, nêu vấn đề, giúp truy nguồn lịch sử/lý do của regulation.</p>
+<p><b>Internal Revenue Manual (IRM):</b> hướng dẫn/chính sách vận hành IRS. Nhân viên IRS PHẢI tuân thủ thủ tục IRM — nhưng bản thân IRM KHÔNG có hiệu lực pháp luật (mang tính chỉ dẫn/directory, không mandatory) — tuân thủ nghiêm ngặt KHÔNG bắt buộc nếu thủ tục không ảnh hưởng lợi ích quan trọng của taxpayer, hoặc IRS không tuân thủ IRM nhưng có thiện chí và việc buộc tuân thủ nghiêm sẽ ảnh hưởng kết quả hành động của chính phủ.</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ 6.2</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">Treasury Regulation</td><td class="vn">Quy định của Bộ Tài chính diễn giải Code</td></tr>
+<tr><td class="word">legislative / interpretative / procedural regulation</td><td class="vn">quy định lập pháp / diễn giải / thủ tục</td></tr>
+<tr><td class="word">Revenue Ruling / Revenue Procedure</td><td class="vn">Phán quyết thu nhập / Thủ tục thu nhập của IRS</td></tr>
+<tr><td class="word">Internal Revenue Bulletin (IRB)</td><td class="vn">Bản tin chính thức hàng tuần của IRS</td></tr>
+<tr><td class="word">Private Letter Ruling (PLR)</td><td class="vn">Phán quyết riêng cho 1 taxpayer cụ thể</td></tr>
+<tr><td class="word">Internal Revenue Manual (IRM)</td><td class="vn">Sổ tay quy trình nội bộ IRS</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 6.2</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. A temporary regulation may remain effective for a maximum of:</div>
+<div class="opt">A. 1 year</div><div class="opt">B. 2 years</div><div class="opt">C. 3 years</div><div class="opt">D. 5 years</div></div>
+<div class="mcq"><div class="q">2. When a proposed regulation becomes final, the document describing the finalization is called a:</div>
+<div class="opt">A. Revenue Ruling</div><div class="opt">B. Treasury Decision (TD)</div><div class="opt">C. Technical Advice Memorandum</div><div class="opt">D. General Counsel Memorandum</div></div>
+<div class="mcq"><div class="q">3. A Private Letter Ruling (PLR) generally:</div>
+<div class="opt">A. Applies to all taxpayers as precedent</div><div class="opt">B. Is confined to the specific taxpayer for whom it was issued</div><div class="opt">C. Has the same force as a Treasury Regulation</div><div class="opt">D. Overrides the IRC</div></div>
+<div class="mcq"><div class="q">4. Which type of regulation is issued by the Commissioner of the IRS (not the Secretary of the Treasury)?</div>
+<div class="opt">A. Legislative</div><div class="opt">B. Interpretative</div><div class="opt">C. Procedural</div><div class="opt">D. Proposed</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 6.2 Regulations</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">C — 3 years</span></div>
+<div><b>2.</b> <span class="key-ans">B — Treasury Decision (TD)</span></div>
+<div><b>3.</b> <span class="key-ans">B</span></div>
+<div><b>4.</b> <span class="key-ans">C — Procedural</span></div>
+</div>
+</div>
+
+<!-- ============================================================ 6.3 THE COURT SYSTEM ============================================================ -->
+<div class="c3 pagebreak">
+<h2 class="section">6.3 — THE COURT SYSTEM (JUDICIAL LAW)</h2>
+<div class="rule-box">
+<p>Hệ thống tòa xử vụ thuế gồm: <b>U.S. Tax Court</b>, <b>U.S. District Courts & Bankruptcy Courts</b>, <b>U.S. Court of Federal Claims</b>, các <b>Appellate Courts</b>, và <b>U.S. Supreme Court</b>.</p>
+</div>
+
+<h3 class="lesson">Tax Court Decisions & Đường kháng cáo</h3>
+<div class="rule-box">
+<p>Quyết định Tax Court có 2 loại: <b>Regular reports</b> (đăng bản in chính thức của chính phủ) và <b>Memorandum decisions</b> (thường chỉ đăng thương mại — là báo cáo quyết định được xem là ÍT GIÁ TRỊ tiền lệ vì vấn đề đã được quyết định 1 hoặc nhiều lần trước đó).</p>
+<p>Case từ Tax Court & District Court kháng cáo lên <b>U.S. Circuit Court of Appeals</b> tương ứng. Case từ Court of Federal Claims kháng cáo lên <b>U.S. Court of Appeals for the Federal Circuit</b>. Bankruptcy court là đơn vị RIÊNG thuộc district court — xử vấn đề thuế của taxpayer đang trong thủ tục phá sản.</p>
+</div>
+
+<h3 class="lesson">U.S. Supreme Court & Writ of Certiorari</h3>
+<div class="rule-box">
+<p>Supreme Court thường review quyết định của circuit court of appeals & tòa liên bang khác. Muốn kháng cáo lên Supreme Court, phải petition xin <b>writ of certiorari</b> — lệnh của Supreme Court yêu cầu chuyển vụ án lên xem xét. Thẩm quyền certiorari HOÀN TOÀN TÙY NGHI (discretionary). TỪ CHỐI writ of certiorari KHÔNG thể hiện ý kiến gì về nội dung vụ án. Nếu các tòa cấp dưới đưa ra quyết định KHÔNG NHẤT QUÁN về 1 vấn đề thuế, Supreme Court có thể ra phán quyết để giải quyết mâu thuẫn.</p>
+</div>
+
+<h3 class="lesson">Acquiescence, Dictum & Tax Citator</h3>
+<div class="rule-box">
+<p>Commissioner of the IRS quyết định về các <b>adverse regular decision</b> (bất lợi cho IRS) của tòa KHÁC Supreme Court — công bố trong IRB. <b>Acquiescence</b> = IRS sẽ theo quyết định của tòa cho case có facts TƯƠNG TỰ. <b>Nonacquiescence</b> = IRS KHÔNG chấp nhận & sẽ không theo cho case cùng vấn đề. Acquiescence/nonacquiescence có thể bị Commissioner SỬA ĐỔI sau này. Chương trình acquiescence KHÔNG thay thế cho chương trình ruling/regulation.</p>
+<p><b>Tax citator:</b> chứa lịch sử case & diễn biến gần đây (kháng cáo, writ of certiorari, case liên quan) — xuất bản thương mại.</p>
+<p><b>Dictum:</b> phát biểu ý kiến của tòa về 1 điểm pháp lý KHÔNG cần thiết cho việc ra quyết định vụ án — KHÔNG có tính ràng buộc, nhưng có thể CÓ SỨC THUYẾT PHỤC với tòa khác xử vấn đề tương tự.</p>
+<p>Quyết định của tòa (trừ Supreme Court) chỉ RÀNG BUỘC Commissioner cho TAXPAYER cụ thể & NĂM đã xét xử — không buộc IRS thay đổi lập trường cho MỌI taxpayer. IRC là luật liên bang — MỌI tòa đều bị ràng buộc bởi các Code section. IRS nói chung có thể thực thi quyền HÀNH PHÁP, TƯ PHÁP, và LẬP PHÁP.</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ 6.3</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">writ of certiorari</td><td class="vn">lệnh Supreme Court yêu cầu chuyển vụ án lên xem xét</td></tr>
+<tr><td class="word">acquiescence / nonacquiescence</td><td class="vn">chấp nhận / không chấp nhận theo 1 quyết định tòa</td></tr>
+<tr><td class="word">dictum</td><td class="vn">phát biểu bên lề của tòa, không ràng buộc</td></tr>
+<tr><td class="word">tax citator</td><td class="vn">công cụ tra cứu lịch sử/diễn biến 1 vụ án thuế</td></tr>
+<tr><td class="word">regular decision / memorandum decision</td><td class="vn">quyết định chính thức / quyết định ghi chú (ít giá trị tiền lệ)</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 6.3</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. Cases from the U.S. Court of Federal Claims are appealed to:</div>
+<div class="opt">A. The applicable U.S. Circuit Court of Appeals</div><div class="opt">B. The U.S. Court of Appeals for the Federal Circuit</div><div class="opt">C. Directly to the Supreme Court</div><div class="opt">D. The U.S. Tax Court</div></div>
+<div class="mcq"><div class="q">2. A denial of a petition for a writ of certiorari by the Supreme Court:</div>
+<div class="opt">A. Means the Supreme Court agrees with the lower court</div><div class="opt">B. Expresses no opinion on the merits of the case</div><div class="opt">C. Means the case must be retried</div><div class="opt">D. Automatically reverses the lower court</div></div>
+<div class="mcq"><div class="q">3. IRS nonacquiescence to a court decision means:</div>
+<div class="opt">A. The IRS will follow the decision nationwide</div><div class="opt">B. The IRS does not accept the decision and will not follow it in similar cases</div><div class="opt">C. The decision is overturned</div><div class="opt">D. The taxpayer must refile</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 6.3 The Court System</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — U.S. Court of Appeals for the Federal Circuit</span></div>
+<div><b>2.</b> <span class="key-ans">B</span></div>
+<div><b>3.</b> <span class="key-ans">B</span></div>
+</div>
+</div>
+
+<!-- ============================================================ 6.4 TAX RESEARCH ============================================================ -->
+<div class="c4 pagebreak">
+<h2 class="section">6.4 — TAX RESEARCH</h2>
+<div class="rule-box">
+<p>2 nhóm nguồn tài liệu thuế: <b>Primary authority</b> (luật do lập pháp ban hành + diễn giải chính thức, xuất phát từ 1 NHÁNH của chính phủ — gồm statutory law, administrative law, judicial law) và <b>Secondary authority</b> (mọi tuyên bố/giải thích KHÁC về luật). Nguồn hỗ trợ cho 1 quy tắc luật LUÔN PHẢI LÀ primary authority.</p>
+</div>
+
+<h3 class="lesson">Primary Authorities (danh sách đầy đủ)</h3>
+<div class="rule-box">
+<ul>
+<li>Hiến pháp (Constitution)</li>
+<li>Internal Revenue Code</li>
+<li>House Ways and Means Committee Report; House debate</li>
+<li>Senate Finance Committee Report; Senate debate</li>
+<li>Conference Committee Report; Post-Conference House & Senate Debate</li>
+<li>Treaties</li>
+<li>Temporary & Final Regulations; Proposed Regulations</li>
+<li>Revenue Rulings; Revenue Procedures</li>
+<li>Private Letter Rulings; Technical Advice Memoranda</li>
+<li>Determination Letters; IRS Press Releases; Notices</li>
+<li>Tài liệu tương tự khác do IRS công bố trong Internal Revenue Bulletin</li>
+<li>Án lệ tòa (Court cases)</li>
+</ul>
+</div>
+
+<h3 class="lesson">Secondary Authorities</h3>
+<div class="rule-box">
+<p>Chỉ dùng làm nguồn hỗ trợ BỔ SUNG cho primary authority, hoặc khi KHÔNG có primary authority phù hợp. Vai trò chính là CÔNG CỤ NGHIÊN CỨU giúp tìm ra primary authority liên quan. Ví dụ: tax service, citator, textbook, journal, newsletter.</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ 6.4</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">primary authority</td><td class="vn">nguồn luật chính thức (xuất phát từ 1 nhánh chính phủ)</td></tr>
+<tr><td class="word">secondary authority</td><td class="vn">nguồn diễn giải/hỗ trợ (không đủ làm căn cứ chính)</td></tr>
+<tr><td class="word">determination letter</td><td class="vn">thư xác định (1 loại primary authority)</td></tr>
+<tr><td class="word">tax service</td><td class="vn">dịch vụ tra cứu thuế thương mại (secondary authority)</td></tr>
+<tr><td class="word">Committee Report</td><td class="vn">Báo cáo ủy ban Quốc hội (1 loại primary authority)</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 6.4</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. Which of the following is a PRIMARY authority?</div>
+<div class="opt">A. A tax service textbook</div><div class="opt">B. A journal article</div><div class="opt">C. A Revenue Ruling</div><div class="opt">D. A newsletter</div></div>
+<div class="mcq"><div class="q">2. Secondary authorities should be used:</div>
+<div class="opt">A. As the primary basis for any tax position</div><div class="opt">B. Only to supplement primary authority or when no primary authority exists on point</div><div class="opt">C. Instead of the Code whenever convenient</div><div class="opt">D. Only in Tax Court litigation</div></div>
+<div class="mcq"><div class="q">3. Which of these is NOT listed as a primary authority?</div>
+<div class="opt">A. Private Letter Ruling</div><div class="opt">B. Tax citator</div><div class="opt">C. Court cases</div><div class="opt">D. Treaties</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 6.4 Tax Research</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">C — A Revenue Ruling</span></div>
+<div><b>2.</b> <span class="key-ans">B</span></div>
+<div><b>3.</b> <span class="key-ans">B — Tax citator (secondary authority)</span></div>
+</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<!-- Google tag (gtag.js) — GA4 chung của TJ, nhãn site=ea -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'ea'});</script>
+
+<meta charset="UTF-8">
+<title>EA Part I – SU01: Filing Requirements</title>
+<style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  body { font-family:'Segoe UI','Calibri',Arial,sans-serif; color:#33322f; font-size:15.5px; line-height:1.5; background:#fdfcfa; margin:0; }
+  .cover { background: linear-gradient(120deg,#bfe4ff 0%,#d6ecff 30%,#e6def7 65%,#fbe6f4 100%); border-radius:20px; padding:40px 30px; text-align:center; margin-bottom:10px; box-shadow:0 6px 18px rgba(120,130,180,.25); border:1px solid #dfe8f5; }
+  .cover .tag { display:inline-block; background:#33314a; color:#d6ecff; font-weight:700; letter-spacing:2px; font-size:13px; padding:5px 14px; border-radius:20px; margin-bottom:14px; }
+  .cover h1 { font-size:30px; margin:6px 0; color:#3170a8; }
+  .cover h2 { font-size:16px; font-weight:500; margin:4px 0 0; opacity:.9; color:#33314a; }
+  .cover .books { margin-top:16px; font-size:13.5px; background:rgba(255,255,255,.55); display:inline-block; padding:8px 16px; border-radius:10px; color:#33314a; }
+  .toc { background:#fff; border:1.5px solid #dfe8f5; border-radius:14px; padding:18px 26px; margin-bottom:30px; }
+  .toc h3 { margin-top:0; color:#3170a8; }
+  .toc ol { margin:0; padding-left:22px; } .toc li{ margin-bottom:6px; }
+  h2.section { font-size:23px; color:#33314a; padding:12px 18px; border-radius:12px; margin:34px 0 14px; border-left:10px solid var(--accent,#5aa9d6); background:var(--bg,#eaf6fd); }
+  h3.lesson { font-size:19px; color:var(--accent-dark,#276a91); border-left:6px solid var(--accent,#5aa9d6); background:var(--bg-soft,#f3fafd); padding:8px 14px; border-radius:6px; margin:22px 0 10px; }
+  .c1{--accent:#5aa9d6;--accent-dark:#276a91;--bg:#eaf6fd;--bg-soft:#f3fafd;--head:#a9d4ec;}
+  .c2{--accent:#a892d9;--accent-dark:#5c4696;--bg:#f1ecfb;--bg-soft:#f8f5fd;--head:#cabdec;}
+  .c3{--accent:#f0a66e;--accent-dark:#b8620b;--bg:#fdeee2;--bg-soft:#fff8f0;--head:#f4c299;}
+  .c4{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
+  .c5{--accent:#e07b9b;--accent-dark:#a3335a;--bg:#fbe9f0;--bg-soft:#fdf5f8;--head:#f3b6c9;}
+  .c6{--accent:#5bb8b0;--accent-dark:#1f7a72;--bg:#e5f7f5;--bg-soft:#f2fbfa;--head:#a6e3dd;}
+  .cKey{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
+  table.vocab { width:100%; border-collapse:collapse; margin-bottom:20px; font-size:.96em; box-shadow:0 2px 8px rgba(0,0,0,.05); border-radius:10px; overflow:hidden; }
+  table.vocab th { background:var(--head,#5aa9d6); color:#2d2d2d; padding:9px 8px; text-align:left; }
+  table.vocab td { padding:8px 8px; border-bottom:1px solid var(--bg,#eaf6fd); vertical-align:top; }
+  table.vocab tr:nth-child(even) td { background:var(--bg-soft,#faf6f0); }
+  table.vocab tr:nth-child(odd) td { background:#fff; }
+  table.vocab td.word { font-weight:800; color:var(--accent-dark,#276a91); }
+  table.vocab td.vn { font-weight:700; color:#3d6ba8; }
+  .rule-box { background:var(--bg,#eaf6fd); border-left:6px solid var(--accent,#5aa9d6); border-radius:8px; padding:12px 18px; margin:10px 0; }
+  .rule-box table { width:100%; border-collapse:collapse; margin:8px 0 4px; }
+  .rule-box table td, .rule-box table th { padding:6px 8px; border-bottom:1px solid rgba(0,0,0,.08); text-align:left; font-size:.94em; }
+  .rule-box table th { color:var(--accent-dark,#276a91); }
+  .rule-box ul, .rule-box ol { margin:6px 0; padding-left:22px; } .rule-box li{ margin-bottom:5px; }
+  .struct { font-weight:800; color:#b8620b; font-family:'Consolas','Courier New',monospace; }
+  .example-box { background:#fff; border:1.5px dashed var(--accent,#5aa9d6); border-radius:8px; padding:10px 16px; margin:10px 0; font-size:.95em; }
+  .example-box b.ex-tag { color:var(--accent-dark,#276a91); }
+  .mcq { background:#fff; border:1.5px solid var(--accent,#5aa9d6); border-radius:10px; padding:12px 18px; margin-bottom:12px; }
+  .mcq .q { color:#3d6ba8; font-weight:700; margin-bottom:6px; }
+  .mcq .opt { margin:2px 0 2px 10px; }
+  .content-block { background:#fff; border:2px dashed var(--accent,#5aa9d6); border-radius:12px; padding:16px 20px; margin-bottom:18px; }
+  .key-grid { column-count:1; } .key-grid div{ margin-bottom:10px; }
+  .key-ans { color:#20824f; font-weight:800; }
+  .key-exp { color:#555; font-size:.95em; }
+  .pagebreak { page-break-before: always; }
+  .note { font-size:.85em; color:#8a8a8a; font-style:italic; }
+  .source-tag { font-size:.8em; color:#999; font-style:italic; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="tag">EA EXAM PREP • PART I — INDIVIDUALS • SU01</div>
+  <h1>📗 SU01 — FILING REQUIREMENTS</h1>
+  <h2>Bản song ngữ Việt–Anh, bám sát giáo trình Gleim 2026</h2>
+  <div class="books">📖 Khái niệm · 🔤 Thuật ngữ · 📌 Ví dụ minh họa · ❓ Câu hỏi trắc nghiệm · 🔑 Đáp án trang sau</div>
+</div>
+
+<div class="toc">
+<h3>📑 Mục lục SU01</h3>
+<ol>
+<li>1.1 Preliminary Work to Prepare Tax Returns (Công việc chuẩn bị trước khi khai thuế)</li>
+<li>1.2 Filing Status (Tình trạng khai thuế)</li>
+<li>1.3 Filing Requirements (Yêu cầu khai thuế)</li>
+<li>1.4 Dependents (Người phụ thuộc)</li>
+<li>1.5 Dependent's Unearned Income (Thu nhập không từ lao động của người phụ thuộc / Kiddie Tax)</li>
+<li>1.6 Nonresident and Dual-Status Aliens (Người nước ngoài không cư trú & tình trạng kép)</li>
+</ol>
+<p class="note">Nguồn: Gleim EA Review, Study Unit 1 — Filing Requirements (2026). Số liệu ($ threshold...) theo năm 2025, cần đối chiếu năm thi thực tế nếu có cập nhật.</p>
+</div>
+
+<!-- ============================================================ 1.1 PRELIMINARY WORK ============================================================ -->
+<div class="c1">
+<h2 class="section">1.1 — PRELIMINARY WORK TO PREPARE TAX RETURNS</h2>
+<div class="rule-box">
+<p><b>Prior-Year Return (Tờ khai năm trước):</b> dùng để so sánh, tránh sai sót tính toán, phát hiện thay đổi lớn (retirement pay, bán nhà chính, itemized deductions...). Nếu không có thay đổi lớn, số liệu năm nay nên tương tự năm trước.</p>
+<p><b>Previous IRS Correspondence:</b> thư từ/notice trước đây với IRS giúp hiểu các vấn đề còn ảnh hưởng đến tờ khai hiện tại (tuân thủ audit, điều chỉnh, phán quyết trước đó).</p>
+<p><b>Personal Information:</b> ngày sinh, tuổi, tình trạng hôn nhân, dependents — dùng xác minh danh tính. Tuổi quyết định các deduction bổ sung (≥65), phân phối hưu trí, dependency...</p>
+<p><b>SSN vs. ITIN:</b> SSN (Social Security Number) do Social Security Administration cấp; nếu không đủ điều kiện SSN (non-citizen), dùng ITIN (Individual Taxpayer Identification Number) do IRS cấp — cấp bất kể tình trạng nhập cư.</p>
+</div>
+
+<h3 class="lesson">Key Forms &amp; Due Dates (Mẫu đơn & hạn nộp quan trọng)</h3>
+<table class="vocab">
+<tr><th>Nếu chịu trách nhiệm về...</th><th>Dùng mẫu</th><th>Hạn nộp</th></tr>
+<tr><td class="word">Income tax</td><td>Form 1040 + Schedule C</td><td>Ngày 15 tháng thứ 4 sau khi kết thúc năm thuế</td></tr>
+<tr><td class="word">Self-employment tax</td><td>Schedule SE</td><td>Nộp cùng Form 1040</td></tr>
+<tr><td class="word">Estimated tax</td><td>Form 1040-ES</td><td>Ngày 15 của tháng 4, 6, 9, và tháng 1 năm sau</td></tr>
+<tr><td class="word">SS/Medicare tax & withholding</td><td>Form 941/944</td><td>30/4, 31/7, 31/10, 31/1</td></tr>
+<tr><td class="word">FUTA (thất nghiệp liên bang)</td><td>Form 940</td><td>31/1 (hoặc theo quý nếu nợ &gt;$500)</td></tr>
+</table>
+
+<h3 class="lesson">Information Returns thường gặp (nguồn gốc thu nhập)</h3>
+<table class="vocab">
+<tr><th>Form</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">W-2</td><td class="vn">Bảng lương & thuế (nhân viên)</td></tr>
+<tr><td class="word">1099-B</td><td class="vn">Tiền thu từ môi giới/trao đổi chứng khoán</td></tr>
+<tr><td class="word">1099-C</td><td class="vn">Xóa nợ (cancellation of debt)</td></tr>
+<tr><td class="word">1099-DIV</td><td class="vn">Cổ tức & phân phối</td></tr>
+<tr><td class="word">1099-INT</td><td class="vn">Thu nhập lãi</td></tr>
+<tr><td class="word">1099-K</td><td class="vn">Giao dịch thẻ thanh toán/mạng bên thứ 3</td></tr>
+<tr><td class="word">1099-NEC</td><td class="vn">Thù lao người không phải nhân viên (tự doanh)</td></tr>
+<tr><td class="word">1099-R</td><td class="vn">Phân phối từ lương hưu/annuity/IRA</td></tr>
+<tr><td class="word">1099-S</td><td class="vn">Tiền thu từ giao dịch bất động sản</td></tr>
+<tr><td class="word">Schedule K-1 (1065/1120-S)</td><td class="vn">Phần chia thu nhập của partner/shareholder</td></tr>
+</table>
+
+<h3 class="lesson">Nondeductible Personal Expenses (Chi phí cá nhân không được khấu trừ)</h3>
+<div class="rule-box">
+<p>Trừ khi luật có quy định riêng, các chi phí cá nhân/gia đình sau KHÔNG được khấu trừ: tiền thuê/bảo hiểm nhà ở của chính mình, phí bảo hiểm nhân thọ do người được bảo hiểm tự trả, chi phí bảo dưỡng xe cá nhân, lãi vay cá nhân, chi phí ăn/mặc/giúp việc nhà.</p>
+</div>
+
+<h3 class="lesson">Foreign Reporting Requirements (Yêu cầu báo cáo tài sản nước ngoài)</h3>
+<table class="vocab">
+<tr><th>Form</th><th>Mục đích</th><th>Ngưỡng khai báo</th></tr>
+<tr><td class="word">FinCEN 114 (FBAR)</td><td class="vn">Báo cáo tài khoản ngân hàng/tài chính nước ngoài</td><td>Tổng giá trị &gt;$10,000 bất kỳ lúc nào trong năm; hạn 15/4 (gia hạn 15/10)</td></tr>
+<tr><td class="word">Form 8938</td><td class="vn">Báo cáo tài sản tài chính nước ngoài cụ thể</td><td>&gt;$50,000 cuối năm hoặc &gt;$75,000 bất kỳ lúc nào (số gấp đôi cho MFJ)</td></tr>
+<tr><td class="word">Form 5471</td><td class="vn">Người Mỹ là officer/director/shareholder của công ty nước ngoài</td><td>Theo Secs. 6038, 6046, 965</td></tr>
+<tr><td class="word">Form 3520</td><td class="vn">Giao dịch với foreign trust, nhận quà tặng nước ngoài lớn</td><td>—</td></tr>
+<tr><td class="word">Form 8865</td><td class="vn">Lợi ích trong foreign partnership</td><td>4 category (50%+, 10%+, contributed property, reportable event)</td></tr>
+</table>
+<div class="example-box"><b class="ex-tag">Ví dụ FBAR:</b> Ngày 1/1 gửi $5,000 vào tài khoản ở nước X. Ngày 1/7 gửi $5,001 vào tài khoản ở nước Y. Ngày 2/7 rút $5,000 từ X. Vì tổng >$10,000 tại một thời điểm bất kỳ trong năm (ngày 1/7: $10,001), taxpayer VẪN phải nộp FBAR năm đó dù sau đó đã rút bớt.</div>
+<p class="note">Lưu ý: Form 8938 và FBAR có mục đích tương tự nhưng KHÔNG thay thế nhau — nhiều người phải nộp cả hai.</p>
+
+<h3 class="lesson">Tax Return Due Date & Publicly Traded Partnerships</h3>
+<div class="rule-box">
+<p>Hạn nộp chung: ngày 15 tháng thứ 4 sau khi kết thúc năm thuế (April 15 với calendar-year taxpayer).</p>
+<p>Taxpayer sống ngoài Mỹ/Puerto Rico do công việc/quân sự được gia hạn tự động 2 tháng (không cần nộp Form 4868).</p>
+<p><b>PTP (Publicly Traded Partnership):</b> lỗ ròng từ 1 PTP KHÔNG được dùng để bù trừ lãi từ PTP khác hoặc lỗ từ passive activity khác — lỗ bị disallow sẽ carryforward, chỉ được trừ khi chính PTP đó có lãi hoặc khi bán hết phần sở hữu.</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ 1.1</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">Individual Taxpayer Identification Number (ITIN)</td><td class="vn">Mã số thuế cá nhân (cho người không đủ điều kiện SSN)</td></tr>
+<tr><td class="word">information return</td><td class="vn">tờ khai thông tin (báo cáo nguồn thu nhập, không phải tờ khai thuế chính)</td></tr>
+<tr><td class="word">Publicly Traded Partnership (PTP)</td><td class="vn">Công ty hợp danh giao dịch công khai trên sàn chứng khoán</td></tr>
+<tr><td class="word">FBAR</td><td class="vn">Báo cáo tài khoản ngân hàng & tài chính nước ngoài</td></tr>
+<tr><td class="word">effectively connected income</td><td class="vn">thu nhập liên kết thực sự với hoạt động kinh doanh tại Mỹ</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 1.1</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. A U.S. taxpayer must file an FBAR if the aggregate value of foreign financial accounts exceeds what amount at any time during the year?</div>
+<div class="opt">A. $5,000</div><div class="opt">B. $10,000</div><div class="opt">C. $50,000</div><div class="opt">D. $75,000</div></div>
+<div class="mcq"><div class="q">2. Net income from a publicly traded partnership (PTP) may be used to offset:</div>
+<div class="opt">A. Losses from other PTPs</div><div class="opt">B. Losses from other passive activities</div><div class="opt">C. Neither A nor B</div><div class="opt">D. Both A and B</div></div>
+<div class="mcq"><div class="q">3. An ITIN is issued to individuals who:</div>
+<div class="opt">A. Are U.S. citizens only</div><div class="opt">B. Need a U.S. taxpayer ID but are not eligible for an SSN</div><div class="opt">C. Have a green card only</div><div class="opt">D. Are exempt from filing entirely</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 1.1 Preliminary Work</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — $10,000</span><br><span class="key-exp">FBAR bắt buộc nếu tổng giá trị tài khoản nước ngoài vượt $10,000 tại BẤT KỲ thời điểm nào trong năm, không phải chỉ cuối năm.</span></div>
+<div><b>2.</b> <span class="key-ans">C — Neither A nor B</span><br><span class="key-exp">Lãi ròng từ PTP không được dùng bù lỗ từ PTP khác hay passive activity khác — đây là quy tắc cô lập đặc thù của PTP.</span></div>
+<div><b>3.</b> <span class="key-ans">B</span><br><span class="key-exp">ITIN dành cho người cần mã số thuế Mỹ nhưng không đủ điều kiện SSN, cấp bất kể tình trạng cư trú/nhập cư.</span></div>
+</div>
+</div>
+
+<!-- ============================================================ 1.2 FILING STATUS ============================================================ -->
+<div class="c2 pagebreak">
+<h2 class="section">1.2 — FILING STATUS</h2>
+<div class="rule-box">
+<p>5 filing status: <b>MFJ, MFS, QSS, HOH, Single</b>. Xác định bởi tình trạng hôn nhân vào NGÀY CUỐI NĂM.</p>
+<p><b>Married Filing Jointly (MFJ):</b> được chọn nếu "considered married" và cả 2 đồng ý khai chung. Được xem là kết hôn cả năm nếu vào ngày cuối năm: đang kết hôn và sống chung; kết hôn nhưng sống riêng (không ly thân hợp pháp); hoặc đang ly thân theo divorce decree CHƯA có hiệu lực cuối cùng.</p>
+<p>Không được khai MFJ nếu 1 người là NRA (nonresident alien) tại bất kỳ thời điểm nào trong năm — trừ khi cả hai chọn election để bị đánh thuế trên worldwide income.</p>
+<p>Nguyên tắc: nếu 1 người khai MFS thì người kia cũng phải MFS — TRỪ khi người kia đủ điều kiện Head of Household trong khi vẫn đang kết hôn.</p>
+</div>
+
+<h3 class="lesson">Injured Spouse vs. Innocent Spouse</h3>
+<table class="vocab">
+<tr><th>Loại</th><th>Áp dụng khi</th><th>Mẫu đơn & thời hạn</th></tr>
+<tr><td class="word">Injured Spouse</td><td class="vn">Refund chung bị giữ để trừ nợ RIÊNG của người kia (child support, nợ liên bang, thuế bang, unemployment debt)</td><td>Form 8379 — trong 3 năm từ hạn nộp hoặc 2 năm từ ngày nộp thuế, tùy cái nào sau</td></tr>
+<tr><td class="word">Innocent Spouse Relief</td><td class="vn">1 người không biết/không có lý do biết về việc khai sai của người kia trên MFJ</td><td>Form 8857 — trong 2 năm từ khi nhận IRS notice về audit/nợ thuế</td></tr>
+</table>
+<div class="example-box"><b class="ex-tag">Lưu ý quan trọng:</b> Innocent spouse relief CHỈ áp dụng cho thuế phát sinh từ thu nhập lao động/tự doanh của NGƯỜI KIA — không áp dụng cho: thu nhập của chính người xin relief, household employment taxes, individual shared responsibility payments, business taxes, trust fund recovery penalties.</div>
+<div class="example-box"><b class="ex-tag">Ngoại lệ domestic abuse:</b> Vẫn được xin innocent spouse relief dù đã biết về sai sót, nếu là nạn nhân bạo hành gia đình, không dám phản đối vì sợ hãi, hoặc bị ép ký tờ khai.</div>
+
+<h3 class="lesson">Head of Household (HOH) — điều kiện</h3>
+<div class="rule-box">
+<ol>
+<li><b>Filing status:</b> không được khai như surviving spouse.</li>
+<li><b>Marital status:</b> phải chưa kết hôn vào cuối năm, HOẶC "considered unmarried" nếu đang kết hôn nhưng đáp ứng đủ 5 điều kiện: khai riêng; trả >50% chi phí nhà; vợ/chồng KHÔNG sống cùng nhà trong 6 tháng cuối năm; nhà là nơi ở chính của con/con riêng/foster child hơn nửa năm; và có thể claim đứa trẻ làm dependent.</li>
+<li><b>Household maintenance:</b> trả hơn 50% chi phí "mutual benefit" (property tax, mortgage interest, rent, utilities, upkeep, repair, insurance, food ăn tại nhà) — KHÔNG tính: quần áo, giáo dục, y tế, bảo hiểm nhân thọ, đi lại, du lịch, dịch vụ do chính taxpayer/dependent tự làm.</li>
+</ol>
+<p><b>2 quy tắc đặc biệt về qualifying person:</b> (1) cha/mẹ phụ thuộc vẫn tính dù không sống chung nhà; (2) nếu qualifying child sống cùng taxpayer, không nhất thiết phải là dependent của taxpayer đó (VD: custodial parent nhường quyền claim theo Form 8332 cho noncustodial parent, nhưng custodial parent vẫn có thể khai HOH).</p>
+</div>
+
+<h3 class="lesson">Qualifying Surviving Spouse (QSS)</h3>
+<div class="rule-box">
+<p>Áp dụng 2 năm thuế SAU năm vợ/chồng mất, nếu: chưa tái hôn trong năm thuế; đủ điều kiện MFJ với người đã mất vào năm mất; và duy trì nhà ở (trả >50% chi phí) là nơi ở chính của dependent con/con riêng/con nuôi (KHÔNG bao gồm foster child — đây là ngoại lệ so với quy tắc dependent thông thường).</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ 1.2</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">considered married / considered unmarried</td><td class="vn">được xem như đã/chưa kết hôn (theo quy tắc thuế, có thể khác thực tế pháp lý)</td></tr>
+<tr><td class="word">separate maintenance agreement</td><td class="vn">thỏa thuận ly thân (chưa ly hôn hẳn)</td></tr>
+<tr><td class="word">Injured Spouse Allocation (Form 8379)</td><td class="vn">Phân bổ phần refund cho vợ/chồng bị liên đới</td></tr>
+<tr><td class="word">Request for Innocent Spouse Relief (Form 8857)</td><td class="vn">Đơn xin miễn trách nhiệm vợ/chồng vô can</td></tr>
+<tr><td class="word">qualifying person</td><td class="vn">người đủ điều kiện làm căn cứ tính HOH</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 1.2</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. Hector and Maria are married with one child. Hector moves out in May; they are not divorced by year-end. Maria pays for the household and claims the child. What is Maria's filing status?</div>
+<div class="opt">A. Married Filing Jointly</div><div class="opt">B. Single</div><div class="opt">C. Head of Household</div><div class="opt">D. Qualifying Surviving Spouse</div></div>
+<div class="mcq"><div class="q">2. Innocent spouse relief can be claimed for taxes due on:</div>
+<div class="opt">A. The innocent spouse's own income</div><div class="opt">B. Household employment taxes</div><div class="opt">C. The other spouse's unreported self-employment income</div><div class="opt">D. Business taxes</div></div>
+<div class="mcq"><div class="q">3. Qualifying Surviving Spouse status is available for how many tax years following the year of the spouse's death?</div>
+<div class="opt">A. 1 year</div><div class="opt">B. 2 years</div><div class="opt">C. 3 years</div><div class="opt">D. Indefinitely</div></div>
+<div class="mcq"><div class="q">4. For Head of Household status, which of the following counts as a qualifying cost of maintaining the household?</div>
+<div class="opt">A. Clothing</div><div class="opt">B. Property tax</div><div class="opt">C. Education</div><div class="opt">D. Vacations</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 1.2 Filing Status</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">C — Head of Household</span><br><span class="key-exp">Maria đáp ứng "considered unmarried" (chồng không sống cùng 6 tháng cuối, trả >50% chi phí nhà, có dependent con). Hector sẽ phải khai MFS.</span></div>
+<div><b>2.</b> <span class="key-ans">C — the other spouse's unreported self-employment income</span><br><span class="key-exp">Innocent spouse relief chỉ áp dụng cho thuế từ employment/self-employment income của NGƯỜI KIA, không áp dụng own income, household employment taxes, hay business taxes.</span></div>
+<div><b>3.</b> <span class="key-ans">B — 2 years</span></div>
+<div><b>4.</b> <span class="key-ans">B — Property tax</span><br><span class="key-exp">Qualifying: property tax, mortgage interest, rent, utilities, upkeep, repair, insurance, food tại nhà. Clothing/education/vacations đều KHÔNG tính.</span></div>
+</div>
+</div>
+
+<!-- ============================================================ 1.3 FILING REQUIREMENTS ============================================================ -->
+<div class="c3 pagebreak">
+<h2 class="section">1.3 — FILING REQUIREMENTS</h2>
+<div class="rule-box">
+<p>Phải khai thuế nếu: gross income vượt ngưỡng, HOẶC net self-employment earnings ≥$400, HOẶC là dependent với gross income lớn hơn standard deduction hay unearned income &gt;$1,350.</p>
+<p><b>Công thức Taxable Income:</b></p>
+<p class="struct">AGI − (Itemized hoặc Standard, lấy số lớn hơn) − QBID − Tips deduction − Overtime deduction − Car loan deduction − Enhanced deduction for seniors = Taxable Income</p>
+<p>Phải "elect" itemize bằng cách nộp Schedule A — nếu không elect, mặc định không có itemized deduction nào được tính. Có thể đổi ý bằng Form 1040-X.</p>
+</div>
+
+<h3 class="lesson">Ai KHÔNG được dùng Standard Deduction</h3>
+<div class="rule-box">
+<ul>
+<li>Người chọn itemize</li>
+<li>Nonresident alien</li>
+<li>Người khai "short period" return</li>
+<li>Người khai MFS mà vợ/chồng itemize (bắt buộc theo nhau)</li>
+<li>Partnerships, estates, trusts, corporations</li>
+</ul>
+</div>
+
+<h3 class="lesson">2025 Standard Deduction Amounts</h3>
+<table class="vocab">
+<tr><th>Filing Status</th><th>Basic</th><th>Additional (65+/blind, mỗi điều kiện)</th></tr>
+<tr><td class="word">MFJ / QSS</td><td>$31,500</td><td>$1,600</td></tr>
+<tr><td class="word">Head of Household</td><td>$23,625</td><td>$2,000</td></tr>
+<tr><td class="word">Single</td><td>$15,750</td><td>$2,000</td></tr>
+<tr><td class="word">MFS</td><td>$15,750</td><td>$1,600</td></tr>
+</table>
+<div class="example-box"><b class="ex-tag">Ví dụ additional deduction:</b> Mike, 68 tuổi, mù hợp pháp, khai HOH → basic $23,625 + 2 khoản additional $2,000×2=$4,000 (1 cho 65+, 1 cho blind) = tổng $27,625.</div>
+<p><b>Dependent's basic standard deduction</b> (trẻ &lt;19 hoặc student &lt;24 là dependent người khác): giới hạn = số LỚN HƠN giữa $1,350 hoặc (earned income + $450), tối đa $15,750. Earned income KHÔNG bao gồm dividend/capital gains.</p>
+
+<h3 class="lesson">Gross Income Filing Threshold</h3>
+<div class="rule-box">
+<p>Ngưỡng chung = mức standard deduction (không tính phần blind). Ngoại lệ: MFS có ngưỡng riêng chỉ $5. Ngưỡng được cộng thêm additional standard deduction cho 65+ (không cộng cho blind khi tính threshold).</p>
+<p>Social Security benefits KHÔNG tính vào gross income cho mục đích này, TRỪ KHI: (1) MFS và sống chung với vợ/chồng bất kỳ lúc nào trong năm, hoặc (2) 1/2 SS benefits + gross income khác + tax-exempt interest &gt;$25,000 ($32,000 nếu MFJ).</p>
+<p>Gain đã exclude từ bán nhà chính và foreign-earned income đã exclude PHẢI cộng ngược lại vào gross income khi tính filing threshold (dù bản thân không chịu thuế).</p>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ:</b> Josie chỉ có $2,500 tiền lãi, bán nhà ở >10 năm lãi $40,000 (được exclude khỏi thu nhập). Dù gain này miễn thuế, Josie VẪN phải khai thuế vì gain phải cộng lại để tính filing threshold.</div>
+
+<h3 class="lesson">Signature, Due Date, Penalty, Recordkeeping</h3>
+<div class="rule-box">
+<p><b>Signature:</b> taxpayer, spouse (nếu MFJ), và paid preparer đều phải ký — khai gian dưới perjury là felony, phạt tối đa $250,000 (cá nhân).</p>
+<p><b>Due date:</b> ngày 15 tháng thứ 4 (April 15). Gia hạn tự động 6 tháng nếu nộp Form 4868 hoặc thanh toán đúng hạn. Quân nhân/công dân ở nước ngoài ngày 15/4 được tự động +2 tháng.</p>
+<p><b>Nonresident alien (Form 1040-NR):</b> hạn ngày 15 tháng thứ 6 nếu KHÔNG bị withholding lương; ngày 15 tháng thứ 4 nếu CÓ bị withholding.</p>
+<p><b>Penalty:</b> Failure-to-file 5%/tháng tối đa 25%; Failure-to-pay 0.5%/tháng tối đa 25% (2 penalty có thể offset nhau để không vượt 5%/tháng tổng). Extension không miễn nghĩa vụ thanh toán — vẫn phải trả ≥90% số thuế thực tế khi xin extension để tránh failure-to-pay penalty.</p>
+<p><b>Employer penalty (deposit trễ):</b> 2% (trễ 1–5 ngày), 5% (6–15 ngày), 10% (≥16 ngày) — miễn nếu có "reasonable cause" không phải "willful neglect".</p>
+<p><b>Recordkeeping:</b> giữ hồ sơ chừng nào còn liên quan đến việc thi hành luật thuế; employer giữ hồ sơ employment tax tối thiểu 4 năm sau hạn nộp/ngày trả thuế.</p>
+<p><b>IP PIN:</b> mã 6 số chống giả mạo SSN trên tờ khai gian lận — thiếu/sai IP PIN sẽ khiến e-file bị từ chối hoặc paper return bị delay xử lý.</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ 1.3</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">Qualified Business Income Deduction (QBID)</td><td class="vn">Khấu trừ thu nhập kinh doanh đủ điều kiện</td></tr>
+<tr><td class="word">short period return</td><td class="vn">tờ khai cho kỳ thuế ngắn hơn 1 năm đầy đủ</td></tr>
+<tr><td class="word">gross income filing threshold</td><td class="vn">ngưỡng thu nhập bắt buộc phải khai thuế</td></tr>
+<tr><td class="word">perjury</td><td class="vn">tội khai gian dưới lời thề</td></tr>
+<tr><td class="word">reasonable cause vs. willful neglect</td><td class="vn">lý do chính đáng vs. cố ý bỏ mặc (ảnh hưởng miễn/không miễn penalty)</td></tr>
+<tr><td class="word">Identity Protection PIN (IP PIN)</td><td class="vn">Mã PIN bảo vệ danh tính khi khai thuế</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 1.3</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. What is the standard deduction filing threshold exception for a taxpayer filing Married Filing Separately?</div>
+<div class="opt">A. Same as Single</div><div class="opt">B. $5</div><div class="opt">C. $15,750</div><div class="opt">D. There is no exception</div></div>
+<div class="mcq"><div class="q">2. A taxpayer excludes a $40,000 gain on the sale of a principal residence. For gross income filing threshold purposes, this gain is:</div>
+<div class="opt">A. Ignored entirely</div><div class="opt">B. Added back to gross income</div><div class="opt">C. Taxed at capital gains rates</div><div class="opt">D. Only relevant if over $100,000</div></div>
+<div class="mcq"><div class="q">3. The failure-to-file penalty is generally:</div>
+<div class="opt">A. 0.5% per month, up to 25%</div><div class="opt">B. 5% per month, up to 25%</div><div class="opt">C. 1% per month, up to 50%</div><div class="opt">D. A flat $500</div></div>
+<div class="mcq"><div class="q">4. To avoid a failure-to-pay penalty when filing an extension, a taxpayer must pay at least what percentage of the actual tax liability by the original due date?</div>
+<div class="opt">A. 50%</div><div class="opt">B. 75%</div><div class="opt">C. 90%</div><div class="opt">D. 100%</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 1.3 Filing Requirements</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — $5</span><br><span class="key-exp">MFS có ngưỡng khai đặc biệt chỉ $5, vì không được dùng standard deduction trong tính threshold (do quy tắc "1 người itemize thì người kia phải itemize theo").</span></div>
+<div><b>2.</b> <span class="key-ans">B — Added back</span><br><span class="key-exp">Dù gain được exclude khỏi thu nhập chịu thuế, vẫn phải cộng lại khi xét CÓ PHẢI khai thuế hay không.</span></div>
+<div><b>3.</b> <span class="key-ans">B — 5% per month, up to 25%</span></div>
+<div><b>4.</b> <span class="key-ans">C — 90%</span></div>
+</div>
+</div>
+
+<!-- ============================================================ 1.4 DEPENDENTS ============================================================ -->
+<div class="c4 pagebreak">
+<h2 class="section">1.4 — DEPENDENTS</h2>
+<div class="rule-box">
+<p>Dependent phải là <b>Qualifying Child</b> hoặc <b>Qualifying Relative</b>. Vợ/chồng KHÔNG BAO GIỜ được tính là dependent.</p>
+</div>
+
+<h3 class="lesson">Qualifying Child — 4 tests</h3>
+<div class="rule-box">
+<ol>
+<li><b>Relationship:</b> con, con riêng, anh/chị/em (kể cả cùng cha/mẹ khác), hoặc con cháu của những người này. Con nuôi & eligible foster child đều tính.</li>
+<li><b>Age:</b> cuối năm dưới 19; HOẶC full-time student dưới 24 (yêu cầu ≥5 tháng học); HOẶC bất kỳ tuổi nào nếu permanently & totally disabled.</li>
+<li><b>Principal Residence:</b> sống cùng nhà với taxpayer hơn nửa năm.</li>
+<li><b>Not Self-Supporting:</b> không tự cấp hơn 50% chi phí sinh hoạt của chính mình.</li>
+</ol>
+</div>
+
+<h3 class="lesson">Qualifying Relative — 4 tests</h3>
+<div class="rule-box">
+<ol>
+<li><b>Relationship hoặc Residence:</b> thỏa 1 trong 2 — sống cùng nhà CẢ NĂM (residence test), HOẶC có quan hệ họ hàng "extended" (ông bà, cháu, cô/dì/chú/bác, cháu gọi cô dì chú bác) hay "immediate" (cha mẹ, con, anh chị em kể cả in-law). Quan hệ do hôn nhân KHÔNG bị mất dù ly hôn/qua đời. Anh/em họ (cousin) CHỈ tính nếu sống cùng nhà cả năm.</li>
+<li><b>Gross income</b> của người đó phải &lt;$5,200 (2025) — gồm mọi thu nhập chịu thuế nhận được; rental income tính gross (không trừ expense); business income = net sales − COGS + misc income; unemployment compensation tính vào; Social Security thường KHÔNG tính trừ khi có thêm thu nhập khác; municipal bond interest miễn thuế nên không tính.</li>
+<li><b>Support:</b> taxpayer phải cấp &gt;50% chi phí kinh tế của người đó trong năm. Support gồm: food, clothing, shelter, utilities, y tế, giáo dục, child care, vacation. KHÔNG tính: học bổng nhận được, thuế, bảo hiểm y tế nhận được, phí bảo hiểm nhân thọ. Capital items (đồ nội thất, xe...) mua vì lợi ích chung cả nhà KHÔNG tính vào support.</li>
+<li><b>Not a Qualifying Child</b> của taxpayer hay bất kỳ ai khác.</li>
+</ol>
+</div>
+
+<h3 class="lesson">Multiple Support Agreement (Form 2120)</h3>
+<div class="rule-box">
+<p>Khi nhiều người CÙNG cấp &gt;50% support cho 1 người (không ai riêng lẻ đạt 50%), 1 người trong nhóm có thể claim dependent nếu: đủ điều kiện khác + cấp &gt;10% support; không ai khác cấp &gt;50%; mỗi người khác cấp &gt;10% phải ký consent gửi kèm tờ khai.</p>
+</div>
+
+<h3 class="lesson">Divorced/Separated Parent — ngoại lệ support test</h3>
+<div class="rule-box">
+<p>Cha/mẹ ly hôn/ly thân KHÔNG cần đáp ứng support test riêng nếu (cả hai gộp lại): cấp &gt;50% support; có custody &gt;50% năm (gộp cả hai); sống riêng nửa cuối năm; không có multiple support agreement.</p>
+<p>Custodial parent (giữ con &gt;50% năm) mặc định được claim dependent — nhưng có thể "nhường" cho noncustodial parent qua <b>Form 8332</b> (Release/Revocation of Release of Claim to Exemption for Child by Custodial Parent).</p>
+</div>
+
+<h3 class="lesson">Special Rules</h3>
+<div class="rule-box">
+<ul>
+<li><b>Dependent taxpayer test:</b> nếu bản thân là dependent của người khác, người đó bị coi là "không có dependent nào" năm đó.</li>
+<li><b>Joint return test:</b> người đã kết hôn khai joint return thường KHÔNG được là dependent — TRỪ khi joint return đó chỉ để claim lại refund (không có tax liability nếu khai riêng).</li>
+<li><b>Citizenship:</b> phải là US citizen/resident/national, hoặc resident của Canada/Mexico (bất kỳ lúc nào trong năm).</li>
+<li>Dependent qua đời giữa năm VÀ trẻ sinh ra giữa năm đều được claim.</li>
+</ul>
+</div>
+
+<h3 class="lesson">Thuật ngữ 1.4</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">Qualifying Child / Qualifying Relative</td><td class="vn">Con đủ điều kiện / Họ hàng đủ điều kiện (2 loại dependent)</td></tr>
+<tr><td class="word">extended relationship / immediate relationship</td><td class="vn">quan hệ họ hàng mở rộng / trực tiếp</td></tr>
+<tr><td class="word">Multiple Support Agreement (Form 2120)</td><td class="vn">Thỏa thuận hỗ trợ nhiều người</td></tr>
+<tr><td class="word">custodial / noncustodial parent</td><td class="vn">cha/mẹ có quyền nuôi con / không có quyền nuôi con</td></tr>
+<tr><td class="word">Form 8332</td><td class="vn">Mẫu nhường quyền claim dependent cho noncustodial parent</td></tr>
+<tr><td class="word">Adoption Taxpayer Identification Number (ATIN)</td><td class="vn">Mã số thuế tạm cho con đang trong quá trình nhận nuôi</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 1.4</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. Allan, 22, earns $6,600 while a full-time student, living with his cousin Doris all year who supports him. Can Doris claim Allan as a dependent?</div>
+<div class="opt">A. Yes, as a qualifying child</div><div class="opt">B. Yes, as a qualifying relative</div><div class="opt">C. No — his gross income exceeds $5,200</div><div class="opt">D. No — cousins never qualify</div></div>
+<div class="mcq"><div class="q">2. Which item does NOT count toward the support test for a qualifying relative?</div>
+<div class="opt">A. Food and shelter</div><div class="opt">B. Medical and dental care</div><div class="opt">C. A scholarship received by the dependent</div><div class="opt">D. Child care expenses</div></div>
+<div class="mcq"><div class="q">3. Under a multiple support agreement, a person claiming the dependent must provide more than what percentage of support?</div>
+<div class="opt">A. 5%</div><div class="opt">B. 10%</div><div class="opt">C. 25%</div><div class="opt">D. 50%</div></div>
+<div class="mcq"><div class="q">4. A custodial parent can release the dependency claim to the noncustodial parent using:</div>
+<div class="opt">A. Form 8379</div><div class="opt">B. Form 8332</div><div class="opt">C. Form 2120</div><div class="opt">D. Form 8857</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 1.4 Dependents</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">C — No, gross income exceeds $5,200</span><br><span class="key-exp">Allan không phải qualifying child (quá tuổi và không có quan hệ trực hệ với cousin), và với qualifying relative thì $6,600 vượt ngưỡng gross income $5,200 → không đủ điều kiện.</span></div>
+<div><b>2.</b> <span class="key-ans">C — Scholarship received by the dependent</span><br><span class="key-exp">Học bổng nhận được KHÔNG tính là support được cung cấp cho dependent.</span></div>
+<div><b>3.</b> <span class="key-ans">B — 10%</span></div>
+<div><b>4.</b> <span class="key-ans">B — Form 8332</span></div>
+</div>
+</div>
+
+<!-- ============================================================ 1.5 DEPENDENT'S UNEARNED INCOME / KIDDIE TAX ============================================================ -->
+<div class="c5 pagebreak">
+<h2 class="section">1.5 — DEPENDENT'S UNEARNED INCOME (KIDDIE TAX)</h2>
+<div class="rule-box">
+<p><b>Standard deduction của dependent có unearned income:</b> giới hạn = số LỚN HƠN giữa $1,350 hoặc (earned income + $450), tối đa $15,750.</p>
+<p><b>Kiddie Tax (2025):</b> Net Unearned Income (NUI) của dependent dưới 19 tuổi (dưới 24 nếu full-time student) cuối năm bị đánh thuế theo MỨC THUẾ SUẤT CỦA CHA/MẸ thay vì mức của trẻ.</p>
+<p class="struct">NUI = Unearned income − $1,350 (first clause) − MAX($1,350 standard/itemized deduction liên quan, hoặc allowable deductions liên quan đến việc tạo ra unearned income)</p>
+<p>Dependent luôn được giảm trừ tối thiểu $2,700 ($1,350×2) trên unearned income trước khi tính kiddie tax.</p>
+</div>
+
+<h3 class="lesson">Earned vs. Unearned Income (ví dụ)</h3>
+<table class="vocab">
+<tr><th>Earned (Thu nhập lao động)</th><th>Unearned (Thu nhập không từ lao động)</th></tr>
+<tr><td class="word">Salaries, Wages, Tips</td><td class="vn">Interest, Dividends, Capital gains, Trust distributions, Debt cancellation, Pension/Annuities, Social Security, Royalties, Taxable scholarships</td></tr>
+</table>
+
+<div class="example-box"><b class="ex-tag">Ví dụ 1-15:</b> Chris, 5 tuổi, có $5,100 unearned income, không có earned income. NUI = $5,100 − $1,350 (first clause) − $1,350 (standard deduction) = <b>$2,400</b> bị đánh thuế theo mức cha/mẹ.</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 1-16 (Kiddie Tax tổng hợp):</b> Melvin, 15 tuổi, dependent, có $6,450 earned income + $2,800 taxable interest. Taxable income = $9,250 − $6,900 (standard deduction = $6,450+$450) = $2,350. Phần bị đánh thuế theo mức cha/mẹ = $2,800 − $1,350 − $1,350 = $100. Phần còn lại $2,250 đánh thuế theo mức của Melvin.</div>
+
+<h3 class="lesson">Ngoại lệ Kiddie Tax</h3>
+<div class="rule-box">
+<p>Kiddie tax KHÔNG áp dụng cho trẻ 18 tuổi (hoặc &lt;24 nếu full-time student) NẾU earned income của trẻ vượt quá 1/2 chi phí sinh hoạt (support) của chính trẻ. Tuy nhiên trẻ DƯỚI 18 tuổi vẫn bị kiddie tax áp dụng dù earned income vượt 1/2 support.</p>
+<p>Nếu nhiều con cùng có NUI, tổng NUI của cha/mẹ phải được phân bổ theo tỷ lệ (proportioned) giữa các con.</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ 1.5</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">Net Unearned Income (NUI)</td><td class="vn">Thu nhập ròng không từ lao động (căn cứ tính kiddie tax)</td></tr>
+<tr><td class="word">kiddie tax</td><td class="vn">thuế áp dụng mức thuế suất cha mẹ lên unearned income của trẻ</td></tr>
+<tr><td class="word">first $1,350 clause</td><td class="vn">khoản miễn trừ đầu tiên khi tính NUI</td></tr>
+<tr><td class="word">proportioned NUI</td><td class="vn">NUI được phân bổ theo tỷ lệ giữa nhiều con</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 1.5</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. A dependent child with $5,100 of unearned income and no earned income has Net Unearned Income of:</div>
+<div class="opt">A. $1,350</div><div class="opt">B. $2,400</div><div class="opt">C. $3,750</div><div class="opt">D. $5,100</div></div>
+<div class="mcq"><div class="q">2. The kiddie tax generally applies to a dependent's unearned income until what age (or age 24 if a full-time student)?</div>
+<div class="opt">A. 16</div><div class="opt">B. 18</div><div class="opt">C. 19</div><div class="opt">D. 21</div></div>
+<div class="mcq"><div class="q">3. Which of the following is considered UNEARNED income for kiddie tax purposes?</div>
+<div class="opt">A. Wages from a part-time job</div><div class="opt">B. Tips</div><div class="opt">C. Taxable scholarships</div><div class="opt">D. Salary</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 1.5 Kiddie Tax</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — $2,400</span><br><span class="key-exp">$5,100 − $1,350 − $1,350 = $2,400.</span></div>
+<div><b>2.</b> <span class="key-ans">C — 19</span><br><span class="key-exp">Dưới 19 (hoặc dưới 24 nếu full-time student) tại thời điểm cuối năm.</span></div>
+<div><b>3.</b> <span class="key-ans">C — Taxable scholarships</span><br><span class="key-exp">Wages/tips/salary đều là earned income; taxable scholarship là unearned income theo bảng phân loại của Gleim.</span></div>
+</div>
+</div>
+
+<!-- ============================================================ 1.6 NONRESIDENT & DUAL-STATUS ALIENS ============================================================ -->
+<div class="c6 pagebreak">
+<h2 class="section">1.6 — NONRESIDENT AND DUAL-STATUS ALIENS</h2>
+<div class="rule-box">
+<p><b>Resident alien</b> nếu đạt Green Card Test HOẶC Substantial Presence Test. <b>Dual-status alien</b> = vừa là nonresident vừa resident trong cùng năm (thường năm đến/rời Mỹ).</p>
+<p><b>Green Card Test:</b> là lawful permanent resident tại bất kỳ thời điểm nào trong năm.</p>
+<p><b>Substantial Presence Test:</b> có mặt tại Mỹ ít nhất (1) 31 ngày trong năm hiện tại, VÀ (2) tổng 183 ngày tính theo công thức: 100% số ngày năm nay + 1/3 số ngày năm trước + 1/6 số ngày 2 năm trước.</p>
+</div>
+
+<h3 class="lesson">Nonresident Alien (NRA) — quy tắc chính</h3>
+<div class="rule-box">
+<ul>
+<li>NRA có thể khai joint return nếu cuối năm kết hôn với US citizen/resident — nếu chọn, CẢ HAI bị đánh thuế trên worldwide income.</li>
+<li>Taxpayer được xem là "unmarried" cho mục đích HOH nếu vợ/chồng là NRA bất kỳ lúc nào trong năm VÀ không chọn treat spouse như resident — nhưng vợ/chồng NRA KHÔNG được tính là qualifying person cho HOH (vẫn cần dependent khác).</li>
+<li>Dù được coi "unmarried" cho HOH, vẫn bị coi là MARRIED khi xét Earned Income Credit (EIC) — phải khai joint return mới được EIC.</li>
+<li>NRA chỉ được itemize 1 số khoản nếu có income "effectively connected" với US trade/business: state/local tax, charitable đến tổ chức Mỹ, casualty/theft loss...</li>
+<li>NRA chỉ được Standard Deduction nếu chọn treat as US resident (do kết hôn với citizen/resident).</li>
+<li>NRA KHÔNG được credit for the elderly và education credits trừ khi chọn treat as US resident.</li>
+<li>Phải khai thuế nếu có wages effectively connected với US trade/business.</li>
+<li>Phần lớn US-source income của NRA chịu thuế suất phẳng 30%.</li>
+<li>Scholarship/fellowship cho hoạt động thực hiện NGOÀI nước Mỹ = foreign source income → KHÔNG chịu thuế Mỹ.</li>
+</ul>
+</div>
+
+<h3 class="lesson">Kết thúc "resident election" (Ending Resident Status)</h3>
+<table class="vocab">
+<tr><th>Cách kết thúc</th><th>Chi tiết</th></tr>
+<tr><td class="word">Revocation</td><td class="vn">Vợ/chồng nào cũng được thu hồi choice, phải làm trước hạn nộp thuế năm đó, kèm statement ký tên với thông tin cụ thể</td></tr>
+<tr><td class="word">Death</td><td class="vn">Kết thúc từ năm thuế SAU năm người mất (trừ trường hợp surviving spouse còn dùng joint rate)</td></tr>
+<tr><td class="word">Divorce/legal separation</td><td class="vn">Kết thúc từ ĐẦU năm thuế xảy ra ly thân hợp pháp</td></tr>
+<tr><td class="word">Inadequate records</td><td class="vn">IRS có thể tự chấm dứt nếu không giữ đủ sổ sách chứng minh thuế</td></tr>
+</table>
+
+<h3 class="lesson">Thuật ngữ 1.6</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">Green Card Test</td><td class="vn">Kiểm tra thẻ xanh (thường trú nhân hợp pháp)</td></tr>
+<tr><td class="word">Substantial Presence Test</td><td class="vn">Kiểm tra thời gian hiện diện đáng kể tại Mỹ</td></tr>
+<tr><td class="word">dual-status alien</td><td class="vn">người nước ngoài có tình trạng kép (vừa resident vừa nonresident trong năm)</td></tr>
+<tr><td class="word">effectively connected income</td><td class="vn">thu nhập liên kết thực sự với hoạt động kinh doanh Mỹ</td></tr>
+<tr><td class="word">revocation (of resident election)</td><td class="vn">thu hồi lựa chọn được coi là resident</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 1.6</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. Under the Substantial Presence Test, days of presence in the prior year count as:</div>
+<div class="opt">A. Full weight (100%)</div><div class="opt">B. 1/2 weight</div><div class="opt">C. 1/3 weight</div><div class="opt">D. 1/6 weight</div></div>
+<div class="mcq"><div class="q">2. Most types of U.S. source income received by a nonresident alien are subject to a flat tax rate of:</div>
+<div class="opt">A. 15%</div><div class="opt">B. 21%</div><div class="opt">C. 30%</div><div class="opt">D. 37%</div></div>
+<div class="mcq"><div class="q">3. A taxpayer considered "unmarried" for Head of Household purposes because their spouse is a nonresident alien is still considered MARRIED for purposes of:</div>
+<div class="opt">A. The standard deduction</div><div class="opt">B. The Earned Income Credit</div><div class="opt">C. Itemized deductions</div><div class="opt">D. Filing threshold only</div></div>
+<div class="mcq"><div class="q">4. A divorce or legal separation ends a resident election choice as of:</div>
+<div class="opt">A. The date of the divorce decree only</div><div class="opt">B. The beginning of the tax year in which the separation occurs</div><div class="opt">C. The following tax year</div><div class="opt">D. It never ends the election</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 1.6 Nonresident &amp; Dual-Status Aliens</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">C — 1/3 weight</span><br><span class="key-exp">Năm hiện tại 100%, năm trước 1/3, năm trước nữa 1/6.</span></div>
+<div><b>2.</b> <span class="key-ans">C — 30%</span></div>
+<div><b>3.</b> <span class="key-ans">B — Earned Income Credit</span><br><span class="key-exp">Dù được coi unmarried cho HOH, vẫn bị coi là married khi xét EIC — phải khai joint return để được EIC.</span></div>
+<div><b>4.</b> <span class="key-ans">B — Beginning of the tax year of separation</span></div>
+</div>
+</div>
+
+</body>
+</html>

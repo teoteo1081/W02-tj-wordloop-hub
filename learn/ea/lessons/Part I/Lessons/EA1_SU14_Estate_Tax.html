@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<!-- Google tag (gtag.js) — GA4 chung của TJ, nhãn site=ea -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'ea'});</script>
+
+<meta charset="UTF-8">
+<title>EA Part I – SU14: Estate Tax</title>
+<style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  body { font-family:'Segoe UI','Calibri',Arial,sans-serif; color:#33322f; font-size:15px; line-height:1.5; background:#fdfcfa; margin:0; }
+  .cover { background: linear-gradient(120deg,#bfe4ff 0%,#d6ecff 30%,#e6def7 65%,#fbe6f4 100%); border-radius:20px; padding:40px 30px; text-align:center; margin-bottom:10px; box-shadow:0 6px 18px rgba(120,130,180,.25); border:1px solid #dfe8f5; }
+  .cover .tag { display:inline-block; background:#33314a; color:#d6ecff; font-weight:700; letter-spacing:2px; font-size:13px; padding:5px 14px; border-radius:20px; margin-bottom:14px; }
+  .cover h1 { font-size:28px; margin:6px 0; color:#3170a8; }
+  .cover h2 { font-size:15px; font-weight:500; margin:4px 0 0; opacity:.9; color:#33314a; }
+  .cover .books { margin-top:16px; font-size:13px; background:rgba(255,255,255,.55); display:inline-block; padding:8px 16px; border-radius:10px; color:#33314a; }
+  .toc { background:#fff; border:1.5px solid #dfe8f5; border-radius:14px; padding:18px 26px; margin-bottom:30px; }
+  .toc h3 { margin-top:0; color:#3170a8; }
+  .toc ol { margin:0; padding-left:22px; } .toc li{ margin-bottom:6px; }
+  h2.section { font-size:21px; color:#33314a; padding:12px 18px; border-radius:12px; margin:34px 0 14px; border-left:10px solid var(--accent,#5aa9d6); background:var(--bg,#eaf6fd); }
+  h3.lesson { font-size:18px; color:var(--accent-dark,#276a91); border-left:6px solid var(--accent,#5aa9d6); background:var(--bg-soft,#f3fafd); padding:8px 14px; border-radius:6px; margin:22px 0 10px; }
+  .c1{--accent:#5aa9d6;--accent-dark:#276a91;--bg:#eaf6fd;--bg-soft:#f3fafd;--head:#a9d4ec;}
+  .c2{--accent:#a892d9;--accent-dark:#5c4696;--bg:#f1ecfb;--bg-soft:#f8f5fd;--head:#cabdec;}
+  .c3{--accent:#f0a66e;--accent-dark:#b8620b;--bg:#fdeee2;--bg-soft:#fff8f0;--head:#f4c299;}
+  .cKey{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
+  table.vocab { width:100%; border-collapse:collapse; margin-bottom:18px; font-size:.94em; box-shadow:0 2px 8px rgba(0,0,0,.05); border-radius:10px; overflow:hidden; }
+  table.vocab th { background:var(--head,#5aa9d6); color:#2d2d2d; padding:8px; text-align:left; }
+  table.vocab td { padding:7px 8px; border-bottom:1px solid var(--bg,#eaf6fd); vertical-align:top; }
+  table.vocab tr:nth-child(even) td { background:var(--bg-soft,#faf6f0); }
+  table.vocab tr:nth-child(odd) td { background:#fff; }
+  table.vocab td.word { font-weight:800; color:var(--accent-dark,#276a91); }
+  table.vocab td.vn { font-weight:700; color:#3d6ba8; }
+  .rule-box { background:var(--bg,#eaf6fd); border-left:6px solid var(--accent,#5aa9d6); border-radius:8px; padding:12px 18px; margin:10px 0; }
+  .rule-box table { width:100%; border-collapse:collapse; margin:8px 0 4px; }
+  .rule-box table td, .rule-box table th { padding:6px 8px; border-bottom:1px solid rgba(0,0,0,.08); text-align:left; font-size:.92em; }
+  .rule-box table th { color:var(--accent-dark,#276a91); }
+  .rule-box ul, .rule-box ol { margin:6px 0; padding-left:22px; } .rule-box li{ margin-bottom:5px; }
+  .struct { font-weight:800; color:#b8620b; font-family:'Consolas','Courier New',monospace; }
+  .example-box { background:#fff; border:1.5px dashed var(--accent,#5aa9d6); border-radius:8px; padding:10px 16px; margin:8px 0; font-size:.92em; }
+  .example-box b.ex-tag { color:var(--accent-dark,#276a91); }
+  .mcq { background:#fff; border:1.5px solid var(--accent,#5aa9d6); border-radius:10px; padding:12px 18px; margin-bottom:12px; }
+  .mcq .q { color:#3d6ba8; font-weight:700; margin-bottom:6px; }
+  .mcq .opt { margin:2px 0 2px 10px; }
+  .content-block { background:#fff; border:2px dashed var(--accent,#5aa9d6); border-radius:12px; padding:16px 20px; margin-bottom:18px; }
+  .key-grid { column-count:1; } .key-grid div{ margin-bottom:9px; }
+  .key-ans { color:#20824f; font-weight:800; }
+  .key-exp { color:#555; font-size:.92em; }
+  .pagebreak { page-break-before: always; }
+  .note { font-size:.85em; color:#8a8a8a; font-style:italic; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="tag">EA EXAM PREP • PART I — INDIVIDUALS • SU14</div>
+  <h1>📗 SU14 — ESTATE TAX</h1>
+  <h2>Thuế di sản: gross estate, deductions, Form 706, portability (Song ngữ Việt–Anh)</h2>
+  <div class="books">📖 Khái niệm · 🔤 Thuật ngữ · 📌 Ví dụ · ❓ Trắc nghiệm · 🔑 Đáp án trang sau</div>
+</div>
+
+<div class="toc">
+<h3>📑 Mục lục SU14</h3>
+<ol>
+<li>14.1 Gross Estate (§2031–2044)</li>
+<li>14.2 Deductions &amp; Tính Estate Tax</li>
+<li>14.3 Form 706, Portability, Valuation &amp; Basis</li>
+<li>14.4 Executor, Payment Relief &amp; Estate Planning Overview</li>
+<li>14.5 Generation-Skipping Transfer Tax (GSTT)</li>
+</ol>
+<p class="note">Soạn theo outline EA Part I — SU14 Estate Tax. Số liệu theo năm thuế 2025 (gồm thay đổi của OBBBA). Chưa đối chiếu giáo trình Gleim — cần kiểm lại số liệu với giáo trình và năm thi thực tế.</p>
+</div>
+
+<!-- 14.1 -->
+<div class="c1">
+<h2 class="section">14.1 — GROSS ESTATE (§2031–2044)</h2>
+<div class="rule-box">
+<p><b>Estate tax</b> đánh vào <b>quyền chuyển giao tài sản khi chết</b>. Đối tượng: <b>citizen/resident</b> — <b>toàn bộ tài sản toàn cầu</b>; <b>nonresident alien</b> — chỉ <b>US-situs</b> property (exemption chỉ $60,000). <b>Gross estate</b> = FMV tại <b>ngày chết</b> (hoặc <b>alternate valuation date</b> 6 tháng sau, nếu elect) của mọi tài sản decedent sở hữu hoặc có interest.</p>
+</div>
+<h3 class="lesson">Các khoản vào Gross Estate</h3>
+<div class="rule-box">
+<table>
+<tr><th>Điều luật</th><th>Khoản mục</th><th>Ghi chú</th></tr>
+<tr><td>§2033</td><td>Tài sản sở hữu (bất động sản, chứng khoán, bank, business)</td><td>Giá trị FMV ngày chết</td></tr>
+<tr><td>§2035</td><td>Gift trong <b>3 năm trước khi chết</b></td><td>Chỉ gift tax paid được cộng lại (gross-up); life insurance/ retained interest chuyển nhượng &lt; 3 năm vẫn bị kéo vào</td></tr>
+<tr><td>§2036/§2037/§2038</td><td>Chuyển nhượng mà decedent <b>giữ life estate, quyền thu nhập, quyền kiểm soát, quyền revoke</b></td><td>Toàn bộ giá trị tài sản</td></tr>
+<tr><td>§2039</td><td>Annuities/ survivor benefits</td><td>Giá trị phần survivor nhận</td></tr>
+<tr><td>§2040</td><td><b>Joint tenancy</b></td><td>Vợ chồng (qualified joint interest): <b>50%</b>; người khác: <b>toàn bộ trừ phần survivor đã đóng góp</b></td></tr>
+<tr><td>§2041</td><td><b>General power of appointment</b></td><td>Bao gồm tài sản của trust nếu decedent có quyền chỉ định cho mình/ estate/ chủ nợ</td></tr>
+<tr><td>§2042</td><td><b>Life insurance</b></td><td>Gồm nếu <b>payable to estate</b> hoặc decedent có <b>incidents of ownership</b> (quyền đổi beneficiary, vay, hủy…)</td></tr>
+<tr><td>§2044</td><td><b>QTIP</b> property (đã khấu trừ marital trước đó)</td><td>Bao gồm trong estate của spouse còn sống</td></tr>
+<tr><td>§691</td><td><b>IRD</b> (lương, pension chưa nhận…)</td><td>Có trong gross estate; có income tax deduction §691(c)</td></tr>
+</table>
+<ul><li>Gross estate gồm cả <b>trái phiếu chính phủ/ địa phương</b> dù lãi được miễn thuế thu nhập; <b>dower/curtesy</b>; cổ tức đã công bố (record date đã qua); hoàn phí y tế đến hạn lúc chết</li><li><b>Nợ</b> của decedent chỉ ảnh hưởng khi estate thực sự trả (khấu trừ ở bước deductions)</li><li><b>Annuity/ survivor benefit</b> vào GE nếu decedent đang nhận hoặc có quyền nhận</li><li><b>Revocable trust</b> — vào gross estate; <b>irrevocable life insurance trust (ILIT)</b> đã lập &gt; 3 năm trước chết — không vào</li><li><b>Gift hoàn tất &gt; 3 năm trước chết</b> (và không giữ interest) — <b>không</b> vào gross estate (nhưng cộng vào <b>adjusted taxable gifts</b>)</li></ul>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 14-1 (§2040):</b> Hai anh em (không phải vợ chồng) mua nhà $400,000: A đóng $300,000, B đóng $100,000. A chết trước → gross estate của A = $400,000 − $100,000 (phần B đóng) = <b>$300,000</b>. Nếu là <b>vợ chồng</b> → chỉ 50% = $200,000.</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 14-1b (Insurance &lt; 3 năm):</b> Joanna mua term life $200,000 20 năm trước, 1 năm trước khi mất chuyển bất khả hồi cho trust và trust trả premium năm cuối. GE của Joanna gồm <b>$190,000</b> (Joanna đã trả 95% premium) — ngoại lệ của quy tắc gift trong 3 năm.</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 14-2 (§2042):</b> Ông Nam sở hữu life insurance $1,000,000, beneficiary là con → <b>$1,000,000 vào gross estate</b> (incidents of ownership). Nếu policy thuộc ILIT lập &gt; 3 năm trước → không vào.</div>
+
+<h3 class="lesson">Thuật ngữ 14.1</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">gross estate</td><td class="vn">tổng tài sản chịu estate tax</td></tr>
+<tr><td class="word">decedent</td><td class="vn">người đã mất</td></tr>
+<tr><td class="word">incidents of ownership</td><td class="vn">quyền sở hữu đối với policy bảo hiểm</td></tr>
+<tr><td class="word">general power of appointment</td><td class="vn">quyền chỉ định rộng (bị coi là sở hữu)</td></tr>
+<tr><td class="word">retained life estate</td><td class="vn">quyền sử dụng/ thu nhập giữ lại khi chuyển nhượng</td></tr>
+<tr><td class="word">qualified joint interest</td><td class="vn">tài sản chung vợ chồng (tính 50%)</td></tr>
+<tr><td class="word">alternate valuation date</td><td class="vn">ngày định giá thay thế (6 tháng sau khi chết)</td></tr>
+<tr><td class="word">gross-up</td><td class="vn">cộng lại gift tax đã trả trong 3 năm trước chết</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 14.1</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. The gross estate of a U.S. citizen includes:</div>
+<div class="opt">A. Only U.S. property</div><div class="opt">B. Worldwide property</div><div class="opt">C. Only property passing by will</div><div class="opt">D. Only real property</div></div>
+<div class="mcq"><div class="q">2. For a married couple (qualified joint interest), the amount included in the first spouse's gross estate is generally:</div>
+<div class="opt">A. 0%</div><div class="opt">B. 50%</div><div class="opt">C. 100%</div><div class="opt">D. Based on contribution</div></div>
+<div class="mcq"><div class="q">3. Life insurance proceeds are included in the gross estate if:</div>
+<div class="opt">A. The policy is payable to a charity only</div><div class="opt">B. The decedent held incidents of ownership or proceeds are payable to the estate</div><div class="opt">C. Premiums were paid by the beneficiary</div><div class="opt">D. The policy is a term policy</div></div>
+<div class="mcq"><div class="q">4. The alternate valuation date is:</div>
+<div class="opt">A. The date of the will</div><div class="opt">B. 6 months after the date of death</div><div class="opt">C. 1 year after death</div><div class="opt">D. The date the executor is appointed</div></div>
+<div class="mcq"><div class="q">5. A completed gift made 5 years before death (with no retained interest) is:</div>
+<div class="opt">A. Included in the gross estate</div><div class="opt">B. Not included in the gross estate, but included in adjusted taxable gifts</div><div class="opt">C. Taxed twice</div><div class="opt">D. Ignored for all purposes</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 14.1 GROSS ESTATE (§2031–2044)</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — Worldwide property</span></div>
+<div><b>2.</b> <span class="key-ans">B — 50%</span></div>
+<div><b>3.</b> <span class="key-ans">B — The decedent held incidents of ownership or proceeds are payable to the estate</span></div>
+<div><b>4.</b> <span class="key-ans">B — 6 months after the date of death</span></div>
+<div><b>5.</b> <span class="key-ans">B — Not included in the gross estate, but included in adjusted taxable gifts</span></div>
+</div>
+</div>
+
+<!-- 14.2 -->
+<div class="c2 pagebreak">
+<h2 class="section">14.2 — DEDUCTIONS &amp; TÍNH ESTATE TAX</h2>
+<h3 class="lesson">Deductions (Gross Estate → Taxable Estate)</h3>
+<div class="rule-box">
+<ul><li><b>Funeral expenses</b> và <b>administration expenses</b> (§2053) — <b>Form 706 hoặc Form 1041, không cả hai</b> (§642(g))</li><li><b>Debts</b> của decedent và <b>mortgages</b> (mà tài sản chịu)</li><li><b>Casualty/theft losses</b> trong khi xử lý estate (§2054)</li><li><b>Marital deduction</b> (§2056): <b>không giới hạn</b> cho tài sản <b>passing to US citizen spouse</b>; <b>terminable interest rule</b>: interest chấm dứt không đủ trừ khi <b>QTIP</b> (election trên Form 706)</li><li><b>Spouse non-citizen</b>: marital deduction chỉ khi qua <b>QDOT</b> (qualified domestic trust)</li><li><b>Charitable deduction</b> (§2055): <b>không giới hạn</b></li><li><b>State death taxes</b> paid (§2058): deduct (không phải credit)</li></ul>
+</div>
+<h3 class="lesson">Công thức Estate Tax</h3>
+<div class="rule-box">
+<table>
+<tr><th>Bước</th><th>Nội dung</th></tr>
+<tr><td>1</td><td><b>Gross estate</b></td></tr>
+<tr><td>2</td><td>− Funeral, administration, debts, losses</td></tr>
+<tr><td>3</td><td>− Marital deduction − Charitable deduction − State death tax</td></tr>
+<tr><td>4</td><td>= <b>Taxable estate</b></td></tr>
+<tr><td>5</td><td>+ <b>Adjusted taxable gifts</b> (taxable gifts sau 1976)</td></tr>
+<tr><td>6</td><td>= Tax base → <b>tentative tax</b> (unified rate: 18%–40%)</td></tr>
+<tr><td>7</td><td>− <b>Gift tax payable</b> (trên gifts sau 1976)</td></tr>
+<tr><td>8</td><td>− <b>Applicable credit</b> (<b>$5,541,800</b> cho 2025)</td></tr>
+<tr><td>9</td><td>− Other credits (tax on prior transfers §2013, foreign death tax) = <b>Estate tax</b></td></tr>
+</table>
+<ul><li><b>Applicable exclusion (2025)</b>: <b>$13,990,000</b>; <b>2026: $15,000,000</b> (OBBBA), lập chỉ số lạm phát</li><li><b>DSUE</b> (deceased spousal unused exclusion) cộng thêm (portability)</li><li><b>Rate cao nhất 40%</b> trên phần vượt <b>$1,000,000</b> (cùng bảng với gift tax — SU13)</li></ul>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 14-3 (Computation):</b> Gross estate $15,000,000. Funeral/admin $300,000, debts $200,000, charity $500,000, không marital, không adjusted taxable gifts. Taxable estate = $15,000,000 − $1,000,000 = <b>$14,000,000</b>. Tentative tax = $345,800 + 40% × ($14,000,000 − $1,000,000) = <b>$5,545,800</b>. Trừ applicable credit $5,541,800 → <b>estate tax $4,000</b>.</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 14-4 (Marital):</b> Gross estate $20,000,000; toàn bộ để lại cho vợ (US citizen) → marital deduction $20,000,000 → taxable estate $0 → <b>estate tax $0</b>. Nhưng toàn bộ tài sản sẽ vào estate của người vợ khi bà mất (nếu không dùng hết exclusion) — nên cân nhắc <b>portability</b> hoặc <b>credit shelter trust</b>.</div>
+
+<h3 class="lesson">Thuật ngữ 14.2</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">taxable estate</td><td class="vn">di sản chịu thuế (sau deductions)</td></tr>
+<tr><td class="word">marital deduction</td><td class="vn">khấu trừ cho vợ/chồng</td></tr>
+<tr><td class="word">QTIP</td><td class="vn">trust thu nhập cho vợ/chồng còn sống (marital deduction)</td></tr>
+<tr><td class="word">QDOT</td><td class="vn">trust nội địa đủ điều kiện (cho spouse không phải citizen)</td></tr>
+<tr><td class="word">terminable interest rule</td><td class="vn">quy tắc interest chấm dứt (không đủ marital deduction)</td></tr>
+<tr><td class="word">adjusted taxable gifts</td><td class="vn">taxable gifts sau 1976 cộng vào tax base</td></tr>
+<tr><td class="word">applicable credit</td><td class="vn">tín dụng ($5,541,800 năm 2025)</td></tr>
+<tr><td class="word">DSUE</td><td class="vn">phần miễn trừ chưa dùng của vợ/chồng đã mất</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 14.2</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. The basic exclusion amount for estates of decedents dying in 2025 is:</div>
+<div class="opt">A. $5,000,000</div><div class="opt">B. $11,180,000</div><div class="opt">C. $13,990,000</div><div class="opt">D. $15,000,000</div></div>
+<div class="mcq"><div class="q">2. The marital deduction is available for property passing to:</div>
+<div class="opt">A. Any spouse regardless of citizenship, unrestricted</div><div class="opt">B. A U.S. citizen spouse, subject to terminable interest rules (or QTIP/QDOT)</div><div class="opt">C. Children</div><div class="opt">D. Charities only</div></div>
+<div class="mcq"><div class="q">3. Administration expenses of an estate may be deducted:</div>
+<div class="opt">A. On both Form 706 and Form 1041</div><div class="opt">B. On Form 706 or Form 1041, but not both</div><div class="opt">C. Only on Form 1041</div><div class="opt">D. Only on Form 706</div></div>
+<div class="mcq"><div class="q">4. The top federal estate tax rate is:</div>
+<div class="opt">A. 28%</div><div class="opt">B. 35%</div><div class="opt">C. 37%</div><div class="opt">D. 40%</div></div>
+<div class="mcq"><div class="q">5. State death taxes paid by an estate are:</div>
+<div class="opt">A. A credit against federal estate tax</div><div class="opt">B. A deduction from the gross estate</div><div class="opt">C. Ignored</div><div class="opt">D. Added to the gross estate</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 14.2 DEDUCTIONS &amp; TÍNH ESTATE TAX</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">C — $13,990,000</span></div>
+<div><b>2.</b> <span class="key-ans">B — A U.S. citizen spouse, subject to terminable interest rules (or QTIP/QDOT)</span></div>
+<div><b>3.</b> <span class="key-ans">B — On Form 706 or Form 1041, but not both</span></div>
+<div><b>4.</b> <span class="key-ans">D — 40%</span></div>
+<div><b>5.</b> <span class="key-ans">B — A deduction from the gross estate</span></div>
+</div>
+</div>
+
+<!-- 14.3 -->
+<div class="c3 pagebreak">
+<h2 class="section">14.3 — FORM 706, PORTABILITY, VALUATION &amp; BASIS</h2>
+<h3 class="lesson">Form 706 — Khi nào phải khai</h3>
+<div class="rule-box">
+<ul><li><b>Phải khai Form 706</b> nếu <b>gross estate + adjusted taxable gifts &gt; basic exclusion</b> (<b>$13,990,000</b>, 2025)</li><li><b>Due: 9 tháng</b> sau ngày chết; <b>Form 4768</b>: extension <b>6 tháng</b> để khai (không gia hạn thời hạn trả thuế)</li><li>Có thể khai <b>kể cả không bắt buộc</b> để <b>elect portability</b></li><li><b>Executor</b> (hoặc <b>personal representative</b>) ký; nếu không có → bất kỳ người nào giữ tài sản</li><li><b>Form 8971</b> + Schedule A cho từng beneficiary: <b>30 ngày</b> sau due date của Form 706 (Gleim; luật: sớm hơn giữa due date và ngày nộp) — cung cấp basis cho beneficiary (basis consistency); <b>không cần</b> nếu return nộp chỉ để portability/ GST; beneficiary khai basis cao hơn Form 8971 bị phạt accuracy-related <b>20%</b>; assessment: <b>3 năm</b> sau due date, thêm năm thứ 4 đối với transferee</li></ul>
+</div>
+<h3 class="lesson">Portability (DSUE)</h3>
+<div class="rule-box">
+<ul><li><b>Surviving spouse</b> được dùng phần <b>exclusion chưa dùng</b> của vợ/chồng mất gần nhất (<b>DSUE</b>)</li><li><b>Elect</b> bằng cách nộp <b>Form 706 đúng hạn</b> (9 tháng + extension); nếu không bắt buộc khai: <b>Rev. Proc. 2022-32</b> cho phép nộp muộn tới <b>5 năm</b></li><li>DSUE <b>không áp dụng cho GST exemption</b></li><li>Dùng <b>last deceased spouse</b>; không "cộng dồn" qua nhiều vợ/chồng</li><li>Cần <b>Form 706 đầy đủ</b> (có thể rút gọn valuation cho tài sản marital/charitable)</li></ul>
+</div>
+<h3 class="lesson">Credits (Gleim 14.2)</h3>
+<div class="rule-box">
+<ul><li><b>4 credits</b>: (1) <b>applicable credit amount</b> $5,541,800 (2025; offset estate tax trên taxable estate tới $13.99 triệu mỗi người)</li><li>(2) credit cho <b>death tax nộp cho chính phủ nước ngoài</b></li><li>(3) credit cho <b>gift tax</b> trên gift <b>trước 1977</b> vào GE</li><li>(4) credit cho <b>prior transfers</b>: transfer từ người mất trong vòng <b>10 năm trước hoặc 2 năm sau</b>; = lesser của estate tax đã nộp bởi transferor trước và mức estate tax tăng thêm do tài sản đó</li><li><b>Portability</b>: tổng exclusion của người còn sống có thể lên tới <b>$27.98 triệu</b></li><li><b>Beneficiary</b> được deduct (Schedule A) estate tax đã nộp trên <b>IRD</b> (SU06)</li><li><b>Không deductible</b>: federal estate tax, income tax trên thu nhập phát sinh sau khi chết</li></ul>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 14-3b (Portability):</b> Chồng mất 2025 chỉ dùng $7.99 triệu exclusion; vợ mất cuối 2025 được dùng $13.99 triệu + $6 triệu chưa dùng = <b>$19.99 triệu</b>.</div>
+<h3 class="lesson">Valuation Elections</h3>
+<div class="rule-box">
+<ul><li><b>Alternate valuation date</b>: elect cho <b>toàn bộ estate</b> (không chọn từng tài sản), <b>không hủy ngang được</b>, chỉ khi <b>giảm cả gross estate và tổng estate tax + GST tax</b>; tài sản chịu ảnh hưởng chỉ do thời gian trôi (patent, life estate, remainder) vẫn tính tại ngày chết; tài sản bán/ distribute trong 6 tháng → giá lúc đó</li><li><b>Special use valuation (§2032A)</b>: bất động sản dùng cho farm/ closely held business — giá theo <b>use</b> (giới hạn giảm ~ $1.4 triệu 2025); điều kiện: ≥ 50% adjusted gross estate là business assets, ≥ 25% là real property; qualified heir dùng trong 10 năm (recapture)</li><li><b>Conservation easement exclusion</b> (§2031(c))</li><li>Discounts: minority, marketability, blockage</li></ul>
+</div>
+<h3 class="lesson">Basis (Income Tax) của Tài sản Thừa kế</h3>
+<div class="rule-box">
+<ul><li><b>§1014</b>: basis = <b>FMV ngày chết</b> (hoặc AVD) — <b>step-up hoặc step-down</b></li><li><b>Holding period</b>: tự động long-term</li><li><b>Community property</b>: cả hai nửa được step-up khi một spouse chết</li><li><b>IRD</b>: <b>KHÔNG</b> step-up (SU03)</li><li><b>§1014(e)</b>: tài sản <b>gift cho decedent trong 1 năm trước chết rồi để lại cho donor/spouse của donor</b> → <b>không step-up</b></li><li><b>Joint tenancy</b> vợ chồng: 50% step-up (trừ community)</li><li>Beneficiary báo <b>basis consistent</b> với Form 706/8971 (§1014(f))</li></ul>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 14-5 (Portability):</b> Chồng chết năm 2025, để lại hết cho vợ (marital deduction). Estate dùng $0 exclusion → <b>DSUE = $13,990,000</b> (nếu nộp Form 706 elect portability). Khi vợ chết, vợ có thể dùng $13,990,000 (DSUE) + exclusion của riêng bà.</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 14-6 (Step-up):</b> Con thừa kế cổ phiếu mua $20,000 (cha), FMV ngày chết $120,000. Basis con = <b>$120,000</b>; bán $125,000 → gain <b>$5,000</b> (long-term).</div>
+
+<h3 class="lesson">Thuật ngữ 14.3</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">Form 706</td><td class="vn">tờ khai estate tax (United States Estate Tax Return)</td></tr>
+<tr><td class="word">Form 4768</td><td class="vn">đơn gia hạn nộp Form 706 / trả estate tax</td></tr>
+<tr><td class="word">portability</td><td class="vn">chuyển phần exclusion chưa dùng cho spouse còn sống</td></tr>
+<tr><td class="word">special use valuation</td><td class="vn">định giá theo mục đích sử dụng (farm/business)</td></tr>
+<tr><td class="word">executor / personal representative</td><td class="vn">người thi hành di chúc / người đại diện di sản</td></tr>
+<tr><td class="word">Form 8971</td><td class="vn">mẫu báo basis cho beneficiary</td></tr>
+<tr><td class="word">basis consistency</td><td class="vn">nhất quán basis với giá trị đã khai ở Form 706</td></tr>
+<tr><td class="word">§1014</td><td class="vn">điều luật step-up basis khi thừa kế</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 14.3</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. Form 706 is generally due:</div>
+<div class="opt">A. 3 months after death</div><div class="opt">B. 6 months after death</div><div class="opt">C. 9 months after death</div><div class="opt">D. 12 months after death</div></div>
+<div class="mcq"><div class="q">2. Portability allows a surviving spouse to use:</div>
+<div class="opt">A. The deceased spouse's unused exclusion (DSUE) if elected on a timely Form 706</div><div class="opt">B. Double the annual exclusion</div><div class="opt">C. The deceased spouse's GST exemption automatically</div><div class="opt">D. A second marital deduction</div></div>
+<div class="mcq"><div class="q">3. The basis of inherited property to the beneficiary is generally:</div>
+<div class="opt">A. Decedent's adjusted basis</div><div class="opt">B. FMV at date of death (or alternate valuation date)</div><div class="opt">C. Zero</div><div class="opt">D. Date-of-sale FMV</div></div>
+<div class="mcq"><div class="q">4. Which of the following does NOT receive a step-up in basis at death?</div>
+<div class="opt">A. Publicly traded stock</div><div class="opt">B. Real estate</div><div class="opt">C. IRD (e.g., unpaid wages, traditional IRA)</div><div class="opt">D. Community property</div></div>
+<div class="mcq"><div class="q">5. The executor may elect the alternate valuation date only if it:</div>
+<div class="opt">A. Increases the gross estate</div><div class="opt">B. Decreases both the gross estate and the estate tax</div><div class="opt">C. Decreases only estate tax</div><div class="opt">D. Is approved by the court</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 14.3 FORM 706, PORTABILITY, VALUATION &amp; BASIS</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">C — 9 months after death</span></div>
+<div><b>2.</b> <span class="key-ans">A — The deceased spouse's unused exclusion (DSUE) if elected on a timely Form 706</span></div>
+<div><b>3.</b> <span class="key-ans">B — FMV at date of death (or alternate valuation date)</span></div>
+<div><b>4.</b> <span class="key-ans">C — IRD (e.g., unpaid wages, traditional IRA)</span></div>
+<div><b>5.</b> <span class="key-ans">B — Decreases both the gross estate and the estate tax</span></div>
+</div>
+</div>
+
+<!-- 14.4 -->
+<div class="c1 pagebreak">
+<h2 class="section">14.4 — EXECUTOR, PAYMENT RELIEF &amp; ESTATE PLANNING OVERVIEW</h2>
+<h3 class="lesson">Executor &amp; Thủ tục</h3>
+<div class="rule-box">
+<ul><li>Xin <b>EIN</b> cho estate; nộp <b>Form 56</b> (fiduciary relationship); mở estate account</li><li>Khai <b>Form 1040 cuối cùng</b> (cho decedent) và <b>Form 1041</b> (estate — SU18 của Part II)</li><li><b>Estate fiscal year</b> được chọn (≤ 12 tháng sau chết)</li><li><b>Disclaimer</b> hợp lệ (§2518): từ chối trong <b>9 tháng</b>, không nhận lợi ích → coi như người đó chưa từng nhận (không gift)</li><li><b>Executor liability</b>: cá nhân chịu trách nhiệm nếu phân phối trước khi trả thuế</li><li><b>Estate tax lien</b>: <b>10 năm</b> trên tài sản</li><li><b>Statute</b>: <b>3 năm</b> sau khi khai (<b>6 năm</b> nếu bỏ sót &gt; 25% gross estate; không giới hạn nếu gian lận/ không khai)</li></ul>
+</div>
+<h3 class="lesson">Payment Relief</h3>
+<div class="rule-box">
+<ul><li><b>Closely held business</b>: corporation có ≤ <b>45 shareholders</b> hoặc ≥ <b>20% voting stock</b> nằm trong GE; partnership có ≤ <b>45 partners</b> hoặc ≥ <b>20% capital</b> trong GE</li><li><b>§6166</b>: trả estate tax <b>trả góp</b> nếu business interest &gt; <b>35%</b> (Gleim: gross estate; luật dùng adjusted gross estate): <b>5 năm chỉ trả lãi</b>, rồi tối đa <b>10 năm</b> trả đều gốc; lãi ưu đãi (2%) áp dụng cho một phần tax</li><li><b>§6161</b>: gia hạn trả thuế tới 12 tháng (kéo dài tối đa 10 năm) vì <b>reasonable cause</b>/ <b>undue hardship</b></li><li><b>§303 redemption</b>: corporation redeem cổ phiếu từ estate để <b>trả estate tax/ chi phí</b> — được coi là <b>sale</b> (không dividend) nếu cổ phiếu &gt; <b>35%</b> adjusted gross estate (SU16 Part II)</li><li><b>Penalty</b>: late filing 5%/tháng (tối đa 25%), late payment 0.5%/tháng (tối đa 25%)</li></ul>
+</div>
+<h3 class="lesson">Estate Planning Overview (cho bài thi)</h3>
+<div class="rule-box">
+<ul><li><b>Unified system</b>: gift tax + estate tax chung exclusion; annual exclusion giảm tích lũy</li><li><b>Trusts</b>: revocable (vào gross estate), irrevocable (ngoài gross estate nếu không giữ quyền), <b>bypass/credit shelter trust</b>, <b>QTIP</b>, <b>ILIT</b>, <b>GRAT</b></li><li><b>Lifetime gifts</b> dùng annual exclusion giảm estate; nhưng mất <b>step-up</b> (carryover basis)</li><li><b>Tuition/ medical direct</b> — không tính gift</li><li><b>GST tax</b>: 40% flat trên skip person; exemption = basic exclusion</li><li><b>Estate tax vs inheritance tax</b>: federal chỉ có estate tax; một số bang có <b>inheritance tax</b> (người nhận trả)</li></ul>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 14-7 (§6166):</b> Estate $30,000,000, gồm family business $12,000,000 (40% &gt; 35%) → đủ điều kiện §6166: có thể trả estate tax liên quan business theo kỳ hạn 5 năm lãi + 10 năm gốc.</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 14-8 (Disclaimer):</b> Cha mất, để lại IRA cho con trai; con từ chối (disclaim) trong 9 tháng, không nhận tiền → IRA chuyển cho contingent beneficiary (cháu) → <b>không phải gift</b> của con.</div>
+
+<h3 class="lesson">Thuật ngữ 14.4</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">executor</td><td class="vn">người thi hành di chúc</td></tr>
+<tr><td class="word">Form 56</td><td class="vn">thông báo quan hệ fiduciary</td></tr>
+<tr><td class="word">§6166 installment payment</td><td class="vn">trả estate tax trả góp cho closely held business</td></tr>
+<tr><td class="word">qualified disclaimer</td><td class="vn">từ chối nhận hợp lệ (§2518)</td></tr>
+<tr><td class="word">estate tax lien</td><td class="vn">quyền cầm giữ thuế di sản (10 năm)</td></tr>
+<tr><td class="word">bypass trust (credit shelter trust)</td><td class="vn">trust tận dụng exclusion của người mất</td></tr>
+<tr><td class="word">ILIT</td><td class="vn">trust bảo hiểm nhân thọ bất khả hủy</td></tr>
+<tr><td class="word">inheritance tax</td><td class="vn">thuế thừa kế (cấp bang, người nhận trả)</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 14.4</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. The IRS gives estates with a closely held business installment payment relief under §6166 if the business interest exceeds what percent of the adjusted gross estate?</div>
+<div class="opt">A. 20%</div><div class="opt">B. 35%</div><div class="opt">C. 50%</div><div class="opt">D. 75%</div></div>
+<div class="mcq"><div class="q">2. A qualified disclaimer must be made within how many months of the transfer (death)?</div>
+<div class="opt">A. 3</div><div class="opt">B. 6</div><div class="opt">C. 9</div><div class="opt">D. 12</div></div>
+<div class="mcq"><div class="q">3. The executor of an estate should file which form to notify the IRS of the fiduciary relationship?</div>
+<div class="opt">A. Form 56</div><div class="opt">B. Form 706</div><div class="opt">C. Form 4768</div><div class="opt">D. Form 709</div></div>
+<div class="mcq"><div class="q">4. An estate tax lien lasts generally:</div>
+<div class="opt">A. 3 years</div><div class="opt">B. 5 years</div><div class="opt">C. 10 years</div><div class="opt">D. 15 years</div></div>
+<div class="mcq"><div class="q">5. Which statement about a revocable living trust is correct?</div>
+<div class="opt">A. The trust assets are excluded from the gross estate</div><div class="opt">B. The trust assets are included in the gross estate</div><div class="opt">C. The trust assets are taxed only for income purposes</div><div class="opt">D. The trust has no tax effects</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 14.4 EXECUTOR, PAYMENT RELIEF &amp; ESTATE PLANNING OVERVIEW</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — 35%</span></div>
+<div><b>2.</b> <span class="key-ans">C — 9</span></div>
+<div><b>3.</b> <span class="key-ans">A — Form 56</span></div>
+<div><b>4.</b> <span class="key-ans">C — 10 years</span></div>
+<div><b>5.</b> <span class="key-ans">B — The trust assets are included in the gross estate</span></div>
+</div>
+</div>
+
+<!-- 14.5 -->
+<div class="c2 pagebreak">
+<h2 class="section">14.5 — GENERATION-SKIPPING TRANSFER TAX (GSTT)</h2>
+<h3 class="lesson">Khái niệm</h3>
+<div class="rule-box">
+<ul><li><b>GSTT</b> đánh <b>riêng và thêm</b> vào gift/estate tax khi chuyển trực tiếp hoặc qua trust cho người ≥ <b>2 thế hệ</b> trẻ hơn transferor (<b>skip person</b>)</li><li><b>3 loại GST</b>: <b>direct skip</b>, <b>taxable distribution</b>, <b>taxable termination</b></li><li><b>Skip person</b>: người thuộc thế hệ từ 2 trở xuống (vd cháu nội/ngoại) hoặc trust mà mọi quyền lợi thuộc skip persons</li><li>Người <b>có quan hệ</b>: xác định theo cây gia đình; người <b>không quan hệ</b>: theo tuổi — sinh ≤ <b>12½ năm</b> sau transferor = cùng thế hệ; mỗi <b>25 năm</b> thêm là một thế hệ mới (sinh 37½–62½ năm sau = <b>2 thế hệ</b> dưới)</li><li>GSTT xấp xỉ <b>mức estate tax liên bang tối đa</b> (40%)</li></ul>
+</div>
+<h3 class="lesson">Ba loại GST</h3>
+<div class="rule-box">
+<table>
+<tr><th>Loại</th><th>Mô tả</th><th>Ai chịu thuế</th></tr>
+<tr><td>Direct skip</td><td>Chuyển (đã chịu gift/estate tax) trực tiếp cho skip person</td><td><b>Transferor</b> (donor hoặc estate)</td></tr>
+<tr><td>Taxable distribution</td><td>Trust phân phối thu nhập/ gốc cho skip person (không phải direct skip/ termination)</td><td><b>Người nhận</b> (transferee)</td></tr>
+<tr><td>Taxable termination</td><td>Chấm dứt quyền lợi của non-skip person trong trust khiến skip person nhận tài sản</td><td><b>Trustee</b></td></tr>
+</table>
+</div>
+<h3 class="lesson">Exemption &amp; Tính thuế</h3>
+<div class="rule-box">
+<ul><li><b>GST exemption 2025: $13,990,000</b> mỗi người, phân bổ cho tài sản GST; gift splitting áp dụng → <b>$27,980,000</b></li><li><b>GSTT = taxable amount × (tỷ lệ tối đa 40% × inclusion ratio)</b></li><li>Gift không chịu gift tax do <b>annual exclusion</b>, <b>tuition/medical</b> thì cũng <b>miễn GSTT</b></li><li>GSTT không áp dụng khi không có gift/estate tax; trust có <b>general power of appointment</b> (vào estate) thì không chịu GSTT</li><li><b>DSGT</b> (direct skip gift tax): donor chịu cả gift tax và GSTT, chỉ annual exclusion và GST exemption áp dụng; GSTT cộng vào taxable gifts; <b>donee</b> có thể cộng phần GSTT vào basis</li><li><b>DSET</b> (direct skip estate tax): estate chịu estate tax và GSTT, dùng GST exemption chưa phân bổ; basis = FMV ngày chết (không cộng GSTT)</li><li><b>GSDT</b> (distribution): người nhận được deduct GSTT trên current income của trust; basis tài sản cộng thêm phần GSTT</li></ul>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 14-9 (Skip person):</b> Darlene (95 tuổi) để lại tài sản cho hàng xóm Tom (35 tuổi) trong di chúc. Tom sinh sau Darlene 60 năm → <b>2 thế hệ</b> dưới → skip person → estate Darlene chịu cả <b>estate tax và GSTT</b>.</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 14-10 (Exemption):</b> Cha mẹ mất, để lại $3.5 triệu trust cho con, phần còn lại cho cháu; toàn bộ $3.5 triệu được phân bổ GST exemption. 25 năm sau con mất, trust có $10 triệu → <b>không chịu GSTT</b> (inclusion ratio = 0).</div>
+
+<h3 class="lesson">Thuật ngữ 14.5</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">generation-skipping transfer tax (GSTT)</td><td class="vn">thuế chuyển giao bỏ cách thế hệ</td></tr>
+<tr><td class="word">skip person</td><td class="vn">người ≥ 2 thế hệ dưới transferor</td></tr>
+<tr><td class="word">direct skip</td><td class="vn">chuyển trực tiếp cho skip person</td></tr>
+<tr><td class="word">taxable distribution</td><td class="vn">phân phối từ trust cho skip person</td></tr>
+<tr><td class="word">taxable termination</td><td class="vn">chấm dứt quyền non-skip person trong trust</td></tr>
+<tr><td class="word">GST exemption</td><td class="vn">mức miễn GSTT ($13.99 triệu 2025)</td></tr>
+<tr><td class="word">inclusion ratio</td><td class="vn">tỷ lệ bao gồm (quyết định phần chịu GSTT)</td></tr>
+<tr><td class="word">DSGT / DSET</td><td class="vn">thuế direct skip cho gift / cho estate</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 14.5</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. A skip person is a person assigned to a generation that is at least how many generations below the transferor?</div>
+<div class="opt">A. 1</div><div class="opt">B. 2</div><div class="opt">C. 3</div><div class="opt">D. 4</div></div>
+<div class="mcq"><div class="q">2. The 2025 GST exemption per individual is:</div>
+<div class="opt">A. $5,000,000</div><div class="opt">B. $13,990,000</div><div class="opt">C. $19,000</div><div class="opt">D. $27,980,000</div></div>
+<div class="mcq"><div class="q">3. The person liable for GSTT on a taxable termination is:</div>
+<div class="opt">A. The transferor</div><div class="opt">B. The skip person</div><div class="opt">C. The trustee</div><div class="opt">D. The IRS</div></div>
+<div class="mcq"><div class="q">4. For an unrelated person, an individual born between 37½ and 62½ years after the transferor is assigned to:</div>
+<div class="opt">A. The same generation</div><div class="opt">B. One generation below</div><div class="opt">C. Two generations below</div><div class="opt">D. Three generations below</div></div>
+<div class="mcq"><div class="q">5. The maximum GSTT rate applies the inclusion ratio to which federal rate?</div>
+<div class="opt">A. 28%</div><div class="opt">B. 35%</div><div class="opt">C. 40%</div><div class="opt">D. 55%</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 14.5 GENERATION-SKIPPING TRANSFER TAX (GSTT)</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — 2</span></div>
+<div><b>2.</b> <span class="key-ans">B — $13,990,000</span></div>
+<div><b>3.</b> <span class="key-ans">C — The trustee</span></div>
+<div><b>4.</b> <span class="key-ans">C — Two generations below</span></div>
+<div><b>5.</b> <span class="key-ans">C — 40%</span></div>
+</div>
+</div>
+
+</body>
+</html>

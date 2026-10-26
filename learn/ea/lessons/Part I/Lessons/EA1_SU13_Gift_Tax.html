@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<!-- Google tag (gtag.js) — GA4 chung của TJ, nhãn site=ea -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'ea'});</script>
+
+<meta charset="UTF-8">
+<title>EA Part I – SU13: Gift Tax</title>
+<style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  body { font-family:'Segoe UI','Calibri',Arial,sans-serif; color:#33322f; font-size:15px; line-height:1.5; background:#fdfcfa; margin:0; }
+  .cover { background: linear-gradient(120deg,#bfe4ff 0%,#d6ecff 30%,#e6def7 65%,#fbe6f4 100%); border-radius:20px; padding:40px 30px; text-align:center; margin-bottom:10px; box-shadow:0 6px 18px rgba(120,130,180,.25); border:1px solid #dfe8f5; }
+  .cover .tag { display:inline-block; background:#33314a; color:#d6ecff; font-weight:700; letter-spacing:2px; font-size:13px; padding:5px 14px; border-radius:20px; margin-bottom:14px; }
+  .cover h1 { font-size:28px; margin:6px 0; color:#3170a8; }
+  .cover h2 { font-size:15px; font-weight:500; margin:4px 0 0; opacity:.9; color:#33314a; }
+  .cover .books { margin-top:16px; font-size:13px; background:rgba(255,255,255,.55); display:inline-block; padding:8px 16px; border-radius:10px; color:#33314a; }
+  .toc { background:#fff; border:1.5px solid #dfe8f5; border-radius:14px; padding:18px 26px; margin-bottom:30px; }
+  .toc h3 { margin-top:0; color:#3170a8; }
+  .toc ol { margin:0; padding-left:22px; } .toc li{ margin-bottom:6px; }
+  h2.section { font-size:21px; color:#33314a; padding:12px 18px; border-radius:12px; margin:34px 0 14px; border-left:10px solid var(--accent,#5aa9d6); background:var(--bg,#eaf6fd); }
+  h3.lesson { font-size:18px; color:var(--accent-dark,#276a91); border-left:6px solid var(--accent,#5aa9d6); background:var(--bg-soft,#f3fafd); padding:8px 14px; border-radius:6px; margin:22px 0 10px; }
+  .c1{--accent:#5aa9d6;--accent-dark:#276a91;--bg:#eaf6fd;--bg-soft:#f3fafd;--head:#a9d4ec;}
+  .c2{--accent:#a892d9;--accent-dark:#5c4696;--bg:#f1ecfb;--bg-soft:#f8f5fd;--head:#cabdec;}
+  .c3{--accent:#f0a66e;--accent-dark:#b8620b;--bg:#fdeee2;--bg-soft:#fff8f0;--head:#f4c299;}
+  .cKey{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
+  table.vocab { width:100%; border-collapse:collapse; margin-bottom:18px; font-size:.94em; box-shadow:0 2px 8px rgba(0,0,0,.05); border-radius:10px; overflow:hidden; }
+  table.vocab th { background:var(--head,#5aa9d6); color:#2d2d2d; padding:8px; text-align:left; }
+  table.vocab td { padding:7px 8px; border-bottom:1px solid var(--bg,#eaf6fd); vertical-align:top; }
+  table.vocab tr:nth-child(even) td { background:var(--bg-soft,#faf6f0); }
+  table.vocab tr:nth-child(odd) td { background:#fff; }
+  table.vocab td.word { font-weight:800; color:var(--accent-dark,#276a91); }
+  table.vocab td.vn { font-weight:700; color:#3d6ba8; }
+  .rule-box { background:var(--bg,#eaf6fd); border-left:6px solid var(--accent,#5aa9d6); border-radius:8px; padding:12px 18px; margin:10px 0; }
+  .rule-box table { width:100%; border-collapse:collapse; margin:8px 0 4px; }
+  .rule-box table td, .rule-box table th { padding:6px 8px; border-bottom:1px solid rgba(0,0,0,.08); text-align:left; font-size:.92em; }
+  .rule-box table th { color:var(--accent-dark,#276a91); }
+  .rule-box ul, .rule-box ol { margin:6px 0; padding-left:22px; } .rule-box li{ margin-bottom:5px; }
+  .struct { font-weight:800; color:#b8620b; font-family:'Consolas','Courier New',monospace; }
+  .example-box { background:#fff; border:1.5px dashed var(--accent,#5aa9d6); border-radius:8px; padding:10px 16px; margin:8px 0; font-size:.92em; }
+  .example-box b.ex-tag { color:var(--accent-dark,#276a91); }
+  .mcq { background:#fff; border:1.5px solid var(--accent,#5aa9d6); border-radius:10px; padding:12px 18px; margin-bottom:12px; }
+  .mcq .q { color:#3d6ba8; font-weight:700; margin-bottom:6px; }
+  .mcq .opt { margin:2px 0 2px 10px; }
+  .content-block { background:#fff; border:2px dashed var(--accent,#5aa9d6); border-radius:12px; padding:16px 20px; margin-bottom:18px; }
+  .key-grid { column-count:1; } .key-grid div{ margin-bottom:9px; }
+  .key-ans { color:#20824f; font-weight:800; }
+  .key-exp { color:#555; font-size:.92em; }
+  .pagebreak { page-break-before: always; }
+  .note { font-size:.85em; color:#8a8a8a; font-style:italic; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="tag">EA EXAM PREP • PART I — INDIVIDUALS • SU13</div>
+  <h1>📗 SU13 — GIFT TAX</h1>
+  <h2>Thuế tặng cho: annual exclusion, gift splitting, Form 709 (Song ngữ Việt–Anh)</h2>
+  <div class="books">📖 Khái niệm · 🔤 Thuật ngữ · 📌 Ví dụ · ❓ Trắc nghiệm · 🔑 Đáp án trang sau</div>
+</div>
+
+<div class="toc">
+<h3>📑 Mục lục SU13</h3>
+<ol>
+<li>13.1 Gift Tax Basics &amp; Excluded Transfers</li>
+<li>13.2 Annual Exclusion, Gift Splitting &amp; Deductions</li>
+<li>13.3 Tính Gift Tax &amp; Form 709</li>
+<li>13.4 Basis của Gift, Valuation &amp; các vấn đề khác</li>
+</ol>
+<p class="note">Soạn theo outline EA Part I — SU13 Gift Tax. Số liệu theo năm thuế 2025 (gồm thay đổi của OBBBA). Chưa đối chiếu giáo trình Gleim — cần kiểm lại số liệu với giáo trình và năm thi thực tế.</p>
+</div>
+
+<!-- 13.1 -->
+<div class="c1">
+<h2 class="section">13.1 — GIFT TAX BASICS &amp; EXCLUDED TRANSFERS</h2>
+<h3 class="lesson">Khái niệm</h3>
+<div class="rule-box">
+<p><b>Gift tax</b> (IRC §2501) đánh vào <b>việc chuyển tài sản (không đổi lấy giá trị tương đương)</b> của <b>donor</b> — kể cả công dân, resident và (với tài sản tại US) nonresident alien. <b>Donor</b> chịu thuế (donee thường không). Gift là <b>completed</b> khi donor <b>từ bỏ quyền kiểm soát</b> (revocable trust → chưa completed). Hệ thống <b>unified</b>: gift + estate dùng chung <b>applicable exclusion amount</b>.</p>
+<ul><li><b>Gift</b> = chuyển tài sản cho người khác với <b>consideration thấp hơn FMV</b>; phần chênh lệch là gift</li><li><b>Donative intent</b> không bắt buộc (objective test)</li><li><b>Below-market loan</b> có thể là gift (SU03)</li><li><b>Gift 2025</b> — <b>lifetime exclusion</b>: <b>$13,990,000</b> (OBBBA nâng lên <b>$15,000,000 từ 2026</b>, tăng theo lạm phát)</li><li><b>Tax rate</b>: 18%–40%, trên <b>$1,000,000 taxable gifts tích lũy</b> là <b>40%</b></li><li><b>Gift loan</b> ≤ $10,000 tổng nợ gốc được loại trừ; vay lãi thấp giữa người liên quan: lender coi như tặng phần imputed interest hằng năm</li><li>Chỉ <b>inter vivos gifts</b> chịu gift tax (tài sản chuyển bằng di chúc/ thừa kế thì không, nhưng chịu estate tax)</li><li><b>Support</b> vợ/chồng cũ hoặc con (thường tới 18 tuổi) không phải gift</li><li>Gift tax <b>do donor trả</b>; nếu donee trả (<b>net gift</b>) → tính lại</li><li>Form <b>709</b> (United States Gift Tax Return), hạn <b>15/4</b> năm sau; extension cùng 1040/Form 8892</li></ul>
+</div>
+<h3 class="lesson">Transfers KHÔNG phải gift (và không cần Form 709)</h3>
+<div class="rule-box">
+<ul><li><b>Tuition</b> trả <b>trực tiếp cho educational institution</b> (không giới hạn; tuition thôi — không gồm books, room &amp; board)</li><li><b>Medical</b> trả <b>trực tiếp cho provider</b> (không giới hạn; gồm premium)</li><li><b>Political organization</b> contributions</li><li><b>Charity</b> (qualify §501(c)(3)) — charitable deduction</li><li><b>Chi phí cấp dưỡng</b> theo nghĩa vụ pháp lý (child support)</li><li><b>Marital deduction</b> — chuyển cho spouse là US citizen: không giới hạn</li><li><b>Transfers for adequate consideration</b> (bán đúng giá)</li><li><b>Disclaimer</b> hợp lệ (qualified disclaimer, trong <b>9 tháng</b>)</li></ul>
+</div>
+<h3 class="lesson">Ai phải khai Form 709?</h3>
+<div class="rule-box">
+<ul><li>Gift cho <b>một donee &gt; annual exclusion</b> ($19,000 năm 2025)</li><li>Gift of <b>future interest</b> (bất kể số tiền)</li><li><b>Gift-splitting</b> (cả hai spouse đều phải khai, dù tổng dưới ngưỡng)</li><li>Gift cho <b>non-citizen spouse &gt; $190,000</b> (2025)</li><li>Gift cho <b>QTIP</b> hoặc <b>GST</b> transfers</li><li>Gift of <b>terminable interest</b> không thuộc ngoại lệ power of appointment</li><li>Tặng cho charity: không cần khai nếu chuyển <b>toàn bộ interest</b> và chỉ có gift từ thiện; nếu chỉ chuyển một phần hoặc có cả gift khác thì khai hết</li><li>Nếu tổng gift present interest cho một donee &gt; $19,000 thì phải liệt kê <b>mọi</b> gift cho donee đó (kể cả phần trong exclusion)</li><li>Năm donor chết: Form 709 đến hạn không muộn hơn hạn nộp estate tax return</li><li><b>Form 3520</b> (người nhận Mỹ khai gift từ foreign person): vượt <b>$100,000</b> (cá nhân/estate) hoặc <b>$20,116</b> (corporation/partnership) năm 2025</li><li><b>Không cần</b> Form 709 nếu chỉ gift trong annual exclusion, tuition/medical trực tiếp, hoặc cho <b>US citizen spouse</b> (ngoại lệ: QTIP)</li></ul>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 13-0 (Joint bank account):</b> R mở tài khoản chung với A, I, H nhưng chỉ R gửi tiền; gift chỉ <b>hoàn tất khi</b> A, I hoặc H rút tiền (đến lúc đó R còn quyền kiểm soát).</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 13-1 (Excluded):</b> Ông Nam trả $30,000 tiền học trực tiếp cho trường của cháu, và $10,000 tiền viện phí trực tiếp cho bệnh viện của con → <b>không phải gift</b>, không cần Form 709.</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 13-2 (Gift defined):</b> Bà Lan bán nhà FMV $400,000 cho con với giá $250,000 → <b>gift = $150,000</b> (trừ annual exclusion $19,000 → taxable gift $131,000).</div>
+
+<h3 class="lesson">Thuật ngữ 13.1</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">gift tax</td><td class="vn">thuế tặng cho</td></tr>
+<tr><td class="word">donor / donee</td><td class="vn">người tặng / người nhận</td></tr>
+<tr><td class="word">completed gift</td><td class="vn">gift hoàn tất (donor từ bỏ quyền kiểm soát)</td></tr>
+<tr><td class="word">unified credit / applicable exclusion amount</td><td class="vn">mức miễn trừ chung cho gift và estate</td></tr>
+<tr><td class="word">Form 709</td><td class="vn">tờ khai gift tax (và GST)</td></tr>
+<tr><td class="word">adequate consideration</td><td class="vn">giá trị tương đương (không phải gift)</td></tr>
+<tr><td class="word">qualified disclaimer</td><td class="vn">từ chối nhận hợp lệ (trong 9 tháng)</td></tr>
+<tr><td class="word">net gift</td><td class="vn">gift mà donee trả gift tax</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 13.1</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. Gift tax is generally the liability of:</div>
+<div class="opt">A. The donee</div><div class="opt">B. The donor</div><div class="opt">C. The estate</div><div class="opt">D. The trustee</div></div>
+<div class="mcq"><div class="q">2. A transfer paid directly to an educational institution for a donee's tuition is:</div>
+<div class="opt">A. Subject to gift tax</div><div class="opt">B. Not a gift for gift tax purposes</div><div class="opt">C. Subject only if &gt; $19,000</div><div class="opt">D. A charitable deduction</div></div>
+<div class="mcq"><div class="q">3. A gift tax return (Form 709) is due:</div>
+<div class="opt">A. January 15</div><div class="opt">B. March 15</div><div class="opt">C. April 15 of the year after the gift</div><div class="opt">D. December 31 of the gift year</div></div>
+<div class="mcq"><div class="q">4. Which of the following is a completed gift?</div>
+<div class="opt">A. Transfer to a revocable trust</div><div class="opt">B. Outright transfer of stock to an adult child</div><div class="opt">C. A promise to give</div><div class="opt">D. A will bequest</div></div>
+<div class="mcq"><div class="q">5. The 2025 lifetime gift/estate exclusion (basic exclusion amount) is:</div>
+<div class="opt">A. $5,490,000</div><div class="opt">B. $11,700,000</div><div class="opt">C. $13,990,000</div><div class="opt">D. $15,000,000</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 13.1 GIFT TAX BASICS &amp; EXCLUDED TRANSFERS</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — The donor</span></div>
+<div><b>2.</b> <span class="key-ans">B — Not a gift for gift tax purposes</span></div>
+<div><b>3.</b> <span class="key-ans">C — April 15 of the year after the gift</span></div>
+<div><b>4.</b> <span class="key-ans">B — Outright transfer of stock to an adult child</span></div>
+<div><b>5.</b> <span class="key-ans">C — $13,990,000</span><br><span class="key-exp">$15,000,000 áp dụng từ 2026 (OBBBA).</span></div>
+</div>
+</div>
+
+<!-- 13.2 -->
+<div class="c2 pagebreak">
+<h2 class="section">13.2 — ANNUAL EXCLUSION, GIFT SPLITTING &amp; DEDUCTIONS</h2>
+<h3 class="lesson">Annual Exclusion</h3>
+<div class="rule-box">
+<ul><li><b>$19,000/donee/năm (2025)</b> (2024: $18,000) — không giới hạn số donee</li><li>Chỉ cho <b>present interest</b> (donee có quyền sử dụng/ hưởng ngay); <b>future interest</b> (vd trust trả sau) <b>không</b> đủ — dùng <b>Crummey power</b> (cho phép rút trong thời gian ngắn) để biến thành present interest</li><li><b>529 plan</b>: có thể <b>superfund</b> — đóng 5 năm một lúc (<b>$95,000</b> 2025) coi như đã tặng đều trong 5 năm (Form 709)</li><li>Gift cho <b>minor</b>: UTMA/ UGMA hoặc trust (§2503(c))</li><li>Annual exclusion <b>khai riêng cho từng donee</b>; gift trong exclusion không cần khai</li></ul>
+</div>
+<h3 class="lesson">Gift Splitting (§2513)</h3>
+<div class="rule-box">
+<ul><li>Vợ chồng <b>gift-split</b> → coi mỗi người tặng <b>một nửa</b>, gấp đôi exclusion (<b>$38,000/donee</b>)</li><li>Điều kiện: cả hai là <b>citizen/resident</b>, <b>đã kết hôn</b> vào lúc tặng (và không tái hôn trong năm), <b>consent</b> (Form 709)</li><li>Không có joint gift tax return: <b>mỗi spouse nộp Form 709 riêng</b> (ngay cả khi tổng dưới exclusion); ngoại lệ: spouse chỉ cần <b>ký consent</b> trên Form 709 của người tặng nếu (a) chỉ một người tặng và tổng ≤ <b>$38,000</b>, hoặc (b) một người tặng &gt; $19,000 nhưng &lt; $38,000 và người kia chỉ tặng ≤ $19,000</li><li>Cả hai chịu trách nhiệm <b>joint and several</b></li><li><b>Không</b> được split nếu: không còn kết hôn lúc tặng, ly hôn rồi một bên tái hôn trong năm, hoặc một spouse là <b>nonresident alien</b></li><li>Áp dụng cho <b>mọi gift trong năm</b> của cả hai (không chọn từng gift)</li></ul>
+</div>
+<h3 class="lesson">Marital &amp; Charitable Deduction</h3>
+<div class="rule-box">
+<ul><li><b>Marital deduction (§2523)</b>: <b>không giới hạn</b> cho gift cho spouse <b>US citizen</b>; <b>terminable interest</b> thường không đủ (trừ <b>QTIP</b> — cần election trên Form 709)</li><li>Spouse <b>non-citizen</b>: marital deduction <b>không</b> dùng; có <b>annual exclusion $190,000</b> (2025); <b>QDOT</b> chỉ áp dụng cho estate</li><li><b>Charitable deduction (§2522)</b>: không giới hạn cho qualified charity</li><li><b>GST tax</b> (generation-skipping): 40% trên transfer cho <b>skip person</b> (cháu/ người ≥ 37.5 năm kém tuổi) vượt <b>GST exemption</b> (bằng $13,990,000, 2025) — Schedule A Part 2 của Form 709</li></ul>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 13-2b (Marital deduction):</b> Sid tặng vợ (US citizen) nhẫn $20,000 và tiền mặt $30,000 trong 2025 → exclusion $19,000, marital deduction = $50,000 − $19,000 = <b>$31,000</b> → taxable gift $0.</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 13-3 (Gift splitting):</b> An tặng con $30,000 tiền mặt; chồng không tặng. Nếu gift-split: mỗi người tặng $15,000 &lt; $19,000 → <b>không taxable gift</b> (cần Form 709 từ cả hai). Nếu không split: An có taxable gift $11,000.</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 13-4 (529 superfund):</b> Ông bà đóng $95,000 vào 529 cho cháu năm 2025 → elect 5-year averaging (Form 709): mỗi năm $19,000 trong 5 năm — <b>không taxable gift</b>; nếu tặng thêm cho cháu trong 5 năm → dùng lifetime exclusion.</div>
+
+<h3 class="lesson">Thuật ngữ 13.2</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">annual exclusion</td><td class="vn">mức miễn trừ hàng năm ($19,000/donee)</td></tr>
+<tr><td class="word">present interest</td><td class="vn">quyền sử dụng ngay (điều kiện của annual exclusion)</td></tr>
+<tr><td class="word">future interest</td><td class="vn">quyền trong tương lai (không đủ annual exclusion)</td></tr>
+<tr><td class="word">Crummey power</td><td class="vn">quyền rút ngắn hạn biến gift thành present interest</td></tr>
+<tr><td class="word">gift splitting</td><td class="vn">vợ chồng chia đôi gift (gấp đôi exclusion)</td></tr>
+<tr><td class="word">marital deduction</td><td class="vn">khấu trừ gift/estate cho vợ/chồng</td></tr>
+<tr><td class="word">QTIP election</td><td class="vn">lựa chọn coi trust thu nhập cho spouse đủ điều kiện marital deduction</td></tr>
+<tr><td class="word">superfunding (529)</td><td class="vn">đóng 529 5 năm một lần ($95,000)</td></tr>
+<tr><td class="word">generation-skipping transfer tax (GSTT)</td><td class="vn">thuế chuyển giao bỏ cách thế hệ</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 13.2</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. The 2025 gift tax annual exclusion per donee is:</div>
+<div class="opt">A. $15,000</div><div class="opt">B. $17,000</div><div class="opt">C. $18,000</div><div class="opt">D. $19,000</div></div>
+<div class="mcq"><div class="q">2. Gift splitting requires that:</div>
+<div class="opt">A. The donor is single</div><div class="opt">B. Both spouses consent and both file Form 709</div><div class="opt">C. The gift is to a charity</div><div class="opt">D. The gift is more than $100,000</div></div>
+<div class="mcq"><div class="q">3. A gift of a future interest:</div>
+<div class="opt">A. Qualifies for the annual exclusion</div><div class="opt">B. Does not qualify for the annual exclusion</div><div class="opt">C. Is always taxable</div><div class="opt">D. Is always exempt</div></div>
+<div class="mcq"><div class="q">4. The gift tax annual exclusion for gifts to a non-citizen spouse (2025) is:</div>
+<div class="opt">A. $19,000</div><div class="opt">B. $38,000</div><div class="opt">C. $190,000</div><div class="opt">D. Unlimited</div></div>
+<div class="mcq"><div class="q">5. A taxpayer wants to contribute a lump sum to a 529 plan for a grandchild using 5-year averaging. The 2025 maximum is:</div>
+<div class="opt">A. $19,000</div><div class="opt">B. $38,000</div><div class="opt">C. $95,000</div><div class="opt">D. $190,000</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 13.2 ANNUAL EXCLUSION, GIFT SPLITTING &amp; DEDUCTIONS</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">D — $19,000</span></div>
+<div><b>2.</b> <span class="key-ans">B — Both spouses consent and both file Form 709</span></div>
+<div><b>3.</b> <span class="key-ans">B — Does not qualify for the annual exclusion</span></div>
+<div><b>4.</b> <span class="key-ans">C — $190,000</span></div>
+<div><b>5.</b> <span class="key-ans">C — $95,000</span></div>
+</div>
+</div>
+
+<!-- 13.3 -->
+<div class="c3 pagebreak">
+<h2 class="section">13.3 — TÍNH GIFT TAX &amp; FORM 709</h2>
+<h3 class="lesson">Công thức</h3>
+<div class="rule-box">
+<p><b>Total gifts</b> của năm − <b>exclusions/deductions</b> = <b>taxable gifts</b> → cộng <b>taxable gifts của các năm trước</b> (cumulative) → tính <b>tentative tax</b> (rate schedule hiện hành) − (<b>taxable gifts năm trước × rate hiện hành</b>) − <b>applicable credit amount còn lại</b> = <b>gift tax due</b> (theo công thức Gleim). Hầu hết taxpayer <b>không trả tiền</b> — chỉ <b>dùng dần exclusion</b> (khai báo trên Form 709).</p>
+<table>
+<tr><th>Bước</th><th>Nội dung</th></tr>
+<tr><td>1</td><td>Gift tổng (FMV)</td></tr>
+<tr><td>2</td><td>− Annual exclusion − marital − charitable − tuition/medical (không cần liệt kê)</td></tr>
+<tr><td>3</td><td>= <b>Taxable gifts năm nay</b></td></tr>
+<tr><td>4</td><td>+ <b>Taxable gifts</b> năm trước (adjusted)</td></tr>
+<tr><td>5</td><td>= Tổng cộng → tentative tax</td></tr>
+<tr><td>6</td><td>− Gift tax đã nộp các năm trước</td></tr>
+<tr><td>7</td><td>− Applicable credit còn lại → <b>Gift tax payable</b></td></tr>
+</table>
+</div>
+<h3 class="lesson">Rate Schedule (rút gọn)</h3>
+<div class="rule-box">
+<table>
+<tr><th>Taxable amount (cumulative)</th><th>Tax</th></tr>
+<tr><td>≤ $10,000</td><td>18%</td></tr>
+<tr><td>$10,000 – $20,000</td><td>$1,800 + 20% phần vượt $10,000</td></tr>
+<tr><td>$20,000 – $40,000</td><td>$3,800 + 22%</td></tr>
+<tr><td>$250,000 – $500,000</td><td>$70,800 + 34%</td></tr>
+<tr><td>$500,000 – $750,000</td><td>$155,800 + 37%</td></tr>
+<tr><td>$750,000 – $1,000,000</td><td>$248,300 + 39%</td></tr>
+<tr><td>&gt; $1,000,000</td><td>$345,800 + 40% phần vượt $1,000,000</td></tr>
+</table>
+<ul><li><b>Applicable credit 2025</b> = tax trên <b>$13,990,000</b> = <b>$5,541,800</b></li><li>Hầu hết donors: không nộp thuế cho tới khi tổng taxable gifts &gt; $13,990,000</li><li><b>Statute of limitations</b>: <b>3 năm</b> sau khi khai Form 709 (adequate disclosure); <b>6 năm</b> nếu bỏ sót &gt; 25%; <b>không giới hạn</b> nếu không khai/ gian lận</li></ul>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 13-5 (Cumulative):</b> Năm 1, taxable gifts $500,000 → tentative tax = $155,800 (dùng applicable credit). Năm 2, taxable gifts thêm $700,000 → tổng $1,200,000 → tentative tax = $345,800 + 40% × $200,000 = $425,800; trừ tax đã tính năm 1 ($155,800) = $270,000 → vẫn dùng applicable credit còn lại → <b>không phải trả tiền mặt</b>.</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 13-6 (Form 709 required):</b> Khoa tặng anh trai $25,000 và tặng bạn $10,000 năm 2025. Gift cho anh vượt $19,000 → <b>phải khai Form 709</b>; taxable gift = $6,000; dùng $6,000 lifetime exclusion.</div>
+
+<h3 class="lesson">Thuật ngữ 13.3</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">tentative tax</td><td class="vn">thuế tạm tính (trên tổng taxable gifts tích lũy)</td></tr>
+<tr><td class="word">taxable gifts</td><td class="vn">gift chịu thuế (sau exclusion, deduction)</td></tr>
+<tr><td class="word">applicable credit</td><td class="vn">tín dụng áp dụng ($5,541,800 cho 2025)</td></tr>
+<tr><td class="word">adjusted taxable gifts</td><td class="vn">taxable gifts các năm trước (cộng vào estate)</td></tr>
+<tr><td class="word">adequate disclosure</td><td class="vn">công bố đầy đủ (bắt đầu thời hiệu 3 năm)</td></tr>
+<tr><td class="word">lifetime exemption</td><td class="vn">mức miễn trừ trọn đời cho gift/estate</td></tr>
+<tr><td class="word">cumulative</td><td class="vn">tính tích lũy qua các năm</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 13.3</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. Which of the following is reported on Form 709?</div>
+<div class="opt">A. Taxable gifts over the annual exclusion</div><div class="opt">B. Charitable contributions deducted on Schedule A</div><div class="opt">C. Inheritances received</div><div class="opt">D. Income from gifted property</div></div>
+<div class="mcq"><div class="q">2. Who must file Form 709 when spouses gift-split?</div>
+<div class="opt">A. Only the donor spouse</div><div class="opt">B. Both spouses</div><div class="opt">C. Only the lower earner</div><div class="opt">D. Neither</div></div>
+<div class="mcq"><div class="q">3. The top gift tax rate is:</div>
+<div class="opt">A. 28%</div><div class="opt">B. 35%</div><div class="opt">C. 37%</div><div class="opt">D. 40%</div></div>
+<div class="mcq"><div class="q">4. A donor makes gifts of $25,000 to one donee in 2025 and no other gifts. The taxable gift is:</div>
+<div class="opt">A. $0</div><div class="opt">B. $6,000</div><div class="opt">C. $19,000</div><div class="opt">D. $25,000</div></div>
+<div class="mcq"><div class="q">5. The statute of limitations on gift tax after a return with adequate disclosure is filed is:</div>
+<div class="opt">A. 1 year</div><div class="opt">B. 3 years</div><div class="opt">C. 6 years</div><div class="opt">D. Unlimited</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 13.3 TÍNH GIFT TAX &amp; FORM 709</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">A — Taxable gifts over the annual exclusion</span></div>
+<div><b>2.</b> <span class="key-ans">B — Both spouses</span></div>
+<div><b>3.</b> <span class="key-ans">D — 40%</span></div>
+<div><b>4.</b> <span class="key-ans">B — $6,000</span></div>
+<div><b>5.</b> <span class="key-ans">B — 3 years</span></div>
+</div>
+</div>
+
+<!-- 13.4 -->
+<div class="c1 pagebreak">
+<h2 class="section">13.4 — BASIS CỦA GIFT, VALUATION &amp; CÁC VẤN ĐỀ KHÁC</h2>
+<h3 class="lesson">Income Tax Aspects</h3>
+<div class="rule-box">
+<ul><li><b>Donee</b> nhận <b>carryover basis</b> (SU09); cộng <b>gift tax đã trả trên phần net appreciation</b> (tỷ lệ appreciation/ FMV); <b>loss basis</b> = FMV ngày tặng nếu thấp hơn</li><li><b>Holding period</b>: tacking (nếu gain basis)</li><li><b>Income từ gifted property</b> sau tặng thuộc donee (kiddie tax nếu donee là trẻ)</li><li>Donor không deduct gift; <b>assignment of income</b> (SU02)</li><li><b>Part gift/part sale</b>: gift = FMV − giá donee trả; gain donor = giá bán − basis phân bổ</li><li><b>Gift of appreciated stock</b> thường tốt hơn tặng cash cho trẻ (nếu bracket thấp), nhưng <b>step-up</b> khi thừa kế có thể tốt hơn (so sánh với estate planning)</li></ul>
+</div>
+<h3 class="lesson">Valuation &amp; Special Rules</h3>
+<div class="rule-box">
+<ul><li><b>FMV</b> = giá giữa người mua sẵn lòng và người bán sẵn lòng, đều biết sự kiện liên quan (Reg. 25.2512-1)</li><li>Chứng khoán niêm yết: <b>trung bình giá cao–thấp</b> ngày tặng</li><li><b>Discount</b>: lack of marketability, minority interest (trong family limited partnership)</li><li><b>Life estate/ remainder</b>, annuity: bảng IRS (§7520)</li><li><b>Gift-in-trust</b>, <b>Grantor Retained Annuity Trust (GRAT)</b>, <b>QPRT</b> — kỹ thuật estate planning</li><li><b>Joint tenancy</b> với non-spouse: gift khi có thể rút tài sản</li><li><b>Gift of tangible property/ artwork</b>: appraisal</li><li><b>Gift tax cho tài sản ở nước ngoài/ NRA donor</b>: chỉ US-situs tangible và real property</li></ul>
+</div>
+<h3 class="lesson">State &amp; Các vấn đề thực tế</h3>
+<div class="rule-box">
+<ul><li><b>State gift tax</b>: ít bang có (vd Connecticut); estate/ inheritance tax cấp bang riêng</li><li><b>Gift to charity</b>: income tax deduction (SU06) khác gift tax deduction</li><li><b>Form 709</b> nộp riêng (không kèm 1040) — mail đến địa chỉ riêng</li><li><b>Donor chết trong năm</b> trước khi khai: executor khai Form 709 (due date sớm hơn: estate tax return due date)</li><li><b>Gift tax lien</b> trên tài sản 10 năm; donee <b>liable</b> nếu donor không trả (transferee liability)</li></ul>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 13-7 (Basis):</b> Mẹ tặng con cổ phiếu basis $20,000, FMV $100,000 năm 2025 (gift tax paid $8,000, rơi vào phần net appreciation $80,000/ $100,000). Basis con = $20,000 + $8,000 × 80% = <b>$26,400</b>.</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 13-8 (Part sale):</b> Cha bán cho con nhà FMV $300,000 (basis $100,000) với giá $120,000 → gift = $300,000 − $120,000 = $180,000 (trừ annual exclusion). <b>Gain của cha</b> = $120,000 − $100,000 = <b>$20,000</b> (basis không phân bổ). <b>Basis của con</b> (khi tính gain) = lớn hơn giữa giá trả ($120,000) và basis của cha ($100,000) = <b>$120,000</b>.</div>
+
+<h3 class="lesson">Thuật ngữ 13.4</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">carryover basis (gift)</td><td class="vn">basis kế thừa cho gift</td></tr>
+<tr><td class="word">gift tax basis adjustment</td><td class="vn">cộng gift tax liên quan phần appreciation vào basis</td></tr>
+<tr><td class="word">fair market value (FMV)</td><td class="vn">giá trị thị trường hợp lý</td></tr>
+<tr><td class="word">marketability discount</td><td class="vn">chiết khấu thanh khoản</td></tr>
+<tr><td class="word">GRAT</td><td class="vn">trust nhận annuity (chuyển giao giá trị tăng thêm với gift tax thấp)</td></tr>
+<tr><td class="word">family limited partnership</td><td class="vn">công ty hợp danh gia đình</td></tr>
+<tr><td class="word">transferee liability</td><td class="vn">trách nhiệm của người nhận gift nếu donor không trả thuế</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 13.4</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. The donee's basis in gifted property, if sold at a gain, is generally:</div>
+<div class="opt">A. FMV at date of gift</div><div class="opt">B. The donor's adjusted basis (plus any gift tax attributable to appreciation)</div><div class="opt">C. Zero</div><div class="opt">D. FMV at the donor's death</div></div>
+<div class="mcq"><div class="q">2. Gift tax paid by the donor increases the donee's basis only to the extent attributable to:</div>
+<div class="opt">A. The entire FMV</div><div class="opt">B. Net appreciation of the gift</div><div class="opt">C. Adjusted basis</div><div class="opt">D. Annual exclusion</div></div>
+<div class="mcq"><div class="q">3. If a donor dies before filing the gift tax return, who must file Form 709?</div>
+<div class="opt">A. The donee</div><div class="opt">B. The executor</div><div class="opt">C. The IRS</div><div class="opt">D. No one</div></div>
+<div class="mcq"><div class="q">4. For publicly traded stock, FMV for gift tax purposes is generally:</div>
+<div class="opt">A. Closing price</div><div class="opt">B. Average of the highest and lowest quoted selling prices on the date of gift</div><div class="opt">C. Opening price</div><div class="opt">D. The donor's basis</div></div>
+<div class="mcq"><div class="q">5. Which of the following is NOT a completed gift?</div>
+<div class="opt">A. Outright gift of cash to a child</div><div class="opt">B. Transfer to an irrevocable trust with no retained powers</div><div class="opt">C. Transfer to a revocable trust</div><div class="opt">D. Gift of stock to a friend</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 13.4 BASIS CỦA GIFT, VALUATION &amp; CÁC VẤN ĐỀ KHÁC</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — The donor's adjusted basis (plus any gift tax attributable to appreciation)</span></div>
+<div><b>2.</b> <span class="key-ans">B — Net appreciation of the gift</span></div>
+<div><b>3.</b> <span class="key-ans">B — The executor</span></div>
+<div><b>4.</b> <span class="key-ans">B — Average of the highest and lowest quoted selling prices on the date of gift</span></div>
+<div><b>5.</b> <span class="key-ans">C — Transfer to a revocable trust</span></div>
+</div>
+</div>
+
+</body>
+</html>

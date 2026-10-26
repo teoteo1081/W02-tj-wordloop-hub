@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<!-- Google tag (gtag.js) — GA4 chung của TJ, nhãn site=ea -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'ea'});</script>
+
+<meta charset="UTF-8">
+<title>EA Part I – SU06: Itemized Deductions</title>
+<style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  body { font-family:'Segoe UI','Calibri',Arial,sans-serif; color:#33322f; font-size:15px; line-height:1.5; background:#fdfcfa; margin:0; }
+  .cover { background: linear-gradient(120deg,#bfe4ff 0%,#d6ecff 30%,#e6def7 65%,#fbe6f4 100%); border-radius:20px; padding:40px 30px; text-align:center; margin-bottom:10px; box-shadow:0 6px 18px rgba(120,130,180,.25); border:1px solid #dfe8f5; }
+  .cover .tag { display:inline-block; background:#33314a; color:#d6ecff; font-weight:700; letter-spacing:2px; font-size:13px; padding:5px 14px; border-radius:20px; margin-bottom:14px; }
+  .cover h1 { font-size:28px; margin:6px 0; color:#3170a8; }
+  .cover h2 { font-size:15px; font-weight:500; margin:4px 0 0; opacity:.9; color:#33314a; }
+  .cover .books { margin-top:16px; font-size:13px; background:rgba(255,255,255,.55); display:inline-block; padding:8px 16px; border-radius:10px; color:#33314a; }
+  .toc { background:#fff; border:1.5px solid #dfe8f5; border-radius:14px; padding:18px 26px; margin-bottom:30px; }
+  .toc h3 { margin-top:0; color:#3170a8; }
+  .toc ol { margin:0; padding-left:22px; } .toc li{ margin-bottom:6px; }
+  h2.section { font-size:21px; color:#33314a; padding:12px 18px; border-radius:12px; margin:34px 0 14px; border-left:10px solid var(--accent,#5aa9d6); background:var(--bg,#eaf6fd); }
+  h3.lesson { font-size:18px; color:var(--accent-dark,#276a91); border-left:6px solid var(--accent,#5aa9d6); background:var(--bg-soft,#f3fafd); padding:8px 14px; border-radius:6px; margin:22px 0 10px; }
+  .c1{--accent:#5aa9d6;--accent-dark:#276a91;--bg:#eaf6fd;--bg-soft:#f3fafd;--head:#a9d4ec;}
+  .c2{--accent:#a892d9;--accent-dark:#5c4696;--bg:#f1ecfb;--bg-soft:#f8f5fd;--head:#cabdec;}
+  .c3{--accent:#f0a66e;--accent-dark:#b8620b;--bg:#fdeee2;--bg-soft:#fff8f0;--head:#f4c299;}
+  .cKey{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
+  table.vocab { width:100%; border-collapse:collapse; margin-bottom:18px; font-size:.94em; box-shadow:0 2px 8px rgba(0,0,0,.05); border-radius:10px; overflow:hidden; }
+  table.vocab th { background:var(--head,#5aa9d6); color:#2d2d2d; padding:8px; text-align:left; }
+  table.vocab td { padding:7px 8px; border-bottom:1px solid var(--bg,#eaf6fd); vertical-align:top; }
+  table.vocab tr:nth-child(even) td { background:var(--bg-soft,#faf6f0); }
+  table.vocab tr:nth-child(odd) td { background:#fff; }
+  table.vocab td.word { font-weight:800; color:var(--accent-dark,#276a91); }
+  table.vocab td.vn { font-weight:700; color:#3d6ba8; }
+  .rule-box { background:var(--bg,#eaf6fd); border-left:6px solid var(--accent,#5aa9d6); border-radius:8px; padding:12px 18px; margin:10px 0; }
+  .rule-box table { width:100%; border-collapse:collapse; margin:8px 0 4px; }
+  .rule-box table td, .rule-box table th { padding:6px 8px; border-bottom:1px solid rgba(0,0,0,.08); text-align:left; font-size:.92em; }
+  .rule-box table th { color:var(--accent-dark,#276a91); }
+  .rule-box ul, .rule-box ol { margin:6px 0; padding-left:22px; } .rule-box li{ margin-bottom:5px; }
+  .struct { font-weight:800; color:#b8620b; font-family:'Consolas','Courier New',monospace; }
+  .example-box { background:#fff; border:1.5px dashed var(--accent,#5aa9d6); border-radius:8px; padding:10px 16px; margin:8px 0; font-size:.92em; }
+  .example-box b.ex-tag { color:var(--accent-dark,#276a91); }
+  .mcq { background:#fff; border:1.5px solid var(--accent,#5aa9d6); border-radius:10px; padding:12px 18px; margin-bottom:12px; }
+  .mcq .q { color:#3d6ba8; font-weight:700; margin-bottom:6px; }
+  .mcq .opt { margin:2px 0 2px 10px; }
+  .content-block { background:#fff; border:2px dashed var(--accent,#5aa9d6); border-radius:12px; padding:16px 20px; margin-bottom:18px; }
+  .key-grid { column-count:1; } .key-grid div{ margin-bottom:9px; }
+  .key-ans { color:#20824f; font-weight:800; }
+  .key-exp { color:#555; font-size:.92em; }
+  .pagebreak { page-break-before: always; }
+  .note { font-size:.85em; color:#8a8a8a; font-style:italic; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="tag">EA EXAM PREP • PART I — INDIVIDUALS • SU06</div>
+  <h1>📗 SU06 — ITEMIZED DEDUCTIONS</h1>
+  <h2>Khấu trừ chi tiết — Schedule A (Song ngữ Việt–Anh)</h2>
+  <div class="books">📖 Khái niệm · 🔤 Thuật ngữ · 📌 Ví dụ · ❓ Trắc nghiệm · 🔑 Đáp án trang sau</div>
+</div>
+
+<div class="toc">
+<h3>📑 Mục lục SU06</h3>
+<ol>
+<li>6.1 Medical &amp; Dental Expenses</li>
+<li>6.2 Taxes Paid (SALT) &amp; Interest</li>
+<li>6.3 Charitable Contributions</li>
+<li>6.4 Các khoản itemized khác &amp; quy tắc chọn</li>
+</ol>
+<p class="note">Soạn theo outline EA Part I — SU06 Itemized Deductions. Số liệu theo năm thuế 2025 (gồm thay đổi của OBBBA). Chưa đối chiếu giáo trình Gleim — cần kiểm lại số liệu với giáo trình và năm thi thực tế.</p>
+</div>
+
+<!-- 6.1 -->
+<div class="c1">
+<h2 class="section">6.1 — MEDICAL AND DENTAL EXPENSES</h2>
+<div class="rule-box">
+<p>Itemize khi <b>tổng Schedule A &gt; standard deduction</b> (2025: $15,750 Single / $31,500 MFJ / $23,625 HOH). Phải <b>elect</b> bằng Schedule A. Quy tắc quan trọng: nếu <b>MFS và một người itemize thì người kia buộc itemize</b> (kể cả $0). Chọn lại bằng Form 1040-X.</p>
+</div>
+<h3 class="lesson">Medical Expenses (§213)</h3>
+<div class="rule-box">
+<ul><li>Chỉ phần <b>vượt 7.5% AGI</b> mới được deduct</li><li>Chi phí cho <b>taxpayer, spouse, dependents</b> (dependent test áp dụng riêng: không cần gross income/joint return test)</li><li><b>Deductible</b>: bác sĩ, nha sĩ, bệnh viện, thuốc kê toa, insulin, kính/kính áp tròng, thiết bị y tế, <b>health insurance premiums</b> (sau thuế), <b>Medicare</b> premiums, <b>long-term care premium</b> (giới hạn theo tuổi), nursing home/y tá (nếu mục đích y tế), lodging tối đa <b>$50/người/đêm</b> khi điều trị xa nhà, chi phí đi lại y tế <b>21¢/dặm</b> (2025), cai nghiện, <b>capital improvements</b> để hỗ trợ khuyết tật (deduct phần vượt tăng giá trị nhà)</li><li><b>KHÔNG</b>: cosmetic surgery (trừ khi do tai nạn/bệnh/dị tật — vd phẫu thuật tái tạo mặt sau bỏng nặng được deduct), health club/weight-loss program (trừ khi bác sĩ kê đơn bằng văn bản để chữa bệnh cụ thể), lãi vay để trả chi phí y tế (personal interest), chi phí ăn uống khi đi khám, vitamin/supplement không kê toa, health club, funeral, bảo hiểm nhân thọ, thuốc nhập lậu, premiums trả bằng pre-tax (cafeteria) hay bởi employer</li><li><b>Medicare Part A</b> thường không deductible (trừ khi tự nguyện đóng), <b>Part B</b> deductible; chi phí y tế trả bằng thẻ tín dụng deduct năm <b>phát sinh</b> (không phải năm trả thẻ); chi phí y tế của người đã mất do estate trả trong <b>1 năm</b> sau khi mất: deduct trên return của năm phát sinh HOẶC khai như claim ở Form 706 (không cả hai); con nuôi: chi phí trước khi nhận về nếu là dependent và có chứng từ; Reimbursement của insurance giảm chi phí; hoàn trả ở năm sau cho chi phí đã deduct → income (tax benefit rule)</li></ul>
+</div>
+<h3 class="lesson">Long-Term Care Premium Limits (2025, theo tuổi cuối năm)</h3>
+<div class="rule-box">
+<table>
+<tr><th>Tuổi</th><th>Tối đa deductible/người</th></tr>
+<tr><td>≤ 40</td><td>$480</td></tr>
+<tr><td>41–50</td><td>$900</td></tr>
+<tr><td>51–60</td><td>$1,800</td></tr>
+<tr><td>61–70</td><td>$4,810</td></tr>
+<tr><td>≥ 71</td><td>$6,020</td></tr>
+</table>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 6-1 (Medical):</b> AGI $80,000 → floor 7.5% = $6,000. Medical: premiums $4,500 + thuốc $1,900 + nha sĩ $2,600 = $9,000. Deductible = $9,000 − $6,000 = <b>$3,000</b>.</div>
+
+<h3 class="lesson">Thuật ngữ 6.1</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">itemized deductions</td><td class="vn">khấu trừ chi tiết (Schedule A)</td></tr>
+<tr><td class="word">standard deduction</td><td class="vn">khấu trừ tiêu chuẩn</td></tr>
+<tr><td class="word">medical expenses</td><td class="vn">chi phí y tế (chỉ phần &gt; 7.5% AGI)</td></tr>
+<tr><td class="word">qualified long-term care</td><td class="vn">bảo hiểm/chăm sóc dài hạn đủ điều kiện</td></tr>
+<tr><td class="word">capital improvement (medical)</td><td class="vn">cải tạo nhà vì lý do y tế</td></tr>
+<tr><td class="word">cosmetic surgery</td><td class="vn">phẫu thuật thẩm mỹ (thường không deductible)</td></tr>
+<tr><td class="word">AGI floor</td><td class="vn">ngưỡng % AGI phải vượt qua mới được khấu trừ</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 6.1</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. Medical expenses are deductible only to the extent they exceed what percentage of AGI?</div>
+<div class="opt">A. 2%</div><div class="opt">B. 5%</div><div class="opt">C. 7.5%</div><div class="opt">D. 10%</div></div>
+<div class="mcq"><div class="q">2. Which of the following is a deductible medical expense?</div>
+<div class="opt">A. Health club dues</div><div class="opt">B. Cosmetic surgery for appearance</div><div class="opt">C. Prescription eyeglasses</div><div class="opt">D. Over-the-counter vitamins</div></div>
+<div class="mcq"><div class="q">3. The 2025 medical mileage rate is:</div>
+<div class="opt">A. 14 cents</div><div class="opt">B. 21 cents</div><div class="opt">C. 67 cents</div><div class="opt">D. 70 cents</div></div>
+<div class="mcq"><div class="q">4. A taxpayer's AGI is $60,000 and unreimbursed medical expenses are $7,500. The medical deduction is:</div>
+<div class="opt">A. $0</div><div class="opt">B. $3,000</div><div class="opt">C. $4,500</div><div class="opt">D. $7,500</div></div>
+<div class="mcq"><div class="q">5. Married taxpayers file separately. If one spouse itemizes, the other:</div>
+<div class="opt">A. May use the standard deduction</div><div class="opt">B. Must itemize</div><div class="opt">C. Has no deduction at all</div><div class="opt">D. May choose either</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 6.1 MEDICAL AND DENTAL EXPENSES</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">C — 7.5%</span></div>
+<div><b>2.</b> <span class="key-ans">C — Prescription eyeglasses</span></div>
+<div><b>3.</b> <span class="key-ans">B — 21 cents</span></div>
+<div><b>4.</b> <span class="key-ans">B — $3,000</span><br><span class="key-exp">$7,500 − 7.5% × $60,000 ($4,500) = $3,000.</span></div>
+<div><b>5.</b> <span class="key-ans">B — Must itemize</span></div>
+</div>
+</div>
+
+<!-- 6.2 -->
+<div class="c2 pagebreak">
+<h2 class="section">6.2 — TAXES PAID (SALT) &amp; INTEREST</h2>
+<h3 class="lesson">Taxes (§164)</h3>
+<div class="rule-box">
+<ul><li><b>SALT cap 2025: $40,000</b> ($20,000 MFS) — OBBBA; <b>giảm 30%</b> phần MAGI vượt <b>$500,000</b> ($250,000 MFS) nhưng không dưới <b>$10,000</b> ($5,000 MFS). 2018–2024: $10,000</li><li>Gồm: state/local <b>income tax HOẶC general sales tax</b> (chọn 1; có thể dùng bảng IRS + sales tax mua xe/tàu lớn), <b>real property tax</b>, <b>personal property tax</b> (ad valorem — theo giá trị, vd car registration phần % giá trị)</li><li><b>KHÔNG deductible</b>: federal income tax, SS/Medicare, estate/gift tax, tax trên giao dịch tại local (transfer tax khi mua nhà → cộng basis), phí dịch vụ (rác, nước), local improvement assessments (cộng vào basis)</li><li><b>Foreign income taxes</b>: chọn credit (Form 1116) hoặc itemized deduction (nằm ngoài SALT cap); <b>foreign real property taxes KHÔNG deductible</b></li><li>Thuế ad valorem phải: thực sự bị đánh, hằng năm, và tỷ lệ theo giá trị (lệ phí đăng ký xe tính theo trọng lượng KHÔNG deductible)</li><li>Thuế trả cho kỳ mà người khác sở hữu: cộng vào basis, không deduct; thuế nộp qua escrow: deduct khi ngân hàng nộp cho cơ quan thuế</li><li>Real estate tax khi mua/bán nhà trong năm: chia theo số ngày sở hữu</li><li><b>Tax benefit rule</b>: refund state tax chỉ là income nếu năm trước itemize và nhờ đó giảm thuế (SALT cap có thể làm refund không phải income)</li></ul>
+</div>
+<h3 class="lesson">Interest (§163)</h3>
+<div class="rule-box">
+<ul><li><b>Qualified residence interest</b>: nhà chính + 1 nhà thứ hai; <b>acquisition debt</b> ≤ <b>$750,000</b> ($375,000 MFS); nợ vay mua <b>trước 16/12/2017</b> vẫn dùng ngưỡng $1,000,000</li><li><b>Home equity debt</b>: chỉ deductible nếu dùng để mua/xây/cải tạo chính ngôi nhà đó (tổng vẫn trong $750,000)</li><li><b>Points</b>: mua nhà chính → deduct ngay năm trả (nếu đủ điều kiện); refinance → amortize theo thời hạn vay</li><li><b>Mortgage insurance premiums (PMI)</b>: KHÔNG deductible cho 2025 (OBBBA khôi phục từ 2026)</li><li><b>Investment interest</b>: deduct tối đa <b>net investment income</b> (Form 4952); dư carryforward; không gồm LTCG/qualified dividends trừ khi chọn đánh thuế theo ordinary rate</li><li><b>Personal interest</b> (thẻ tín dụng, revolving/ line of credit, xe cá nhân, lãi vay để trả chi phí y tế, <b>lãi trên thuế nộp thiếu</b>) <b>KHÔNG</b> deductible</li><li><b>Qualified residence</b> = nhà chính + 1 nhà khác dùng cá nhân &gt; lớn hơn giữa 14 ngày hoặc 10% số ngày cho thuê (nếu &gt; 2 nhà: chọn mỗi năm); <b>home equity debt</b> ≤ FMV nhà − acquisition debt</li><li>Phân bổ lãi vay theo cách <b>truy vết</b> mục đích sử dụng tiền vay (investment, business, passive, personal)</li><li>Business interest → Schedule C/E; chịu §163(j) nếu gross receipts &gt; $31 triệu</li></ul>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 6-2 (SALT):</b> Cặp MFJ MAGI $300,000: state income tax $18,000 + property tax $14,000 = $32,000 &lt; $40,000 → deduct đủ <b>$32,000</b>. Nếu MAGI $560,000 → cap giảm: $40,000 − 30% × ($560,000 − $500,000) = $22,000 → deduct <b>$22,000</b>.</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 6-3 (Mortgage):</b> Vay $900,000 mua nhà năm 2024 (sau 12/2017), lãi $54,000. Tỷ lệ deductible = $750,000/$900,000 = 83.3% → deduct <b>$45,000</b>.</div>
+
+<h3 class="lesson">Thuật ngữ 6.2</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">state and local taxes (SALT)</td><td class="vn">thuế tiểu bang và địa phương</td></tr>
+<tr><td class="word">SALT cap</td><td class="vn">giới hạn khấu trừ SALT (2025: $40,000)</td></tr>
+<tr><td class="word">ad valorem tax</td><td class="vn">thuế theo giá trị (tài sản)</td></tr>
+<tr><td class="word">acquisition indebtedness</td><td class="vn">nợ vay để mua/xây/cải tạo nhà</td></tr>
+<tr><td class="word">qualified residence interest</td><td class="vn">lãi vay nhà ở đủ điều kiện</td></tr>
+<tr><td class="word">points</td><td class="vn">phí điểm (lãi trả trước khi vay)</td></tr>
+<tr><td class="word">investment interest expense</td><td class="vn">lãi vay đầu tư (giới hạn theo net investment income)</td></tr>
+<tr><td class="word">Form 4952</td><td class="vn">mẫu tính investment interest</td></tr>
+<tr><td class="word">Form 1098</td><td class="vn">mẫu báo lãi vay nhà</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 6.2</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. For tax year 2025, the SALT deduction cap for a married-filing-separately taxpayer (before the high-income phase-down) is:</div>
+<div class="opt">A. $5,000</div><div class="opt">B. $10,000</div><div class="opt">C. $20,000</div><div class="opt">D. $40,000</div></div>
+<div class="mcq"><div class="q">2. Which tax is NOT deductible on Schedule A?</div>
+<div class="opt">A. State income tax</div><div class="opt">B. Real property tax</div><div class="opt">C. Personal property tax based on value</div><div class="opt">D. Federal income tax</div></div>
+<div class="mcq"><div class="q">3. Mortgage interest on acquisition debt incurred after December 15, 2017 is deductible on debt up to:</div>
+<div class="opt">A. $500,000</div><div class="opt">B. $750,000</div><div class="opt">C. $1,000,000</div><div class="opt">D. $1,500,000</div></div>
+<div class="mcq"><div class="q">4. Investment interest expense is deductible only up to:</div>
+<div class="opt">A. Taxable income</div><div class="opt">B. Net investment income</div><div class="opt">C. 50% of AGI</div><div class="opt">D. $3,000</div></div>
+<div class="mcq"><div class="q">5. Interest on credit card debt used for personal purchases is:</div>
+<div class="opt">A. Deductible as itemized deduction</div><div class="opt">B. Personal interest, not deductible</div><div class="opt">C. Deductible above-the-line</div><div class="opt">D. Deductible up to $2,500</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 6.2 TAXES PAID (SALT) &amp; INTEREST</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">C — $20,000</span></div>
+<div><b>2.</b> <span class="key-ans">D — Federal income tax</span></div>
+<div><b>3.</b> <span class="key-ans">B — $750,000</span></div>
+<div><b>4.</b> <span class="key-ans">B — Net investment income</span></div>
+<div><b>5.</b> <span class="key-ans">B — Personal interest, not deductible</span><br><span class="key-exp">Personal interest không được deduct (ngoại lệ mới: khoản khấu trừ lãi vay mua xe mới sản xuất tại Mỹ — SU07).</span></div>
+</div>
+</div>
+
+<!-- 6.3 -->
+<div class="c3 pagebreak">
+<h2 class="section">6.3 — CHARITABLE CONTRIBUTIONS</h2>
+<h3 class="lesson">Quy tắc chung</h3>
+<div class="rule-box">
+<ul><li>Chỉ cho <b>qualified organization</b> (501(c)(3), government cho public purpose, veterans, fraternal cho mục đích từ thiện…); đóng cho cá nhân, political party/candidate, hội ngành, nhà nước ngoài (trừ trường hợp) <b>không</b> deductible</li><li><b>Volunteer services</b> không deductible; out-of-pocket (xăng, đồng phục) có; mileage charity <b>14¢/dặm</b></li><li>Deduct vào năm <b>trả</b> (charge vào credit card = năm charge; check = năm gửi)</li><li>Nếu nhận <b>benefit</b> (bữa tối, vé) → deduct = đóng góp − FMV benefit</li><li>Mua hàng tại buổi gây quỹ: chỉ phần vượt FMV hàng nhận được</li></ul>
+</div>
+<h3 class="lesson">Giới hạn theo % AGI</h3>
+<div class="rule-box">
+<table>
+<tr><th>Loại</th><th>Giới hạn (public charity)</th><th>Giới hạn (private non-operating foundation)</th></tr>
+<tr><td>Cash</td><td>60% AGI</td><td>30%</td></tr>
+<tr><td>Ordinary income / short-term property (theo basis)</td><td>50% AGI</td><td>30%</td></tr>
+<tr><td>Long-term capital gain property (theo FMV)</td><td>30% AGI</td><td>20%</td></tr>
+<tr><td>Carryover phần dư</td><td>5 năm</td><td>5 năm</td></tr>
+</table>
+<ul><li>LTCG property tặng public charity: deduct <b>FMV</b>; tangible personal property (tranh, đồ cổ) mà charity KHÔNG dùng cho mục đích liên quan (vd bán đấu giá) → deduct <b>basis</b></li><li>Tặng <b>ordinary income property</b> (inventory, ST gain): deduct <b>basis</b></li><li>Tặng xe: nếu charity bán → deduct = giá bán (Form 1098-C); nếu dùng/cải tiến → FMV</li><li><b>Bargain sale</b>: phần đóng góp = FMV − giá bán; basis phân bổ theo tỷ lệ</li><li>Hạn mức tổng <b>50% AGI</b> (<b>60% cho cash</b>); tổ chức loại <b>50% limit</b> (public charities, churches, trường, bệnh viện, private operating foundation…) vs <b>non-50% limit</b> (chủ yếu private foundation): cash 30%, LTCG property 20% (lesser of 20% AGI hoặc 30% trừ LTCG gifts cho public charity)</li><li>Thứ tự áp dụng: <b>50%/60% → 30% → 20%</b>; phần dư carryover 5 năm đúng nhóm</li><li><b>Election</b> giảm FMV của LTCG property xuống basis → chỉ còn giới hạn 50%/60% thay vì 30%</li><li>Quần áo/đồ gia dụng phải <b>good condition</b> (một món &gt; $500 không đạt good condition cần qualified appraisal); donee bán tài sản ≥ $500 trong 3 năm → <b>Form 8282</b> trong 125 ngày; bán xe/thuyền/máy bay → <b>Form 1098-C</b> trong 30 ngày</li><li>Từ <b>2026</b> (OBBBA): non-itemizer deduct tới $1,000 ($2,000 MFJ) cash; itemizer chịu <b>sàn 0.5% AGI</b> — không áp dụng 2025</li></ul>
+</div>
+<h3 class="lesson">Substantiation</h3>
+<div class="rule-box">
+<table>
+<tr><th>Giá trị</th><th>Chứng từ</th></tr>
+<tr><td>&lt; $250 cash</td><td>Canceled check, bank/credit card statement, hoặc receipt từ charity</td></tr>
+<tr><td>≥ $250</td><td><b>Contemporaneous written acknowledgment (CWA)</b> từ donee — canceled check KHÔNG đủ</td></tr>
+<tr><td>Noncash &gt; $500</td><td>Form 8283 (Section A)</td></tr>
+<tr><td>Noncash &gt; $5,000</td><td><b>Qualified appraisal</b> + Form 8283 Section B (ký của appraiser và donee)</td></tr>
+<tr><td>Quid pro quo &gt; $75</td><td>Charity phải cấp disclosure statement</td></tr>
+<tr><td>Xe/thuyền/máy bay ≥ $500</td><td>Form 1098-C</td></tr>
+<tr><td>Quần áo/đồ dùng</td><td>Phải ở tình trạng good used condition trở lên</td></tr>
+</table>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 6-4 (Appreciated stock):</b> Tặng cổ phiếu mua $2,000, FMV $10,000, giữ 3 năm cho public charity → deduct <b>$10,000</b> (không chịu LTCG). AGI $50,000 → giới hạn 30% = $15,000 → đủ.</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 6-5 (Quid pro quo):</b> Trả $300 cho dinner gây quỹ, bữa ăn FMV $80 → deduct <b>$220</b>; charity phải gửi disclosure (&gt; $75).</div>
+
+<h3 class="lesson">Thuật ngữ 6.3</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">qualified organization</td><td class="vn">tổ chức đủ điều kiện nhận donation deductible</td></tr>
+<tr><td class="word">contemporaneous written acknowledgment</td><td class="vn">xác nhận bằng văn bản kịp thời của donee</td></tr>
+<tr><td class="word">quid pro quo contribution</td><td class="vn">đóng góp có nhận lại giá trị</td></tr>
+<tr><td class="word">qualified appraisal</td><td class="vn">thẩm định giá đủ điều kiện (cho &gt; $5,000)</td></tr>
+<tr><td class="word">Form 8283</td><td class="vn">mẫu khai đóng góp phi tiền mặt</td></tr>
+<tr><td class="word">capital gain property</td><td class="vn">tài sản có thể tạo capital gain (giữ &gt; 1 năm)</td></tr>
+<tr><td class="word">carryover (charitable)</td><td class="vn">chuyển phần dư sang 5 năm sau</td></tr>
+<tr><td class="word">bargain sale</td><td class="vn">bán dưới giá trị thị trường cho charity</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 6.3</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. Cash contributions to a public charity are generally limited to what percentage of AGI?</div>
+<div class="opt">A. 20%</div><div class="opt">B. 30%</div><div class="opt">C. 50%</div><div class="opt">D. 60%</div></div>
+<div class="mcq"><div class="q">2. A taxpayer donates long-term appreciated stock (basis $2,000, FMV $10,000) to a public charity. The deduction is generally:</div>
+<div class="opt">A. $2,000</div><div class="opt">B. $8,000</div><div class="opt">C. $10,000</div><div class="opt">D. $0</div></div>
+<div class="mcq"><div class="q">3. A cash donation of $250 or more requires:</div>
+<div class="opt">A. Only a canceled check</div><div class="opt">B. A contemporaneous written acknowledgment from the charity</div><div class="opt">C. Form 8283</div><div class="opt">D. A qualified appraisal</div></div>
+<div class="mcq"><div class="q">4. Excess charitable contributions may be carried forward for:</div>
+<div class="opt">A. 1 year</div><div class="opt">B. 3 years</div><div class="opt">C. 5 years</div><div class="opt">D. Indefinitely</div></div>
+<div class="mcq"><div class="q">5. A qualified appraisal is required for a noncash contribution (other than certain exceptions) exceeding:</div>
+<div class="opt">A. $500</div><div class="opt">B. $1,000</div><div class="opt">C. $5,000</div><div class="opt">D. $25,000</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 6.3 CHARITABLE CONTRIBUTIONS</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">D — 60%</span></div>
+<div><b>2.</b> <span class="key-ans">C — $10,000</span></div>
+<div><b>3.</b> <span class="key-ans">B — A contemporaneous written acknowledgment from the charity</span></div>
+<div><b>4.</b> <span class="key-ans">C — 5 years</span></div>
+<div><b>5.</b> <span class="key-ans">C — $5,000</span></div>
+</div>
+</div>
+
+<!-- 6.4 -->
+<div class="c1 pagebreak">
+<h2 class="section">6.4 — CÁC KHOẢN ITEMIZED KHÁC &amp; QUY TẮC CHỌN</h2>
+<h3 class="lesson">Các khoản Other Itemized Deductions (Schedule A, line 16)</h3>
+<div class="rule-box">
+<ul><li><b>Gambling losses</b> (tối đa bằng winnings)</li><li><b>Casualty/theft loss</b> từ federally declared disaster (SU05)</li><li><b>Federal estate tax</b> trên IRD (§691(c))</li><li><b>Impairment-related work expenses</b> của employee khuyết tật</li><li>Amortizable premium on taxable bonds (theo Gleim)</li><li>Repayment của claim of right &gt; $3,000 (§1341: deduct hoặc credit)</li><li>Unrecovered investment in annuity</li><li><b>Miscellaneous deductions subject to 2% floor</b> (tax prep fee, investment advice, unreimbursed employee expenses…): <b>bị bãi bỏ 2018 trở đi</b> — OBBBA làm vĩnh viễn</li></ul>
+</div>
+<h3 class="lesson">Standard vs. Itemized — chọn gì?</h3>
+<div class="rule-box">
+<ul><li>So sánh tổng itemized với standard (2025: <b>$15,750 / $31,500 / $23,625</b>; +$2,000 hoặc $1,600/mỗi điều kiện ≥ 65/mù; thêm khoản senior deduction $6,000 — SU07)</li><li><b>Bunching</b>: dồn chi phí (charity, medical, property tax) vào một năm để vượt standard, năm khác dùng standard</li><li>Không được dùng standard: người <b>elect itemize</b>, <b>MFS khi spouse itemize</b>, <b>NRA</b>, return <b>short period</b> do đổi kỳ kế toán</li><li>Phase-out itemized deductions (Pease) đã bãi bỏ; từ <b>2026</b> OBBBA giảm itemized của người bracket 37% khoảng 2/37</li></ul>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 6-6 (Standard vs Itemized):</b> Single, AGI $90,000: SALT $9,000, mortgage interest $8,200, charity $3,500 = $20,700 &gt; $15,750 → <b>itemize</b>. Nếu mortgage interest chỉ $3,000 → $15,500 &lt; $15,750 → <b>standard</b>.</div>
+
+<h3 class="lesson">Thuật ngữ 6.4</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">Schedule A</td><td class="vn">bảng khai itemized deductions</td></tr>
+<tr><td class="word">bunching</td><td class="vn">dồn khoản khấu trừ vào một năm để vượt standard deduction</td></tr>
+<tr><td class="word">claim of right</td><td class="vn">nguyên tắc quyền nhận (hoàn lại khoản đã tính income)</td></tr>
+<tr><td class="word">miscellaneous itemized deductions</td><td class="vn">khấu trừ linh tinh (2% floor) — đã bị bãi bỏ</td></tr>
+<tr><td class="word">Pease limitation</td><td class="vn">giới hạn giảm itemized theo thu nhập (đã bãi bỏ 2018–2025)</td></tr>
+<tr><td class="word">IRD estate tax deduction</td><td class="vn">khấu trừ thuế estate trên thu nhập truy nhận</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 6.4</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. Which of the following is still deductible on Schedule A for 2025?</div>
+<div class="opt">A. Tax preparation fees</div><div class="opt">B. Unreimbursed employee business expenses</div><div class="opt">C. Gambling losses up to winnings</div><div class="opt">D. Investment advisory fees</div></div>
+<div class="mcq"><div class="q">2. Which taxpayer is NOT allowed to claim the standard deduction?</div>
+<div class="opt">A. A Single taxpayer</div><div class="opt">B. A married filing separately taxpayer whose spouse itemizes</div><div class="opt">C. A head of household</div><div class="opt">D. A qualifying surviving spouse</div></div>
+<div class="mcq"><div class="q">3. Which of the following is a reason to "bunch" itemized deductions into one year?</div>
+<div class="opt">A. To exceed the standard deduction in alternating years</div><div class="opt">B. To avoid the SALT cap entirely</div><div class="opt">C. To increase AGI</div><div class="opt">D. To avoid Form 1040</div></div>
+<div class="mcq"><div class="q">4. The tax benefit rule applies when:</div>
+<div class="opt">A. A deduction was never claimed</div><div class="opt">B. A recovery of an amount deducted in a prior year produced a tax benefit</div><div class="opt">C. A taxpayer overpays estimated tax</div><div class="opt">D. The IRS audits the return</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 6.4 CÁC KHOẢN ITEMIZED KHÁC &amp; QUY TẮC CHỌN</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">C — Gambling losses up to winnings</span></div>
+<div><b>2.</b> <span class="key-ans">B — A married filing separately taxpayer whose spouse itemizes</span></div>
+<div><b>3.</b> <span class="key-ans">A — To exceed the standard deduction in alternating years</span></div>
+<div><b>4.</b> <span class="key-ans">B — A recovery of an amount deducted in a prior year produced a tax benefit</span></div>
+</div>
+</div>
+
+</body>
+</html>

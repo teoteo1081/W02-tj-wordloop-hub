@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<!-- Google tag (gtag.js) — GA4 chung của TJ, nhãn site=ea -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'ea'});</script>
+
+<meta charset="UTF-8">
+<title>EA Part III – SU03: Representation</title>
+<style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  body { font-family:'Segoe UI','Calibri',Arial,sans-serif; color:#33322f; font-size:15.5px; line-height:1.5; background:#fdfcfa; margin:0; }
+  .cover { background: linear-gradient(120deg,#bfe4ff 0%,#d6ecff 30%,#e6def7 65%,#fbe6f4 100%); border-radius:20px; padding:40px 30px; text-align:center; margin-bottom:10px; box-shadow:0 6px 18px rgba(120,130,180,.25); border:1px solid #dfe8f5; }
+  .cover .tag { display:inline-block; background:#33314a; color:#d6ecff; font-weight:700; letter-spacing:2px; font-size:13px; padding:5px 14px; border-radius:20px; margin-bottom:14px; }
+  .cover h1 { font-size:30px; margin:6px 0; color:#3170a8; }
+  .cover h2 { font-size:16px; font-weight:500; margin:4px 0 0; opacity:.9; color:#33314a; }
+  .cover .books { margin-top:16px; font-size:13.5px; background:rgba(255,255,255,.55); display:inline-block; padding:8px 16px; border-radius:10px; color:#33314a; }
+  .toc { background:#fff; border:1.5px solid #dfe8f5; border-radius:14px; padding:18px 26px; margin-bottom:30px; }
+  .toc h3 { margin-top:0; color:#3170a8; }
+  .toc ol { margin:0; padding-left:22px; } .toc li{ margin-bottom:6px; }
+  h2.section { font-size:23px; color:#33314a; padding:12px 18px; border-radius:12px; margin:34px 0 14px; border-left:10px solid var(--accent,#5aa9d6); background:var(--bg,#eaf6fd); }
+  h3.lesson { font-size:19px; color:var(--accent-dark,#276a91); border-left:6px solid var(--accent,#5aa9d6); background:var(--bg-soft,#f3fafd); padding:8px 14px; border-radius:6px; margin:22px 0 10px; }
+  .c1{--accent:#5aa9d6;--accent-dark:#276a91;--bg:#eaf6fd;--bg-soft:#f3fafd;--head:#a9d4ec;}
+  .c2{--accent:#a892d9;--accent-dark:#5c4696;--bg:#f1ecfb;--bg-soft:#f8f5fd;--head:#cabdec;}
+  .c3{--accent:#f0a66e;--accent-dark:#b8620b;--bg:#fdeee2;--bg-soft:#fff8f0;--head:#f4c299;}
+  .c4{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
+  .c5{--accent:#e07b9b;--accent-dark:#a3335a;--bg:#fbe9f0;--bg-soft:#fdf5f8;--head:#f3b6c9;}
+  .c6{--accent:#5bb8b0;--accent-dark:#1f7a72;--bg:#e5f7f5;--bg-soft:#f2fbfa;--head:#a6e3dd;}
+  .cKey{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
+  table.vocab { width:100%; border-collapse:collapse; margin-bottom:20px; font-size:.96em; box-shadow:0 2px 8px rgba(0,0,0,.05); border-radius:10px; overflow:hidden; }
+  table.vocab th { background:var(--head,#5aa9d6); color:#2d2d2d; padding:9px 8px; text-align:left; }
+  table.vocab td { padding:8px 8px; border-bottom:1px solid var(--bg,#eaf6fd); vertical-align:top; }
+  table.vocab tr:nth-child(even) td { background:var(--bg-soft,#faf6f0); }
+  table.vocab tr:nth-child(odd) td { background:#fff; }
+  table.vocab td.word { font-weight:800; color:var(--accent-dark,#276a91); }
+  table.vocab td.vn { font-weight:700; color:#3d6ba8; }
+  .rule-box { background:var(--bg,#eaf6fd); border-left:6px solid var(--accent,#5aa9d6); border-radius:8px; padding:12px 18px; margin:10px 0; }
+  .rule-box table { width:100%; border-collapse:collapse; margin:8px 0 4px; }
+  .rule-box table td, .rule-box table th { padding:6px 8px; border-bottom:1px solid rgba(0,0,0,.08); text-align:left; font-size:.94em; }
+  .rule-box table th { color:var(--accent-dark,#276a91); }
+  .rule-box ul, .rule-box ol { margin:6px 0; padding-left:22px; } .rule-box li{ margin-bottom:5px; }
+  .struct { font-weight:800; color:#b8620b; font-family:'Consolas','Courier New',monospace; }
+  .example-box { background:#fff; border:1.5px dashed var(--accent,#5aa9d6); border-radius:8px; padding:10px 16px; margin:10px 0; font-size:.95em; }
+  .example-box b.ex-tag { color:var(--accent-dark,#276a91); }
+  .mcq { background:#fff; border:1.5px solid var(--accent,#5aa9d6); border-radius:10px; padding:12px 18px; margin-bottom:12px; }
+  .mcq .q { color:#3d6ba8; font-weight:700; margin-bottom:6px; }
+  .mcq .opt { margin:2px 0 2px 10px; }
+  .content-block { background:#fff; border:2px dashed var(--accent,#5aa9d6); border-radius:12px; padding:16px 20px; margin-bottom:18px; }
+  .key-grid { column-count:1; } .key-grid div{ margin-bottom:10px; }
+  .key-ans { color:#20824f; font-weight:800; }
+  .key-exp { color:#555; font-size:.95em; }
+  .pagebreak { page-break-before: always; }
+  .note { font-size:.85em; color:#8a8a8a; font-style:italic; }
+  .source-tag { font-size:.8em; color:#999; font-style:italic; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="tag">EA EXAM PREP • PART III — REPRESENTATION, PRACTICES & PROCEDURES • SU03</div>
+  <h1>📗 SU03 — REPRESENTATION</h1>
+  <h2>Bản song ngữ Việt–Anh, bám sát giáo trình Gleim 2026</h2>
+  <div class="books">📖 Khái niệm · 🔤 Thuật ngữ · 📌 Ví dụ minh họa · ❓ Câu hỏi trắc nghiệm · 🔑 Đáp án trang sau</div>
+</div>
+
+<div class="toc">
+<h3>📑 Mục lục SU03</h3>
+<ol>
+<li>3.1 Representation (Power of Attorney, Form 2848, TIA/Form 8821, đại diện decedent)</li>
+<li>3.2 Centralized Authorization File — CAF (Hệ thống lưu trữ ủy quyền tập trung)</li>
+</ol>
+<p class="note">Nguồn: Gleim EA Review, Study Unit 3 — Representation (2026).</p>
+</div>
+
+<!-- ============================================================ 3.1 REPRESENTATION ============================================================ -->
+<div class="c1">
+<h2 class="section">3.1 — REPRESENTATION</h2>
+<div class="rule-box">
+<p><b>Representation</b> = hành vi thực hiện thay taxpayer bởi representative khi hành nghề trước IRS. Bất kỳ ai cũng được làm nhân chứng cho taxpayer, hoặc cung cấp thông tin theo yêu cầu IRS mà KHÔNG cần là representative.</p>
+<p><b>Power of Attorney (POA)</b> = văn bản do taxpayer (principal) ký, chỉ định 1 cá nhân làm attorney-in-fact thực hiện hành vi cụ thể thay mình.</p>
+</div>
+
+<h3 class="lesson">Các loại Power of Attorney</h3>
+<table class="vocab">
+<tr><th>Loại</th><th>Đặc điểm</th></tr>
+<tr><td class="word">General POA</td><td class="vn">Attorney-in-fact được làm BẤT KỲ hành vi nào taxpayer có thể làm</td></tr>
+<tr><td class="word">Durable POA</td><td class="vn">Không chấm dứt theo thời gian hay khi principal mất năng lực (kéo dài đến khi taxpayer mất)</td></tr>
+<tr><td class="word">Limited (Special) POA</td><td class="vn">Giới hạn ở 1 số hành vi cụ thể (khác General POA)</td></tr>
+</table>
+
+<h3 class="lesson">Recognized Representative — Ai được công nhận</h3>
+<div class="rule-box">
+<p>Recognized representative = người được chỉ định làm attorney-in-fact theo POA, thuộc 1 trong các nhóm sau, VÀ nộp declaration of representative:</p>
+<ul>
+<li><b>Attorney</b> — thành viên tốt của đoàn luật sư bất kỳ bang/lãnh thổ/DC.</li>
+<li><b>CPA</b> — đủ điều kiện hành nghề CPA tại bất kỳ bang nào.</li>
+<li><b>Enrolled agent</b> — đang active theo Circular 230 (kể cả temporary recognition do Director of Practice cấp).</li>
+<li><b>Enrolled actuary</b> — active với Joint Board for the Enrollment of Actuaries.</li>
+<li><b>Quan hệ đặc biệt (relationship/special status)</b> — VD đại diện employer full-time hoặc thân nhân trực hệ; officer/employee full-time của corporation đại diện cho entity đó.</li>
+<li><b>AFSP participant</b> — CHỈ đại diện trước revenue agents & examining officers của Examination Division, CHỈ cho return chính mình ký/chuẩn bị. Mọi unenrolled preparer phải có PTIN hợp lệ để đại diện.</li>
+<li><b>Special appearance</b> — được IRS cho phép qua đơn viết, cho 1 vấn đề cụ thể.</li>
+</ul>
+</div>
+
+<h3 class="lesson">Ký tờ khai & các quy tắc khác của POA</h3>
+<div class="rule-box">
+<p>Việc nộp POA KHÔNG tự động cho phép representative <b>ký tờ khai thay taxpayer</b> — chỉ được nếu VỪA (1) luật/quy định IRC cho phép VÀ (2) POA nói rõ quyền này.</p>
+<p><b>KHÔNG cần POA</b> để nộp tax information authorization (chỉ để nhận thông tin, không phải "practice before IRS"). IRS chấp nhận bản gốc HOẶC bản copy của POA. POA thiếu thông tin có thể được attorney-in-fact SỬA mà không cần làm POA mới.</p>
+<p><b>Liên hệ trực tiếp taxpayer:</b> nếu representative trì hoãn/cản trở vô lý việc examination/collection/investigation (không cung cấp thông tin không privileged sau nhiều lần yêu cầu), nhân viên IRS có thể xin phép cấp trên liên hệ trực tiếp taxpayer. Việc này KHÔNG tự động loại bỏ tư cách representative, nhưng có thể bị báo cáo cho thủ tục kỷ luật Circular 230.</p>
+<p>POA KHÔNG cho quyền đại diện trước TÒA ÁN — phải được admitted to practice trước tòa đó riêng.</p>
+</div>
+
+<h3 class="lesson">Form 2848 — Power of Attorney and Declaration of Representative</h3>
+<div class="rule-box">
+<p>Cần <b>Form 2848</b> (hoặc mẫu thay thế non-IRS có đủ thông tin) khi taxpayer muốn ủy quyền cho representative: đại diện tại conference với IRS; nộp phản hồi bằng văn bản; ký consent/extension.</p>
+<p>Declaration of representative xác nhận: (1) không đang bị suspend/disbar/ineligible; (2) chịu sự điều chỉnh của Circular 230; (3) được ủy quyền đại diện taxpayer cho vấn đề nêu trong Part 1; (4) thuộc 1 trong các nhóm 26 CFR 601.502.</p>
+</div>
+
+<h3 class="lesson">Return Information, Disclosure & Form 8821 (TIA)</h3>
+<div class="rule-box">
+<p><b>Return information</b> = dữ liệu IRS nhận/chuẩn bị liên quan đến return, deficiency, hay penalty — kể cả THAY ĐỔI trên return cũng tính. Return/return information CONFIDENTIAL, không được tiết lộ TRỪ: người được taxpayer chỉ định, ủy ban Quốc hội, cán bộ thuế bang, và một số người khác.</p>
+<p><b>Form 8821 (Tax Information Authorization — TIA):</b> cần nộp để representative NHẬN/XEM thông tin thuế confidential thay taxpayer, TRỪ khi đã có POA cho hành vi cụ thể đó. TIA hay POA không phải mẫu chuẩn vẫn được chấp nhận nếu đủ thông tin — nhưng để xử lý vào CAF, phải đính kèm Form 2848 (không cần taxpayer ký Form 2848 đính kèm này).</p>
+<p><b>KHÔNG cần TIA/POA</b> khi representative: đại diện tại conference CÓ MẶT taxpayer; đại diện executor/administrator tại estate tax conference (nếu chứng minh đã chuẩn bị estate tax return, được recognize hành nghề trước IRS, và là attorney of record trước tòa probate); được tòa chỉ định làm trustee/receiver/attorney cho debtor; đã ký petition lên Tax Court với tư cách counsel được admit trước Tax Court.</p>
+</div>
+
+<h3 class="lesson">Multiple Representatives & Scope of Authority</h3>
+<div class="rule-box">
+<p>IRS chỉ gửi copy communication cho <b>tối đa 2 representative</b> được chỉ định (theo thứ tự trên POA mới nhất) — giới hạn này KHÔNG áp dụng cho TIA appointee.</p>
+<p><b>Scope of authority</b> thường cho phép representative: đại diện trước bất kỳ văn phòng IRS nào; ký waiver đồng ý điều chỉnh thuế; ký consent gia hạn thời hiệu assessment/collection; ký closing agreement; NHẬN (không endorse/cash) séc hoàn thuế; ghi âm buổi phỏng vấn. Unenrolled return preparer chỉ giới hạn trước revenue agents & examining officers.</p>
+<p>Không cần ngôn ngữ kỹ thuật, nhưng phải rõ ràng — cụm "in all tax matters" KHÔNG đủ cụ thể. Phải nêu rõ loại thuế và năm/kỳ thuế. POA chỉ áp dụng cho kỳ thuế kết thúc <b>không muộn hơn 3 năm</b> sau ngày IRS nhận POA. KHÔNG cần liệt kê các bộ phận IRS liên quan.</p>
+</div>
+
+<h3 class="lesson">Yêu cầu nội dung POA & Giới hạn TIA</h3>
+<div class="rule-box">
+<p><b>POA phải có:</b> tên/địa chỉ/mã số ID taxpayer; số employee plan (nếu áp dụng); tên/địa chỉ/chức danh representative; bang nơi attorney/CPA được hành nghề; mô tả vấn đề được ủy quyền (loại thuế, số mẫu, năm cụ thể, ngày mất của decedent nếu là estate matter); biểu đạt rõ ý định về phạm vi ủy quyền; chữ ký representative.</p>
+<p><b>TIA KHÔNG cho phép</b> appointee: bênh vực vị trí taxpayer về luật thuế liên bang; ký waiver/consent/closing agreement; hay đại diện taxpayer trước IRS theo cách khác.</p>
+</div>
+
+<h3 class="lesson">Thay đổi & Chấm dứt ủy quyền, Substitution</h3>
+<div class="rule-box">
+<p>POA mới MẶC ĐỊNH thu hồi POA cũ TRỪ khi ghi rõ điều khoản không thu hồi. Có thể thu hồi cụ thể bằng statement liệt kê tên/địa chỉ representative bị thu hồi, viết chữ "REVOKE" trên POA.</p>
+<p>Representative có thể TỰ RÚT (withdraw) bằng statement ký tên, nêu tên/địa chỉ taxpayer và vấn đề rút khỏi, nộp cho văn phòng IRS đã nhận POA.</p>
+<p><b>Substitution:</b> nếu POA nêu rõ ý định cho phép, có thể thay representative bằng cách nộp: notice of substitution, declaration of representative mới, và POA cho phép substitution. CHỈ representative MỚI được công nhận.</p>
+<p><b>Chữ ký hợp lệ theo loại taxpayer:</b> joint return — cả 2 vợ chồng (trừ khi 1 người ủy quyền ký thay bằng văn bản); partnership — tất cả partner hoặc partner được ủy quyền (partnership giải thể → mỗi partner còn sống phải tự ký); corporation — officer có thẩm quyền; người có guardian tòa chỉ định — fiduciary được tòa chỉ định; decedent — executor/administrator.</p>
+</div>
+
+<h3 class="lesson">Partnership Audits & Representing a Decedent</h3>
+<div class="rule-box">
+<p><b>Partnership audit:</b> xử lý ở CẤP PARTNERSHIP trong 1 thủ tục hành chính duy nhất (không xử lý riêng từng partner). Notice bắt đầu thủ tục & final partnership administrative adjustment phải gửi mọi partner, TRỪ partner &lt;1% lợi ích trong partnership &gt;100 partner (nhóm partner có tổng lợi ích ≥5% có thể yêu cầu gửi cho 1 partner đại diện). Mỗi partnership nên chỉ định <b>partnership representative</b> để nhận notice thay small partner và cập nhật thông tin cho mọi partner.</p>
+<p style="background:#fff7e0;border-left:4px solid #e0a800;padding:6px 10px;border-radius:6px;margin:8px 0">⚠️ <b>Luật hiện hành (kiểm 2026-10-25):</b> Theo luật audit partnership hiện hành (BBA, áp dụng từ năm thuế 2018), partnership <b>bắt buộc</b> chỉ định một <b>partnership representative</b>, và người này <b>có quyền ràng buộc</b> partnership cùng mọi partner. Gleim viết “nên chỉ định” và theo mô hình notice-to-partners cũ.</p>
+<p><b>Personal representative</b> của estate = executor (do will chỉ định), administrator (tòa chỉ định nếu không có will/executor), hoặc bất kỳ ai kiểm soát tài sản decedent. Nhiệm vụ chính: thu thập tài sản, trả nợ, phân phối cho người thừa kế; xin EIN cho estate; nộp mọi return (income, estate, gift) đúng hạn; trả thuế đến ngày discharge. Dựa vào agent (luật sư/kế toán) KHÔNG phải reasonable cause cho việc nộp trễ. Phí nhận từ estate phải tính vào gross income của personal representative.</p>
+<p><b>Form 56 (Notice Concerning Fiduciary Relationship):</b> nộp khi bắt đầu quan hệ fiduciary, khi chấm dứt, hoặc khi có successor fiduciary (nếu estate chưa chấm dứt).</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ 3.1</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">Power of Attorney (POA) / Form 2848</td><td class="vn">Giấy ủy quyền đại diện & Tờ khai đại diện</td></tr>
+<tr><td class="word">attorney-in-fact</td><td class="vn">người được ủy quyền hành động thay (theo POA)</td></tr>
+<tr><td class="word">recognized representative</td><td class="vn">đại diện được công nhận hành nghề trước IRS</td></tr>
+<tr><td class="word">Tax Information Authorization (TIA) / Form 8821</td><td class="vn">Ủy quyền tiếp cận thông tin thuế (không phải đại diện đầy đủ)</td></tr>
+<tr><td class="word">return information</td><td class="vn">thông tin liên quan tờ khai (deficiency, penalty, thay đổi...)</td></tr>
+<tr><td class="word">personal representative (executor/administrator)</td><td class="vn">người đại diện di sản (chấp hành di chúc / quản lý di sản)</td></tr>
+<tr><td class="word">Form 56</td><td class="vn">Thông báo quan hệ fiduciary</td></tr>
+<tr><td class="word">fiduciary</td><td class="vn">người được ủy thác hành động cho người khác</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 3.1</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. A power of attorney generally covers tax periods ending no later than how many years after the IRS receives the POA?</div>
+<div class="opt">A. 1 year</div><div class="opt">B. 2 years</div><div class="opt">C. 3 years</div><div class="opt">D. 5 years</div></div>
+<div class="mcq"><div class="q">2. An AFSP participant's representation rights are limited to:</div>
+<div class="opt">A. Appeals officers and revenue officers</div><div class="opt">B. Revenue agents and examining officers, for returns the AFSP participant prepared and signed</div><div class="opt">C. All IRS offices without restriction</div><div class="opt">D. Federal courts only</div></div>
+<div class="mcq"><div class="q">3. A Form 8821 (TIA) authorizes the appointee to:</div>
+<div class="opt">A. Sign a closing agreement</div><div class="opt">B. Execute a waiver</div><div class="opt">C. Receive and inspect confidential tax information only</div><div class="opt">D. Advocate the taxpayer's position before the IRS</div></div>
+<div class="mcq"><div class="q">4. The IRS will send copies of written communications to at most how many designated representatives?</div>
+<div class="opt">A. 1</div><div class="opt">B. 2</div><div class="opt">C. 3</div><div class="opt">D. Unlimited</div></div>
+<div class="mcq"><div class="q">5. Reliance on an agent such as an attorney or accountant to file a decedent's returns on time is:</div>
+<div class="opt">A. Always reasonable cause for late filing</div><div class="opt">B. Not reasonable cause for late filing</div><div class="opt">C. Reasonable cause only if the agent is an EA</div><div class="opt">D. Irrelevant since decedents need not file returns</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 3.1 Representation</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">C — 3 years</span></div>
+<div><b>2.</b> <span class="key-ans">B</span></div>
+<div><b>3.</b> <span class="key-ans">C</span><br><span class="key-exp">TIA chỉ cho nhận/xem thông tin — không cho ký waiver/consent/closing agreement hay đại diện đầy đủ.</span></div>
+<div><b>4.</b> <span class="key-ans">B — 2</span></div>
+<div><b>5.</b> <span class="key-ans">B — Không phải reasonable cause</span></div>
+</div>
+</div>
+
+<!-- ============================================================ 3.2 CENTRALIZED AUTHORIZATION FILE (CAF) ============================================================ -->
+<div class="c2 pagebreak">
+<h2 class="section">3.2 — CENTRALIZED AUTHORIZATION FILE (CAF)</h2>
+<div class="rule-box">
+<p><b>CAF (Centralized Authorization File)</b> = hệ thống máy tính lưu thông tin về thẩm quyền của những người được chỉ định theo POA hoặc TIA, giúp nhân viên IRS truy cập nhanh thông tin ủy quyền.</p>
+<p><b>CAF number</b> thường được cấp cho: recognized representative nộp POA + declaration of representative bằng văn bản; appointee được ủy quyền theo TIA.</p>
+</div>
+
+<h3 class="lesson">Ý nghĩa & giới hạn của CAF Number</h3>
+<div class="rule-box">
+<p>Việc CÓ CAF number KHÔNG có nghĩa người đó được công nhận/cho phép hành nghề trước IRS — quyết định đó nằm ở Circular 230 (31 CFR Part 10), hoàn toàn tách biệt.</p>
+<p>Representative/appointee NÊN dùng CÙNG 1 CAF number trên mọi POA/TIA nộp — nhưng vì CAF number KHÔNG phải yêu cầu bắt buộc về nội dung (substantive requirement), TIA/POA sẽ KHÔNG bị từ chối chỉ vì thiếu CAF number.</p>
+<p>Thông tin từ CẢ POA và TIA đều được ghi vào hệ thống CAF, giúp nhân viên IRS (không có quyền truy cập bản POA/TIA gốc) vẫn gửi được copy/thông báo tự động cho appointee/representative.</p>
+<p>CHỈ tài liệu liên quan kỳ thuế kết thúc KHÔNG MUỘN hơn <b>3 năm</b> sau ngày IRS nhận POA mới được ghi vào CAF. Tài liệu liên quan kỳ thuế đã kết thúc TRƯỚC ngày nhận POA vẫn được ghi vào CAF NẾU vấn đề của kỳ đó đang được IRS xem xét.</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ 3.2</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">Centralized Authorization File (CAF)</td><td class="vn">Hệ thống lưu trữ ủy quyền tập trung của IRS</td></tr>
+<tr><td class="word">CAF number</td><td class="vn">Mã số CAF (không đồng nghĩa với việc được công nhận hành nghề)</td></tr>
+<tr><td class="word">substantive requirement</td><td class="vn">yêu cầu nội dung bắt buộc</td></tr>
+<tr><td class="word">recognized representative</td><td class="vn">người đại diện được công nhận (nộp POA + declaration)</td></tr>
+<tr><td class="word">appointee</td><td class="vn">người được chỉ định (theo Tax Information Authorization)</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 3.2</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. The issuance of a CAF number means that a person is:</div>
+<div class="opt">A. Automatically recognized to practice before the IRS</div><div class="opt">B. Not necessarily recognized or authorized to practice — that is determined under Circular 230</div><div class="opt">C. An enrolled agent</div><div class="opt">D. Exempt from filing a declaration of representative</div></div>
+<div class="mcq"><div class="q">2. A TIA or POA lacking a CAF number will be:</div>
+<div class="opt">A. Automatically rejected</div><div class="opt">B. Accepted, since a CAF number is not a substantive requirement</div><div class="opt">C. Returned for a $50 fee</div><div class="opt">D. Valid only for 30 days</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 3.2 Centralized Authorization File (CAF)</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B</span></div>
+<div><b>2.</b> <span class="key-ans">B</span></div>
+</div>
+</div>
+
+</body>
+</html>

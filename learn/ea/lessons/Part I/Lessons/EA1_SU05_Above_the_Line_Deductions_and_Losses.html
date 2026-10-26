@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<!-- Google tag (gtag.js) — GA4 chung của TJ, nhãn site=ea -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'ea'});</script>
+
+<meta charset="UTF-8">
+<title>EA Part I – SU05: Above-the-Line Deductions and Losses</title>
+<style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  body { font-family:'Segoe UI','Calibri',Arial,sans-serif; color:#33322f; font-size:15px; line-height:1.5; background:#fdfcfa; margin:0; }
+  .cover { background: linear-gradient(120deg,#bfe4ff 0%,#d6ecff 30%,#e6def7 65%,#fbe6f4 100%); border-radius:20px; padding:40px 30px; text-align:center; margin-bottom:10px; box-shadow:0 6px 18px rgba(120,130,180,.25); border:1px solid #dfe8f5; }
+  .cover .tag { display:inline-block; background:#33314a; color:#d6ecff; font-weight:700; letter-spacing:2px; font-size:13px; padding:5px 14px; border-radius:20px; margin-bottom:14px; }
+  .cover h1 { font-size:28px; margin:6px 0; color:#3170a8; }
+  .cover h2 { font-size:15px; font-weight:500; margin:4px 0 0; opacity:.9; color:#33314a; }
+  .cover .books { margin-top:16px; font-size:13px; background:rgba(255,255,255,.55); display:inline-block; padding:8px 16px; border-radius:10px; color:#33314a; }
+  .toc { background:#fff; border:1.5px solid #dfe8f5; border-radius:14px; padding:18px 26px; margin-bottom:30px; }
+  .toc h3 { margin-top:0; color:#3170a8; }
+  .toc ol { margin:0; padding-left:22px; } .toc li{ margin-bottom:6px; }
+  h2.section { font-size:21px; color:#33314a; padding:12px 18px; border-radius:12px; margin:34px 0 14px; border-left:10px solid var(--accent,#5aa9d6); background:var(--bg,#eaf6fd); }
+  h3.lesson { font-size:18px; color:var(--accent-dark,#276a91); border-left:6px solid var(--accent,#5aa9d6); background:var(--bg-soft,#f3fafd); padding:8px 14px; border-radius:6px; margin:22px 0 10px; }
+  .c1{--accent:#5aa9d6;--accent-dark:#276a91;--bg:#eaf6fd;--bg-soft:#f3fafd;--head:#a9d4ec;}
+  .c2{--accent:#a892d9;--accent-dark:#5c4696;--bg:#f1ecfb;--bg-soft:#f8f5fd;--head:#cabdec;}
+  .c3{--accent:#f0a66e;--accent-dark:#b8620b;--bg:#fdeee2;--bg-soft:#fff8f0;--head:#f4c299;}
+  .cKey{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
+  table.vocab { width:100%; border-collapse:collapse; margin-bottom:18px; font-size:.94em; box-shadow:0 2px 8px rgba(0,0,0,.05); border-radius:10px; overflow:hidden; }
+  table.vocab th { background:var(--head,#5aa9d6); color:#2d2d2d; padding:8px; text-align:left; }
+  table.vocab td { padding:7px 8px; border-bottom:1px solid var(--bg,#eaf6fd); vertical-align:top; }
+  table.vocab tr:nth-child(even) td { background:var(--bg-soft,#faf6f0); }
+  table.vocab tr:nth-child(odd) td { background:#fff; }
+  table.vocab td.word { font-weight:800; color:var(--accent-dark,#276a91); }
+  table.vocab td.vn { font-weight:700; color:#3d6ba8; }
+  .rule-box { background:var(--bg,#eaf6fd); border-left:6px solid var(--accent,#5aa9d6); border-radius:8px; padding:12px 18px; margin:10px 0; }
+  .rule-box table { width:100%; border-collapse:collapse; margin:8px 0 4px; }
+  .rule-box table td, .rule-box table th { padding:6px 8px; border-bottom:1px solid rgba(0,0,0,.08); text-align:left; font-size:.92em; }
+  .rule-box table th { color:var(--accent-dark,#276a91); }
+  .rule-box ul, .rule-box ol { margin:6px 0; padding-left:22px; } .rule-box li{ margin-bottom:5px; }
+  .struct { font-weight:800; color:#b8620b; font-family:'Consolas','Courier New',monospace; }
+  .example-box { background:#fff; border:1.5px dashed var(--accent,#5aa9d6); border-radius:8px; padding:10px 16px; margin:8px 0; font-size:.92em; }
+  .example-box b.ex-tag { color:var(--accent-dark,#276a91); }
+  .mcq { background:#fff; border:1.5px solid var(--accent,#5aa9d6); border-radius:10px; padding:12px 18px; margin-bottom:12px; }
+  .mcq .q { color:#3d6ba8; font-weight:700; margin-bottom:6px; }
+  .mcq .opt { margin:2px 0 2px 10px; }
+  .content-block { background:#fff; border:2px dashed var(--accent,#5aa9d6); border-radius:12px; padding:16px 20px; margin-bottom:18px; }
+  .key-grid { column-count:1; } .key-grid div{ margin-bottom:9px; }
+  .key-ans { color:#20824f; font-weight:800; }
+  .key-exp { color:#555; font-size:.92em; }
+  .pagebreak { page-break-before: always; }
+  .note { font-size:.85em; color:#8a8a8a; font-style:italic; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="tag">EA EXAM PREP • PART I — INDIVIDUALS • SU05</div>
+  <h1>📗 SU05 — ABOVE-THE-LINE DEDUCTIONS AND LOSSES</h1>
+  <h2>Adjustments to Income &amp; các giới hạn khấu trừ lỗ (Song ngữ Việt–Anh)</h2>
+  <div class="books">📖 Khái niệm · 🔤 Thuật ngữ · 📌 Ví dụ · ❓ Trắc nghiệm · 🔑 Đáp án trang sau</div>
+</div>
+
+<div class="toc">
+<h3>📑 Mục lục SU05</h3>
+<ol>
+<li>5.1 Adjustments to Income (Schedule 1)</li>
+<li>5.2 Loss Limitations: Basis, At-Risk, Passive Activity</li>
+<li>5.3 NOL, Excess Business Loss, Capital Loss</li>
+<li>5.4 Casualty/Theft, Gambling, §1244 &amp; thứ tự áp dụng</li>
+</ol>
+<p class="note">Soạn theo outline EA Part I — SU05 Above-the-Line Deductions and Losses. Số liệu theo năm thuế 2025 (gồm thay đổi của OBBBA). Chưa đối chiếu giáo trình Gleim — cần kiểm lại số liệu với giáo trình và năm thi thực tế.</p>
+</div>
+
+<!-- 5.1 -->
+<div class="c1">
+<h2 class="section">5.1 — ADJUSTMENTS TO INCOME (SCHEDULE 1, PART II)</h2>
+<div class="rule-box">
+<p><b>Above-the-line deductions</b> (adjustments) trừ khỏi gross income để ra <b>AGI</b>, được hưởng dù taxpayer dùng standard hay itemized deduction. AGI thấp còn giúp giảm ngưỡng/ phase-out của nhiều khoản khác (medical 7.5%, credits, Roth…).</p>
+</div>
+<h3 class="lesson">Các adjustment chính (2025)</h3>
+<div class="rule-box">
+<table>
+<tr><th>Khoản</th><th>Quy tắc</th></tr>
+<tr><td>Educator expenses</td><td>Tối đa $300 (MFJ cả hai là giáo viên: $600, mỗi người tối đa $300); K–12, ≥ 900 giờ/năm</td></tr>
+<tr><td>HSA</td><td>Tự đóng: $4,300 self-only / $8,550 family; +$1,000 nếu ≥ 55 tuổi; phải có HDHP; hạn đóng = due date không extension</td></tr>
+<tr><td>Self-employed health insurance</td><td>Premium cho bản thân/vợ chồng/dependents; không vượt net profit của business; KHÔNG được nếu đủ điều kiện tham gia plan do employer (của mình/vợ chồng) trả một phần</td></tr>
+<tr><td>½ SE tax</td><td>50% SE tax đã tính ở Schedule SE</td></tr>
+<tr><td>SEP / SIMPLE / qualified plan</td><td>Contribution của self-employed (xem Part II SU19)</td></tr>
+<tr><td>Student loan interest</td><td>Tối đa $2,500; phase-out MAGI 2025: Single $85,000–$100,000; MFJ $170,000–$200,000; MFS không được; qualified expenses của loan này rộng hơn các credit giáo dục: gồm <b>room &amp; board</b>, tuition, sách, thiết bị, đi lại</td></tr>
+<tr><td>Traditional IRA</td><td>Xem SU12</td></tr>
+<tr><td>Penalty on early withdrawal of savings</td><td>Phạt do ngân hàng trừ khi rút CD sớm (Form 1099-INT box 2)</td></tr>
+<tr><td>Moving expenses</td><td>Chỉ Armed Forces active duty chuyển theo lệnh (OBBBA thêm nhân viên intelligence community)</td></tr>
+<tr><td>Alimony paid</td><td>Chỉ nếu divorce/separation instrument trước 1/1/2019</td></tr>
+<tr><td>Jury duty pay</td><td>Trả lại cho employer (employer giữ lương)</td></tr>
+<tr><td>Performing artists</td><td>Deduct chi phí employee above-the-line nếu: ≥ 2 employers, ≥ $200 từ mỗi nơi trong 2 nơi, chi phí &gt; 10% gross income từ nghề, và AGI ≤ $16,000</td></tr>
+<tr><td>Reservists / fee-basis officials</td><td>Business expenses theo quy tắc riêng</td></tr>
+<tr><td>Archer MSA</td><td>Deduct không bị floor 7.5%; rút không dùng y tế: thu nhập + phạt 20% (trừ ≥ 65, chết, tàn tật); có thể rollover sang HSA</td></tr>
+<tr><td>Legal fees</td><td>Vụ kiện unlawful discrimination/whistleblower (tối đa số income từ vụ đó)</td></tr>
+</table>
+</div>
+<h3 class="lesson">HSA chi tiết</h3>
+<div class="rule-box">
+<ul><li><b>HDHP 2025</b>: deductible tối thiểu $1,650 (self) / $3,300 (family); out-of-pocket tối đa $8,300 / $16,600</li><li>Không đủ điều kiện nếu đang có coverage khác không phải HDHP, <b>đã ghi danh Medicare</b> (Gleim ghi thêm: không đóng được từ <b>65 tuổi</b> trở lên), hoặc bị người khác claim làm dependent; không cần có HDHP cả năm để đóng đủ mức (tối đa bằng deductible và không vượt mức trần); đóng góp cho 2025 được tới <b>15/4/2026</b></li><li>Distribution cho <b>qualified medical expenses</b>: tax-free; dùng sai mục đích: income + <b>phạt 20%</b> (trừ khi ≥ 65 tuổi, chết, tàn tật)</li><li>Employer contribution (cafeteria) loại khỏi W-2 wages</li><li><b>Last-month rule</b>: đủ điều kiện ngày 1/12 → được đóng cả năm nhưng phải duy trì 12 tháng kế tiếp (testing period)</li></ul>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 5-1 (Student loan interest):</b> Minh (Single) trả $3,100 lãi student loan, MAGI $92,500. Tối đa $2,500; phase-out = $2,500 × ($92,500 − $85,000)/$15,000 = $1,250 giảm → deduction <b>$1,250</b>.</div>
+
+<h3 class="lesson">Thuật ngữ 5.1</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">above-the-line deduction</td><td class="vn">khoản khấu trừ trước khi tính AGI</td></tr>
+<tr><td class="word">adjusted gross income (AGI)</td><td class="vn">tổng thu nhập điều chỉnh</td></tr>
+<tr><td class="word">educator expenses</td><td class="vn">chi phí giáo viên (tối đa $300)</td></tr>
+<tr><td class="word">Health Savings Account (HSA)</td><td class="vn">tài khoản tiết kiệm y tế</td></tr>
+<tr><td class="word">high-deductible health plan (HDHP)</td><td class="vn">bảo hiểm y tế khấu trừ cao</td></tr>
+<tr><td class="word">qualified education loan</td><td class="vn">khoản vay giáo dục đủ điều kiện</td></tr>
+<tr><td class="word">self-employed health insurance deduction</td><td class="vn">khấu trừ bảo hiểm y tế cho người tự doanh</td></tr>
+<tr><td class="word">early withdrawal penalty</td><td class="vn">phạt rút tiền gửi kỳ hạn sớm (khấu trừ được)</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 5.1</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. Which of the following is an above-the-line deduction?</div>
+<div class="opt">A. Mortgage interest</div><div class="opt">B. Student loan interest</div><div class="opt">C. Charitable contributions</div><div class="opt">D. State income tax</div></div>
+<div class="mcq"><div class="q">2. The maximum student loan interest deduction is:</div>
+<div class="opt">A. $1,000</div><div class="opt">B. $2,500</div><div class="opt">C. $4,000</div><div class="opt">D. $10,000</div></div>
+<div class="mcq"><div class="q">3. A taxpayer enrolled in Medicare:</div>
+<div class="opt">A. May still contribute to an HSA</div><div class="opt">B. Can no longer contribute to an HSA</div><div class="opt">C. May contribute double</div><div class="opt">D. Must close the HSA</div></div>
+<div class="mcq"><div class="q">4. The self-employed health insurance deduction is NOT allowed for any month in which the taxpayer:</div>
+<div class="opt">A. Has a net profit</div><div class="opt">B. Is eligible to participate in an employer-subsidized health plan</div><div class="opt">C. Pays premiums by credit card</div><div class="opt">D. Has dependents</div></div>
+<div class="mcq"><div class="q">5. A nonqualified distribution from an HSA before age 65 is subject to income tax plus an additional tax of:</div>
+<div class="opt">A. 6%</div><div class="opt">B. 10%</div><div class="opt">C. 20%</div><div class="opt">D. 25%</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 5.1 ADJUSTMENTS TO INCOME (SCHEDULE 1, PART II)</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — Student loan interest</span></div>
+<div><b>2.</b> <span class="key-ans">B — $2,500</span></div>
+<div><b>3.</b> <span class="key-ans">B — Can no longer contribute to an HSA</span></div>
+<div><b>4.</b> <span class="key-ans">B — Is eligible to participate in an employer-subsidized health plan</span></div>
+<div><b>5.</b> <span class="key-ans">C — 20%</span></div>
+</div>
+</div>
+
+<!-- 5.2 -->
+<div class="c2 pagebreak">
+<h2 class="section">5.2 — LOSS LIMITATIONS — BASIS, AT-RISK, PASSIVE ACTIVITY</h2>
+<div class="rule-box">
+<p>Lỗ từ hoạt động phải đi qua <b>các bộ lọc theo thứ tự</b>: (1) <b>Basis</b> → (2) <b>At-risk</b> → (3) <b>Passive activity loss (PAL)</b> → (4) <b>Excess business loss</b> (§5.3). Lỗ bị chặn ở bộ lọc nào thì <b>suspended</b> (carryforward vô thời hạn) ở bộ lọc đó.</p>
+</div>
+<h3 class="lesson">At-Risk Rules (§465)</h3>
+<div class="rule-box">
+<ul><li>Áp dụng cho individual, S corp shareholder, partner, closely held C corp</li><li>At-risk amount = tiền + adjusted basis tài sản đã góp + khoản vay <b>recourse</b> (chịu trách nhiệm cá nhân) + <b>qualified nonrecourse financing</b> (bất động sản, vay từ lender thương mại)</li><li>Nonrecourse thông thường và khoản vay từ người có lợi ích trong hoạt động <b>KHÔNG</b> tính; <b>seller financing</b> (vay từ người bán tài sản) cũng KHÔNG tính at-risk dù có điều khoản thương mại; nợ được bảo hiểm/bảo lãnh chống rủi ro không tính; nếu at-risk amount &lt; 0 → lỗ đã khấu trừ trước đó bị <b>recapture</b> thành income</li><li>Lỗ vượt at-risk: suspended; Form 6198</li></ul>
+</div>
+<h3 class="lesson">Passive Activity Loss (§469)</h3>
+<div class="rule-box">
+<ul><li><b>Passive activity</b> = trade/business mà taxpayer <b>không material participate</b>, và <b>mọi rental activity</b> (trừ real estate professional)</li><li>PAL chỉ bù trừ <b>passive income</b>; dư carryforward; được giải phóng khi <b>bán toàn bộ</b> interest cho bên không liên quan trong giao dịch taxable</li><li><b>Portfolio income</b> (lãi, cổ tức) KHÔNG phải passive</li><li><b>Material participation</b> — 1 trong 7 test: (1) &gt;500 giờ; (2) gần như toàn bộ công việc; (3) &gt;100 giờ và nhiều hơn ai khác; (4) significant participation activities &gt;500 giờ; (5) 5 trong 10 năm trước; (6) personal service 3 năm trước; (7) facts &amp; circumstances &gt;100 giờ</li><li><b>Active participation</b> (thấp hơn material): quyết định quản lý (duyệt tenant, đặt giá thuê) + sở hữu ≥ 10%</li></ul>
+</div>
+<h3 class="lesson">$25,000 Special Allowance &amp; Real Estate Professional</h3>
+<div class="rule-box">
+<ul><li>Active participant cho thuê bất động sản được khấu trừ tối đa <b>$25,000</b> lỗ rental vào non-passive income</li><li><b>Phase-out</b>: giảm $0.50 cho mỗi $1 MAGI vượt <b>$100,000</b>, về 0 tại <b>$150,000</b> (MFS sống chung: không được; MFS sống riêng: $12,500 và ngưỡng $50,000–$75,000)</li><li><b>Real estate professional</b>: &gt; <b>750 giờ</b> trong real property trades/businesses VÀ &gt; <b>50%</b> tổng giờ làm việc trong năm ở đó; vẫn phải <b>material participate</b> ở từng rental (hoặc elect gộp) mới thành non-passive</li><li><b>Publicly traded partnership (PTP)</b>: lỗ PTP chỉ bù lãi từ chính PTP đó</li><li>Cho thuê cho chính business của mình (<b>self-rental</b>): lãi là non-passive, lỗ là passive</li><li>Rental ≤ 7 ngày bình quân, hoặc dịch vụ đáng kể → không phải rental activity (có thể là passive/ non-passive theo participation)</li></ul>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 5-2 (PAL):</b> An độc thân, MAGI $120,000, active participation, lỗ rental $30,000. Allowance = $25,000 − 50% × ($120,000 − $100,000) = <b>$15,000</b> deduct được; $15,000 còn lại suspended.</div>
+
+<h3 class="lesson">Thuật ngữ 5.2</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">at-risk rules</td><td class="vn">quy tắc giới hạn lỗ theo số vốn thực chịu rủi ro</td></tr>
+<tr><td class="word">recourse debt</td><td class="vn">nợ có truy đòi (chịu trách nhiệm cá nhân)</td></tr>
+<tr><td class="word">qualified nonrecourse financing</td><td class="vn">vay nonrecourse đủ điều kiện cho bất động sản</td></tr>
+<tr><td class="word">passive activity loss (PAL)</td><td class="vn">lỗ từ hoạt động thụ động</td></tr>
+<tr><td class="word">material participation</td><td class="vn">tham gia đáng kể/thực chất</td></tr>
+<tr><td class="word">active participation</td><td class="vn">tham gia tích cực (thấp hơn material)</td></tr>
+<tr><td class="word">portfolio income</td><td class="vn">thu nhập đầu tư (lãi, cổ tức) — không passive</td></tr>
+<tr><td class="word">suspended loss</td><td class="vn">lỗ bị treo, chuyển sang năm sau</td></tr>
+<tr><td class="word">real estate professional</td><td class="vn">chuyên gia bất động sản (thoát PAL)</td></tr>
+<tr><td class="word">publicly traded partnership (PTP)</td><td class="vn">công ty hợp danh giao dịch công khai</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 5.2</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. The correct order in which loss limitations are applied is:</div>
+<div class="opt">A. Passive, at-risk, basis</div><div class="opt">B. At-risk, basis, passive</div><div class="opt">C. Basis, at-risk, passive</div><div class="opt">D. Basis, passive, at-risk</div></div>
+<div class="mcq"><div class="q">2. The $25,000 rental loss allowance begins to phase out when MAGI exceeds:</div>
+<div class="opt">A. $50,000</div><div class="opt">B. $75,000</div><div class="opt">C. $100,000</div><div class="opt">D. $150,000</div></div>
+<div class="mcq"><div class="q">3. Which test, by itself, establishes material participation?</div>
+<div class="opt">A. Participating more than 100 hours and more than any other individual</div><div class="opt">B. Participating 20 hours</div><div class="opt">C. Owning 5% of the activity</div><div class="opt">D. Having a spouse who works full time</div></div>
+<div class="mcq"><div class="q">4. A taxpayer has MAGI of $130,000 and active participation in a rental with a $40,000 loss. The deductible rental loss this year is:</div>
+<div class="opt">A. $0</div><div class="opt">B. $10,000</div><div class="opt">C. $25,000</div><div class="opt">D. $40,000</div></div>
+<div class="mcq"><div class="q">5. Which of the following is portfolio income and therefore NOT passive?</div>
+<div class="opt">A. Rental income from an apartment</div><div class="opt">B. Dividend income</div><div class="opt">C. Income from a limited partnership in which the taxpayer does not participate</div><div class="opt">D. Income from a trade or business without material participation</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 5.2 LOSS LIMITATIONS — BASIS, AT-RISK, PASSIVE ACTIVITY</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">C — Basis, at-risk, passive</span></div>
+<div><b>2.</b> <span class="key-ans">C — $100,000</span></div>
+<div><b>3.</b> <span class="key-ans">A — Participating more than 100 hours and more than any other individual</span></div>
+<div><b>4.</b> <span class="key-ans">B — $10,000</span><br><span class="key-exp">$25,000 − 50% × ($130,000 − $100,000) = $10,000.</span></div>
+<div><b>5.</b> <span class="key-ans">B — Dividend income</span></div>
+</div>
+</div>
+
+<!-- 5.3 -->
+<div class="c3 pagebreak">
+<h2 class="section">5.3 — NOL, EXCESS BUSINESS LOSS &amp; CAPITAL LOSS</h2>
+<h3 class="lesson">Net Operating Loss (NOL)</h3>
+<div class="rule-box">
+<ul><li>NOL phát sinh từ năm 2021: <b>carryforward vô thời hạn</b>, <b>không carryback</b> (ngoại lệ: <b>farming loss</b> carryback 2 năm)</li><li>Mỗi năm dùng tối đa <b>80% taxable income</b> của năm đó (tính trước NOL deduction); dùng NOL <b>cũ nhất trước</b></li><li>Chỉ lỗ từ trade/business, casualty, hoặc cho thuê (không phải lỗ cá nhân) mới tạo NOL</li><li>Cách tính cho cá nhân: lấy taxable income âm, rồi <b>cộng lại</b>: QBI deduction, capital loss vượt capital gain, nonbusiness deductions vượt nonbusiness income, standard/itemized (nếu không phải business). Khai Schedule 1 (line 8a) và attach statement</li></ul>
+</div>
+<h3 class="lesson">Excess Business Loss (§461(l))</h3>
+<div class="rule-box">
+<p>Sau khi qua basis, at-risk và PAL, tổng lỗ business của non-corporate taxpayer vượt <b>$313,000</b> ($626,000 MFJ) cho 2025 sẽ bị disallow; phần dư <b>chuyển thành NOL carryforward</b> (OBBBA đã làm quy tắc này vĩnh viễn).</p>
+</div>
+<h3 class="lesson">Capital Loss Limitation</h3>
+<div class="rule-box">
+<ul><li>Net capital loss được trừ vào ordinary income tối đa <b>$3,000/năm</b> ($1,500 MFS); dư <b>carryforward vô thời hạn</b>, giữ nguyên tính chất (short-term/long-term)</li><li>Bù trừ theo thứ tự: ST với ST, LT với LT; kết quả ST và LT khác dấu thì bù nhau</li><li>Chết: capital loss carryover KHÔNG chuyển sang estate (xem SU03)</li><li><b>Wash sale</b>: lỗ bị disallow nếu mua lại substantially identical trong 30 ngày trước/sau (xem SU09)</li></ul>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 5-3 (NOL 80%):</b> Năm 3, taxable income trước NOL là $100,000, NOL carryforward $150,000 → dùng tối đa 80% × $100,000 = <b>$80,000</b>; taxable income $20,000; NOL còn $70,000 sang năm sau.</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 5-4 (Capital loss):</b> Năm 1: STCG $2,000, LTCL $(9,000) → net LTCL $7,000. Deduct $3,000 vào ordinary income; carryover $4,000 (long-term).</div>
+
+<h3 class="lesson">Thuật ngữ 5.3</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">net operating loss (NOL)</td><td class="vn">lỗ hoạt động ròng</td></tr>
+<tr><td class="word">excess business loss</td><td class="vn">lỗ kinh doanh vượt ngưỡng cho phép</td></tr>
+<tr><td class="word">farming loss</td><td class="vn">lỗ nông nghiệp (được carryback 2 năm)</td></tr>
+<tr><td class="word">capital loss carryover</td><td class="vn">lỗ vốn chuyển sang năm sau</td></tr>
+<tr><td class="word">netting</td><td class="vn">bù trừ lãi/lỗ vốn</td></tr>
+<tr><td class="word">carryforward / carryback</td><td class="vn">chuyển sang năm sau / năm trước</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 5.3</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. An NOL arising in 2025 may generally be:</div>
+<div class="opt">A. Carried back 2 years</div><div class="opt">B. Carried back 5 years</div><div class="opt">C. Carried forward indefinitely, limited to 80% of taxable income</div><div class="opt">D. Carried forward 20 years, no limit</div></div>
+<div class="mcq"><div class="q">2. The 2025 excess business loss threshold for a single taxpayer is:</div>
+<div class="opt">A. $250,000</div><div class="opt">B. $313,000</div><div class="opt">C. $626,000</div><div class="opt">D. $1,000,000</div></div>
+<div class="mcq"><div class="q">3. A taxpayer has a net capital loss of $10,000. The maximum deductible against ordinary income this year (Single) is:</div>
+<div class="opt">A. $1,500</div><div class="opt">B. $3,000</div><div class="opt">C. $5,000</div><div class="opt">D. $10,000</div></div>
+<div class="mcq"><div class="q">4. An excess business loss disallowed under §461(l) is:</div>
+<div class="opt">A. Permanently lost</div><div class="opt">B. Treated as an NOL carryforward</div><div class="opt">C. Carried back 2 years</div><div class="opt">D. Converted to a capital loss</div></div>
+<div class="mcq"><div class="q">5. The capital loss carryover keeps its character as:</div>
+<div class="opt">A. Always short-term</div><div class="opt">B. Always long-term</div><div class="opt">C. Short-term or long-term as originally incurred</div><div class="opt">D. Ordinary</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 5.3 NOL, EXCESS BUSINESS LOSS &amp; CAPITAL LOSS</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">C — Carried forward indefinitely, limited to 80% of taxable income</span></div>
+<div><b>2.</b> <span class="key-ans">B — $313,000</span></div>
+<div><b>3.</b> <span class="key-ans">B — $3,000</span></div>
+<div><b>4.</b> <span class="key-ans">B — Treated as an NOL carryforward</span></div>
+<div><b>5.</b> <span class="key-ans">C — Short-term or long-term as originally incurred</span></div>
+</div>
+</div>
+
+<!-- 5.4 -->
+<div class="c1 pagebreak">
+<h2 class="section">5.4 — CASUALTY/THEFT, GAMBLING, §1244 &amp; TỔNG HỢP THỨ TỰ</h2>
+<h3 class="lesson">Casualty and Theft Losses</h3>
+<div class="rule-box">
+<ul><li><b>Personal-use property</b>: chỉ deduct nếu thuộc <b>federally declared disaster</b> (2018–2025; từ 2026 mở rộng cho state-declared disaster), sau khi trừ <b>$100/event</b> và <b>10% AGI</b> (tổng); Form 4684, itemized (Schedule A)</li><li><b>Business / income-producing property</b>: không có $100/10% floor; loss = lesser(adjusted basis, decline in FMV) − insurance; mất toàn bộ → adjusted basis</li><li>Casualty loss: năm xảy ra (disaster: có thể chọn năm trước); <b>theft loss</b>: năm phát hiện</li><li><b>Casualty gain</b> (insurance &gt; basis) có thể hoãn bằng §1033; casualty gain từ personal property được bù với loss trước khi áp dụng điều kiện disaster</li><li>Ponzi/theft từ transaction entered into for profit: deductible (Rev. Proc. 2009-20), không bị hạn chế disaster</li></ul>
+</div>
+<h3 class="lesson">Gambling Losses</h3>
+<div class="rule-box">
+<p>Mọi winnings là income (W-2G, Schedule 1). <b>Gambling losses</b> chỉ deduct như <b>itemized</b> (Schedule A), tối đa bằng winnings; không carryover. Professional gambler: khai Schedule C. OBBBA: từ <b>2026</b> chỉ được deduct 90% lỗ.</p>
+</div>
+<h3 class="lesson">Section 1244 Stock</h3>
+<div class="rule-box">
+<p>Lỗ bán/vô giá trị của <b>small business corporation stock</b> (ban đầu ≤ $1,000,000 vốn góp) mua trực tiếp từ công ty: <b>ordinary loss tối đa $50,000/năm ($100,000 MFJ)</b>, phần dư là capital loss. Chỉ cá nhân/partnership ban đầu mua; phải là corporation &gt;50% doanh thu từ hoạt động kinh doanh thực trong 5 năm gần nhất.</p>
+</div>
+<h3 class="lesson">Thứ tự tổng hợp</h3>
+<div class="rule-box">
+<p>Basis → At-risk → PAL → <b>Excess business loss</b> → NOL (80%) → capital loss ($3,000). Mỗi bước giữ phần lỗ bị chặn để carryforward.</p>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ 5-5 (Casualty personal):</b> Bão được tuyên bố federal disaster phá xe cá nhân: adjusted basis $22,000, FMV trước $18,000, sau $0, insurance $11,000. Loss = lesser($22,000, $18,000) = $18,000 − $11,000 = $7,000 − $100 = $6,900. Nếu AGI $50,000 → floor 10% = $5,000 → deduct <b>$1,900</b> (Schedule A).</div>
+
+<h3 class="lesson">Thuật ngữ 5.4</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">casualty loss</td><td class="vn">lỗ do thiên tai/tai nạn bất ngờ</td></tr>
+<tr><td class="word">theft loss</td><td class="vn">lỗ do trộm cắp (deduct năm phát hiện)</td></tr>
+<tr><td class="word">federally declared disaster</td><td class="vn">thảm họa được liên bang tuyên bố</td></tr>
+<tr><td class="word">Form 4684</td><td class="vn">mẫu khai casualty &amp; theft</td></tr>
+<tr><td class="word">gambling losses</td><td class="vn">lỗ cờ bạc (deduct tối đa bằng winnings, itemized)</td></tr>
+<tr><td class="word">Section 1244 stock</td><td class="vn">cổ phiếu §1244 (lỗ ordinary tối đa $50,000/$100,000)</td></tr>
+<tr><td class="word">Ponzi scheme</td><td class="vn">mô hình lừa đảo kiểu Ponzi</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 5.4</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. A personal casualty loss (2025) is generally deductible only if attributable to:</div>
+<div class="opt">A. Any casualty</div><div class="opt">B. A federally declared disaster</div><div class="opt">C. Theft only</div><div class="opt">D. Property worth more than $10,000</div></div>
+<div class="mcq"><div class="q">2. Personal casualty losses are reduced by $100 per event and then by what percentage of AGI?</div>
+<div class="opt">A. 2%</div><div class="opt">B. 5%</div><div class="opt">C. 7.5%</div><div class="opt">D. 10%</div></div>
+<div class="mcq"><div class="q">3. Gambling losses are deductible:</div>
+<div class="opt">A. Above-the-line, without limit</div><div class="opt">B. On Schedule A, up to gambling winnings</div><div class="opt">C. Only by professional gamblers</div><div class="opt">D. With a 3-year carryover</div></div>
+<div class="mcq"><div class="q">4. The maximum ordinary loss on Section 1244 stock for a Single taxpayer in one year is:</div>
+<div class="opt">A. $3,000</div><div class="opt">B. $10,000</div><div class="opt">C. $50,000</div><div class="opt">D. $100,000</div></div>
+<div class="mcq"><div class="q">5. A theft loss is deductible in the year:</div>
+<div class="opt">A. It occurs</div><div class="opt">B. It is discovered</div><div class="opt">C. The police report is filed</div><div class="opt">D. A lawsuit ends</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 5.4 CASUALTY/THEFT, GAMBLING, §1244 &amp; TỔNG HỢP THỨ TỰ</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — A federally declared disaster</span></div>
+<div><b>2.</b> <span class="key-ans">D — 10%</span></div>
+<div><b>3.</b> <span class="key-ans">B — On Schedule A, up to gambling winnings</span><br><span class="key-exp">Professional gambler khai Schedule C (không phải câu hỏi này).</span></div>
+<div><b>4.</b> <span class="key-ans">C — $50,000</span></div>
+<div><b>5.</b> <span class="key-ans">B — It is discovered</span></div>
+</div>
+</div>
+
+</body>
+</html>

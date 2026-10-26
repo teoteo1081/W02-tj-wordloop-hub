@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<!-- Google tag (gtag.js) — GA4 chung của TJ, nhãn site=ea -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'ea'});</script>
+
+<meta charset="UTF-8">
+<title>EA Part III – SU05: The Collection Process</title>
+<style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  body { font-family:'Segoe UI','Calibri',Arial,sans-serif; color:#33322f; font-size:15.5px; line-height:1.5; background:#fdfcfa; margin:0; }
+  .cover { background: linear-gradient(120deg,#bfe4ff 0%,#d6ecff 30%,#e6def7 65%,#fbe6f4 100%); border-radius:20px; padding:40px 30px; text-align:center; margin-bottom:10px; box-shadow:0 6px 18px rgba(120,130,180,.25); border:1px solid #dfe8f5; }
+  .cover .tag { display:inline-block; background:#33314a; color:#d6ecff; font-weight:700; letter-spacing:2px; font-size:13px; padding:5px 14px; border-radius:20px; margin-bottom:14px; }
+  .cover h1 { font-size:30px; margin:6px 0; color:#3170a8; }
+  .cover h2 { font-size:16px; font-weight:500; margin:4px 0 0; opacity:.9; color:#33314a; }
+  .cover .books { margin-top:16px; font-size:13.5px; background:rgba(255,255,255,.55); display:inline-block; padding:8px 16px; border-radius:10px; color:#33314a; }
+  .toc { background:#fff; border:1.5px solid #dfe8f5; border-radius:14px; padding:18px 26px; margin-bottom:30px; }
+  .toc h3 { margin-top:0; color:#3170a8; }
+  .toc ol { margin:0; padding-left:22px; } .toc li{ margin-bottom:6px; }
+  h2.section { font-size:23px; color:#33314a; padding:12px 18px; border-radius:12px; margin:34px 0 14px; border-left:10px solid var(--accent,#5aa9d6); background:var(--bg,#eaf6fd); }
+  h3.lesson { font-size:19px; color:var(--accent-dark,#276a91); border-left:6px solid var(--accent,#5aa9d6); background:var(--bg-soft,#f3fafd); padding:8px 14px; border-radius:6px; margin:22px 0 10px; }
+  .c1{--accent:#5aa9d6;--accent-dark:#276a91;--bg:#eaf6fd;--bg-soft:#f3fafd;--head:#a9d4ec;}
+  .c2{--accent:#a892d9;--accent-dark:#5c4696;--bg:#f1ecfb;--bg-soft:#f8f5fd;--head:#cabdec;}
+  .c3{--accent:#f0a66e;--accent-dark:#b8620b;--bg:#fdeee2;--bg-soft:#fff8f0;--head:#f4c299;}
+  .c4{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
+  .c5{--accent:#e07b9b;--accent-dark:#a3335a;--bg:#fbe9f0;--bg-soft:#fdf5f8;--head:#f3b6c9;}
+  .c6{--accent:#5bb8b0;--accent-dark:#1f7a72;--bg:#e5f7f5;--bg-soft:#f2fbfa;--head:#a6e3dd;}
+  .cKey{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
+  table.vocab { width:100%; border-collapse:collapse; margin-bottom:20px; font-size:.96em; box-shadow:0 2px 8px rgba(0,0,0,.05); border-radius:10px; overflow:hidden; }
+  table.vocab th { background:var(--head,#5aa9d6); color:#2d2d2d; padding:9px 8px; text-align:left; }
+  table.vocab td { padding:8px 8px; border-bottom:1px solid var(--bg,#eaf6fd); vertical-align:top; }
+  table.vocab tr:nth-child(even) td { background:var(--bg-soft,#faf6f0); }
+  table.vocab tr:nth-child(odd) td { background:#fff; }
+  table.vocab td.word { font-weight:800; color:var(--accent-dark,#276a91); }
+  table.vocab td.vn { font-weight:700; color:#3d6ba8; }
+  .rule-box { background:var(--bg,#eaf6fd); border-left:6px solid var(--accent,#5aa9d6); border-radius:8px; padding:12px 18px; margin:10px 0; }
+  .rule-box table { width:100%; border-collapse:collapse; margin:8px 0 4px; }
+  .rule-box table td, .rule-box table th { padding:6px 8px; border-bottom:1px solid rgba(0,0,0,.08); text-align:left; font-size:.94em; }
+  .rule-box table th { color:var(--accent-dark,#276a91); }
+  .rule-box ul, .rule-box ol { margin:6px 0; padding-left:22px; } .rule-box li{ margin-bottom:5px; }
+  .struct { font-weight:800; color:#b8620b; font-family:'Consolas','Courier New',monospace; }
+  .example-box { background:#fff; border:1.5px dashed var(--accent,#5aa9d6); border-radius:8px; padding:10px 16px; margin:10px 0; font-size:.95em; }
+  .example-box b.ex-tag { color:var(--accent-dark,#276a91); }
+  .mcq { background:#fff; border:1.5px solid var(--accent,#5aa9d6); border-radius:10px; padding:12px 18px; margin-bottom:12px; }
+  .mcq .q { color:#3d6ba8; font-weight:700; margin-bottom:6px; }
+  .mcq .opt { margin:2px 0 2px 10px; }
+  .content-block { background:#fff; border:2px dashed var(--accent,#5aa9d6); border-radius:12px; padding:16px 20px; margin-bottom:18px; }
+  .key-grid { column-count:1; } .key-grid div{ margin-bottom:10px; }
+  .key-ans { color:#20824f; font-weight:800; }
+  .key-exp { color:#555; font-size:.95em; }
+  .pagebreak { page-break-before: always; }
+  .note { font-size:.85em; color:#8a8a8a; font-style:italic; }
+  .source-tag { font-size:.8em; color:#999; font-style:italic; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="tag">EA EXAM PREP • PART III — REPRESENTATION, PRACTICES & PROCEDURES • SU05</div>
+  <h1>📗 SU05 — THE COLLECTION PROCESS</h1>
+  <h2>Bản song ngữ Việt–Anh, bám sát giáo trình Gleim 2026</h2>
+  <div class="books">📖 Khái niệm · 🔤 Thuật ngữ · 📌 Ví dụ minh họa · ❓ Câu hỏi trắc nghiệm · 🔑 Đáp án trang sau</div>
+</div>
+
+<div class="toc">
+<h3>📑 Mục lục SU05</h3>
+<ol>
+<li>5.1 Collections (Quy trình thu nợ: notice, statute, installment agreement, CAP, summons)</li>
+<li>5.2 Offer in Compromise (Thỏa hiệp thuế, Taxpayer Assistance Orders, Interest, CSED)</li>
+<li>5.3 Liens and Levies (Lien & Levy: attachment, appeal, exemption, sale, bankruptcy)</li>
+<li>5.4 Trust Fund Recovery Penalty (Phạt truy thu quỹ ủy thác)</li>
+</ol>
+<p class="note">Nguồn: Gleim EA Review, Study Unit 5 — The Collection Process (2026).</p>
+</div>
+
+<!-- ============================================================ 5.1 COLLECTIONS ============================================================ -->
+<div class="c1">
+<h2 class="section">5.1 — COLLECTIONS</h2>
+<div class="rule-box">
+<p>Khi taxpayer không trả đủ thuế, sẽ nhận <b>assessment notice</b> — thông báo số dư nợ, yêu cầu thanh toán, và bắt đầu quy trình collection. Notice yêu cầu trả trong <b>10 ngày</b>, được tạo ra tại IRS service center.</p>
+</div>
+
+<h3 class="lesson">Statutory Period (Thời hiệu thu nợ)</h3>
+<div class="rule-box">
+<p>IRS có <b>10 năm</b> từ ngày assessment để thu thuế đã assess (statute of limitations on collection). Trong thời gian này, thuế có thể thu qua levy hoặc kiện ra tòa. Taxpayer và IRS có thể thỏa thuận GIA HẠN thời gian thu.</p>
+<p>Thời hạn 10 năm có thể được gia hạn SAU KHI đã hết hạn nếu: đã có levy trên 1 phần tài sản taxpayer TRƯỚC KHI hết hạn, VÀ việc gia hạn được đồng ý bằng văn bản TRƯỚC khi levy được release.</p>
+<p>Thời hiệu thu có thể bị TẠM DỪNG (suspend) bởi nhiều hành vi. IRS phải thông báo cho taxpayer rằng họ có quyền TỪ CHỐI gia hạn thời hiệu.</p>
+<p><b>Form 872-A</b> (Special Consent to Extend the Time to Assess Tax): gia hạn VÔ THỜI HẠN thời gian để ASSESS thuế (khác với thời hiệu THU).</p>
+</div>
+
+<h3 class="lesson">Payments to IRS & Installment Agreements</h3>
+<div class="rule-box">
+<p>Nếu không trả đủ, taxpayer nên trả càng nhiều càng tốt và liên hệ IRS. IRS xác định phương thức thanh toán tốt nhất dựa trên tình trạng tài chính hiện tại qua các mẫu: <b>Form 433-A</b> (cá nhân/tự doanh), <b>433-A (OIC)</b>, <b>433-B</b> (doanh nghiệp), <b>433-B (OIC)</b>, <b>433-D</b> (Installment Agreement), <b>433-F</b> (Collection Information Statement).</p>
+<p><b>Installment Agreement:</b> IRS được phép (và trong 1 số trường hợp PHẢI) lập thỏa thuận trả góp. Lãi & phạt vẫn tiếp tục tích lũy. Phải trả đúng hạn & cập nhật tài chính khi IRS yêu cầu — nếu không, agreement có thể bị chấm dứt (cũng chấm dứt nếu tình trạng tài chính thay đổi đáng kể). IRS phải báo trước <b>30 ngày</b> trước khi thay đổi agreement, và phải cho phép independent administrative review khi terminate.</p>
+<p>Để có installment agreement: phải nộp ĐỦ mọi tờ khai + trả estimated tax hiện tại (nếu cần). IRS thu 1 khoản phí thiết lập. <b>Form 9465</b> (Installment Agreement Request) dùng để yêu cầu trả góp hàng tháng — nợ &lt;$50,000 có thể yêu cầu online với phí thấp hơn. IRS vẫn có thể file Notice of Federal Tax Lien để bảo đảm lợi ích cho đến khi trả xong.</p>
+<p><b>IRS KHÔNG được có hành động thu nợ:</b> trong khi đang xem xét yêu cầu agreement; trong khi agreement còn hiệu lực; trong 30 ngày SAU KHI agreement bị từ chối; hoặc trong thời gian appeal việc từ chối.</p>
+</div>
+
+<h3 class="lesson">Guaranteed Installment Agreement & Extension of Time to Pay</h3>
+<div class="rule-box">
+<p><b>Guaranteed Installment Agreement:</b> IRS BẮT BUỘC phải chấp thuận nếu: nợ KHÔNG quá <b>$10,000</b>; trong 5 năm qua KHÔNG failed to file/pay/vi phạm agreement nào; taxpayer về tài chính KHÔNG THỂ trả đủ ngay; đồng ý trả HẾT trong <b>3 năm</b>; và đồng ý nộp & trả đủ mọi tờ khai trong thời gian agreement còn hiệu lực.</p>
+<p><b>Extension of Time to Pay (Undue Hardship):</b> nộp <b>Form 1127</b> (cá nhân) hoặc <b>Form 4768</b> (estate/GSTT). Undue hardship = hơn cả bất tiện — phải chứng minh THIỆT HẠI TÀI CHÍNH ĐÁNG KỂ (VD bán tài sản giá rẻ) nếu trả đúng hạn. Gia hạn tối đa 6 tháng (trừ ngoại lệ ở nước ngoài) — chỉ ảnh hưởng <b>failure-to-pay penalty</b>, KHÔNG miễn lãi & các penalty khác từ ngày due date gốc.</p>
+</div>
+
+<h3 class="lesson">Collection Appeals Program (CAP) & Administrative Summons</h3>
+<div class="rule-box">
+<p><b>CAP</b> cho phép taxpayer/bên thứ 3 (tài sản bị ảnh hưởng) kháng nghị: levy/seizure; Notice of Federal Tax Lien (NFTL); lien trên tài sản alter-ego/nominee; từ chối lien certificate; installment agreement bị từ chối/sửa đổi/chấm dứt; từ chối trả lại tài sản bị levy.</p>
+<p>Quy trình: (1) yêu cầu conference với MANAGER của nhân viên IRS; (2) nếu không giải quyết được, nộp <b>Form 9423</b> (Collection Appeal Request) — phải báo ý định trong <b>2 ngày làm việc</b> sau conference, Form 9423 phải nhận/đóng dấu bưu điện trong <b>3 ngày làm việc</b> sau conference (nếu không, collection action có thể tiếp tục). Nếu bị seizure, phải appeal trong <b>10 ngày làm việc</b> từ khi nhận Notice of Seizure. Với installment agreement, nộp Form 9423 trong <b>30 ngày dương lịch</b>.</p>
+<p>IRS thường DỪNG hành động thu trong khi appeal, trừ khi tin rằng số tiền/việc thu bị rủi ro. Quyết định của Appeals RÀNG BUỘC cả 2 bên — KHÔNG được judicial review sau CAP (nhưng vẫn có thể có administrative/judicial review khác, VD bên thứ 3 kiện wrongful levy ở district court).</p>
+<p><b>Administrative Summons:</b> công cụ mạnh để định vị tài sản/xác định thuế — giống grand jury subpoena. Dùng ở giai đoạn điều tra để buộc cung cấp record. Nếu summons gửi bên thứ 3 trong GIAI ĐOẠN EXAMINATION → taxpayer thường được thông báo & có quyền petition to quash. NHƯNG summons COLLECTION gửi bên thứ 3 (sau khi đã xác định liability) → taxpayer KHÔNG cần được thông báo và KHÔNG được petition to quash. Ngoại lệ notice: John Doe summons, emergency summons, khi việc thu bị jeopardy, hoặc taxpayer đã cho phép.</p>
+</div>
+
+<h3 class="lesson">Refund Offset & Collection Financial Standards</h3>
+<div class="rule-box">
+<p><b>Refund Offset:</b> refund có thể bị dùng bù nợ thuế liên bang/bang quá hạn, state unemployment debt, child/spousal support, hoặc nợ liên bang phi-thuế khác (VD student loan). Offset thuế liên bang do IRS thực hiện; các offset khác do <b>Bureau of Fiscal Services (BFS)</b> thuộc Treasury.</p>
+<p><b>Collection Financial Standards:</b> dùng đánh giá khả năng trả nợ. <b>National Standards</b> (food/clothing theo family size; chi phí y tế out-of-pocket) áp dụng toàn quốc; <b>Local Standards</b> (housing/utilities/transportation) thay đổi theo địa phương. Số người tính chi phí sinh hoạt thường = số dependent trên tờ khai gần nhất. Nếu standard không đủ trang trải chi phí sinh hoạt cơ bản (có bằng chứng), IRS có thể cho phép dùng CHI PHÍ THỰC TẾ.</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ 5.1</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">assessment notice</td><td class="vn">thông báo số thuế đã assess, bắt đầu quy trình thu</td></tr>
+<tr><td class="word">installment agreement</td><td class="vn">thỏa thuận trả góp</td></tr>
+<tr><td class="word">Collection Appeals Program (CAP)</td><td class="vn">Chương trình kháng nghị hành động thu nợ</td></tr>
+<tr><td class="word">administrative summons</td><td class="vn">trát đòi hành chính (buộc cung cấp hồ sơ)</td></tr>
+<tr><td class="word">refund offset</td><td class="vn">bù trừ tiền hoàn thuế vào khoản nợ khác</td></tr>
+<tr><td class="word">Collection Financial Standards</td><td class="vn">Tiêu chuẩn tài chính đánh giá khả năng trả nợ</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 5.1</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. Generally, the IRS has how many years from the date of assessment to collect unpaid tax?</div>
+<div class="opt">A. 3 years</div><div class="opt">B. 6 years</div><div class="opt">C. 10 years</div><div class="opt">D. There is no limit</div></div>
+<div class="mcq"><div class="q">2. A Guaranteed Installment Agreement is available when the taxpayer does not owe more than:</div>
+<div class="opt">A. $10,000</div><div class="opt">B. $25,000</div><div class="opt">C. $50,000</div><div class="opt">D. $100,000</div></div>
+<div class="mcq"><div class="q">3. Under the Collection Appeals Program, Form 9423 must generally be received or postmarked within how many business days after the conference with the collection manager?</div>
+<div class="opt">A. 2</div><div class="opt">B. 3</div><div class="opt">C. 10</div><div class="opt">D. 30</div></div>
+<div class="mcq"><div class="q">4. A collection summons issued to a third party (after liability has been determined) generally:</div>
+<div class="opt">A. Requires notice to the taxpayer and allows a petition to quash</div><div class="opt">B. Does not require notice to the taxpayer and cannot be quashed by the taxpayer</div><div class="opt">C. Is illegal</div><div class="opt">D. Requires a court order first</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 5.1 Collections</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">C — 10 years</span></div>
+<div><b>2.</b> <span class="key-ans">A — $10,000</span></div>
+<div><b>3.</b> <span class="key-ans">B — 3 business days</span></div>
+<div><b>4.</b> <span class="key-ans">B</span></div>
+</div>
+</div>
+
+<!-- ============================================================ 5.2 OFFER IN COMPROMISE ============================================================ -->
+<div class="c2 pagebreak">
+<h2 class="section">5.2 — OFFER IN COMPROMISE</h2>
+<div class="rule-box">
+<p>IRS có thể chấp nhận <b>offer in compromise (OIC)</b> để giải quyết nợ thuế với số tiền THẤP HƠN tổng nợ. Số tiền đề nghị phải phản ánh KHẢ NĂNG TRẢ TỐI ĐA của taxpayer (gồm cả thu nhập hiện tại & tương lai). Commissioner có quyền compromise mọi loại thuế/lãi/phạt TRỪ thuế alcohol, tobacco, firearms.</p>
+</div>
+
+<h3 class="lesson">3 căn cứ chấp nhận OIC</h3>
+<div class="rule-box">
+<ol>
+<li><b>Doubt as to Liability:</b> nghi ngờ về số tiền nợ — phải có bằng chứng hỗ trợ.</li>
+<li><b>Doubt as to Collectibility:</b> nghi ngờ khả năng trả đủ — tổng nợ LỚN HƠN tổng tài sản + thu nhập tương lai của taxpayer.</li>
+<li><b>Promotion of Effective Tax Administration:</b> có economic hardship hoặc hoàn cảnh đặc biệt khác.</li>
+</ol>
+<p><b>2 hình thức trả:</b> (1) <b>Lump sum cash:</b> trả trong ≤5 kỳ, trong ≤5 tháng sau khi offer được chấp nhận; (2) <b>Periodic payment:</b> trả hàng tháng, ≥6 kỳ, trong ≤24 tháng sau khi chấp nhận.</p>
+</div>
+
+<h3 class="lesson">Điều kiện & thủ tục nộp OIC</h3>
+<div class="rule-box">
+<p>TRƯỚC KHI xem xét OIC, taxpayer cá nhân phải: nộp ĐỦ mọi tờ khai bắt buộc; trả ĐỦ estimated tax năm hiện tại; đã nhận ít nhất 1 hóa đơn (bill) cho khoản nợ trong OIC; KHÔNG đang trong thủ tục phá sản; nếu là chủ doanh nghiệp có nhân viên, đã nộp ĐỦ federal tax deposit quý hiện tại + 2 quý trước.</p>
+<p>Nộp kèm phí <b>$205</b> (application fee). Ngoài ra: <b>20% KHÔNG hoàn lại</b> của số tiền đề nghị (cho lump sum offer — phần còn lại trả trong ≤5 kỳ); hoặc khoản trả đầu tiên (cho periodic offer — các khoản còn lại vẫn phải tiếp tục trả trong lúc offer đang được đánh giá). <b>Miễn</b> các yêu cầu nộp phí/khoản trả này nếu taxpayer có thu nhập ở/dưới mức nghèo (poverty guidelines).</p>
+<p>Nếu OIC dựa trên doubt as to collectibility hoặc effective tax administration → phải nộp kèm <b>Form 433-A/433-B</b> + chứng từ hỗ trợ. Nếu dựa trên doubt as to liability → nộp <b>Form 656-L</b> (thay vì Form 656 + 433-A(OIC)/433-B(OIC)).</p>
+<p>Sau khi offer được chấp nhận, taxpayer phải TIẾP TỤC tuân thủ nộp/trả thuế trong <b>5 năm</b> HOẶC đến khi trả đủ số tiền offer, TÙY CÁI NÀO DÀI HƠN. Có thể yêu cầu IRS Independent Office of Appeals xem xét lại nếu offer bị từ chối.</p>
+</div>
+
+<h3 class="lesson">Taxpayer Assistance Orders, Interest & CSED</h3>
+<div class="rule-box">
+<p><b>Taxpayer Advocate Service (TAS):</b> giúp taxpayer giải quyết vấn đề với IRS; đại diện TAS phát hành <b>Taxpayer Assistance Order (TAO)</b> khi taxpayer chịu khó khăn nghiêm trọng (significant hardship) do cách luật thuế được thi hành — TAO có thể buộc IRS release tài sản bị levy hoặc dừng/không thực hiện hành động khác. Yêu cầu TAO qua <b>Form 911</b>.</p>
+<p><b>Interest:</b> tính từ due date của return đến (1) ngày trả (nếu trả khi ký agreement) hoặc (2) ngày billing (nếu trả trong 21 ngày — 10 ngày nếu nợ &gt;$100,000).</p>
+<p><b>Collection Statute Expiration Date (CSED):</b> ngày cuối cùng IRS được thu nợ — thường <b>10 năm</b> từ ngày assessment. Một số hành vi của taxpayer sẽ SUSPEND/EXTEND CSED, VD: nộp yêu cầu Collection Due Process hearing, nộp OIC, hoặc installment agreement.</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ 5.2</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">Offer in Compromise (OIC)</td><td class="vn">Đề nghị thỏa hiệp nợ thuế (trả ít hơn tổng nợ)</td></tr>
+<tr><td class="word">doubt as to collectibility</td><td class="vn">nghi ngờ khả năng thu đủ nợ</td></tr>
+<tr><td class="word">Taxpayer Assistance Order (TAO)</td><td class="vn">Lệnh hỗ trợ taxpayer do Taxpayer Advocate ban hành</td></tr>
+<tr><td class="word">Collection Statute Expiration Date (CSED)</td><td class="vn">Ngày hết thời hiệu thu nợ</td></tr>
+<tr><td class="word">Form 656 / 656-L</td><td class="vn">Đơn OIC chuẩn / OIC dựa trên doubt as to liability</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 5.2</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. Which is NOT one of the three grounds for an offer in compromise?</div>
+<div class="opt">A. Doubt as to liability</div><div class="opt">B. Doubt as to collectibility</div><div class="opt">C. Promotion of effective tax administration</div><div class="opt">D. Taxpayer's personal preference</div></div>
+<div class="mcq"><div class="q">2. A lump sum cash offer in compromise must be paid within how many installments/months after acceptance?</div>
+<div class="opt">A. 5 or fewer</div><div class="opt">B. 6 or more</div><div class="opt">C. 12</div><div class="opt">D. 24</div></div>
+<div class="mcq"><div class="q">3. After an offer in compromise is accepted, the taxpayer must remain compliant for 5 years or until the offer amount is paid in full, whichever is:</div>
+<div class="opt">A. Shorter</div><div class="opt">B. Longer</div><div class="opt">C. Exactly 5 years always</div><div class="opt">D. Not specified</div></div>
+<div class="mcq"><div class="q">4. The Collection Statute Expiration Date (CSED) is generally how many years from the date of assessment?</div>
+<div class="opt">A. 3</div><div class="opt">B. 6</div><div class="opt">C. 10</div><div class="opt">D. Unlimited</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 5.2 Offer in Compromise</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">D</span></div>
+<div><b>2.</b> <span class="key-ans">A — 5 or fewer</span></div>
+<div><b>3.</b> <span class="key-ans">B — Longer</span></div>
+<div><b>4.</b> <span class="key-ans">C — 10 years</span></div>
+</div>
+</div>
+
+<!-- ============================================================ 5.3 LIENS AND LEVIES ============================================================ -->
+<div class="c3 pagebreak">
+<h2 class="section">5.3 — LIENS AND LEVIES</h2>
+<div class="rule-box">
+<p><b>Lien:</b> claim trên tài sản của taxpayer chưa trả nợ — phát sinh nếu taxpayer bỏ qua/từ chối trả deficiency SAU khi nhận formal demand. Khi IRS file <b>Notice of Federal Tax Lien (NFTL)</b>, mọi chủ nợ được thông báo — lien bám (attach) vào MỌI tài sản, kể cả tài sản có được SAU khi notice được file.</p>
+<p><b>3 điều kiện để lien attach:</b> (1) IRS đã assess liability; (2) IRS đã gửi notice & demand for payment (trừ khi taxpayer waive); (3) taxpayer bỏ qua/từ chối trả trong <b>10 ngày</b> sau thông báo.</p>
+<p><b>Notice:</b> IRS phải thông báo bằng văn bản cho taxpayer trong <b>5 ngày làm việc</b> sau khi file lien. Việc ghi nhận (recording) tạo "constructive notice" cho người mua/chủ nợ tiềm năng — hạn chế khả năng chuyển nhượng/thế chấp tài sản.</p>
+</div>
+
+<h3 class="lesson">Removal, Release & Appeal của Lien</h3>
+<div class="rule-box">
+<p>Secretary of the Treasury có quyền WITHDRAW notice of lien đã file (prepayment removal) trong 1 số trường hợp trước khi trả thuế. IRS phải phát hành <b>Release of Notice of Federal Tax Lien</b> trong <b>30 ngày</b> sau khi liability được thỏa mãn (bao gồm lãi, phạt, phí filing/releasing). Nếu IRS KHÔNG release đúng hạn, taxpayer có thể kiện dân sự đòi bồi thường. IRS sẽ DISCHARGE lien nếu tài sản giảm giá trị và bán sẽ không đủ tiền cho IRS.</p>
+<p><b>Appeal lien:</b> nộp <b>Form 12153</b> (Request for a Collection Due Process or Equivalent Hearing) trong <b>30 ngày</b>. Sau CDP hearing, nếu không đồng ý, có <b>30 ngày</b> từ khi nhận thư để kiện ra tòa. Lien bị coi là SAI nếu file trong khi taxpayer đang phá sản và chịu automatic stay.</p>
+</div>
+
+<h3 class="lesson">Levy — Assessment, Notice & Demand, Final Notice, Jeopardy Levy</h3>
+<div class="rule-box">
+<p><b>Levy</b> = quyền distraint & seizure (tịch thu) tài sản bằng bất kỳ phương tiện nào để thu thuế chưa trả. TRƯỚC khi levy: IRS phải xác định & assess liability. Trong <b>60 ngày</b> sau assessment, IRS phải gửi notice & demand for payment (để tại nhà/nơi làm việc hoặc gửi thư đến địa chỉ cuối cùng biết) kèm publication về quyền của taxpayer.</p>
+<p>Nếu đồng ý & trả trong <b>21 ngày dương lịch</b> (10 ngày làm việc nếu nợ ≥$100,000) sau notice & demand → KHÔNG bị thêm lãi sau ngày đó (trừ lãi trên penalty/failure-to-file/stamp tax/accuracy-fraud penalty).</p>
+<p>Nếu KHÔNG trả trong <b>10 ngày</b> sau notice & demand → <b>Notice of Intent to Levy</b> (Final Notice) phải gửi ÍT NHẤT <b>30 ngày</b> TRƯỚC khi levy (gửi trực tiếp, để tại nhà/nơi làm việc, hoặc certified mail).</p>
+<p><b>Jeopardy Levy:</b> nếu IRS xác định việc assess/thu bị NGUY HIỂM do trì hoãn, có thể BỎ QUA cả thời hạn 10 ngày và 30 ngày. Các lý do KHÔNG ĐỦ căn cứ cho jeopardy levy: taxpayer nộp đơn phá sản; tài sản bị seize là hàng dễ hỏng; có sự tham gia của DEA.</p>
+</div>
+
+<h3 class="lesson">Exemption, Sale, Wages & Bankruptcy Discharge</h3>
+<div class="rule-box">
+<p><b>Tài sản MIỄN levy:</b> quần áo cần thiết; sách vở/dụng cụ nghề nghiệp; thư chưa giao; unemployment/workers' comp benefit; 1 số annuity/pension; mức lương tối thiểu miễn trừ; nhà ở chính (trừ khi được thẩm phán District Court chấp thuận bằng văn bản); tài sản kinh doanh hữu hình/bất động sản không cho thuê (trừ khi được area director chấp thuận hoặc việc thu bị jeopardy).</p>
+<p><b>Sale:</b> phải xảy ra trong <b>10–40 ngày</b> sau public notice. Perishable goods trả lại nếu taxpayer post bond/trả giá trị định giá — nếu không phải bán NGAY. Bất động sản: có thể REDEEM trong <b>180 ngày</b> sau khi bán bằng cách trả lại người mua giá đã trả + lãi. Nhà ở chính KHÔNG bị seize để thỏa mãn levy ≤<b>$5,000</b>.</p>
+<p><b>Wages:</b> levy trên lương có hiệu lực đến khi liability được thỏa mãn, levy được release, hoặc hết hiệu lực do thời gian. Có mức miễn trừ hàng tuần = standard deduction ÷ 52 (VD: Single $15,750÷52 = <b>$302.88</b>/tuần).</p>
+<p><b>Bankruptcy discharge (Chapter 7/13):</b> CHỈ áp dụng income tax (KHÔNG payroll tax). 4 điều kiện: (1) thuế & return liên quan phải nộp ≥<b>3 năm</b> trước khi phá sản (tính cả extension); (2) return phải được NỘP ≥<b>2 năm</b> trước khi phá sản (substitute return KHÔNG tính); (3) thuế phải được assess ≥<b>240 ngày</b> trước khi nộp đơn phá sản; (4) KHÔNG có gian lận/trốn thuế. Chapter 7 discharge đủ debt nhưng lien VẪN KHÔNG bị xóa; Chapter 13 có payment plan, cần thanh lý tài sản non-exempt để xóa hoàn toàn.</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ 5.3</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">Notice of Federal Tax Lien (NFTL)</td><td class="vn">Thông báo lien thuế liên bang</td></tr>
+<tr><td class="word">levy</td><td class="vn">lệnh tịch thu/distraint tài sản để thu thuế</td></tr>
+<tr><td class="word">jeopardy levy</td><td class="vn">levy khẩn cấp (bỏ qua thời hạn thông báo thông thường)</td></tr>
+<tr><td class="word">redeem (real property)</td><td class="vn">chuộc lại bất động sản đã bán trong 180 ngày</td></tr>
+<tr><td class="word">Collection Due Process (CDP) hearing</td><td class="vn">Buổi điều trần quy trình thu nợ đúng luật</td></tr>
+<tr><td class="word">discharge (bankruptcy)</td><td class="vn">xóa nợ thuế qua thủ tục phá sản</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 5.3</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. The IRS must notify a taxpayer in writing within how many business days after filing a Notice of Federal Tax Lien?</div>
+<div class="opt">A. 3</div><div class="opt">B. 5</div><div class="opt">C. 10</div><div class="opt">D. 30</div></div>
+<div class="mcq"><div class="q">2. A Final Notice of Intent to Levy must generally be provided how many days before the levy?</div>
+<div class="opt">A. 10 days</div><div class="opt">B. 21 days</div><div class="opt">C. 30 days</div><div class="opt">D. 60 days</div></div>
+<div class="mcq"><div class="q">3. After a sale of real property seized by levy, the taxpayer may redeem the property within:</div>
+<div class="opt">A. 30 days</div><div class="opt">B. 90 days</div><div class="opt">C. 180 days</div><div class="opt">D. 1 year</div></div>
+<div class="mcq"><div class="q">4. For an income tax debt to be dischargeable in bankruptcy, the return must have been assessed at least how many days before the bankruptcy petition is filed?</div>
+<div class="opt">A. 90 days</div><div class="opt">B. 120 days</div><div class="opt">C. 180 days</div><div class="opt">D. 240 days</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 5.3 Liens and Levies</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — 5 business days</span></div>
+<div><b>2.</b> <span class="key-ans">C — 30 days</span></div>
+<div><b>3.</b> <span class="key-ans">C — 180 days</span></div>
+<div><b>4.</b> <span class="key-ans">D — 240 days</span></div>
+</div>
+</div>
+
+<!-- ============================================================ 5.4 TRUST FUND RECOVERY PENALTY ============================================================ -->
+<div class="c4 pagebreak">
+<h2 class="section">5.4 — TRUST FUND RECOVERY PENALTY</h2>
+<div class="rule-box">
+<p>Trust Fund Recovery Penalty (TFRP) khuyến khích nộp ĐÚNG HẠN thuế thu nhập & employment tax bị withheld, gồm Social Security & excise tax đã thu. <b>Trust fund taxes</b> = income tax withheld + phần FICA tax do EMPLOYEE gánh (withheld).</p>
+<p>Phạt áp dụng cho người CÓ TRÁCH NHIỆM (responsible person) thu/trả thuế withheld mà CỐ Ý (willfully) không thu/trả. Responsible person = người có NHIỆM VỤ thực hiện & QUYỀN chỉ đạo việc thu/kế toán/trả trust fund tax — có thể là officer/employee của corp, thành viên/employee của partnership, director/shareholder, hoặc thành viên board of trustees. <b>Lưu ý:</b> nhân viên không giữ chức vụ/không có cổ phần ít khi bị phạt.</p>
+<p><b>Willful:</b> có tự do lựa chọn nhưng cố ý bỏ qua luật hoặc thờ ơ rõ ràng với yêu cầu pháp lý. Nhân viên KHÔNG chịu trách nhiệm nếu chức năng của họ CHỈ là trả bill theo chỉ đạo supervisor (không có quyền quyết định chủ nợ nào được trả).</p>
+<p><b>Mức phạt = 100%</b> số trust fund tax chưa trả. Additional Medicare tax theo Sec. 1411 KHÔNG được xem là trust fund tax. TFRP KHÔNG được discharge qua phá sản dù có/không được đưa vào kế hoạch hay proof of claim đúng hạn.</p>
+<p style="background:#fff7e0;border-left:4px solid #e0a800;padding:6px 10px;border-radius:6px;margin:8px 0">⚠️ <b>Luật hiện hành (kiểm 2026-10-25):</b> <b>§1411 là Net Investment Income Tax (NIIT)</b>, không phải Additional Medicare Tax (Additional Medicare Tax nằm ở §3101(b)(2) và §3102(f)). Gleim ghi nhầm số điều; ý “không được xem là trust fund tax” là điểm Gleim nhấn, cần nhớ theo Gleim.</p>
+</div>
+
+<h3 class="lesson">Các Form liên quan TFRP Assessment</h3>
+<table class="vocab">
+<tr><th>Form</th><th>Ý nghĩa</th></tr>
+<tr><td class="word">Form CT-1</td><td class="vn">Employer's Annual Railroad Retirement Tax Return</td></tr>
+<tr><td class="word">Form 720</td><td class="vn">Quarterly Federal Excise Tax Return</td></tr>
+<tr><td class="word">Form 941</td><td class="vn">Employer's Quarterly Federal Tax Return</td></tr>
+<tr><td class="word">Form 943</td><td class="vn">Employer's Annual Federal Tax Return for Agricultural Employees</td></tr>
+<tr><td class="word">Form 944</td><td class="vn">Employer's Annual Federal Tax Return</td></tr>
+<tr><td class="word">Form 945</td><td class="vn">Annual Return of Withheld Federal Income Tax</td></tr>
+<tr><td class="word">Form 1042</td><td class="vn">Annual Withholding Tax Return for U.S. Source Income of Foreign Persons</td></tr>
+<tr><td class="word">Form 8288</td><td class="vn">U.S. Withholding Tax Return (Foreign Persons — U.S. Real Property)</td></tr>
+<tr><td class="word">Form 8804</td><td class="vn">Annual Return for Partnership Withholding Tax (Sec. 1446)</td></tr>
+</table>
+
+<h3 class="lesson">Thuật ngữ 5.4</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">Trust Fund Recovery Penalty (TFRP)</td><td class="vn">Phạt truy thu quỹ ủy thác (100% thuế withheld chưa trả)</td></tr>
+<tr><td class="word">responsible person</td><td class="vn">người có trách nhiệm thu/trả trust fund tax</td></tr>
+<tr><td class="word">willfully</td><td class="vn">cố ý (bỏ qua luật/thờ ơ rõ ràng)</td></tr>
+<tr><td class="word">trust fund taxes</td><td class="vn">thuế thu nhập withheld + phần FICA employee</td></tr>
+<tr><td class="word">responsible officer/director/shareholder</td><td class="vn">officer/director/cổ đông có thể là responsible person</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 5.4</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. The Trust Fund Recovery Penalty is generally equal to what percentage of the unpaid trust fund taxes?</div>
+<div class="opt">A. 20%</div><div class="opt">B. 50%</div><div class="opt">C. 75%</div><div class="opt">D. 100%</div></div>
+<div class="mcq"><div class="q">2. Trust fund taxes consist of income taxes withheld plus:</div>
+<div class="opt">A. The employer's share of FICA</div><div class="opt">B. The employee's share of FICA</div><div class="opt">C. FUTA tax</div><div class="opt">D. State income tax withheld</div></div>
+<div class="mcq"><div class="q">3. An employee whose only function is to pay bills as directed by a supervisor, without authority over which creditors get paid, is:</div>
+<div class="opt">A. Always a responsible person</div><div class="opt">B. Generally not a responsible person</div><div class="opt">C. Automatically exempt from all IRS penalties</div><div class="opt">D. Personally liable for all corporate taxes</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 5.4 Trust Fund Recovery Penalty</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">D — 100%</span></div>
+<div><b>2.</b> <span class="key-ans">B — Employee's share of FICA</span></div>
+<div><b>3.</b> <span class="key-ans">B</span></div>
+</div>
+</div>
+
+</body>
+</html>

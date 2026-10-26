@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<!-- Google tag (gtag.js) — GA4 chung của TJ, nhãn site=ea -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'ea'});</script>
+
+<meta charset="UTF-8">
+<title>EA Part II – Businesses: Entity Types through Other Deductions (SU01-05)</title>
+<style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  body { font-family:'Segoe UI','Calibri',Arial,sans-serif; color:#33322f; font-size:15.5px; line-height:1.5; background:#fdfcfa; margin:0; }
+  .cover { background: linear-gradient(120deg,#bfe4ff 0%,#d6ecff 30%,#e6def7 65%,#fbe6f4 100%); border-radius:20px; padding:40px 30px; text-align:center; margin-bottom:10px; box-shadow:0 6px 18px rgba(120,130,180,.25); border:1px solid #dfe8f5; }
+  .cover .tag { display:inline-block; background:#33314a; color:#d6ecff; font-weight:700; letter-spacing:2px; font-size:13px; padding:5px 14px; border-radius:20px; margin-bottom:14px; }
+  .cover h1 { font-size:30px; margin:6px 0; color:#3170a8; }
+  .cover h2 { font-size:16px; font-weight:500; margin:4px 0 0; opacity:.9; color:#33314a; }
+  .cover .books { margin-top:16px; font-size:13.5px; background:rgba(255,255,255,.55); display:inline-block; padding:8px 16px; border-radius:10px; color:#33314a; }
+  .toc { background:#fff; border:1.5px solid #dfe8f5; border-radius:14px; padding:18px 26px; margin-bottom:30px; }
+  .toc h3 { margin-top:0; color:#3170a8; }
+  .toc ol { margin:0; padding-left:22px; } .toc li{ margin-bottom:6px; }
+  h2.section { font-size:23px; color:#33314a; padding:12px 18px; border-radius:12px; margin:34px 0 14px; border-left:10px solid var(--accent,#5aa9d6); background:var(--bg,#eaf6fd); }
+  h3.lesson { font-size:19px; color:var(--accent-dark,#276a91); border-left:6px solid var(--accent,#5aa9d6); background:var(--bg-soft,#f3fafd); padding:8px 14px; border-radius:6px; margin:22px 0 10px; }
+  .c1{--accent:#5aa9d6;--accent-dark:#276a91;--bg:#eaf6fd;--bg-soft:#f3fafd;--head:#a9d4ec;}
+  .c2{--accent:#a892d9;--accent-dark:#5c4696;--bg:#f1ecfb;--bg-soft:#f8f5fd;--head:#cabdec;}
+  .c3{--accent:#f0a66e;--accent-dark:#b8620b;--bg:#fdeee2;--bg-soft:#fff8f0;--head:#f4c299;}
+  .c4{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
+  .c5{--accent:#e07b9b;--accent-dark:#a3335a;--bg:#fbe9f0;--bg-soft:#fdf5f8;--head:#f3b6c9;}
+  .cKey{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
+  table.vocab { width:100%; border-collapse:collapse; margin-bottom:20px; font-size:.96em; box-shadow:0 2px 8px rgba(0,0,0,.05); border-radius:10px; overflow:hidden; }
+  table.vocab th { background:var(--head,#5aa9d6); color:#2d2d2d; padding:9px 8px; text-align:left; }
+  table.vocab td { padding:8px 8px; border-bottom:1px solid var(--bg,#eaf6fd); vertical-align:top; }
+  table.vocab tr:nth-child(even) td { background:var(--bg-soft,#faf6f0); }
+  table.vocab tr:nth-child(odd) td { background:#fff; }
+  table.vocab td.word { font-weight:800; color:var(--accent-dark,#276a91); }
+  table.vocab td.vn { font-weight:700; color:#3d6ba8; }
+  .rule-box { background:var(--bg,#eaf6fd); border-left:6px solid var(--accent,#5aa9d6); border-radius:8px; padding:12px 18px; margin:10px 0; }
+  .rule-box table { width:100%; border-collapse:collapse; margin:8px 0 4px; }
+  .rule-box table td, .rule-box table th { padding:6px 8px; border-bottom:1px solid rgba(0,0,0,.08); text-align:left; font-size:.94em; }
+  .rule-box table th { color:var(--accent-dark,#276a91); }
+  .rule-box ul, .rule-box ol { margin:6px 0; padding-left:22px; } .rule-box li{ margin-bottom:5px; }
+  .struct { font-weight:800; color:#b8620b; font-family:'Consolas','Courier New',monospace; }
+  .example-box { background:#fff; border:1.5px dashed var(--accent,#5aa9d6); border-radius:8px; padding:10px 16px; margin:10px 0; font-size:.95em; }
+  .example-box b.ex-tag { color:var(--accent-dark,#276a91); }
+  .mcq { background:#fff; border:1.5px solid var(--accent,#5aa9d6); border-radius:10px; padding:12px 18px; margin-bottom:12px; }
+  .mcq .q { color:#3d6ba8; font-weight:700; margin-bottom:6px; }
+  .mcq .opt { margin:2px 0 2px 10px; }
+  .content-block { background:#fff; border:2px dashed var(--accent,#5aa9d6); border-radius:12px; padding:16px 20px; margin-bottom:18px; }
+  .key-grid { column-count:1; } .key-grid div{ margin-bottom:10px; }
+  .key-ans { color:#20824f; font-weight:800; }
+  .key-exp { color:#555; font-size:.95em; }
+  .pagebreak { page-break-before: always; }
+  .note { font-size:.85em; color:#8a8a8a; font-style:italic; }
+  .source-tag { font-size:.8em; color:#999; font-style:italic; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="tag">EA EXAM PREP • PART II — BUSINESSES • SU01-05</div>
+  <h1>📗 EA PART II — BUSINESSES</h1>
+  <h2>SU01–05: Entity Types đến Other Deductions (Song ngữ Việt–Anh)</h2>
+  <div class="books">📖 Khái niệm luật thuế · 🔤 Thuật ngữ · 📌 Ví dụ minh họa · ❓ Câu hỏi trắc nghiệm · 🔑 Đáp án trang sau</div>
+</div>
+
+<div class="toc">
+<h3>📑 Mục lục</h3>
+<ol>
+<li>SU01 — Entity Types, Methods, and Periods (Loại hình doanh nghiệp, phương pháp & kỳ kế toán)</li>
+<li>SU02 — Income and Farms (Thu nhập kinh doanh & thu nhập nông trại)</li>
+<li>SU03 — Rental Property and Loss Limitations (Bất động sản cho thuê & giới hạn lỗ)</li>
+<li>SU04 — Business Expenses (Chi phí kinh doanh: lương, lãi vay, thuê, thuế)</li>
+<li>SU05 — Other Deductions (Các khoản khấu trừ khác: meals, travel, bad debts, QBID...)</li>
+</ol>
+<p class="note">Nguồn: Gleim EA Review Part II, Study Units 1–5 (2026 edition) + EA2 BookOnline Outlines. Số liệu $ theo năm thuế 2025 (bao gồm các thay đổi từ OBBBA – One Big Beautiful Bill Act). Cần đối chiếu năm thi thực tế nếu có cập nhật.</p>
+</div>
+
+<!-- ============================================================ SU01 ============================================================ -->
+<div class="c1">
+<h2 class="section">1️⃣ SU01 — ENTITY TYPES, METHODS, AND PERIODS</h2>
+
+<h3 class="lesson">Khái niệm chính</h3>
+<div class="rule-box">
+<p><b>Các loại hình doanh nghiệp (Business Entities):</b></p>
+<table>
+<tr><th>Entity</th><th>Liability của chủ</th><th>Cách đánh thuế</th></tr>
+<tr><td><b>Sole Proprietorship</b></td><td>Unlimited (không giới hạn)</td><td>Schedule C (Form 1040); không phải entity pháp lý riêng</td></tr>
+<tr><td><b>C Corporation</b></td><td>Limited</td><td><b>Double taxation</b>: đánh thuế ở cấp công ty, rồi lại đánh thuế cổ tức khi chia cho cổ đông</td></tr>
+<tr><td><b>S Corporation</b></td><td>Limited</td><td>Flow-through — không bị double tax; hạn chế về số lượng/loại cổ đông</td></tr>
+<tr><td><b>General Partnership</b></td><td>Unlimited cho tất cả partner</td><td>Flow-through, nộp Form 1065</td></tr>
+<tr><td><b>Limited Partnership</b></td><td>GP: unlimited; LP: limited</td><td>Flow-through; LP không được tham gia điều hành</td></tr>
+<tr><td><b>LLC (≥2 members)</b></td><td>Limited (state law)</td><td>Mặc định = partnership (flow-through); có thể elect corporation qua Form 8832</td></tr>
+<tr><td><b>Single-Member LLC</b></td><td>Limited</td><td>Mặc định = disregarded entity → Schedule C/E của chủ</td></tr>
+</table>
+<p><b>Check-the-Box (Form 8832):</b> eligible entity tự chọn được đánh thuế là corporation, partnership, hay disregarded entity. Mặc định: domestic entity ≥2 chủ → partnership; 1 chủ → disregarded.</p>
+<p><b>EIN (Form SS-4):</b> bắt buộc cho partnership/corporation dù không có nhân viên; sole proprietor không nhân viên & không nộp excise/pension return thì KHÔNG bắt buộc EIN. Đổi entity (incorporate, join partnership) → cần EIN mới; chỉ đổi cách đánh thuế qua Form 8832 thì KHÔNG cần EIN mới.</p>
+<p><b>Accounting Methods:</b> Cash method — ghi nhận income khi thực nhận tiền/cash equivalent/constructive receipt; deduct khi thực trả. Accrual method — ghi nhận theo "all-events test" (quyền nhận đã cố định + số tiền xác định được) bất kể tiền đã về hay chưa. C corporations (trừ ngoại lệ farm/personal service corp/gross receipts ≤$31 triệu), partnership có corporate partner, và tax shelter BẮT BUỘC dùng accrual method. Taxpayer có inventory nói chung phải dùng accrual cho purchases/sales (trừ gross-receipts-test taxpayer ≤$31 triệu).</p>
+<p><b>Related-party rule:</b> payor (accrual) chỉ được deduct khi payee (cash-basis) đã ghi nhận income — bắt buộc "matching".</p>
+<p><b>Inventory valuation:</b> FIFO, LIFO (cần Form 970 để đổi sang), specific identification. Valuation: Cost, Lower-of-Cost-or-Market (LCM — không dùng chung với LIFO), Retail method. Một khi chọn phương pháp, phải xin phép IRS mới đổi được.</p>
+<p><b>Tax Year:</b> calendar year (mặc định) hoặc fiscal year (52/53-week được). Short tax year khi mới thành lập hoặc đổi kỳ kế toán. Đổi tax year: Form 1128 (cần substantial business purpose); Sec. 444 election dùng Form 8716 cho partnership/S corp/personal service corp muốn năm khác required year (tối đa 3 tháng deferral).</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ SU01</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">check-the-box regulations (Form 8832)</td><td class="vn">quy định tự chọn loại hình thuế cho entity</td></tr>
+<tr><td class="word">disregarded entity</td><td class="vn">entity không được xem là tách biệt với chủ sở hữu (thuế)</td></tr>
+<tr><td class="word">constructive receipt</td><td class="vn">được xem như đã nhận (dù chưa thực sự cầm tiền)</td></tr>
+<tr><td class="word">all-events test</td><td class="vn">điều kiện ghi nhận income/expense theo accrual (quyền đã cố định + số tiền xác định được)</td></tr>
+<tr><td class="word">closely held corporation</td><td class="vn">công ty sở hữu tập trung (≤5 cá nhân sở hữu &gt;50% cuối năm)</td></tr>
+<tr><td class="word">Sec. 444 election (Form 8716)</td><td class="vn">lựa chọn năm thuế khác required year</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm SU01</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. Which entity is subject to double taxation?</div>
+<div class="opt">A. S corporation</div><div class="opt">B. C corporation</div><div class="opt">C. General partnership</div><div class="opt">D. Sole proprietorship</div></div>
+<div class="mcq"><div class="q">2. A domestic LLC with two or more members that files no election is, by default, classified as a:</div>
+<div class="opt">A. C corporation</div><div class="opt">B. Disregarded entity</div><div class="opt">C. Partnership</div><div class="opt">D. S corporation</div></div>
+<div class="mcq"><div class="q">3. Under the cash method, a taxpayer includes income when cash is actually or constructively received. Which of the following is required for the accrual method to include income?</div>
+<div class="opt">A. Cash must be received</div><div class="opt">B. All events have occurred fixing the right to income and the amount is determinable with reasonable accuracy</div><div class="opt">C. A promise to pay is enough</div><div class="opt">D. Income must be billed to the customer</div></div>
+<div class="mcq"><div class="q">4. Which taxpayer is generally REQUIRED to use the accrual method?</div>
+<div class="opt">A. A qualified personal service corporation</div><div class="opt">B. A C corporation with average annual gross receipts over $31 million</div><div class="opt">C. A farming business</div><div class="opt">D. A sole proprietor with no inventory</div></div>
+<div class="mcq"><div class="q">5. To switch inventory valuation to LIFO, a taxpayer must file:</div>
+<div class="opt">A. Form 3115</div><div class="opt">B. Form 970</div><div class="opt">C. Form 1128</div><div class="opt">D. Form 8716</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — SU01 Entity Types, Methods, and Periods</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — C corporation</span><br><span class="key-exp">C corp bị đánh thuế 2 lần: ở cấp công ty và khi chia dividend cho cổ đông. S corp, partnership, sole proprietorship đều flow-through, chỉ đánh thuế 1 lần.</span></div>
+<div><b>2.</b> <span class="key-ans">C — Partnership</span></div>
+<div><b>3.</b> <span class="key-ans">B</span><br><span class="key-exp">Accrual method dùng "all-events test": quyền nhận income đã cố định (fixed) và số tiền xác định được với độ chính xác hợp lý.</span></div>
+<div><b>4.</b> <span class="key-ans">B — C corporation với gross receipts &gt;$31 triệu</span><br><span class="key-exp">C corporations (trừ ngoại lệ nhỏ như farm/qualified personal service corp) bắt buộc accrual nếu vượt ngưỡng gross receipts test $31 triệu.</span></div>
+<div><b>5.</b> <span class="key-ans">B — Form 970</span><br><span class="key-exp">Form 970, Application to Use LIFO Inventory Method — cần consent của IRS để chuyển sang LIFO.</span></div>
+</div>
+</div>
+
+<!-- ============================================================ SU02 ============================================================ -->
+<div class="c2 pagebreak">
+<h2 class="section">2️⃣ SU02 — INCOME AND FARMS</h2>
+
+<h3 class="lesson">Khái niệm chính</h3>
+<div class="rule-box">
+<p><b>Gross Income (Sec. 61):</b> "all income from whatever source derived" — danh sách trong luật KHÔNG đầy đủ (not exhaustive). Business gross income = Gross sales − COGS + other gross income (rentals...).</p>
+<p><b>Discharge of Indebtedness:</b> tính vào gross income trừ khi: bankruptcy, insolvency (giới hạn = liabilities vượt FMV assets), qualified farm indebtedness, hoặc purchase-money debt reduction (coi như điều chỉnh giá mua). Khi exclude COD income, phải giảm tax attributes theo thứ tự: NOL → GBC → minimum tax credit → capital loss carryover → basis reduction.</p>
+<p><b>Assignment of Income doctrine:</b> thu nhập bị đánh thuế cho người TẠO RA nó, không phải người nhận. Chuyển nhượng tài sản tạo thu nhập (chứ không chỉ chuyển thu nhập) mới shift được thuế sang người nhận — với điều kiện chuyển nhượng hoàn tất, không giữ quyền kiểm soát, và xảy ra TRƯỚC khi thu nhập phát sinh.</p>
+<p><b>Rental Income:</b> cash-basis ghi nhận khi nhận; prepaid rent luôn tính vào gross income khi nhận (cả cash lẫn accrual). Security deposit dự định hoàn trả KHÔNG phải income. Lessee trả chi phí lessor (vd property tax) thay tiền thuê = rental income thêm cho lessor.</p>
+<p><b>Self-Employment (SE) Tax:</b> 15.3% = 2 × (6.2% SS + 1.45% Medicare) trên net SE earnings. SS phần chỉ áp dụng tới $176,100 (2025); Medicare không giới hạn + thêm 0.9% Additional Medicare Tax nếu vượt $200,000 ($250,000 MFJ). Distributive share + guaranteed payments của general partner đều chịu SE tax (dù active hay không); limited partner's share thường KHÔNG chịu SE tax (trừ guaranteed payments cho dịch vụ thực hiện). S corp shareholder distributive share KHÔNG chịu SE tax.</p>
+<p><b>Farm Income (Schedule F):</b> gồm income từ trồng trọt/chăn nuôi, gain bán gia súc nuôi/mua để bán lại. Gia súc nuôi cho draft/dairy/breeding/sporting → capital gain trên Form 4797, KHÔNG trên Schedule F. Farm Optional Method (SE tax): nếu gross farm income ≤$10,860 → net earnings = 2/3 gross; nếu &gt;$10,860 → net earnings = $7,240 cố định. Farm income averaging (Schedule J): dùng thuế suất 3 năm trước để tính thuế năm nay — chỉ cho individual/partner/S corp shareholder, KHÔNG cho corporation/trust/estate.</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ SU02</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">cancellation of debt (COD) income</td><td class="vn">thu nhập từ xóa nợ</td></tr>
+<tr><td class="word">assignment of income doctrine</td><td class="vn">học thuyết đánh thuế người tạo ra thu nhập</td></tr>
+<tr><td class="word">net earnings from self-employment</td><td class="vn">thu nhập ròng từ tự doanh (căn cứ tính SE tax)</td></tr>
+<tr><td class="word">real estate dealer</td><td class="vn">người kinh doanh mua bán bất động sản (chịu SE tax trên rent từ BĐS giữ để bán)</td></tr>
+<tr><td class="word">Farm Optional Method</td><td class="vn">phương pháp tính SE tax tùy chọn cho nông dân thu nhập thấp</td></tr>
+<tr><td class="word">farm income averaging (Schedule J)</td><td class="vn">tính thuế thu nhập nông trại theo bình quân 3 năm</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm SU02</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. Cancellation of debt income is generally excluded from gross income when the debtor is:</div>
+<div class="opt">A. Simply unwilling to pay</div><div class="opt">B. In bankruptcy</div><div class="opt">C. A cash-basis taxpayer</div><div class="opt">D. A corporation</div></div>
+<div class="mcq"><div class="q">2. For the assignment of income doctrine, shifting the tax on income to another person generally requires:</div>
+<div class="opt">A. A gift of the income itself after it is earned</div><div class="opt">B. A complete transfer of the income-producing property before the income is earned</div><div class="opt">C. A verbal promise</div><div class="opt">D. Nothing — income can always be shifted by direction</div></div>
+<div class="mcq"><div class="q">3. For 2025, the Social Security portion of self-employment tax applies to the first:</div>
+<div class="opt">A. $118,500 of net SE income</div><div class="opt">B. $147,000 of net SE income</div><div class="opt">C. $176,100 of net SE income</div><div class="opt">D. All net SE income, uncapped</div></div>
+<div class="mcq"><div class="q">4. A limited partner's distributive share of partnership income is generally:</div>
+<div class="opt">A. Fully subject to self-employment tax</div><div class="opt">B. Not subject to self-employment tax (except guaranteed payments for services)</div><div class="opt">C. Exempt only if under $400</div><div class="opt">D. Subject to double taxation</div></div>
+<div class="mcq"><div class="q">5. Under the Farm Optional Method, if gross farm income is more than $10,860 for 2025, net earnings for SE tax purposes equal:</div>
+<div class="opt">A. Two-thirds of gross farm income</div><div class="opt">B. $7,240</div><div class="opt">C. 100% of gross farm income</div><div class="opt">D. Zero</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — SU02 Income and Farms</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — Bankruptcy</span><br><span class="key-exp">COD income được exclude nếu discharge xảy ra trong bankruptcy, hoặc khi insolvent, hoặc là qualified farm indebtedness/purchase-money reduction.</span></div>
+<div><b>2.</b> <span class="key-ans">B</span><br><span class="key-exp">Phải chuyển nhượng chính tài sản tạo ra thu nhập (không chỉ thu nhập), hoàn tất, không giữ kiểm soát, và trước khi thu nhập phát sinh.</span></div>
+<div><b>3.</b> <span class="key-ans">C — $176,100</span></div>
+<div><b>4.</b> <span class="key-ans">B</span><br><span class="key-exp">Limited partner's share thường không chịu SE tax vì không tham gia điều hành — ngoại lệ là guaranteed payments cho dịch vụ thực sự thực hiện.</span></div>
+<div><b>5.</b> <span class="key-ans">B — $7,240</span><br><span class="key-exp">Nếu gross farm income ≤$10,860 → 2/3 gross income; nếu vượt → cố định $7,240.</span></div>
+</div>
+</div>
+
+<!-- ============================================================ SU03 ============================================================ -->
+<div class="c3 pagebreak">
+<h2 class="section">3️⃣ SU03 — RENTAL PROPERTY AND LOSS LIMITATIONS</h2>
+
+<h3 class="lesson">Khái niệm chính</h3>
+<div class="rule-box">
+<p><b>Rental income:</b> báo cáo trên Schedule E (nếu không cung cấp dịch vụ đáng kể) hoặc Schedule C (nếu có significant services). Nhà cho thuê &lt;15 ngày/năm → KHÔNG cần báo cáo income (và cũng không được deduct expense tương ứng).</p>
+<p><b>Vacation Home Rules — 2 bài test:</b></p>
+<table>
+<tr><th>Rental-use test</th><th>Personal-use test</th><th>Kết quả</th></tr>
+<tr><td>Pass (&gt;14 ngày)</td><td>Pass (≤14 ngày HOẶC ≤10% số ngày cho thuê)</td><td>Full deduction, chịu passive loss rules</td></tr>
+<tr><td>Pass (&gt;14 ngày)</td><td>Fail (personal use lớn hơn)</td><td>"Vacation home" — deduction giới hạn = rental income (không lỗ)</td></tr>
+<tr><td>Fail (≤14 ngày)</td><td>—</td><td>Không cần khai income, KHÔNG được deduct expense</td></tr>
+</table>
+<p><b>Thứ tự deduction khi vacation home bị giới hạn:</b> (1) lãi vay & property tax (deduct dù có income hay không) → (2) chi phí không ảnh hưởng basis (sửa chữa) → (3) chi phí ảnh hưởng basis (depreciation, luôn cuối cùng).</p>
+<p><b>3 giới hạn lỗ (theo thứ tự áp dụng):</b> (1) Basis trong hoạt động, (2) At-risk rules, (3) Passive activity loss (PAL) rules — deduction bị giới hạn ở mức NHỎ NHẤT trong 3.</p>
+<p><b>At-Risk:</b> gồm tiền/property đã bỏ vào + recourse debt (chịu trách nhiệm cá nhân) + Qualified Nonrecourse Financing (QNRF, riêng cho real estate). Nonrecourse debt thường KHÔNG tính vào at-risk (trừ QNRF).</p>
+<p><b>Passive Activity Loss (PAL):</b> mọi rental activity mặc định là passive (dù không "trade or business"). Material participation qua 1 trong 7 test (vd &gt;500 giờ, &gt;100 giờ và nhiều nhất trong số người tham gia...). Ngoại lệ $25,000: active participant sở hữu ≥10% được deduct tới $25,000 lỗ rental real estate chống lại nonpassive income, giảm dần 50% phần MAGI vượt $100,000 (về 0 tại MAGI $150,000). Real estate professional (&gt;50% personal services + &gt;750 giờ trong real property trade/business có material participation) thoát hẳn PAL limitation cho rental real estate.</p>
+<p><b>Excess Business Loss:</b> sau at-risk và PAL, lỗ kinh doanh non-corporate còn bị giới hạn thêm ở mức $313,000 ($626,000 MFJ) cho 2025 — phần vượt chuyển thành NOL carryforward (giới hạn 80% TI các năm sau).</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ SU03</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">vacation home rules</td><td class="vn">quy tắc giới hạn deduction cho nhà nghỉ dưỡng vừa ở vừa cho thuê</td></tr>
+<tr><td class="word">at-risk rules</td><td class="vn">quy tắc giới hạn lỗ theo số vốn thực sự "chịu rủi ro"</td></tr>
+<tr><td class="word">Qualified Nonrecourse Financing (QNRF)</td><td class="vn">khoản vay nonrecourse đủ điều kiện tính vào at-risk (bất động sản)</td></tr>
+<tr><td class="word">passive activity loss (PAL)</td><td class="vn">lỗ từ hoạt động thụ động</td></tr>
+<tr><td class="word">material participation</td><td class="vn">tham gia thực chất/tích cực vào hoạt động kinh doanh</td></tr>
+<tr><td class="word">real estate professional</td><td class="vn">chuyên gia bất động sản (thoát PAL limitation)</td></tr>
+<tr><td class="word">excess business loss</td><td class="vn">lỗ kinh doanh vượt ngưỡng cho phép (sau at-risk/PAL)</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm SU03</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. A residence rented for fewer than 15 days during the year:</div>
+<div class="opt">A. Must report income but can deduct all expenses</div><div class="opt">B. Rental income is excluded and related expenses are not deductible</div><div class="opt">C. Is always a vacation home</div><div class="opt">D. Is subject to the $25,000 exception</div></div>
+<div class="mcq"><div class="q">2. A taxpayer's deductible loss from an activity is limited to the SMALLEST of which three limitations, applied in order?</div>
+<div class="opt">A. Basis, passive activity rules, then at-risk rules</div><div class="opt">B. Basis, at-risk rules, then passive activity rules</div><div class="opt">C. At-risk rules only</div><div class="opt">D. Passive activity rules only</div></div>
+<div class="mcq"><div class="q">3. Under the $25,000 rental real estate loss exception, the deduction begins to phase out when MAGI exceeds:</div>
+<div class="opt">A. $50,000</div><div class="opt">B. $75,000</div><div class="opt">C. $100,000</div><div class="opt">D. $150,000</div></div>
+<div class="mcq"><div class="q">4. To qualify as a real estate professional exempt from PAL limitations on rental activities, an individual must perform more than how many hours of service in real property trades or businesses in which he or she materially participates?</div>
+<div class="opt">A. 500 hours</div><div class="opt">B. 750 hours</div><div class="opt">C. 1,000 hours</div><div class="opt">D. 100 hours</div></div>
+<div class="mcq"><div class="q">5. For 2025, the excess business loss threshold for a married-filing-jointly taxpayer is:</div>
+<div class="opt">A. $313,000</div><div class="opt">B. $500,000</div><div class="opt">C. $626,000</div><div class="opt">D. $1,000,000</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — SU03 Rental Property and Loss Limitations</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B</span></div>
+<div><b>2.</b> <span class="key-ans">B — Basis, at-risk, rồi passive activity rules</span></div>
+<div><b>3.</b> <span class="key-ans">C — $100,000</span><br><span class="key-exp">Giảm 50 cent cho mỗi $1 MAGI vượt $100,000, về 0 tại $150,000.</span></div>
+<div><b>4.</b> <span class="key-ans">B — 750 giờ</span><br><span class="key-exp">Cộng thêm điều kiện: &gt;50% tổng personal services trong năm phải ở trong real property trade/business có material participation.</span></div>
+<div><b>5.</b> <span class="key-ans">C — $626,000</span></div>
+</div>
+</div>
+
+<!-- ============================================================ SU04 ============================================================ -->
+<div class="c4 pagebreak">
+<h2 class="section">4️⃣ SU04 — BUSINESS EXPENSES</h2>
+
+<h3 class="lesson">Khái niệm chính</h3>
+<div class="rule-box">
+<p><b>Điều kiện chung:</b> expense phải "ordinary and necessary", reasonable, và paid/incurred trong năm thuế trong việc kinh doanh (trade or business). Hobby (không nhằm mục đích lợi nhuận) → expense KHÔNG deductible. Có lợi nhuận 3/5 năm liên tiếp (2/7 với đua ngựa) → presumed KHÔNG phải hobby.</p>
+<p><b>Compensation:</b> phải ordinary/necessary + reasonable + paid to employee. Bonus/vacation pay deductible khi trả (cash-basis) hoặc khi vested + trả trong 2.5 tháng sau năm thuế (accrual). Related cash-basis payee (vợ/chồng, anh chị em, lineal descendant) → payor accrual chỉ deduct khi THỰC SỰ trả tiền.</p>
+<p><b>Cafeteria Plan:</b> nhân viên chọn giữa cash và qualified benefits (accident/health, adoption assistance, dependent care, group-term life ≤$50,000, group legal, disability). KHÔNG gồm: educational assistance, transportation, meals, scholarships, moving reimbursement...</p>
+<p><b>Family Employment:</b> con &lt;18 làm cho cha/mẹ (sole prop/partnership toàn cha mẹ là partner) → miễn SS/Medicare; con &lt;21 → miễn FUTA. Vợ/chồng làm cho nhau → chịu SS/Medicare nhưng miễn FUTA. Làm cho corporation → LUÔN chịu đủ 3 loại thuế dù công ty do cha mẹ/vợ chồng sở hữu.</p>
+<p><b>Interest Expense:</b> business interest deduction giới hạn = business interest income + 30% adjusted taxable income + floor plan financing interest (miễn giới hạn nếu gross receipts ≤$31 triệu). Points/prepaid interest phải amortize theo đời khoản vay. Construction period interest phải capitalize (production period &gt;2 năm hoặc &gt;1 năm và chi phí &gt;$1 triệu).</p>
+<p><b>Rent Expense:</b> prepaid rent chỉ deduct phần áp dụng cho năm hiện tại; phần còn lại deduct theo kỳ tương ứng.</p>
+<p><b>Taxes:</b> sales tax mua tài sản → cộng vào basis (không deduct riêng). Property tax kinh doanh → business expense (cá nhân thì itemized deduction). Real estate tax khi bán → chia theo số ngày sở hữu giữa buyer/seller. Federal income tax KHÔNG deductible. Local improvement assessments (sidewalk, sewer...) → cộng vào basis, không phải tax expense hiện tại.</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ SU04</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">ordinary and necessary</td><td class="vn">thông thường và cần thiết (điều kiện để expense được deduct)</td></tr>
+<tr><td class="word">cafeteria plan</td><td class="vn">chương trình phúc lợi tự chọn cho nhân viên</td></tr>
+<tr><td class="word">statutory employee</td><td class="vn">người được luật quy định xử lý như nhân viên dù về bản chất là independent contractor</td></tr>
+<tr><td class="word">floor plan financing interest</td><td class="vn">lãi vay tài trợ mua xe/phương tiện để bán/cho thuê</td></tr>
+<tr><td class="word">adjusted taxable income (ATI)</td><td class="vn">thu nhập chịu thuế điều chỉnh (căn cứ giới hạn business interest)</td></tr>
+<tr><td class="word">semi-weekly depositor</td><td class="vn">doanh nghiệp phải nộp employment tax deposit 2 lần/tuần (nếu &gt;$50,000 tax liability)</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm SU04</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. Wages paid to a child under age 18 employed by a parent's sole proprietorship are exempt from:</div>
+<div class="opt">A. Federal income tax withholding only</div><div class="opt">B. Social Security and Medicare taxes</div><div class="opt">C. All taxes including FUTA regardless of age</div><div class="opt">D. Nothing — all taxes apply</div></div>
+<div class="mcq"><div class="q">2. Wages paid by a corporation to the owner's minor child are:</div>
+<div class="opt">A. Exempt from Social Security, Medicare, and FUTA</div><div class="opt">B. Subject to income tax withholding, Social Security, Medicare, and FUTA</div><div class="opt">C. Exempt only from FUTA</div><div class="opt">D. Never deductible by the corporation</div></div>
+<div class="mcq"><div class="q">3. The general business interest expense deduction limitation is the sum of business interest income, floor plan financing interest, and what percentage of adjusted taxable income?</div>
+<div class="opt">A. 20%</div><div class="opt">B. 30%</div><div class="opt">C. 50%</div><div class="opt">D. 100%</div></div>
+<div class="mcq"><div class="q">4. Which qualified benefit CANNOT be included in a cafeteria plan?</div>
+<div class="opt">A. Group-term life insurance up to $50,000</div><div class="opt">B. Dependent care assistance</div><div class="opt">C. Educational assistance</div><div class="opt">D. Accident and health benefits</div></div>
+<div class="mcq"><div class="q">5. When real estate is sold during the year, the deduction for real estate taxes is:</div>
+<div class="opt">A. Entirely the buyer's</div><div class="opt">B. Entirely the seller's</div><div class="opt">C. Divided between buyer and seller based on days of ownership during the real property tax year</div><div class="opt">D. Not deductible by either party</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — SU04 Business Expenses</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B</span><br><span class="key-exp">Con &lt;18 làm cho cha/mẹ (sole prop hoặc partnership mà mỗi partner là cha/mẹ) miễn SS/Medicare; con &lt;21 miễn thêm FUTA.</span></div>
+<div><b>2.</b> <span class="key-ans">B</span><br><span class="key-exp">Làm việc cho corporation luôn chịu đủ 3 loại thuế, kể cả khi công ty do cha/mẹ sở hữu — khác với sole proprietorship/partnership toàn cha mẹ.</span></div>
+<div><b>3.</b> <span class="key-ans">B — 30%</span></div>
+<div><b>4.</b> <span class="key-ans">C — Educational assistance</span><br><span class="key-exp">Educational assistance là fringe benefit riêng (giới hạn $5,250) nhưng KHÔNG được đưa vào cafeteria plan.</span></div>
+<div><b>5.</b> <span class="key-ans">C</span></div>
+</div>
+</div>
+
+<!-- ============================================================ SU05 ============================================================ -->
+<div class="c5 pagebreak">
+<h2 class="section">5️⃣ SU05 — OTHER DEDUCTIONS</h2>
+
+<h3 class="lesson">Khái niệm chính</h3>
+<div class="rule-box">
+<p><b>Business Meals:</b> chỉ 50% deductible; phải: ordinary/necessary, không lavish, có mặt taxpayer/employee, cho current/potential business contact, và tách riêng khỏi entertainment (entertainment KHÔNG còn deductible từ 2018). Không có substantiation cho meal &gt;$75 → bị từ chối.</p>
+<p><b>Travel:</b> phải away from home overnight; commuting KHÔNG deductible. Standard mileage rate 2025 = $0.70/dặm. Domestic travel: transportation 100% deductible nếu mục đích chính là business, 0% nếu chủ yếu personal (không phân bổ theo tỷ lệ). Foreign travel &gt;1 tuần với &lt;25% thời gian personal → coi như entirely business (không cần phân bổ transportation).</p>
+<p><b>Bad Debts:</b> chỉ specific write-off method được dùng cho thuế (không phải reserve method). Business bad debt = ordinary loss, deduct cả partially worthless. Nonbusiness bad debt = short-term capital loss, CHỈ deduct khi wholly worthless (partially worthless KHÔNG deductible). Cho vay người thân với ý định không đòi lại = gift, không phải bad debt.</p>
+<p><b>Business Gifts:</b> giới hạn $25/người/năm (không tính chi phí engraving/gói/bảo hiểm/gửi). Vợ chồng = 1 taxpayer cho mục đích này. Employee achievement award: $400 (non-qualified plan) / $1,600 (qualified plan) — chỉ tangible personal property, KHÔNG gồm cash/gift card/vacation/tickets.</p>
+<p><b>Start-Up & Organizational Costs:</b> deduct ngay $5,000 mỗi loại (giảm dollar-for-dollar nếu tổng chi phí &gt;$50,000, về 0 tại $55,000), phần còn lại amortize 180 tháng (15 năm) bắt đầu từ tháng kinh doanh bắt đầu hoạt động.</p>
+<p><b>Business Use of Home:</b> phải exclusive & regular use làm principal place of business (trừ ngoại lệ retail/wholesale storage và day care). Deduction giới hạn = gross income từ hoạt động trừ các khoản khác. Simplified option: $5/sq.ft, tối đa 300 sq.ft = $1,500.</p>
+<p><b>QBID (Sec. 199A) — 20% của Qualified Business Income:</b> giới hạn = LESSER của 20%×QBI hoặc 20%×(Taxable income − net capital gains). Specified Service Trade or Business (SSTB — health, law, accounting, consulting, financial services...) bị mất hẳn QBID nếu taxable income vượt upper threshold ($247,300 Single / $494,600 MFJ cho 2025).</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ SU05</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">specific write-off method</td><td class="vn">phương pháp xóa nợ xấu cụ thể (bắt buộc dùng cho thuế)</td></tr>
+<tr><td class="word">nonbusiness bad debt</td><td class="vn">nợ xấu ngoài kinh doanh (xử lý như short-term capital loss)</td></tr>
+<tr><td class="word">start-up costs / organizational costs</td><td class="vn">chi phí khởi nghiệp / chi phí thành lập entity</td></tr>
+<tr><td class="word">Qualified Business Income Deduction (QBID, Sec. 199A)</td><td class="vn">khấu trừ 20% thu nhập kinh doanh đủ điều kiện</td></tr>
+<tr><td class="word">Specified Service Trade or Business (SSTB)</td><td class="vn">ngành dịch vụ đặc thù (tài sản chính là danh tiếng/kỹ năng) — bị giới hạn QBID</td></tr>
+<tr><td class="word">accountable plan</td><td class="vn">kế hoạch hoàn phí có báo cáo đầy đủ (reimbursement không tính vào thu nhập nhân viên)</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm SU05</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. The deduction for a qualifying business meal is generally limited to what percentage of the expense?</div>
+<div class="opt">A. 100%</div><div class="opt">B. 80%</div><div class="opt">C. 50%</div><div class="opt">D. 0% — meals are never deductible</div></div>
+<div class="mcq"><div class="q">2. A partially worthless nonbusiness bad debt is:</div>
+<div class="opt">A. Deductible as an ordinary loss</div><div class="opt">B. Not deductible at all</div><div class="opt">C. Deductible as a long-term capital loss</div><div class="opt">D. Deductible only up to $3,000</div></div>
+<div class="mcq"><div class="q">3. The deduction limit for business gifts is:</div>
+<div class="opt">A. $10 per recipient per year</div><div class="opt">B. $25 per recipient per year</div><div class="opt">C. $100 per recipient per year</div><div class="opt">D. Unlimited</div></div>
+<div class="mcq"><div class="q">4. Up to how much of start-up expenditures may be deducted in the year a business begins, before phase-out?</div>
+<div class="opt">A. $2,000</div><div class="opt">B. $5,000</div><div class="opt">C. $10,000</div><div class="opt">D. $50,000</div></div>
+<div class="mcq"><div class="q">5. A specified service trade or business (SSTB) whose owner's taxable income is above the upper threshold generally:</div>
+<div class="opt">A. Gets the full 20% QBID</div><div class="opt">B. Gets no QBID at all</div><div class="opt">C. Gets double the QBID</div><div class="opt">D. Is exempt from tax entirely</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — SU05 Other Deductions</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">C — 50%</span></div>
+<div><b>2.</b> <span class="key-ans">B — Not deductible at all</span><br><span class="key-exp">Nonbusiness bad debt chỉ deductible khi WHOLLY worthless (và khi đó là short-term capital loss). Partially worthless nonbusiness bad debt không được deduct.</span></div>
+<div><b>3.</b> <span class="key-ans">B — $25</span></div>
+<div><b>4.</b> <span class="key-ans">B — $5,000</span><br><span class="key-exp">$5,000 start-up + $5,000 organizational, mỗi loại giảm dollar-for-dollar khi chi phí vượt $50,000, phần còn lại amortize 180 tháng.</span></div>
+<div><b>5.</b> <span class="key-ans">B — Gets no QBID at all</span><br><span class="key-exp">Trên upper threshold, SSTB hoàn toàn mất QBID cho hoạt động kinh doanh đó.</span></div>
+</div>
+</div>
+
+</body>
+</html>

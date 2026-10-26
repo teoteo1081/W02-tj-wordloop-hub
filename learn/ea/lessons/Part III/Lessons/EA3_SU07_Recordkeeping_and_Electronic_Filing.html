@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<!-- Google tag (gtag.js) — GA4 chung của TJ, nhãn site=ea -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'ea'});</script>
+
+<meta charset="UTF-8">
+<title>EA Part III – SU07: Recordkeeping and Electronic Filing</title>
+<style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  body { font-family:'Segoe UI','Calibri',Arial,sans-serif; color:#33322f; font-size:15.5px; line-height:1.5; background:#fdfcfa; margin:0; }
+  .cover { background: linear-gradient(120deg,#bfe4ff 0%,#d6ecff 30%,#e6def7 65%,#fbe6f4 100%); border-radius:20px; padding:40px 30px; text-align:center; margin-bottom:10px; box-shadow:0 6px 18px rgba(120,130,180,.25); border:1px solid #dfe8f5; }
+  .cover .tag { display:inline-block; background:#33314a; color:#d6ecff; font-weight:700; letter-spacing:2px; font-size:13px; padding:5px 14px; border-radius:20px; margin-bottom:14px; }
+  .cover h1 { font-size:30px; margin:6px 0; color:#3170a8; }
+  .cover h2 { font-size:16px; font-weight:500; margin:4px 0 0; opacity:.9; color:#33314a; }
+  .cover .books { margin-top:16px; font-size:13.5px; background:rgba(255,255,255,.55); display:inline-block; padding:8px 16px; border-radius:10px; color:#33314a; }
+  .toc { background:#fff; border:1.5px solid #dfe8f5; border-radius:14px; padding:18px 26px; margin-bottom:30px; }
+  .toc h3 { margin-top:0; color:#3170a8; }
+  .toc ol { margin:0; padding-left:22px; } .toc li{ margin-bottom:6px; }
+  h2.section { font-size:23px; color:#33314a; padding:12px 18px; border-radius:12px; margin:34px 0 14px; border-left:10px solid var(--accent,#5aa9d6); background:var(--bg,#eaf6fd); }
+  h3.lesson { font-size:19px; color:var(--accent-dark,#276a91); border-left:6px solid var(--accent,#5aa9d6); background:var(--bg-soft,#f3fafd); padding:8px 14px; border-radius:6px; margin:22px 0 10px; }
+  .c1{--accent:#5aa9d6;--accent-dark:#276a91;--bg:#eaf6fd;--bg-soft:#f3fafd;--head:#a9d4ec;}
+  .c2{--accent:#a892d9;--accent-dark:#5c4696;--bg:#f1ecfb;--bg-soft:#f8f5fd;--head:#cabdec;}
+  .c3{--accent:#f0a66e;--accent-dark:#b8620b;--bg:#fdeee2;--bg-soft:#fff8f0;--head:#f4c299;}
+  .c4{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
+  .c5{--accent:#e07b9b;--accent-dark:#a3335a;--bg:#fbe9f0;--bg-soft:#fdf5f8;--head:#f3b6c9;}
+  .c6{--accent:#5bb8b0;--accent-dark:#1f7a72;--bg:#e5f7f5;--bg-soft:#f2fbfa;--head:#a6e3dd;}
+  .cKey{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
+  table.vocab { width:100%; border-collapse:collapse; margin-bottom:20px; font-size:.96em; box-shadow:0 2px 8px rgba(0,0,0,.05); border-radius:10px; overflow:hidden; }
+  table.vocab th { background:var(--head,#5aa9d6); color:#2d2d2d; padding:9px 8px; text-align:left; }
+  table.vocab td { padding:8px 8px; border-bottom:1px solid var(--bg,#eaf6fd); vertical-align:top; }
+  table.vocab tr:nth-child(even) td { background:var(--bg-soft,#faf6f0); }
+  table.vocab tr:nth-child(odd) td { background:#fff; }
+  table.vocab td.word { font-weight:800; color:var(--accent-dark,#276a91); }
+  table.vocab td.vn { font-weight:700; color:#3d6ba8; }
+  .rule-box { background:var(--bg,#eaf6fd); border-left:6px solid var(--accent,#5aa9d6); border-radius:8px; padding:12px 18px; margin:10px 0; }
+  .rule-box table { width:100%; border-collapse:collapse; margin:8px 0 4px; }
+  .rule-box table td, .rule-box table th { padding:6px 8px; border-bottom:1px solid rgba(0,0,0,.08); text-align:left; font-size:.94em; }
+  .rule-box table th { color:var(--accent-dark,#276a91); }
+  .rule-box ul, .rule-box ol { margin:6px 0; padding-left:22px; } .rule-box li{ margin-bottom:5px; }
+  .struct { font-weight:800; color:#b8620b; font-family:'Consolas','Courier New',monospace; }
+  .example-box { background:#fff; border:1.5px dashed var(--accent,#5aa9d6); border-radius:8px; padding:10px 16px; margin:10px 0; font-size:.95em; }
+  .example-box b.ex-tag { color:var(--accent-dark,#276a91); }
+  .mcq { background:#fff; border:1.5px solid var(--accent,#5aa9d6); border-radius:10px; padding:12px 18px; margin-bottom:12px; }
+  .mcq .q { color:#3d6ba8; font-weight:700; margin-bottom:6px; }
+  .mcq .opt { margin:2px 0 2px 10px; }
+  .content-block { background:#fff; border:2px dashed var(--accent,#5aa9d6); border-radius:12px; padding:16px 20px; margin-bottom:18px; }
+  .key-grid { column-count:1; } .key-grid div{ margin-bottom:10px; }
+  .key-ans { color:#20824f; font-weight:800; }
+  .key-exp { color:#555; font-size:.95em; }
+  .pagebreak { page-break-before: always; }
+  .note { font-size:.85em; color:#8a8a8a; font-style:italic; }
+  .source-tag { font-size:.8em; color:#999; font-style:italic; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="tag">EA EXAM PREP • PART III — REPRESENTATION, PRACTICES & PROCEDURES • SU07</div>
+  <h1>📗 SU07 — RECORDKEEPING AND ELECTRONIC FILING</h1>
+  <h2>Bản song ngữ Việt–Anh, bám sát giáo trình Gleim 2026</h2>
+  <div class="books">📖 Khái niệm · 🔤 Thuật ngữ · 📌 Ví dụ minh họa · ❓ Câu hỏi trắc nghiệm · 🔑 Đáp án trang sau</div>
+</div>
+
+<div class="toc">
+<h3>📑 Mục lục SU07</h3>
+<ol>
+<li>7.1 Recordkeeping (Lưu trữ hồ sơ: thời hạn, transcript, FOIA, IP PIN)</li>
+<li>7.2 Electronic Filing (E-file: các loại provider, Form 8879/8453, sanctions, EFTPS)</li>
+</ol>
+<p class="note">Nguồn: Gleim EA Review, Study Unit 7 — Recordkeeping and Electronic Filing (2026).</p>
+</div>
+
+<!-- ============================================================ 7.1 RECORDKEEPING ============================================================ -->
+<div class="c1">
+<h2 class="section">7.1 — RECORDKEEPING</h2>
+<div class="rule-box">
+<p>Taxpayer phải giữ sổ sách/record ĐẦY ĐỦ để hỗ trợ các khoản mục trên return. IRS khuyến nghị giữ: sales slip, invoice, receipt, canceled check, hoặc financial account statement liên quan giao dịch. Có thể thay bản cứng bằng tài liệu ĐIỆN TỬ nếu hệ thống tuân thủ yêu cầu IRS. Nếu KHÔNG thể xuất trình tài liệu do lý do NGOÀI TẦM KIỂM SOÁT, taxpayer vẫn có thể TÁI TẠO (reconstruct) record để chứng minh deduction.</p>
+</div>
+
+<h3 class="lesson">Availability & Statute of Limitations của Record</h3>
+<div class="rule-box">
+<p>Record phải sẵn sàng bất cứ lúc nào để IRS kiểm tra, giữ chừng nào còn LIÊN QUAN. Vì IRS thường có <b>3 năm</b> từ due date (hoặc ngày filed, nếu sau) hoặc <b>2 năm</b> từ ngày trả thuế (tùy sau) để assess, taxpayer phải giữ record đến thời điểm SAU trong 2 mốc đó.</p>
+<p><b>6 năm:</b> nếu taxpayer KHÔNG báo cáo thu nhập &gt;25% gross income trên return, HOẶC overstate basis tài sản &gt;25% gross income. Với hàng hóa/dịch vụ từ trade/business, gross income (cho ngưỡng 25%) tính GROSS RECEIPTS TRƯỚC khi trừ COGS. Chỉ tính khoản BỊ BỎ SÓT HOÀN TOÀN.</p>
+<div class="example-box"><b class="ex-tag">Ví dụ tính ngưỡng 25% GI:</b> Sole proprietor: Gross receipts $300,000 − COGS $200,000 = Net business income $100,000; + Capital gains $40,000 = Gross income (return) $140,000. NHƯNG để tính ngưỡng 25% cho mục đích 6-year S/L: dùng Gross receipts $300,000 + Capital gains $40,000 = <b>$340,000</b> (khoản phi-business như capital gain chỉ tính phần GAIN, không tính giá bán).</div>
+<p><b>KHÔNG có thời hiệu:</b> return gian lận (fraudulent), hoặc KHÔNG nộp return. <b>Refund claim:</b> thời hiệu = sau trong (3 năm từ ngày filed) hoặc (2 năm từ ngày trả thuế). <b>Worthless securities loss:</b> thời hiệu <b>7 năm</b>.</p>
+<p><b>Basis của property:</b> giữ record chừng nào còn material — đến khi hết thời hiệu của NĂM tài sản được BÁN.</p>
+</div>
+
+<h3 class="lesson">Employment Tax Records & Business Expense Substantiation</h3>
+<div class="rule-box">
+<p><b>Employment tax & withholding record:</b> giữ tối thiểu <b>4 năm</b> sau due date/ngày trả thuế (tùy sau) — nơi thuận tiện, an toàn, IRS tiếp cận được. Employer phải giữ: tên/địa chỉ/SSN nhân viên; số tiền & ngày mỗi lần trả lương + kỳ dịch vụ; phần remuneration chịu withholding; số thuế đã thu & ngày thu (nếu khác ngày trả); FMV & ngày trả noncash compensation cho retail commission salesperson (nếu không withhold); thông tin health/accident plan; Form W-4 đã nộp; và statement về tips (nếu chưa ghi ở tài liệu khác). <b>Employee KHÔNG cần</b> giữ thêm record về employment tax/withholding.</p>
+<p><b>Business travel & meals:</b> phải chứng minh (substantiate) số tiền, thời gian, địa điểm, mối quan hệ kinh doanh, người tham dự, mục đích kinh doanh. KHÔNG cần documentary evidence cho khoản &lt;$75 (trừ lodging).</p>
+<p><b>Accountable plan — thời hạn hợp lý:</b> advance nhận trong <b>30 ngày</b> từ khi phát sinh expense; expense được kê khai đầy đủ trong <b>60 ngày</b> sau khi trả/phát sinh; excess reimbursement hoàn trả trong <b>120 ngày</b> sau khi trả/phát sinh.</p>
+</div>
+
+<h3 class="lesson">Charitable Contributions & Preparer Privilege (Sec. 7525)</h3>
+<div class="rule-box">
+<p><b>Charitable contribution &lt;$250 (cash):</b> canceled check, bank/credit card statement, hoặc thư biên nhận từ donee ĐỦ LÀM chứng từ (phải có tên donee, ngày, số tiền) — KHÔNG được gộp nhiều khoản đóng góp riêng lẻ để tính $250. <b>≥$250:</b> BẮT BUỘC có "contemporaneous written acknowledgment" từ donee (canceled check KHÔNG đủ).</p>
+<p><b>Sec. 6060:</b> người thuê ≥1 income tax return preparer phải lập return khai tên/ID/nơi làm việc mỗi preparer, giữ record đến <b>3 năm</b>.</p>
+<p><b>Từ chối cung cấp record:</b> practitioner KHÔNG được từ chối cung cấp record/thông tin theo yêu cầu hợp pháp của IRS — TRỪ KHI có căn cứ hợp lý tin rằng thông tin đó được BẢO MẬT (privileged) hoặc yêu cầu có tính pháp lý ĐÁNG NGỜ.</p>
+<p><b>Sec. 7525:</b> taxpayer có quyền BẢO MẬT (privilege) với tax preparer được liên bang ủy quyền về TAX ADVICE — CHỈ áp dụng trong noncriminal hearing; KHÔNG áp dụng cho việc xác định 1 khoản mục trên ORIGINAL return, hay tax shelter.</p>
+</div>
+
+<h3 class="lesson">Transcripts (Return / Account / Record of Account / Wage & Income)</h3>
+<table class="vocab">
+<tr><th>Loại Transcript</th><th>Nội dung & thời gian có sẵn</th></tr>
+<tr><td class="word">Return Transcript</td><td class="vn">Hầu hết dòng mục của return (KHÔNG phải bản copy return) — chỉ cho 1040 series, 1065, 1120, 1120-H, 1120-L, 1120-S</td></tr>
+<tr><td class="word">Account Transcript</td><td class="vn">Tình trạng tài chính account (payment, penalty, điều chỉnh sau khi filed) — có cho hầu hết return</td></tr>
+<tr><td class="word">Record of Account Transcript</td><td class="vn">Chi tiết NHẤT = Return + Account transcript gộp lại — năm hiện tại + 3 năm trước</td></tr>
+<tr><td class="word">Wage and Income Transcript</td><td class="vn">Dữ liệu từ information return (W-2, 1099, 1098, 5498 series) — có thể lấy đến 10 năm; KHÔNG gồm thông tin state/local từ W-2</td></tr>
+<tr><td class="word">Non-Filing Transcript</td><td class="vn">Xác nhận IRS KHÔNG có record đã xử lý 1040-series — KHÔNG cho biết có nghĩa vụ khai thuế hay không</td></tr>
+</table>
+<div class="rule-box">
+<p><b>e-Services & Transcript Delivery System (TDS):</b> bộ công cụ web cho phép tax practitioner giao dịch với IRS — gồm Registration Services, e-file Application, TDS, TIN Matching. Truy cập qua xác thực 2 yếu tố (Secure Access). TDS giúp practitioner nhận transcript trong VÀI PHÚT (thay vì paper request mất vài ngày/tuần). <b>e-Services đang bị thay thế dần bởi Tax Pro Account.</b></p>
+<p><b>Documentation thông thường</b> (receipt, W-2, 1099, canceled check...): có thể bỏ SAU 3 năm từ due date (trừ trường hợp đặc biệt kéo dài đến 6 năm nếu nghi underreport ≥25%). <b>Bản copy tax return chính thức nên giữ VĨNH VIỄN.</b></p>
+</div>
+
+<h3 class="lesson">Legal Documents, FOIA & IP PIN</h3>
+<div class="rule-box">
+<p><b>Proof of birth:</b> cần official document (VD birth certificate). <b>Proof of foreign status/identification:</b> passport, USCIS photo ID, visa, U.S./foreign driver's license, military ID, national ID card (phải còn hiệu lực, có tên/ảnh/địa chỉ/ngày sinh/hạn), U.S. state ID, foreign voter registration, civil birth certificate, medical record (chỉ cho dependent &lt;6 tuổi), school record (chỉ cho dependent &lt;18 tuổi).</p>
+<p><b>Lawsuit settlement review:</b> IRS có thể yêu cầu công ty trả settlement cung cấp: địa chỉ/SĐT/SSN plaintiff; copy complaint/settlement agreement/waiver; mặt trước-sau check; record trao đổi liên quan đàm phán. Với taxpayer: prior-year return, đơn kiện gốc, settlement agreement, check/lịch trả, chứng từ legal fee, lịch phân phối, xác nhận từ luật sư về tính KHÔNG chịu thuế.</p>
+<p><b>Preparer copy requirement:</b> preparer phải giao BẢN COPY ĐẦY ĐỦ của return/refund claim cho taxpayer TRƯỚC HOẶC CÙNG LÚC trình ký. Preparer/employer của preparer giữ 1 bản copy trong <b>3 năm</b>.</p>
+<p><b>Freedom of Information Act (FOIA):</b> mọi record IRS đều chịu FOIA request — nhưng IRS KHÔNG bắt buộc công bố TẤT CẢ (có 9 exemption + 2/3 exclusion theo luật FOIA). Tài liệu phải sẵn có ĐIỆN TỬ — IRS chỉ duy trì Electronic Reading Room (www.irs.gov/privacy-disclosure/foia-library).</p>
+<p><b>IP PIN (Identity Protection PIN):</b> mã 6 số cấp cho taxpayer đủ điều kiện để ngăn lạm dụng SSN trên return gian lận — giúp IRS xác minh danh tính. E-file với SSN + IP PIN sai/thiếu → bị REJECT (phải sửa hoặc nộp giấy); paper return cùng điều kiện → bị DELAY xử lý & refund. Cách nhanh nhất nhận IP PIN: qua online account (1 số taxpayer có thể qua điện thoại/Taxpayer Assistance Center — phải xác minh danh tính). IP PIN mới cấp MỖI NĂM.</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ 7.1</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">contemporaneous written acknowledgment</td><td class="vn">xác nhận bằng văn bản đồng thời (bắt buộc cho donation ≥$250)</td></tr>
+<tr><td class="word">accountable plan</td><td class="vn">kế hoạch hoàn phí có trách nhiệm giải trình (miễn thuế nếu tuân thủ thời hạn)</td></tr>
+<tr><td class="word">Sec. 7525 privilege</td><td class="vn">quyền bảo mật tax advice với preparer (chỉ noncriminal)</td></tr>
+<tr><td class="word">Transcript Delivery System (TDS)</td><td class="vn">Hệ thống lấy transcript điện tử cho practitioner</td></tr>
+<tr><td class="word">Freedom of Information Act (FOIA)</td><td class="vn">Đạo luật tự do thông tin</td></tr>
+<tr><td class="word">Identity Protection PIN (IP PIN)</td><td class="vn">Mã PIN 6 số bảo vệ danh tính khi khai thuế</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 7.1</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. If a taxpayer omits more than 25% of gross income shown on the return, the statute of limitations for retaining records extends to:</div>
+<div class="opt">A. 3 years</div><div class="opt">B. 4 years</div><div class="opt">C. 6 years</div><div class="opt">D. 7 years</div></div>
+<div class="mcq"><div class="q">2. The statute of limitations for a claim of loss from worthless securities is:</div>
+<div class="opt">A. 3 years</div><div class="opt">B. 4 years</div><div class="opt">C. 6 years</div><div class="opt">D. 7 years</div></div>
+<div class="mcq"><div class="q">3. Employment tax and withholding records must be kept for at least how many years after the due date of the tax or the date paid, whichever is later?</div>
+<div class="opt">A. 2 years</div><div class="opt">B. 3 years</div><div class="opt">C. 4 years</div><div class="opt">D. 6 years</div></div>
+<div class="mcq"><div class="q">4. A cash charitable contribution of $250 or more requires:</div>
+<div class="opt">A. A canceled check only</div><div class="opt">B. Contemporaneous written acknowledgment from the donee</div><div class="opt">C. No documentation</div><div class="opt">D. Oral confirmation only</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 7.1 Recordkeeping</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">C — 6 years</span></div>
+<div><b>2.</b> <span class="key-ans">D — 7 years</span></div>
+<div><b>3.</b> <span class="key-ans">C — 4 years</span></div>
+<div><b>4.</b> <span class="key-ans">B</span></div>
+</div>
+</div>
+
+<!-- ============================================================ 7.2 ELECTRONIC FILING ============================================================ -->
+<div class="c2 pagebreak">
+<h2 class="section">7.2 — ELECTRONIC FILING</h2>
+<div class="rule-box">
+<p><b>Specified tax return preparer:</b> preparer chuẩn bị return cho cá nhân/trust/estate (Form 1040, 1041) và DỰ KIẾN nộp ≥<b>11 return</b>/năm → BẮT BUỘC e-file. Áp dụng cho preparer trong 1 firm nếu TỔNG số return của firm (aggregate) ≥11/năm. <b>KHÔNG áp dụng</b> nếu CLIENT (không phải preparer) chọn nộp bản giấy và TỰ NỘP — preparer phải ghi lại lựa chọn này bằng <b>Form 8948</b> (Preparer Explanation for Not Filing Electronically) nộp kèm bản giấy.</p>
+<p><b>Corporation</b> ≥$10 triệu tổng tài sản và nộp ≥10 return/năm → phải e-file. <b>Partnership</b> &gt;100 partners (Schedule K-1) → phải e-file.</p>
+<p style="background:#fff7e0;border-left:4px solid #e0a800;padding:6px 10px;border-radius:6px;margin:8px 0">⚠️ <b>Luật hiện hành (kiểm 2026-10-25):</b> Từ các return phải nộp trong năm <b>2024 trở đi</b> (T.D. 9972), ngưỡng e-file là <b>10 return gộp mọi loại</b> (information returns, partnership, corporate…) thay cho ngưỡng 250 tính riêng từng loại; riêng partnership &gt;100 partners vẫn phải e-file. Gleim 2026 vẫn nêu quy tắc cũ ở trên.</p>
+</div>
+
+<h3 class="lesson">Các loại E-File Provider</h3>
+<table class="vocab">
+<tr><th>Loại Provider</th><th>Vai trò chính</th></tr>
+<tr><td class="word">Electronic Return Originator (ERO)</td><td class="vn">Khởi tạo việc nộp điện tử — thường là điểm liên hệ đầu tiên của taxpayer; chỉ được originate return mình đã CHUẨN BỊ hoặc THU THẬP từ taxpayer; phải có 1 EFIN/firm/địa điểm (trừ khi IRS cấp thêm)</td></tr>
+<tr><td class="word">Intermediate Service Provider</td><td class="vn">Xử lý thông tin return GIỮA ERO và transmitter; đưa EFIN của mình + ERO vào mọi thông tin gửi cho transmitter</td></tr>
+<tr><td class="word">Reporting Agent</td><td class="vn">Originate/transmit return cho client — phải là accounting service/franchiser/bank... tuân Rev. Proc. 2012-32; nộp <b>Form 8655</b> cho mỗi client</td></tr>
+<tr><td class="word">Software Developer</td><td class="vn">Viết phần mềm định dạng/truyền return theo chuẩn IRS — phải qua acceptance/assurance testing</td></tr>
+<tr><td class="word">Transmitter</td><td class="vn">Truyền trực tiếp return đến IRS, nhận acknowledgment file</td></tr>
+<tr><td class="word">Online Provider</td><td class="vn">Cho taxpayer TỰ chuẩn bị return qua phần mềm/website — phải tuân 6 tiêu chuẩn bảo mật (SSL, vulnerability scan, privacy policy, chống bulk-filing gian lận, public domain registration, báo cáo sự cố bảo mật)</td></tr>
+<tr><td class="word">ACA Provider</td><td class="vn">Tổ chức sản xuất/nhập thuốc kê đơn có nhãn hiệu hoặc bảo hiểm y tế báo cáo net premium — originate/transmit report riêng</td></tr>
+</table>
+
+<h3 class="lesson">Điều kiện trở thành E-File Provider & Suitability Check</h3>
+<div class="rule-box">
+<p>Để trở thành IRS e-file provider: (1) truy cập IRS website qua tài khoản <b>ID.me</b>; (2) nộp e-file application; (3) vượt <b>suitability check</b>. Tạo <b>Tax Pro Account</b> cần cung cấp: tên hợp pháp, SSN, ngày sinh, SĐT, email, địa chỉ nhà; AGI năm hiện tại/trước; tạo username/password/PIN + câu hỏi bảo mật. <b>Publication 1345</b> quy định luật lệ cho e-file provider — vi phạm có thể bị chế tài.</p>
+<p>Mỗi provider (principal/responsible official) phải: là công dân Mỹ hoặc thường trú nhân hợp pháp; ≥<b>18 tuổi</b>; đáp ứng yêu cầu license/bond của bang/địa phương; nộp dấu vân tay (TRỪ KHI đã là attorney, CPA, EA, officer của công ty đại chúng, hoặc banking official đã bonded & fingerprinted trong 2 năm qua).</p>
+<p><b>Suitability check</b> gồm: criminal background check; tax compliance check (đã nộp/trả đủ return, có bị assess fraud penalty không); kiểm tra vi phạm e-file trước đây. IRS KHÔNG check suitability cho ứng viên CHỈ đăng ký làm software developer. Quy trình có thể mất <b>45 ngày</b>.</p>
+<p>IRS cấp <b>EFIN</b> cho mọi provider và <b>ETIN</b> cho transmitter/software provider/online provider. Phải CẬP NHẬT application trong <b>30 ngày</b> sau khi có thay đổi (thêm/đổi/xóa principal, đổi vai trò...).</p>
+</div>
+
+<h3 class="lesson">Form 8879 & Form 8453</h3>
+<div class="rule-box">
+<p><b>Form 8879 (IRS e-file Signature Authorization):</b> dùng khi dùng practitioner PIN method hoặc khi taxpayer ủy quyền ERO nhập/tạo PIN cho return e-file. Taxpayer tạo PIN <b>5 số</b>. Form KHÔNG gửi IRS trừ khi được yêu cầu — giữ <b>3 năm</b> từ due date hoặc ngày IRS nhận (tùy sau); có thể giữ điện tử.</p>
+<p><b>Form 8453 (Transmittal for IRS e-file Return):</b> đi kèm 1 số chứng từ PHẢI gửi giấy cho IRS (VD Form 1098-C, 2848, 3115, 3468, 4136, 5713, 8283, 8332, 8858, 8864, 8949). Nếu taxpayer phải mail chứng từ KHÔNG có trong danh sách Form 8453 → KHÔNG được e-file. ERO phải mail Form 8453 trong <b>3 ngày làm việc</b> sau khi nhận acknowledgment IRS đã chấp nhận return. Provider giữ copy Form 8453 đến HẾT NĂM DƯƠNG LỊCH đó (Pub. 1345).</p>
+<p>E-file giới hạn cho return có due date trong năm HIỆN TẠI + 2 năm trước (VD 2026 + 2025 + 2024). KHÔNG xử lý được: return fiscal-year cá nhân; return có form/schedule không tương thích e-file.</p>
+</div>
+
+<h3 class="lesson">Fees, Refunds, Rejection & RAL</h3>
+<div class="rule-box">
+<p><b>Fee:</b> ERO KHÔNG được tính phí dựa trên thời gian chuẩn bị, % refund, hay bất kỳ số liệu nào từ return (contingent fee); KHÔNG được tính phí riêng cho direct deposit.</p>
+<p><b>Refund:</b> ERO phải chấp nhận direct deposit vào BẤT KỲ tổ chức tài chính hợp lệ nào taxpayer chỉ định (checking/savings/share draft/IRA...) — KHÔNG được thu thêm phí.</p>
+<p><b>Rejection:</b> nếu return bị reject và KHÔNG thể sửa theo Rev. Proc. 98-50, ERO phải báo taxpayer trong <b>24 giờ</b> rằng return CHƯA được nộp, kèm business rule + giải thích. Có thể sửa & gửi lại KHÔNG cần chữ ký mới nếu thay đổi ≤$50 (Total income/AGI) hoặc ≤$14 (Total tax/Withheld/Refund/Amount owed). Paper return coi là NỘP ĐÚNG HẠN nếu đóng dấu bưu điện trước ngày SAU trong (due date gốc + extension) hoặc (10 ngày sau IRS thông báo reject cuối); resubmit điện tử: due date hoặc <b>5 ngày</b> sau thông báo cuối (tùy sau).</p>
+<p><b>Refund Anticipation Loan (RAL):</b> khoản vay dựa trên refund dự kiến — là HỢP ĐỒNG giữa taxpayer & lender, IRS KHÔNG liên quan (không chịu trách nhiệm lãi phát sinh do refund trễ). ERO có thể hỗ trợ & tính PHÍ CỐ ĐỊNH (giống nhau cho mọi khách hàng, KHÔNG liên quan số refund/RAL). ERO/provider là preparer & tổ chức tài chính cho RAL KHÔNG được là "related taxpayer" theo Sec. 267/707.</p>
+</div>
+
+<h3 class="lesson">Advertising, EFTPS & Sanctions</h3>
+<div class="rule-box">
+<p><b>Advertising:</b> phải tuân Circular 230 — cấm truyền thông sai lệch/gian lận/gây hiểu lầm. KHÔNG được dùng "Internal Revenue Service"/"IRS" trong tên firm (nhưng ĐƯỢC tự xưng "Authorized IRS e-file Provider" sau khi được chấp nhận). Với quảng cáo phát sóng/online: giữ bản copy ≥<b>36 tháng</b> (Sec. 10.30 Circular 230) — Pub. 3112 yêu cầu giữ đến HẾT NĂM DƯƠNG LỊCH kế tiếp lần dùng cuối.</p>
+<p><b>EFTPS (Electronic Federal Tax Payment System):</b> cá nhân đăng ký qua điện thoại/online; doanh nghiệp dùng trực tiếp hoặc qua tổ chức tài chính. Truy cập bằng SSN/TIN + PIN + Internet password. Giao dịch phải lên lịch ÍT NHẤT <b>1 ngày</b> trước due date. Cá nhân được lên lịch trước tối đa <b>1 năm</b>; 1 số doanh nghiệp tối đa <b>120 ngày</b>.</p>
+<p><b>Sanctions (3 cấp):</b> Level 1 (ảnh hưởng ít/không đáng kể) → written reprimand. Level 2 (ảnh hưởng đáng kể chất lượng e-file, gồm cả level-1 tái phạm) → hạn chế tham gia hoặc suspend <b>1 năm</b>. Level 3 (ảnh hưởng NGHIÊM TRỌNG, gồm level-2 tái phạm) → suspend <b>2 năm</b>, hoặc EXPULSION nếu nghiêm trọng (identity theft, fraud, tội phạm) — IRS có quyền suspend/expel TRƯỚC KHI administrative review với level 3.</p>
+<p><b>Administrative review:</b> 2 bước — (1) yêu cầu review tại office đã denied/sanction; (2) nếu vẫn giữ nguyên, có thể appeal lên IRS appeals office (TRỪ sanction là written reprimand/level 1). KHÔNG phản hồi trong <b>30 ngày</b> → MẤT VĨNH VIỄN quyền review/appeal.</p>
+<p><b>EFIN Revocation:</b> IRS có thể thu hồi nếu có lệnh tòa liên bang cấm nộp return, hoặc hành động pháp lý liên bang/bang cấm tham gia e-file — trường hợp này KHÔNG được administrative review. Có thể nộp lại application sau khi injunction/hành động pháp lý hết hiệu lực/bị đảo ngược.</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ 7.2</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">Electronic Return Originator (ERO)</td><td class="vn">Người khởi tạo nộp return điện tử</td></tr>
+<tr><td class="word">Electronic Filing Identification Number (EFIN)</td><td class="vn">Mã số định danh e-file provider</td></tr>
+<tr><td class="word">Form 8879 / Form 8453</td><td class="vn">Ủy quyền chữ ký e-file / Chuyển giao chứng từ giấy kèm e-file</td></tr>
+<tr><td class="word">Refund Anticipation Loan (RAL)</td><td class="vn">Khoản vay tạm ứng dựa trên tiền hoàn thuế dự kiến</td></tr>
+<tr><td class="word">Electronic Federal Tax Payment System (EFTPS)</td><td class="vn">Hệ thống thanh toán thuế liên bang điện tử</td></tr>
+<tr><td class="word">contingent fee</td><td class="vn">phí tính theo tỷ lệ kết quả (bị cấm cho e-file transmission)</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 7.2</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. A specified tax return preparer who reasonably expects to file how many or more individual income tax returns in a calendar year must e-file?</div>
+<div class="opt">A. 5</div><div class="opt">B. 11</div><div class="opt">C. 25</div><div class="opt">D. 50</div></div>
+<div class="mcq"><div class="q">2. Form 8879 must generally be retained for:</div>
+<div class="opt">A. 1 year</div><div class="opt">B. 2 years</div><div class="opt">C. 3 years from the return due date or IRS received date, whichever is later</div><div class="opt">D. Indefinitely</div></div>
+<div class="mcq"><div class="q">3. If the IRS rejects an e-filed return and the issue cannot be corrected under Rev. Proc. 98-50, the ERO must notify the taxpayer within:</div>
+<div class="opt">A. 24 hours</div><div class="opt">B. 48 hours</div><div class="opt">C. 5 business days</div><div class="opt">D. 10 calendar days</div></div>
+<div class="mcq"><div class="q">4. A Level 3 e-file sanction infraction may result in suspension from IRS e-file participation for:</div>
+<div class="opt">A. 6 months</div><div class="opt">B. 1 year</div><div class="opt">C. 2 years</div><div class="opt">D. Never — only a written reprimand</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 7.2 Electronic Filing</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — 11</span></div>
+<div><b>2.</b> <span class="key-ans">C</span></div>
+<div><b>3.</b> <span class="key-ans">A — 24 hours</span></div>
+<div><b>4.</b> <span class="key-ans">C — 2 years</span></div>
+</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<!-- Google tag (gtag.js) — GA4 chung của TJ, nhãn site=ea -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'ea'});</script>
+
+<meta charset="UTF-8">
+<title>EA Part II – SU17–20: S Corporations to Exempt Organizations</title>
+<style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  body { font-family:'Segoe UI','Calibri',Arial,sans-serif; color:#33322f; font-size:15px; line-height:1.5; background:#fdfcfa; margin:0; }
+  .cover { background: linear-gradient(120deg,#bfe4ff 0%,#d6ecff 30%,#e6def7 65%,#fbe6f4 100%); border-radius:20px; padding:40px 30px; text-align:center; margin-bottom:10px; box-shadow:0 6px 18px rgba(120,130,180,.25); border:1px solid #dfe8f5; }
+  .cover .tag { display:inline-block; background:#33314a; color:#d6ecff; font-weight:700; letter-spacing:2px; font-size:13px; padding:5px 14px; border-radius:20px; margin-bottom:14px; }
+  .cover h1 { font-size:28px; margin:6px 0; color:#3170a8; }
+  .cover h2 { font-size:15px; font-weight:500; margin:4px 0 0; opacity:.9; color:#33314a; }
+  .cover .books { margin-top:16px; font-size:13px; background:rgba(255,255,255,.55); display:inline-block; padding:8px 16px; border-radius:10px; color:#33314a; }
+  .toc { background:#fff; border:1.5px solid #dfe8f5; border-radius:14px; padding:18px 26px; margin-bottom:30px; }
+  .toc h3 { margin-top:0; color:#3170a8; }
+  .toc ol { margin:0; padding-left:22px; } .toc li{ margin-bottom:6px; }
+  h2.section { font-size:21px; color:#33314a; padding:12px 18px; border-radius:12px; margin:34px 0 14px; border-left:10px solid var(--accent,#5aa9d6); background:var(--bg,#eaf6fd); }
+  h3.lesson { font-size:18px; color:var(--accent-dark,#276a91); border-left:6px solid var(--accent,#5aa9d6); background:var(--bg-soft,#f3fafd); padding:8px 14px; border-radius:6px; margin:22px 0 10px; }
+  .c1{--accent:#5aa9d6;--accent-dark:#276a91;--bg:#eaf6fd;--bg-soft:#f3fafd;--head:#a9d4ec;}
+  .c2{--accent:#a892d9;--accent-dark:#5c4696;--bg:#f1ecfb;--bg-soft:#f8f5fd;--head:#cabdec;}
+  .c3{--accent:#f0a66e;--accent-dark:#b8620b;--bg:#fdeee2;--bg-soft:#fff8f0;--head:#f4c299;}
+  .c4{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
+  .c5{--accent:#e07b9b;--accent-dark:#a3335a;--bg:#fbe9f0;--bg-soft:#fdf5f8;--head:#f3b6c9;}
+  .c6{--accent:#5bb8b0;--accent-dark:#1f7a72;--bg:#e5f7f5;--bg-soft:#f2fbfa;--head:#a6e3dd;}
+  .c7{--accent:#c9a13a;--accent-dark:#8a6c14;--bg:#fbf3de;--bg-soft:#fdf9ee;--head:#e9cd7c;}
+  .c8{--accent:#8697d6;--accent-dark:#4453a0;--bg:#eceffc;--bg-soft:#f6f7fd;--head:#c1c9ef;}
+  .cKey{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
+  table.vocab { width:100%; border-collapse:collapse; margin-bottom:18px; font-size:.94em; box-shadow:0 2px 8px rgba(0,0,0,.05); border-radius:10px; overflow:hidden; }
+  table.vocab th { background:var(--head,#5aa9d6); color:#2d2d2d; padding:8px; text-align:left; }
+  table.vocab td { padding:7px 8px; border-bottom:1px solid var(--bg,#eaf6fd); vertical-align:top; }
+  table.vocab tr:nth-child(even) td { background:var(--bg-soft,#faf6f0); }
+  table.vocab tr:nth-child(odd) td { background:#fff; }
+  table.vocab td.word { font-weight:800; color:var(--accent-dark,#276a91); }
+  table.vocab td.vn { font-weight:700; color:#3d6ba8; }
+  .rule-box { background:var(--bg,#eaf6fd); border-left:6px solid var(--accent,#5aa9d6); border-radius:8px; padding:12px 18px; margin:10px 0; }
+  .rule-box table { width:100%; border-collapse:collapse; margin:8px 0 4px; }
+  .rule-box table td, .rule-box table th { padding:6px 8px; border-bottom:1px solid rgba(0,0,0,.08); text-align:left; font-size:.92em; }
+  .rule-box table th { color:var(--accent-dark,#276a91); }
+  .rule-box ul, .rule-box ol { margin:6px 0; padding-left:22px; } .rule-box li{ margin-bottom:5px; }
+  .struct { font-weight:800; color:#b8620b; font-family:'Consolas','Courier New',monospace; }
+  .example-box { background:#fff; border:1.5px dashed var(--accent,#5aa9d6); border-radius:8px; padding:10px 16px; margin:8px 0; font-size:.92em; }
+  .example-box b.ex-tag { color:var(--accent-dark,#276a91); }
+  .mcq { background:#fff; border:1.5px solid var(--accent,#5aa9d6); border-radius:10px; padding:12px 18px; margin-bottom:12px; }
+  .mcq .q { color:#3d6ba8; font-weight:700; margin-bottom:6px; }
+  .mcq .opt { margin:2px 0 2px 10px; }
+  .content-block { background:#fff; border:2px dashed var(--accent,#5aa9d6); border-radius:12px; padding:16px 20px; margin-bottom:18px; }
+  .key-grid { column-count:1; } .key-grid div{ margin-bottom:9px; }
+  .key-ans { color:#20824f; font-weight:800; }
+  .key-exp { color:#555; font-size:.92em; }
+  .pagebreak { page-break-before: always; }
+  .note { font-size:.85em; color:#8a8a8a; font-style:italic; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="tag">EA EXAM PREP • PART II — BUSINESSES • SU17–20</div>
+  <h1>📗 PART II — BUSINESSES</h1>
+  <h2>SU17 S Corporations · SU18 Decedent/Estate/Trust Income Tax · SU19 Retirement Plans for Small Businesses · SU20 Exempt Organizations</h2>
+  <div class="books">📖 Khái niệm · 🔤 Thuật ngữ · 📌 Ví dụ · ❓ Trắc nghiệm · 🔑 Đáp án trang sau</div>
+</div>
+
+<div class="toc">
+<h3>📑 Mục lục SU17–20 (chia nhỏ theo chủ đề)</h3>
+<ol>
+<li>A. S Corporations — Eligibility, Election & Termination</li>
+<li>B. S Corporations — Operations: Pass-Through, Separately Stated Items & Basis</li>
+<li>C. S Corporations — Distributions: AAA/OAA & Reasonable Compensation</li>
+<li>D. Decedent's Final Return & Income in Respect of a Decedent (IRD)</li>
+<li>E. Income Taxation of Estates & Trusts — DNI & Distribution Deduction</li>
+<li>F. Beneficiary Taxation, NIIT & Fraudulent Trusts</li>
+<li>G. Retirement Plans — SEP & SIMPLE</li>
+<li>H. Retirement Plans — Qualified Plans, Distributions & Loans</li>
+<li>I. Exempt Organizations — Status, Categories & Private Foundations</li>
+<li>J. Exempt Organizations — Annual Returns, UBTI & Charitable Deduction</li>
+</ol>
+<p class="note">Nguồn: Gleim EA Review, Study Units 17–20 (2026). Số liệu $ theo năm 2025 (trừ khi ghi chú khác).</p>
+</div>
+
+<!-- A -->
+<div class="c1">
+<h2 class="section">A — S CORPORATIONS: ELIGIBILITY, ELECTION & TERMINATION</h2>
+<div class="rule-box">
+<p><b>S corporation</b> nhìn chung không chịu thuế thu nhập liên bang ở cấp công ty — các khoản thu nhập/lỗ/khấu trừ/credit được <b>pass-through</b> cho shareholders theo tỷ lệ per-day, per-share.</p>
+<p><b>Điều kiện Eligibility:</b></p>
+<ul>
+<li><b>One class of stock</b> — mọi cổ phần lưu hành phải có quyền lợi giống nhau về profits & assets khi thanh lý (variation về voting rights vẫn được phép trong cùng 1 class). Nợ (debt) có thể bị coi là "second class of stock" và làm mất tư cách S corp.</li>
+<li><b>Tối đa 100 shareholders</b> — vợ/chồng tính là 1 shareholder; gia đình trong phạm vi 6 thế hệ (six-generation family) cũng tính là 1 shareholder.</li>
+<li><b>Nonresident alien (NRA)</b> KHÔNG được sở hữu cổ phần.</li>
+<li>Shareholder chỉ được là: <b>individual</b> (kể cả chủ single-member LLC), <b>estate</b>, hoặc <b>qualified trust</b> (một số small business trust & tổ chức tax-exempt như qualified retirement plan cũng được). <b>Partnerships và corporations KHÔNG được</b> làm shareholder. Charitable Remainder Unitrust/Annuity Trust cũng KHÔNG đủ điều kiện.</li>
+<li>Corporation phải là <b>domestic và eligible</b> — công ty bảo hiểm và ngân hàng dùng reserve method cho bad debts thì KHÔNG đủ điều kiện.</li>
+<li>S corp được sở hữu C corporation hoặc <b>QSSS/QSub</b> (Qualified Subchapter S Subsidiary — công ty con 100% thuộc S corp parent). Ngược lại, <b>C corporation KHÔNG được sở hữu cổ phần của S corp</b>.</li>
+</ul>
+</div>
+
+<h3 class="lesson">Election — Thời hạn "2 tháng 15 ngày"</h3>
+<div class="rule-box">
+<p>Mọi shareholder tại thời điểm election (và cả những người từng là shareholder trong phần năm trước khi election được thực hiện) phải ký <b>Form 2553</b> (Election by a Small Business Corporation) để consent.</p>
+<p><b>Election trong vòng 2 tháng 15 ngày</b> đầu năm thuế (= ngày 15 tháng thứ 3) → hiệu lực từ ngày đầu năm thuế đó. Election SAU thời hạn này → hiệu lực từ đầu năm thuế TIẾP THEO. IRS có thể chấp nhận election trễ nếu có <b>reasonable cause</b>.</p>
+</div>
+
+<h3 class="lesson">Termination & PII Termination</h3>
+<div class="rule-box">
+<p>S election chấm dứt khi: (1) <b>Revocation</b> — cần &gt;50% shareholders (voting + nonvoting) đồng ý; (2) bất kỳ điều kiện eligibility nào không được đáp ứng vào bất kỳ ngày nào; (3) <b>Passive Investment Income (PII) termination</b>.</p>
+<p><b>PII termination:</b> xảy ra khi S corp có <b>Subchapter C E&amp;P</b> (từng là C corp) VÀ PII &gt; 25% gross receipts trong <b>3 năm liên tiếp</b>. PII gồm dividends, interest (kể cả tax-exempt), royalties, rents, annuities (trừ 1 số khoản loại trừ như lãi từ A/R hàng tồn kho, rent có significant services). Hiệu lực termination = ngày đầu năm thuế SAU năm thứ 3 liên tiếp đó.</p>
+<p>Sau khi terminate, phải chờ <b>5 tax years</b> mới được re-elect (trừ khi IRS đồng ý sớm hơn, hoặc waive nếu termination là inadvertent và được sửa kịp thời).</p>
+<p><b>Return due date:</b> ngày 15 tháng thứ 3 sau khi kết thúc năm thuế (Form 1120-S); extension 6 tháng qua Form 7004. <b>Failure-to-file penalty</b> = $260/tháng (2025) × số shareholders × số tháng trễ (tối đa 12 tháng); nếu có tax due, cộng thêm 5%/tháng (tối đa 25%).</p>
+<p style="background:#fff7e0;border-left:4px solid #e0a800;padding:6px 10px;border-radius:6px;margin:8px 0">⚠️ <b>Luật hiện hành (kiểm 2026-10-25):</b> Nguồn khác ghi mức phạt trễ cho return đến hạn 2026 là <b>$255</b>/shareholder/tháng; Gleim ghi $260 (“2025 returns filed in 2026”). Con số chỉnh theo lạm phát hằng năm, đề thi bám số của Gleim/đề.</p>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ:</b> Acme, Inc. (S corp) muốn fiscal year 30/4 vì &gt;25% gross receipts rơi vào tháng 3–4 trong 3 năm liên tiếp → đủ điều kiện "natural business year". Nếu không chứng minh được business purpose, S corp buộc dùng calendar year (trừ khi làm Sec. 444 election kèm noninterest-bearing deposit, deferral tối đa 3 tháng).</div>
+
+<h3 class="lesson">Thuật ngữ Phần A</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">pass-through entity</td><td class="vn">thực thể chuyển tiếp thu nhập/lỗ cho chủ sở hữu, không chịu thuế cấp công ty</td></tr>
+<tr><td class="word">one class of stock</td><td class="vn">một loại cổ phần duy nhất (điều kiện bắt buộc của S corp)</td></tr>
+<tr><td class="word">QSub / QSSS</td><td class="vn">công ty con thuộc Subchapter S đủ điều kiện, sở hữu 100% bởi S corp</td></tr>
+<tr><td class="word">Form 2553</td><td class="vn">mẫu bầu chọn quy chế S corporation</td></tr>
+<tr><td class="word">Passive Investment Income (PII)</td><td class="vn">thu nhập đầu tư thụ động (dividend, interest, rent, royalty, annuity)</td></tr>
+<tr><td class="word">reasonable cause</td><td class="vn">lý do hợp lý (để được miễn phạt/chấp nhận election trễ)</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm Phần A</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. The maximum number of shareholders an S corporation may have is:</div>
+<div class="opt">A. 35</div><div class="opt">B. 75</div><div class="opt">C. 100</div><div class="opt">D. Unlimited</div></div>
+<div class="mcq"><div class="q">2. Which of the following can be a shareholder of an S corporation?</div>
+<div class="opt">A. A partnership</div><div class="opt">B. A C corporation</div><div class="opt">C. A nonresident alien</div><div class="opt">D. An individual's estate</div></div>
+<div class="mcq"><div class="q">3. An S election made after the first 2 months and 15 days of the corporation's tax year is effective:</div>
+<div class="opt">A. Retroactively to the first day of that tax year</div><div class="opt">B. On the first day of the following tax year</div><div class="opt">C. Never</div><div class="opt">D. Immediately upon filing</div></div>
+<div class="mcq"><div class="q">4. A PII termination of S status occurs when passive investment income exceeds 25% of gross receipts (with Subchapter C E&P on hand) for how many consecutive years?</div>
+<div class="opt">A. 1 year</div><div class="opt">B. 2 years</div><div class="opt">C. 3 years</div><div class="opt">D. 5 years</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — Phần A</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">C — 100</span><br><span class="key-exp">Vợ/chồng và gia đình trong 6 thế hệ tính là 1 shareholder, giúp thực tế "chứa" nhiều thành viên hơn.</span></div>
+<div><b>2.</b> <span class="key-ans">D — An individual's estate</span><br><span class="key-exp">Estate, individual, và certain qualified trust được phép; partnership, C corporation, NRA đều KHÔNG được.</span></div>
+<div><b>3.</b> <span class="key-ans">B — First day of the following tax year</span></div>
+<div><b>4.</b> <span class="key-ans">C — 3 years</span></div>
+</div>
+</div>
+
+<!-- B -->
+<div class="c2 pagebreak">
+<h2 class="section">B — S CORPORATIONS: OPERATIONS, SEPARATELY STATED ITEMS & BASIS</h2>
+<div class="rule-box">
+<p>S corps được <b>miễn</b>: corporate income tax, accumulated earnings tax (AET), personal holding company (PHC) tax.</p>
+<p><b>Separately stated items</b> = các khoản có thể ảnh hưởng khác nhau đến thuế của từng shareholder nếu tính riêng, PHẢI pass-through riêng biệt: Sec. 1231 gains/losses, net short/long-term capital gains/losses, dividends, charitable contributions, foreign taxes, tax-exempt interest, investment income/expense, Sec. 179 deduction, credits...</p>
+<p><b>Sec. 179 (2025):</b> tối đa <b>$2,500,000</b>; giảm dần nếu property placed in service &gt;<b>$4,000,000</b>. Limit áp dụng theo TỪNG TAXPAYER (shareholder), không theo từng business.</p>
+<p><b>Built-in gains tax:</b> nếu S corp từng là C corp, bán tài sản có unrealized gain trong <b>5 năm đầu</b> sau khi elect S status → S corp phải nộp thuế ở mức corporate rate (21%) trên net unrealized built-in gains.</p>
+<p><b>Charitable contribution property:</b> shareholder giảm basis cổ phần theo <b>adjusted basis (AB)</b> của property (không phải FMV), dù được deduct theo FMV.</p>
+</div>
+
+<h3 class="lesson">Stock Basis — Tăng/Giảm</h3>
+<div class="rule-box">
+<p><b>Tăng basis</b> theo pro rata: mọi income items (kể cả tax-exempt) separately stated + non-separately stated income + phần depletion vượt basis.</p>
+<p><b>Giảm basis</b> theo thứ tự: (1) distributions không tính vào income, (2) separately stated losses/deductions, (3) non-separately stated loss, (4) expenses không deductible/không capitalized.</p>
+<p style="background:#fff7e0;border-left:4px solid #e0a800;padding:6px 10px;border-radius:6px;margin:8px 0">⚠️ <b>Luật hiện hành (kiểm 2026-10-25):</b> Theo Treas. Reg. §1.1367-1(f), thứ tự giảm basis là: <b>distributions → expenses không deductible → losses/deductions</b> (expenses không deductible đứng TRƯỚC losses). Bài liệt kê expenses không deductible ở cuối; khi có loss, áp dụng thứ tự của quy định.</p>
+<p><b>Debt basis:</b> chỉ phát sinh khi shareholder trực tiếp CHO S corp vay tiền — bảo lãnh (guarantee) khoản vay bên thứ ba KHÔNG tạo basis (trừ khi shareholder thực trả). Sau khi stock basis = 0, loss tiếp tục giảm debt basis (không dưới 0); phần loss vượt cả 2 loại basis bị <b>suspended, carryover vô thời hạn</b>.</p>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ (giảm basis):</b> Basis đầu năm $22,000 ($19,500 stock + $2,500 debt). Shareholder rút $16,000, corp lỗ $9,000. Stock basis: $19,500 − $16,000 = $3,500, rồi − $9,000 loss → về $0 (dùng hết $3,500). Debt basis $2,500 tiếp tục hấp thụ phần loss còn lại → về $0. Phần loss còn dư $3,000 ($9,000 − $3,500 − $2,500) bị carryover.</div>
+
+<h3 class="lesson">At-Risk & Passive Activity Loss Rules</h3>
+<div class="rule-box">
+<p><b>At-risk rules</b> áp dụng CẤP SHAREHOLDER: loss vượt "amount at risk" bị suspended, carryforward vô thời hạn. At-risk amount = tiền + basis property góp vào công ty + số tiền cho công ty vay MÀ shareholder chịu trách nhiệm cá nhân (không gồm nợ công ty với bên thứ ba dù shareholder bảo lãnh).</p>
+<p><b>Passive activity loss (PAL) rules:</b> nếu S corp là rental activity, HOẶC shareholder không "materially participate" → loss pass-through chỉ được deduct đến mức passive income (áp dụng ở cấp shareholder, dù S corp có materially participate hay không).</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ Phần B</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">separately stated item</td><td class="vn">khoản mục phải tính riêng khi pass-through cho shareholder</td></tr>
+<tr><td class="word">built-in gains tax</td><td class="vn">thuế trên lãi tiềm ẩn tại thời điểm chuyển từ C sang S corp</td></tr>
+<tr><td class="word">stock basis / debt basis</td><td class="vn">basis cổ phần / basis khoản nợ shareholder cho công ty vay</td></tr>
+<tr><td class="word">at-risk amount</td><td class="vn">số tiền thực sự "chịu rủi ro" của shareholder trong hoạt động kinh doanh</td></tr>
+<tr><td class="word">material participation</td><td class="vn">tham gia đáng kể/thường xuyên vào hoạt động kinh doanh</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm Phần B</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. Which of the following taxes does an S corporation generally NOT pay?</div>
+<div class="opt">A. Employment taxes on wages</div><div class="opt">B. Corporate income tax</div><div class="opt">C. Excise taxes</div><div class="opt">D. Built-in gains tax (if formerly a C corp)</div></div>
+<div class="mcq"><div class="q">2. A shareholder's stock basis is increased by which of the following?</div>
+<div class="opt">A. Nondeductible expenses</div><div class="opt">B. Distributions not included in income</div><div class="opt">C. Tax-exempt income</div><div class="opt">D. Nondeductible losses</div></div>
+<div class="mcq"><div class="q">3. If a shareholder guarantees a third-party loan to an S corporation but makes no payments on it, the guarantee:</div>
+<div class="opt">A. Increases the shareholder's stock basis</div><div class="opt">B. Increases the shareholder's debt basis</div><div class="opt">C. Does not increase the shareholder's basis</div><div class="opt">D. Decreases the shareholder's basis</div></div>
+<div class="mcq"><div class="q">4. The built-in gains tax applies when an S corporation that was formerly a C corporation sells appreciated assets within how many years of the S election?</div>
+<div class="opt">A. 2 years</div><div class="opt">B. 3 years</div><div class="opt">C. 5 years</div><div class="opt">D. 10 years</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — Phần B</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — Corporate income tax</span><br><span class="key-exp">S corp miễn corporate income tax, AET, PHC tax — nhưng vẫn phải trả employment tax, excise tax, và built-in gains tax nếu có.</span></div>
+<div><b>2.</b> <span class="key-ans">C — Tax-exempt income</span></div>
+<div><b>3.</b> <span class="key-ans">C — Does not increase basis</span><br><span class="key-exp">Chỉ khi shareholder thực sự THANH TOÁN khoản vay được bảo lãnh thì mới tăng basis.</span></div>
+<div><b>4.</b> <span class="key-ans">C — 5 years</span></div>
+</div>
+</div>
+
+<!-- C -->
+<div class="c3 pagebreak">
+<h2 class="section">C — S CORPORATIONS: DISTRIBUTIONS, AAA/OAA & REASONABLE COMPENSATION</h2>
+<div class="rule-box">
+<p>S corp giữ 2 loại "sổ" cho mỗi shareholder: <b>AAA</b> (Accumulated Adjustments Account) và <b>OAA</b> (Other Adjustments Account). Thứ tự nguồn tài trợ distribution: <b>AAA → AE&amp;P (Subchapter C E&amp;P) → OAA → Stock basis</b>.</p>
+<p><b>AAA</b> = tổng lũy kế các separately/non-separately stated items (tính KHÔNG kể tax-exempt income — khoản này vào OAA thay vào đó). AAA CÓ THỂ âm (basis thì KHÔNG được âm); distribution không làm AAA giảm dưới 0.</p>
+</div>
+
+<h3 class="lesson">Xử lý Distribution cho Shareholder</h3>
+<div class="rule-box">
+<p><b>S corp KHÔNG có Subchapter C E&amp;P</b> (chưa từng là C corp):</p>
+<table><tr><th>Distribution</th><th>Kết quả thuế</th></tr>
+<tr><td>Đến mức stock basis</td><td>Không chịu thuế; giảm basis</td></tr>
+<tr><td>Vượt basis</td><td>Chịu thuế như capital gain</td></tr></table>
+<p><b>S corp CÓ Subchapter C E&amp;P</b> (thứ tự đầy đủ):</p>
+<table><tr><th>Distribution</th><th>Kết quả thuế</th></tr>
+<tr><td>Đến mức AAA</td><td>Không chịu thuế; giảm AAA & basis</td></tr>
+<tr><td>Đến mức C corp E&P</td><td>Chịu thuế như dividend; giảm E&P, KHÔNG giảm basis</td></tr>
+<tr><td>Đến mức OAA</td><td>Không chịu thuế; giảm OAA & basis</td></tr>
+<tr><td>Đến mức basis còn lại</td><td>Không chịu thuế; giảm basis</td></tr>
+<tr><td>Vượt basis</td><td>Chịu thuế như capital gain</td></tr></table>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ:</b> S corp 1 chủ, AAA $12,000, E&amp;P $8,000, basis shareholder $25,000. $12,000 đầu → giảm AAA về $0, basis còn $13,000 (không thuế). $8,000 tiếp theo → dividend income, giảm E&amp;P về $0 (basis KHÔNG đổi). $13,000 tiếp theo → giảm basis về $0 (không thuế, return of capital). Phần vượt $33,000 ($25,000+$8,000) → capital gain.</div>
+
+<h3 class="lesson">Reasonable Compensation</h3>
+<div class="rule-box">
+<p>Distributions/payments cho corporate officer PHẢI được coi là <b>wages</b> đến mức là "reasonable compensation" cho dịch vụ đã thực hiện — báo trên <b>Form W-2</b>, chịu employment tax. Officer compensation báo trên Form 1120-S dòng 7; wages nhân viên khác dòng 8.</p>
+<p>IRS có quyền <b>reclassify</b> non-wage distributions thành wages nếu compensation trả cho shareholder-officer thấp bất hợp lý. Yếu tố xét "reasonable": training/experience, duties/responsibilities, thời gian bỏ ra, lịch sử dividend, so sánh với thị trường, công thức tính lương...</p>
+<p class="note">Officer compensation bị khai nhầm thành distribution sẽ làm giảm AAA sai và ảnh hưởng basis shareholder.</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ Phần C</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">AAA (Accumulated Adjustments Account)</td><td class="vn">tài khoản điều chỉnh lũy kế (theo dõi thu nhập/lỗ sau khi elect S)</td></tr>
+<tr><td class="word">OAA (Other Adjustments Account)</td><td class="vn">tài khoản điều chỉnh khác (tax-exempt income, life insurance proceeds)</td></tr>
+<tr><td class="word">Subchapter C E&P</td><td class="vn">lợi nhuận tích lũy còn lại từ thời còn là C corporation</td></tr>
+<tr><td class="word">reasonable compensation</td><td class="vn">mức lương hợp lý cho officer/shareholder-employee</td></tr>
+<tr><td class="word">return of capital</td><td class="vn">hoàn vốn gốc (không chịu thuế, giảm basis)</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm Phần C</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. For an S corporation with Subchapter C E&P, distributions are sourced first from:</div>
+<div class="opt">A. AE&P</div><div class="opt">B. AAA</div><div class="opt">C. OAA</div><div class="opt">D. Stock basis</div></div>
+<div class="mcq"><div class="q">2. A distribution treated as a dividend to the extent of Subchapter C E&P:</div>
+<div class="opt">A. Reduces the shareholder's stock basis</div><div class="opt">B. Does not reduce the shareholder's stock basis</div><div class="opt">C. Is always tax-free</div><div class="opt">D. Reduces AAA</div></div>
+<div class="mcq"><div class="q">3. If the IRS determines that an S corporation shareholder-officer's compensation is unreasonably low compared to distributions taken, the IRS may:</div>
+<div class="opt">A. Terminate the S election</div><div class="opt">B. Reclassify distributions as wages subject to employment tax</div><div class="opt">C. Disallow the distribution entirely</div><div class="opt">D. Do nothing; there is no such rule</div></div>
+<div class="mcq"><div class="q">4. The AAA balance:</div>
+<div class="opt">A. Can never go below zero</div><div class="opt">B. Can be reduced below zero</div><div class="opt">C. Is identical to stock basis</div><div class="opt">D. Includes tax-exempt income</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — Phần C</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — AAA</span></div>
+<div><b>2.</b> <span class="key-ans">B — Does not reduce basis</span></div>
+<div><b>3.</b> <span class="key-ans">B — Reclassify as wages</span></div>
+<div><b>4.</b> <span class="key-ans">B — Can be reduced below zero</span><br><span class="key-exp">AAA có thể âm; chỉ stock basis là KHÔNG được âm.</span></div>
+</div>
+</div>
+
+<!-- D -->
+<div class="c4 pagebreak">
+<h2 class="section">D — DECEDENT'S FINAL RETURN & INCOME IN RESPECT OF A DECEDENT (IRD)</h2>
+<div class="rule-box">
+<p><b>Final individual return:</b> due date GIỐNG như nếu người đó còn sống. Cash-method: chỉ tính income đã actually/constructively received TRƯỚC khi chết. Accrual-method: tính mọi khoản đã earned/accrued trước khi chết.</p>
+<p><b>Deductions:</b> full standard deduction (nếu không itemize). Medical expenses trả trước khi chết → deductible nếu itemize. Nếu estate trả medical expenses trong vòng <b>1 năm sau ngày mất</b>, có thể election để deduct trên final return thay vì trên estate tax return (Form 706) — nhưng KHÔNG được deduct cả hai (double deduction bị cấm).</p>
+<p><b>NOL và capital loss</b> của decedent PHẢI được dùng trên final return (capital loss giới hạn $3,000/năm) — <b>KHÔNG có carryforward</b> sau khi chết.</p>
+<p>Return chỉ được ký bởi <b>personal representative</b> và/hoặc paid preparer (người làm miễn phí thì KHÔNG ký).</p>
+</div>
+
+<h3 class="lesson">Income in Respect of a Decedent (IRD)</h3>
+<div class="rule-box">
+<p><b>IRD</b> = thu nhập decedent CÓ QUYỀN nhận nhưng CHƯA được tính vào final return (vì cash-method chưa nhận, hoặc accrual-method chưa accrue đúng cách trước khi chết).</p>
+<table><tr><th>IRD</th><th>KHÔNG phải IRD</th></tr>
+<tr><td>Lương earned nhưng chưa nhận (cash-method)</td><td>Lương đã earned & accrued (accrual-method)</td></tr>
+<tr><td>Thu A/R sau khi chết (cash-method)</td><td>Thu A/R (accrual-method)</td></tr>
+<tr><td>Gain bán property nhận SAU khi chết</td><td>Gain nhận TRƯỚC khi chết</td></tr>
+<tr><td>Rent accrued nhưng chưa nhận (cash-method)</td><td>Rent đã nhận trước khi chết</td></tr></table>
+<p><b>Đặc điểm quan trọng:</b> basis của "quyền nhận IRD" là <b>transferred basis</b> (KHÔNG được step-up lên FMV như tài sản thường thừa kế). IRD giữ nguyên character (ordinary/capital) như khi còn ở tay decedent. IRD được báo trên return của người/entity thực sự NHẬN được tiền (estate's Form 1041, hoặc beneficiary's Form 1040) — <b>KHÔNG BAO GIỜ trên final Form 1040 của decedent</b>.</p>
+<p><b>Double-tax mitigation:</b> phần <b>estate tax</b> attributable đến IRD (đã tính vào gross estate trên Form 706) được deduct trên Form 1041 của người nhận IRD. Deduction chi phí accrued trước khi chết (decedent dùng cash method) cũng được phép khi payment thực xảy ra.</p>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ:</b> Frank (cash-method) bán táo $2,000, giao hàng nhưng chưa được trả tiền khi chết. Estate chuyển quyền nhận cho vợ góa. Khi vợ nhận $2,000 → BÀ phải khai IRD $2,000 trên return của mình — KHÔNG khai trên final return của Frank, KHÔNG khai trên return của estate.</div>
+
+<h3 class="lesson">Thuật ngữ Phần D</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">Income in Respect of a Decedent (IRD)</td><td class="vn">thu nhập chưa thực nhận tính vào người thừa kế sau khi người mất đi</td></tr>
+<tr><td class="word">personal representative</td><td class="vn">người đại diện hợp pháp của di sản (executor/administrator)</td></tr>
+<tr><td class="word">transferred basis</td><td class="vn">basis được chuyển nguyên trạng (không step-up) cho quyền nhận IRD</td></tr>
+<tr><td class="word">Form 706</td><td class="vn">tờ khai thuế thừa kế liên bang (Estate Tax Return)</td></tr>
+<tr><td class="word">Form 1041</td><td class="vn">tờ khai thuế thu nhập của estate/trust</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm Phần D</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. Income in respect of a decedent (IRD) is reported on:</div>
+<div class="opt">A. The decedent's final Form 1040</div><div class="opt">B. The return of whoever actually receives the income</div><div class="opt">C. Neither return</div><div class="opt">D. Form 706 only</div></div>
+<div class="mcq"><div class="q">2. A right to receive IRD has a basis equal to:</div>
+<div class="opt">A. FMV on the date of death (stepped-up)</div><div class="opt">B. The decedent's transferred (carryover) basis</div><div class="opt">C. Zero, always</div><div class="opt">D. The FMV on the date received</div></div>
+<div class="mcq"><div class="q">3. On a decedent's final income tax return, capital losses are limited to:</div>
+<div class="opt">A. $1,500</div><div class="opt">B. $3,000</div><div class="opt">C. $10,000</div><div class="opt">D. Unlimited</div></div>
+<div class="mcq"><div class="q">4. An accrual-method taxpayer's salary that was earned and properly accrued before death is:</div>
+<div class="opt">A. IRD, reported by the estate</div><div class="opt">B. Included on the decedent's final return</div><div class="opt">C. Never taxable</div><div class="opt">D. Reported by the beneficiary only</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — Phần D</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B</span></div>
+<div><b>2.</b> <span class="key-ans">B — Transferred (carryover) basis</span><br><span class="key-exp">Khác với property thừa kế thông thường (được step-up), quyền nhận IRD giữ basis gốc của decedent.</span></div>
+<div><b>3.</b> <span class="key-ans">B — $3,000</span></div>
+<div><b>4.</b> <span class="key-ans">B — Included on final return</span><br><span class="key-exp">Accrual-method taxpayer đã accrue đúng cách trước khi chết → KHÔNG phải IRD.</span></div>
+</div>
+</div>
+
+<!-- E -->
+<div class="c5 pagebreak">
+<h2 class="section">E — INCOME TAXATION OF ESTATES & TRUSTS: DNI & DISTRIBUTION DEDUCTION</h2>
+<div class="rule-box">
+<p><b>Fiduciary tax brackets 2025</b> (rất "nén" — chạm 37% rất nhanh):</p>
+<table><tr><th>Taxable Income</th><th>Rate</th></tr>
+<tr><td>$0 – $3,150</td><td>10%</td></tr>
+<tr><td>&gt;$3,150 – $11,450</td><td>24% (+$315)</td></tr>
+<tr><td>&gt;$11,450 – $15,650</td><td>35% (+$2,307)</td></tr>
+<tr><td>&gt;$15,650</td><td>37% (+$3,777)</td></tr></table>
+<p><b>Simple trust:</b> bắt buộc phân phối TOÀN BỘ income hiện tại, KHÔNG phân phối principal, KHÔNG charitable contribution. <b>Complex trust</b> = mọi trust khác (được tích lũy income, charitable contribution, phân phối cả principal). <b>Grantor trust:</b> grantor giữ quyền kiểm soát/hưởng lợi → income đánh thuế TRỰC TIẾP cho grantor, trust bị "bỏ qua" (disregarded) cho mục đích thuế. Mọi <b>revocable trust</b> đều là grantor trust.</p>
+<p><b>Filing:</b> estate phải file nếu gross income ≥ $600; trust phải file nếu có taxable income HOẶC gross income &gt;$600. Due date = ngày 15 tháng thứ 4 sau khi kết thúc năm thuế (Form 1041). Estate được chọn năm thuế kết thúc trong 12 tháng sau khi chết; hầu hết trust PHẢI dùng calendar year.</p>
+</div>
+
+<h3 class="lesson">Distributable Net Income (DNI) & Distribution Deduction</h3>
+<div class="rule-box">
+<p><b>DNI</b> = mức TRẦN vừa deduct được ở cấp fiduciary, vừa taxable ở cấp beneficiary. Công thức tổng quát:</p>
+<p class="struct">DNI = TI của fiduciary (trước distribution deduction) + personal exemption + capital gain phân bổ cho beneficiary + tax-exempt interest (trừ related expense) + điều chỉnh charitable deduction − capital gain/loss phân bổ cho principal ± các điều chỉnh dividend đặc biệt</p>
+<p><b>Personal exemption:</b> $600 (estate), $300 (simple trust), $100 (complex trust) — KHÔNG áp dụng năm cuối cùng khi trust/estate chấm dứt.</p>
+<p><b>Distribution deduction:</b></p>
+<ul>
+<li><b>Simple trust:</b> = SỐ NHỎ HƠN giữa (distributions bắt buộc − net tax-exempt income) hoặc (DNI − tax-exempt interest).</li>
+<li><b>Estate/Complex trust:</b> = SỐ NHỎ HƠN giữa DNI (trừ tax-exempt interest) hoặc số tiền thực phân phối.</li>
+</ul>
+<p>Capital loss được fiduciary deduct đến mức capital gain + $3,000, có carryover. NOL tính KHÔNG kể charitable contribution/distribution deduction, carryover được phép; chỉ pass-through cho beneficiary vào NĂM CUỐI khi trust/estate chấm dứt.</p>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ:</b> Simple trust có DNI $10,000 (gồm $1,000 tax-exempt interest), phân phối hết $10,000 cho 1 beneficiary duy nhất. Beneficiary coi $1,000 là tax-exempt interest (loại trừ khỏi gross income cá nhân), $9,000 còn lại theo character gốc (character "giữ nguyên" khi pass-through cho beneficiary).</div>
+
+<h3 class="lesson">Thuật ngữ Phần E</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">simple trust / complex trust</td><td class="vn">trust đơn giản (phân phối hết income) / trust phức tạp (có thể tích lũy income)</td></tr>
+<tr><td class="word">grantor trust</td><td class="vn">trust mà người lập vẫn bị coi là chủ sở hữu cho mục đích thuế</td></tr>
+<tr><td class="word">Distributable Net Income (DNI)</td><td class="vn">thu nhập ròng có thể phân phối — mức trần deduct/taxable</td></tr>
+<tr><td class="word">principal / corpus</td><td class="vn">vốn gốc của trust/estate (phân biệt với "income")</td></tr>
+<tr><td class="word">distribution deduction</td><td class="vn">khoản khấu trừ cho phân phối cho beneficiary</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm Phần E</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. A trust that must distribute all its income currently, cannot distribute principal, and makes no charitable contributions is a:</div>
+<div class="opt">A. Complex trust</div><div class="opt">B. Grantor trust</div><div class="opt">C. Simple trust</div><div class="opt">D. Qualified trust</div></div>
+<div class="mcq"><div class="q">2. The personal exemption deduction for a complex trust is:</div>
+<div class="opt">A. $100</div><div class="opt">B. $300</div><div class="opt">C. $600</div><div class="opt">D. $4,700</div></div>
+<div class="mcq"><div class="q">3. For a simple trust, the income distribution deduction is the LESSER of DNI (minus tax-exempt interest) or:</div>
+<div class="opt">A. The trust's total assets</div><div class="opt">B. Required distributions minus net tax-exempt income</div><div class="opt">C. The trustee's fee</div><div class="opt">D. The trust's gross income</div></div>
+<div class="mcq"><div class="q">4. All revocable trusts are treated as:</div>
+<div class="opt">A. Simple trusts</div><div class="opt">B. Complex trusts</div><div class="opt">C. Grantor trusts</div><div class="opt">D. Private foundations</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — Phần E</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">C — Simple trust</span></div>
+<div><b>2.</b> <span class="key-ans">A — $100</span></div>
+<div><b>3.</b> <span class="key-ans">B</span></div>
+<div><b>4.</b> <span class="key-ans">C — Grantor trusts</span></div>
+</div>
+</div>
+
+<!-- F -->
+<div class="c6 pagebreak">
+<h2 class="section">F — BENEFICIARY TAXATION, NIIT & FRAUDULENT TRUSTS</h2>
+<div class="rule-box">
+<p><b>Beneficiary của simple trust:</b> chịu thuế trên số NHỎ HƠN giữa (income bắt buộc phân phối, dù thực tế chưa nhận) hoặc (tỷ lệ tương ứng của DNI).</p>
+<p><b>Beneficiary của estate/complex trust:</b> chịu thuế trên số income bắt buộc phân phối CỘNG số phân phối thêm, nhưng KHÔNG VƯỢT phần DNI tương ứng của beneficiary đó.</p>
+<p><b>Character "giữ nguyên":</b> tính chất thu nhập (ordinary/capital/tax-exempt) trong tay beneficiary GIỐNG như trong tay trust/estate. Báo trên <b>Schedule K-1 (Form 1041)</b> — cũng chứa thông tin để tính QBI deduction.</p>
+<p><b>Charitable contribution allocation (nếu không có provision trong will/trust):</b> phân bổ theo tỷ lệ mỗi loại thu nhập trong tổng DNI.</p>
+</div>
+
+<h3 class="lesson">Net Investment Income Tax (NIIT)</h3>
+<div class="rule-box">
+<p>Estate/trust chịu <b>NIIT 3.8%</b> trên phần NHỎ HƠN giữa (undistributed net investment income) hoặc (AGI vượt mức bracket cao nhất — <b>$15,650</b> cho 2025). Net investment income gồm interest, dividend, capital gain, rent/royalty, nonqualified annuity.</p>
+</div>
+
+<h3 class="lesson">Due Date, Penalties & Estimated Tax</h3>
+<div class="rule-box">
+<p>Most Form 1041 due <b>April 15</b>; extension tối đa 5½ tháng. <b>Late filing:</b> 5%/tháng (tối đa 25%), 15%/tháng nếu fraudulent (tối đa 75%). <b>Failure to provide K-1:</b> $340/lần (tối đa $4,098,500/năm).</p>
+<p>Estate KHÔNG phải trả estimated tax trong <b>2 năm thuế đầu tiên</b>. Trustee có thể election để coi 1 phần estimated tax payment là đã trả bởi beneficiary.</p>
+</div>
+
+<h3 class="lesson">Fraudulent Trusts</h3>
+<div class="rule-box">
+<p>Trust lập ra để che giấu quyền sở hữu tài sản/thu nhập hoặc ngụy trang bản chất giao dịch = <b>fraudulent (abusive) trust</b>. Kỹ thuật lạm dụng phổ biến: khấu hao tài sản cá nhân (nhà ở), deduct chi phí cá nhân, chia nhỏ thu nhập qua nhiều entity, underreport income, không file return, chuyển tiền ra nước ngoài không báo cáo, lợi dụng bank secrecy ở tax haven.</p>
+<p><b>Civil sanction:</b> fraud penalty tối đa <b>75%</b> phần thuế thiếu do fraud. <b>Criminal conviction:</b> phạt tối đa $250,000 (cá nhân)/$500,000 (corporation) và/hoặc tối đa <b>5 năm tù</b> mỗi tội danh.</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ Phần F</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">Net Investment Income Tax (NIIT)</td><td class="vn">thuế 3.8% trên thu nhập đầu tư ròng</td></tr>
+<tr><td class="word">Schedule K-1 (Form 1041)</td><td class="vn">bảng kê phần thu nhập/khấu trừ/credit của từng beneficiary</td></tr>
+<tr><td class="word">abusive/fraudulent trust</td><td class="vn">trust lạm dụng để trốn thuế bất hợp pháp</td></tr>
+<tr><td class="word">character (of income)</td><td class="vn">tính chất thu nhập (ordinary/capital/tax-exempt) được giữ nguyên khi pass-through</td></tr>
+<tr><td class="word">fraud penalty</td><td class="vn">phạt gian lận thuế (tối đa 75% phần thuế thiếu)</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm Phần F</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. The Net Investment Income Tax rate for estates and trusts is:</div>
+<div class="opt">A. 2.9%</div><div class="opt">B. 3.8%</div><div class="opt">C. 5%</div><div class="opt">D. 10%</div></div>
+<div class="mcq"><div class="q">2. A beneficiary of a simple trust is taxed on the LESSER of trust income required to be distributed or:</div>
+<div class="opt">A. The trust's total DNI</div><div class="opt">B. The beneficiary's proportionate share of DNI</div><div class="opt">C. The trust's taxable income</div><div class="opt">D. Zero</div></div>
+<div class="mcq"><div class="q">3. An estate is required to make estimated tax payments:</div>
+<div class="opt">A. Immediately upon formation</div><div class="opt">B. Beginning in its 3rd tax year</div><div class="opt">C. Never</div><div class="opt">D. Only if it has a fiscal year</div></div>
+<div class="mcq"><div class="q">4. The maximum civil fraud penalty on the underpayment of tax attributable to fraud is:</div>
+<div class="opt">A. 20%</div><div class="opt">B. 25%</div><div class="opt">C. 50%</div><div class="opt">D. 75%</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — Phần F</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — 3.8%</span></div>
+<div><b>2.</b> <span class="key-ans">B — Beneficiary's proportionate share of DNI</span></div>
+<div><b>3.</b> <span class="key-ans">B — Beginning in its 3rd tax year</span><br><span class="key-exp">Estate được miễn estimated tax trong 2 năm thuế đầu tiên.</span></div>
+<div><b>4.</b> <span class="key-ans">D — 75%</span></div>
+</div>
+</div>
+
+<!-- G -->
+<div class="c7 pagebreak">
+<h2 class="section">G — RETIREMENT PLANS: SEP & SIMPLE</h2>
+<div class="rule-box">
+<p><b>SEP (Simplified Employee Pension):</b> employer đóng trực tiếp vào <b>SEP-IRA</b> của từng qualifying employee/self-employed — SEP-IRA thuộc sở hữu & kiểm soát của employee. Có thể setup trễ đến due date (kể cả extension) của business return; contribution cũng phải nộp trước due date đó.</p>
+<p><b>Qualifying employee</b> phải: ≥21 tuổi, làm việc ≥3 trong 5 năm gần nhất, nhận ≥$750 compensation trong năm. Có thể loại trừ: nhân viên theo collective bargaining agreement, NRA không có US-source income.</p>
+<p><b>Contribution limit SEP (2025):</b> nhỏ hơn giữa <b>25% compensation</b> hoặc <b>$70,000</b> (compensation tính tối đa $350,000). SEP-IRA contribution được EXCLUDE khỏi income employee (khác IRA thường là deduct). Self-employed dùng worksheet riêng — rate thực tế effective giảm còn tối đa <b>20%</b> (net earnings) sau khi tính vòng lặp deduction.</p>
+</div>
+
+<h3 class="lesson">SIMPLE (Savings Incentive Match Plan for Employees)</h3>
+<div class="rule-box">
+<p>Employer ≤<b>100 employees</b> (mỗi người nhận ≥$5,000 compensation năm trước) VÀ không duy trì qualified plan khác → được lập SIMPLE IRA. Employee elective contribution tối đa <b>$16,500</b> (2025), <b>$20,000</b> nếu ≥50 tuổi.</p>
+<p><b>Employer matching:</b> 2 công thức — (1) match dollar-for-dollar đến 3% compensation (có thể giảm còn tối thiểu 1%, nhưng KHÔNG được dưới 3% quá 2 năm trong 5-năm); hoặc (2) nonelective 2% compensation cho mọi eligible employee kiếm ≥$5,000 (compensation tính tối đa $350,000).</p>
+<p>Contribution employer phải <b>100% vested ngay</b>. Employer contribute elective deferral trong vòng <b>30 ngày</b> sau tháng phát sinh; matching contribution trước due date tax return.</p>
+<p><b>Withdrawal penalty:</b> trước 59½ tuổi → 10%; trong <b>2 năm đầu</b> tham gia SIMPLE → penalty tăng lên <b>25%</b>. Rollover sang SIMPLE khác luôn được; rollover sang IRA/qualified plan khác chỉ miễn phạt SAU khi đã tham gia ≥2 năm.</p>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ:</b> Mary có compensation $95,000, tự đóng $8,000 vào SIMPLE IRA. Employer match 3% × $95,000 = <b>$2,850</b> (không giới hạn bởi annual compensation limit thông thường).</div>
+
+<h3 class="lesson">Thuật ngữ Phần G</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">Simplified Employee Pension (SEP)</td><td class="vn">chương trình hưu trí đơn giản qua SEP-IRA</td></tr>
+<tr><td class="word">SIMPLE IRA</td><td class="vn">chương trình tiết kiệm hưu trí khuyến khích cho doanh nghiệp nhỏ</td></tr>
+<tr><td class="word">elective contribution</td><td class="vn">khoản đóng góp tự nguyện trích từ lương (salary reduction)</td></tr>
+<tr><td class="word">matching contribution</td><td class="vn">khoản đóng góp đối ứng của employer</td></tr>
+<tr><td class="word">highly compensated employee</td><td class="vn">nhân viên có mức lương/sở hữu cao (chịu quy tắc chống phân biệt đối xử)</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm Phần G</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. The maximum SEP contribution for 2025 is the lesser of 25% of compensation or:</div>
+<div class="opt">A. $23,500</div><div class="opt">B. $46,000</div><div class="opt">C. $70,000</div><div class="opt">D. $350,000</div></div>
+<div class="mcq"><div class="q">2. SIMPLE IRA withdrawals made within the first 2 years of participation are subject to an additional tax of:</div>
+<div class="opt">A. 10%</div><div class="opt">B. 15%</div><div class="opt">C. 20%</div><div class="opt">D. 25%</div></div>
+<div class="mcq"><div class="q">3. Under the SIMPLE plan matching contribution formula, the employer generally matches employee contributions dollar-for-dollar up to what percentage of compensation?</div>
+<div class="opt">A. 1%</div><div class="opt">B. 2%</div><div class="opt">C. 3%</div><div class="opt">D. 5%</div></div>
+<div class="mcq"><div class="q">4. Employer contributions to a SIMPLE plan must be:</div>
+<div class="opt">A. 100% vested immediately</div><div class="opt">B. Vested after 3 years</div><div class="opt">C. Vested after 5 years</div><div class="opt">D. Forfeitable if the employee leaves within 1 year</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — Phần G</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">C — $70,000</span></div>
+<div><b>2.</b> <span class="key-ans">D — 25%</span></div>
+<div><b>3.</b> <span class="key-ans">C — 3%</span></div>
+<div><b>4.</b> <span class="key-ans">A — 100% vested immediately</span></div>
+</div>
+</div>
+
+<!-- H -->
+<div class="c8 pagebreak">
+<h2 class="section">H — RETIREMENT PLANS: QUALIFIED PLANS, DISTRIBUTIONS & LOANS</h2>
+<div class="rule-box">
+<p>Qualified plan cho self-employed còn gọi là <b>Keogh/HR10 plan</b>. Common-law employee/partner KHÔNG tự lập được loại plan này. Phải setup TRƯỚC cuối năm thuế (khác SEP có thể setup trễ hơn).</p>
+<p><b>Minimum participation:</b> employee ≥21 tuổi VÀ ≥1 năm service (2 năm nếu không phải 401(k) và có nonforfeitable right sau ≤2 năm).</p>
+<p><b>2 loại chính:</b> <b>Defined contribution plan</b> (profit-sharing plan hoặc money purchase pension plan — mỗi participant có tài khoản riêng) và <b>Defined benefit plan</b> (benefit xác định trước, tính theo actuarial).</p>
+</div>
+
+<h3 class="lesson">Contribution & Deduction Limits (2025)</h3>
+<div class="rule-box">
+<table><tr><th>Loại</th><th>Giới hạn</th></tr>
+<tr><td>Defined contribution — tổng góp/năm</td><td>Nhỏ hơn giữa 100% compensation hoặc $70,000 ($77,500 nếu ≥50 tuổi, $81,250 nếu 60–63 tuổi)</td></tr>
+<tr><td>Defined benefit — annual benefit</td><td>Nhỏ hơn giữa 100% average compensation (3 năm cao nhất) hoặc $280,000</td></tr>
+<tr><td>401(k) elective deferral</td><td>$23,500 + catch-up $7,500 (50+) hoặc $11,250 (60–63)</td></tr>
+<tr><td>Employer deduction — profit-sharing/money purchase</td><td>Tối đa 25% compensation trả cho common-law employees tham gia</td></tr></table>
+<p>Contribution vào SEP CŨNG được cộng vào giới hạn defined contribution plan (không tách riêng). Deduction limit KHÔNG carryforward nếu năm trước đóng thiếu.</p>
+</div>
+
+<h3 class="lesson">Distributions, RMD & Premature Distribution Penalty</h3>
+<div class="rule-box">
+<p><b>RMD:</b> phải bắt đầu nhận trước ngày 1/4 năm sau khi đạt tuổi <b>73</b> (hoặc nghỉ hưu, tùy cái nào sau — trừ traditional IRA luôn tính theo tuổi 73). Không đủ RMD → excise tax <b>25%</b> (giảm còn <b>10%</b> nếu sửa trong 2 năm).</p>
+<p style="background:#fff7e0;border-left:4px solid #e0a800;padding:6px 10px;border-radius:6px;margin:8px 0">⚠️ <b>Luật hiện hành (kiểm 2026-10-25):</b> Theo SECURE 2.0, tuổi bắt đầu RMD là <b>73</b> (sinh 1951–1959) hoặc <b>75</b> (sinh từ 1960). Gleim 2026 chỉ nêu tuổi 73.</p>
+<p><b>Premature distribution (trước 59½ tuổi):</b> chịu thêm <b>10% tax</b>. Miễn trừ phổ biến: do chết/disability, substantially equal periodic payments, tách khỏi công việc năm ≥55 tuổi (hoặc 25 năm service — không áp dụng SEP/IRA), medical expense, QDRO, IRS levy, higher education expense (IRA), first-time home purchase ≤$10,000 (IRA), qualified birth/adoption ≤$5,000, domestic abuse victim (nhỏ hơn $10,000 hoặc 50% account)...</p>
+</div>
+
+<h3 class="lesson">Borrowing from the Plan (Loans)</h3>
+<div class="rule-box">
+<p>Loan KHÔNG bị coi là distribution nếu ≤ SỐ NHỎ HƠN giữa <b>$50,000</b> hoặc (SỐ LỚN HƠN giữa ½ vested accrued benefit hoặc $10,000). $50,000 giảm trừ theo outstanding balance cao nhất trong 12 tháng trước đó. Phải trả trong <b>5 năm</b> (trừ mua nhà chính), amortize đều, trả ít nhất theo quý.</p>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ (multiple loans):</b> Vested balance $100,000, đã vay $40,000 (outstanding cao nhất năm trước). Dư nợ hiện tại $33,322. Khoản vay mới tối đa = $50,000 − ($40,000 − $33,322) = $43,322 − $33,322 = <b>$10,000</b>.</div>
+
+<h3 class="lesson">Thuật ngữ Phần H</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">Keogh / HR10 plan</td><td class="vn">qualified plan dành cho người tự doanh</td></tr>
+<tr><td class="word">defined contribution plan / defined benefit plan</td><td class="vn">kế hoạch đóng góp xác định / kế hoạch quyền lợi xác định</td></tr>
+<tr><td class="word">Required Minimum Distribution (RMD)</td><td class="vn">mức rút tối thiểu bắt buộc</td></tr>
+<tr><td class="word">elective deferral</td><td class="vn">khoản khấu trừ tự nguyện trước thuế (401(k))</td></tr>
+<tr><td class="word">catch-up contribution</td><td class="vn">khoản đóng góp bổ sung cho người ≥50 tuổi</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm Phần H</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. For 2025, the basic 401(k) elective deferral limit (before any catch-up) is:</div>
+<div class="opt">A. $16,500</div><div class="opt">B. $23,500</div><div class="opt">C. $70,000</div><div class="opt">D. $280,000</div></div>
+<div class="mcq"><div class="q">2. Generally, RMDs from a qualified plan must begin by April 1 of the year following the year the participant reaches age:</div>
+<div class="opt">A. 59 1/2</div><div class="opt">B. 65</div><div class="opt">C. 70 1/2</div><div class="opt">D. 73</div></div>
+<div class="mcq"><div class="q">3. A plan loan not treated as a distribution is limited to the lesser of $50,000 or:</div>
+<div class="opt">A. 25% of vested accrued benefit</div><div class="opt">B. The greater of 1/2 the vested accrued benefit or $10,000</div><div class="opt">C. 100% of vested accrued benefit</div><div class="opt">D. $10,000 flat</div></div>
+<div class="mcq"><div class="q">4. Which of the following is an exception to the 10% premature distribution penalty?</div>
+<div class="opt">A. A distribution used for a vacation</div><div class="opt">B. A distribution made under a QDRO</div><div class="opt">C. A distribution to pay off a credit card</div><div class="opt">D. A distribution to buy a car</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — Phần H</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — $23,500</span></div>
+<div><b>2.</b> <span class="key-ans">D — 73</span></div>
+<div><b>3.</b> <span class="key-ans">B</span></div>
+<div><b>4.</b> <span class="key-ans">B — Distribution under a QDRO</span></div>
+</div>
+</div>
+
+<!-- I -->
+<div class="c1 pagebreak">
+<h2 class="section">I — EXEMPT ORGANIZATIONS: STATUS, CATEGORIES & PRIVATE FOUNDATIONS</h2>
+<div class="rule-box">
+<p>Tổ chức chỉ tax-exempt khi được <b>IRC chỉ định rõ ràng</b> (Sec. 501(a)). Có thể là corporation (kể cả LLC), trust, foundation, fund, society... nhưng KHÔNG được là sole proprietorship, cá nhân, hay partnership. Tổ chức hoạt động CHỦ YẾU vì mục đích kinh doanh sinh lời thường KHÔNG được exempt.</p>
+<p><b>Ví dụ loại tổ chức có thể exempt:</b> religious/apostolic, political organizations, chambers of commerce, labor organizations, civic welfare (chống suy thoái cộng đồng/tội phạm vị thành niên), child/animal protection, athletic clubs (không cung cấp facility/equipment), fraternal beneficiary associations, <b>social organizations</b> (mất exempt nếu ≥35% receipts từ nguồn khác ngoài phí thành viên; tối đa 15% gross receipts từ công chúng sử dụng facility), schools.</p>
+</div>
+
+<h3 class="lesson">501(c)(3) — Religious, Charitable, Scientific, Educational, Literary</h3>
+<div class="rule-box">
+<p>Nhóm rộng nhất. Điều kiện: KHÔNG phần thu nhập ròng nào được "inure" (làm lợi) cho private shareholder/individual; KHÔNG substantial part hoạt động nhằm ảnh hưởng lập pháp (có thể election thay bằng lobbying expenditure limit — vượt limit bị excise tax <b>25%</b>); KHÔNG được tham gia trực tiếp vào chiến dịch chính trị (mất exempt status ngay).</p>
+<p><b>Private Foundation:</b> MẶC ĐỊNH mọi 501(c)(3) là private foundation, TRỪ KHI nhận &gt;1/3 support từ members/public → trở thành <b>public charity</b>. Được presumed là private foundation trừ khi là church, gross receipts &lt;$5,000, hoặc thông báo IRS trong <b>27 tháng</b> kể từ cuối tháng thành lập rằng KHÔNG phải private foundation.</p>
+<p><b>Feeder organization:</b> phải TỰ đủ điều kiện exempt — chỉ đưa hết lợi nhuận cho tổ chức exempt khác KHÔNG đủ để tự động exempt.</p>
+</div>
+
+<h3 class="lesson">Application Forms</h3>
+<div class="rule-box">
+<p><b>Form 1023</b> — xin exemption theo Sec. 501(c)(3): nếu file trong <b>27 tháng</b> kể từ cuối tháng thành lập VÀ được duyệt → effective date = ngày thành lập; nếu trễ → effective date = ngày file.</p>
+<p><b>Form 1024</b> — xin exemption theo Sec. 501(a) khác (không phải (c)(3)): thời hạn tương tự nhưng là <b>15 tháng</b>.</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ Phần I</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">tax-exempt organization</td><td class="vn">tổ chức được miễn thuế thu nhập liên bang</td></tr>
+<tr><td class="word">private foundation</td><td class="vn">quỹ tư nhân (chịu nhiều hạn chế/excise tax hơn public charity)</td></tr>
+<tr><td class="word">public charity</td><td class="vn">tổ chức từ thiện công cộng (nhận &gt;1/3 support từ công chúng)</td></tr>
+<tr><td class="word">feeder organization</td><td class="vn">tổ chức "nuôi" — chuyển hết lợi nhuận cho tổ chức exempt khác</td></tr>
+<tr><td class="word">inurement</td><td class="vn">việc thu nhập tổ chức làm lợi riêng cho cá nhân/shareholder (bị cấm)</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm Phần I</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. A social club loses its tax-exempt status if what percentage or more of its receipts come from sources other than membership fees, dues, and assessments?</div>
+<div class="opt">A. 15%</div><div class="opt">B. 25%</div><div class="opt">C. 35%</div><div class="opt">D. 50%</div></div>
+<div class="mcq"><div class="q">2. By default, a 501(c)(3) organization is presumed to be a:</div>
+<div class="opt">A. Public charity</div><div class="opt">B. Private foundation</div><div class="opt">C. Feeder organization</div><div class="opt">D. Homeowners' association</div></div>
+<div class="mcq"><div class="q">3. To apply for recognition of exemption under Sec. 501(c)(3), an organization files:</div>
+<div class="opt">A. Form 1024</div><div class="opt">B. Form 1023</div><div class="opt">C. Form 990</div><div class="opt">D. Form 5500</div></div>
+<div class="mcq"><div class="q">4. An organization that simply pays all of its profits to an exempt organization but does not itself operate for an exempt purpose is:</div>
+<div class="opt">A. Automatically exempt</div><div class="opt">B. A feeder organization that must independently qualify</div><div class="opt">C. A private foundation automatically</div><div class="opt">D. Exempt only if a church</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — Phần I</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">C — 35%</span></div>
+<div><b>2.</b> <span class="key-ans">B — Private foundation</span></div>
+<div><b>3.</b> <span class="key-ans">B — Form 1023</span></div>
+<div><b>4.</b> <span class="key-ans">B — Feeder organization, must independently qualify</span></div>
+</div>
+</div>
+
+<!-- J -->
+<div class="c2 pagebreak">
+<h2 class="section">J — EXEMPT ORGANIZATIONS: ANNUAL RETURNS, UBTI & CHARITABLE DEDUCTION</h2>
+<div class="rule-box">
+<p><b>Annual information return</b> due ngày <b>15 tháng thứ 5</b> sau khi kết thúc năm thuế. Miễn filing: church/church-affiliated, exclusively religious activity, tổ chức (không phải private foundation) có gross receipts ≤<b>$50,000</b>, Sec. 401 qualified trust.</p>
+<table><tr><th>Form</th><th>Điều kiện sử dụng</th></tr>
+<tr><td>Form 990-N (e-Postcard)</td><td>Gross receipts ≤$50,000</td></tr>
+<tr><td>Form 990-EZ</td><td>Gross receipts &lt;$200,000 VÀ total assets &lt;$500,000</td></tr>
+<tr><td>Form 990</td><td>Không đủ điều kiện dùng bản rút gọn</td></tr>
+<tr><td>Form 990-PF</td><td>Private foundation (BẮT BUỘC dù gross receipts bao nhiêu)</td></tr></table>
+<p>Không file 3 năm liên tiếp → MẤT exempt status, phải reapply. Extension 6 tháng qua <b>Form 8868</b>.</p>
+</div>
+
+<h3 class="lesson">Unrelated Business Taxable Income (UBTI)</h3>
+<div class="rule-box">
+<p><b>Unrelated business</b> = hoạt động kinh doanh thường xuyên tạo thu nhập KHÔNG liên quan thực chất đến mục đích exempt. Tổ chức exempt VẪN bị đánh thuế trên UBTI ở mức <b>corporate rate</b> nếu UBTI &gt;$1,000 — dùng <b>Form 990-T</b>.</p>
+<p><b>KHÔNG tính là UBTI:</b> qualified sponsorship payment (payor không kỳ vọng return/benefit đáng kể ngoài việc dùng tên/logo); công việc chủ yếu do <b>unpaid volunteers</b> thực hiện; bingo games không mang tính thương mại/không vi phạm luật địa phương.</p>
+<p>Nhiều unrelated business khác nhau → tính UBTI <b>RIÊNG cho từng loại</b> (không được netting chéo). Estimated tax quarterly nếu dự kiến nợ ≥$500 (Form 990-W).</p>
+</div>
+
+<h3 class="lesson">Charitable Deduction & Donor Disclosure</h3>
+<div class="rule-box">
+<p>Donation cho 501(c)(3) (trừ loại testing for public safety) là deductible. Nếu tổ chức nhận <b>charitable deduction property</b> và bán/thanh lý trong vòng <b>3 năm</b> → phải file <b>Form 8282</b> trong <b>125 ngày</b> (miễn nếu property ≤$500 hoặc bị tiêu thụ cho mục đích từ thiện).</p>
+<p><b>Quid pro quo contribution &gt;$75:</b> tổ chức PHẢI cung cấp disclosure statement bằng văn bản, nêu rõ: (1) phần deductible = tiền quyên góp trừ FMV hàng hóa/dịch vụ nhận lại, (2) good-faith estimate FMV của hàng hóa/dịch vụ đó. Không disclose → có thể bị phạt.</p>
+</div>
+<div class="example-box"><b class="ex-tag">Ví dụ:</b> Người donate $200 cho charity dinner, nhận bữa ăn trị giá FMV $60 → phần deductible chỉ là $140 ($200 − $60); charity PHẢI gửi disclosure statement vì tổng $200 &gt;$75.</div>
+
+<h3 class="lesson">Thuật ngữ Phần J</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">Unrelated Business Taxable Income (UBTI)</td><td class="vn">thu nhập từ hoạt động kinh doanh không liên quan mục đích exempt</td></tr>
+<tr><td class="word">Form 990 / 990-EZ / 990-N / 990-PF</td><td class="vn">các mẫu annual information return theo quy mô tổ chức</td></tr>
+<tr><td class="word">qualified sponsorship payment</td><td class="vn">khoản tài trợ đủ điều kiện, không tính vào UBTI</td></tr>
+<tr><td class="word">quid pro quo contribution</td><td class="vn">khoản đóng góp đổi lại một phần hàng hóa/dịch vụ</td></tr>
+<tr><td class="word">Form 8282 (Donee Information Return)</td><td class="vn">báo cáo khi tổ chức bán/thanh lý tài sản nhận được trong vòng 3 năm</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm Phần J</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. An organization with $50,000 or less in gross receipts that is not otherwise exempt from filing generally must file:</div>
+<div class="opt">A. Form 990</div><div class="opt">B. Form 990-N (e-Postcard)</div><div class="opt">C. Form 990-PF</div><div class="opt">D. No return at all</div></div>
+<div class="mcq"><div class="q">2. UBTI is not generated when substantially all the work for the unrelated activity is performed by:</div>
+<div class="opt">A. Paid full-time staff</div><div class="opt">B. Unpaid volunteers</div><div class="opt">C. Independent contractors</div><div class="opt">D. Officers of the organization</div></div>
+<div class="mcq"><div class="q">3. A charitable organization must provide a written disclosure statement for a quid pro quo contribution exceeding:</div>
+<div class="opt">A. $25</div><div class="opt">B. $75</div><div class="opt">C. $250</div><div class="opt">D. $500</div></div>
+<div class="mcq"><div class="q">4. Failure to file required annual information returns for how many consecutive years results in automatic loss of exempt status?</div>
+<div class="opt">A. 1 year</div><div class="opt">B. 2 years</div><div class="opt">C. 3 years</div><div class="opt">D. 5 years</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — Phần J</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — Form 990-N (e-Postcard)</span></div>
+<div><b>2.</b> <span class="key-ans">B — Unpaid volunteers</span></div>
+<div><b>3.</b> <span class="key-ans">B — $75</span></div>
+<div><b>4.</b> <span class="key-ans">C — 3 years</span></div>
+</div>
+</div>
+
+</body>
+</html>

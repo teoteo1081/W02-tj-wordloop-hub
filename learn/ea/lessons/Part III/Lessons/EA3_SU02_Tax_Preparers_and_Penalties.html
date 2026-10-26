@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<!-- Google tag (gtag.js) — GA4 chung của TJ, nhãn site=ea -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'ea'});</script>
+
+<meta charset="UTF-8">
+<title>EA Part III – SU02: Tax Preparers and Penalties</title>
+<style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  body { font-family:'Segoe UI','Calibri',Arial,sans-serif; color:#33322f; font-size:15.5px; line-height:1.5; background:#fdfcfa; margin:0; }
+  .cover { background: linear-gradient(120deg,#bfe4ff 0%,#d6ecff 30%,#e6def7 65%,#fbe6f4 100%); border-radius:20px; padding:40px 30px; text-align:center; margin-bottom:10px; box-shadow:0 6px 18px rgba(120,130,180,.25); border:1px solid #dfe8f5; }
+  .cover .tag { display:inline-block; background:#33314a; color:#d6ecff; font-weight:700; letter-spacing:2px; font-size:13px; padding:5px 14px; border-radius:20px; margin-bottom:14px; }
+  .cover h1 { font-size:30px; margin:6px 0; color:#3170a8; }
+  .cover h2 { font-size:16px; font-weight:500; margin:4px 0 0; opacity:.9; color:#33314a; }
+  .cover .books { margin-top:16px; font-size:13.5px; background:rgba(255,255,255,.55); display:inline-block; padding:8px 16px; border-radius:10px; color:#33314a; }
+  .toc { background:#fff; border:1.5px solid #dfe8f5; border-radius:14px; padding:18px 26px; margin-bottom:30px; }
+  .toc h3 { margin-top:0; color:#3170a8; }
+  .toc ol { margin:0; padding-left:22px; } .toc li{ margin-bottom:6px; }
+  h2.section { font-size:23px; color:#33314a; padding:12px 18px; border-radius:12px; margin:34px 0 14px; border-left:10px solid var(--accent,#5aa9d6); background:var(--bg,#eaf6fd); }
+  h3.lesson { font-size:19px; color:var(--accent-dark,#276a91); border-left:6px solid var(--accent,#5aa9d6); background:var(--bg-soft,#f3fafd); padding:8px 14px; border-radius:6px; margin:22px 0 10px; }
+  .c1{--accent:#5aa9d6;--accent-dark:#276a91;--bg:#eaf6fd;--bg-soft:#f3fafd;--head:#a9d4ec;}
+  .c2{--accent:#a892d9;--accent-dark:#5c4696;--bg:#f1ecfb;--bg-soft:#f8f5fd;--head:#cabdec;}
+  .c3{--accent:#f0a66e;--accent-dark:#b8620b;--bg:#fdeee2;--bg-soft:#fff8f0;--head:#f4c299;}
+  .c4{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
+  .c5{--accent:#e07b9b;--accent-dark:#a3335a;--bg:#fbe9f0;--bg-soft:#fdf5f8;--head:#f3b6c9;}
+  .c6{--accent:#5bb8b0;--accent-dark:#1f7a72;--bg:#e5f7f5;--bg-soft:#f2fbfa;--head:#a6e3dd;}
+  .cKey{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
+  table.vocab { width:100%; border-collapse:collapse; margin-bottom:20px; font-size:.96em; box-shadow:0 2px 8px rgba(0,0,0,.05); border-radius:10px; overflow:hidden; }
+  table.vocab th { background:var(--head,#5aa9d6); color:#2d2d2d; padding:9px 8px; text-align:left; }
+  table.vocab td { padding:8px 8px; border-bottom:1px solid var(--bg,#eaf6fd); vertical-align:top; }
+  table.vocab tr:nth-child(even) td { background:var(--bg-soft,#faf6f0); }
+  table.vocab tr:nth-child(odd) td { background:#fff; }
+  table.vocab td.word { font-weight:800; color:var(--accent-dark,#276a91); }
+  table.vocab td.vn { font-weight:700; color:#3d6ba8; }
+  .rule-box { background:var(--bg,#eaf6fd); border-left:6px solid var(--accent,#5aa9d6); border-radius:8px; padding:12px 18px; margin:10px 0; }
+  .rule-box table { width:100%; border-collapse:collapse; margin:8px 0 4px; }
+  .rule-box table td, .rule-box table th { padding:6px 8px; border-bottom:1px solid rgba(0,0,0,.08); text-align:left; font-size:.94em; }
+  .rule-box table th { color:var(--accent-dark,#276a91); }
+  .rule-box ul, .rule-box ol { margin:6px 0; padding-left:22px; } .rule-box li{ margin-bottom:5px; }
+  .struct { font-weight:800; color:#b8620b; font-family:'Consolas','Courier New',monospace; }
+  .example-box { background:#fff; border:1.5px dashed var(--accent,#5aa9d6); border-radius:8px; padding:10px 16px; margin:10px 0; font-size:.95em; }
+  .example-box b.ex-tag { color:var(--accent-dark,#276a91); }
+  .mcq { background:#fff; border:1.5px solid var(--accent,#5aa9d6); border-radius:10px; padding:12px 18px; margin-bottom:12px; }
+  .mcq .q { color:#3d6ba8; font-weight:700; margin-bottom:6px; }
+  .mcq .opt { margin:2px 0 2px 10px; }
+  .content-block { background:#fff; border:2px dashed var(--accent,#5aa9d6); border-radius:12px; padding:16px 20px; margin-bottom:18px; }
+  .key-grid { column-count:1; } .key-grid div{ margin-bottom:10px; }
+  .key-ans { color:#20824f; font-weight:800; }
+  .key-exp { color:#555; font-size:.95em; }
+  .pagebreak { page-break-before: always; }
+  .note { font-size:.85em; color:#8a8a8a; font-style:italic; }
+  .source-tag { font-size:.8em; color:#999; font-style:italic; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="tag">EA EXAM PREP • PART III — REPRESENTATION, PRACTICES & PROCEDURES • SU02</div>
+  <h1>📗 SU02 — TAX PREPARERS AND PENALTIES</h1>
+  <h2>Bản song ngữ Việt–Anh, bám sát giáo trình Gleim 2026</h2>
+  <div class="books">📖 Khái niệm · 🔤 Thuật ngữ · 📌 Ví dụ minh họa · ❓ Câu hỏi trắc nghiệm · 🔑 Đáp án trang sau</div>
+</div>
+
+<div class="toc">
+<h3>📑 Mục lục SU02</h3>
+<ol>
+<li>2.1 Tax Preparers (Định nghĩa & nghĩa vụ của người chuẩn bị tờ khai)</li>
+<li>2.2 Disclosure of Taxpayer Information (Tiết lộ thông tin taxpayer)</li>
+<li>2.3 Tax Shelters (Chỗ trú ẩn thuế & reportable transactions)</li>
+<li>2.4 Penalties (Các loại phạt đối với preparer, kể cả fraud)</li>
+</ol>
+<p class="note">Nguồn: Gleim EA Review, Study Unit 2 — Tax Preparers and Penalties (2026). Preparer KHÔNG cần là practitioner để chuẩn bị return, nhưng mọi preparer đều chịu preparer penalties (Sec. 6694, 6695, 6700-6701, 6702...).</p>
+</div>
+
+<!-- ============================================================ 2.1 TAX PREPARERS ============================================================ -->
+<div class="c1">
+<h2 class="section">2.1 — TAX PREPARERS</h2>
+<div class="rule-box">
+<p><b>Tax return preparer</b> = người chuẩn bị, để nhận thù lao (hoặc thuê người khác chuẩn bị để nhận thù lao), all/substantial portion của bất kỳ return of tax hoặc claim for refund theo IRC (Title 26). Bao gồm cả một số information returns. Người chỉ cung cấp đủ thông tin & lời khuyên khiến việc hoàn thành return chỉ còn là việc "cơ khí" (mechanical) CŨNG được coi là tax return preparer.</p>
+<p>Preparer KHÔNG cần là practitioner (EA/CPA/attorney) để chuẩn bị return; và chỉ chịu Circular 230 NẾU đồng thời là practitioner. NHƯNG mọi tax return preparer đều chịu <b>preparer penalties</b> (hiểu sai vị trí, tiết lộ thông tin, cổ súy tax shelter lạm dụng...).</p>
+</div>
+
+<h3 class="lesson">"Substantial Portion" vs. "Insubstantial Portion"</h3>
+<div class="rule-box">
+<p><b>Substantial portion:</b> so sánh độ dài & phức tạp của phần đó (hay 1 schedule) với toàn bộ return; bao gồm cả việc chuẩn bị ngoài lãnh thổ Mỹ.</p>
+<p><b>Insubstantial (KHÔNG tính là substantial)</b> nếu phần đó liên quan gross income/deduction/credit ít hơn:</p>
+<ul>
+<li>$10,000, HOẶC</li>
+<li>$400,000 VÀ dưới 20% AGI (hoặc GI nếu không phải cá nhân) trên return.</li>
+</ul>
+<p>Người chỉ tư vấn về vấn đề cụ thể (specific issues) thường KHÔNG bị coi là tax return preparer. Preparer của 1 return KHÔNG tự động bị coi là preparer của return khác chỉ vì entry ảnh hưởng lẫn nhau (VD partnership & partner) — TRỪ khi entry đó được phản ánh trực tiếp trên return kia VÀ chiếm substantial portion (gross income &gt;$400,000 hoặc &gt;20%).</p>
+</div>
+
+<h3 class="lesson">Primary Responsibility & Compensation</h3>
+<div class="rule-box">
+<p>Nếu nhiều preparer cùng tham gia 1 return, người có <b>primary responsibility</b> cho tính chính xác tổng thể được coi là (duy nhất) preparer cho mục đích ký tên. Người này KHÔNG thể "chia sẻ" trách nhiệm bằng cách san sẻ các nhiệm vụ chức năng (thu thập info, áp dụng luật thuế, hoàn thành return, review, áp dụng chính sách taxpayer, tư vấn vị trí luật, xin phê duyệt cuối).</p>
+<p>Nếu KHÔNG có thù lao (explicit/implicit agreement), người đó KHÔNG phải tax return preparer — kể cả nếu nhận quà/dịch vụ đổi lại/ân huệ. Không đòi hỏi bằng cấp/chức danh chuyên môn để là preparer.</p>
+</div>
+
+<h3 class="lesson">KHÔNG phải Tax Return Preparer</h3>
+<div class="rule-box">
+<ul>
+<li>Nhân viên chuẩn bị return cho employer đang làm việc thường xuyên & liên tục cho mình.</li>
+<li>Fiduciary chuẩn bị return cho trust/estate/cá nhân mình đại diện.</li>
+<li>Người chuẩn bị refund claim để phản hồi notice of deficiency gửi cho người khác.</li>
+<li>Người chỉ cung cấp dịch vụ đánh máy/photocopy/hỗ trợ cơ khí.</li>
+<li>Người chỉ đưa ý kiến về sự kiện CHƯA xảy ra (tax planning thuần túy).</li>
+</ul>
+</div>
+
+<h3 class="lesson">Inquiry & Position on Law</h3>
+<div class="rule-box">
+<p>Preparer được tin tưởng (good faith) thông tin do taxpayer cung cấp mà KHÔNG cần xác minh bên thứ 3 — nhưng không được bỏ qua hệ quả, phải hỏi hợp lý nếu thông tin có vẻ sai/thiếu, và với deduction phải hỏi về chứng từ chứng minh (kể cả số tiền nhỏ).</p>
+<p>Preparer KHÔNG được chọn vị trí (position) trên return mà KHÔNG có <b>substantial authority</b>. Substantial authority tồn tại khi trọng số các authority ủng hộ lớn hơn đáng kể so với trọng số phản đối — cân nhắc TẤT CẢ authority liên quan (kể cả trái chiều), theo facts & circumstances. Có thể có substantial authority cho NHIỀU HƠN 1 vị trí cùng 1 khoản mục. Chuẩn "substantial authority" là <b>chuẩn khách quan</b> IRS áp dụng — không phải niềm tin chủ quan của taxpayer.</p>
+<p>Nếu vị trí được <b>disclose</b> (công khai) VÀ có <b>reasonable basis</b>, penalty sẽ KHÔNG áp dụng dù chưa đạt substantial authority.</p>
+<p>Với <b>tax shelter</b>: preparer cần CẢ substantial authority VÀ reasonable belief rằng vị trí "more likely than not" (khả năng thành công &gt;50%) đúng. Penalty cho vị trí unreasonable không disclose = số LỚN HƠN giữa $1,000 hoặc 50% thu nhập preparer nhận từ return đó.</p>
+</div>
+
+<h3 class="lesson">Chữ ký, mã số, và nghĩa vụ thủ tục</h3>
+<div class="rule-box">
+<p><b>Signature:</b> preparer phải ký return SAU khi hoàn thành, TRƯỚC khi trình cho taxpayer. Nếu không có mặt để ký, preparer khác phải review toàn bộ rồi mới ký. Chữ ký hợp lệ theo luật bang — phần mềm máy tính, thiết bị cơ khí, hay con dấu cao su đều được chấp nhận cho signature line riêng của paid preparer. Preparer không thể ký tay ghi "unable to sign". Nếu nhiều người được thuê làm preparer, CHỈ employer được coi là tax return preparer.</p>
+<p><b>Identifying Number:</b> return phải có PTIN (cá nhân) và EIN (nếu áp dụng, của partnership/employer) cùng địa chỉ nơi làm việc. KHÔNG cần ký/gắn ID trên bản copy đưa cho taxpayer.</p>
+<p><b>Copy to Taxpayer:</b> phải cung cấp bản copy hoàn chỉnh cho taxpayer không muộn hơn lúc trình để taxpayer ký.</p>
+<p><b>Employer of Preparers:</b> employer phải nộp thông tin tên, ID, nơi làm việc chính của mỗi preparer được thuê (hoặc giữ record & cung cấp khi Commissioner yêu cầu trong <b>3 năm</b>). Partnership được coi là employer của partners; sole proprietor tự giữ record của chính mình.</p>
+<p><b>Records:</b> giữ bản copy mỗi return/claim đã chuẩn bị trong <b>3 năm</b> sau khi kết thúc "return period" (12 tháng bắt đầu từ 1/7 hàng năm) — HOẶC giữ list gồm tên taxpayer, TIN, taxable year, loại return. Employment/withholding tax records: giữ tối thiểu <b>4 năm</b> sau ngày due/ngày trả thuế (tùy sau).</p>
+</div>
+
+<h3 class="lesson">Accuracy, sửa lỗi thông tin & Data Security</h3>
+<div class="rule-box">
+<p>Phần mềm khai thuế nhìn chung hiệu quả nhưng phải "trust but verify" — lỗi phổ biến khi import dữ liệu giao dịch chứng khoán từ brokerage không đầy đủ. Taxpayer chịu trách nhiệm xác minh mọi thông tin thuế.</p>
+<p><b>Form 4852</b> (Substitute for Form W-2/1099-R): dùng khi taxpayer tranh chấp số liệu trên W-2/1099, hoặc chưa nhận được document báo cáo.</p>
+<p><b>Form 8082</b> (Notice of Inconsistent Treatment or AAR): dùng khi shareholder của S corp hoặc partner sẽ khai KHÔNG khớp với corporate/partnership return. Nếu chênh lệch K-1 vs. Form 1040 không được báo cáo, IRS có thể ra correction notice mà KHÔNG cần qua deficiency procedures thông thường (như thể có lỗi toán học) — KHÔNG có thủ tục hành chính để kháng cáo, chỉ tòa án mới sửa được.</p>
+<p><b>Data Security:</b> IRS yêu cầu mọi practitioner có data security plan: firewall, tự động cập nhật thiết bị, anti-malware/antivirus, mã hóa file & email, backup dữ liệu nhạy cảm ra nguồn ngoài mạng chính, giới hạn quyền truy cập. Dấu hiệu cybercrime: client nhận thư/refund/notice bất ngờ; client trả lời email preparer chưa từng gửi; máy tính/mạng bị khóa hoặc chạy chậm bất thường; số return nộp dưới EFIN của preparer vượt số client thực tế. Mọi vụ mất/trộm dữ liệu phải báo <b>IRS Stakeholder Liaison</b> địa phương.</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ 2.1</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">tax return preparer</td><td class="vn">người chuẩn bị tờ khai thuế (không nhất thiết là practitioner)</td></tr>
+<tr><td class="word">substantial authority</td><td class="vn">căn cứ pháp lý đáng kể ủng hộ 1 vị trí thuế</td></tr>
+<tr><td class="word">reasonable basis</td><td class="vn">cơ sở hợp lý (chuẩn thấp hơn substantial authority)</td></tr>
+<tr><td class="word">more likely than not</td><td class="vn">khả năng thành công hơn 50%</td></tr>
+<tr><td class="word">Form 4852</td><td class="vn">Mẫu thay thế W-2/1099-R khi tranh chấp/thiếu số liệu</td></tr>
+<tr><td class="word">Form 8082 (AAR)</td><td class="vn">Thông báo xử lý không nhất quán / yêu cầu điều chỉnh hành chính</td></tr>
+<tr><td class="word">EFIN</td><td class="vn">Mã số định danh e-file của practitioner</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 2.1</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. A portion of a return is generally NOT "substantial" if it involves an amount less than:</div>
+<div class="opt">A. $1,000</div><div class="opt">B. $10,000, or $400,000 and less than 20% of AGI</div><div class="opt">C. $100,000 regardless of AGI</div><div class="opt">D. 5% of gross income regardless of dollar amount</div></div>
+<div class="mcq"><div class="q">2. A tax return preparer must retain a completed copy of each return prepared for:</div>
+<div class="opt">A. 1 year</div><div class="opt">B. 3 years after the close of the return period</div><div class="opt">C. 5 years</div><div class="opt">D. Indefinitely</div></div>
+<div class="mcq"><div class="q">3. Which of the following is NOT considered a tax return preparer?</div>
+<div class="opt">A. A person paid to prepare a substantial portion of a return</div><div class="opt">B. An employee who prepares a return for his regular full-time employer</div><div class="opt">C. A person who employs others to prepare returns for compensation</div><div class="opt">D. A paid preparer who signs the return</div></div>
+<div class="mcq"><div class="q">4. Form 8082 is used to report:</div>
+<div class="opt">A. Identity theft</div><div class="opt">B. Inconsistent treatment between a K-1 and the recipient's own return</div><div class="opt">C. A disclosure of a frivolous position</div><div class="opt">D. Renewal of enrollment</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 2.1 Tax Preparers</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B</span></div>
+<div><b>2.</b> <span class="key-ans">B — 3 years</span></div>
+<div><b>3.</b> <span class="key-ans">B</span><br><span class="key-exp">Nhân viên chuẩn bị return cho employer thường xuyên của mình KHÔNG bị coi là tax return preparer.</span></div>
+<div><b>4.</b> <span class="key-ans">B</span></div>
+</div>
+</div>
+
+<!-- ============================================================ 2.2 DISCLOSURE OF TAXPAYER INFORMATION ============================================================ -->
+<div class="c2 pagebreak">
+<h2 class="section">2.2 — DISCLOSURE OF TAXPAYER INFORMATION</h2>
+<div class="rule-box">
+<p>Penalty áp dụng cho preparer tiết lộ/sử dụng tax return information mà KHÔNG có sự đồng ý của taxpayer, ngoài mục đích chuẩn bị/hỗ trợ chuẩn bị/dịch vụ liên quan return của chính taxpayer đó.</p>
+<ul>
+<li><b>Civil penalty:</b> $250/lần tiết lộ trái phép, tối đa <b>$10,000/năm</b>.</li>
+<li><b>Criminal (nếu cố ý/liều lĩnh):</b> misdemeanor, phạt tới $1,000 và/hoặc tù tới <b>1 năm</b>.</li>
+<li>Hình phạt hình sự TĂNG NẶNG nếu liên quan identity theft.</li>
+</ul>
+</div>
+
+<h3 class="lesson">Ngoại lệ (không bị phạt) & Consent</h3>
+<div class="rule-box">
+<p>KHÔNG bị phạt nếu tiết lộ: theo quy định khác của Code; cho taxpayer liên quan (related taxpayer) nếu không bị cấm rõ ràng; theo lệnh tòa; theo subpoena của grand jury liên bang/bang hoặc Quốc hội; giữa các officer/employee/partner trong cùng firm; cho mục đích giáo dục; để chào mời dịch vụ chuẩn bị thuế; cho mục đích conflict/quality/peer review.</p>
+<p><b>Consent</b> của taxpayer phải bằng <b>văn bản, chính thức</b>, cho mục đích cụ thể. Cần consent riêng để: dùng thông tin chào mời sản phẩm/dịch vụ KHÔNG liên quan IRS; tiết lộ cho bên thứ 3 khác; tiết lộ liên quan đến return của người khác.</p>
+</div>
+
+<h3 class="lesson">Confidentiality Privilege (Đặc quyền bảo mật)</h3>
+<div class="rule-box">
+<p>Đặc quyền bảo mật mở rộng cho <b>"federally authorized tax practitioner"</b> không phải attorney (EA, enrolled actuary, CPA...) — trong thủ tục thuế KHÔNG hình sự trước IRS, taxpayer được hưởng bảo vệ common-law tương tự như khi tư vấn bởi attorney, đối với "tax advice" (nằm trong phạm vi thẩm quyền hành nghề trước IRS của người đó).</p>
+<p>Đặc quyền cũng áp dụng trong thủ tục thuế không hình sự tại tòa liên bang do/chống lại Mỹ. KHÔNG được dùng để ngăn tiết lộ cho cơ quan quản lý khác NGOÀI IRS. KHÔNG áp dụng cho communication bằng văn bản liên quan đến việc <b>promotion của tax shelter</b> mà corporation là bên tham gia.</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ 2.2</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">unauthorized disclosure</td><td class="vn">tiết lộ trái phép thông tin taxpayer</td></tr>
+<tr><td class="word">misdemeanor</td><td class="vn">tội nhẹ (hình sự cấp thấp)</td></tr>
+<tr><td class="word">confidentiality privilege</td><td class="vn">đặc quyền bảo mật thông tin</td></tr>
+<tr><td class="word">federally authorized tax practitioner</td><td class="vn">practitioner được liên bang cho phép hành nghề (EA, CPA, actuary...)</td></tr>
+<tr><td class="word">related taxpayer</td><td class="vn">taxpayer có quan hệ liên quan</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 2.2</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. The civil penalty for an unauthorized disclosure of taxpayer information is:</div>
+<div class="opt">A. $100 per disclosure, no annual limit</div><div class="opt">B. $250 per disclosure, capped at $10,000 per year</div><div class="opt">C. $500 per disclosure, capped at $5,000 per year</div><div class="opt">D. $1,000 flat regardless of number of disclosures</div></div>
+<div class="mcq"><div class="q">2. The confidentiality privilege for federally authorized tax practitioners does NOT apply to:</div>
+<div class="opt">A. Noncriminal IRS proceedings</div><div class="opt">B. Noncriminal federal court tax proceedings</div><div class="opt">C. Written communications promoting a tax shelter to a corporation</div><div class="opt">D. Tax advice within the practitioner's scope of authority</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 2.2 Disclosure of Taxpayer Information</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B</span></div>
+<div><b>2.</b> <span class="key-ans">C</span></div>
+</div>
+</div>
+
+<!-- ============================================================ 2.3 TAX SHELTERS ============================================================ -->
+<div class="c3 pagebreak">
+<h2 class="section">2.3 — TAX SHELTERS</h2>
+<div class="rule-box">
+<p><b>Tax shelter</b> = phương pháp hợp pháp để giảm thiểu taxable income và tax liability của nhà đầu tư. <b>Tax benefit</b> gồm: deductions, exclusions khỏi gross income, non-recognition of gain, tax credits, điều chỉnh (hoặc không điều chỉnh) basis, tình trạng entity miễn thuế, và mọi hậu quả thuế khác làm giảm liability qua số tiền, thời điểm, tính chất, hay nguồn của income/gain/expense/loss/credit.</p>
+<p>Giao dịch cần báo cáo (<b>reportable transaction</b>) được khai trên <b>Form 8886</b>, đính kèm return MỖI NĂM có giao dịch, và nộp riêng cho Office of Tax Shelter Analysis năm đầu tiên.</p>
+</div>
+
+<h3 class="lesson">5 loại Reportable Transactions</h3>
+<table class="vocab">
+<tr><th>Loại</th><th>Định nghĩa / ngưỡng</th></tr>
+<tr><td class="word">Listed transactions</td><td class="vn">Giao dịch tránh thuế đã được IRS xác định qua notice/regulation/guidance, hoặc tương tự đáng kể</td></tr>
+<tr><td class="word">Confidential transactions</td><td class="vn">Giao dịch có điều kiện bảo mật; phí tối thiểu $250,000 (corp, trừ S corp) hoặc $50,000 (khác)</td></tr>
+<tr><td class="word">Contractual protection</td><td class="vn">Taxpayer có quyền hoàn phí nếu vị trí thuế không được giữ vững, hoặc phí phụ thuộc kết quả</td></tr>
+<tr><td class="word">Loss transactions</td><td class="vn">Lỗ theo Sec. 165 vượt ngưỡng: $10tr/năm ($20tr gộp) cho corp/partnership toàn corp; $2tr/năm ($4tr gộp) cho cá nhân/S corp/trust/partnership khác; $50,000/năm cho giao dịch ngoại tệ của cá nhân/trust</td></tr>
+<tr><td class="word">Transactions of interest</td><td class="vn">IRS xác định có tiềm năng tránh/trốn thuế nhưng chưa đủ thông tin kết luận</td></tr>
+</table>
+<div class="example-box"><b class="ex-tag">Angel List (Rev. Proc. 2003-24):</b> một số loss được MIỄN yêu cầu báo cáo: tài sản bán/trao đổi với basis hợp lệ; hỏa hoạn/bão/đắm tàu; mark-to-market; hedging transactions; xử lý basis; từ bỏ tài sản (abandonment); bán sỉ hàng tồn kho.</div>
+<p class="note">Lưu ý: việc PHẢI báo cáo trên Form 8886 KHÔNG đồng nghĩa tax benefit của giao dịch sẽ bị từ chối.</p>
+
+<h3 class="lesson">Penalties liên quan Tax Shelter</h3>
+<div class="rule-box">
+<p>Không đăng ký tax shelter đúng hạn khi bắt buộc → bị phạt — TRỪ khi có <b>reasonable cause</b>.</p>
+<p>Preparer cổ súy (promoting) abusive tax shelter bị phạt số NHỎ HƠN giữa: <b>$1,000/lần bán</b> HOẶC <b>100% thu nhập</b> từ hoạt động đó.</p>
+</div>
+
+<h3 class="lesson">Thuật ngữ 2.3</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">tax shelter</td><td class="vn">phương pháp hợp pháp giảm thuế</td></tr>
+<tr><td class="word">Form 8886</td><td class="vn">Tờ khai công bố giao dịch cần báo cáo</td></tr>
+<tr><td class="word">listed transaction</td><td class="vn">giao dịch tránh thuế đã bị IRS liệt kê</td></tr>
+<tr><td class="word">Angel List</td><td class="vn">Danh sách loại trừ báo cáo loss transaction (Rev. Proc. 2003-24)</td></tr>
+<tr><td class="word">abusive tax shelter</td><td class="vn">tax shelter bị lạm dụng/không hợp lệ</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 2.3</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. Reportable transactions are disclosed to the IRS on:</div>
+<div class="opt">A. Form 8275</div><div class="opt">B. Form 8886</div><div class="opt">C. Form 8867</div><div class="opt">D. Form 2848</div></div>
+<div class="mcq"><div class="q">2. The penalty for a preparer promoting an abusive tax shelter is the LESSER of $1,000 per sale or:</div>
+<div class="opt">A. 50% of income derived</div><div class="opt">B. 75% of income derived</div><div class="opt">C. 100% of income derived</div><div class="opt">D. $10,000 flat</div></div>
+<div class="mcq"><div class="q">3. For individuals, a Sec. 165 loss transaction generally becomes reportable if it exceeds:</div>
+<div class="opt">A. $500,000 in a single year</div><div class="opt">B. $2 million in a single year</div><div class="opt">C. $10 million in a single year</div><div class="opt">D. $50,000 regardless of type</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 2.3 Tax Shelters</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">B — Form 8886</span></div>
+<div><b>2.</b> <span class="key-ans">C — 100%</span></div>
+<div><b>3.</b> <span class="key-ans">B — $2 million</span><br><span class="key-exp">Cá nhân/S corp/trust/partnership khác: $2tr/năm hoặc $4tr gộp nhiều năm.</span></div>
+</div>
+</div>
+
+<!-- ============================================================ 2.4 PENALTIES ============================================================ -->
+<div class="c4 pagebreak">
+<h2 class="section">2.4 — PENALTIES</h2>
+<div class="rule-box">
+<p>Tax return preparer chịu nhiều loại penalty [Sec. 6694, 6695, 6700, 6701, 6702...], mức độ nghiêm trọng khác nhau. Người có trách nhiệm giám sát chung (overall supervisory responsibility) của firm cũng có thể bị phạt.</p>
+</div>
+
+<h3 class="lesson">Compliance Penalty (Sec. 6695) & Misconduct</h3>
+<div class="rule-box">
+<p><b>$65/lần vi phạm</b> mỗi yêu cầu thủ tục, tối đa <b>$32,500/năm</b>, cho: không ký return/claim; không gắn ID number; không cung cấp copy cho taxpayer; không nộp information return đúng; không giữ record (copy hoặc list). <b>Reasonable cause</b> (không do willful neglect) loại trừ penalty.</p>
+<p><b>Injunction:</b> tòa có thể cấm preparer nếu: mạo nhận đủ điều kiện hành nghề trước IRS; cam kết (guarantee) số tiền hoàn thuế/credit; can thiệp đáng kể vào luật thuế bằng gian dối; understate tax liability. Nếu có pattern lặp lại, tòa có thể cấm hẳn việc hành nghề làm preparer.</p>
+</div>
+
+<h3 class="lesson">Accuracy-Related Penalty (20%/40%)</h3>
+<div class="rule-box">
+<p><b>20%</b> của phần underpayment do: negligence/disregard quy định; substantial understatement of income tax; substantial valuation misstatement; substantial overstatement pension liabilities; substantial estate/gift valuation understatement; hoặc claim tax benefit từ giao dịch thiếu economic substance.</p>
+<p><b>40%</b> nếu: gross valuation misstatement (đạt ngưỡng $); KHÔNG disclose đầy đủ giao dịch thiếu economic substance; hoặc undisclosed foreign financial asset understatement.</p>
+<p><b>Reasonable basis</b> (chuẩn CAO hơn "not frivolous", không thỏa mãn chỉ vì "merely arguable") + good-faith challenge tính hợp lệ quy định + disclose đầy đủ → tránh phần "disregard of regulations". Nếu có <b>reasonable cause</b> VÀ good faith → không bị phạt phần đó.</p>
+<p>Tax Court KHÔNG chấp nhận việc dựa vào lỗi phần mềm khai thuế (kể cả vô ý) làm lý do miễn accuracy-related penalty (VD: Bartlett v. Commissioner, Anyika v. Commissioner).</p>
+</div>
+
+<h3 class="lesson">Substantial Understatement & Valuation Misstatement</h3>
+<div class="rule-box">
+<p><b>Substantial understatement (cá nhân):</b> vượt số LỚN HƠN giữa 10% tax phải khai HOẶC $5,000. <b>Corporation (trừ S corp):</b> vượt số NHỎ HƠN giữa 10% (tối thiểu $10,000) HOẶC $10,000,000.</p>
+<p><b>Substantial valuation misstatement (20%):</b> giá trị/basis khai ≥150% giá trị đúng, VÀ underpay &gt;$5,000 ($10,000 cho corp) do sai sót đó, VÀ không chứng minh được reasonable cause + good faith.</p>
+<p><b>Gross valuation misstatement (40%):</b> giá trị/basis ≥200% giá trị đúng, hoặc giá trị/basis đúng = 0.</p>
+</div>
+
+<h3 class="lesson">Negotiating Refund Checks & Due Diligence (EIC/CTC/AOTC/HOH)</h3>
+<div class="rule-box">
+<p><b>Negotiating refund checks:</b> phạt <b>$650/lần</b> preparer thương lượng (kể cả endorse) séc hoàn thuế của taxpayer. Taxpayer có thể ủy quyền representative NHẬN séc trên Power of Attorney — nhưng nếu representative là tax preparer, KHÔNG được ủy quyền endorse/cash séc đó. Gắn tên taxpayer lên séc chỉ để gửi vào tài khoản đứng tên taxpayer (hoặc đồng sở hữu, không gồm preparer) KHÔNG bị coi là "negotiate".</p>
+<p><b>Due diligence (Sec. 6695(g)):</b> phạt <b>$650/lần thiếu sót</b> đối với EIC, American Opportunity Tax Credit, Child Tax Credit, và HOH filing status. <b>4 yêu cầu:</b> (1) hoàn thành & nộp <b>Form 8867</b> (Paid Preparer's Due Diligence Checklist); (2) tính toán credit đúng qua worksheet; (3) "Knowledge" — phỏng vấn, hỏi hợp lý, ghi chép phản hồi taxpayer, không bỏ qua thông tin đáng ngờ; (4) giữ 5 loại record (Form 8867, worksheet, copy chứng từ, cách/khi/từ ai lấy thông tin, thông tin bổ sung) trong <b>3 năm</b> từ ngày due date muộn nhất áp dụng. KHÔNG bắt buộc giữ copy thẻ Social Security.</p>
+</div>
+
+<h3 class="lesson">Underpayment Penalty (Sec. 6694) — Unreasonable Position & Willfulness</h3>
+<div class="rule-box">
+<p><b>Sec. 6694(a) — Unreasonable position:</b> số LỚN HƠN giữa $1,000 hoặc 50% thu nhập preparer nhận. Cần đủ <b>4 yếu tố</b>: (1) có understatement of liability; (2) vị trí KHÔNG có reasonable belief "more likely than not" thành công; (3) preparer biết (hoặc lẽ ra phải biết theo chuẩn khách quan) vị trí đó không đủ cơ sở, hoặc vị trí frivolous; (4) KHÔNG disclose đầy đủ (trừ vị trí frivolous thì disclose cũng không cứu được).</p>
+<p style="background:#fff7e0;border-left:4px solid #e0a800;padding:6px 10px;border-radius:6px;margin:8px 0">⚠️ <b>Luật hiện hành (kiểm 2026-10-25):</b> Theo §6694(a) hiện hành (sửa 2008), vị trí bị coi là không hợp lý <b>trừ khi</b> có <b>substantial authority</b>, hoặc được <b>disclose</b> và có <b>reasonable basis</b>. Chuẩn “more likely than not” chỉ áp cho <b>tax shelter / reportable transaction</b>. Gleim vẫn diễn đạt theo kiểu “reasonable belief of being sustained”; làm bài thi thì bám chữ trong đề, nhưng hiểu đúng quy tắc ở đây.</p>
+<p><b>Sec. 6694(b) — Willful/reckless:</b> số LỚN HƠN giữa $5,000 hoặc 75% thu nhập preparer. Preparer chịu <b>burden of proof</b> chứng minh KHÔNG cố ý/liều lĩnh bỏ qua quy định. Willfulness được suy ra từ việc bỏ qua thông tin taxpayer cung cấp mà không hỏi thêm.</p>
+<p><b>Abatement (Sec. 6694(d)):</b> penalty được hủy nếu quyết định hành chính/tòa án cuối cùng xác định KHÔNG có understatement — dù trước đó có ý định willful understate.</p>
+</div>
+
+<h3 class="lesson">Avoidance vs. Evasion, Sec. 6701, và Statute of Limitations</h3>
+<div class="rule-box">
+<p><b>Tax avoidance</b> (hợp pháp, trước khi phát sinh liability) khác <b>tax evasion</b> (sau khi liability đã phát sinh, có ý định gian lận — nhận diện qua "badges of fraud": understate income, phân bổ sai income, khai deduction giả, hành vi đáng ngờ, bất thường sổ sách).</p>
+<p><b>Sec. 7201 (tax evasion):</b> felony, phạt tới <b>$250,000</b> ($500,000 corp) và/hoặc tù tới <b>5 năm</b>.</p>
+<p><b>Sec. 7206 (fraud/false statement):</b> phạt tới <b>$250,000</b> ($500,000 corp), tù tới <b>3 năm</b>.</p>
+<p><b>Sec. 6701:</b> phạt <b>$1,000</b> (hoặc <b>$10,000</b> nếu liên quan corporate taxpayer) cho việc hỗ trợ chuẩn bị tài liệu biết/nghi ngờ sẽ dùng cho vấn đề thuế liên bang gây understatement. KHÔNG áp dụng đồng thời với Sec. 6694(a)/(b) cho cùng vi phạm.</p>
+<p><b>Vi phạm lặp lại 6694(a), hoặc 1 lần 6694(b)/6701</b> → có thể bị kỷ luật bởi Director of OPR, ảnh hưởng quyền hành nghề.</p>
+<p><b>Statute of limitations:</b> <b>3 năm</b> cho procedural penalty & understatement penalty thường; KHÔNG có giới hạn thời gian cho penalty do willful/reckless conduct.</p>
+<p><b>Assessment:</b> preparer trả ≥15% penalty đã assess sau notice & demand có thể nộp claim for refund trong <b>30 ngày</b>, hoặc xin conference với IRS agent.</p>
+</div>
+
+<h3 class="lesson">Frivolous Submission & Form 8275</h3>
+<div class="rule-box">
+<p><b>Frivolous return:</b> thiếu thông tin cần thiết xác định liability; tax sai đáng kể; dựa trên vị trí frivolous (VD "wages không phải income"); hoặc nhằm cản trở việc thu thuế — kể cả sửa/xóa dòng "penalty of perjury".</p>
+<p><b>Sec. 6702:</b> phạt <b>$5,000</b> cho "specified frivolous submission" (VD: yêu cầu CDP hearing, đơn installment agreement, offer-in-compromise, taxpayer assistance order dựa trên vị trí frivolous).</p>
+<p><b>Form 8275 / 8275-R:</b> dùng để disclose vị trí chưa đủ rõ trên return, tránh được phần accuracy-related penalty do disregard of rules (Form 8275-R nếu vị trí trái regulation) và substantial understatement (không thuộc tax shelter) khi vị trí có reasonable basis và được disclose đầy đủ. Disclosure KHÔNG cứu được: negligence, substantial valuation misstatement, substantial pension overstatement, estate/gift valuation understatement, giao dịch thiếu economic substance, undisclosed foreign financial asset understatement, hay vị trí thuộc tax shelter/reportable transaction.</p>
+</div>
+
+<h3 class="lesson">Bảng tổng hợp Penalty chính</h3>
+<table class="vocab">
+<tr><th>Vi phạm</th><th>Mức phạt</th></tr>
+<tr><td class="word">Understatement — unreasonable position</td><td>Lớn hơn: $1,000 hoặc 50% thu nhập</td></tr>
+<tr><td class="word">Understatement — willful/reckless</td><td>Lớn hơn: $5,000 hoặc 75% thu nhập</td></tr>
+<tr><td class="word">Không ký / không copy / không ID / không giữ record / sai information return</td><td>$65/lần, tối đa $32,500/năm</td></tr>
+<tr><td class="word">Endorse séc hoàn thuế client</td><td>$650/lần, không giới hạn</td></tr>
+<tr><td class="word">Thiếu due diligence (EIC/CTC/AOTC/HOH)</td><td>$650/lần, không giới hạn</td></tr>
+<tr><td class="word">Promoting abusive tax shelter</td><td>Nhỏ hơn: $1,000/lần bán hoặc thu nhập kiếm được</td></tr>
+<tr><td class="word">Aiding/abetting understatement (Sec. 6701)</td><td>$1,000/năm (cá nhân); $10,000/năm (corp)</td></tr>
+<tr><td class="word">Tiết lộ/sử dụng thông tin trái phép</td><td>$250/lần, tối đa $10,000/năm</td></tr>
+<tr><td class="word">Fraud & false statements</td><td>$250,000 (cá nhân)/$500,000 (corp), tù tới 3 năm</td></tr>
+<tr><td class="word">Tax evasion</td><td>$250,000 (cá nhân)/$500,000 (corp), tù tới 5 năm</td></tr>
+</table>
+
+<h3 class="lesson">Thuật ngữ 2.4</h3>
+<table class="vocab">
+<tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
+<tr><td class="word">accuracy-related penalty</td><td class="vn">phạt liên quan độ chính xác của return</td></tr>
+<tr><td class="word">substantial understatement</td><td class="vn">khai thiếu thuế đáng kể</td></tr>
+<tr><td class="word">economic substance doctrine</td><td class="vn">học thuyết bản chất kinh tế (giao dịch phải có mục đích thực ngoài thuế)</td></tr>
+<tr><td class="word">badges of fraud</td><td class="vn">dấu hiệu gợi ý gian lận thuế</td></tr>
+<tr><td class="word">Form 8867</td><td class="vn">Bảng kiểm due diligence của paid preparer</td></tr>
+<tr><td class="word">Form 8275 / 8275-R</td><td class="vn">Tờ khai công bố vị trí thuế / công bố trái quy định</td></tr>
+<tr><td class="word">frivolous return/submission</td><td class="vn">tờ khai/đơn dựa trên lập luận vô căn cứ</td></tr>
+</table>
+
+<h3 class="lesson">Câu hỏi trắc nghiệm 2.4</h3>
+<div class="content-block">
+<div class="mcq"><div class="q">1. The penalty for a preparer's willful or reckless understatement of a taxpayer's liability is the greater of $5,000 or:</div>
+<div class="opt">A. 25% of income derived</div><div class="opt">B. 50% of income derived</div><div class="opt">C. 75% of income derived</div><div class="opt">D. 100% of income derived</div></div>
+<div class="mcq"><div class="q">2. A preparer's failure to comply with a due diligence requirement for the Earned Income Credit results in a penalty of:</div>
+<div class="opt">A. $65 per failure, capped annually</div><div class="opt">B. $250 per failure</div><div class="opt">C. $650 per failure, uncapped</div><div class="opt">D. $1,000 per failure</div></div>
+<div class="mcq"><div class="q">3. The accuracy-related penalty rate increases to 40% for a gross valuation misstatement when the claimed value is what percentage (or more) of the correct value?</div>
+<div class="opt">A. 125%</div><div class="opt">B. 150%</div><div class="opt">C. 200%</div><div class="opt">D. 300%</div></div>
+<div class="mcq"><div class="q">4. Under Sec. 7201, willful tax evasion by an individual is punishable by a fine of not more than:</div>
+<div class="opt">A. $10,000</div><div class="opt">B. $100,000</div><div class="opt">C. $250,000</div><div class="opt">D. $500,000</div></div>
+</div>
+</div>
+
+<div class="cKey pagebreak">
+<h2 class="section">🔑 Đáp án — 2.4 Penalties</h2>
+<div class="content-block key-grid">
+<div><b>1.</b> <span class="key-ans">C — 75%</span></div>
+<div><b>2.</b> <span class="key-ans">C — $650/lần, không giới hạn</span></div>
+<div><b>3.</b> <span class="key-ans">C — 200%</span></div>
+<div><b>4.</b> <span class="key-ans">C — $250,000</span><br><span class="key-exp">$500,000 áp dụng cho corporation, không phải cá nhân.</span></div>
+</div>
+</div>
+
+</body>
+</html>
