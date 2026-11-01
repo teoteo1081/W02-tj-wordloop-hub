@@ -4,7 +4,13 @@
    chọn chủ đề cho game) | "↗ Tab mới". Bấm lại tab Hub -> mở lại trang. Iframe tạo 1 lần, GIỮ SỐNG (đang nghe dở không mất). */
 (function (w) {
   "use strict";
+  var isLocal = location.protocol === "file:" || location.hostname === "localhost" || location.hostname === "127.0.0.1";
   var HUB_PAGES = {
+    courses_portal: { url: isLocal ? "sites/L00_PORTAL/index.html" : "https://teoteo1081.github.io/W02_TJHUB/sites/L00_PORTAL/", title: "🎓 Cổng Khoá Học TJ 2026" },
+    course_ea: { url: isLocal ? "sites/L04_EA/index.html" : "https://teoteo1081.github.io/L04_EA/", title: "🇺🇸 IRS Enrolled Agent 2026" },
+    course_dm: { url: isLocal ? "sites/L02_DM/index.html" : "https://teoteo1081.github.io/L02_DM/", title: "🚀 Digital Marketing Thực Chiến 2026" },
+    course_toeic: { url: isLocal ? "sites/L05_TOEIC/index.html" : "https://teoteo1081.github.io/L05_TOEIC/", title: "🎯 TOEIC 4 Kỹ Năng Thực Chiến" },
+    course_ielts: { url: isLocal ? "sites/L06_IELTS/index.html" : "https://teoteo1081.github.io/L06_IELTS/", title: "🇬🇧 IELTS Academic 4 Kỹ Năng 2026" },
     hub_cia: { url: "https://teoteo1081.github.io/L00_ES-CN/Operation_0-Chunks_1000_cau_EN_ES_CN_VN_v4.html", title: "🕵️ Operation 0→Chunks · 1000 câu" }
   };
   var tabs = w.$("#hub-tabs"); if (!tabs) return;
@@ -54,5 +60,14 @@
     var a = w.$("#hub-tabs .hub-tab.active");
     if (a || ++tries > 40) { clearInterval(t); if (a && HUB_PAGES[a.dataset.hub] && !gameWanted()) open(a.dataset.hub); }
   }, 250);
-  w.HubPage = { open: open, close: close, pages: HUB_PAGES };
+  function openCourse(code) {
+    var key = code ? "course_" + code : "courses_portal";
+    if (code === "portal" || !HUB_PAGES[key]) key = "courses_portal";
+    open(key);
+  }
+  setTimeout(function () {
+    var btn = w.$("#btn-courses"); if (btn && !btn._hbound) { btn._hbound = true; btn.addEventListener("click", function () { openCourse("portal"); }); }
+    var mnav = w.$("#mnav-courses"); if (mnav && !mnav._hbound) { mnav._hbound = true; mnav.addEventListener("click", function () { openCourse("portal"); }); }
+  }, 300);
+  w.HubPage = { open: open, close: close, pages: HUB_PAGES, openCourse: openCourse };
 })(window);
