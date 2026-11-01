@@ -6,72 +6,58 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'ea'});</script>
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>EA Part III – SU03: Representation</title>
-<style>
-  @page { size: A4; margin: 14mm 12mm; }
-  * { box-sizing: border-box; }
-  body { font-family:'Segoe UI','Calibri',Arial,sans-serif; color:#33322f; font-size:15.5px; line-height:1.5; background:#fdfcfa; margin:0; }
-  .cover { background: linear-gradient(120deg,#bfe4ff 0%,#d6ecff 30%,#e6def7 65%,#fbe6f4 100%); border-radius:20px; padding:40px 30px; text-align:center; margin-bottom:10px; box-shadow:0 6px 18px rgba(120,130,180,.25); border:1px solid #dfe8f5; }
-  .cover .tag { display:inline-block; background:#33314a; color:#d6ecff; font-weight:700; letter-spacing:2px; font-size:13px; padding:5px 14px; border-radius:20px; margin-bottom:14px; }
-  .cover h1 { font-size:30px; margin:6px 0; color:#3170a8; }
-  .cover h2 { font-size:16px; font-weight:500; margin:4px 0 0; opacity:.9; color:#33314a; }
-  .cover .books { margin-top:16px; font-size:13.5px; background:rgba(255,255,255,.55); display:inline-block; padding:8px 16px; border-radius:10px; color:#33314a; }
-  .toc { background:#fff; border:1.5px solid #dfe8f5; border-radius:14px; padding:18px 26px; margin-bottom:30px; }
-  .toc h3 { margin-top:0; color:#3170a8; }
-  .toc ol { margin:0; padding-left:22px; } .toc li{ margin-bottom:6px; }
-  h2.section { font-size:23px; color:#33314a; padding:12px 18px; border-radius:12px; margin:34px 0 14px; border-left:10px solid var(--accent,#5aa9d6); background:var(--bg,#eaf6fd); }
-  h3.lesson { font-size:19px; color:var(--accent-dark,#276a91); border-left:6px solid var(--accent,#5aa9d6); background:var(--bg-soft,#f3fafd); padding:8px 14px; border-radius:6px; margin:22px 0 10px; }
-  .c1{--accent:#5aa9d6;--accent-dark:#276a91;--bg:#eaf6fd;--bg-soft:#f3fafd;--head:#a9d4ec;}
-  .c2{--accent:#a892d9;--accent-dark:#5c4696;--bg:#f1ecfb;--bg-soft:#f8f5fd;--head:#cabdec;}
-  .c3{--accent:#f0a66e;--accent-dark:#b8620b;--bg:#fdeee2;--bg-soft:#fff8f0;--head:#f4c299;}
-  .c4{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
-  .c5{--accent:#e07b9b;--accent-dark:#a3335a;--bg:#fbe9f0;--bg-soft:#fdf5f8;--head:#f3b6c9;}
-  .c6{--accent:#5bb8b0;--accent-dark:#1f7a72;--bg:#e5f7f5;--bg-soft:#f2fbfa;--head:#a6e3dd;}
-  .cKey{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
-  table.vocab { width:100%; border-collapse:collapse; margin-bottom:20px; font-size:.96em; box-shadow:0 2px 8px rgba(0,0,0,.05); border-radius:10px; overflow:hidden; }
-  table.vocab th { background:var(--head,#5aa9d6); color:#2d2d2d; padding:9px 8px; text-align:left; }
-  table.vocab td { padding:8px 8px; border-bottom:1px solid var(--bg,#eaf6fd); vertical-align:top; }
-  table.vocab tr:nth-child(even) td { background:var(--bg-soft,#faf6f0); }
-  table.vocab tr:nth-child(odd) td { background:#fff; }
-  table.vocab td.word { font-weight:800; color:var(--accent-dark,#276a91); }
-  table.vocab td.vn { font-weight:700; color:#3d6ba8; }
-  .rule-box { background:var(--bg,#eaf6fd); border-left:6px solid var(--accent,#5aa9d6); border-radius:8px; padding:12px 18px; margin:10px 0; }
-  .rule-box table { width:100%; border-collapse:collapse; margin:8px 0 4px; }
-  .rule-box table td, .rule-box table th { padding:6px 8px; border-bottom:1px solid rgba(0,0,0,.08); text-align:left; font-size:.94em; }
-  .rule-box table th { color:var(--accent-dark,#276a91); }
-  .rule-box ul, .rule-box ol { margin:6px 0; padding-left:22px; } .rule-box li{ margin-bottom:5px; }
-  .struct { font-weight:800; color:#b8620b; font-family:'Consolas','Courier New',monospace; }
-  .example-box { background:#fff; border:1.5px dashed var(--accent,#5aa9d6); border-radius:8px; padding:10px 16px; margin:10px 0; font-size:.95em; }
-  .example-box b.ex-tag { color:var(--accent-dark,#276a91); }
-  .mcq { background:#fff; border:1.5px solid var(--accent,#5aa9d6); border-radius:10px; padding:12px 18px; margin-bottom:12px; }
-  .mcq .q { color:#3d6ba8; font-weight:700; margin-bottom:6px; }
-  .mcq .opt { margin:2px 0 2px 10px; }
-  .content-block { background:#fff; border:2px dashed var(--accent,#5aa9d6); border-radius:12px; padding:16px 20px; margin-bottom:18px; }
-  .key-grid { column-count:1; } .key-grid div{ margin-bottom:10px; }
-  .key-ans { color:#20824f; font-weight:800; }
-  .key-exp { color:#555; font-size:.95em; }
-  .pagebreak { page-break-before: always; }
-  .note { font-size:.85em; color:#8a8a8a; font-style:italic; }
-  .source-tag { font-size:.8em; color:#999; font-style:italic; }
-</style>
+<link rel="stylesheet" href="../../lesson-2026.css">
+
 </head>
 <body>
+<main class="lesson-shell">
+<nav class="lesson-nav" aria-label="Điều hướng bài học">
+  <a class="nav-back" href="EA3_SU02_Tax_Preparers_and_Penalties.html">← Bài trước: SU02</a>
+  <span class="nav-meta">Part III • SU03</span>
+  <a class="nav-next" href="EA3_SU04_Examination_of_Returns_and_Appeals_Process.html">Bài tiếp: SU04 →</a>
+</nav>
 
 <div class="cover">
   <div class="tag">EA EXAM PREP • PART III — REPRESENTATION, PRACTICES & PROCEDURES • SU03</div>
   <h1>📗 SU03 — REPRESENTATION</h1>
-  <h2>Bản song ngữ Việt–Anh, bám sát giáo trình Gleim 2026</h2>
+  <h2>Bản song ngữ Việt–Anh, đối chiếu chuẩn Circular 230 & Chế độ Thanh tra BBA</h2>
   <div class="books">📖 Khái niệm · 🔤 Thuật ngữ · 📌 Ví dụ minh họa · ❓ Câu hỏi trắc nghiệm · 🔑 Đáp án trang sau</div>
-</div>
 
-<div class="toc">
+<div class="exam-dual-banner">
+  <div class="banner-see">🎯 <b>Đề thi hiện hành (SEE 2026–27 / PSI):</b> Áp dụng luật đến <b>31/12/2025 (TY2025)</b></div>
+  <div class="banner-practice">💼 <b>Hành nghề mùa mới:</b> Số liệu <b>TY2026</b> nằm trong hộp <i>«Cập nhật 2026»</i></div>
+</div>
+</div><div class="toc">
 <h3>📑 Mục lục SU03</h3>
 <ol>
 <li>3.1 Representation (Power of Attorney, Form 2848, TIA/Form 8821, đại diện decedent)</li>
 <li>3.2 Centralized Authorization File — CAF (Hệ thống lưu trữ ủy quyền tập trung)</li>
 </ol>
-<p class="note">Nguồn: Gleim EA Review, Study Unit 3 — Representation (2026).</p>
+
 </div>
+
+<aside class="ea-update-2026" aria-label="Cập nhật thanh tra BBA">
+  <h3>⚡ Chế độ Thanh tra Hợp danh Tập trung BBA (IRC §§ 6221–6241)</h3>
+  <p>Chuẩn hóa quy chế đại diện hợp danh theo Luật Ngân sách Bipartisan Budget Act (BBA):</p>
+  <div class="table-scroll">
+    <table class="compare-table">
+      <thead>
+        <tr><th>Tiêu chí thanh tra Partnership</th><th>Chế độ TEFRA cũ (trước 2018)</th><th class="col-tested">Chế độ BBA hiện hành (2018 trở đi)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><b>Đại diện hợp danh trước IRS</b></td><td>Tax Matters Partner (TMP)</td><td class="col-tested"><b>Partnership Representative (PR per §6223)</b></td></tr>
+        <tr><td><b>Tư cách của người đại diện</b></td><td>Bắt buộc là general partner</td><td class="col-tested"><b>Cá nhân hoặc tổ chức có Substantial U.S. Presence</b></td></tr>
+        <tr><td><b>Quyền hạn ràng buộc</b></td><td>Partner khác có thể can thiệp</td><td class="col-tested"><b>Quyền duy nhất (Sole Authority) ràng buộc cả pship &amp; partners</b></td></tr>
+        <tr><td><b>Điều kiện xin miễn trừ (Opt-out)</b></td><td>Theo quy mô nhỏ cũ</td><td class="col-tested"><b>&le; 100 eligible partners (nộp Form 1065 Schedule B-2)</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="upcoming-box">
+    <b>📜 Phân biệt Form 2848 vs Form 8821:</b> <code>Form 2848</code> trao quyền đại diện trọn vẹn (Power of Attorney). <code>Form 8821</code> chỉ cho phép xem thông tin và nhận transcript thuế, tuyệt đối không trao quyền đại diện hay thương lượng với IRS.
+  </div>
+</aside>
 
 <!-- ============================================================ 3.1 REPRESENTATION ============================================================ -->
 <div class="c1">
@@ -82,12 +68,14 @@
 </div>
 
 <h3 class="lesson">Các loại Power of Attorney</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Loại</th><th>Đặc điểm</th></tr>
 <tr><td class="word">General POA</td><td class="vn">Attorney-in-fact được làm BẤT KỲ hành vi nào taxpayer có thể làm</td></tr>
 <tr><td class="word">Durable POA</td><td class="vn">Không chấm dứt theo thời gian hay khi principal mất năng lực (kéo dài đến khi taxpayer mất)</td></tr>
 <tr><td class="word">Limited (Special) POA</td><td class="vn">Giới hạn ở 1 số hành vi cụ thể (khác General POA)</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Recognized Representative — Ai được công nhận</h3>
 <div class="rule-box">
@@ -148,12 +136,13 @@
 <h3 class="lesson">Partnership Audits & Representing a Decedent</h3>
 <div class="rule-box">
 <p><b>Partnership audit:</b> xử lý ở CẤP PARTNERSHIP trong 1 thủ tục hành chính duy nhất (không xử lý riêng từng partner). Notice bắt đầu thủ tục & final partnership administrative adjustment phải gửi mọi partner, TRỪ partner &lt;1% lợi ích trong partnership &gt;100 partner (nhóm partner có tổng lợi ích ≥5% có thể yêu cầu gửi cho 1 partner đại diện). Mỗi partnership nên chỉ định <b>partnership representative</b> để nhận notice thay small partner và cập nhật thông tin cho mọi partner.</p>
-<p style="background:#fff7e0;border-left:4px solid #e0a800;padding:6px 10px;border-radius:6px;margin:8px 0">⚠️ <b>Luật hiện hành (kiểm 2026-10-25):</b> Theo luật audit partnership hiện hành (BBA, áp dụng từ năm thuế 2018), partnership <b>bắt buộc</b> chỉ định một <b>partnership representative</b>, và người này <b>có quyền ràng buộc</b> partnership cùng mọi partner. Gleim viết “nên chỉ định” và theo mô hình notice-to-partners cũ.</p>
+<p style="background:#fff7e0;border-left:4px solid #e0a800;padding:6px 10px;border-radius:6px;margin:8px 0">⚠️ <b>Luật hiện hành (kiểm 2026-10-25):</b> Theo luật audit partnership hiện hành (BBA, áp dụng từ năm thuế 2018), partnership <b>bắt buộc</b> chỉ định một <b>partnership representative</b>, và người này <b>có quyền ràng buộc</b> partnership cùng mọi partner. luật thuế chuẩn viết “nên chỉ định” và theo mô hình notice-to-partners cũ.</p>
 <p><b>Personal representative</b> của estate = executor (do will chỉ định), administrator (tòa chỉ định nếu không có will/executor), hoặc bất kỳ ai kiểm soát tài sản decedent. Nhiệm vụ chính: thu thập tài sản, trả nợ, phân phối cho người thừa kế; xin EIN cho estate; nộp mọi return (income, estate, gift) đúng hạn; trả thuế đến ngày discharge. Dựa vào agent (luật sư/kế toán) KHÔNG phải reasonable cause cho việc nộp trễ. Phí nhận từ estate phải tính vào gross income của personal representative.</p>
 <p><b>Form 56 (Notice Concerning Fiduciary Relationship):</b> nộp khi bắt đầu quan hệ fiduciary, khi chấm dứt, hoặc khi có successor fiduciary (nếu estate chưa chấm dứt).</p>
 </div>
 
 <h3 class="lesson">Thuật ngữ 3.1</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">Power of Attorney (POA) / Form 2848</td><td class="vn">Giấy ủy quyền đại diện & Tờ khai đại diện</td></tr>
@@ -165,6 +154,7 @@
 <tr><td class="word">Form 56</td><td class="vn">Thông báo quan hệ fiduciary</td></tr>
 <tr><td class="word">fiduciary</td><td class="vn">người được ủy thác hành động cho người khác</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm 3.1</h3>
 <div class="content-block">
@@ -209,6 +199,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ 3.2</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">Centralized Authorization File (CAF)</td><td class="vn">Hệ thống lưu trữ ủy quyền tập trung của IRS</td></tr>
@@ -217,6 +208,7 @@
 <tr><td class="word">recognized representative</td><td class="vn">người đại diện được công nhận (nộp POA + declaration)</td></tr>
 <tr><td class="word">appointee</td><td class="vn">người được chỉ định (theo Tax Information Authorization)</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm 3.2</h3>
 <div class="content-block">
@@ -235,5 +227,18 @@
 </div>
 </div>
 
+<footer class="authority-footer">
+  <h4>🏛️ Nguồn chính thống &amp; Ngày đối chiếu</h4>
+  <ul>
+    <li><b>Bộ luật:</b> Internal Revenue Code (26 U.S.C.) §§ 6221, 6222, 6223, 7521; Circular 230 §§ 10.3, 10.7.</li>
+    <li><b>Hướng dẫn IRS:</b> Instructions for Form 2848 (Power of Attorney and Declaration of Representative); Instructions for Form 8821 (Tax Information Authorization).</li>
+    <li><b>Chuẩn kỳ thi:</b> PSI SEE Candidate Information Bulletin (2026–2027). Ngày đối chiếu: <b>2026-11-01</b>.</li>
+  </ul>
+</footer>
+<nav class="lesson-nav lesson-nav-bottom" aria-label="Điều hướng cuối bài">
+  <a class="nav-back" href="EA3_SU02_Tax_Preparers_and_Penalties.html">← Bài trước: SU02</a>
+  <a class="nav-next" href="EA3_SU04_Examination_of_Returns_and_Appeals_Process.html">Bài tiếp: SU04 →</a>
+</nav>
+</main>
 </body>
 </html>

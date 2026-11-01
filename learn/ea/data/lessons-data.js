@@ -208,6 +208,54 @@ window.EA_LESSONS = {
    "file": "Part III/Lessons/EA3_SU07_Recordkeeping_and_Electronic_Filing.html",
    "vocabCount": 24,
    "quizCount": 8
+  },
+  {
+   "id": "EA4_M01_Roadmap_Credentials_and_Practice_Rights",
+   "part": 4,
+   "title": "EA Part IV – M01: Lộ trình Hành nghề & Quyền Đại diện",
+   "file": "Money/EA4_M01_Roadmap_Credentials_and_Practice_Rights.html",
+   "vocabCount": 15,
+   "quizCount": 5
+  },
+  {
+   "id": "EA4_M02_Niches_Cash_Businesses_and_Compliance",
+   "part": 4,
+   "title": "EA Part IV – M02: Ngách Tiệm Nail, Nhà hàng & Tiền mặt",
+   "file": "Money/EA4_M02_Niches_Cash_Businesses_and_Compliance.html",
+   "vocabCount": 15,
+   "quizCount": 5
+  },
+  {
+   "id": "EA4_M03_Tax_Season_Workflow_Due_Diligence_and_Intake",
+   "part": 4,
+   "title": "EA Part IV – M03: Quy trình Mùa Thuế & Thẩm định Form 8867",
+   "file": "Money/EA4_M03_Tax_Season_Workflow_Due_Diligence_and_Intake.html",
+   "vocabCount": 15,
+   "quizCount": 5
+  },
+  {
+   "id": "EA4_M04_Pricing_Engagement_Letters_and_Billing_Ethics",
+   "part": 4,
+   "title": "EA Part IV – M04: Định giá, Hợp đồng & Đạo đức Phí",
+   "file": "Money/EA4_M04_Pricing_Engagement_Letters_and_Billing_Ethics.html",
+   "vocabCount": 15,
+   "quizCount": 5
+  },
+  {
+   "id": "EA4_M05_IRS_Representation_Notices_and_Resolution",
+   "part": 4,
+   "title": "EA Part IV – M05: Đại diện Giải quyết Nợ & Thư báo IRS",
+   "file": "Money/EA4_M05_IRS_Representation_Notices_and_Resolution.html",
+   "vocabCount": 15,
+   "quizCount": 5
+  },
+  {
+   "id": "EA4_M06_Data_Security_WISP_IRC7216_and_Risk_Management",
+   "part": 4,
+   "title": "EA Part IV – M06: Bảo mật Dữ liệu WISP, IRC §7216 & Rủi ro",
+   "file": "Money/EA4_M06_Data_Security_WISP_IRC7216_and_Risk_Management.html",
+   "vocabCount": 15,
+   "quizCount": 5
   }
  ],
  "vocab": [
@@ -523,7 +571,7 @@ window.EA_LESSONS = {
   },
   {
    "en": "Qualifying Child / Qualifying Relative",
-   "vi": "Con đủ điều kiện / Họ hàng đủ điều kiện (2 loại dependent)",
+   "vi": "Con đủ điều kiện / Họ hàng đủ điều kiện (2 loại dependent; giới hạn tổng thu nhập Qualifying Relative TY2025: $5,200 theo IRC §152(d))",
    "kind": "term",
    "lesson": "EA1_SU01_Filing_Requirements",
    "section": "1.4 — DEPENDENTS"
@@ -3288,7 +3336,7 @@ window.EA_LESSONS = {
   },
   {
    "en": "annual exclusion",
-   "vi": "mức miễn trừ hàng năm ($19,000/donee)",
+   "vi": "Mức miễn trừ quà tặng hàng năm (TY2025: $19,000/người nhận, giữ nguyên $19,000 cho TY2026 theo Rev. Proc. 2024-40 & IRC §2503(b))",
    "kind": "term",
    "lesson": "EA1_SU13_Gift_Tax",
    "section": "13.2 — ANNUAL EXCLUSION, GIFT SPLITTING & DEDUCTIONS"
@@ -6630,6 +6678,726 @@ window.EA_LESSONS = {
    "kind": "term",
    "lesson": "EA3_SU07_Recordkeeping_and_Electronic_Filing",
    "section": "7.2 — ELECTRONIC FILING"
+  },
+  {
+   "en": "Unlimited Representation Rights",
+   "vi": "Quyền đại diện không giới hạn trước IRS (mọi người nộp thuế, mọi sắc thuế, mọi cấp độ: Kiểm toán, Khiếu nại Appeals, Thu nợ Collection)",
+   "kind": "rule",
+   "lesson": "EA4_M01_Roadmap_Credentials_and_Practice_Rights",
+   "section": "Part 4 · M01",
+   "head": "Circular 230 §10.3"
+  },
+  {
+   "en": "Limited Practice Rights",
+   "vi": "Quyền hành nghề giới hạn (chỉ được đại diện cho tờ khai do chính mình lập và ký, trước nhân viên kiểm toán/CSR)",
+   "kind": "rule",
+   "lesson": "EA4_M01_Roadmap_Credentials_and_Practice_Rights",
+   "section": "Part 4 · M01",
+   "head": "Circular 230 §10.7"
+  },
+  {
+   "en": "Annual Filing Season Program (AFSP)",
+   "vi": "Chương trình chứng nhận mùa thuế tự nguyện của IRS hàng năm (18 giờ CE gồm AFTR), chỉ có quyền đại diện giới hạn",
+   "kind": "term",
+   "lesson": "EA4_M01_Roadmap_Credentials_and_Practice_Rights",
+   "section": "Part 4 · M01",
+   "head": "IRS AFSP Record of Completion"
+  },
+  {
+   "en": "Form 23",
+   "vi": "Đơn xin cấp chứng chỉ Enrolled Agent nộp qua Pay.gov trong vòng 1 năm sau khi đỗ đủ 3 phần SEE (lệ phí $140)",
+   "kind": "fact",
+   "lesson": "EA4_M01_Roadmap_Credentials_and_Practice_Rights",
+   "section": "Part 4 · M01",
+   "head": "31 CFR §10.5(b)"
+  },
+  {
+   "en": "Form 8554",
+   "vi": "Đơn gia hạn chứng chỉ Enrolled Agent định kỳ 3 năm một lần trên Pay.gov theo số đuôi SSN (lệ phí $140)",
+   "kind": "fact",
+   "lesson": "EA4_M01_Roadmap_Credentials_and_Practice_Rights",
+   "section": "Part 4 · M01",
+   "head": "Circular 230 §10.6(d)"
+  },
+  {
+   "en": "Continuing Education (CE)",
+   "vi": "Giáo dục thường xuyên bắt buộc của EA: tối thiểu 72 giờ/chu kỳ 3 năm, tối thiểu 16 giờ/năm, tối thiểu 2 giờ Ethics/năm",
+   "kind": "rule",
+   "lesson": "EA4_M01_Roadmap_Credentials_and_Practice_Rights",
+   "section": "Part 4 · M01",
+   "head": "Circular 230 §10.6(e)"
+  },
+  {
+   "en": "Suitability & Tax Compliance Check",
+   "vi": "Quy trình IRS kiểm tra lý lịch tư pháp và lịch sử nộp thuế cá nhân của ứng viên trước khi cấp thẻ EA",
+   "kind": "term",
+   "lesson": "EA4_M01_Roadmap_Credentials_and_Practice_Rights",
+   "section": "Part 4 · M01",
+   "head": "31 CFR §10.5(c)"
+  },
+  {
+   "en": "Office of Professional Responsibility (OPR)",
+   "vi": "Văn phòng Trách nhiệm Nghề nghiệp IRS — cơ quan giám sát, xử lý kỷ luật và đình chỉ người hành nghề theo Circular 230",
+   "kind": "term",
+   "lesson": "EA4_M01_Roadmap_Credentials_and_Practice_Rights",
+   "section": "Part 4 · M01",
+   "head": "Circular 230 §10.1"
+  },
+  {
+   "en": "PTIN (Preparer Tax Identification Number)",
+   "vi": "Mã số định danh người khai thuế có thu phí, bắt buộc gia hạn hàng năm ($18.75/năm)",
+   "kind": "fact",
+   "lesson": "EA4_M01_Roadmap_Credentials_and_Practice_Rights",
+   "section": "Part 4 · M01",
+   "head": "IRC §6109(a)(4)"
+  },
+  {
+   "en": "EFIN (Electronic Filing Identification Number)",
+   "vi": "Mã số định danh nộp tờ khai điện tử của văn phòng khai thuế (ERO), miễn phí, cấp sau khi kiểm tra lý lịch vân tay",
+   "kind": "fact",
+   "lesson": "EA4_M01_Roadmap_Credentials_and_Practice_Rights",
+   "section": "Part 4 · M01",
+   "head": "IRS Pub. 3112"
+  },
+  {
+   "en": "Unauthorized Practice of Law (UPL)",
+   "vi": "Hành vi hành nghề luật trái phép (EA không được soạn thảo di chúc, điều lệ công ty phức tạp, tranh tụng tại tòa án ngoài quyền hạn)",
+   "kind": "rule",
+   "lesson": "EA4_M01_Roadmap_Credentials_and_Practice_Rights",
+   "section": "Part 4 · M01",
+   "head": "State Bar Boundaries"
+  },
+  {
+   "en": "USTCP (U.S. Tax Court Practitioner)",
+   "vi": "Người hành nghề không phải luật sư đã thi đỗ kỳ thi non-attorney để có quyền đại diện tranh tụng tại Tòa án Thuế Hoa Kỳ",
+   "kind": "term",
+   "lesson": "EA4_M01_Roadmap_Credentials_and_Practice_Rights",
+   "section": "Part 4 · M01",
+   "head": "Tax Court Rule 200"
+  },
+  {
+   "en": "Attestation / Financial Audit Prohibition",
+   "vi": "Giới hạn kiểm toán báo cáo tài chính: EA không có quyền ký báo cáo kiểm toán tài chính độc lập (chức năng độc quyền của CPA)",
+   "kind": "rule",
+   "lesson": "EA4_M01_Roadmap_Credentials_and_Practice_Rights",
+   "section": "Part 4 · M01",
+   "head": "State Accountancy Board"
+  },
+  {
+   "en": "State Tax Preparer Boards (CTEC / OBTP)",
+   "vi": "Hội đồng quản lý người khai thuế cấp tiểu bang (như California CTEC, Oregon OBTP) — EA được miễn thi chứng chỉ tiểu bang",
+   "kind": "rule",
+   "lesson": "EA4_M01_Roadmap_Credentials_and_Practice_Rights",
+   "section": "Part 4 · M01",
+   "head": "State Exemption for EAs"
+  },
+  {
+   "en": "Special Enrollment Examination (SEE)",
+   "vi": "Kỳ thi sát hạch gồm 3 phần do IRS tổ chức thông qua PSI Services LLC từ 01/03/2026 (lệ phí $317/phần)",
+   "kind": "fact",
+   "lesson": "EA4_M01_Roadmap_Credentials_and_Practice_Rights",
+   "section": "Part 4 · M01",
+   "head": "IRS SEE Transition 2026"
+  },
+  {
+   "en": "Booth Renter",
+   "vi": "Thợ thuê ghế/bàn làm việc độc lập tại tiệm nail hoặc salon (được xem là 1099 independent contractor nếu tự chủ)",
+   "kind": "term",
+   "lesson": "EA4_M02_Niches_Cash_Businesses_and_Compliance",
+   "section": "Part 4 · M02",
+   "head": "Worker Classification"
+  },
+  {
+   "en": "Worker Misclassification",
+   "vi": "Phân loại sai lao động (xếp nhân viên W-2 thành 1099 để trốn thuế quỹ lương FICA/FUTA), dẫn đến rủi ro phạt nặng",
+   "kind": "rule",
+   "lesson": "EA4_M02_Niches_Cash_Businesses_and_Compliance",
+   "section": "Part 4 · M02",
+   "head": "IRC §3509 & SS-8"
+  },
+  {
+   "en": "Backup Withholding (24%)",
+   "vi": "Khấu trừ dự phòng 24% thuế thu nhập bắt buộc khi người nhận tiền 1099 không cung cấp W-9 hoặc TIN hợp lệ",
+   "kind": "rule",
+   "lesson": "EA4_M02_Niches_Cash_Businesses_and_Compliance",
+   "section": "Part 4 · M02",
+   "head": "IRC §3406"
+  },
+  {
+   "en": "Qualified Tips Deduction",
+   "vi": "Khoản khấu trừ thuế thu nhập liên bang tối đa $25,000/năm cho tiền tip hợp lệ theo OBBBA Sec. 70201 (TY2025–TY2028)",
+   "kind": "rule",
+   "lesson": "EA4_M02_Niches_Cash_Businesses_and_Compliance",
+   "section": "Part 4 · M02",
+   "head": "OBBBA Sec. 70201"
+  },
+  {
+   "en": "Allocated Tips (8% Rule)",
+   "vi": "Quy tắc phân bổ tiền tip tối thiểu 8% tổng doanh thu thực phẩm/đồ uống cho cơ sở kinh doanh F&B quy mô lớn",
+   "kind": "rule",
+   "lesson": "EA4_M02_Niches_Cash_Businesses_and_Compliance",
+   "section": "Part 4 · M02",
+   "head": "IRC §6053(c) & Form 8027"
+  },
+  {
+   "en": "Form 4070 (Employee's Report of Tips)",
+   "vi": "Sổ/Báo cáo tiền tip hàng tháng của nhân viên nộp cho chủ lao động trước ngày 10 của tháng sau nếu tip ≥$20",
+   "kind": "fact",
+   "lesson": "EA4_M02_Niches_Cash_Businesses_and_Compliance",
+   "section": "Part 4 · M02",
+   "head": "IRS Pub. 1244"
+  },
+  {
+   "en": "Trust Fund Recovery Penalty (TFRP)",
+   "vi": "Hình phạt 100% trách nhiệm cá nhân đối với người quản lý không trích nộp thuế giữ lại quỹ lương (FICA/FIT)",
+   "kind": "rule",
+   "lesson": "EA4_M02_Niches_Cash_Businesses_and_Compliance",
+   "section": "Part 4 · M02",
+   "head": "IRC §6672"
+  },
+  {
+   "en": "Mandatory Service Charge",
+   "vi": "Phí dịch vụ bắt buộc (như 18% tip tự động cho bàn đông người) được tính là lương W-2 thông thường, không phải tip tự nguyện",
+   "kind": "rule",
+   "lesson": "EA4_M02_Niches_Cash_Businesses_and_Compliance",
+   "section": "Part 4 · M02",
+   "head": "Rev. Rul. 2012-18"
+  },
+  {
+   "en": "Form 1099-NEC Threshold",
+   "vi": "Ngưỡng báo cáo 1099-NEC: $600 cho năm 2025, tăng lên $2,000 cho các khoản chi trả từ 2026 theo OBBBA Sec. 70433",
+   "kind": "fact",
+   "lesson": "EA4_M02_Niches_Cash_Businesses_and_Compliance",
+   "section": "Part 4 · M02",
+   "head": "OBBBA Sec. 70433"
+  },
+  {
+   "en": "Form 8300 Cash Reporting",
+   "vi": "Báo cáo bắt buộc cho giao dịch nhận tiền mặt trên $10,000 trong một giao dịch hoặc các giao dịch có liên quan",
+   "kind": "rule",
+   "lesson": "EA4_M02_Niches_Cash_Businesses_and_Compliance",
+   "section": "Part 4 · M02",
+   "head": "IRC §6050I & 31 U.S.C. 5331"
+  },
+  {
+   "en": "Advertising Retention Rule (36 Months)",
+   "vi": "Quy tắc lưu trữ hồ sơ quảng cáo: EA phải giữ bản sao các nội dung quảng cáo và bảng giá dịch vụ ít nhất 36 tháng",
+   "kind": "rule",
+   "lesson": "EA4_M02_Niches_Cash_Businesses_and_Compliance",
+   "section": "Part 4 · M02",
+   "head": "Circular 230 §10.30(c)"
+  },
+  {
+   "en": "Deceptive Advertising Prohibition",
+   "vi": "Lệnh cấm quảng cáo gian dối: cấm cam kết hoàn tiền lớn, cấm dùng cụm từ 'IRS endorsed' hoặc tuyên bố đảm bảo kết quả audit",
+   "kind": "rule",
+   "lesson": "EA4_M02_Niches_Cash_Businesses_and_Compliance",
+   "section": "Part 4 · M02",
+   "head": "Circular 230 §10.30(a)"
+  },
+  {
+   "en": "POS Reconciliation",
+   "vi": "Đối chiếu doanh thu hệ thống máy POS với sao kê ngân hàng và báo cáo thuế bán hàng Sales Tax để phát hiện lệch",
+   "kind": "term",
+   "lesson": "EA4_M02_Niches_Cash_Businesses_and_Compliance",
+   "section": "Part 4 · M02",
+   "head": "Cash Audit Defense"
+  },
+  {
+   "en": "Section 530 Relief",
+   "vi": "Lá chắn bảo vệ chủ doanh nghiệp khỏi bị truy thu thuế lương do phân loại nhầm 1099 nếu có cơ sở hợp lý và nhất quán",
+   "kind": "rule",
+   "lesson": "EA4_M02_Niches_Cash_Businesses_and_Compliance",
+   "section": "Part 4 · M02",
+   "head": "Revenue Act of 1978 §530"
+  },
+  {
+   "en": "Reasonable Compensation",
+   "vi": "Mức lương hợp lý bắt buộc phải trả cho cổ đông kiêm nhân viên làm việc trong S corporation trước khi chia lãi distribution",
+   "kind": "rule",
+   "lesson": "EA4_M02_Niches_Cash_Businesses_and_Compliance",
+   "section": "Part 4 · M02",
+   "head": "Rev. Rul. 74-44"
+  },
+  {
+   "en": "Form 8867 Due Diligence",
+   "vi": "Mẫu thẩm định trách nhiệm của preparer khi khai EITC, CTC/ACTC/ODC, AOTC, HOH (phạt $650/lỗi năm nộp 2026)",
+   "kind": "rule",
+   "lesson": "EA4_M03_Tax_Season_Workflow_Due_Diligence_and_Intake",
+   "section": "Part 4 · M03",
+   "head": "IRC §6695(g)"
+  },
+  {
+   "en": "Contemporaneous Documentation",
+   "vi": "Tài liệu ghi chép đương thời: ghi chép ngay tại thời điểm phỏng vấn khách hàng về các câu hỏi thẩm định đã thực hiện",
+   "kind": "rule",
+   "lesson": "EA4_M03_Tax_Season_Workflow_Due_Diligence_and_Intake",
+   "section": "Part 4 · M03",
+   "head": "Treas. Reg. §1.6695-2"
+  },
+  {
+   "en": "Knowledge Requirement",
+   "vi": "Yêu cầu hiểu biết của preparer: không được nhắm mắt làm ngơ trước thông tin mâu thuẫn, phi lý; phải hỏi thêm và ghi chép lại",
+   "kind": "rule",
+   "lesson": "EA4_M03_Tax_Season_Workflow_Due_Diligence_and_Intake",
+   "section": "Part 4 · M03",
+   "head": "Treas. Reg. §1.6695-2(b)(3)"
+  },
+  {
+   "en": "Document Retention (3 Years)",
+   "vi": "Nghĩa vụ lưu trữ hồ sơ thẩm định Form 8867 và các ghi chú phỏng vấn tối thiểu 3 năm kể từ ngày nộp tờ khai",
+   "kind": "rule",
+   "lesson": "EA4_M03_Tax_Season_Workflow_Due_Diligence_and_Intake",
+   "section": "Part 4 · M03",
+   "head": "Treas. Reg. §1.6695-2(b)(4)"
+  },
+  {
+   "en": "Primary Taxpayer SSN Rule for CTC",
+   "vi": "Quy tắc mới từ TY2025: người đứng đơn khai thuế bắt buộc phải có SSN hợp lệ để được nhận Child Tax Credit",
+   "kind": "rule",
+   "lesson": "EA4_M03_Tax_Season_Workflow_Due_Diligence_and_Intake",
+   "section": "Part 4 · M03",
+   "head": "OBBBA Sec. 70104 & IRC §24(e)"
+  },
+  {
+   "en": "Substantial Authority Standard",
+   "vi": "Tiêu chuẩn căn cứ xác đáng (xác suất thắng kiện ~40%), bắt buộc để tránh phạt khai thiếu thuế §6694(a) khi không công khai",
+   "kind": "term",
+   "lesson": "EA4_M03_Tax_Season_Workflow_Due_Diligence_and_Intake",
+   "section": "Part 4 · M03",
+   "head": "IRC §6694(a)(2)(A)"
+  },
+  {
+   "en": "Reasonable Basis with Disclosure (Form 8275)",
+   "vi": "Cơ sở hợp lý (~20% xác suất) kèm nộp Form 8275 công khai vị trí thuế với IRS để tránh phạt preparer §6694(a)",
+   "kind": "term",
+   "lesson": "EA4_M03_Tax_Season_Workflow_Due_Diligence_and_Intake",
+   "section": "Part 4 · M03",
+   "head": "Treas. Reg. §1.6694-2"
+  },
+  {
+   "en": "Willful or Reckless Conduct Penalty",
+   "vi": "Phạt preparer cố tình gian lận hoặc coi thường quy định thuế theo IRC §6694(b) (phạt $5,000 hoặc 75% phí dịch vụ)",
+   "kind": "rule",
+   "lesson": "EA4_M03_Tax_Season_Workflow_Due_Diligence_and_Intake",
+   "section": "Part 4 · M03",
+   "head": "IRC §6694(b)"
+  },
+  {
+   "en": "Specified Tax Return Preparer (11-Return Rule)",
+   "vi": "Người khai thuế dự kiến nộp từ 11 tờ khai cá nhân trở lên trong năm bắt buộc phải e-file theo IRC §6011(e)(3)",
+   "kind": "rule",
+   "lesson": "EA4_M03_Tax_Season_Workflow_Due_Diligence_and_Intake",
+   "section": "Part 4 · M03",
+   "head": "IRC §6011(e)(3)"
+  },
+  {
+   "en": "Form 8948",
+   "vi": "Bản giải trình nộp tờ khai giấy cho khách hàng thuộc trường hợp ngoại lệ từ chối e-file đính kèm sau Form 1040",
+   "kind": "fact",
+   "lesson": "EA4_M03_Tax_Season_Workflow_Due_Diligence_and_Intake",
+   "section": "Part 4 · M03",
+   "head": "Treas. Reg. §301.6011-7"
+  },
+  {
+   "en": "Electronic Return Originator (ERO)",
+   "vi": "Tổ chức/văn phòng khởi tạo và truyền gửi tờ khai điện tử trực tiếp lên hệ thống trung tâm IRS e-file",
+   "kind": "term",
+   "lesson": "EA4_M03_Tax_Season_Workflow_Due_Diligence_and_Intake",
+   "section": "Part 4 · M03",
+   "head": "IRS Pub. 1345"
+  },
+  {
+   "en": "Form 8879",
+   "vi": "Giấy ủy quyền chữ ký số nộp tờ khai điện tử (e-File Signature Authorization) khách hàng phải ký trước khi ERO truyền gửi",
+   "kind": "fact",
+   "lesson": "EA4_M03_Tax_Season_Workflow_Due_Diligence_and_Intake",
+   "section": "Part 4 · M03",
+   "head": "IRS Pub. 1345 §3"
+  },
+  {
+   "en": "Client Intake Questionnaire",
+   "vi": "Phiếu câu hỏi khảo sát thông tin khách hàng đầu vào để thu thập đầy đủ tình trạng nhân thân, người phụ thuộc và nguồn thu",
+   "kind": "term",
+   "lesson": "EA4_M03_Tax_Season_Workflow_Due_Diligence_and_Intake",
+   "section": "Part 4 · M03",
+   "head": "Tax Season Workflow"
+  },
+  {
+   "en": "Identity Verification Protocol",
+   "vi": "Quy trình đối chiếu giấy tờ tùy thân có hình (ID/Passport) và thẻ SSN để ngăn chặn đánh cắp danh tính nộp thuế",
+   "kind": "rule",
+   "lesson": "EA4_M03_Tax_Season_Workflow_Due_Diligence_and_Intake",
+   "section": "Part 4 · M03",
+   "head": "FTC Safeguards Rule"
+  },
+  {
+   "en": "Due Diligence Checklist Sign-off",
+   "vi": "Biên bản ký chốt kiểm tra thẩm định nội bộ trước khi chuyển tờ khai sang khâu phát hành và truyền e-file",
+   "kind": "term",
+   "lesson": "EA4_M03_Tax_Season_Workflow_Due_Diligence_and_Intake",
+   "section": "Part 4 · M03",
+   "head": "Circular 230 §10.36"
+  },
+  {
+   "en": "Engagement Letter",
+   "vi": "Hợp đồng dịch vụ thuế bằng văn bản xác lập rõ phạm vi công việc, trách nhiệm hai bên, biểu phí và điều khoản chấm dứt",
+   "kind": "term",
+   "lesson": "EA4_M04_Pricing_Engagement_Letters_and_Billing_Ethics",
+   "section": "Part 4 · M04",
+   "head": "Practice Management"
+  },
+  {
+   "en": "Scope Creep",
+   "vi": "Hiện tượng khách hàng phát sinh thêm yêu cầu công việc nằm ngoài hợp đồng ban đầu (cần lập văn bản bổ sung phạm vi)",
+   "kind": "term",
+   "lesson": "EA4_M04_Pricing_Engagement_Letters_and_Billing_Ethics",
+   "section": "Part 4 · M04",
+   "head": "Scope Management"
+  },
+  {
+   "en": "Retainer / Upfront Deposit",
+   "vi": "Khoản tiền đặt cọc giữ chỗ trước khi thực hiện dịch vụ giải quyết tranh chấp hoặc tư vấn thuế phức tạp",
+   "kind": "fact",
+   "lesson": "EA4_M04_Pricing_Engagement_Letters_and_Billing_Ethics",
+   "section": "Part 4 · M04",
+   "head": "Billing Policies"
+  },
+  {
+   "en": "Contingent Fee Prohibition",
+   "vi": "Lệnh cấm tính phí theo tỷ lệ hoàn thuế hoặc thuế tiết kiệm trên tờ khai gốc theo Circular 230 §10.27",
+   "kind": "rule",
+   "lesson": "EA4_M04_Pricing_Engagement_Letters_and_Billing_Ethics",
+   "section": "Part 4 · M04",
+   "head": "Circular 230 §10.27(a)"
+  },
+  {
+   "en": "Contingent Fee Exceptions",
+   "vi": "3 ngoại lệ cho phép phí kết quả: IRS kiểm toán tờ khai gốc; claim hoàn thuế chỉ đòi tiền lãi/phạt statutory; thủ tục tư pháp",
+   "kind": "rule",
+   "lesson": "EA4_M04_Pricing_Engagement_Letters_and_Billing_Ethics",
+   "section": "Part 4 · M04",
+   "head": "Circular 230 §10.27(b)"
+  },
+  {
+   "en": "Unconscionable Fee",
+   "vi": "Mức phí vô lý, cắt cổ trái đạo đức nghề nghiệp bị nghiêm cấm theo quy định của Circular 230 §10.27(a)",
+   "kind": "rule",
+   "lesson": "EA4_M04_Pricing_Engagement_Letters_and_Billing_Ethics",
+   "section": "Part 4 · M04",
+   "head": "Circular 230 §10.27(a)"
+  },
+  {
+   "en": "Client Records Return (§10.28)",
+   "vi": "Nghĩa vụ hoàn trả hồ sơ gốc cho khách hàng ngay khi có yêu cầu, bất kể khách hàng có còn nợ tiền phí dịch vụ hay không",
+   "kind": "rule",
+   "lesson": "EA4_M04_Pricing_Engagement_Letters_and_Billing_Ethics",
+   "section": "Part 4 · M04",
+   "head": "Circular 230 §10.28"
+  },
+  {
+   "en": "Preparer Work Product",
+   "vi": "Sản phẩm công việc do preparer tự tạo ra (như bảng tính nháp, ghi chú tư vấn) có thể giữ lại nếu luật tiểu bang cho phép khi khách nợ phí",
+   "kind": "rule",
+   "lesson": "EA4_M04_Pricing_Engagement_Letters_and_Billing_Ethics",
+   "section": "Part 4 · M04",
+   "head": "Circular 230 §10.28(b)"
+  },
+  {
+   "en": "Refund Check Negotiation Ban",
+   "vi": "Lệnh cấm ký hậu hoặc thương lượng séc hoàn thuế của người nộp thuế theo IRC §6695(f) (phạt $650/séc năm nộp 2026)",
+   "kind": "rule",
+   "lesson": "EA4_M04_Pricing_Engagement_Letters_and_Billing_Ethics",
+   "section": "Part 4 · M04",
+   "head": "IRC §6695(f)"
+  },
+  {
+   "en": "Disengagement Letter",
+   "vi": "Thư chính thức chấm dứt quan hệ đại diện, thông báo rõ hạn chót pháp lý và khuyến nghị khách tìm đại diện mới",
+   "kind": "term",
+   "lesson": "EA4_M04_Pricing_Engagement_Letters_and_Billing_Ethics",
+   "section": "Part 4 · M04",
+   "head": "Circular 230 Practice"
+  },
+  {
+   "en": "Annual Advisory Retainer",
+   "vi": "Mô hình thu phí trọn gói theo tháng/năm gồm tư vấn thuế định kỳ, rà soát sổ sách và hỗ trợ trả lời thư IRS",
+   "kind": "term",
+   "lesson": "EA4_M04_Pricing_Engagement_Letters_and_Billing_Ethics",
+   "section": "Part 4 · M04",
+   "head": "Value-Based Pricing"
+  },
+  {
+   "en": "Itemized Form-Based Pricing",
+   "vi": "Mô hình định giá theo từng biểu mẫu thuế (Form 1040 cơ bản, cộng thêm phí cho Schedule C, D, E, Form 8867)",
+   "kind": "term",
+   "lesson": "EA4_M04_Pricing_Engagement_Letters_and_Billing_Ethics",
+   "section": "Part 4 · M04",
+   "head": "Pricing Strategies"
+  },
+  {
+   "en": "Hourly Rate with Not-to-Exceed Cap",
+   "vi": "Tính phí theo giờ kèm mức trần tối đa để khách hàng yên tâm khi giải quyết các vụ việc điều chỉnh phức tạp",
+   "kind": "term",
+   "lesson": "EA4_M04_Pricing_Engagement_Letters_and_Billing_Ethics",
+   "section": "Part 4 · M04",
+   "head": "Pricing Strategies"
+  },
+  {
+   "en": "120-Day Examination Challenge Window",
+   "vi": "Thời hạn 120 ngày sau khi nhận thông báo kiểm tra tờ khai gốc để áp dụng ngoại lệ phí kết quả hợp lệ",
+   "kind": "rule",
+   "lesson": "EA4_M04_Pricing_Engagement_Letters_and_Billing_Ethics",
+   "section": "Part 4 · M04",
+   "head": "Circular 230 §10.27(b)(2)"
+  },
+  {
+   "en": "Fee Schedule Publishing (§10.30)",
+   "vi": "Quy định niêm yết biểu phí công khai: nếu đã công bố giá cố định thì phải giữ nguyên mức giá đó tối thiểu 30 ngày",
+   "kind": "rule",
+   "lesson": "EA4_M04_Pricing_Engagement_Letters_and_Billing_Ethics",
+   "section": "Part 4 · M04",
+   "head": "Circular 230 §10.30(b)(1)"
+  },
+  {
+   "en": "Power of Attorney (Form 2848)",
+   "vi": "Giấy ủy quyền đại diện trước IRS, trao quyền tranh luận, điều đình trả góp, ký gia hạn thời hiệu cho EA/CPA/Luật sư",
+   "kind": "term",
+   "lesson": "EA4_M05_IRS_Representation_Notices_and_Resolution",
+   "section": "Part 4 · M05",
+   "head": "IRS Form 2848"
+  },
+  {
+   "en": "Tax Information Authorization (Form 8821)",
+   "vi": "Giấy ủy quyền tiếp nhận/xem thông tin thuế (không trao quyền đại diện hay đàm phán thay khách hàng)",
+   "kind": "term",
+   "lesson": "EA4_M05_IRS_Representation_Notices_and_Resolution",
+   "section": "Part 4 · M05",
+   "head": "IRS Form 8821"
+  },
+  {
+   "en": "Centralized Authorization File (CAF)",
+   "vi": "Hệ thống mã số quản lý ủy quyền đại diện tập trung 9 chữ số của IRS cấp cho người hành nghề",
+   "kind": "fact",
+   "lesson": "EA4_M05_IRS_Representation_Notices_and_Resolution",
+   "section": "Part 4 · M05",
+   "head": "IRS CAF Unit"
+  },
+  {
+   "en": "Transcript Delivery System (TDS)",
+   "vi": "Cổng điện tử cho phép đại diện tải bản sao kê thuế bảo mật của khách hàng (Account, Return, Wage & Income Transcripts)",
+   "kind": "term",
+   "lesson": "EA4_M05_IRS_Representation_Notices_and_Resolution",
+   "section": "Part 4 · M05",
+   "head": "IRS e-Services TDS"
+  },
+  {
+   "en": "Practitioner Priority Service (PPS)",
+   "vi": "Đường dây điện thoại hỗ trợ ưu tiên dành riêng cho người hành nghề thuế có giấy ủy quyền Form 2848/8821 hợp lệ",
+   "kind": "term",
+   "lesson": "EA4_M05_IRS_Representation_Notices_and_Resolution",
+   "section": "Part 4 · M05",
+   "head": "IRS PPS Hotline"
+  },
+  {
+   "en": "Automated Underreporter Notice (CP2000)",
+   "vi": "Thư báo tự động đề xuất tính lại thuế khi thông tin người nộp khai báo lệch với mẫu 1099/W-2 bên thứ ba gửi về IRS",
+   "kind": "term",
+   "lesson": "EA4_M05_IRS_Representation_Notices_and_Resolution",
+   "section": "Part 4 · M05",
+   "head": "IRC §6211 Notice"
+  },
+  {
+   "en": "Statutory Notice of Deficiency (90-Day Letter)",
+   "vi": "Thư báo chính thức ấn định số thuế nợ cho phép người nộp thuế 90 ngày để nộp đơn kiện lên Tòa án Thuế Tax Court",
+   "kind": "rule",
+   "lesson": "EA4_M05_IRS_Representation_Notices_and_Resolution",
+   "section": "Part 4 · M05",
+   "head": "IRC §6212 & §6213"
+  },
+  {
+   "en": "Collection Due Process (Form 12153)",
+   "vi": "Yêu cầu buổi điều trần bảo vệ quyền lợi thu nợ trong vòng 30 ngày từ thư Final Notice of Intent to Levy để dừng tịch biên",
+   "kind": "rule",
+   "lesson": "EA4_M05_IRS_Representation_Notices_and_Resolution",
+   "section": "Part 4 · M05",
+   "head": "IRC §6330 & Form 12153"
+  },
+  {
+   "en": "Collection Statute Expiration Date (CSED)",
+   "vi": "Thời hiệu thu nợ thuế 10 năm của IRS tính từ ngày số thuế chính thức được ấn định (assessment date)",
+   "kind": "rule",
+   "lesson": "EA4_M05_IRS_Representation_Notices_and_Resolution",
+   "section": "Part 4 · M05",
+   "head": "IRC §6502"
+  },
+  {
+   "en": "First-Time Abate (FTA)",
+   "vi": "Chính sách miễn phạt hành chính một lần đối với lỗi chậm nộp tờ khai (FTF) hoặc chậm nộp tiền thuế (FTP) khi có lịch sử sạch 3 năm",
+   "kind": "rule",
+   "lesson": "EA4_M05_IRS_Representation_Notices_and_Resolution",
+   "section": "Part 4 · M05",
+   "head": "IRM 20.1.1.3.3.2.1"
+  },
+  {
+   "en": "Offer in Compromise (OIC)",
+   "vi": "Thỏa thuận giải quyết dứt điểm nợ thuế với số tiền ít hơn nợ thực tế dựa trên khả năng thu nợ hợp lý (Form 656)",
+   "kind": "rule",
+   "lesson": "EA4_M05_IRS_Representation_Notices_and_Resolution",
+   "section": "Part 4 · M05",
+   "head": "IRC §7122 & Form 656"
+  },
+  {
+   "en": "Reasonable Collection Potential (RCP)",
+   "vi": "Tổng giá trị tài sản ròng thanh lý cộng với thu nhập khả dụng trong tương lai dùng để định giá hồ sơ OIC",
+   "kind": "term",
+   "lesson": "EA4_M05_IRS_Representation_Notices_and_Resolution",
+   "section": "Part 4 · M05",
+   "head": "IRM 5.8.5"
+  },
+  {
+   "en": "Currently Not Collectible (CNC)",
+   "vi": "Tình trạng tài chính kiệt quệ tạm thời ngưng các biện pháp cưỡng chế thu nợ (Status 53) do khó khăn kinh tế",
+   "kind": "term",
+   "lesson": "EA4_M05_IRS_Representation_Notices_and_Resolution",
+   "section": "Part 4 · M05",
+   "head": "IRM 5.16.1"
+  },
+  {
+   "en": "Conflict of Interest Written Consent (§10.29)",
+   "vi": "Văn bản đồng ý có hiểu biết có chữ ký xác nhận của các bên liên quan khi đại diện khách hàng có xung đột lợi ích tiềm ẩn",
+   "kind": "rule",
+   "lesson": "EA4_M05_IRS_Representation_Notices_and_Resolution",
+   "section": "Part 4 · M05",
+   "head": "Circular 230 §10.29"
+  },
+  {
+   "en": "Streamlined Installment Agreement",
+   "vi": "Thỏa thuận trả góp nợ thuế đơn giản hóa lên đến $50,000 trong tối đa 72 tháng mà không cần nộp bảng kê tài chính chi tiết",
+   "kind": "rule",
+   "lesson": "EA4_M05_IRS_Representation_Notices_and_Resolution",
+   "section": "Part 4 · M05",
+   "head": "IRM 5.14.5"
+  },
+  {
+   "en": "Written Information Security Plan (WISP)",
+   "vi": "Kế hoạch bảo mật thông tin bằng văn bản bắt buộc đối với mọi văn phòng thuế theo FTC Safeguards Rule và IRS Pub. 4557",
+   "kind": "rule",
+   "lesson": "EA4_M06_Data_Security_WISP_IRC7216_and_Risk_Management",
+   "section": "Part 4 · M06",
+   "head": "FTC 16 CFR Part 314"
+  },
+  {
+   "en": "FTC Safeguards Rule",
+   "vi": "Quy chế bảo vệ thông tin tài chính người tiêu dùng theo Đạo luật Gramm-Leach-Bliley coi cơ sở khai thuế là định chế tài chính",
+   "kind": "rule",
+   "lesson": "EA4_M06_Data_Security_WISP_IRC7216_and_Risk_Management",
+   "section": "Part 4 · M06",
+   "head": "GLBA 15 U.S.C. 6801"
+  },
+  {
+   "en": "Qualified Individual",
+   "vi": "Cá nhân có đủ năng lực chuyên môn được chỉ định chịu trách nhiệm giám sát, thực thi và báo cáo kế hoạch WISP",
+   "kind": "term",
+   "lesson": "EA4_M06_Data_Security_WISP_IRC7216_and_Risk_Management",
+   "section": "Part 4 · M06",
+   "head": "16 CFR §314.4(a)"
+  },
+  {
+   "en": "Multi-Factor Authentication (MFA)",
+   "vi": "Xác thực đa yếu tố bắt buộc trên mọi thiết bị và phần mềm lưu trữ/truy cập dữ liệu thuế của khách hàng",
+   "kind": "rule",
+   "lesson": "EA4_M06_Data_Security_WISP_IRC7216_and_Risk_Management",
+   "section": "Part 4 · M06",
+   "head": "16 CFR §314.4(c)(5)"
+  },
+  {
+   "en": "IRS Pub. 4557",
+   "vi": "Tài liệu chính thức của IRS hướng dẫn bảo vệ dữ liệu người nộp thuế dành cho chuyên gia thuế và văn phòng kế toán",
+   "kind": "fact",
+   "lesson": "EA4_M06_Data_Security_WISP_IRC7216_and_Risk_Management",
+   "section": "Part 4 · M06",
+   "head": "IRS Pub. 4557 (Rev. 10-2024)"
+  },
+  {
+   "en": "IRS Pub. 5708",
+   "vi": "Mẫu hướng dẫn chi tiết từng bước xây dựng Kế hoạch Bảo mật Thông tin Bằng Văn bản cho văn phòng thuế độc lập",
+   "kind": "fact",
+   "lesson": "EA4_M06_Data_Security_WISP_IRC7216_and_Risk_Management",
+   "section": "Part 4 · M06",
+   "head": "IRS Pub. 5708"
+  },
+  {
+   "en": "IRC §7216 Criminal Penalty",
+   "vi": "Chế tài hình sự phạt tối đa $1,000 và tù đến 1 năm cho hành vi tiết lộ hoặc dùng dữ liệu tờ khai thuế trái phép",
+   "kind": "rule",
+   "lesson": "EA4_M06_Data_Security_WISP_IRC7216_and_Risk_Management",
+   "section": "Part 4 · M06",
+   "head": "IRC §7216(a)"
+  },
+  {
+   "en": "IRC §6713 Civil Penalty",
+   "vi": "Hình phạt dân sự $250 cho mỗi lần tiết lộ dữ liệu tờ khai trái phép (tối đa $10,000/năm; tăng lên nếu tiếp thị trộm danh tính)",
+   "kind": "rule",
+   "lesson": "EA4_M06_Data_Security_WISP_IRC7216_and_Risk_Management",
+   "section": "Part 4 · M06",
+   "head": "IRC §6713"
+  },
+  {
+   "en": "Section 7216 Separate Consent",
+   "vi": "Văn bản đồng ý sử dụng/tiết lộ dữ liệu thuế độc lập, tự nguyện, cấm gộp vào hợp đồng chính và cấm bắt buộc khách ký",
+   "kind": "rule",
+   "lesson": "EA4_M06_Data_Security_WISP_IRC7216_and_Risk_Management",
+   "section": "Part 4 · M06",
+   "head": "Treas. Reg. §301.7216-3"
+  },
+  {
+   "en": "Offshore Disclosure SSN Redaction",
+   "vi": "Quy tắc bắt buộc che (redact) số SSN trước khi chuyển giao thông tin tờ khai Form 1040 ra ngoài biên giới Hoa Kỳ",
+   "kind": "rule",
+   "lesson": "EA4_M06_Data_Security_WISP_IRC7216_and_Risk_Management",
+   "section": "Part 4 · M06",
+   "head": "Treas. Reg. §301.7216-3(b)(4)"
+  },
+  {
+   "en": "Supervisory Responsibility (§10.36)",
+   "vi": "Trách nhiệm quản lý của chủ văn phòng/người đứng đầu trong việc xây dựng quy trình nội bộ đảm bảo tuân thủ Circular 230",
+   "kind": "rule",
+   "lesson": "EA4_M06_Data_Security_WISP_IRC7216_and_Risk_Management",
+   "section": "Part 4 · M06",
+   "head": "Circular 230 §10.36"
+  },
+  {
+   "en": "Errors & Omissions (E&O) Insurance",
+   "vi": "Bảo hiểm trách nhiệm nghề nghiệp bồi thường thiệt hại khi xảy ra sai sót kỹ thuật hoặc sơ suất trong quá trình hành nghề",
+   "kind": "term",
+   "lesson": "EA4_M06_Data_Security_WISP_IRC7216_and_Risk_Management",
+   "section": "Part 4 · M06",
+   "head": "Risk Management"
+  },
+  {
+   "en": "Cyber Liability Insurance",
+   "vi": "Bảo hiểm an ninh mạng chi trả chi phí điều tra pháp y, thông báo vi phạm dữ liệu, tư vấn pháp lý và bồi thường rò rỉ dữ liệu",
+   "kind": "term",
+   "lesson": "EA4_M06_Data_Security_WISP_IRC7216_and_Risk_Management",
+   "section": "Part 4 · M06",
+   "head": "Cybersecurity"
+  },
+  {
+   "en": "Incident Response Plan (IRP)",
+   "vi": "Kế hoạch ứng phó sự cố rò rỉ dữ liệu: cô lập thiết bị, thông báo IRS Stakeholder Liaison và cơ quan chức năng trong 24h",
+   "kind": "term",
+   "lesson": "EA4_M06_Data_Security_WISP_IRC7216_and_Risk_Management",
+   "section": "Part 4 · M06",
+   "head": "IRS Data Theft Protocol"
+  },
+  {
+   "en": "IRS Stakeholder Liaison",
+   "vi": "Đầu mối liên lạc viên IRS địa phương tiếp nhận báo cáo khẩn cấp khi văn phòng thuế bị hacker tấn công hoặc mất cắp dữ liệu",
+   "kind": "fact",
+   "lesson": "EA4_M06_Data_Security_WISP_IRC7216_and_Risk_Management",
+   "section": "Part 4 · M06",
+   "head": "IRS Reporting Protocol"
   }
  ],
  "questions": [
@@ -6725,7 +7493,7 @@ window.EA_LESSONS = {
    "section": "1.2 — FILING STATUS"
   },
   {
-   "q": "What is the standard deduction filing threshold exception for a taxpayer filing Married Filing Separately?",
+   "q": "[TY2025] What is the standard deduction filing threshold exception for a taxpayer filing Married Filing Separately?",
    "opts": [
     "Same as Single",
     "$5",
@@ -6777,7 +7545,7 @@ window.EA_LESSONS = {
    "section": "1.3 — FILING REQUIREMENTS"
   },
   {
-   "q": "Allan, 22, earns $6,600 while a full-time student, living with his cousin Doris all year who supports him. Can Doris claim Allan as a dependent?",
+   "q": "[TY2025] Allan, 22, earns $6,600 while a full-time student, living with his cousin Doris all year who supports him. Can Doris claim Allan as a dependent? (Qualifying relative gross income limit: $5,200 for TY2025)",
    "opts": [
     "Yes, as a qualifying child",
     "Yes, as a qualifying relative",
@@ -6829,7 +7597,7 @@ window.EA_LESSONS = {
    "section": "1.4 — DEPENDENTS"
   },
   {
-   "q": "A dependent child with $5,100 of unearned income and no earned income has Net Unearned Income of:",
+   "q": "[TY2025] A dependent child with $5,100 of unearned income and no earned income has Net Unearned Income of (TY2025 base threshold: $1,350):",
    "opts": [
     "$1,350",
     "$2,400",
@@ -6863,7 +7631,7 @@ window.EA_LESSONS = {
     "Salary"
    ],
    "a": 2,
-   "exp": "Taxable scholarships Wages/tips/salary đều là earned income; taxable scholarship là unearned income theo bảng phân loại của Gleim.",
+   "exp": "Taxable scholarships Wages/tips/salary đều là earned income; taxable scholarship là unearned income theo IRC §1(g)(4)(A) & §911(d)(2).",
    "lesson": "EA1_SU01_Filing_Requirements",
    "section": "1.5 — DEPENDENT'S UNEARNED INCOME (KIDDIE TAX)"
   },
@@ -8350,7 +9118,7 @@ window.EA_LESSONS = {
    "section": "7.2 — KHẤU TRỪ MỚI OBBBA — TIPS, OVERTIME, CAR LOAN, SENIORS"
   },
   {
-   "q": "The maximum deduction for qualified tips is:",
+   "q": "[TY2025–TY2028 | OBBBA Sec. 70201] The maximum deduction for qualified tips is:",
    "opts": [
     "$2,500",
     "$10,000",
@@ -8363,7 +9131,7 @@ window.EA_LESSONS = {
    "section": "7.2 — KHẤU TRỪ MỚI OBBBA — TIPS, OVERTIME, CAR LOAN, SENIORS"
   },
   {
-   "q": "The phase-out of the car loan interest deduction begins at MAGI of:",
+   "q": "[TY2025–TY2028 | OBBBA Sec. 70203] The phase-out of the car loan interest deduction begins at MAGI of:",
    "opts": [
     "$75,000 Single",
     "$100,000 Single",
@@ -8441,7 +9209,7 @@ window.EA_LESSONS = {
    "section": "7.3 — TÍNH THUẾ — BRACKETS, CAPITAL GAIN RATES & AMT"
   },
   {
-   "q": "A Single taxpayer's long-term capital gain is taxed at 15% if taxable income is above $48,350 and up to:",
+   "q": "[TY2025] A Single taxpayer's long-term capital gain is taxed at 15% if taxable income is above $48,350 and up to (TY2025 bracket):",
    "opts": [
     "$96,700",
     "$200,000",
@@ -10691,7 +11459,7 @@ window.EA_LESSONS = {
    "section": "8️⃣ SU08 — CREDITS, LOSSES, AND ADDITIONAL TAXES"
   },
   {
-   "q": "A personal-use asset destroyed by casualty is deductible only if:",
+   "q": "[TY2018–TY2025] A personal-use asset destroyed by casualty is deductible only if:",
    "opts": [
     "The taxpayer had no insurance",
     "It occurred in a federally declared disaster area",
@@ -11263,15 +12031,15 @@ window.EA_LESSONS = {
    "section": "H — STOCK REDEMPTIONS: SALE VS. DIVIDEND TREATMENT"
   },
   {
-   "q": "A corporation may recognize a LOSS on a stock redemption distribution of property only if:",
+   "q": "Under IRC §311(a), which of the following statements is TRUE regarding a corporation recognizing a loss on a nonliquidating distribution or stock redemption of property?",
    "opts": [
-    "The shareholder is unrelated",
-    "The redemption is in complete liquidation or involves estate stock to pay death taxes",
-    "The property was held for more than 1 year",
-    "Losses are never allowed on redemptions"
+    "A corporation can recognize a loss if the redemption is to pay estate death taxes under Sec. 303.",
+    "A corporation never recognizes a loss on a nonliquidating distribution or stock redemption of property.",
+    "A corporation recognizes a loss if the property distributed has depreciated by more than 50%.",
+    "A corporation recognizes a loss if the redeemed shareholder owns less than 50% of the voting stock."
    ],
    "a": 1,
-   "exp": "Complete liquidation or estate stock for death taxes",
+   "exp": "Under IRC §311(a), no gain or loss is recognized to a corporation on the distribution of property with respect to its stock (nonliquidating or redemption), except gain on appreciated property under §311(b). Losses are NEVER allowed on redemptions (even under §303). Loss recognition is permitted ONLY in a complete liquidation under IRC §336(a).",
    "lesson": "Corporate_Income_to_Redemptions_and_Liquidations",
    "section": "H — STOCK REDEMPTIONS: SALE VS. DIVIDEND TREATMENT"
   },
@@ -11562,7 +12330,7 @@ window.EA_LESSONS = {
    "section": "D — SU12.2: CONTROLLED GROUPS & PERSONAL SERVICE CORPORATIONS (PSCs)"
   },
   {
-   "q": "The $2,500,000 Sec. 179 expensing maximum for a controlled group is:",
+   "q": "[TY2025/TY2026] The $2,500,000 Sec. 179 expensing maximum for a controlled group is:",
    "opts": [
     "Available in full to each member",
     "Shared among the members of the group",
@@ -11835,7 +12603,7 @@ window.EA_LESSONS = {
    "section": "1️⃣ SU01 — ENTITY TYPES, METHODS, AND PERIODS"
   },
   {
-   "q": "Which taxpayer is generally REQUIRED to use the accrual method?",
+   "q": "[TY2025] Which taxpayer is generally REQUIRED to use the accrual method under the gross receipts test (TY2025 threshold: $31 million)?",
    "opts": [
     "A qualified personal service corporation",
     "A C corporation with average annual gross receipts over $31 million",
@@ -12498,7 +13266,7 @@ window.EA_LESSONS = {
    "section": "H — RETIREMENT PLANS: QUALIFIED PLANS, DISTRIBUTIONS & LOANS"
   },
   {
-   "q": "Generally, RMDs from a qualified plan must begin by April 1 of the year following the year the participant reaches age:",
+   "q": "[SECURE 2.0] Generally, RMDs from a qualified plan must begin by April 1 of the year following the year the participant reaches age:",
    "opts": [
     "59 1/2",
     "65",
@@ -13083,7 +13851,7 @@ window.EA_LESSONS = {
    "section": "2.4 — PENALTIES"
   },
   {
-   "q": "A preparer's failure to comply with a due diligence requirement for the Earned Income Credit results in a penalty of:",
+   "q": "[2026 Filing Season | TY2025 Rates] A preparer's failure to comply with a due diligence requirement for the Earned Income Credit (IRC §6695(g)) results in a penalty of:",
    "opts": [
     "$65 per failure, capped annually",
     "$250 per failure",
@@ -13395,7 +14163,7 @@ window.EA_LESSONS = {
    "section": "4.4 — PENALTIES (Phạt Taxpayer)"
   },
   {
-   "q": "A \"seriously delinquent tax debt\" that can trigger passport revocation generally exceeds:",
+   "q": "[2025/2026] A 'seriously delinquent tax debt' that can trigger passport revocation (IRC §7345 indexed) generally exceeds:",
    "opts": [
     "$10,000",
     "$25,000",
@@ -13887,6 +14655,396 @@ window.EA_LESSONS = {
    "exp": "2 years",
    "lesson": "EA3_SU07_Recordkeeping_and_Electronic_Filing",
    "section": "7.2 — ELECTRONIC FILING"
+  },
+  {
+   "q": "[M01-Q1] Under current IRS Enrolled Agent administration rules (effective March 2026), a candidate who passes Part 1 of the Special Enrollment Examination (SEE) through PSI Services must pass the remaining two parts within what timeframe to retain credit for Part 1, and what is the standard Form 23 enrollment application fee?",
+   "opts": [
+    "Within 2 years; `$18.75`",
+    "Within 3 years; `$140`",
+    "Within 1 year; `$317`",
+    "Within 5 years; `$140`"
+   ],
+   "a": 1,
+   "exp": "Thí sinh có **3 năm** kể từ ngày thi đỗ phần SEE đầu tiên để đỗ nốt 2 phần còn lại; sau khi đỗ đủ 3 phần phải nộp `Form 23` trên `Pay.gov` trong vòng 1 năm với lệ phí **`$140`** (`$18.75` là phí PTIN hằng năm; `$317` là phí dự thi mỗi phần SEE trên PSI).",
+   "lesson": "EA4_M01",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M01"
+  },
+  {
+   "q": "[M01-Q2] Linh receives her initial Enrolled Agent card and completes a full 3-year renewal cycle. To renew her enrollment on Form 8554, what are the minimum Continuing Education (CE) hours she must complete?",
+   "opts": [
+    "60 hours total over 3 years, with at least 12 hours per year including 4 hours of ethics per cycle",
+    "72 hours total over 3 years, with at least 16 hours per year including at least 2 hours of ethics each year",
+    "54 hours total over 3 years, with 18 hours per year including a 6-hour AFTR course",
+    "72 hours total over 3 years, with no annual minimum as long as 6 hours of ethics are completed in year 3"
+   ],
+   "a": 1,
+   "exp": "Theo `Circular 230 §10.6(e)`, chu kỳ gia hạn chuẩn 3 năm của EA yêu cầu tối thiểu **`72` giờ CE**, mỗi năm tối thiểu **`16` giờ**, trong đó mỗi năm bắt buộc có ít nhất **`2` giờ Ethics** từ nhà cung cấp được IRS phê duyệt (`18` giờ kèm `AFTR` là của chương trình tự nguyện `AFSP`, không phải của EA).",
+   "lesson": "EA4_M01",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M01"
+  },
+  {
+   "q": "[M01-Q3] Minh holds a valid PTIN and an Annual Filing Season Program (AFSP) Record of Completion, but is NOT an EA, CPA, or Attorney. Which of the following actions is Minh legally permitted to perform before the IRS?",
+   "opts": [
+    "Represent any taxpayer before IRS Appeals as long as the disputed tax is under `$25,000`",
+    "Represent a client before an IRS Revenue Agent during an audit of a return that Minh personally prepared and signed while participating in AFSP",
+    "Represent a new client before IRS Automated Collection System (ACS) regarding a prior-year return prepared by another preparer",
+    "None — unenrolled preparers have zero representation rights even with an AFSP Record of Completion"
+   ],
+   "a": 1,
+   "exp": "Người có **AFSP Record of Completion** (cả tại thời điểm lập tờ khai và thời điểm đại diện) có *limited representation rights*: chỉ được đại diện khách hàng mà **chính họ đã lập và ký tờ khai**, và chỉ trước Revenue Agents, Customer Service Representatives hoặc nhân sự tương đương của Examination — **không** được đại diện trước Appeals, Collection hay Chief Counsel, và không được đại diện tờ khai do người khác lập.",
+   "lesson": "EA4_M01",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M01"
+  },
+  {
+   "q": "[M01-Q4] An active Enrolled Agent advises a business client on the tax differences between a Partnership and an S Corporation. The client asks the EA to draft a multi-member LLC Operating Agreement and issue an audited financial statement for a bank loan. How must the EA respond?",
+   "opts": [
+    "Perform both tasks because unlimited representation before the IRS preempts all state law and accounting board rules",
+    "Draft the LLC Operating Agreement as incidental to tax planning, but refer the audited financial statement to a CPA",
+    "Decline to draft the legal Operating Agreement (referring it to a licensed attorney) and decline to issue an audited financial statement (referring attest work to a licensed CPA), while continuing to handle the tax election and tax compliance",
+    "Decline both tasks and also withdraw from preparing Form 2553 because entity selection advice is prohibited"
+   ],
+   "a": 2,
+   "exp": "Theo `Circular 230 §10.32`, quy chế hành nghề trước IRS **không trao quyền hành nghề luật** (*Unauthorized Practice of Law* — soạn hợp đồng/Operating Agreement/trust phải chuyển Luật sư), và EA cũng không có giấy phép hành nghề kiểm toán báo cáo tài chính (*attest/audit* thuộc thẩm quyền độc quyền của CPA theo luật kế toán tiểu bang). EA hoàn toàn được phép tư vấn hệ quả thuế và nộp `Form 2553` / tờ khai thuế.",
+   "lesson": "EA4_M01",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M01"
+  },
+  {
+   "q": "[M01-Q5] While studying for her final SEE exam part, Mai (who holds only a federal PTIN and lives in California) wants to charge fees to prepare individual tax returns for California residents. Which statement is accurate?",
+   "opts": [
+    "A federal PTIN automatically exempts all non-credentialed preparers from state registration in every U.S. state",
+    "Until Mai becomes an active EA, CPA, or Attorney, she must comply with state-level tax preparer registration laws where applicable (such as registering with CTEC in California, including education and surety bond requirements)",
+    "Non-credentialed preparers are federally prohibited from preparing state income tax returns",
+    "State registration boards like CTEC, Oregon OBTP, New York, and Maryland apply only to CPAs, not unenrolled preparers"
+   ],
+   "a": 1,
+   "exp": "PTIN là mã số cấp liên bang bắt buộc của IRS, nhưng một số tiểu bang (tiêu biểu **California CTEC**, **Oregon OBTP**, **New York**, **Maryland**) có luật cấp phép/đăng ký riêng đối với người khai thuế thu phí chưa có chứng chỉ EA/CPA/Attorney. Người hành nghề bắt buộc phải kiểm tra và tuân thủ quy định tiểu bang trước khi nhận phí khai thuế.\n\n---",
+   "lesson": "EA4_M01",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M01"
+  },
+  {
+   "q": "[M02-Q1] Hoa works as a W-2 manicurist at a nail salon in 2025 (valid SSN, Single, MAGI `$52,000`) and properly reports `$18,000` of voluntary customer tips to her employer. Under the OBBBA qualified tips provision for tax year 2025, how are these `$18,000` of tips treated?",
+   "opts": [
+    "Excluded from both federal income tax and Social Security/Medicare (FICA) taxes",
+    "Subject to Social Security and Medicare (FICA) taxes, and eligible for an `$18,000` below-the-line federal income tax deduction (available even if Hoa claims the standard deduction)",
+    "Deductible only if Hoa itemizes deductions on Schedule A, capped at `$10,000`",
+    "Not eligible for any deduction until tax year 2026"
+   ],
+   "a": 1,
+   "exp": "Theo `OBBBA Sec. 70201` (hiệu lực `TY2025–TY2028`), tiền tip hợp lệ được khấu trừ thuế thu nhập liên bang tối đa **`$25,000`/năm** cho cả người lấy Standard Deduction lẫn Itemizer (phase-out khi MAGI `>$150,000` Single / `>$300,000` MFJ), nhưng **vẫn phải chịu đầy đủ thuế FICA (Social Security & Medicare)**.",
+   "lesson": "EA4_M02",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M02"
+  },
+  {
+   "q": "[M02-Q2] In October 2025, Pho Saigon LLC paid `$1,200` by check to an independent graphic designer (a sole proprietor) for menu redesign services. What is Pho Saigon LLC's Form 1099-NEC reporting obligation for this payment?",
+   "opts": [
+    "No Form 1099-NEC is required because OBBBA raised the threshold to `$2,000` starting in 2025",
+    "Form 1099-NEC is required because the `$600` reporting threshold still applies to payments made in calendar year 2025 (the `$2,000` threshold applies only to payments made after December 31, 2025)",
+    "Form 1099-K must be issued by Pho Saigon LLC instead of Form 1099-NEC",
+    "Form 1099-NEC is required only if the designer received more than 200 payments"
+   ],
+   "a": 1,
+   "exp": "Theo `OBBBA Sec. 70433` và `Rev. Proc. 2025-32` §2.15, ngưỡng mới **`$2,000`** của `Form 1099-NEC / 1099-MISC` chỉ áp dụng cho các khoản thanh toán thực hiện **sau ngày `31/12/2025` (`TY2026`)**. Với khoản thanh toán `$1,200` trong **năm 2025 (`TY2025`)**, ngưỡng **`$600`** vẫn áp dụng nên doanh nghiệp bắt buộc phải phát hành `Form 1099-NEC`.",
+   "lesson": "EA4_M02",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M02"
+  },
+  {
+   "q": "[M02-Q3] During tax year 2025, an independent hairstylist receives `$15,400` across `110` business transactions through a third-party payment network (TPSO) and receives no Form 1099-K. When preparing the hairstylist's 2025 Schedule C, what must the Enrolled Agent do?",
+   "opts": [
+    "Omit the `$15,400` because OBBBA restored the `$20,000` and `200`-transaction exemption from income tax",
+    "Report the full `$15,400` in gross receipts on Schedule C, explaining that the `>$20,000` and `>200`-transaction rule only governs when the TPSO must issue Form 1099-K, not whether business income is taxable under IRC §61",
+    "Report only `$14,800` after subtracting a `$600` de minimis exclusion",
+    "Defer reporting the `$15,400` until cumulative TPSO receipts exceed `$20,000` in a future year"
+   ],
+   "a": 1,
+   "exp": "`OBBBA Sec. 70432` khôi phục ngưỡng phát hành `Form 1099-K` của đơn vị trung gian thanh toán ở mức **`>$20,000` VÀ `>200` giao dịch**, nhưng quy tắc này chỉ là ngưỡng báo cáo tờ khai thông tin (*information reporting*). Theo `IRC §61`, **100% doanh thu kinh doanh** (dù tiền mặt, Zelle hay thẻ không có 1099-K) đều phải kê khai đầy đủ trên `Schedule C`.",
+   "lesson": "EA4_M02",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M02"
+  },
+  {
+   "q": "[M02-Q4] An Enrolled Agent launches a bilingual Facebook ad campaign targeting Vietnamese small business owners. Which of the following statements in the ad COMPLIES with Circular 230 §10.30, and how long must a copy of the advertisement be retained?",
+   "opts": [
+    "*\"Certified Enrolled Agent by the U.S. Treasury — Guaranteed bigger refunds!\"*; retain for 12 months",
+    "*\"Enrolled to practice before the Internal Revenue Service — Transparent flat-fee schedule available upon request\"*; retain a copy of the communication for at least 36 months",
+    "*\"IRS-Endorsed Tax Specialist with inside Examination connections\"*; retain for 36 months",
+    "*\"Official IRS Agent for Vietnamese Small Businesses\"*; no retention required for social media posts"
+   ],
+   "a": 1,
+   "exp": "Theo `Circular 230 §10.30`, EA **bị cấm** dùng danh xưng *\"certified\"*, cấm ngụ ý được IRS bảo trợ hay có quan hệ đặc biệt với IRS, và cấm hứa hẹn kết quả sai lệch. Cụm từ chuẩn được phép là *\"enrolled to practice before the Internal Revenue Service\"* (hoặc *\"admitted to practice...\"*), và bản sao nội dung quảng cáo (kể cả trên truyền thông số/mạng xã hội) phải được lưu giữ ít nhất **`36 tháng`**.",
+   "lesson": "EA4_M02",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M02"
+  },
+  {
+   "q": "[M02-Q5] A server at a Vietnamese restaurant receives `$950` in cash and credit-card tips during March 2025. By what statutory deadline must the employee report those tips to the employer, and what threshold triggers this monthly reporting duty?",
+   "opts": [
+    "By April 10, 2025, because tips received in a calendar month were `$20` or more",
+    "By April 30, 2025, because tips exceeded `$600` for the month",
+    "Only at year-end on Form 1040, regardless of monthly amount",
+    "Within 24 hours of each shift if tips exceed `$50`"
+   ],
+   "a": 0,
+   "exp": "Theo `IRC §6053(a)`, nhân viên nhận tiền tip từ **`$20` trở lên** trong một tháng dương lịch khi làm việc cho một chủ sử dụng lao động bắt buộc phải báo cáo bằng văn bản cho chủ chậm nhất vào **ngày `10` của tháng kế tiếp** (nếu ngày 10 rơi vào cuối tuần/ngày lễ thì chuyển sang ngày làm việc tiếp theo).\n\n---",
+   "lesson": "EA4_M02",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M02"
+  },
+  {
+   "q": "[M03-Q1] In March 2026, a paid preparer prepares a 2025 Form 1040 for Maria (unmarried, holds only an ITIN) and her 8-year-old U.S.-born son (holds a valid SSN issued before the due date, lived with Maria all year, Maria paid 100% of household costs). For tax year 2025, which combination of Head of Household (HOH) status and Child Tax Credit (CTC/ACTC) may Maria legally claim?",
+   "opts": [
+    "Both HOH filing status and the `$2,200` Child Tax Credit / ACTC because the child has a valid SSN",
+    "HOH filing status (if household maintenance and residency tests are met, requiring Form 8867), but NO `$2,200` CTC or ACTC because starting in TY2025 the taxpayer (or at least one spouse on a joint return) must also have a valid SSN (only the `$500` nonrefundable ODC may be considered)",
+    "Neither HOH filing status nor any dependent credit because ITIN holders must always file as Single with zero dependents",
+    "Full EITC and `$2,200` CTC, but not HOH status"
+   ],
+   "a": 1,
+   "exp": "Từ **`TY2025`**, theo `OBBBA Sec. 70104` và `Instructions for Form 8867 (Rev. Nov. 2025)`, để nhận `CTC / ACTC`, không chỉ đứa trẻ phải có SSN mà **người nộp thuế (hoặc ít nhất 1 vợ/chồng trên tờ khai MFJ) cũng bắt buộc phải có SSN hợp lệ**. Người có ITIN vẫn được khai `HOH` (nếu thỏa test cấp dưỡng `>50%` nhà ở và Qualifying Child) và xét `ODC ($500 nonrefundable)`, đồng thời preparer vẫn phải hoàn thành `Form 8867` cho mục `HOH`.",
+   "lesson": "EA4_M03",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M03"
+  },
+  {
+   "q": "[M03-Q2] An Enrolled Agent prepares a client's 2025 Form 1040 (required to be filed in April 2026) claiming Head of Household status, the Earned Income Credit, the Child Tax Credit, and the American Opportunity Tax Credit. If the EA fails to satisfy the Form 8867 due diligence requirements for ALL FOUR items on that single return, what is the maximum IRC §6695(g) penalty assessable on that one return?",
+   "opts": [
+    "`$65` total per return",
+    "`$650` total per return",
+    "`$2,600` (`$650` multiplied by each of the 4 due diligence failures on the return)",
+    "`$1,000` or 50% of the preparation fee"
+   ],
+   "a": 2,
+   "exp": "Theo `Rev. Proc. 2024-40` §2.56 và `Instructions for Form 8867 (Rev. Nov. 2025)`, đối với tờ khai phải nộp trong **năm 2026 (`CY2026`)**, mức phạt `IRC §6695(g)` là **`$650` cho MỖI lỗi thiếu thẩm định** trên cùng một tờ khai. Nếu một tờ khai vi phạm đủ 4 khoản (`HOH + EITC + CTC/ACTC/ODC + AOTC`), tiền phạt lên tới **`4 × $650 = $2,600`** cho riêng tờ khai đó!",
+   "lesson": "EA4_M03",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M03"
+  },
+  {
+   "q": "[M03-Q3] For how long must a paid tax return preparer retain a copy of Form 8867, all computation worksheets, and a contemporaneous record of additional inquiries made to verify client-provided information?",
+   "opts": [
+    "1 year from the date the client pays the preparation invoice",
+    "3 years from the latest of the return due date (without extension), the date the return was electronically filed/signed, or June 30 following the due date for nonsigning preparers",
+    "36 months only if the return is selected for an IRS audit",
+    "7 years in paper format only (electronic storage is prohibited)"
+   ],
+   "a": 1,
+   "exp": "Theo `Treas. Reg. §1.6695-2(b)(4)` và `Instructions for Form 8867`, toàn bộ hồ sơ thẩm định `Form 8867` (gồm worksheet, bản sao tài liệu khách đưa mà preparer dựa vào, và ghi chú đương thời ai cung cấp thông tin gì vào ngày nào) phải được lưu giữ (bản giấy hoặc điện tử an toàn) trong **`3 năm`**.",
+   "lesson": "EA4_M03",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M03"
+  },
+  {
+   "q": "[M03-Q4] A client wants to take an aggressive deduction on a non-tax-shelter business expense where the legal support has roughly a 25% chance of being sustained on the merits (meeting \"reasonable basis\" but falling short of \"substantial authority\"). Under IRC §6694(a), how can the Enrolled Agent avoid the unreasonable-position preparer penalty?",
+   "opts": [
+    "Sign the return without disclosure, because any non-frivolous position (>5%) is exempt from §6694(a)",
+    "Ensure the position has a reasonable basis AND adequately disclose the position to the IRS on Form 8275 (or Form 8275-R if contrary to a regulation)",
+    "Have the client sign a private waiver releasing the EA from IRS preparer penalties",
+    "Charge a contingent fee equal to 30% of the tax saved by the deduction"
+   ],
+   "a": 1,
+   "exp": "Theo `IRC §6694(a)(2)`, với giao dịch không phải *tax shelter / reportable transaction*, vị trí khai thuế phải đạt mức ***substantial authority*** (`~40%`) nếu không công bố, HOẶC đạt mức ***reasonable basis*** (`~20%`) **kèm công bố đầy đủ trên `Form 8275` / `8275-R`**. Thỏa thuận riêng với khách không miễn trừ tiền phạt IRS (`max($1,000, 50% thu nhập)`).",
+   "lesson": "EA4_M03",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M03"
+  },
+  {
+   "q": "[M03-Q5] An Enrolled Agent expects to prepare and file `45` individual Form 1040 returns during the 2026 filing season. One elderly client insists on mailing a paper Form 1040 instead of e-filing. What procedure must the EA follow?",
+   "opts": [
+    "Refuse the client completely because Specified Tax Return Preparers are strictly barred from ever signing a paper Form 1040",
+    "Obtain a signed and dated hand-signed statement from the taxpayer choosing to file on paper, and attach Form 8948 (Preparer Explanation for Not Filing Electronically) to the paper return",
+    "Mail the paper return without any extra form because the mandatory e-file threshold for preparers is still 250 returns",
+    "File Form 2848 to override the client's preference and e-file without Form 8879"
+   ],
+   "a": 1,
+   "exp": "Theo `IRC §6011(e)(3)`, người khai thuế dự kiến nộp **`≥ 11` tờ khai cá nhân/estate/trust** trong năm là *Specified Tax Return Preparer* bắt buộc phải e-file; nếu khách hàng tự quyết định nộp bản giấy thì preparer phải lưu văn bản xác nhận có chữ ký của khách và đính kèm **`Form 8948`** vào tờ khai giấy. *(Phân biệt với quy tắc **`10` tờ khai gộp** theo `T.D. 9972` áp dụng cho doanh nghiệp/đơn vị nộp tờ khai doanh nghiệp & tờ khai thông tin W-2/1099)*.\n\n---",
+   "lesson": "EA4_M03",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M03"
+  },
+  {
+   "q": "[M04-Q1] Under Circular 230 §10.27, in which of the following situations MAY an Enrolled Agent legally charge a contingent fee?",
+   "opts": [
+    "Preparing an original Form 1040 where the fee is 15% of the client's Earned Income Tax Credit refund",
+    "Preparing an amended return (Form 1040-X) for a client who has never been contacted or audited by the IRS, charging 25% of the resulting tax refund",
+    "Representing a taxpayer in a claim solely for the abatement or refund of statutory penalties and interest assessed by the IRS",
+    "Transmitting an e-filed return for a fee equal to 3% of the direct-deposit refund amount"
+   ],
+   "a": 2,
+   "exp": "Theo `Circular 230 §10.27(b)`, *contingent fee* bị cấm tuyệt đối với tờ khai gốc (và cả tờ khai sửa đổi `1040-X` tự nguyện khi chưa bị IRS kiểm tra), cũng như cấm tính phí e-file theo `%` hoàn thuế. Tuy nhiên, `§10.27(b)(3)` cho phép thu *contingent fee* đối với dịch vụ khiếu nại hoàn/xóa **chỉ liên quan đến tiền phạt và tiền lãi theo luật định (*statutory interest or penalties*)** (cùng 2 ngoại lệ khác là IRS examination/challenge và judicial proceeding).",
+   "lesson": "EA4_M04",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M04"
+  },
+  {
+   "q": "[M04-Q2] A taxpayer receives a first written notice of examination from the IRS regarding their 2024 income tax return. If an Enrolled Agent is hired to file an amended return or refund claim in connection with that IRS examination on a contingent-fee basis, within how many days of the taxpayer receiving the preliminary written examination notice must that amended return or claim be filed?",
+   "opts": [
+    "Within 30 days",
+    "Within 90 days",
+    "Within 120 days",
+    "Within 365 days"
+   ],
+   "a": 2,
+   "exp": "Theo `Circular 230 §10.27(b)(2)(ii)`, ngoại lệ cho phép tính *contingent fee* đối với tờ khai sửa đổi hoặc đơn đòi hoàn thuế gắn với cuộc kiểm tra của IRS yêu cầu hồ sơ đó phải được nộp trước khi bắt đầu kiểm tra hoặc **trong vòng `120 ngày`** kể từ khi người nộp thuế nhận được văn bản thông báo kiểm tra đầu tiên từ IRS.",
+   "lesson": "EA4_M04",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M04"
+  },
+  {
+   "q": "[M04-Q3] To make fee collection convenient during the 2026 filing season, a tax preparer has three clients route their federal tax refunds directly into the preparer's business checking account, deducts the agreed `$400` preparation fee from each refund, and immediately wires the remaining balance to each client. What IRC §6695(f) penalty applies for returns filed in 2026?",
+   "opts": [
+    "`$0`, because each client consented in writing and received the net balance immediately",
+    "`$65` per refund (`$195` total)",
+    "`$650` per refund (`$1,950` total), because a preparer may never endorse, negotiate, or deposit a client's tax refund check/direct deposit into an account controlled by the preparer",
+    "`$250` total under IRC §6713"
+   ],
+   "a": 2,
+   "exp": "Theo `IRC §6695(f)` và `Rev. Proc. 2024-40` §2.56, người khai thuế bị cấm tuyệt đối ký hậu, thương lượng hoặc nhận chuyển khoản tiền hoàn thuế của khách vào tài khoản do preparer kiểm soát (kể cả khi khách đồng ý để trừ phí!). Mức phạt cho năm nộp 2026 là **`$650` cho mỗi lần vi phạm** (`3 × $650 = $1,950`), không có trần giới hạn năm.",
+   "lesson": "EA4_M04",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M04"
+  },
+  {
+   "q": "[M04-Q4] A client refuses to pay a `$950` invoice for tax preparation work and demands the immediate return of the original Form W-2, original closing disclosure, and original vendor receipts that the client handed to the Enrolled Agent. State law allows accountants to retain unpaid preparer-created workpapers. Under Circular 230 §10.28, what must the EA do?",
+   "opts": [
+    "Hold all original W-2s and receipts as collateral until the `$950` invoice is paid in full",
+    "Promptly return all original documents provided by the client (such as the W-2, closing disclosure, and receipts) even though a fee dispute exists, while retaining copies for the EA's files (and withholding only preparer-created work product if permitted by state law and not needed to comply with a current filing obligation)",
+    "Mail the client's original documents to the IRS Examination Division",
+    "Destroy the unpaid workpapers and original receipts after 15 days"
+   ],
+   "a": 1,
+   "exp": "Theo `Circular 230 §10.28(a)–(b)`, dù đang có tranh chấp phí dịch vụ (*fee dispute*), practitioner **bắt buộc phải trả lại kịp thời toàn bộ hồ sơ của khách hàng** (đặc biệt là mọi tài liệu gốc do khách cung cấp và bất kỳ tài liệu nào cần thiết để khách hoàn thành nghĩa vụ thuế hiện hành); practitioner được phép photocopy lưu hồ sơ.",
+   "lesson": "EA4_M04",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M04"
+  },
+  {
+   "q": "[M04-Q5] Why should a well-drafted annual Form 1040 Engagement Letter explicitly state whether FinCEN Form 114 (FBAR), state sales tax returns, and IRS audit representation are INCLUDED or EXCLUDED from the base engagement?",
+   "opts": [
+    "Because Circular 230 prohibits an EA from ever filing an FBAR under any contract",
+    "To clearly communicate the terms and scope of the engagement (Circular 230 §10.33 Best Practices), prevent scope creep and malpractice disputes over uncontracted filings, and establish separate pricing if those services are requested",
+    "Because an Engagement Letter must be filed with the IRS alongside every Form 8879",
+    "Because excluding audit representation waives all Form 8867 due diligence duties"
+   ],
+   "a": 1,
+   "exp": "Theo `Circular 230 §10.33(a)(1)` (*Best Practices*), nhà tư vấn thuế cần truyền đạt rõ ràng với khách hàng các điều khoản hợp đồng (*terms of the engagement*). Ghi rõ ranh giới phạm vi dịch vụ giúp tránh tranh chấp trách nhiệm nghề nghiệp (*E&O malpractice claims*) khi khách tưởng rằng khai Form 1040 đã tự động bao gồm FBAR, thuế bán hàng tiểu bang hay đại diện kiểm tra thuế miễn phí.\n\n---",
+   "lesson": "EA4_M04",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M04"
+  },
+  {
+   "q": "[M05-Q1] During Phase 1 of a tax resolution engagement, an Enrolled Agent has a prospective client sign Form 8821 (Tax Information Authorization) for Form 1040, tax years 2022–2025. Which action is the EA authorized to take using ONLY Form 8821?",
+   "opts": [
+    "Negotiate a Streamlined Installment Agreement with IRS Collection on the client's behalf",
+    "Inspect and receive the client's confidential IRS Account Transcripts and Wage & Income Transcripts for 2022–2025 to diagnose the case, WITHOUT advocating, negotiating, or executing agreements on the taxpayer's behalf",
+    "Represent the client at an IRS Appeals conference to contest a proposed accuracy-related penalty",
+    "Sign an extension of the assessment statute of limitations (Form 872) for the client"
+   ],
+   "a": 1,
+   "exp": "`Form 8821` chỉ là giấy ủy quyền tiếp nhận/tra cứu thông tin thuế bảo mật (*Tax Information Authorization*), **tuyệt đối không trao quyền đại diện** người nộp thuế để thương lượng trả góp, xin xóa phạt, tranh luận tại Appeals hay ký văn bản ràng buộc pháp lý. Muốn đại diện phải ký **`Form 2848`**.",
+   "lesson": "EA4_M05",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M05"
+  },
+  {
+   "q": "[M05-Q2] When an Enrolled Agent files a new Form 2848 (Power of Attorney) with the IRS CAF unit for a client's 2024 Form 1040, what happens to a prior Form 2848 previously filed by another practitioner for that same 2024 Form 1040 if Line 6 (Retention/revocation of prior power(s) of attorney) is left unchecked?",
+   "opts": [
+    "Both Forms 2848 remain active indefinitely because filing a new Form 2848 never affects prior POAs",
+    "The new Form 2848 automatically revokes the earlier Form 2848 for the same tax matter and tax period (though it does NOT revoke any prior Form 8821)",
+    "The IRS rejects the new Form 2848 until the previous practitioner signs a release",
+    "It revokes all prior Forms 8821 and all Forms 2848 across every tax year ever filed"
+   ],
+   "a": 1,
+   "exp": "Theo `Instructions for Form 2848`, việc nộp `Form 2848` mới mặc định **tự động thu hồi các `Form 2848` đã nộp trước đó** của cùng sắc thuế và kỳ tính thuế (trừ khi đánh dấu ô giữ lại tại Line 6 và đính kèm bản sao POA cũ muốn giữ), nhưng **không làm thu hồi `Form 8821`** đã nộp trước đó.",
+   "lesson": "EA4_M05",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M05"
+  },
+  {
+   "q": "[M05-Q3] An Enrolled Agent is asked to represent a recently divorced husband and wife in an IRS audit of their prior-year joint Form 1040. Assuming the EA reasonably believes he can provide competent and diligent representation to each spouse without adversely hurting the other and the representation is not prohibited by law, what written consent rules under Circular 230 §10.29 must be satisfied?",
+   "opts": [
+    "Oral consent over the phone is sufficient and no recordkeeping is required",
+    "Each affected client must waive the conflict and give informed consent, confirmed in writing by each affected client within 30 days, and the EA must retain copies of the written consents for at least 36 months after the representation concludes",
+    "Only the primary taxpayer listed first on Form 1040 needs to sign a consent within 90 days",
+    "The IRS Revenue Agent must co-sign the conflict waiver before the first audit meeting"
+   ],
+   "a": 1,
+   "exp": "Theo `Circular 230 §10.29(b)–(c)`, khi tồn tại xung đột lợi ích nhưng đáp ứng đủ điều kiện được phép đại diện, **từng khách hàng bị ảnh hưởng** phải đưa ra sự đồng ý trên cơ sở được thông tin đầy đủ và **xác nhận bằng văn bản trong vòng `30 ngày`**, đồng thời practitioner phải lưu giữ bản văn bản đồng ý ít nhất **`36 tháng`** sau khi kết thúc việc đại diện. *(Lưu ý: nếu một bên xin Innocent Spouse Relief đối kháng trực tiếp bên kia khiến không thể đại diện công bằng cho cả hai thì EA bắt buộc phải rút/từ chối không được nhận cả hai!).*",
+   "lesson": "EA4_M05",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M05"
+  },
+  {
+   "q": "[M05-Q4] For calendar year 2025, an individual's unpaid, legally enforceable federal tax debt (including assessed penalties and interest) may be certified to the State Department as a \"seriously delinquent tax debt\" — risking passport denial or revocation — once it exceeds what inflation-adjusted threshold (and which action prevents or reverses certification)?",
+   "opts": [
+    "Exceeds `$25,000` in 2025; prevented simply by hiring an EA on Form 8821",
+    "Exceeds `$64,000` in 2025 (rising to `$66,000` in 2026); certification does not apply or is reversed if the taxpayer enters into an IRS-approved Installment Agreement, has a pending/accepted Offer in Compromise, or timely requests a Collection Due Process (CDP) hearing",
+    "Exceeds `$10,000` in 2025; can never be reversed short of paying 100% in cash",
+    "Exceeds `$100,000` in 2025; reversed automatically by filing Form 4868"
+   ],
+   "a": 1,
+   "exp": "Theo `IRC §7345` và `Rev. Proc. 2024-40` §2.59, ngưỡng *Seriously Delinquent Tax Debt* cho **năm 2025 là `> $64,000`** (tăng lên `> $66,000` cho năm 2026 theo `Rev. Proc. 2025-32` §4.60). Khoản nợ đang trả góp đúng hạn theo `Installment Agreement`, đang có `OIC` hợp lệ hoặc đang kháng nghị `CDP` đúng hạn `30 ngày` sẽ được loại trừ khỏi diện thu hồi hộ chiếu.",
+   "lesson": "EA4_M05",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M05"
+  },
+  {
+   "q": "[M05-Q5] A client receives Letter 1058 / LT11 (Final Notice of Intent to Levy and Notice of Your Right to a Hearing). Within how many days from the date of that notice must the Enrolled Agent file Form 12153 to secure a statutory Collection Due Process (CDP) hearing — preserving the right to petition the U.S. Tax Court?",
+   "opts": [
+    "10 business days",
+    "30 calendar days",
+    "90 calendar days",
+    "1 year"
+   ],
+   "a": 1,
+   "exp": "Theo `IRC §6330(a)(3)(B)`, người nộp thuế có đúng **`30 ngày`** kể từ ngày ghi trên thông báo `Final Notice of Intent to Levy` (`LT11 / Letter 1058`) để nộp `Form 12153` yêu cầu phiên điều trần **CDP** (tạm dừng cưỡng chế và giữ quyền kiện lên U.S. Tax Court). Nếu nộp trễ quá 30 ngày (nhưng trong vòng 1 năm) thì chỉ được xin *Equivalent Hearing* — không giữ được quyền kháng cáo ra Tòa Thuế!\n\n---",
+   "lesson": "EA4_M05",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M05"
+  },
+  {
+   "q": "[M06-Q1] Which statement is TRUE regarding the Written Information Security Plan (WISP) requirement for paid tax return preparers?",
+   "opts": [
+    "Only CPA firms with 50 or more employees are required to have a WISP; solo Enrolled Agents working from home are exempt",
+    "Under the federal FTC Safeguards Rule (as detailed in IRS Publications 4557 and 5708), ALL professional tax preparers — regardless of firm size — are treated as financial institutions required to create, implement, and maintain a written WISP (including designating a Qualified Individual, enforcing MFA, and maintaining an incident response plan)",
+    "Filing an EFIN application automatically generates an IRS-hosted WISP with no action needed by the firm",
+    "A WISP is optional unless the firm suffered a ransomware attack in the prior calendar year"
+   ],
+   "a": 1,
+   "exp": "Theo *FTC Safeguards Rule* (`16 CFR Part 314`) và tài liệu chính thức **`IRS Pub. 4557` / `Pub. 5708`**, mọi đơn vị cung cấp dịch vụ khai thuế chuyên nghiệp (kể cả văn phòng 1 người làm tại nhà) đều thuộc diện bắt buộc phải lập và thực thi **WISP** bằng văn bản, và phải xác nhận tuân thủ khi đăng ký/gia hạn PTIN.",
+   "lesson": "EA4_M06",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M06"
+  },
+  {
+   "q": "[M06-Q2] An Enrolled Agent who is also a licensed financial advisor wants to use information from her Form 1040 clients' tax returns to identify high-income clients and pitch wealth-management products to them. Under IRC §7216 regulations, how must client consent be obtained?",
+   "opts": [
+    "No consent is needed because the EA is using the data internally within her own solo practice rather than selling it to an outside stranger",
+    "She may bury a mandatory non-negotiable consent clause inside the standard Form 1040 Engagement Letter and refuse to prepare returns for clients who cross it out",
+    "Before using the tax return information for non-tax marketing, she must obtain a separate, voluntary, signed and dated written §7216 Use Consent containing the mandatory federal disclosure language (and if a Form 1040 taxpayer declines to sign, she cannot condition tax preparation on signing or re-solicit consent for that same purpose)",
+    "Oral permission recorded in the EA's appointment calendar is valid for up to 3 years"
+   ],
+   "a": 2,
+   "exp": "`IRC §7216` điều chỉnh cả hành vi **tiết lộ (*disclosure*)** lẫn **sử dụng (*use*)** thông tin tờ khai thuế cho mục đích ngoài việc lập tờ khai thuế (kể cả tự bản thân EA dùng dữ liệu đó để bán bảo hiểm/đầu tư!). Đối với người nộp thuế `Form 1040`, văn bản đồng ý phải tách riêng, hoàn toàn tự nguyện, có câu cảnh báo bắt buộc của Bộ Tài chính, mặc định hiệu lực **1 năm** nếu không ghi thời hạn khác, và **cấm lấy làm điều kiện cung cấp dịch vụ khai thuế** hoặc nài ép xin lại khi khách đã từ chối.",
+   "lesson": "EA4_M06",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M06"
+  },
+  {
+   "q": "[M06-Q3] A U.S.-based Enrolled Agent contracts with a back-office tax preparation support team located outside the United States to assist with data entry on individual Form 1040 returns. Which compliance rule applies under IRC §7216 regulations?",
+   "opts": [
+    "Sending data to an offshore contractor requires no client consent because tax preparation support is an automatic administrative exception worldwide",
+    "Prior to transmitting any return information outside the United States, the EA must obtain the taxpayer's specific written §7216 Offshore Disclosure Consent, AND for Form 1040-series taxpayers a Social Security Number may NOT be disclosed outside the U.S. unless properly redacted/masked (or handled through qualifying adequate data-protection safeguards under IRS rules)",
+    "Offshore tax preparation assistance is a federal felony under all circumstances, even with written consent",
+    "Only business Form 1120 returns require consent before being sent outside the United States; Form 1040 returns are exempt"
+   ],
+   "a": 1,
+   "exp": "Ngoại lệ tự động chia sẻ dữ liệu cho bên hỗ trợ khai thuế mà không cần consent (`Treas. Reg. §301.7216-2(d)`) **chỉ áp dụng khi cả hai bên đều đặt tại Hoa Kỳ**! Khi chuyển bất kỳ thông tin tờ khai nào ra **ngoài lãnh thổ Hoa Kỳ**, bắt buộc phải có văn bản đồng ý `§7216` về tiết lộ ra nước ngoài ký trước bởi khách hàng, kèm quy tắc bảo vệ/che hoàn toàn số **SSN** đối với tờ khai cá nhân `Form 1040`.",
+   "lesson": "EA4_M06",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M06"
+  },
+  {
+   "q": "[M06-Q4] An Enrolled Agent discovers on Tuesday morning that phishing malware breached an office workstation containing client tax files and e-file credentials. According to IRS security guidance for tax professionals (Pub. 4557 / Identity Theft procedures), whom at the IRS should the practitioner contact immediately, and within what target timeframe?",
+   "opts": [
+    "Wait until next January's PTIN renewal form to report the incident",
+    "Contact the local IRS Stakeholder Liaison immediately (generally within 1 business day of discovering the breach, alongside law enforcement/FTC/state authorities as required) so the IRS can block fraudulent returns under the firm's EFIN/PTIN",
+    "File Form 2848 for the hacker's IP address within 90 days",
+    "Email client Social Security Numbers to the general IRS customer service inbox for backup"
+   ],
+   "a": 1,
+   "exp": "Theo hướng dẫn bảo mật của IRS (`Pub. 4557` và quy trình ứng phó đánh cắp danh tính dành cho tax pros cũng được kiểm tra trực tiếp trong `EA3_SU01`), khi phát hiện lộ lọt dữ liệu khách hàng, văn phòng phải kích hoạt kế hoạch ứng phó sự cố trong `WISP` và báo ngay cho **IRS Stakeholder Liaison** (mốc chuẩn là ngay lập tức / không quá **1 ngày làm việc**) để IRS khóa bảo vệ EFIN/PTIN và ngăn chặn tờ khai hoàn thuế giả mạo.",
+   "lesson": "EA4_M06",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M06"
+  },
+  {
+   "q": "[M06-Q5] An Enrolled Agent owns a growing tax firm and supervises four seasonal preparers. Under Circular 230 §10.36 and §10.50(c), if a firm representative commits a Circular 230 violation that the firm's managing EA knew or through gross incompetence failed to prevent via reasonable compliance procedures, any monetary penalty imposed by the Treasury on the FIRM itself cannot exceed:",
+   "opts": [
+    "`$65` per employee",
+    "`$10,000` per calendar year",
+    "The gross income derived (or to be derived) from the conduct giving rise to the penalty",
+    "`$250,000` minimum mandatory fine"
+   ],
+   "a": 2,
+   "exp": "Theo `Circular 230 §10.36`, người đứng đầu phụ trách tuân thủ của firm phải thực thi các biện pháp hợp lý để đảm bảo mọi nhân sự tuân thủ `Circular 230`; và theo `§10.50(c)`, ngoài hình thức khiển trách/đình chỉ/tước thẻ, Bộ Tài chính có thể phạt tiền trực tiếp lên cá nhân vi phạm VÀ lên cả **firm**, với trần tiền phạt tối đa bằng **tổng thu nhập gộp thu được (hoặc dự kiến thu được) từ hành vi vi phạm đó (*gross income derived or to be derived from the conduct*)**.\n\n---",
+   "lesson": "EA4_M06",
+   "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M06"
   }
  ]
 };

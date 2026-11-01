@@ -6,65 +6,30 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'ea'});</script>
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>EA Part III – SU06: Tax Authority</title>
-<style>
-  @page { size: A4; margin: 14mm 12mm; }
-  * { box-sizing: border-box; }
-  body { font-family:'Segoe UI','Calibri',Arial,sans-serif; color:#33322f; font-size:15.5px; line-height:1.5; background:#fdfcfa; margin:0; }
-  .cover { background: linear-gradient(120deg,#bfe4ff 0%,#d6ecff 30%,#e6def7 65%,#fbe6f4 100%); border-radius:20px; padding:40px 30px; text-align:center; margin-bottom:10px; box-shadow:0 6px 18px rgba(120,130,180,.25); border:1px solid #dfe8f5; }
-  .cover .tag { display:inline-block; background:#33314a; color:#d6ecff; font-weight:700; letter-spacing:2px; font-size:13px; padding:5px 14px; border-radius:20px; margin-bottom:14px; }
-  .cover h1 { font-size:30px; margin:6px 0; color:#3170a8; }
-  .cover h2 { font-size:16px; font-weight:500; margin:4px 0 0; opacity:.9; color:#33314a; }
-  .cover .books { margin-top:16px; font-size:13.5px; background:rgba(255,255,255,.55); display:inline-block; padding:8px 16px; border-radius:10px; color:#33314a; }
-  .toc { background:#fff; border:1.5px solid #dfe8f5; border-radius:14px; padding:18px 26px; margin-bottom:30px; }
-  .toc h3 { margin-top:0; color:#3170a8; }
-  .toc ol { margin:0; padding-left:22px; } .toc li{ margin-bottom:6px; }
-  h2.section { font-size:23px; color:#33314a; padding:12px 18px; border-radius:12px; margin:34px 0 14px; border-left:10px solid var(--accent,#5aa9d6); background:var(--bg,#eaf6fd); }
-  h3.lesson { font-size:19px; color:var(--accent-dark,#276a91); border-left:6px solid var(--accent,#5aa9d6); background:var(--bg-soft,#f3fafd); padding:8px 14px; border-radius:6px; margin:22px 0 10px; }
-  .c1{--accent:#5aa9d6;--accent-dark:#276a91;--bg:#eaf6fd;--bg-soft:#f3fafd;--head:#a9d4ec;}
-  .c2{--accent:#a892d9;--accent-dark:#5c4696;--bg:#f1ecfb;--bg-soft:#f8f5fd;--head:#cabdec;}
-  .c3{--accent:#f0a66e;--accent-dark:#b8620b;--bg:#fdeee2;--bg-soft:#fff8f0;--head:#f4c299;}
-  .c4{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
-  .c5{--accent:#e07b9b;--accent-dark:#a3335a;--bg:#fbe9f0;--bg-soft:#fdf5f8;--head:#f3b6c9;}
-  .c6{--accent:#5bb8b0;--accent-dark:#1f7a72;--bg:#e5f7f5;--bg-soft:#f2fbfa;--head:#a6e3dd;}
-  .cKey{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
-  table.vocab { width:100%; border-collapse:collapse; margin-bottom:20px; font-size:.96em; box-shadow:0 2px 8px rgba(0,0,0,.05); border-radius:10px; overflow:hidden; }
-  table.vocab th { background:var(--head,#5aa9d6); color:#2d2d2d; padding:9px 8px; text-align:left; }
-  table.vocab td { padding:8px 8px; border-bottom:1px solid var(--bg,#eaf6fd); vertical-align:top; }
-  table.vocab tr:nth-child(even) td { background:var(--bg-soft,#faf6f0); }
-  table.vocab tr:nth-child(odd) td { background:#fff; }
-  table.vocab td.word { font-weight:800; color:var(--accent-dark,#276a91); }
-  table.vocab td.vn { font-weight:700; color:#3d6ba8; }
-  .rule-box { background:var(--bg,#eaf6fd); border-left:6px solid var(--accent,#5aa9d6); border-radius:8px; padding:12px 18px; margin:10px 0; }
-  .rule-box table { width:100%; border-collapse:collapse; margin:8px 0 4px; }
-  .rule-box table td, .rule-box table th { padding:6px 8px; border-bottom:1px solid rgba(0,0,0,.08); text-align:left; font-size:.94em; }
-  .rule-box table th { color:var(--accent-dark,#276a91); }
-  .rule-box ul, .rule-box ol { margin:6px 0; padding-left:22px; } .rule-box li{ margin-bottom:5px; }
-  .struct { font-weight:800; color:#b8620b; font-family:'Consolas','Courier New',monospace; }
-  .example-box { background:#fff; border:1.5px dashed var(--accent,#5aa9d6); border-radius:8px; padding:10px 16px; margin:10px 0; font-size:.95em; }
-  .example-box b.ex-tag { color:var(--accent-dark,#276a91); }
-  .mcq { background:#fff; border:1.5px solid var(--accent,#5aa9d6); border-radius:10px; padding:12px 18px; margin-bottom:12px; }
-  .mcq .q { color:#3d6ba8; font-weight:700; margin-bottom:6px; }
-  .mcq .opt { margin:2px 0 2px 10px; }
-  .content-block { background:#fff; border:2px dashed var(--accent,#5aa9d6); border-radius:12px; padding:16px 20px; margin-bottom:18px; }
-  .key-grid { column-count:1; } .key-grid div{ margin-bottom:10px; }
-  .key-ans { color:#20824f; font-weight:800; }
-  .key-exp { color:#555; font-size:.95em; }
-  .pagebreak { page-break-before: always; }
-  .note { font-size:.85em; color:#8a8a8a; font-style:italic; }
-  .source-tag { font-size:.8em; color:#999; font-style:italic; }
-</style>
+<link rel="stylesheet" href="../../lesson-2026.css">
+
 </head>
 <body>
+<main class="lesson-shell">
+<nav class="lesson-nav" aria-label="Điều hướng bài học">
+  <a class="nav-back" href="EA3_SU05_The_Collection_Process.html">← Bài trước: SU05</a>
+  <span class="nav-meta">Part III • SU06</span>
+  <a class="nav-next" href="EA3_SU07_Recordkeeping_and_Electronic_Filing.html">Bài tiếp: SU07 →</a>
+</nav>
 
 <div class="cover">
   <div class="tag">EA EXAM PREP • PART III — REPRESENTATION, PRACTICES & PROCEDURES • SU06</div>
   <h1>📗 SU06 — TAX AUTHORITY</h1>
-  <h2>Bản song ngữ Việt–Anh, bám sát giáo trình Gleim 2026</h2>
+  <h2>Bản song ngữ Việt–Anh, đối chiếu chuẩn Nguồn Luật Thuế & Hiệp định Thuế</h2>
   <div class="books">📖 Khái niệm · 🔤 Thuật ngữ · 📌 Ví dụ minh họa · ❓ Câu hỏi trắc nghiệm · 🔑 Đáp án trang sau</div>
-</div>
 
-<div class="toc">
+<div class="exam-dual-banner">
+  <div class="banner-see">🎯 <b>Đề thi hiện hành (SEE 2026–27 / PSI):</b> Áp dụng luật đến <b>31/12/2025 (TY2025)</b></div>
+  <div class="banner-practice">💼 <b>Hành nghề mùa mới:</b> Số liệu <b>TY2026</b> nằm trong hộp <i>«Cập nhật 2026»</i></div>
+</div>
+</div><div class="toc">
 <h3>📑 Mục lục SU06</h3>
 <ol>
 <li>6.1 Statutory Law (Legislative Law) — IRC, Committee Reports, Treaties</li>
@@ -72,8 +37,28 @@
 <li>6.3 The Court System (Judicial Law) — Tax Court, District Court, Supreme Court, Acquiescence</li>
 <li>6.4 Tax Research — Primary vs. Secondary Authority</li>
 </ol>
-<p class="note">Nguồn: Gleim EA Review, Study Unit 6 — Tax Authority (2026).</p>
+
 </div>
+
+<aside class="ea-update-2026" aria-label="Cập nhật nguồn luật và án lệ">
+  <h3>⚡ Quan hệ giữa Hiệp định Thuế và IRC &amp; Án lệ Loper Bright (2024)</h3>
+  <p>Chuẩn hóa căn cứ về địa vị pháp lý của Hiệp định thuế quốc tế và hiệu lực của Thông tư thuế:</p>
+  <div class="table-scroll">
+    <table class="compare-table">
+      <thead>
+        <tr><th>Nguồn luật thuế</th><th>Địa vị pháp lý &amp; Nguyên tắc giải quyết xung đột</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><b>Hiệp định thuế (Tax Treaty) vs. Bộ luật IRC</b></td><td>Theo <code>IRC §7852(d)(1)</code> &amp; Hiến pháp Mỹ (Art. VI), hai văn bản có <b>địa vị ngang hàng</b>. Khi xung đột trực tiếp, áp dụng <b>quy tắc văn bản ban hành sau có hiệu lực (Later-in-time rule)</b>.</td></tr>
+        <tr><td><b>Khai báo vị trí theo Treaty (<code>IRC §6114</code>)</b></td><td>Người nộp thuế khai vị trí dựa trên Treaty làm thay đổi luật nội địa IRC <b>bắt buộc phải công bố trên Form 8833</b>.</td></tr>
+        <tr><td><b>Hiệu lực của Treasury Regulations</b></td><td>Hậu án lệ Tối cao Pháp viện <i>Loper Bright Enterprises v. Raimondo</i> (2024) bãi bỏ <i>Chevron deference</i>; tòa án tự giải thích luật theo APA thay vì mặc nhiên phục tùng cơ quan hành pháp.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="upcoming-box">
+    <b>📚 Trọng tâm thứ bậc nguồn luật:</b> Bộ luật IRC &amp; Án lệ Tối cao Pháp viện &gt; Treasury Regulations (Legislative &gt; Interpretative) &gt; Án lệ Tòa Phúc thẩm Circuit &gt; Tòa Thuế U.S. Tax Court (Regular &gt; Memo) &gt; Revenue Rulings &amp; Rev. Procs.
+  </div>
+</aside>
 
 <!-- ============================================================ 6.1 STATUTORY LAW ============================================================ -->
 <div class="c1">
@@ -93,10 +78,11 @@
 <div class="rule-box">
 <p><b>Committee Reports:</b> công cụ hữu ích xác định Ý ĐỊNH của Quốc hội (Congressional intent) đằng sau 1 luật thuế — giúp examiner áp dụng luật đúng.</p>
 <p><b>Tax Treaty:</b> được xem TƯƠNG ĐƯƠNG statutory law và GHI ĐÈ (overrides) IRC. Mỹ có hiệp định thuế với nhiều nước — theo đó, RESIDENT (không nhất thiết là citizen) của nước ngoài bị đánh thuế mức GIẢM hoặc MIỄN thuế Mỹ với 1 số khoản thu nhập nguồn Mỹ. Mức giảm/miễn khác nhau theo từng nước/loại thu nhập. Treaty thường có tính HỖ TƯƠNG (reciprocal — áp dụng cho cả 2 nước & resident của họ).</p>
-<p style="background:#fff7e0;border-left:4px solid #e0a800;padding:6px 10px;border-radius:6px;margin:8px 0">⚠️ <b>Luật hiện hành (kiểm 2026-10-25):</b> Theo §7852(d), treaty và IRC <b>ngang hàng</b>; khi mâu thuẫn thì <b>văn bản ban hành sau</b> thắng (later-in-time rule). Gleim viết treaty “overrides the IRC” — đề thi theo cách viết của Gleim.</p>
+<p style="background:#fff7e0;border-left:4px solid #e0a800;padding:6px 10px;border-radius:6px;margin:8px 0">⚠️ <b>Luật hiện hành (kiểm 2026-10-25):</b> Theo §7852(d), treaty và IRC <b>ngang hàng</b>; khi mâu thuẫn thì <b>văn bản ban hành sau</b> thắng (later-in-time rule). luật thuế chuẩn viết treaty “overrides the IRC” — đề thi theo cách viết của luật thuế chuẩn.</p>
 </div>
 
 <h3 class="lesson">Thuật ngữ 6.1</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">Internal Revenue Code (IRC)</td><td class="vn">Bộ luật thuế thu nhập nội bộ (Title 26 U.S.C.)</td></tr>
@@ -105,6 +91,7 @@
 <tr><td class="word">tax treaty</td><td class="vn">hiệp định thuế song phương, tương đương statutory law</td></tr>
 <tr><td class="word">reciprocal</td><td class="vn">có tính hỗ tương (áp dụng 2 chiều)</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm 6.1</h3>
 <div class="content-block">
@@ -167,6 +154,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ 6.2</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">Treasury Regulation</td><td class="vn">Quy định của Bộ Tài chính diễn giải Code</td></tr>
@@ -176,6 +164,7 @@
 <tr><td class="word">Private Letter Ruling (PLR)</td><td class="vn">Phán quyết riêng cho 1 taxpayer cụ thể</td></tr>
 <tr><td class="word">Internal Revenue Manual (IRM)</td><td class="vn">Sổ tay quy trình nội bộ IRS</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm 6.2</h3>
 <div class="content-block">
@@ -227,6 +216,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ 6.3</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">writ of certiorari</td><td class="vn">lệnh Supreme Court yêu cầu chuyển vụ án lên xem xét</td></tr>
@@ -235,6 +225,7 @@
 <tr><td class="word">tax citator</td><td class="vn">công cụ tra cứu lịch sử/diễn biến 1 vụ án thuế</td></tr>
 <tr><td class="word">regular decision / memorandum decision</td><td class="vn">quyết định chính thức / quyết định ghi chú (ít giá trị tiền lệ)</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm 6.3</h3>
 <div class="content-block">
@@ -287,6 +278,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ 6.4</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">primary authority</td><td class="vn">nguồn luật chính thức (xuất phát từ 1 nhánh chính phủ)</td></tr>
@@ -295,6 +287,7 @@
 <tr><td class="word">tax service</td><td class="vn">dịch vụ tra cứu thuế thương mại (secondary authority)</td></tr>
 <tr><td class="word">Committee Report</td><td class="vn">Báo cáo ủy ban Quốc hội (1 loại primary authority)</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm 6.4</h3>
 <div class="content-block">
@@ -316,5 +309,18 @@
 </div>
 </div>
 
+<footer class="authority-footer">
+  <h4>🏛️ Nguồn chính thống &amp; Ngày đối chiếu</h4>
+  <ul>
+    <li><b>Bộ luật &amp; Hiến pháp:</b> U.S. Constitution Art. VI; Internal Revenue Code (26 U.S.C.) §§ 6114, 7805, 7852(d).</li>
+    <li><b>Án lệ Tối cao:</b> <i>Loper Bright Enterprises v. Raimondo</i>, 603 U.S. 369 (2024); <i>Whitney v. Robertson</i>, 124 U.S. 190 (1888 — later-in-time rule).</li>
+    <li><b>Chuẩn kỳ thi:</b> PSI SEE Candidate Information Bulletin (2026–2027). Ngày đối chiếu: <b>2026-11-01</b>.</li>
+  </ul>
+</footer>
+<nav class="lesson-nav lesson-nav-bottom" aria-label="Điều hướng cuối bài">
+  <a class="nav-back" href="EA3_SU05_The_Collection_Process.html">← Bài trước: SU05</a>
+  <a class="nav-next" href="EA3_SU07_Recordkeeping_and_Electronic_Filing.html">Bài tiếp: SU07 →</a>
+</nav>
+</main>
 </body>
 </html>

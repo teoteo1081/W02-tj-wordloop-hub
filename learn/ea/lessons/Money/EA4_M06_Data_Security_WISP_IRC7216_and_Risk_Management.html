@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<!-- Google tag (gtag.js) — GA4 chung của TJ, nhãn site=ea -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'ea'});</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EA Part IV – M06: Bảo Mật WISP, IRC §7216 &amp; Quản Trị Rủi Ro Hành Nghề</title>
+<link rel="stylesheet" href="../lesson-2026.css">
+</head>
+<body>
+<main class="lesson-shell">
+<nav class="lesson-nav" aria-label="Điều hướng bài học">
+  <a class="nav-back" href="EA4_M05_IRS_Representation_Notices_and_Resolution.html">← Bài trước: M05</a>
+  <span class="nav-meta">Part IV • M06</span>
+  <a class="nav-next" href="../../../index.html">Về EA Quest Hub →</a>
+</nav>
+
+<div class="cover">
+  <div class="tag">EA PRACTICE • PART IV — MONETIZATION &amp; PRACTICE • M06</div>
+  <h1>🔒 M06 — BẢO MẬT DỮ LIỆU WISP, IRC §7216 &amp; QUẢN TRỊ RỦI RO</h1>
+  <h2>Kế Hoạch Bảo Mật Bắt Buộc Pub 4557/5708, Tiếp Thị Chéo &amp; Gia Công Xuyên Biên Giới B2B</h2>
+  <div class="exam-dual-banner">
+    <div class="banner-see">🎯 <b>FTC Safeguards Rule:</b> Bắt buộc lập kế hoạch an ninh văn bản <b>WISP</b> cho mọi tax preparer</div>
+    <div class="banner-practice">💼 <b>IRC §7216 / §6713:</b> Cấm tiếp thị chéo hoặc gửi dữ liệu ra nước ngoài nếu thiếu Consent</div>
+  </div>
+</div>
+
+<div class="toc">
+  <h3>📑 Mục lục bài học M06</h3>
+  <ol>
+    <li>6.1 Mục tiêu đầu ra: Thiết lập lá chắn an ninh dữ liệu và tuân thủ liên bang</li>
+    <li>6.2 Thuật ngữ an toàn thông tin &amp; Quy định bảo mật IRS</li>
+    <li>6.3 Lập kế hoạch bảo mật thông tin văn bản (WISP) chuẩn IRS Pub 4557 / Pub 5708</li>
+    <li>6.4 Ranh giới thép IRC §7216: Tiếp thị chéo bảo hiểm/nhà đất &amp; Gia công xuyên biên giới (Offshore B2B)</li>
+    <li>6.5 Trách nhiệm người giám sát văn phòng (Circular 230 §10.36) &amp; Bảo hiểm nghề nghiệp E&amp;O</li>
+    <li>6.6 Lịch trình kinh doanh 12 tháng: Chuyển đổi luật TY2025 -> TY2026 thành gói Tax Planning</li>
+    <li>6.7 Tình huống thực chiến mẫu: Văn phòng mở rộng tiếp thị bảo hiểm và thuê nhân sự hỗ trợ tại Việt Nam</li>
+    <li>6.8 Tóm tắt 1 trang &amp; 5 câu tự kiểm tra năng lực</li>
+  </ol>
+</div>
+
+<div class="c1">
+  <h2 class="section">6.1 — MỤC TIÊU ĐẦU RA ĐO LƯỜNG ĐƯỢC</h2>
+  <div class="rule-box">
+    <p>Sau khi hoàn thành bài học này, học viên có khả năng:</p>
+    <ul>
+      <li><b>Lập bản Kế hoạch Bảo mật Thông tin bằng Văn bản (WISP)</b> hoàn chỉnh theo đúng khung IRS Pub. 4557 và mẫu Pub. 5708 (FTC Safeguards Rule — <code>16 CFR Part 314</code>).</li>
+      <li><b>Áp dụng chính xác quy định bảo mật tờ khai <code>IRC §7216</code> &amp; <code>§6713</code>:</b> Soạn thảo văn bản đồng ý riêng biệt (Separate Written Consent) trước khi tiếp thị chéo sản phẩm tài chính hoặc chuyển dữ liệu ra ngoài nước Mỹ.</li>
+      <li><b>Thực thi quy chuẩn bảo vệ SSN khi gia công xuyên biên giới (Offshore B2B):</b> Che/ẩn hoàn toàn số SSN (Redacted/Masked SSN) đối với tờ khai Form 1040 trước khi nhân sự ngoài nước Mỹ truy cập.</li>
+      <li><b>Xử lý sự cố rò rỉ dữ liệu (Data Breach Response):</b> Báo cáo khẩn cấp cho IRS Stakeholder Liaison trong vòng <b>1 ngày làm việc</b> để bảo vệ mã EFIN/PTIN.</li>
+      <li><b>Thiết lập quy trình giám sát văn phòng theo <code>Circular 230 §10.36</code></b> và quản trị rủi ro trách nhiệm nghề nghiệp.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="c2">
+  <h2 class="section">6.2 — BẢNG THUẬT NGỮ AN NINH THÔNG TIN &amp; BẢO MẬT</h2>
+  <div class="table-scroll">
+    <table class="vocab">
+      <thead>
+        <tr><th>Thuật ngữ (EN)</th><th>Nghĩa tiếng Việt</th><th>Căn cứ &amp; Yêu cầu tuân thủ</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="word">Written Information Security Plan (WISP)</td><td class="vn">Kế hoạch bảo mật thông tin bằng văn bản</td><td>Bắt buộc cho mọi preparer theo FTC Safeguards Rule (Pub. 4557 &amp; Pub. 5708); cam kết khi xin EFIN.</td></tr>
+        <tr><td class="word">FTC Safeguards Rule (16 CFR Part 314)</td><td class="vn">Quy chuẩn an toàn bảo mật liên bang FTC</td><td>Xếp văn phòng thuế là tổ chức tài chính; bắt buộc chỉ định Qualified Individual và áp dụng MFA.</td></tr>
+        <tr><td class="word">Multi-Factor Authentication (MFA)</td><td class="vn">Xác thực đa yếu tố</td><td>Bắt buộc trên mọi phần mềm khai thuế, email văn phòng và cổng lưu trữ đám mây chứa dữ liệu khách.</td></tr>
+        <tr><td class="word">Section 7216 Consent</td><td class="vn">Văn bản đồng ý sử dụng/tiết lộ thông tin thuế</td><td><code>IRC §7216 &amp; Treas. Reg. §301.7216-3</code>: Văn bản riêng biệt, tự nguyện, có câu cảnh báo bắt buộc của Bộ Tài chính.</td></tr>
+        <tr><td class="word">Offshore Disclosure Consent</td><td class="vn">Đồng ý tiết lộ dữ liệu ra ngoài nước Mỹ</td><td>Bắt buộc ký trước khi gửi bất kỳ dữ liệu thuế nào ra ngoài nước Mỹ; Form 1040 phải che số SSN.</td></tr>
+        <tr><td class="word">SSN Masking / Redaction</td><td class="vn">Che giấu / Ẩn số An sinh xã hội</td><td>Chỉ hiển thị 4 số cuối (XXX-XX-1234) trên chứng từ khi gửi cho nhân sự gia công ở nước ngoài.</td></tr>
+        <tr><td class="word">IRS Stakeholder Liaison</td><td class="vn">Đầu mối liên lạc sự cố bảo mật của IRS</td><td>Đơn vị tiếp nhận báo cáo rò rỉ dữ liệu trong vòng 1 ngày làm việc để khóa EFIN chống gian lận.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="c3">
+  <h2 class="section">6.3 — LẬP BẢN KẾ HOẠCH BẢO MẬT WISP (IRS PUB. 4557 / PUB. 5708)</h2>
+  <div class="rule-box">
+    <p><b>5 Thành tố bắt buộc của bản WISP chuẩn Pub. 5708 (Áp dụng cho cả văn phòng 1 người):</b></p>
+    <ol>
+      <li><b>Chỉ định Người chịu trách nhiệm (Qualified Individual):</b> Chỉ định đích danh người giám sát an ninh thông tin văn phòng.</li>
+      <li><b>Đánh giá rủi ro &amp; Kiểm kê dữ liệu:</b> Xác định mọi vị trí lưu trữ PII (máy tính, email, drive đám mây, tủ hồ sơ giấy).</li>
+      <li><b>Thiết kế &amp; Vận hành các biện pháp kiểm soát kỹ thuật ("Security Six"):</b>
+        <ul>
+          <li>Phần mềm diệt virus và tường lửa luôn cập nhật tự động.</li>
+          <li>Xác thực đa yếu tố (MFA) bắt buộc trên 100% tài khoản.</li>
+          <li>Mã hóa toàn bộ ổ cứng (BitLocker / FileVault) và mã hóa dữ liệu khi truyền tải.</li>
+          <li>Sao lưu dữ liệu định kỳ (Backup) vào ổ cứng rời hoặc đám mây mã hóa.</li>
+          <li>Sử dụng mạng riêng ảo (VPN) khi truy cập mạng ngoài văn phòng.</li>
+          <li>Hủy tài liệu giấy bằng máy cắt vụn (Cross-cut shredder).</li>
+        </ul>
+      </li>
+      <li><b>Giám sát nhà cung cấp dịch vụ (Service Providers):</b> Đảm bảo phần mềm thuế và lưu trữ đám mây ký thỏa thuận bảo mật dữ liệu.</li>
+      <li><b>Kế hoạch ứng phó sự cố (Incident Response Plan):</b> Quy trình khẩn cấp khi bị tấn công mã độc hoặc lộ lọt dữ liệu: ngắt kết nối mạng ngay lập tức, thông báo cho <b>IRS Stakeholder Liaison trong vòng 1 ngày làm việc</b>, báo công an/FBI và thông báo cho khách hàng bị ảnh hưởng.</li>
+    </ol>
+  </div>
+</div>
+
+<div class="c4">
+  <h2 class="section">6.4 — RANH GIỚI THÉP IRC §7216: TIẾP THỊ CHÉO &amp; GIA CÔNG XUYÊN BIÊN GIỚI</h2>
+  <div class="rule-box">
+    <p><b>Chế tài xử phạt vi phạm bảo mật thông tin tờ khai:</b></p>
+    <ul>
+      <li><b>Xử phạt dân sự (<code>IRC §6713</code>):</b> Phạt <b>$250 cho mỗi lần</b> tiết lộ hoặc sử dụng trái phép (tối đa $10,000/năm; tăng nặng nếu liên quan hành vi đánh cắp danh tính).</li>
+      <li><b>Xử phạt hình sự (<code>IRC §7216</code>):</b> Tội khinh tội liên bang (Misdemeanor), phạt tiền tới <b>$1,000</b> và/hoặc <b>tù giam tới 1 năm</b> cho mỗi tội danh.</li>
+    </ul>
+  </div>
+
+  <div class="pitfall-box">
+    <h4>⚠️ 2 CẠM BẪY PHỔ BIẾN NHẤT CẦN TRÁNH TUYỆT ĐỐI</h4>
+    <ol>
+      <li><b>Bẫy Tiếp thị Chéo (Bán bảo hiểm, bất động sản, đầu tư):</b> Cấm tự ý dùng thông tin từ tờ khai thuế Form 1040 (như thu nhập AGI, tình trạng con cái, số tiền hoàn thuế) để gọi điện chào bán bảo hiểm hay nhà đất! Muốn sử dụng, <b>bắt buộc phải có văn bản đồng ý Form §7216 Use Consent ký riêng trước đó</b>. Consent phải tự nguyện, có câu cảnh báo bắt buộc của Bộ Tài chính, thời hạn tối đa 1 năm, và <b>cấm ép khách ký làm điều kiện khai thuế</b>!</li>
+      <li><b>Bẫy Gia công Xuyên biên giới (Offshore B2B cho đội ngũ tại Việt Nam):</b> Ngoại lệ chia sẻ nội bộ không cần consent chỉ áp dụng khi các bên đều ở Mỹ. Khi chuyển bất kỳ dữ liệu thuế nào ra ngoài nước Mỹ:
+        <ul>
+          <li>Bắt buộc phải có <b>Offshore Disclosure Consent</b> có chữ ký của người nộp thuế trước khi gửi dữ liệu.</li>
+          <li>Với tờ khai Form 1040, <b>CẤM TUYỆT ĐỐI gửi số SSN nguyên vẹn ra ngoài nước Mỹ</b> — toàn bộ SSN phải được che/ẩn (Redacted/Masked) trừ khi có biện pháp bảo vệ kỹ thuật được IRS phê duyệt!</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+</div>
+
+<div class="c5">
+  <h2 class="section">6.5 — TRÁCH NHIỆM GIÁM SÁT VĂN PHÒNG &amp; LỊCH KINH DOANH 12 THÁNG</h2>
+  <div class="rule-box">
+    <p><b>Trách nhiệm của người đứng đầu (<code>Circular 230 §10.36</code>):</b></p>
+    <ul>
+      <li>Người quản lý văn phòng có nghĩa vụ thiết lập và duy trì các biện pháp kiểm soát tuân thủ Circular 230 cho toàn thể nhân sự. Nếu cẩu thả hoặc dung túng cho nhân viên vi phạm, Bộ Tài chính có thể phạt tiền trực tiếp lên cả văn phòng tới <b>100% tổng doanh thu</b> thu được từ hành vi vi phạm đó per <code>§10.50(c)</code>.</li>
+    </ul>
+  </div>
+
+  <div class="checklist-box">
+    <h4>📅 BIẾN CHUYỂN GIAO LUẬT TY2025 -> TY2026 THÀNH DỊCH VỤ TAX PLANNING QUANH NĂM</h4>
+    <ul>
+      <li><b>Quý 1 (Tháng 1 – 4): Mùa Thuế Cao Điểm:</b> Khai thuế Form 1040, 1065, 1120-S; thẩm định Form 8867; tối ưu khấu trừ tiền tip OBBBA $25,000 và kiểm tra SSN.</li>
+      <li><b>Quý 2 (Tháng 5 – 6): Dọn Sổ &amp; Đánh giá Giữa năm:</b> Hoàn tất các hồ sơ xin gia hạn Form 4868; triển khai dịch vụ đại diện IRS Transcripts cho khách nhận thư CP2000.</li>
+      <li><b>Quý 3 (Tháng 7 – 9): Hoạch định Chuyển giao OBBBA:</b> Tư vấn mở tài khoản <b>Trump Accounts (<code>IRC §530A</code> mở đóng góp từ 04/07/2026)</b>; mở rộng quỹ 529 K-12 lên $20,000; rà soát ngưỡng W-9 khi 1099-NEC chuyển sang mức $2,000 từ 2026.</li>
+      <li><b>Quý 4 (Tháng 10 – 12): Hoạch định Cuối năm (Year-End Planning):</b> Hoàn tất tờ khai gia hạn hạn 15/10; tính lương hợp lý Reasonable Compensation cho chủ S-Corp; tối ưu từ thiện trước khi áp dụng sàn 0.5% AGI năm 2026; gia hạn PTIN và cập nhật bản WISP.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="cKey">
+  <h2 class="section">6.6 — TÌNH HUỐNG THỰC CHIẾN MẪU (100% DỮ LIỆU GIẢ LẬP)</h2>
+  <div class="example-box">
+    <b class="ex-tag">Tình huống 6-1: Mở rộng tiếp thị bảo hiểm và thuê nhân sự gia công tại Việt Nam</b><br>
+    <b>Nhân vật:</b> Chị Ngọc Mai, EA (chủ Pacific Tax &amp; Advisory LLC tại Westminster, CA; EIN: <code>XX-XXX5529</code>; email: <code>mai.ea@example.com</code>; ĐT: <code>(714) 555-0188</code>). Chị Mai có giấy phép bảo hiểm nhân thọ và định dùng danh sách 320 khách Form 1040 năm trước có AGI >$120,000 để gửi email chào mua gói annuity, đồng thời gài điều khoản bắt buộc đồng ý vào cuối Engagement Letter. Ngoài ra, chị định gửi file PDF chứa nguyên vẹn thẻ SSN của khách qua Google Drive cho nhóm 2 trợ lý tại Đà Nẵng, Việt Nam nhập liệu mà không thông báo cho khách.<br>
+    <b>Giải pháp chấn chỉnh chuẩn luật:</b><br>
+    1. <i>Về tiếp thị bảo hiểm:</i> Việc gài điều khoản bắt buộc vào hợp đồng khai thuế là vô hiệu per <code>Treas. Reg. §301.7216-3(c)</code>. Dùng danh sách 320 khách khi chưa có consent sẽ bị phạt tới $10,000 dân sự và nguy cơ truy tố hình sự. Giải pháp: Tách riêng mẫu <b>Form §7216 Use Consent tự nguyện</b>, chỉ tiếp cận những khách nào tự nguyện ký trước.<br>
+    2. <i>Về gia công tại Việt Nam:</i> Bắt buộc phải có <b>Offshore Disclosure Consent</b> có chữ ký của từng khách hàng trước khi truyền dữ liệu ra nước ngoài. Đồng thời, trên toàn bộ tài liệu gửi sang Việt Nam, số <b>SSN bắt buộc phải được che giấu hoàn toàn (Masked/Redacted)</b>, và nhóm nhân sự phải đăng nhập qua cổng portal bảo mật có xác thực MFA được quy định trong bản WISP của văn phòng.
+  </div>
+
+  <div class="content-block">
+    <h3>❓ 5 Câu hỏi trắc nghiệm tự kiểm tra (Kèm giải thích chi tiết)</h3>
+
+    <div class="mcq">
+      <div class="q">Câu 1 [FTC Safeguards Rule &amp; IRS Pub. 4557 / 5708 | SEE 2026–27]: Phát biểu nào sau đây là CHÍNH XÁC về nghĩa vụ lập Kế hoạch Bảo mật Thông tin bằng Văn bản (WISP) đối với người khai thuế thu phí?</div>
+      <div class="opt">A. Chỉ các công ty kế toán có từ 50 nhân viên trở lên mới bắt buộc phải có WISP; văn phòng solo EA làm tại nhà được miễn trừ</div>
+      <div class="opt">B. Theo quy chuẩn liên bang FTC Safeguards Rule (hướng dẫn tại IRS Pub. 4557 và 5708), MỌI người khai thuế chuyên nghiệp — bất kể quy mô — đều được coi là tổ chức tài chính bắt buộc phải lập, thực thi và duy trì WISP (chỉ định Qualified Individual, áp dụng MFA và có kế hoạch ứng phó sự cố)</div>
+      <div class="opt">C. Nộp đơn xin cấp EFIN sẽ tự động tạo bản WISP do IRS lưu trữ mà văn phòng không cần làm gì</div>
+      <div class="opt">D. WISP là tài liệu tự nguyện trừ khi văn phòng từng bị tấn công mạng</div>
+    </div>
+
+    <div class="mcq">
+      <div class="q">Câu 2 [IRC §§7216, 6713 &amp; Treas. Reg. §301.7216-3]: Một Enrolled Agent đồng thời có chứng chỉ tư vấn tài chính muốn sử dụng thông tin từ tờ khai Form 1040 của khách hàng để nhận diện người có thu nhập cao và chào bán sản phẩm đầu tư. Theo quy định IRC §7216, sự đồng ý của khách hàng phải được thu thập như thế nào?</div>
+      <div class="opt">A. Không cần xin phép vì EA sử dụng nội bộ trong văn phòng chứ không bán dữ liệu cho bên thứ ba</div>
+      <div class="opt">B. Có thể gài một điều khoản bắt buộc không thể bỏ chọn vào trong Engagement Letter</div>
+      <div class="opt">C. Trước khi sử dụng thông tin cho mục đích tiếp thị ngoài thuế, EA bắt buộc phải thu thập văn bản đồng ý Form §7216 Use Consent riêng biệt, hoàn toàn tự nguyện, có câu cảnh báo liên bang bắt buộc (và nếu khách từ chối, EA không được lấy đó làm lý do từ chối khai thuế)</div>
+      <div class="opt">D. Đồng ý miệng qua điện thoại là hợp lệ trong 3 năm</div>
+    </div>
+
+    <div class="mcq">
+      <div class="q">Câu 3 [Treas. Reg. §301.7216-3(a)(3) — Offshore Outsourcing]: Một Enrolled Agent tại Mỹ ký hợp đồng với một đội ngũ hỗ trợ kế toán thuế đặt bên ngoài lãnh thổ Hoa Kỳ để nhập liệu tờ khai Form 1040. Quy định tuân thủ nào bắt buộc phải áp dụng theo IRC §7216?</div>
+      <div class="opt">A. Gửi dữ liệu ra nước ngoài không cần xin phép vì hỗ trợ khai thuế là ngoại lệ hành chính tự động toàn cầu</div>
+      <div class="opt">B. Trước khi truyền bất kỳ dữ liệu nào ra ngoài nước Mỹ, EA bắt buộc phải có văn bản Offshore Disclosure Consent có chữ ký của người nộp thuế, VÀ đối với tờ khai cá nhân Form 1040, số An sinh xã hội (SSN) KHÔNG ĐƯỢC PHÉP tiết lộ ra nước ngoài trừ khi đã được che/ẩn (Redacted/Masked) hoàn toàn</div>
+      <div class="opt">C. Thuê nhân sự nước ngoài là tội phạm hình sự trong mọi tình huống</div>
+      <div class="opt">D. Chỉ tờ khai doanh nghiệp mới cần xin phép, tờ khai Form 1040 được miễn</div>
+    </div>
+
+    <div class="mcq">
+      <div class="q">Câu 4 [Data Breach Incident Response | SEE 2026–27]: Sáng thứ Ba, một Enrolled Agent phát hiện máy tính văn phòng bị nhiễm mã độc tống tiền (ransomware) làm lộ lọt dữ liệu hồ sơ thuế và thông tin đăng nhập e-file. Theo hướng dẫn của IRS (Pub. 4557), người hành nghề phải liên hệ với ai tại IRS ngay lập tức và trong khung thời gian nào?</div>
+      <div class="opt">A. Chờ đến kỳ gia hạn PTIN vào tháng 1 năm sau để báo cáo</div>
+      <div class="opt">B. Liên hệ ngay lập tức với IRS Stakeholder Liaison tại địa phương (thông thường trong vòng 1 ngày làm việc kể từ khi phát hiện sự cố) để IRS kịp thời khóa chặn các tờ khai hoàn thuế gian lận nộp dưới mã số EFIN/PTIN của văn phòng</div>
+      <div class="opt">C. Nộp Form 2848 cho địa chỉ IP của tin tặc</div>
+      <div class="opt">D. Gửi email chứa danh sách SSN của khách hàng vào hộp thư hỗ trợ chung của IRS</div>
+    </div>
+
+    <div class="mcq">
+      <div class="q">Câu 5 [Circular 230 §10.36 &amp; §10.50(c) — Firm Supervision]: Một Enrolled Agent làm chủ văn phòng thuế giám sát 4 nhân viên thời vụ. Theo Circular 230 §10.36 và §10.50(c), nếu một nhân viên vi phạm quy chế Circular 230 mà người chủ EA do cẩu thả nghiêm trọng đã không thiết lập quy trình kiểm soát ngăn chặn, mức phạt tiền tối đa mà Bộ Tài chính có thể áp dụng lên chính CÔNG TY (FIRM) là bao nhiêu?</div>
+      <div class="opt">A. $65 cho mỗi nhân viên</div>
+      <div class="opt">B. $10,000 cho mỗi năm dương lịch</div>
+      <div class="opt">C. Tổng thu nhập gộp thu được (hoặc dự kiến thu được) từ hành vi vi phạm đó (Gross income derived from the conduct)</div>
+      <div class="opt">D. Mức phạt cố định $250,000</div>
+    </div>
+
+    <div class="key-grid">
+      <h4>🔑 ĐÁP ÁN &amp; CĂN CỨ PHÁP LÝ</h4>
+      <div><b>Câu 1:</b> <span class="key-ans">B — Mọi người khai thuế chuyên nghiệp bắt buộc phải có WISP per FTC Safeguards Rule</span>. <span class="key-exp">Căn cứ <code>FTC Safeguards Rule (16 CFR Part 314)</code> và <code>IRS Pub. 4557 / 5708</code>. Mọi cơ sở dịch vụ thuế dù là solo EA làm tại nhà đều được xếp là tổ chức tài chính bắt buộc phải lập WISP.</span></div>
+      <div><b>Câu 2:</b> <span class="key-ans">C — Thu thập văn bản Form §7216 Use Consent riêng biệt, tự nguyện có câu cảnh báo bắt buộc</span>. <span class="key-exp">Căn cứ <code>Treas. Reg. §301.7216-3</code>. Sử dụng dữ liệu thuế cho mục đích tiếp thị ngoài thuế bắt buộc phải có văn bản đồng ý riêng biệt, không được ép buộc hay gài vào hợp đồng khai thuế.</span></div>
+      <div><b>Câu 3:</b> <span class="key-ans">B — Bắt buộc có Offshore Disclosure Consent và che giấu hoàn toàn số SSN Form 1040</span>. <span class="key-exp">Căn cứ <code>Treas. Reg. §301.7216-3(a)(3)</code> và <code>Rev. Proc. 2013-14</code>. Dữ liệu chuyển ra ngoài nước Mỹ bắt buộc phải có sự đồng ý của khách hàng và phải che hoàn toàn số SSN của tờ khai Form 1040.</span></div>
+      <div><b>Câu 4:</b> <span class="key-ans">B — Liên hệ ngay với IRS Stakeholder Liaison trong vòng 1 ngày làm việc</span>. <span class="key-exp">Căn cứ quy trình ứng phó đánh cắp danh tính của IRS (Pub. 4557). Báo cáo kịp thời cho Stakeholder Liaison giúp ngăn chặn tờ khai lừa đảo và bảo vệ EFIN của văn phòng.</span></div>
+      <div><b>Câu 5:</b> <span class="key-ans">C — Tổng thu nhập gộp thu được từ hành vi vi phạm (Gross income derived)</span>. <span class="key-exp">Căn cứ <code>Circular 230 §10.36 &amp; §10.50(c)</code>. Bộ Tài chính có thể phạt tiền trực tiếp lên công ty tới 100% tổng thu nhập gộp phát sinh từ hành vi vi phạm.</span></div>
+    </div>
+  </div>
+</div>
+
+<footer class="authority-footer">
+  <h4>🏛️ Nguồn chính thống &amp; Ngày đối chiếu</h4>
+  <ul>
+    <li><b>Quy chế An ninh Liên bang:</b> FTC Safeguards Rule (16 CFR Part 314); Gramm-Leach-Bliley Act (GLBA).</li>
+    <li><b>Bộ luật:</b> Internal Revenue Code (26 U.S.C.) §§ 6713, 7216; 26 CFR §§ 301.7216-1..3; Circular 230 §§ 10.36, 10.50(c).</li>
+    <li><b>Tài liệu IRS:</b> IRS Pub. 4557 (Safeguarding Taxpayer Data); IRS Pub. 5708 (Creating a Written Information Security Plan for your Tax Practice); Rev. Proc. 2013-14. Ngày đối chiếu: <b>2026-11-01</b>.</li>
+  </ul>
+</footer>
+
+<nav class="lesson-nav lesson-nav-bottom" aria-label="Điều hướng cuối bài">
+  <a class="nav-back" href="EA4_M05_IRS_Representation_Notices_and_Resolution.html">← Bài trước: M05</a>
+  <a class="nav-next" href="../../../index.html">Hoàn thành Module 4 • Về EA Quest Hub →</a>
+</nav>
+</main>
+</body>
+</html>

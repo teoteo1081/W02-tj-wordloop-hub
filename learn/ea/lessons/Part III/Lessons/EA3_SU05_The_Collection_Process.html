@@ -6,65 +6,30 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'ea'});</script>
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>EA Part III – SU05: The Collection Process</title>
-<style>
-  @page { size: A4; margin: 14mm 12mm; }
-  * { box-sizing: border-box; }
-  body { font-family:'Segoe UI','Calibri',Arial,sans-serif; color:#33322f; font-size:15.5px; line-height:1.5; background:#fdfcfa; margin:0; }
-  .cover { background: linear-gradient(120deg,#bfe4ff 0%,#d6ecff 30%,#e6def7 65%,#fbe6f4 100%); border-radius:20px; padding:40px 30px; text-align:center; margin-bottom:10px; box-shadow:0 6px 18px rgba(120,130,180,.25); border:1px solid #dfe8f5; }
-  .cover .tag { display:inline-block; background:#33314a; color:#d6ecff; font-weight:700; letter-spacing:2px; font-size:13px; padding:5px 14px; border-radius:20px; margin-bottom:14px; }
-  .cover h1 { font-size:30px; margin:6px 0; color:#3170a8; }
-  .cover h2 { font-size:16px; font-weight:500; margin:4px 0 0; opacity:.9; color:#33314a; }
-  .cover .books { margin-top:16px; font-size:13.5px; background:rgba(255,255,255,.55); display:inline-block; padding:8px 16px; border-radius:10px; color:#33314a; }
-  .toc { background:#fff; border:1.5px solid #dfe8f5; border-radius:14px; padding:18px 26px; margin-bottom:30px; }
-  .toc h3 { margin-top:0; color:#3170a8; }
-  .toc ol { margin:0; padding-left:22px; } .toc li{ margin-bottom:6px; }
-  h2.section { font-size:23px; color:#33314a; padding:12px 18px; border-radius:12px; margin:34px 0 14px; border-left:10px solid var(--accent,#5aa9d6); background:var(--bg,#eaf6fd); }
-  h3.lesson { font-size:19px; color:var(--accent-dark,#276a91); border-left:6px solid var(--accent,#5aa9d6); background:var(--bg-soft,#f3fafd); padding:8px 14px; border-radius:6px; margin:22px 0 10px; }
-  .c1{--accent:#5aa9d6;--accent-dark:#276a91;--bg:#eaf6fd;--bg-soft:#f3fafd;--head:#a9d4ec;}
-  .c2{--accent:#a892d9;--accent-dark:#5c4696;--bg:#f1ecfb;--bg-soft:#f8f5fd;--head:#cabdec;}
-  .c3{--accent:#f0a66e;--accent-dark:#b8620b;--bg:#fdeee2;--bg-soft:#fff8f0;--head:#f4c299;}
-  .c4{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
-  .c5{--accent:#e07b9b;--accent-dark:#a3335a;--bg:#fbe9f0;--bg-soft:#fdf5f8;--head:#f3b6c9;}
-  .c6{--accent:#5bb8b0;--accent-dark:#1f7a72;--bg:#e5f7f5;--bg-soft:#f2fbfa;--head:#a6e3dd;}
-  .cKey{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
-  table.vocab { width:100%; border-collapse:collapse; margin-bottom:20px; font-size:.96em; box-shadow:0 2px 8px rgba(0,0,0,.05); border-radius:10px; overflow:hidden; }
-  table.vocab th { background:var(--head,#5aa9d6); color:#2d2d2d; padding:9px 8px; text-align:left; }
-  table.vocab td { padding:8px 8px; border-bottom:1px solid var(--bg,#eaf6fd); vertical-align:top; }
-  table.vocab tr:nth-child(even) td { background:var(--bg-soft,#faf6f0); }
-  table.vocab tr:nth-child(odd) td { background:#fff; }
-  table.vocab td.word { font-weight:800; color:var(--accent-dark,#276a91); }
-  table.vocab td.vn { font-weight:700; color:#3d6ba8; }
-  .rule-box { background:var(--bg,#eaf6fd); border-left:6px solid var(--accent,#5aa9d6); border-radius:8px; padding:12px 18px; margin:10px 0; }
-  .rule-box table { width:100%; border-collapse:collapse; margin:8px 0 4px; }
-  .rule-box table td, .rule-box table th { padding:6px 8px; border-bottom:1px solid rgba(0,0,0,.08); text-align:left; font-size:.94em; }
-  .rule-box table th { color:var(--accent-dark,#276a91); }
-  .rule-box ul, .rule-box ol { margin:6px 0; padding-left:22px; } .rule-box li{ margin-bottom:5px; }
-  .struct { font-weight:800; color:#b8620b; font-family:'Consolas','Courier New',monospace; }
-  .example-box { background:#fff; border:1.5px dashed var(--accent,#5aa9d6); border-radius:8px; padding:10px 16px; margin:10px 0; font-size:.95em; }
-  .example-box b.ex-tag { color:var(--accent-dark,#276a91); }
-  .mcq { background:#fff; border:1.5px solid var(--accent,#5aa9d6); border-radius:10px; padding:12px 18px; margin-bottom:12px; }
-  .mcq .q { color:#3d6ba8; font-weight:700; margin-bottom:6px; }
-  .mcq .opt { margin:2px 0 2px 10px; }
-  .content-block { background:#fff; border:2px dashed var(--accent,#5aa9d6); border-radius:12px; padding:16px 20px; margin-bottom:18px; }
-  .key-grid { column-count:1; } .key-grid div{ margin-bottom:10px; }
-  .key-ans { color:#20824f; font-weight:800; }
-  .key-exp { color:#555; font-size:.95em; }
-  .pagebreak { page-break-before: always; }
-  .note { font-size:.85em; color:#8a8a8a; font-style:italic; }
-  .source-tag { font-size:.8em; color:#999; font-style:italic; }
-</style>
+<link rel="stylesheet" href="../../lesson-2026.css">
+
 </head>
 <body>
+<main class="lesson-shell">
+<nav class="lesson-nav" aria-label="Điều hướng bài học">
+  <a class="nav-back" href="EA3_SU04_Examination_of_Returns_and_Appeals_Process.html">← Bài trước: SU04</a>
+  <span class="nav-meta">Part III • SU05</span>
+  <a class="nav-next" href="EA3_SU06_Tax_Authority.html">Bài tiếp: SU06 →</a>
+</nav>
 
 <div class="cover">
   <div class="tag">EA EXAM PREP • PART III — REPRESENTATION, PRACTICES & PROCEDURES • SU05</div>
   <h1>📗 SU05 — THE COLLECTION PROCESS</h1>
-  <h2>Bản song ngữ Việt–Anh, bám sát giáo trình Gleim 2026</h2>
+  <h2>Bản song ngữ Việt–Anh, đối chiếu chuẩn Quy trình Cưỡng chế Thu nợ IRS</h2>
   <div class="books">📖 Khái niệm · 🔤 Thuật ngữ · 📌 Ví dụ minh họa · ❓ Câu hỏi trắc nghiệm · 🔑 Đáp án trang sau</div>
-</div>
 
-<div class="toc">
+<div class="exam-dual-banner">
+  <div class="banner-see">🎯 <b>Đề thi hiện hành (SEE 2026–27 / PSI):</b> Áp dụng luật đến <b>31/12/2025 (TY2025)</b></div>
+  <div class="banner-practice">💼 <b>Hành nghề mùa mới:</b> Số liệu <b>TY2026</b> nằm trong hộp <i>«Cập nhật 2026»</i></div>
+</div>
+</div><div class="toc">
 <h3>📑 Mục lục SU05</h3>
 <ol>
 <li>5.1 Collections (Quy trình thu nợ: notice, statute, installment agreement, CAP, summons)</li>
@@ -72,8 +37,29 @@
 <li>5.3 Liens and Levies (Lien & Levy: attachment, appeal, exemption, sale, bankruptcy)</li>
 <li>5.4 Trust Fund Recovery Penalty (Phạt truy thu quỹ ủy thác)</li>
 </ol>
-<p class="note">Nguồn: Gleim EA Review, Study Unit 5 — The Collection Process (2026).</p>
+
 </div>
+
+<aside class="ea-update-2026" aria-label="Cập nhật tài sản miễn levy">
+  <h3>⚡ Tài sản Miễn Cưỡng chế Thuế §6334 &amp; Chuẩn xác Điều luật</h3>
+  <p>Cập nhật mức miễn trừ tài sản gia đình/công cụ hành nghề khi IRS phát lệnh siết nợ (Levy):</p>
+  <div class="table-scroll">
+    <table class="compare-table">
+      <thead>
+        <tr><th>Khoản mục miễn cưỡng chế (Levy)</th><th>Năm 2024</th><th class="col-tested">Năm 2025 (Thi SEE 2026–27)</th><th>Năm 2026</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><b>Đồ dùng gia đình &amp; quần áo (<code>IRC §6334(a)(2)</code>)</b></td><td>$11,390</td><td class="col-tested"><b>$11,710</b> (Rev. Proc. 2024-40)</td><td>$11,980 (Rev. Proc. 2025-32)</td></tr>
+        <tr><td><b>Sách vở &amp; công cụ hành nghề (<code>§6334(a)(3)</code>)</b></td><td>$5,700</td><td class="col-tested"><b>$5,860</b> (Rev. Proc. 2024-40)</td><td>$5,990 (Rev. Proc. 2025-32)</td></tr>
+        <tr><td><b>Phạt trách nhiệm quỹ tín thác TFRP (<code>§6672</code>)</b></td><td>100% thuế khấu trừ</td><td class="col-tested"><b>100% thuế khấu trừ (FICA nhân viên &amp; withholding)</b></td><td>100% thuế khấu trừ</td></tr>
+        <tr><td><b>Additional Medicare Tax (0.9%)</b></td><td>IRC §3101(b)(2)</td><td class="col-tested"><b>IRC §3101(b)(2) &amp; §3102(f) (không phải §1411 NIIT)</b></td><td>IRC §3101(b)(2)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="upcoming-box">
+    <b>🛡️ Giải pháp thu nợ chính:</b> (1) <i>Guaranteed Installment Agreement</i> (&le; $10,000 cá nhân, 36 tháng); (2) <i>Streamlined Installment Agreement</i> (&le; $50,000 cá nhân, 72 tháng); (3) <i>Offer in Compromise (OIC)</i> dựa trên Doubt as to Collectibility / Doubt as to Liability.
+  </div>
+</aside>
 
 <!-- ============================================================ 5.1 COLLECTIONS ============================================================ -->
 <div class="c1">
@@ -119,6 +105,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ 5.1</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">assessment notice</td><td class="vn">thông báo số thuế đã assess, bắt đầu quy trình thu</td></tr>
@@ -128,6 +115,7 @@
 <tr><td class="word">refund offset</td><td class="vn">bù trừ tiền hoàn thuế vào khoản nợ khác</td></tr>
 <tr><td class="word">Collection Financial Standards</td><td class="vn">Tiêu chuẩn tài chính đánh giá khả năng trả nợ</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm 5.1</h3>
 <div class="content-block">
@@ -185,6 +173,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ 5.2</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">Offer in Compromise (OIC)</td><td class="vn">Đề nghị thỏa hiệp nợ thuế (trả ít hơn tổng nợ)</td></tr>
@@ -193,6 +182,7 @@
 <tr><td class="word">Collection Statute Expiration Date (CSED)</td><td class="vn">Ngày hết thời hiệu thu nợ</td></tr>
 <tr><td class="word">Form 656 / 656-L</td><td class="vn">Đơn OIC chuẩn / OIC dựa trên doubt as to liability</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm 5.2</h3>
 <div class="content-block">
@@ -249,6 +239,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ 5.3</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">Notice of Federal Tax Lien (NFTL)</td><td class="vn">Thông báo lien thuế liên bang</td></tr>
@@ -258,6 +249,7 @@
 <tr><td class="word">Collection Due Process (CDP) hearing</td><td class="vn">Buổi điều trần quy trình thu nợ đúng luật</td></tr>
 <tr><td class="word">discharge (bankruptcy)</td><td class="vn">xóa nợ thuế qua thủ tục phá sản</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm 5.3</h3>
 <div class="content-block">
@@ -290,10 +282,11 @@
 <p>Phạt áp dụng cho người CÓ TRÁCH NHIỆM (responsible person) thu/trả thuế withheld mà CỐ Ý (willfully) không thu/trả. Responsible person = người có NHIỆM VỤ thực hiện & QUYỀN chỉ đạo việc thu/kế toán/trả trust fund tax — có thể là officer/employee của corp, thành viên/employee của partnership, director/shareholder, hoặc thành viên board of trustees. <b>Lưu ý:</b> nhân viên không giữ chức vụ/không có cổ phần ít khi bị phạt.</p>
 <p><b>Willful:</b> có tự do lựa chọn nhưng cố ý bỏ qua luật hoặc thờ ơ rõ ràng với yêu cầu pháp lý. Nhân viên KHÔNG chịu trách nhiệm nếu chức năng của họ CHỈ là trả bill theo chỉ đạo supervisor (không có quyền quyết định chủ nợ nào được trả).</p>
 <p><b>Mức phạt = 100%</b> số trust fund tax chưa trả. Additional Medicare tax theo Sec. 1411 KHÔNG được xem là trust fund tax. TFRP KHÔNG được discharge qua phá sản dù có/không được đưa vào kế hoạch hay proof of claim đúng hạn.</p>
-<p style="background:#fff7e0;border-left:4px solid #e0a800;padding:6px 10px;border-radius:6px;margin:8px 0">⚠️ <b>Luật hiện hành (kiểm 2026-10-25):</b> <b>§1411 là Net Investment Income Tax (NIIT)</b>, không phải Additional Medicare Tax (Additional Medicare Tax nằm ở §3101(b)(2) và §3102(f)). Gleim ghi nhầm số điều; ý “không được xem là trust fund tax” là điểm Gleim nhấn, cần nhớ theo Gleim.</p>
+<p style="background:#fff7e0;border-left:4px solid #e0a800;padding:6px 10px;border-radius:6px;margin:8px 0">⚠️ <b>Luật hiện hành (kiểm 2026-10-25):</b> <b>§1411 là Net Investment Income Tax (NIIT)</b>, không phải Additional Medicare Tax (Additional Medicare Tax nằm ở §3101(b)(2) và §3102(f)). luật thuế chuẩn ghi nhầm số điều; ý “không được xem là trust fund tax” là điểm luật thuế chuẩn nhấn, cần nhớ theo luật thuế chuẩn.</p>
 </div>
 
 <h3 class="lesson">Các Form liên quan TFRP Assessment</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Form</th><th>Ý nghĩa</th></tr>
 <tr><td class="word">Form CT-1</td><td class="vn">Employer's Annual Railroad Retirement Tax Return</td></tr>
@@ -306,8 +299,10 @@
 <tr><td class="word">Form 8288</td><td class="vn">U.S. Withholding Tax Return (Foreign Persons — U.S. Real Property)</td></tr>
 <tr><td class="word">Form 8804</td><td class="vn">Annual Return for Partnership Withholding Tax (Sec. 1446)</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Thuật ngữ 5.4</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">Trust Fund Recovery Penalty (TFRP)</td><td class="vn">Phạt truy thu quỹ ủy thác (100% thuế withheld chưa trả)</td></tr>
@@ -316,6 +311,7 @@
 <tr><td class="word">trust fund taxes</td><td class="vn">thuế thu nhập withheld + phần FICA employee</td></tr>
 <tr><td class="word">responsible officer/director/shareholder</td><td class="vn">officer/director/cổ đông có thể là responsible person</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm 5.4</h3>
 <div class="content-block">
@@ -337,5 +333,18 @@
 </div>
 </div>
 
+<footer class="authority-footer">
+  <h4>🏛️ Nguồn chính thống &amp; Ngày đối chiếu</h4>
+  <ul>
+    <li><b>Bộ luật:</b> Internal Revenue Code (26 U.S.C.) §§ 6321, 6323, 6331, 6334, 6672, 7122, 3101(b)(2).</li>
+    <li><b>Hướng dẫn IRS:</b> Rev. Proc. 2024-40 §2.52; Rev. Proc. 2025-32 §4.53; IRS Pub. 594 (The IRS Collection Process), Pub. 1660 (Collection Appeal Rights).</li>
+    <li><b>Chuẩn kỳ thi:</b> PSI SEE Candidate Information Bulletin (2026–2027). Ngày đối chiếu: <b>2026-11-01</b>.</li>
+  </ul>
+</footer>
+<nav class="lesson-nav lesson-nav-bottom" aria-label="Điều hướng cuối bài">
+  <a class="nav-back" href="EA3_SU04_Examination_of_Returns_and_Appeals_Process.html">← Bài trước: SU04</a>
+  <a class="nav-next" href="EA3_SU06_Tax_Authority.html">Bài tiếp: SU06 →</a>
+</nav>
+</main>
 </body>
 </html>
