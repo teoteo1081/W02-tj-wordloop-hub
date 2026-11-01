@@ -14666,7 +14666,7 @@ window.EA_LESSONS = {
    ],
    "a": 1,
    "exp": "Thí sinh có **3 năm** kể từ ngày thi đỗ phần SEE đầu tiên để đỗ nốt 2 phần còn lại; sau khi đỗ đủ 3 phần phải nộp `Form 23` trên `Pay.gov` trong vòng 1 năm với lệ phí **`$140`** (`$18.75` là phí PTIN hằng năm; `$317` là phí dự thi mỗi phần SEE trên PSI).",
-   "lesson": "EA4_M01",
+   "lesson": "EA4_M01_Roadmap_Credentials_and_Practice_Rights",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M01"
   },
   {
@@ -14679,7 +14679,7 @@ window.EA_LESSONS = {
    ],
    "a": 1,
    "exp": "Theo `Circular 230 §10.6(e)`, chu kỳ gia hạn chuẩn 3 năm của EA yêu cầu tối thiểu **`72` giờ CE**, mỗi năm tối thiểu **`16` giờ**, trong đó mỗi năm bắt buộc có ít nhất **`2` giờ Ethics** từ nhà cung cấp được IRS phê duyệt (`18` giờ kèm `AFTR` là của chương trình tự nguyện `AFSP`, không phải của EA).",
-   "lesson": "EA4_M01",
+   "lesson": "EA4_M01_Roadmap_Credentials_and_Practice_Rights",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M01"
   },
   {
@@ -14692,7 +14692,7 @@ window.EA_LESSONS = {
    ],
    "a": 1,
    "exp": "Người có **AFSP Record of Completion** (cả tại thời điểm lập tờ khai và thời điểm đại diện) có *limited representation rights*: chỉ được đại diện khách hàng mà **chính họ đã lập và ký tờ khai**, và chỉ trước Revenue Agents, Customer Service Representatives hoặc nhân sự tương đương của Examination — **không** được đại diện trước Appeals, Collection hay Chief Counsel, và không được đại diện tờ khai do người khác lập.",
-   "lesson": "EA4_M01",
+   "lesson": "EA4_M01_Roadmap_Credentials_and_Practice_Rights",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M01"
   },
   {
@@ -14705,7 +14705,7 @@ window.EA_LESSONS = {
    ],
    "a": 2,
    "exp": "Theo `Circular 230 §10.32`, quy chế hành nghề trước IRS **không trao quyền hành nghề luật** (*Unauthorized Practice of Law* — soạn hợp đồng/Operating Agreement/trust phải chuyển Luật sư), và EA cũng không có giấy phép hành nghề kiểm toán báo cáo tài chính (*attest/audit* thuộc thẩm quyền độc quyền của CPA theo luật kế toán tiểu bang). EA hoàn toàn được phép tư vấn hệ quả thuế và nộp `Form 2553` / tờ khai thuế.",
-   "lesson": "EA4_M01",
+   "lesson": "EA4_M01_Roadmap_Credentials_and_Practice_Rights",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M01"
   },
   {
@@ -14718,7 +14718,7 @@ window.EA_LESSONS = {
    ],
    "a": 1,
    "exp": "PTIN là mã số cấp liên bang bắt buộc của IRS, nhưng một số tiểu bang (tiêu biểu **California CTEC**, **Oregon OBTP**, **New York**, **Maryland**) có luật cấp phép/đăng ký riêng đối với người khai thuế thu phí chưa có chứng chỉ EA/CPA/Attorney. Người hành nghề bắt buộc phải kiểm tra và tuân thủ quy định tiểu bang trước khi nhận phí khai thuế.\n\n---",
-   "lesson": "EA4_M01",
+   "lesson": "EA4_M01_Roadmap_Credentials_and_Practice_Rights",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M01"
   },
   {
@@ -14731,7 +14731,7 @@ window.EA_LESSONS = {
    ],
    "a": 1,
    "exp": "Theo `OBBBA Sec. 70201` (hiệu lực `TY2025–TY2028`), tiền tip hợp lệ được khấu trừ thuế thu nhập liên bang tối đa **`$25,000`/năm** cho cả người lấy Standard Deduction lẫn Itemizer (phase-out khi MAGI `>$150,000` Single / `>$300,000` MFJ), nhưng **vẫn phải chịu đầy đủ thuế FICA (Social Security & Medicare)**.",
-   "lesson": "EA4_M02",
+   "lesson": "EA4_M02_Niches_Cash_Businesses_and_Compliance",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M02"
   },
   {
@@ -14744,7 +14744,7 @@ window.EA_LESSONS = {
    ],
    "a": 1,
    "exp": "Theo `OBBBA Sec. 70433` và `Rev. Proc. 2025-32` §2.15, ngưỡng mới **`$2,000`** của `Form 1099-NEC / 1099-MISC` chỉ áp dụng cho các khoản thanh toán thực hiện **sau ngày `31/12/2025` (`TY2026`)**. Với khoản thanh toán `$1,200` trong **năm 2025 (`TY2025`)**, ngưỡng **`$600`** vẫn áp dụng nên doanh nghiệp bắt buộc phải phát hành `Form 1099-NEC`.",
-   "lesson": "EA4_M02",
+   "lesson": "EA4_M02_Niches_Cash_Businesses_and_Compliance",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M02"
   },
   {
@@ -14757,7 +14757,7 @@ window.EA_LESSONS = {
    ],
    "a": 1,
    "exp": "`OBBBA Sec. 70432` khôi phục ngưỡng phát hành `Form 1099-K` của đơn vị trung gian thanh toán ở mức **`>$20,000` VÀ `>200` giao dịch**, nhưng quy tắc này chỉ là ngưỡng báo cáo tờ khai thông tin (*information reporting*). Theo `IRC §61`, **100% doanh thu kinh doanh** (dù tiền mặt, Zelle hay thẻ không có 1099-K) đều phải kê khai đầy đủ trên `Schedule C`.",
-   "lesson": "EA4_M02",
+   "lesson": "EA4_M02_Niches_Cash_Businesses_and_Compliance",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M02"
   },
   {
@@ -14770,7 +14770,7 @@ window.EA_LESSONS = {
    ],
    "a": 1,
    "exp": "Theo `Circular 230 §10.30`, EA **bị cấm** dùng danh xưng *\"certified\"*, cấm ngụ ý được IRS bảo trợ hay có quan hệ đặc biệt với IRS, và cấm hứa hẹn kết quả sai lệch. Cụm từ chuẩn được phép là *\"enrolled to practice before the Internal Revenue Service\"* (hoặc *\"admitted to practice...\"*), và bản sao nội dung quảng cáo (kể cả trên truyền thông số/mạng xã hội) phải được lưu giữ ít nhất **`36 tháng`**.",
-   "lesson": "EA4_M02",
+   "lesson": "EA4_M02_Niches_Cash_Businesses_and_Compliance",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M02"
   },
   {
@@ -14783,7 +14783,7 @@ window.EA_LESSONS = {
    ],
    "a": 0,
    "exp": "Theo `IRC §6053(a)`, nhân viên nhận tiền tip từ **`$20` trở lên** trong một tháng dương lịch khi làm việc cho một chủ sử dụng lao động bắt buộc phải báo cáo bằng văn bản cho chủ chậm nhất vào **ngày `10` của tháng kế tiếp** (nếu ngày 10 rơi vào cuối tuần/ngày lễ thì chuyển sang ngày làm việc tiếp theo).\n\n---",
-   "lesson": "EA4_M02",
+   "lesson": "EA4_M02_Niches_Cash_Businesses_and_Compliance",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M02"
   },
   {
@@ -14796,7 +14796,7 @@ window.EA_LESSONS = {
    ],
    "a": 1,
    "exp": "Từ **`TY2025`**, theo `OBBBA Sec. 70104` và `Instructions for Form 8867 (Rev. Nov. 2025)`, để nhận `CTC / ACTC`, không chỉ đứa trẻ phải có SSN mà **người nộp thuế (hoặc ít nhất 1 vợ/chồng trên tờ khai MFJ) cũng bắt buộc phải có SSN hợp lệ**. Người có ITIN vẫn được khai `HOH` (nếu thỏa test cấp dưỡng `>50%` nhà ở và Qualifying Child) và xét `ODC ($500 nonrefundable)`, đồng thời preparer vẫn phải hoàn thành `Form 8867` cho mục `HOH`.",
-   "lesson": "EA4_M03",
+   "lesson": "EA4_M03_Tax_Season_Workflow_Due_Diligence_and_Intake",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M03"
   },
   {
@@ -14809,7 +14809,7 @@ window.EA_LESSONS = {
    ],
    "a": 2,
    "exp": "Theo `Rev. Proc. 2024-40` §2.56 và `Instructions for Form 8867 (Rev. Nov. 2025)`, đối với tờ khai phải nộp trong **năm 2026 (`CY2026`)**, mức phạt `IRC §6695(g)` là **`$650` cho MỖI lỗi thiếu thẩm định** trên cùng một tờ khai. Nếu một tờ khai vi phạm đủ 4 khoản (`HOH + EITC + CTC/ACTC/ODC + AOTC`), tiền phạt lên tới **`4 × $650 = $2,600`** cho riêng tờ khai đó!",
-   "lesson": "EA4_M03",
+   "lesson": "EA4_M03_Tax_Season_Workflow_Due_Diligence_and_Intake",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M03"
   },
   {
@@ -14822,7 +14822,7 @@ window.EA_LESSONS = {
    ],
    "a": 1,
    "exp": "Theo `Treas. Reg. §1.6695-2(b)(4)` và `Instructions for Form 8867`, toàn bộ hồ sơ thẩm định `Form 8867` (gồm worksheet, bản sao tài liệu khách đưa mà preparer dựa vào, và ghi chú đương thời ai cung cấp thông tin gì vào ngày nào) phải được lưu giữ (bản giấy hoặc điện tử an toàn) trong **`3 năm`**.",
-   "lesson": "EA4_M03",
+   "lesson": "EA4_M03_Tax_Season_Workflow_Due_Diligence_and_Intake",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M03"
   },
   {
@@ -14835,7 +14835,7 @@ window.EA_LESSONS = {
    ],
    "a": 1,
    "exp": "Theo `IRC §6694(a)(2)`, với giao dịch không phải *tax shelter / reportable transaction*, vị trí khai thuế phải đạt mức ***substantial authority*** (`~40%`) nếu không công bố, HOẶC đạt mức ***reasonable basis*** (`~20%`) **kèm công bố đầy đủ trên `Form 8275` / `8275-R`**. Thỏa thuận riêng với khách không miễn trừ tiền phạt IRS (`max($1,000, 50% thu nhập)`).",
-   "lesson": "EA4_M03",
+   "lesson": "EA4_M03_Tax_Season_Workflow_Due_Diligence_and_Intake",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M03"
   },
   {
@@ -14848,7 +14848,7 @@ window.EA_LESSONS = {
    ],
    "a": 1,
    "exp": "Theo `IRC §6011(e)(3)`, người khai thuế dự kiến nộp **`≥ 11` tờ khai cá nhân/estate/trust** trong năm là *Specified Tax Return Preparer* bắt buộc phải e-file; nếu khách hàng tự quyết định nộp bản giấy thì preparer phải lưu văn bản xác nhận có chữ ký của khách và đính kèm **`Form 8948`** vào tờ khai giấy. *(Phân biệt với quy tắc **`10` tờ khai gộp** theo `T.D. 9972` áp dụng cho doanh nghiệp/đơn vị nộp tờ khai doanh nghiệp & tờ khai thông tin W-2/1099)*.\n\n---",
-   "lesson": "EA4_M03",
+   "lesson": "EA4_M03_Tax_Season_Workflow_Due_Diligence_and_Intake",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M03"
   },
   {
@@ -14861,7 +14861,7 @@ window.EA_LESSONS = {
    ],
    "a": 2,
    "exp": "Theo `Circular 230 §10.27(b)`, *contingent fee* bị cấm tuyệt đối với tờ khai gốc (và cả tờ khai sửa đổi `1040-X` tự nguyện khi chưa bị IRS kiểm tra), cũng như cấm tính phí e-file theo `%` hoàn thuế. Tuy nhiên, `§10.27(b)(3)` cho phép thu *contingent fee* đối với dịch vụ khiếu nại hoàn/xóa **chỉ liên quan đến tiền phạt và tiền lãi theo luật định (*statutory interest or penalties*)** (cùng 2 ngoại lệ khác là IRS examination/challenge và judicial proceeding).",
-   "lesson": "EA4_M04",
+   "lesson": "EA4_M04_Pricing_Engagement_Letters_and_Billing_Ethics",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M04"
   },
   {
@@ -14874,7 +14874,7 @@ window.EA_LESSONS = {
    ],
    "a": 2,
    "exp": "Theo `Circular 230 §10.27(b)(2)(ii)`, ngoại lệ cho phép tính *contingent fee* đối với tờ khai sửa đổi hoặc đơn đòi hoàn thuế gắn với cuộc kiểm tra của IRS yêu cầu hồ sơ đó phải được nộp trước khi bắt đầu kiểm tra hoặc **trong vòng `120 ngày`** kể từ khi người nộp thuế nhận được văn bản thông báo kiểm tra đầu tiên từ IRS.",
-   "lesson": "EA4_M04",
+   "lesson": "EA4_M04_Pricing_Engagement_Letters_and_Billing_Ethics",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M04"
   },
   {
@@ -14887,7 +14887,7 @@ window.EA_LESSONS = {
    ],
    "a": 2,
    "exp": "Theo `IRC §6695(f)` và `Rev. Proc. 2024-40` §2.56, người khai thuế bị cấm tuyệt đối ký hậu, thương lượng hoặc nhận chuyển khoản tiền hoàn thuế của khách vào tài khoản do preparer kiểm soát (kể cả khi khách đồng ý để trừ phí!). Mức phạt cho năm nộp 2026 là **`$650` cho mỗi lần vi phạm** (`3 × $650 = $1,950`), không có trần giới hạn năm.",
-   "lesson": "EA4_M04",
+   "lesson": "EA4_M04_Pricing_Engagement_Letters_and_Billing_Ethics",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M04"
   },
   {
@@ -14900,7 +14900,7 @@ window.EA_LESSONS = {
    ],
    "a": 1,
    "exp": "Theo `Circular 230 §10.28(a)–(b)`, dù đang có tranh chấp phí dịch vụ (*fee dispute*), practitioner **bắt buộc phải trả lại kịp thời toàn bộ hồ sơ của khách hàng** (đặc biệt là mọi tài liệu gốc do khách cung cấp và bất kỳ tài liệu nào cần thiết để khách hoàn thành nghĩa vụ thuế hiện hành); practitioner được phép photocopy lưu hồ sơ.",
-   "lesson": "EA4_M04",
+   "lesson": "EA4_M04_Pricing_Engagement_Letters_and_Billing_Ethics",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M04"
   },
   {
@@ -14913,7 +14913,7 @@ window.EA_LESSONS = {
    ],
    "a": 1,
    "exp": "Theo `Circular 230 §10.33(a)(1)` (*Best Practices*), nhà tư vấn thuế cần truyền đạt rõ ràng với khách hàng các điều khoản hợp đồng (*terms of the engagement*). Ghi rõ ranh giới phạm vi dịch vụ giúp tránh tranh chấp trách nhiệm nghề nghiệp (*E&O malpractice claims*) khi khách tưởng rằng khai Form 1040 đã tự động bao gồm FBAR, thuế bán hàng tiểu bang hay đại diện kiểm tra thuế miễn phí.\n\n---",
-   "lesson": "EA4_M04",
+   "lesson": "EA4_M04_Pricing_Engagement_Letters_and_Billing_Ethics",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M04"
   },
   {
@@ -14926,7 +14926,7 @@ window.EA_LESSONS = {
    ],
    "a": 1,
    "exp": "`Form 8821` chỉ là giấy ủy quyền tiếp nhận/tra cứu thông tin thuế bảo mật (*Tax Information Authorization*), **tuyệt đối không trao quyền đại diện** người nộp thuế để thương lượng trả góp, xin xóa phạt, tranh luận tại Appeals hay ký văn bản ràng buộc pháp lý. Muốn đại diện phải ký **`Form 2848`**.",
-   "lesson": "EA4_M05",
+   "lesson": "EA4_M05_IRS_Representation_Notices_and_Resolution",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M05"
   },
   {
@@ -14939,7 +14939,7 @@ window.EA_LESSONS = {
    ],
    "a": 1,
    "exp": "Theo `Instructions for Form 2848`, việc nộp `Form 2848` mới mặc định **tự động thu hồi các `Form 2848` đã nộp trước đó** của cùng sắc thuế và kỳ tính thuế (trừ khi đánh dấu ô giữ lại tại Line 6 và đính kèm bản sao POA cũ muốn giữ), nhưng **không làm thu hồi `Form 8821`** đã nộp trước đó.",
-   "lesson": "EA4_M05",
+   "lesson": "EA4_M05_IRS_Representation_Notices_and_Resolution",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M05"
   },
   {
@@ -14952,7 +14952,7 @@ window.EA_LESSONS = {
    ],
    "a": 1,
    "exp": "Theo `Circular 230 §10.29(b)–(c)`, khi tồn tại xung đột lợi ích nhưng đáp ứng đủ điều kiện được phép đại diện, **từng khách hàng bị ảnh hưởng** phải đưa ra sự đồng ý trên cơ sở được thông tin đầy đủ và **xác nhận bằng văn bản trong vòng `30 ngày`**, đồng thời practitioner phải lưu giữ bản văn bản đồng ý ít nhất **`36 tháng`** sau khi kết thúc việc đại diện. *(Lưu ý: nếu một bên xin Innocent Spouse Relief đối kháng trực tiếp bên kia khiến không thể đại diện công bằng cho cả hai thì EA bắt buộc phải rút/từ chối không được nhận cả hai!).*",
-   "lesson": "EA4_M05",
+   "lesson": "EA4_M05_IRS_Representation_Notices_and_Resolution",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M05"
   },
   {
@@ -14965,7 +14965,7 @@ window.EA_LESSONS = {
    ],
    "a": 1,
    "exp": "Theo `IRC §7345` và `Rev. Proc. 2024-40` §2.59, ngưỡng *Seriously Delinquent Tax Debt* cho **năm 2025 là `> $64,000`** (tăng lên `> $66,000` cho năm 2026 theo `Rev. Proc. 2025-32` §4.60). Khoản nợ đang trả góp đúng hạn theo `Installment Agreement`, đang có `OIC` hợp lệ hoặc đang kháng nghị `CDP` đúng hạn `30 ngày` sẽ được loại trừ khỏi diện thu hồi hộ chiếu.",
-   "lesson": "EA4_M05",
+   "lesson": "EA4_M05_IRS_Representation_Notices_and_Resolution",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M05"
   },
   {
@@ -14978,7 +14978,7 @@ window.EA_LESSONS = {
    ],
    "a": 1,
    "exp": "Theo `IRC §6330(a)(3)(B)`, người nộp thuế có đúng **`30 ngày`** kể từ ngày ghi trên thông báo `Final Notice of Intent to Levy` (`LT11 / Letter 1058`) để nộp `Form 12153` yêu cầu phiên điều trần **CDP** (tạm dừng cưỡng chế và giữ quyền kiện lên U.S. Tax Court). Nếu nộp trễ quá 30 ngày (nhưng trong vòng 1 năm) thì chỉ được xin *Equivalent Hearing* — không giữ được quyền kháng cáo ra Tòa Thuế!\n\n---",
-   "lesson": "EA4_M05",
+   "lesson": "EA4_M05_IRS_Representation_Notices_and_Resolution",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M05"
   },
   {
@@ -14991,7 +14991,7 @@ window.EA_LESSONS = {
    ],
    "a": 1,
    "exp": "Theo *FTC Safeguards Rule* (`16 CFR Part 314`) và tài liệu chính thức **`IRS Pub. 4557` / `Pub. 5708`**, mọi đơn vị cung cấp dịch vụ khai thuế chuyên nghiệp (kể cả văn phòng 1 người làm tại nhà) đều thuộc diện bắt buộc phải lập và thực thi **WISP** bằng văn bản, và phải xác nhận tuân thủ khi đăng ký/gia hạn PTIN.",
-   "lesson": "EA4_M06",
+   "lesson": "EA4_M06_Data_Security_WISP_IRC7216_and_Risk_Management",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M06"
   },
   {
@@ -15004,7 +15004,7 @@ window.EA_LESSONS = {
    ],
    "a": 2,
    "exp": "`IRC §7216` điều chỉnh cả hành vi **tiết lộ (*disclosure*)** lẫn **sử dụng (*use*)** thông tin tờ khai thuế cho mục đích ngoài việc lập tờ khai thuế (kể cả tự bản thân EA dùng dữ liệu đó để bán bảo hiểm/đầu tư!). Đối với người nộp thuế `Form 1040`, văn bản đồng ý phải tách riêng, hoàn toàn tự nguyện, có câu cảnh báo bắt buộc của Bộ Tài chính, mặc định hiệu lực **1 năm** nếu không ghi thời hạn khác, và **cấm lấy làm điều kiện cung cấp dịch vụ khai thuế** hoặc nài ép xin lại khi khách đã từ chối.",
-   "lesson": "EA4_M06",
+   "lesson": "EA4_M06_Data_Security_WISP_IRC7216_and_Risk_Management",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M06"
   },
   {
@@ -15017,7 +15017,7 @@ window.EA_LESSONS = {
    ],
    "a": 1,
    "exp": "Ngoại lệ tự động chia sẻ dữ liệu cho bên hỗ trợ khai thuế mà không cần consent (`Treas. Reg. §301.7216-2(d)`) **chỉ áp dụng khi cả hai bên đều đặt tại Hoa Kỳ**! Khi chuyển bất kỳ thông tin tờ khai nào ra **ngoài lãnh thổ Hoa Kỳ**, bắt buộc phải có văn bản đồng ý `§7216` về tiết lộ ra nước ngoài ký trước bởi khách hàng, kèm quy tắc bảo vệ/che hoàn toàn số **SSN** đối với tờ khai cá nhân `Form 1040`.",
-   "lesson": "EA4_M06",
+   "lesson": "EA4_M06_Data_Security_WISP_IRC7216_and_Risk_Management",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M06"
   },
   {
@@ -15030,7 +15030,7 @@ window.EA_LESSONS = {
    ],
    "a": 1,
    "exp": "Theo hướng dẫn bảo mật của IRS (`Pub. 4557` và quy trình ứng phó đánh cắp danh tính dành cho tax pros cũng được kiểm tra trực tiếp trong `EA3_SU01`), khi phát hiện lộ lọt dữ liệu khách hàng, văn phòng phải kích hoạt kế hoạch ứng phó sự cố trong `WISP` và báo ngay cho **IRS Stakeholder Liaison** (mốc chuẩn là ngay lập tức / không quá **1 ngày làm việc**) để IRS khóa bảo vệ EFIN/PTIN và ngăn chặn tờ khai hoàn thuế giả mạo.",
-   "lesson": "EA4_M06",
+   "lesson": "EA4_M06_Data_Security_WISP_IRC7216_and_Risk_Management",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M06"
   },
   {
@@ -15043,7 +15043,7 @@ window.EA_LESSONS = {
    ],
    "a": 2,
    "exp": "Theo `Circular 230 §10.36`, người đứng đầu phụ trách tuân thủ của firm phải thực thi các biện pháp hợp lý để đảm bảo mọi nhân sự tuân thủ `Circular 230`; và theo `§10.50(c)`, ngoài hình thức khiển trách/đình chỉ/tước thẻ, Bộ Tài chính có thể phạt tiền trực tiếp lên cá nhân vi phạm VÀ lên cả **firm**, với trần tiền phạt tối đa bằng **tổng thu nhập gộp thu được (hoặc dự kiến thu được) từ hành vi vi phạm đó (*gross income derived or to be derived from the conduct*)**.\n\n---",
-   "lesson": "EA4_M06",
+   "lesson": "EA4_M06_Data_Security_WISP_IRC7216_and_Risk_Management",
    "section": "Part 4 · Kiếm tiền & Hành nghề · EA4_M06"
   }
  ]
