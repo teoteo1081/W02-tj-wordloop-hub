@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IELTS Academic Listening &amp; Reading — TJ WordLoop</title>
+  <link rel="stylesheet" href="ielts-lr.css">
+</head>
+<body>
+
+  <!-- Top Sticky Header -->
+  <header class="ielts-header">
+    <div class="brand-section">
+      <span class="brand-badge">IELTS ACADEMIC</span>
+      <span class="brand-title">TJ WordLoop L/R Prep</span>
+    </div>
+
+    <div class="header-controls">
+      <div class="timer-box" id="timerBox">
+        <span>⏱</span>
+        <span id="timerText">00:00</span>
+      </div>
+
+      <button type="button" class="btn-ctrl" id="btnTheme" title="Chuyển chế độ sáng/tối">
+        🌓 Giao diện
+      </button>
+
+      <button type="button" class="btn-ctrl" id="btnReset" title="Xoá làm lại từ đầu">
+        🔄 Làm lại
+      </button>
+
+      <button type="button" class="btn-ctrl btn-primary" id="btnGrade" title="Nộp bài và chấm điểm">
+        ✅ Nộp bài / Chấm điểm
+      </button>
+    </div>
+  </header>
+
+  <!-- Test Selector & Mode Control Bar -->
+  <section class="test-bar">
+    <div class="test-select-group">
+      <label for="testSelect" style="font-weight: 700; font-size: 14px;">Bộ đề:</label>
+      <select id="testSelect" class="select-test">
+        <!-- Populated dynamically via JS -->
+      </select>
+
+      <div class="mode-pills">
+        <button type="button" class="pill-opt active" id="btnModePractice">Luyện tập (Practice)</button>
+        <button type="button" class="pill-opt" id="btnModeExam">Thi thử (Exam 60m)</button>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+      <div id="partNavContainer" style="display: flex; gap: 6px;">
+        <!-- Passage / Section buttons populated dynamically -->
+      </div>
+      <span id="progressText" style="font-size: 14px; font-weight: 700; color: var(--brand-primary);">
+        Đã làm: 0/40
+      </span>
+    </div>
+  </section>
+
+  <!-- Audio Player Bar (Active during Listening Tests) -->
+  <section class="audio-player-bar" id="audioPlayerBar" style="display: none;">
+    <div class="player-main">
+      <button type="button" class="btn-ctrl" id="btnTurnPrev" title="Lượt trước">⏮ Turn trước</button>
+      <button type="button" class="btn-ctrl" id="btnAudioPlay">▶ Phát Audio</button>
+      <button type="button" class="btn-ctrl" id="btnAudioStop">⏹ Dừng</button>
+      <button type="button" class="btn-ctrl" id="btnTurnNext" title="Lượt kế tiếp">Turn sau ⏭</button>
+
+      <label for="audioSpeedSelect" style="font-size: 13px; font-weight: 600; margin-left: 6px;">Tốc độ:</label>
+      <select id="audioSpeedSelect" class="select-dropdown" style="width: auto; min-width: 90px; min-height: 38px; padding: 4px 8px; font-size: 13px;">
+        <option value="0.85">0.85x (Chậm)</option>
+        <option value="1.0" selected>1.0x (Chuẩn)</option>
+        <option value="1.15">1.15x (Nhanh)</option>
+      </select>
+
+      <span class="speaker-badge" id="currentSpeakerBadge">🗣 Người nói</span>
+      <span style="font-size: 13px; font-weight: 600;" id="audioTurnInfo">Turn 0/0</span>
+    </div>
+
+    <div class="voice-status" id="voiceStatus">Đang nạp giọng đọc tiếng Anh...</div>
+  </section>
+
+  <!-- Notice Disclaimer -->
+  <aside class="notice-box">
+    <span>
+      💡 <strong>Lưu ý:</strong> Nội dung biên soạn độc quyền theo chuẩn công bố chính thức trên <em>ielts.org</em>. Chấm tự động với đáp án tiếng Anh chuẩn xác và giải thích 100% tiếng Việt chi tiết kèm dẫn chứng.
+    </span>
+  </aside>
+
+  <!-- Mobile Tab Bar (Visible on <890px viewports) -->
+  <nav class="mobile-tabs" id="mobileTabs">
+    <button type="button" class="tab-btn active" id="tabLeft">📖 Bài đọc / Transcript</button>
+    <button type="button" class="tab-btn" id="tabRight">✍️ Câu hỏi (40 câu)</button>
+  </nav>
+
+  <!-- Split Pane Workspace -->
+  <main class="workspace">
+    <!-- Left Pane: Reading Passage or Listening Transcript -->
+    <section class="pane-left" id="paneLeft">
+      <!-- Populated dynamically via JS -->
+    </section>
+
+    <!-- Right Pane: Questions & Inputs -->
+    <section class="pane-right" id="paneRight">
+      <!-- Populated dynamically via JS -->
+    </section>
+  </main>
+
+  <!-- Bottom Question Navigation Strip -->
+  <footer class="q-strip" id="qStrip">
+    <div style="font-size: 13px; font-weight: 700; white-space: nowrap;">Bảng câu hỏi:</div>
+    <div class="q-grid" id="qGrid">
+      <!-- 40 Question dots populated via JS -->
+    </div>
+  </footer>
+
+  <!-- Results Summary Modal -->
+  <div class="modal-overlay" id="resultsModal" style="display: none;">
+    <div class="modal-card">
+      <h2 style="font-size: 22px; font-weight: 800; text-align: center;">KẾT QUẢ BÀI THI</h2>
+      
+      <div class="score-display">
+        <div style="font-size: 14px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Số câu đúng</div>
+        <div class="score-number" id="modalRawScore">0 / 40</div>
+        <div class="band-number" id="modalBandScore">Band 0.0</div>
+        <div class="band-disclaimer">
+          Điểm Band quy đổi ước tính tham khảo theo mốc chuẩn của ielts.org (độ khó bài thi thật có thể xê dịch ±0.5 band).
+        </div>
+      </div>
+
+      <div id="modalBreakdown">
+        <!-- Section-by-section breakdown populated via JS -->
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 24px; justify-content: center;">
+        <button type="button" class="btn-ctrl btn-primary" id="btnCloseModal" style="flex: 1;">
+          👁 Xem lại chi tiết bài làm
+        </button>
+        <button type="button" class="btn-ctrl" id="btnModalRetake" style="flex: 1;">
+          🔄 Làm lại đề này
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts (Ordered for file:// and offline compatibility) -->
+  <script src="data/reading.js"></script>
+  <script src="data/listening.js"></script>
+  <script src="ielts-lr.js"></script>
+</body>
+</html>
