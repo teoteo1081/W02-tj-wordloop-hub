@@ -248,11 +248,17 @@
 
   function getBestVoiceForSpeaker(speakerObj) {
     if (!state.tts.voices || state.tts.voices.length === 0) return null;
-    const lang = (speakerObj && speakerObj.accent) || 'en-GB';
+    const lang = (speakerObj && speakerObj.accentPref && speakerObj.accentPref[0]) || (speakerObj && speakerObj.accent) || 'en-GB';
     const isFemale = speakerObj && speakerObj.gender === 'female';
 
     // 1. Exact language match e.g. en-GB
     let matches = state.tts.voices.filter(v => v.lang.toLowerCase() === lang.toLowerCase());
+    if (matches.length === 0 && speakerObj && speakerObj.accentPref && speakerObj.accentPref.length > 1) {
+      for (let i = 1; i < speakerObj.accentPref.length; i++) {
+        matches = state.tts.voices.filter(v => v.lang.toLowerCase() === speakerObj.accentPref[i].toLowerCase());
+        if (matches.length > 0) break;
+      }
+    }
     if (matches.length === 0) {
       // 2. Prefix match e.g. en-
       matches = state.tts.voices.filter(v => v.lang.toLowerCase().startsWith('en-'));
@@ -301,21 +307,25 @@
     const turn = state.tts.turnsList[index];
     const test = state.tests[state.currentTestId];
     const currentPart = test.sections ? test.sections[state.currentPartIndex] : null;
-    const speakerObj = currentPart && currentPart.speakers ? currentPart.speakers.find(s => s.id === turn.speaker || s.name === turn.speaker) : null;
+    const tid = turn.turnId || turn.id;
+    const sid = turn.speakerId || turn.speaker;
+    const speakerObj = currentPart && currentPart.speakers ? currentPart.speakers.find(s => (s.speakerId || s.id) === sid || s.name === sid) : null;
 
     // Highlight turn block in UI
-    highlightActiveTurn(turn.id);
-    updatePlayerStatus(turn.speaker, index + 1, state.tts.turnsList.length);
+    highlightActiveTurn(tid);
+    updatePlayerStatus((speakerObj && speakerObj.label) || sid, index + 1, state.tts.turnsList.length);
 
     const utterance = new SpeechSynthesisUtterance(turn.text);
     utterance.rate = state.tts.speedRate;
-    utterance.lang = (speakerObj && speakerObj.accent) || 'en-GB';
+    utterance.lang = (speakerObj && speakerObj.accentPref && speakerObj.accentPref[0]) || (speakerObj && speakerObj.accent) || 'en-GB';
 
     const voice = getBestVoiceForSpeaker(speakerObj);
     if (voice) utterance.voice = voice;
 
-    if (speakerObj && speakerObj.gender === 'female') {
-      utterance.pitch = 1.1;
+    if (speakerObj && speakerObj.pitch) {
+      utterance.pitch = speakerObj.pitch;
+    } else if (speakerObj && speakerObj.gender === 'female') {
+      utterance.pitch = 1.05;
     } else {
       utterance.pitch = 0.95;
     }
@@ -607,10 +617,11 @@
 
     if (passage.paragraphs && Array.isArray(passage.paragraphs)) {
       passage.paragraphs.forEach(para => {
+        const pid = para.id || para.label;
         html += `
-          <div class="para-block" id="para-${escapeHtml(para.label)}">
-            <span class="para-label">${escapeHtml(para.label)}</span>
-            <div class="para-text" id="para-text-${escapeHtml(para.label)}">${escapeHtml(para.text)}</div>
+          <div class="para-block" id="para-${escapeHtml(pid)}">
+            <span class="para-label">${escapeHtml(pid)}</span>
+            <div class="para-text" id="para-text-${escapeHtml(pid)}">${escapeHtml(para.text)}</div>
           </div>
         `;
       });
@@ -658,11 +669,15 @@
 
     if (section.turns && Array.isArray(section.turns)) {
       section.turns.forEach((turn, idx) => {
+        const tid = turn.turnId || turn.id;
+        const sid = turn.speakerId || turn.speaker;
+        const spkObj = section.speakers ? section.speakers.find(s => (s.speakerId || s.id) === sid || s.name === sid) : null;
+        const spkName = spkObj ? spkObj.label : sid;
         html += `
-          <div class="turn-block" id="turn-${escapeHtml(turn.id)}" data-turn-index="${idx}" onclick="window.IeltsRunner.playSpecificTurn(${idx})">
+          <div class="turn-block" id="turn-${escapeHtml(tid)}" data-turn-index="${idx}" onclick="window.IeltsRunner.playSpecificTurn(${idx})">
             <div class="turn-speaker" style="display:flex; justify-content:space-between; align-items:center;">
-              <span>🗣 ${escapeHtml(turn.speaker)}</span>
-              <span style="font-size: 11px; color: var(--text-muted); font-weight: normal;">#${escapeHtml(turn.id)}</span>
+              <span>🗣 ${escapeHtml(spkName)}</span>
+              <span style="font-size: 11px; color: var(--text-muted); font-weight: normal;">#${escapeHtml(tid)}</span>
             </div>
             <div class="turn-text">${escapeHtml(turn.text)}</div>
           </div>
@@ -990,6 +1005,9 @@
 
   // --- Evidence Jumping Engine ---
   function jumpToEvidence(ref, quote) {
+    if (window.innerWidth <= 768) {
+      switchMobileTab('left');
+    }
     const test = state.tests[state.currentTestId];
     if (test.type === 'reading') {
       // In reading, ref is paragraph label like 'A', 'B', 'C'
@@ -1275,6 +1293,38 @@
 
       const tabRight = document.getElementById('tabRight');
       if (tabRight) tabRight.onclick = () => switchMobileTab('right');
+
+      // Keyboard shortcut navigation (P3)
+      window.addEventListener('keydown', (e) => {
+        const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+        if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+
+        if (e.code === 'Space') {
+          const test = state.tests[state.currentTestId];
+          if (test && test.type === 'listening') {
+            e.preventDefault();
+            toggleAudio();
+          }
+        } else if ((e.altKey && e.code === 'KeyN') || (e.code === 'ArrowRight' && !e.shiftKey)) {
+          const test = state.tests[state.currentTestId];
+          if (test) {
+            const parts = test.type === 'reading' ? test.passages : test.sections;
+            if (parts && state.currentPartIndex + 1 < parts.length) {
+              e.preventDefault();
+              state.currentPartIndex++;
+              renderPartNavigation();
+              renderCurrentTest();
+            }
+          }
+        } else if ((e.altKey && e.code === 'KeyP') || (e.code === 'ArrowLeft' && !e.shiftKey)) {
+          if (state.currentPartIndex > 0) {
+            e.preventDefault();
+            state.currentPartIndex--;
+            renderPartNavigation();
+            renderCurrentTest();
+          }
+        }
+      });
     },
     onAnswerChange: onAnswerChange,
     onMcqMultiToggle: onMcqMultiToggle,
