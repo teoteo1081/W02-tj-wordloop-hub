@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Module 05 · Meta Ads: ODAX, Advantage+ & CAPI 2026 | Marketing Quest</title>
+  <link rel="stylesheet" href="lesson.css?v=1">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-6X5S109XKM', { site: 'dm' });
+  </script>
+</head>
+<body>
+  <header class="lesson-topbar" role="navigation" aria-label="Điều hướng bài học">
+    <a class="nav-btn" href="../index.html">← Về khoá Digital Marketing</a>
+    <a class="nav-btn primary" href="../index.html#play=quiz">🎯 Luyện trắc nghiệm</a>
+  </header>
+
+  <main class="lesson-container">
+    <span class="lesson-badge">Phần 2 · Quảng cáo · Module m05</span>
+    <h1>Module 05 — Meta Ads: 6 Mục tiêu ODAX, Advantage+ &amp; Conversions API (CAPI) 2026</h1>
+
+    <section class="box box-update" aria-label="Cập nhật 2026">
+      <h2>📌 Cập nhật Thực chiến &amp; Pháp lý Việt Nam 2026</h2>
+      <ul>
+        <li><strong>Chuẩn hoá 6 Mục tiêu ODAX (Outcome-Driven Ad Experiences)</strong>: Meta đã gom toàn bộ mục tiêu cũ thành 6 nhóm chuẩn: <em>Awareness (Nhận biết)</em>, <em>Traffic (Lưu lượng)</em>, <em>Engagement (Tương tác)</em>, <em>Leads (Khách tiềm năng)</em>, <em>App Promotion (Quảng bá ứng dụng)</em> và <em>Sales (Doanh số)</em>.</li>
+        <li><strong>Hạ tầng đo lường song song Pixel + Conversions API (CAPI)</strong>: Trong bối cảnh trình duyệt chặn cookie bên thứ ba và thiết bị di động thắt chặt quyền riêng tư, chỉ cài Pixel trên web sẽ bị rơi rớt 30–40% dữ liệu. Năm 2026 bắt buộc phải triển khai CAPI gửi trực tiếp từ máy chủ, khử trùng lặp qua <code>event_id</code> và tối ưu điểm <strong>Event Match Quality (EMQ từ 7,0/10 trở lên)</strong>.</li>
+        <li><strong>Advantage+ Audience (Gợi ý đối tượng bằng AI)</strong>: Không còn cài đặt giới hạn tuổi/sở thích quá hẹp như trước; marketer đưa ra tệp khách cũ làm "gợi ý" (Audience Suggestion) để thuật toán AI tự động tìm rộng hơn.</li>
+        <li><strong>Ngưỡng Learning Phase (50 kết quả/7 ngày)</strong>: Mỗi nhóm quảng cáo cần đạt tối thiểu khoảng 50 sự kiện chuyển đổi trong vòng 7 ngày để máy học ổn định chi phí.</li>
+      </ul>
+    </section>
+
+    <!-- PHẦN 1: MỤC TIÊU ĐẦU RA ĐO ĐƯỢC -->
+    <section id="p1-muc-tieu">
+      <h2>1. Mục tiêu đầu ra đo được</h2>
+      <p>Sau khi học xong bài này (25 phút), bạn làm được ngay 3 việc cụ thể:</p>
+      <ol>
+        <li>Chọn chính xác 1 trong 6 mục tiêu ODAX phù hợp với mô hình kinh doanh, chấm dứt việc chọn nhầm mục tiêu Traffic/Engagement khi muốn ra đơn hàng.</li>
+        <li>Tính toán được ngân sách tối thiểu cho 1 nhóm quảng cáo để vượt qua giai đoạn máy học (Learning Phase) hoặc cách xử lý trạng thái <em>Learning Limited</em> cho ngân sách nhỏ.</li>
+        <li>Hiểu và thiết lập được quy trình kết nối Meta Pixel song song với Conversions API (CAPI) đảm bảo điểm chất lượng kết nối EMQ &gt; 7.0 và tuân thủ Luật Bảo vệ dữ liệu cá nhân số 91/2025/QH15.</li>
+      </ol>
+    </section>
+
+    <!-- PHẦN 2: BẢNG THUẬT NGỮ SONG NGỮ ANH - VIỆT -->
+    <section id="p2-thuat-ngu">
+      <h2>2. Bảng thuật ngữ song ngữ Anh – Việt</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 28%;">Thuật ngữ tiếng Anh</th>
+              <th style="width: 32%;">Giải nghĩa tiếng Việt thực dụng</th>
+              <th style="width: 40%;">Ứng dụng tại thị trường VN 2026</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>ODAX Framework</strong></td>
+              <td>Khung 6 mục tiêu dựa trên kết quả</td>
+              <td>Mô hình gom gọn các mục tiêu quảng cáo Meta thành 6 lựa chọn kinh doanh rõ ràng.</td>
+            </tr>
+            <tr>
+              <td><strong>Campaign</strong></td>
+              <td>Chiến dịch quảng cáo</td>
+              <td>Tầng cao nhất trong Ads Manager: nơi chọn mục tiêu ODAX và ngân sách tổng (CBO).</td>
+            </tr>
+            <tr>
+              <td><strong>Ad Set</strong></td>
+              <td>Nhóm quảng cáo</td>
+              <td>Tầng cài đặt đối tượng nhắm chọn, vị trí hiển thị, ngân sách ngày và lịch chạy.</td>
+            </tr>
+            <tr>
+              <td><strong>Ad Creative</strong></td>
+              <td>Nội dung quảng cáo</td>
+              <td>Hình ảnh, video, văn bản và nút kêu gọi hành động (CTA) mà người dùng nhìn thấy.</td>
+            </tr>
+            <tr>
+              <td><strong>Conversions API (CAPI)</strong></td>
+              <td>API chuyển đổi phía máy chủ</td>
+              <td>Gửi dữ liệu mua hàng trực tiếp từ máy chủ website về Meta, không phụ thuộc cookie trình duyệt.</td>
+            </tr>
+            <tr>
+              <td><strong>Event Deduplication</strong></td>
+              <td>Khử trùng lặp sự kiện</td>
+              <td>Dùng cặp <code>event_id</code> + <code>event_name</code> để Meta không tính trùng khi cả Pixel và CAPI cùng ghi nhận.</td>
+            </tr>
+            <tr>
+              <td><strong>Event Match Quality (EMQ)</strong></td>
+              <td>Chất lượng khớp sự kiện</td>
+              <td>Thang điểm (0–10) đo độ chính xác của thông tin gửi về (email hash, SĐT hash) để khớp người dùng.</td>
+            </tr>
+            <tr>
+              <td><strong>Advantage+ Audience</strong></td>
+              <td>Đối tượng tự động hoá AI</td>
+              <td>Cho phép Meta mở rộng tìm kiếm khách hàng ngoài các tiêu chí sở thích/hành vi ban đầu.</td>
+            </tr>
+            <tr>
+              <td><strong>Advantage+ Campaign Budget (CBO)</strong></td>
+              <td>Ngân sách chiến dịch tự động</td>
+              <td>Để thuật toán Meta tự phân bổ tiền vào nhóm quảng cáo nào đang có hiệu quả cao nhất.</td>
+            </tr>
+            <tr>
+              <td><strong>Learning Phase</strong></td>
+              <td>Giai đoạn máy học</td>
+              <td>Khoảng thời gian máy cần ~50 kết quả chuyển đổi trong 7 ngày để tối ưu chi phí ổn định.</td>
+            </tr>
+            <tr>
+              <td><strong>Learning Limited</strong></td>
+              <td>Hạn chế máy học</td>
+              <td>Trạng thái cảnh báo khi nhóm quảng cáo không gom đủ 50 kết quả/7 ngày do ngân sách quá ít.</td>
+            </tr>
+            <tr>
+              <td><strong>Custom Audience</strong></td>
+              <td>Đối tượng tuỳ chỉnh (Retarget)</td>
+              <td>Tệp khách đã từng nhắn tin, xem video, vào web để quảng cáo nhắc nhớ lại.</td>
+            </tr>
+            <tr>
+              <td><strong>Lookalike Audience (LAL)</strong></td>
+              <td>Đối tượng tương tự</td>
+              <td>Tệp người dùng có hành vi tương đồng với 1.000 khách hàng cũ do Meta tự quét tìm.</td>
+            </tr>
+            <tr>
+              <td><strong>Hook 3-Second</strong></td>
+              <td>Móc câu 3 giây đầu</td>
+              <td>Câu nói hoặc hình ảnh mở màn video thu hút người dùng dừng ngón tay lướt.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PHẦN 3: KHUNG LÀM THẬT TỪNG BƯỚC + VÍ DỤ TÍNH TOÁN VNĐ -->
+    <section id="p3-khung-lam-that">
+      <h2>3. Khung làm thật từng bước: Cài đặt Chiến dịch Meta Ads &amp; Bài toán Thoát Máy học</h2>
+
+      <h3>3.1 Bản đồ 6 mục tiêu ODAX và cách chọn chuẩn xác</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Mục tiêu ODAX</th>
+              <th>Thuật toán tối ưu cái gì?</th>
+              <th>Khi nào NÊN dùng?</th>
+              <th>Sai lầm hay gặp</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1. Awareness (Nhận biết)</strong></td>
+              <td>Tối đa hoá số người nhìn thấy với chi phí CPM rẻ nhất.</td>
+              <td>Khai trương cơ sở mới, sự kiện nhãn hàng lớn phủ thương hiệu.</td>
+              <td>Shop nhỏ chọn mục tiêu này rồi thắc mắc sao không ai nhắn tin hỏi mua.</td>
+            </tr>
+            <tr>
+              <td><strong>2. Traffic (Lưu lượng)</strong></td>
+              <td>Tìm những người có thói quen bấm vào liên kết (Link clicks).</td>
+              <td>Kéo người đọc bài viết blog, xem trang tin tức.</td>
+              <td>Kéo khách vào trang bán hàng nhưng toàn người chỉ tò mò bấm rồi thoát ngay.</td>
+            </tr>
+            <tr>
+              <td><strong>3. Engagement (Tương tác)</strong></td>
+              <td>Tìm người hay like, share, comment hoặc nhắn tin qua Messenger.</td>
+              <td>Tăng tương tác cho bài đăng, chạy chiến dịch chốt đơn qua tin nhắn Messenger.</td>
+              <td>Nhiều người comment "chấm" hỏi giá nhưng không có nhu cầu mua thật.</td>
+            </tr>
+            <tr>
+              <td><strong>4. Leads (Khách tiềm năng)</strong></td>
+              <td>Tìm người sẵn sàng điền Form (Instant Form) hoặc để lại số điện thoại.</td>
+              <td>Bất động sản, tuyển sinh khoá học, dịch vụ nha khoa, thẩm mỹ viện.</td>
+              <td>Không có người gọi lại ngay khiến khách quên mất đã đăng ký gì.</td>
+            </tr>
+            <tr>
+              <td><strong>5. App Promotion</strong></td>
+              <td>Tối ưu lượt cài đặt ứng dụng và sự kiện trong app.</td>
+              <td>Doanh nghiệp có ứng dụng di động riêng (Game, App TMĐT).</td>
+              <td>Không phù hợp với người bán hàng thông thường.</td>
+            </tr>
+            <tr>
+              <td><strong>6. Sales (Doanh số)</strong></td>
+              <td>Tìm người có xác suất thanh toán mua hàng cao nhất trên Website/Mini App.</td>
+              <td>Bán hàng có trang đích thương mại điện tử đã cài đặt Pixel + CAPI.</td>
+              <td>Chạy mục tiêu Sales khi web chưa có đơn nào khiến máy không có dữ liệu để học.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>3.2 Bài toán thoát Learning Phase: Cần bao nhiêu tiền ngân sách?</h3>
+      <p>Theo tài liệu chính thức của Meta, một nhóm quảng cáo cần <strong>khoảng 50 sự kiện tối ưu trong 7 ngày</strong>. Hãy làm phép tính:</p>
+      <ul>
+        <li>Nếu bạn chọn mục tiêu <em>Sales (Mua hàng trên web)</em> và CPA trung bình dự kiến là <code>100.000đ/đơn</code>:
+          <br>→ Ngân sách tối thiểu cho nhóm = 50 đơn × 100.000đ = <code>5.000.000đ / 7 ngày</code> (khoảng <strong>720.000đ/ngày/ad set</strong>).
+        </li>
+        <li>Nếu ngân sách của bạn chỉ có <code>150.000đ/ngày</code>, nhóm quảng cáo chắc chắn sẽ rơi vào trạng thái <strong>Learning Limited (Hạn chế máy học)</strong> vì 7 ngày chỉ thu được khoảng 10 đơn.</li>
+        <li><strong>Giải pháp cho ngân sách nhỏ</strong>:
+          <ol>
+            <li>Chuyển sự kiện tối ưu lên tầng cao hơn trong phễu: Thay vì tối ưu sự kiện <em>Purchase (Mua hàng)</em>, hãy tối ưu sự kiện <em>ViewContent (Xem trang)</em> hoặc <em>InitiateCheckout (Bắt đầu thanh toán)</em> — nơi có khối lượng sự kiện gấp 5–10 lần với chi phí rẻ hơn để máy đủ 50 kết quả.</li>
+            <li>Hoặc chuyển sang mục tiêu <em>Engagement (Nhắn tin Messenger/Zalo)</em> để trực tiếp chốt đơn 1-1 với chi phí mỗi tin nhắn khoảng 25.000đ – 40.000đ.</li>
+          </ol>
+        </li>
+      </ul>
+    </section>
+
+    <!-- PHẦN 4: CẠM BẪY THỰC TẾ & RANH GIỚI PHÁP LÝ -->
+    <section id="p4-cam-bay" class="box box-trap">
+      <h2>4. ⚠️ Cạm bẫy thực tế &amp; Ranh giới pháp lý (Khi nào cần kế toán / luật sư)</h2>
+      <ul>
+        <li><strong>Bẫy chỉnh sửa quảng cáo liên tục</strong>: Mỗi lần đổi ngân sách trên 20%, đổi ảnh, đổi tiêu đề hoặc đổi đối tượng, nhóm quảng cáo sẽ bị <em>Reset Learning Phase</em> và máy phải học lại từ đầu, làm chi phí dao động mạnh. Hãy gom các chỉnh sửa làm 1 lần và theo dõi ít nhất 3–5 ngày.</li>
+        <li><strong>Quy định bảo mật dữ liệu khi cài đặt Meta CAPI</strong>: Khi truyền dữ liệu từ website về Meta qua Conversions API (email, số điện thoại), bắt buộc phải được mã hoá băm một chiều bằng thuật toán <strong>SHA-256</strong> trước khi truyền đi. Đồng thời, website phải có thông báo đồng ý thu thập cookie theo <strong>Luật Bảo vệ dữ liệu cá nhân số 91/2025/QH15</strong>.</li>
+        <li><strong>Quyền sở hữu tài sản số</strong>: Marketer tuyệt đối không chạy quảng cáo của khách hàng trên tài khoản cá nhân của mình. Khách hàng phải là người sở hữu Business Manager (Meta Business Portfolio) và gắn thẻ thanh toán doanh nghiệp chính chủ.</li>
+      </ul>
+    </section>
+
+    <!-- PHẦN 5: BIỂU MẪU / CHECKLIST ÁP DỤNG NGAY -->
+    <section id="p5-checklist" class="box box-checklist">
+      <h2>5. ✅ Checklist Kiểm tra Cài đặt Chiến dịch Meta Ads 2026</h2>
+      <ul>
+        <li>☐ <strong>Hạ tầng đo lường</strong>: Đã cài đặt Meta Pixel + CAPI song song; kiểm tra trong Trình quản lý sự kiện (Events Manager) thấy có cờ khử trùng lặp (Deduplication) và điểm EMQ ≥ 7,0.</li>
+        <li>☐ <strong>Cấu trúc chiến dịch</strong>: 1 Chiến dịch ODAX → 2–3 Nhóm quảng cáo (Ad Sets) khác nhau về góc tiếp cận đối tượng → Mỗi nhóm có 3–5 Mẫu quảng cáo (Creatives) với các Hook khác nhau.</li>
+        <li>☐ <strong>Quy tắc ngân sách</strong>: Ngân sách ngày của Ad Set đủ khả năng mang lại tối thiểu 5–7 sự kiện/ngày để hướng tới mốc 50 sự kiện/tuần.</li>
+        <li>☐ <strong>Nội dung quảng cáo</strong>: 3 giây đầu có Hook rõ ràng, chữ trong ảnh không che quá nhiều, video có phụ đề cho người xem không bật tiếng.</li>
+      </ul>
+    </section>
+
+    <!-- PHẦN 6: TÓM TẮT 1 TRANG & CÂU HỎI TỰ KIỂM -->
+    <section id="p6-tom-tat-kiem-tra">
+      <h2>6. Tóm tắt 1 trang &amp; Câu hỏi tự kiểm tra</h2>
+      <p><em>Bấm vào từng câu để xem đáp án và giải thích chi tiết:</em></p>
+
+      <details class="quiz-item">
+        <summary>Câu 1: Trong khung ODAX của Meta, nếu mục tiêu kinh doanh của bạn là thu thập số điện thoại và thông tin đăng ký tư vấn khoá học, mục tiêu chiến dịch nào là chuẩn xác nhất?</summary>
+        <div class="quiz-ans">
+          <p><strong>Đáp án đúng:</strong> Mục tiêu Leads (Khách hàng tiềm năng).</p>
+          <p><em>Giải thích:</em> Mục tiêu Leads tối ưu cho hành vi điền form trực tiếp trên Facebook (Instant Form) hoặc để lại thông tin liên hệ trên trang đích.</p>
+        </div>
+      </details>
+
+      <details class="quiz-item">
+        <summary>Câu 2: Một nhóm quảng cáo cần đạt tối thiểu khoảng bao nhiêu sự kiện chuyển đổi trong vòng 7 ngày để thoát khỏi giai đoạn máy học (Learning Phase)?</summary>
+        <div class="quiz-ans">
+          <p><strong>Đáp án đúng:</strong> Khoảng 50 sự kiện chuyển đổi trong vòng 7 ngày.</p>
+          <p><em>Giải thích:</em> Đây là ngưỡng dữ liệu tối thiểu mà thuật toán Meta cần để nhận diện mẫu hình chung của người có khả năng chuyển đổi cao nhất.</p>
+        </div>
+      </details>
+
+      <details class="quiz-item">
+        <summary>Câu 3: Vì sao năm 2026 các nhà quảng cáo bắt buộc phải triển khai Meta Conversions API (CAPI) song song với Meta Pixel truyền thống?</summary>
+        <div class="quiz-ans">
+          <p><strong>Đáp án đúng:</strong> Vì Pixel trình duyệt bị chặn cookie và hạn chế theo dõi bởi các hệ điều hành/trình duyệt mới, CAPI gửi trực tiếp từ máy chủ giúp ghi nhận đầy đủ dữ liệu hơn.</p>
+          <p><em>Giải thích:</em> CAPI kết hợp Pixel cùng cơ chế khử trùng lặp qua event_id giúp bù đắp lượng dữ liệu bị rơi rớt, cải thiện điểm EMQ và giúp máy học tối ưu chính xác hơn.</p>
+        </div>
+      </details>
+
+      <details class="quiz-item">
+        <summary>Câu 4: Khi nhóm quảng cáo bị rơi vào trạng thái "Learning Limited" (Hạn chế máy học) do ngân sách quá nhỏ không đủ đạt 50 đơn/tuần, cách xử lý thông minh nhất là gì?</summary>
+        <div class="quiz-ans">
+          <p><strong>Đáp án đúng:</strong> Chuyển sự kiện tối ưu lên bước trước đó có khối lượng sự kiện lớn hơn (như Thêm vào giỏ hoặc Xem nội dung) hoặc gom các nhóm quảng cáo lại để tập trung ngân sách.</p>
+          <p><em>Giải thích:</em> Gom nhóm hoặc tối ưu sự kiện nông hơn giúp nhóm quảng cáo gom đủ 50 kết quả để thuật toán hoạt động hiệu quả hơn.</p>
+        </div>
+      </details>
+
+      <details class="quiz-item">
+        <summary>Câu 5: Trong cấu trúc 3 tầng của Meta Ads (Campaign – Ad Set – Ad), tầng nào là nơi bạn cài đặt đối tượng nhắm chọn, ngân sách ngày và vị trí hiển thị?</summary>
+        <div class="quiz-ans">
+          <p><strong>Đáp án đúng:</strong> Tầng Nhóm quảng cáo (Ad Set).</p>
+          <p><em>Giải thích:</em> Chiến dịch (Campaign) chọn mục tiêu; Nhóm quảng cáo (Ad Set) chọn đối tượng, vị trí, lịch và ngân sách; Quảng cáo (Ad) là hình ảnh/video nội dung.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- NGUỒN CHÍNH THỐNG -->
+    <footer class="box box-source" aria-label="Nguồn chính thống và ngày đối chiếu">
+      <h3>📚 Nguồn chính thống &amp; Ngày đối chiếu (2026-11-01)</h3>
+      <ul>
+        <li>Meta Business Help Center — Hướng dẫn khung mục tiêu <em>Outcome-Driven Ad Experiences (ODAX)</em>: <a href="https://www.facebook.com/business/help/1438417719786914" target="_blank" rel="noopener">facebook.com/business/help (1438417719786914)</a> — <code>VERIFIED</code>.</li>
+        <li>Meta Business Help Center — Quy tắc máy học <em>About the Learning Phase (50 events/7 days)</em>: <a href="https://www.facebook.com/business/help/112167992830700" target="_blank" rel="noopener">facebook.com/business/help (112167992830700)</a> — <code>VERIFIED</code>.</li>
+        <li>Meta for Developers — Tài liệu kỹ thuật <em>Conversions API (CAPI), Deduplication &amp; EMQ</em>: <a href="https://developers.facebook.com/docs/marketing-api/conversions-api" target="_blank" rel="noopener">developers.facebook.com</a> — <code>VERIFIED</code>.</li>
+      </ul>
+    </footer>
+
+    <nav class="lesson-nav-footer" aria-label="Chuyển bài học">
+      <a class="nav-btn" href="m04.html">← Bài trước: Module 04 — Nền tảng & Sàn TMĐT</a>
+      <a class="nav-btn primary" href="m06.html">Bài tiếp theo: Module 06 — TikTok GMV Max, Google & Zalo Ads →</a>
+    </nav>
+  </main>
+</body>
+</html>

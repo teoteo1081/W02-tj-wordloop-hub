@@ -6,65 +6,36 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'ea'});</script>
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>EA Part II – SU17–20: S Corporations to Exempt Organizations</title>
-<style>
-  @page { size: A4; margin: 14mm 12mm; }
-  * { box-sizing: border-box; }
-  body { font-family:'Segoe UI','Calibri',Arial,sans-serif; color:#33322f; font-size:15px; line-height:1.5; background:#fdfcfa; margin:0; }
-  .cover { background: linear-gradient(120deg,#bfe4ff 0%,#d6ecff 30%,#e6def7 65%,#fbe6f4 100%); border-radius:20px; padding:40px 30px; text-align:center; margin-bottom:10px; box-shadow:0 6px 18px rgba(120,130,180,.25); border:1px solid #dfe8f5; }
-  .cover .tag { display:inline-block; background:#33314a; color:#d6ecff; font-weight:700; letter-spacing:2px; font-size:13px; padding:5px 14px; border-radius:20px; margin-bottom:14px; }
-  .cover h1 { font-size:28px; margin:6px 0; color:#3170a8; }
-  .cover h2 { font-size:15px; font-weight:500; margin:4px 0 0; opacity:.9; color:#33314a; }
-  .cover .books { margin-top:16px; font-size:13px; background:rgba(255,255,255,.55); display:inline-block; padding:8px 16px; border-radius:10px; color:#33314a; }
-  .toc { background:#fff; border:1.5px solid #dfe8f5; border-radius:14px; padding:18px 26px; margin-bottom:30px; }
-  .toc h3 { margin-top:0; color:#3170a8; }
-  .toc ol { margin:0; padding-left:22px; } .toc li{ margin-bottom:6px; }
-  h2.section { font-size:21px; color:#33314a; padding:12px 18px; border-radius:12px; margin:34px 0 14px; border-left:10px solid var(--accent,#5aa9d6); background:var(--bg,#eaf6fd); }
-  h3.lesson { font-size:18px; color:var(--accent-dark,#276a91); border-left:6px solid var(--accent,#5aa9d6); background:var(--bg-soft,#f3fafd); padding:8px 14px; border-radius:6px; margin:22px 0 10px; }
-  .c1{--accent:#5aa9d6;--accent-dark:#276a91;--bg:#eaf6fd;--bg-soft:#f3fafd;--head:#a9d4ec;}
-  .c2{--accent:#a892d9;--accent-dark:#5c4696;--bg:#f1ecfb;--bg-soft:#f8f5fd;--head:#cabdec;}
-  .c3{--accent:#f0a66e;--accent-dark:#b8620b;--bg:#fdeee2;--bg-soft:#fff8f0;--head:#f4c299;}
-  .c4{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
-  .c5{--accent:#e07b9b;--accent-dark:#a3335a;--bg:#fbe9f0;--bg-soft:#fdf5f8;--head:#f3b6c9;}
-  .c6{--accent:#5bb8b0;--accent-dark:#1f7a72;--bg:#e5f7f5;--bg-soft:#f2fbfa;--head:#a6e3dd;}
-  .c7{--accent:#c9a13a;--accent-dark:#8a6c14;--bg:#fbf3de;--bg-soft:#fdf9ee;--head:#e9cd7c;}
-  .c8{--accent:#8697d6;--accent-dark:#4453a0;--bg:#eceffc;--bg-soft:#f6f7fd;--head:#c1c9ef;}
-  .cKey{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
-  table.vocab { width:100%; border-collapse:collapse; margin-bottom:18px; font-size:.94em; box-shadow:0 2px 8px rgba(0,0,0,.05); border-radius:10px; overflow:hidden; }
-  table.vocab th { background:var(--head,#5aa9d6); color:#2d2d2d; padding:8px; text-align:left; }
-  table.vocab td { padding:7px 8px; border-bottom:1px solid var(--bg,#eaf6fd); vertical-align:top; }
-  table.vocab tr:nth-child(even) td { background:var(--bg-soft,#faf6f0); }
-  table.vocab tr:nth-child(odd) td { background:#fff; }
-  table.vocab td.word { font-weight:800; color:var(--accent-dark,#276a91); }
-  table.vocab td.vn { font-weight:700; color:#3d6ba8; }
-  .rule-box { background:var(--bg,#eaf6fd); border-left:6px solid var(--accent,#5aa9d6); border-radius:8px; padding:12px 18px; margin:10px 0; }
-  .rule-box table { width:100%; border-collapse:collapse; margin:8px 0 4px; }
-  .rule-box table td, .rule-box table th { padding:6px 8px; border-bottom:1px solid rgba(0,0,0,.08); text-align:left; font-size:.92em; }
-  .rule-box table th { color:var(--accent-dark,#276a91); }
-  .rule-box ul, .rule-box ol { margin:6px 0; padding-left:22px; } .rule-box li{ margin-bottom:5px; }
-  .struct { font-weight:800; color:#b8620b; font-family:'Consolas','Courier New',monospace; }
-  .example-box { background:#fff; border:1.5px dashed var(--accent,#5aa9d6); border-radius:8px; padding:10px 16px; margin:8px 0; font-size:.92em; }
-  .example-box b.ex-tag { color:var(--accent-dark,#276a91); }
-  .mcq { background:#fff; border:1.5px solid var(--accent,#5aa9d6); border-radius:10px; padding:12px 18px; margin-bottom:12px; }
-  .mcq .q { color:#3d6ba8; font-weight:700; margin-bottom:6px; }
-  .mcq .opt { margin:2px 0 2px 10px; }
-  .content-block { background:#fff; border:2px dashed var(--accent,#5aa9d6); border-radius:12px; padding:16px 20px; margin-bottom:18px; }
-  .key-grid { column-count:1; } .key-grid div{ margin-bottom:9px; }
-  .key-ans { color:#20824f; font-weight:800; }
-  .key-exp { color:#555; font-size:.92em; }
-  .pagebreak { page-break-before: always; }
-  .note { font-size:.85em; color:#8a8a8a; font-style:italic; }
-</style>
+<link rel="stylesheet" href="../../lesson-2026.css">
+
 </head>
 <body>
+<main class="lesson-shell">
+<nav class="lesson-nav" aria-label="Điều hướng bài học">
+  <a class="nav-back" href="Corporate_Income_to_Redemptions_and_Liquidations.html">← Bài trước: SU14–SU16</a>
+  <span class="nav-meta">Part II • SU17–SU20</span>
+  <a class="nav-next" href="../../Part III/Lessons/EA3_SU01_Practice_before_the_IRS.html">Học tiếp Part III: Hành nghề & Thủ tục →</a>
+</nav>
 
 <div class="cover">
   <div class="tag">EA EXAM PREP • PART II — BUSINESSES • SU17–20</div>
   <h1>📗 PART II — BUSINESSES</h1>
   <h2>SU17 S Corporations · SU18 Decedent/Estate/Trust Income Tax · SU19 Retirement Plans for Small Businesses · SU20 Exempt Organizations</h2>
   <div class="books">📖 Khái niệm · 🔤 Thuật ngữ · 📌 Ví dụ · ❓ Trắc nghiệm · 🔑 Đáp án trang sau</div>
-</div>
 
+<div class="exam-dual-banner">
+  <div class="banner-see">🎯 <b>Đề thi hiện hành (SEE 2026–27 / PSI):</b> Áp dụng luật đến <b>31/12/2025 (TY2025)</b></div>
+  <div class="banner-practice">💼 <b>Hành nghề mùa mới:</b> Số liệu <b>TY2026</b> nằm trong hộp <i>«Cập nhật 2026»</i></div>
+</div>
+</div><nav class="su-pills" aria-label="Nhảy nhanh Study Unit">
+<div class="su-pills-label">⚡ Nhảy nhanh Study Unit:</div>
+<a href="#su17">SU17: S-Corp Eligibility</a>
+<a href="#su18">SU18: S-Corp Basis Order</a>
+<a href="#su19">SU19: Trusts & Estates</a>
+<a href="#su20">SU20: Exempt Organizations</a>
+</nav>
 <div class="toc">
 <h3>📑 Mục lục SU17–20 (chia nhỏ theo chủ đề)</h3>
 <ol>
@@ -79,10 +50,31 @@
 <li>I. Exempt Organizations — Status, Categories & Private Foundations</li>
 <li>J. Exempt Organizations — Annual Returns, UBTI & Charitable Deduction</li>
 </ol>
-<p class="note">Nguồn: Gleim EA Review, Study Units 17–20 (2026). Số liệu $ theo năm 2025 (trừ khi ghi chú khác).</p>
+
 </div>
 
 <!-- A -->
+<aside class="ea-update-2026" aria-label="Cập nhật luật thuế 2026">
+  <h3>⚡ Cập nhật luật thuế 2026 &amp; Thứ tự Điều chỉnh Basis S-Corp</h3>
+  <p>Chuẩn hóa thứ tự điều chỉnh cơ sở vốn cổ phần S-Corporation và mức phạt nộp trễ Form 1120-S:</p>
+  <div class="table-scroll">
+    <table class="compare-table">
+      <thead>
+        <tr><th>Thứ tự bắt buộc điều chỉnh Basis S-Corp (<code>Treas. Reg. §1.1367-1(f)</code>)</th><th>Ý nghĩa thực tiễn</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><b>Bước 1: Tăng thu nhập</b></td><td>Cộng mọi khoản thu nhập chịu thuế và miễn thuế</td></tr>
+        <tr><td><b>Bước 2: Giảm phân phối (Distributions)</b></td><td>Trừ phân phối không chịu thuế (tránh bị tính thuế phân phối vượt basis)</td></tr>
+        <tr><td><b>Bước 3: Giảm chi phí không được trừ</b></td><td>Trừ chi phí nondeductible noncapital (tiền phạt, 50% ăn uống bị cấm...)</td></tr>
+        <tr><td><b>Bước 4: Giảm khoản lỗ và khấu trừ</b></td><td>Trừ các khoản lỗ deductible (lỗ vượt basis bị đình chỉ treo sang năm sau)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="upcoming-box">
+    <b>📌 Phạt nộp trễ Form 1120-S (<code>IRC §6699</code>):</b> Tờ khai năm thuế 2025 nộp trong năm 2026 chịu mức phạt <b>$255 / cổ đông / tháng</b> (tối đa 12 tháng; năm nộp 2025 là $245; năm nộp 2027 là $260 theo Rev. Proc. 2025-32).
+  </div>
+</aside>
+
 <div class="c1">
 <h2 class="section">A — S CORPORATIONS: ELIGIBILITY, ELECTION & TERMINATION</h2>
 <div class="rule-box">
@@ -110,11 +102,12 @@
 <p><b>PII termination:</b> xảy ra khi S corp có <b>Subchapter C E&amp;P</b> (từng là C corp) VÀ PII &gt; 25% gross receipts trong <b>3 năm liên tiếp</b>. PII gồm dividends, interest (kể cả tax-exempt), royalties, rents, annuities (trừ 1 số khoản loại trừ như lãi từ A/R hàng tồn kho, rent có significant services). Hiệu lực termination = ngày đầu năm thuế SAU năm thứ 3 liên tiếp đó.</p>
 <p>Sau khi terminate, phải chờ <b>5 tax years</b> mới được re-elect (trừ khi IRS đồng ý sớm hơn, hoặc waive nếu termination là inadvertent và được sửa kịp thời).</p>
 <p><b>Return due date:</b> ngày 15 tháng thứ 3 sau khi kết thúc năm thuế (Form 1120-S); extension 6 tháng qua Form 7004. <b>Failure-to-file penalty</b> = $260/tháng (2025) × số shareholders × số tháng trễ (tối đa 12 tháng); nếu có tax due, cộng thêm 5%/tháng (tối đa 25%).</p>
-<p style="background:#fff7e0;border-left:4px solid #e0a800;padding:6px 10px;border-radius:6px;margin:8px 0">⚠️ <b>Luật hiện hành (kiểm 2026-10-25):</b> Nguồn khác ghi mức phạt trễ cho return đến hạn 2026 là <b>$255</b>/shareholder/tháng; Gleim ghi $260 (“2025 returns filed in 2026”). Con số chỉnh theo lạm phát hằng năm, đề thi bám số của Gleim/đề.</p>
+<p style="background:#fff7e0;border-left:4px solid #e0a800;padding:6px 10px;border-radius:6px;margin:8px 0">⚠️ <b>Luật hiện hành (kiểm 2026-10-25):</b> Nguồn khác ghi mức phạt trễ cho return đến hạn 2026 là <b>$255</b>/shareholder/tháng; luật thuế chuẩn ghi $260 (“2025 returns filed in 2026”). Con số chỉnh theo lạm phát hằng năm, đề thi bám số của luật thuế chuẩn/đề.</p>
 </div>
 <div class="example-box"><b class="ex-tag">Ví dụ:</b> Acme, Inc. (S corp) muốn fiscal year 30/4 vì &gt;25% gross receipts rơi vào tháng 3–4 trong 3 năm liên tiếp → đủ điều kiện "natural business year". Nếu không chứng minh được business purpose, S corp buộc dùng calendar year (trừ khi làm Sec. 444 election kèm noninterest-bearing deposit, deferral tối đa 3 tháng).</div>
 
 <h3 class="lesson">Thuật ngữ Phần A</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">pass-through entity</td><td class="vn">thực thể chuyển tiếp thu nhập/lỗ cho chủ sở hữu, không chịu thuế cấp công ty</td></tr>
@@ -124,6 +117,7 @@
 <tr><td class="word">Passive Investment Income (PII)</td><td class="vn">thu nhập đầu tư thụ động (dividend, interest, rent, royalty, annuity)</td></tr>
 <tr><td class="word">reasonable cause</td><td class="vn">lý do hợp lý (để được miễn phạt/chấp nhận election trễ)</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm Phần A</h3>
 <div class="content-block">
@@ -175,6 +169,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ Phần B</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">separately stated item</td><td class="vn">khoản mục phải tính riêng khi pass-through cho shareholder</td></tr>
@@ -183,6 +178,7 @@
 <tr><td class="word">at-risk amount</td><td class="vn">số tiền thực sự "chịu rủi ro" của shareholder trong hoạt động kinh doanh</td></tr>
 <tr><td class="word">material participation</td><td class="vn">tham gia đáng kể/thường xuyên vào hoạt động kinh doanh</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm Phần B</h3>
 <div class="content-block">
@@ -218,16 +214,20 @@
 <h3 class="lesson">Xử lý Distribution cho Shareholder</h3>
 <div class="rule-box">
 <p><b>S corp KHÔNG có Subchapter C E&amp;P</b> (chưa từng là C corp):</p>
+<div class="table-scroll">
 <table><tr><th>Distribution</th><th>Kết quả thuế</th></tr>
 <tr><td>Đến mức stock basis</td><td>Không chịu thuế; giảm basis</td></tr>
 <tr><td>Vượt basis</td><td>Chịu thuế như capital gain</td></tr></table>
+</div>
 <p><b>S corp CÓ Subchapter C E&amp;P</b> (thứ tự đầy đủ):</p>
+<div class="table-scroll">
 <table><tr><th>Distribution</th><th>Kết quả thuế</th></tr>
 <tr><td>Đến mức AAA</td><td>Không chịu thuế; giảm AAA & basis</td></tr>
 <tr><td>Đến mức C corp E&P</td><td>Chịu thuế như dividend; giảm E&P, KHÔNG giảm basis</td></tr>
 <tr><td>Đến mức OAA</td><td>Không chịu thuế; giảm OAA & basis</td></tr>
 <tr><td>Đến mức basis còn lại</td><td>Không chịu thuế; giảm basis</td></tr>
 <tr><td>Vượt basis</td><td>Chịu thuế như capital gain</td></tr></table>
+</div>
 </div>
 <div class="example-box"><b class="ex-tag">Ví dụ:</b> S corp 1 chủ, AAA $12,000, E&amp;P $8,000, basis shareholder $25,000. $12,000 đầu → giảm AAA về $0, basis còn $13,000 (không thuế). $8,000 tiếp theo → dividend income, giảm E&amp;P về $0 (basis KHÔNG đổi). $13,000 tiếp theo → giảm basis về $0 (không thuế, return of capital). Phần vượt $33,000 ($25,000+$8,000) → capital gain.</div>
 
@@ -239,6 +239,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ Phần C</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">AAA (Accumulated Adjustments Account)</td><td class="vn">tài khoản điều chỉnh lũy kế (theo dõi thu nhập/lỗ sau khi elect S)</td></tr>
@@ -247,6 +248,7 @@
 <tr><td class="word">reasonable compensation</td><td class="vn">mức lương hợp lý cho officer/shareholder-employee</td></tr>
 <tr><td class="word">return of capital</td><td class="vn">hoàn vốn gốc (không chịu thuế, giảm basis)</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm Phần C</h3>
 <div class="content-block">
@@ -284,17 +286,20 @@
 <h3 class="lesson">Income in Respect of a Decedent (IRD)</h3>
 <div class="rule-box">
 <p><b>IRD</b> = thu nhập decedent CÓ QUYỀN nhận nhưng CHƯA được tính vào final return (vì cash-method chưa nhận, hoặc accrual-method chưa accrue đúng cách trước khi chết).</p>
+<div class="table-scroll">
 <table><tr><th>IRD</th><th>KHÔNG phải IRD</th></tr>
 <tr><td>Lương earned nhưng chưa nhận (cash-method)</td><td>Lương đã earned & accrued (accrual-method)</td></tr>
 <tr><td>Thu A/R sau khi chết (cash-method)</td><td>Thu A/R (accrual-method)</td></tr>
 <tr><td>Gain bán property nhận SAU khi chết</td><td>Gain nhận TRƯỚC khi chết</td></tr>
 <tr><td>Rent accrued nhưng chưa nhận (cash-method)</td><td>Rent đã nhận trước khi chết</td></tr></table>
+</div>
 <p><b>Đặc điểm quan trọng:</b> basis của "quyền nhận IRD" là <b>transferred basis</b> (KHÔNG được step-up lên FMV như tài sản thường thừa kế). IRD giữ nguyên character (ordinary/capital) như khi còn ở tay decedent. IRD được báo trên return của người/entity thực sự NHẬN được tiền (estate's Form 1041, hoặc beneficiary's Form 1040) — <b>KHÔNG BAO GIỜ trên final Form 1040 của decedent</b>.</p>
 <p><b>Double-tax mitigation:</b> phần <b>estate tax</b> attributable đến IRD (đã tính vào gross estate trên Form 706) được deduct trên Form 1041 của người nhận IRD. Deduction chi phí accrued trước khi chết (decedent dùng cash method) cũng được phép khi payment thực xảy ra.</p>
 </div>
 <div class="example-box"><b class="ex-tag">Ví dụ:</b> Frank (cash-method) bán táo $2,000, giao hàng nhưng chưa được trả tiền khi chết. Estate chuyển quyền nhận cho vợ góa. Khi vợ nhận $2,000 → BÀ phải khai IRD $2,000 trên return của mình — KHÔNG khai trên final return của Frank, KHÔNG khai trên return của estate.</div>
 
 <h3 class="lesson">Thuật ngữ Phần D</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">Income in Respect of a Decedent (IRD)</td><td class="vn">thu nhập chưa thực nhận tính vào người thừa kế sau khi người mất đi</td></tr>
@@ -303,6 +308,7 @@
 <tr><td class="word">Form 706</td><td class="vn">tờ khai thuế thừa kế liên bang (Estate Tax Return)</td></tr>
 <tr><td class="word">Form 1041</td><td class="vn">tờ khai thuế thu nhập của estate/trust</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm Phần D</h3>
 <div class="content-block">
@@ -332,11 +338,13 @@
 <h2 class="section">E — INCOME TAXATION OF ESTATES & TRUSTS: DNI & DISTRIBUTION DEDUCTION</h2>
 <div class="rule-box">
 <p><b>Fiduciary tax brackets 2025</b> (rất "nén" — chạm 37% rất nhanh):</p>
+<div class="table-scroll">
 <table><tr><th>Taxable Income</th><th>Rate</th></tr>
 <tr><td>$0 – $3,150</td><td>10%</td></tr>
 <tr><td>&gt;$3,150 – $11,450</td><td>24% (+$315)</td></tr>
 <tr><td>&gt;$11,450 – $15,650</td><td>35% (+$2,307)</td></tr>
 <tr><td>&gt;$15,650</td><td>37% (+$3,777)</td></tr></table>
+</div>
 <p><b>Simple trust:</b> bắt buộc phân phối TOÀN BỘ income hiện tại, KHÔNG phân phối principal, KHÔNG charitable contribution. <b>Complex trust</b> = mọi trust khác (được tích lũy income, charitable contribution, phân phối cả principal). <b>Grantor trust:</b> grantor giữ quyền kiểm soát/hưởng lợi → income đánh thuế TRỰC TIẾP cho grantor, trust bị "bỏ qua" (disregarded) cho mục đích thuế. Mọi <b>revocable trust</b> đều là grantor trust.</p>
 <p><b>Filing:</b> estate phải file nếu gross income ≥ $600; trust phải file nếu có taxable income HOẶC gross income &gt;$600. Due date = ngày 15 tháng thứ 4 sau khi kết thúc năm thuế (Form 1041). Estate được chọn năm thuế kết thúc trong 12 tháng sau khi chết; hầu hết trust PHẢI dùng calendar year.</p>
 </div>
@@ -356,6 +364,7 @@
 <div class="example-box"><b class="ex-tag">Ví dụ:</b> Simple trust có DNI $10,000 (gồm $1,000 tax-exempt interest), phân phối hết $10,000 cho 1 beneficiary duy nhất. Beneficiary coi $1,000 là tax-exempt interest (loại trừ khỏi gross income cá nhân), $9,000 còn lại theo character gốc (character "giữ nguyên" khi pass-through cho beneficiary).</div>
 
 <h3 class="lesson">Thuật ngữ Phần E</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">simple trust / complex trust</td><td class="vn">trust đơn giản (phân phối hết income) / trust phức tạp (có thể tích lũy income)</td></tr>
@@ -364,6 +373,7 @@
 <tr><td class="word">principal / corpus</td><td class="vn">vốn gốc của trust/estate (phân biệt với "income")</td></tr>
 <tr><td class="word">distribution deduction</td><td class="vn">khoản khấu trừ cho phân phối cho beneficiary</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm Phần E</h3>
 <div class="content-block">
@@ -416,6 +426,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ Phần F</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">Net Investment Income Tax (NIIT)</td><td class="vn">thuế 3.8% trên thu nhập đầu tư ròng</td></tr>
@@ -424,6 +435,7 @@
 <tr><td class="word">character (of income)</td><td class="vn">tính chất thu nhập (ordinary/capital/tax-exempt) được giữ nguyên khi pass-through</td></tr>
 <tr><td class="word">fraud penalty</td><td class="vn">phạt gian lận thuế (tối đa 75% phần thuế thiếu)</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm Phần F</h3>
 <div class="content-block">
@@ -467,6 +479,7 @@
 <div class="example-box"><b class="ex-tag">Ví dụ:</b> Mary có compensation $95,000, tự đóng $8,000 vào SIMPLE IRA. Employer match 3% × $95,000 = <b>$2,850</b> (không giới hạn bởi annual compensation limit thông thường).</div>
 
 <h3 class="lesson">Thuật ngữ Phần G</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">Simplified Employee Pension (SEP)</td><td class="vn">chương trình hưu trí đơn giản qua SEP-IRA</td></tr>
@@ -475,6 +488,7 @@
 <tr><td class="word">matching contribution</td><td class="vn">khoản đóng góp đối ứng của employer</td></tr>
 <tr><td class="word">highly compensated employee</td><td class="vn">nhân viên có mức lương/sở hữu cao (chịu quy tắc chống phân biệt đối xử)</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm Phần G</h3>
 <div class="content-block">
@@ -510,18 +524,20 @@
 
 <h3 class="lesson">Contribution & Deduction Limits (2025)</h3>
 <div class="rule-box">
+<div class="table-scroll">
 <table><tr><th>Loại</th><th>Giới hạn</th></tr>
 <tr><td>Defined contribution — tổng góp/năm</td><td>Nhỏ hơn giữa 100% compensation hoặc $70,000 ($77,500 nếu ≥50 tuổi, $81,250 nếu 60–63 tuổi)</td></tr>
 <tr><td>Defined benefit — annual benefit</td><td>Nhỏ hơn giữa 100% average compensation (3 năm cao nhất) hoặc $280,000</td></tr>
 <tr><td>401(k) elective deferral</td><td>$23,500 + catch-up $7,500 (50+) hoặc $11,250 (60–63)</td></tr>
 <tr><td>Employer deduction — profit-sharing/money purchase</td><td>Tối đa 25% compensation trả cho common-law employees tham gia</td></tr></table>
+</div>
 <p>Contribution vào SEP CŨNG được cộng vào giới hạn defined contribution plan (không tách riêng). Deduction limit KHÔNG carryforward nếu năm trước đóng thiếu.</p>
 </div>
 
 <h3 class="lesson">Distributions, RMD & Premature Distribution Penalty</h3>
 <div class="rule-box">
 <p><b>RMD:</b> phải bắt đầu nhận trước ngày 1/4 năm sau khi đạt tuổi <b>73</b> (hoặc nghỉ hưu, tùy cái nào sau — trừ traditional IRA luôn tính theo tuổi 73). Không đủ RMD → excise tax <b>25%</b> (giảm còn <b>10%</b> nếu sửa trong 2 năm).</p>
-<p style="background:#fff7e0;border-left:4px solid #e0a800;padding:6px 10px;border-radius:6px;margin:8px 0">⚠️ <b>Luật hiện hành (kiểm 2026-10-25):</b> Theo SECURE 2.0, tuổi bắt đầu RMD là <b>73</b> (sinh 1951–1959) hoặc <b>75</b> (sinh từ 1960). Gleim 2026 chỉ nêu tuổi 73.</p>
+<p style="background:#fff7e0;border-left:4px solid #e0a800;padding:6px 10px;border-radius:6px;margin:8px 0">⚠️ <b>Luật hiện hành (kiểm 2026-10-25):</b> Theo SECURE 2.0, tuổi bắt đầu RMD là <b>73</b> (sinh 1951–1959) hoặc <b>75</b> (sinh từ 1960). luật thuế chuẩn 2026 chỉ nêu tuổi 73.</p>
 <p><b>Premature distribution (trước 59½ tuổi):</b> chịu thêm <b>10% tax</b>. Miễn trừ phổ biến: do chết/disability, substantially equal periodic payments, tách khỏi công việc năm ≥55 tuổi (hoặc 25 năm service — không áp dụng SEP/IRA), medical expense, QDRO, IRS levy, higher education expense (IRA), first-time home purchase ≤$10,000 (IRA), qualified birth/adoption ≤$5,000, domestic abuse victim (nhỏ hơn $10,000 hoặc 50% account)...</p>
 </div>
 
@@ -532,6 +548,7 @@
 <div class="example-box"><b class="ex-tag">Ví dụ (multiple loans):</b> Vested balance $100,000, đã vay $40,000 (outstanding cao nhất năm trước). Dư nợ hiện tại $33,322. Khoản vay mới tối đa = $50,000 − ($40,000 − $33,322) = $43,322 − $33,322 = <b>$10,000</b>.</div>
 
 <h3 class="lesson">Thuật ngữ Phần H</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">Keogh / HR10 plan</td><td class="vn">qualified plan dành cho người tự doanh</td></tr>
@@ -540,6 +557,7 @@
 <tr><td class="word">elective deferral</td><td class="vn">khoản khấu trừ tự nguyện trước thuế (401(k))</td></tr>
 <tr><td class="word">catch-up contribution</td><td class="vn">khoản đóng góp bổ sung cho người ≥50 tuổi</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm Phần H</h3>
 <div class="content-block">
@@ -586,6 +604,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ Phần I</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">tax-exempt organization</td><td class="vn">tổ chức được miễn thuế thu nhập liên bang</td></tr>
@@ -594,6 +613,7 @@
 <tr><td class="word">feeder organization</td><td class="vn">tổ chức "nuôi" — chuyển hết lợi nhuận cho tổ chức exempt khác</td></tr>
 <tr><td class="word">inurement</td><td class="vn">việc thu nhập tổ chức làm lợi riêng cho cá nhân/shareholder (bị cấm)</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm Phần I</h3>
 <div class="content-block">
@@ -623,11 +643,13 @@
 <h2 class="section">J — EXEMPT ORGANIZATIONS: ANNUAL RETURNS, UBTI & CHARITABLE DEDUCTION</h2>
 <div class="rule-box">
 <p><b>Annual information return</b> due ngày <b>15 tháng thứ 5</b> sau khi kết thúc năm thuế. Miễn filing: church/church-affiliated, exclusively religious activity, tổ chức (không phải private foundation) có gross receipts ≤<b>$50,000</b>, Sec. 401 qualified trust.</p>
+<div class="table-scroll">
 <table><tr><th>Form</th><th>Điều kiện sử dụng</th></tr>
 <tr><td>Form 990-N (e-Postcard)</td><td>Gross receipts ≤$50,000</td></tr>
 <tr><td>Form 990-EZ</td><td>Gross receipts &lt;$200,000 VÀ total assets &lt;$500,000</td></tr>
 <tr><td>Form 990</td><td>Không đủ điều kiện dùng bản rút gọn</td></tr>
 <tr><td>Form 990-PF</td><td>Private foundation (BẮT BUỘC dù gross receipts bao nhiêu)</td></tr></table>
+</div>
 <p>Không file 3 năm liên tiếp → MẤT exempt status, phải reapply. Extension 6 tháng qua <b>Form 8868</b>.</p>
 </div>
 
@@ -646,6 +668,7 @@
 <div class="example-box"><b class="ex-tag">Ví dụ:</b> Người donate $200 cho charity dinner, nhận bữa ăn trị giá FMV $60 → phần deductible chỉ là $140 ($200 − $60); charity PHẢI gửi disclosure statement vì tổng $200 &gt;$75.</div>
 
 <h3 class="lesson">Thuật ngữ Phần J</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">Unrelated Business Taxable Income (UBTI)</td><td class="vn">thu nhập từ hoạt động kinh doanh không liên quan mục đích exempt</td></tr>
@@ -654,6 +677,7 @@
 <tr><td class="word">quid pro quo contribution</td><td class="vn">khoản đóng góp đổi lại một phần hàng hóa/dịch vụ</td></tr>
 <tr><td class="word">Form 8282 (Donee Information Return)</td><td class="vn">báo cáo khi tổ chức bán/thanh lý tài sản nhận được trong vòng 3 năm</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm Phần J</h3>
 <div class="content-block">
@@ -678,5 +702,18 @@
 </div>
 </div>
 
+<footer class="authority-footer">
+  <h4>🏛️ Nguồn chính thống &amp; Ngày đối chiếu</h4>
+  <ul>
+    <li><b>Bộ luật:</b> Internal Revenue Code (26 U.S.C.) §§ 401(k), 408(k), 501(c)(3), 642, 651, 661, 1361, 1362, 1366, 1367, 1368, 6699; Treas. Reg. § 1.1367-1.</li>
+    <li><b>Hướng dẫn IRS:</b> Rev. Proc. 2024-40 §2.57; Rev. Proc. 2025-32 §4.58; Notice 2024-80, Notice 2025-67; IRS Pub. 557 (Tax-Exempt Status for Your Organization).</li>
+    <li><b>Chuẩn kỳ thi:</b> PSI SEE Candidate Information Bulletin (2026–2027). Ngày đối chiếu: <b>2026-11-01</b>.</li>
+  </ul>
+</footer>
+<nav class="lesson-nav lesson-nav-bottom" aria-label="Điều hướng cuối bài">
+  <a class="nav-back" href="Corporate_Income_to_Redemptions_and_Liquidations.html">← Bài trước: SU14–SU16</a>
+  <a class="nav-next" href="../../Part III/Lessons/EA3_SU01_Practice_before_the_IRS.html">Học tiếp Part III: Hành nghề & Thủ tục →</a>
+</nav>
+</main>
 </body>
 </html>

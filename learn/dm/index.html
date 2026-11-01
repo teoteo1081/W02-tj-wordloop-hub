@@ -19,9 +19,14 @@
 if (window.top === window) document.querySelector(".quest-home").hidden = false;
 window.QUEST_CONFIG = {
   storeKey: "dm-quest-v1",
-  lessonBase: "https://github.com/teoteo1081/L02-digital-marketing-beginner/blob/main/",
-  parts: { 1: { label: "Nền tảng", name: "Funnel, persona, chọn kênh" }, 2: { label: "Quảng cáo", name: "Facebook, TikTok, Google, Zalo Ads" }, 3: { label: "Organic & đo lường", name: "SEO, cộng đồng, KPI, tối ưu" } },
-  mock: { perPart: { 1: 7, 2: 6, 3: 7 }, minutes: 20 },
+  lessonBase: "lessons/",
+  parts: {
+    1: { label: "Nền tảng", name: "Funnel, persona, chọn kênh" },
+    2: { label: "Quảng cáo", name: "Facebook, TikTok, Google, Zalo Ads" },
+    3: { label: "Organic & đo lường", name: "SEO, cộng đồng, KPI, tối ưu" },
+    4: { label: "Kiếm tiền & Hành nghề", name: "Freelance, Agency, Báo giá, Hợp đồng & Pháp lý 2026" }
+  },
+  mock: { perPart: { 1: 5, 2: 5, 3: 5, 4: 5 }, minutes: 20 },
   typeLabel: { channel: "🎯 Kênh nào?", metric: "📊 Chỉ số nào?", tool: "🛠️ Cài đặt nào?", flag: "🚩 Điểm bất thường" },
   ranks: [
     { xp: 0, emoji: "🐣", vi: "Thực tập sinh marketing", en: "Marketing Intern" },
@@ -35,8 +40,8 @@ window.QUEST_CONFIG = {
   ],
   text: {
     pathTitle: "🗺️ Lộ trình từ số 0 đến marketer",
-    quizIntro: "Câu hỏi bám theo 10 module của khoá Digital Marketing. Sai câu nào sẽ vào <b>Sổ lỗi sai</b> để làm lại 💪",
-    mockDesc: "20 câu trộn cả khoá · 20 phút",
+    quizIntro: "Câu hỏi bám theo 16 module của khoá Digital Marketing. Sai câu nào sẽ vào <b>Sổ lỗi sai</b> để làm lại 💪",
+    mockDesc: "20 câu trộn cả khoá (5 câu/phần) · 20 phút",
     mockPass: "Bạn nắm chắc kiến thức nền rồi đó! 🚀",
     mockFail: "Xem lại các câu sai bên dưới rồi thử lại nha 💪",
     sprintName: "Marketing Sprint",
@@ -54,11 +59,60 @@ window.QUEST_CONFIG = {
   }
 };
 </script>
-<script src="data/lessons-data.js?v=1"></script>
-<script src="data/cases.js?v=1"></script>
-<script src="data/research.js?v=1"></script>
-<script src="../quest.js?v=3"></script>
-<script>window.QUEST_CLASS_ID="dm";</script>
-<script src="../qclass.js?v=31"></script>
+<script>
+/* TJ 2026-11-01 (WL2026 Audit): D5 local-first loader fallback.
+   Chạy local (file:, localhost, 127.0.0.1, ?local=1): ưu tiên nạp data/*.js cục bộ trước, lỗi thì fallback sang Supabase bucket 'dm'.
+   Chạy domain public (*.github.io...): nạp remote Supabase trước, lỗi mạng thì fallback sang data/*.js cục bộ. */
+(function () {
+  var isLocal = location.protocol === "file:" ||
+                location.hostname === "localhost" ||
+                location.hostname === "127.0.0.1" ||
+                location.search.indexOf("local=1") !== -1;
+  var R = "https://pqarpszsipbdugrumhfy.supabase.co/storage/v1/object/public/dm/";
+  var DATA = [
+    ["data/lessons-data.js?v=2", R + "data/lessons-data.js?v=2"],
+    ["data/cases.js?v=2", R + "data-w02/cases.js?v=2"],
+    ["data/research.js?v=2", R + "data/research.js?v=2"]
+  ];
+  function add(src, ok, bad) {
+    var s = document.createElement("script");
+    s.src = src;
+    s.onload = ok;
+    s.onerror = bad || ok;
+    document.body.appendChild(s);
+  }
+  function tail() {
+    add("../quest.js?v=3", function () {
+      window.QUEST_CLASS_ID = "dm";
+      add("../qclass.js?v=31");
+    });
+  }
+  function loadLocal(i) {
+    if (i >= DATA.length) return tail();
+    add(DATA[i][0], function () {
+      loadLocal(i + 1);
+    }, function () {
+      add(DATA[i][1], function () {
+        loadLocal(i + 1);
+      }, function () {
+        loadLocal(i + 1);
+      });
+    });
+  }
+  function loadRemote(i) {
+    if (i >= DATA.length) return tail();
+    add(DATA[i][1], function () {
+      loadRemote(i + 1);
+    }, function () {
+      loadLocal(0);
+    });
+  }
+  if (isLocal) {
+    loadLocal(0);
+  } else {
+    loadRemote(0);
+  }
+})();
+</script>
 </body>
 </html>
