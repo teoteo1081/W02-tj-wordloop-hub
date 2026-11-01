@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Module 09 · Đo lường: KPI, ROAS Hoà vốn & GA4 2026 | Marketing Quest</title>
+  <link rel="stylesheet" href="lesson.css?v=1">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-6X5S109XKM', { site: 'dm' });
+  </script>
+</head>
+<body>
+  <header class="lesson-topbar" role="navigation" aria-label="Điều hướng bài học">
+    <a class="nav-btn" href="../index.html">← Về khoá Digital Marketing</a>
+    <a class="nav-btn primary" href="../index.html#play=quiz">🎯 Luyện trắc nghiệm</a>
+  </header>
+
+  <main class="lesson-container">
+    <span class="lesson-badge">Phần 3 · Organic &amp; Đo lường · Module m09</span>
+    <h1>Module 09 — Hệ thống Đo lường: KPI, ROAS Hoà vốn, UTM &amp; Google Analytics 4 (GA4) 2026</h1>
+
+    <section class="box box-update" aria-label="Cập nhật 2026">
+      <h2>📌 Cập nhật Thực chiến &amp; Pháp lý Việt Nam 2026</h2>
+      <ul>
+        <li><strong>Chuẩn hoá GA4: Chuyển đổi "Conversions" thành "Key Events"</strong>: Trong Google Analytics 4, khái niệm chuyển đổi đã chính thức đổi tên thành <strong>Sự kiện chính (Key events)</strong> để phân biệt rạch ròi với chuyển đổi tính tiền quảng cáo của Google Ads.</li>
+        <li><strong>Định nghĩa Phiên tương tác (Engaged Session) &amp; Tỷ lệ thoát mới</strong>: Một phiên được tính là tương tác thật khi: <em>kéo dài trên 10 giây</em>, HOẶC <em>xem từ 2 trang/màn hình trở lên</em>, HOẶC <em>phát sinh ít nhất 1 Key event</em>. Tỷ lệ thoát được tính lại theo chuẩn mới: <code>Bounce Rate = 100% − Engagement Rate</code>.</li>
+        <li><strong>Google Consent Mode v2 (Chế độ đồng ý v2)</strong>: Bắt buộc truyền đủ 4 tín hiệu đồng ý quyền riêng tư của người dùng: <code>ad_storage</code>, <code>analytics_storage</code>, và 2 tham số mới là <strong><code>ad_user_data</code></strong> và <strong><code>ad_personalization</code></strong>.</li>
+        <li><strong>Bài toán ROAS hoà vốn thực tế sau thuế sàn 1,5% NĐ 117/2025/NĐ-CP</strong>: Không đánh giá hiệu quả quảng cáo chỉ bằng doanh thu ảo; mọi quyết định tối ưu phải dựa trên điểm hoà vốn sau khi trừ giá vốn, phí sàn và thuế khấu trừ tại nguồn.</li>
+      </ul>
+    </section>
+
+    <!-- PHẦN 1: MỤC TIÊU ĐẦU RA ĐO ĐƯỢC -->
+    <section id="p1-muc-tieu">
+      <h2>1. Mục tiêu đầu ra đo được</h2>
+      <p>Sau khi học xong bài này (25 phút), bạn làm được ngay 3 việc cụ thể:</p>
+      <ol>
+        <li>Tính toán chính xác <strong>Điểm hoà vốn ROAS (Break-even ROAS)</strong> và biên lợi nhuận ròng thực nhận của bất kỳ chiến dịch quảng cáo nào tại Việt Nam.</li>
+        <li>Thiết lập quy chuẩn gắn mã tham số <strong>UTM Tracking</strong> (Source, Medium, Campaign, Content) giúp báo cáo Traffic Acquisition trong GA4 phân loại chuẩn xác 100% nguồn truy cập.</li>
+        <li>Đọc hiểu thành thạo các chỉ số cốt lõi trong báo cáo <strong>Google Analytics 4 (GA4)</strong>: Người dùng (Users), Phiên tương tác (Engaged sessions), Tỷ lệ tương tác (Engagement rate) và Sự kiện chính (Key events).</li>
+      </ol>
+    </section>
+
+    <!-- PHẦN 2: BẢNG THUẬT NGỮ SONG NGỮ ANH - VIỆT -->
+    <section id="p2-thuat-ngu">
+      <h2>2. Bảng thuật ngữ song ngữ Anh – Việt</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 28%;">Thuật ngữ tiếng Anh</th>
+              <th style="width: 32%;">Giải nghĩa tiếng Việt thực dụng</th>
+              <th style="width: 40%;">Ứng dụng tại thị trường VN 2026</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>KPI (Key Performance Indicator)</strong></td>
+              <td>Chỉ số đo lường hiệu suất cốt lõi</td>
+              <td>Chỉ số quan trọng nhất phản ánh mục tiêu: CPA cho bán hàng, CPL cho thu lead.</td>
+            </tr>
+            <tr>
+              <td><strong>Key Event (GA4)</strong></td>
+              <td>Sự kiện chính (thay cho Conversion)</td>
+              <td>Hành động có giá trị kinh doanh cao nhất được đánh dấu trong GA4 (mua hàng, gửi form).</td>
+            </tr>
+            <tr>
+              <td><strong>Engaged Session</strong></td>
+              <td>Phiên truy cập có tương tác</td>
+              <td>Phiên kéo dài &gt;10 giây, hoặc xem ≥2 trang, hoặc có ít nhất 1 Key event.</td>
+            </tr>
+            <tr>
+              <td><strong>Engagement Rate</strong></td>
+              <td>Tỷ lệ phiên có tương tác thật</td>
+              <td>Số phiên tương tác ÷ Tổng số phiên. Đo lường mức độ hấp dẫn thật của trang web.</td>
+            </tr>
+            <tr>
+              <td><strong>Break-even ROAS</strong></td>
+              <td>ROAS hoà vốn</td>
+              <td>Công thức: 1 ÷ Biên lợi nhuận ròng trước ads. Ngưỡng tối thiểu để không lỗ.</td>
+            </tr>
+            <tr>
+              <td><strong>UTM Parameters</strong></td>
+              <td>Tham số theo dõi liên kết</td>
+              <td>Đoạn mã gắn đuôi link giúp GA4 nhận diện nguồn kênh kéo khách (source, medium, campaign).</td>
+            </tr>
+            <tr>
+              <td><strong>Google Consent Mode v2</strong></td>
+              <td>Chế độ chấp thuận quyền riêng tư v2</td>
+              <td>Gửi 4 tín hiệu đồng ý dữ liệu sang Google để tuân thủ luật bảo vệ dữ liệu cá nhân.</td>
+            </tr>
+            <tr>
+              <td><strong>CTR (Click-Through Rate)</strong></td>
+              <td>Tỷ lệ nhấp chuột</td>
+              <td>Số click ÷ Lượt hiển thị (%). Đo lường độ hấp dẫn của hình ảnh và tiêu đề quảng cáo.</td>
+            </tr>
+            <tr>
+              <td><strong>CPC (Cost Per Click)</strong></td>
+              <td>Chi phí mỗi lượt nhấp</td>
+              <td>Tổng chi phí ÷ Số lượt click (VNĐ).</td>
+            </tr>
+            <tr>
+              <td><strong>CPM (Cost Per Mille)</strong></td>
+              <td>Chi phí cho 1.000 lượt hiển thị</td>
+              <td>(Tổng chi phí ÷ Lượt hiển thị) × 1.000 (VNĐ).</td>
+            </tr>
+            <tr>
+              <td><strong>CPA (Cost Per Action)</strong></td>
+              <td>Chi phí trên mỗi hành động</td>
+              <td>Tổng chi phí ÷ Số chuyển đổi (mua hàng, để lại tin nhắn SĐT).</td>
+            </tr>
+            <tr>
+              <td><strong>Frequency</strong></td>
+              <td>Tần suất hiển thị lặp lại</td>
+              <td>Hiển thị ÷ Số người tiếp cận (Reach). Lớn hơn 4–5 cảnh báo khách bị ngán quảng cáo.</td>
+            </tr>
+            <tr>
+              <td><strong>Traffic Acquisition</strong></td>
+              <td>Báo cáo thu nạp lưu lượng</td>
+              <td>Bảng trong GA4 chỉ rõ khách đến từ Organic Search, Paid Social, Direct, Referral.</td>
+            </tr>
+            <tr>
+              <td><strong>Attribution Window</strong></td>
+              <td>Cửa sổ quy gán kết quả</td>
+              <td>Khoảng thời gian (ví dụ: click 7 ngày hoặc xem 1 ngày) để tính đơn hàng cho quảng cáo.</td>
+            </tr>
+            <tr>
+              <td><strong>Bounce Rate (GA4 mới)</strong></td>
+              <td>Tỷ lệ thoát trang kiểu mới</td>
+              <td>Được tính bằng: 100% − Tỷ lệ tương tác (Engagement rate).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PHẦN 3: KHUNG LÀM THẬT TỪNG BƯỚC + VÍ DỤ TÍNH TOÁN VNĐ -->
+    <section id="p3-khung-lam-that">
+      <h2>3. Khung làm thật từng bước: Xây dựng URL có UTM &amp; Bảng tính ROAS Hoà vốn</h2>
+
+      <h3>3.1 Quy tắc chuẩn hoá tham số UTM không bị lỗi dữ liệu</h3>
+      <p>Khi chạy quảng cáo trên nhiều kênh kéo về 1 trang đích, nếu không gắn UTM, GA4 sẽ đẩy phần lớn khách vào nhóm <em>"Direct" (Không xác định)</em>. Hãy tuân thủ quy tắc 4 tham số:</p>
+      <ul>
+        <li><code>utm_source</code> (Nguồn): Tên nền tảng cụ thể — viết thường, không dấu (ví dụ: <code>facebook</code>, <code>tiktok</code>, <code>zalo</code>, <code>google</code>).</li>
+        <li><code>utm_medium</code> (Hình thức kênh): Phân loại cách tiếp cận (ví dụ: <code>cpc</code> cho quảng cáo trả phí, <code>social</code> cho bài đăng tự nhiên, <code>zns</code> cho tin nhắn Zalo).</li>
+        <li><code>utm_campaign</code> (Tên chiến dịch): Tên sản phẩm và thời gian (ví dụ: <code>tra-thao-moc-he2026</code>).</li>
+        <li><code>utm_content</code> (Nội dung mẫu test): Phân biệt ảnh/video (ví dụ: <code>video-bac-si</code> vs <code>anh-hop-qua</code>).</li>
+      </ul>
+      <p><strong>Ví dụ URL hoàn chỉnh:</strong><br>
+      <code>https://shop.example.com/san-pham?utm_source=facebook&amp;utm_medium=cpc&amp;utm_campaign=tra-he2026&amp;utm_content=video-review</code></p>
+
+      <h3>3.2 Bảng đối chiếu ROAS Thực tế vs ROAS Hoà vốn: Tránh bẫy ngộ nhận số xanh</h3>
+      <p>Hãy xem xét 3 kịch bản của một shop bán hàng online với đơn giá 500.000đ (Giá vốn 40%, Phí sàn + hoàn đơn 18,5%, Thuế khấu trừ 1,5% theo NĐ 117/2025/NĐ-CP $\Rightarrow \text{ROAS Hoà vốn} = 2,5$):</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Chỉ số đo lường</th>
+              <th>Chiến dịch A (Lỗ ngầm)</th>
+              <th>Chiến dịch B (Hoà vốn)</th>
+              <th>Chiến dịch C (Lãi đạt mục tiêu)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Chi phí quảng cáo đã chi</strong></td>
+              <td>10.000.000 VNĐ</td>
+              <td>10.000.000 VNĐ</td>
+              <td>10.000.000 VNĐ</td>
+            </tr>
+            <tr>
+              <td><strong>Doanh thu mang về</strong></td>
+              <td>20.000.000 VNĐ (40 đơn)</td>
+              <td>25.000.000 VNĐ (50 đơn)</td>
+              <td>35.000.000 VNĐ (70 đơn)</td>
+            </tr>
+            <tr>
+              <td><strong>ROAS hiển thị trên bảng</strong></td>
+              <td><strong>2,0 lần</strong></td>
+              <td><strong>2,5 lần</strong></td>
+              <td><strong>3,5 lần</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Chi phí hàng + phí sàn + thuế 1,5%</strong></td>
+              <td>12.000.000 VNĐ (60%)</td>
+              <td>15.000.000 VNĐ (60%)</td>
+              <td>21.000.000 VNĐ (60%)</td>
+            </tr>
+            <tr>
+              <td><strong>Lợi nhuận ròng thực nhận</strong></td>
+              <td><span style="color:red; font-weight:700;">−2.000.000 VNĐ (LỖ)</span></td>
+              <td><strong>0 VNĐ (HOÀ VỐN)</strong></td>
+              <td><span style="color:green; font-weight:700;">+4.000.000 VNĐ (LÃI)</span></td>
+            </tr>
+            <tr>
+              <td><strong>Hành động tối ưu cần làm</strong></td>
+              <td>Tắt nhóm quảng cáo lỗ; thiết kế lại combo tăng AOV.</td>
+              <td>Giữ ổn định; tối ưu tỷ lệ chốt của nhân viên sale.</td>
+              <td>Nhân rộng ngân sách tăng 15–20% để mở rộng doanh thu.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PHẦN 4: CẠM BẪY THỰC TẾ & RANH GIỚI PHÁP LÝ -->
+    <section id="p4-cam-bay" class="box box-trap">
+      <h2>4. ⚠️ Cạm bẫy thực tế &amp; Ranh giới pháp lý (Khi nào cần kế toán / luật sư)</h2>
+      <ul>
+        <li><strong>Bẫy xem số liệu theo từng ngày</strong>: Đánh giá chiến dịch chỉ dựa trên số liệu của 1 ngày (ví dụ: hôm nay CPA tăng vọt gấp đôi rồi vội vàng tắt quảng cáo) là sai lầm phổ biến. Luôn xem xu hướng tối thiểu 7 ngày để loại trừ dao động ngẫu nhiên.</li>
+        <li><strong>Quy định Google Consent Mode v2</strong>: Từ năm 2024–2026, các website thu thập dữ liệu người dùng truy cập để phục vụ tiếp thị lại (remarketing) bắt buộc phải tích hợp Google Consent Mode v2 với 4 tín hiệu đồng ý rõ ràng. Vi phạm có thể khiến tài khoản Google Ads bị ngưng quyền sử dụng tệp đối tượng tiếp thị lại.</li>
+        <li><strong>Ranh giới kế toán thuế và số liệu GA4</strong>: Doanh thu trên GA4 chỉ là số liệu đo lường kỹ thuật trực tuyến; không được dùng số liệu GA4 làm báo cáo tài chính chính thức. Báo cáo doanh thu tính thuế phải đối chiếu từ hoá đơn điện tử và sao kê tài khoản ngân hàng của doanh nghiệp theo quy định của cơ quan thuế.</li>
+      </ul>
+    </section>
+
+    <!-- PHẦN 5: BIỂU MẪU / CHECKLIST ÁP DỤNG NGAY -->
+    <section id="p5-checklist" class="box box-checklist">
+      <h2>5. ✅ Bảng Cấu trúc Báo cáo KPI Hàng tuần cho Marketer</h2>
+      <pre><code>[BÁO CÁO HIỆU QUẢ MARKETING TUẦN .../2026]
+1. Mục tiêu kinh doanh:
+   - Ngân sách tuần: ................. VNĐ | Thực chi: ................. VNĐ
+   - Số đơn hàng / Lead: ............ đơn | CPA thực tế: ............. VNĐ/đơn
+   - Doanh thu: ..................... VNĐ | ROAS thực tế: ............ lần
+   - Trạng thái so với ROAS Hoà vốn (.... lần): [LÃI / HOÀ / LỖ]
+2. Chỉ số tầng trên (Top of Funnel):
+   - Impressions: ................... | CPM: ................... VNĐ
+   - CTR: ......................... % | CPC: ................... VNĐ
+   - Engagement rate trên web (GA4): ........................... %
+3. Kế hoạch tối ưu tuần tới:
+   - Tắt 2 nhóm quảng cáo có CPA > .............. VNĐ.
+   - Thử nghiệm 2 mẫu creative video mới nhắm vào nỗi đau [...].</code></pre>
+    </section>
+
+    <!-- PHẦN 6: TÓM TẮT 1 TRANG & CÂU HỎI TỰ KIỂM -->
+    <section id="p6-tom-tat-kiem-tra">
+      <h2>6. Tóm tắt 1 trang &amp; Câu hỏi tự kiểm tra</h2>
+      <p><em>Bấm vào từng câu để xem đáp án và giải thích chi tiết:</em></p>
+
+      <details class="quiz-item">
+        <summary>Câu 1: Trong Google Analytics 4 (GA4), thuật ngữ nào đã chính thức thay thế cho khái niệm "Conversions" truyền thống?</summary>
+        <div class="quiz-ans">
+          <p><strong>Đáp án đúng:</strong> Key events (Sự kiện chính).</p>
+          <p><em>Giải thích:</em> Google đổi tên thành Key events để phân biệt rõ ràng giữa các sự kiện đo lường hành vi quan trọng trên web và các chuyển đổi được dùng để đấu thầu tính tiền trong Google Ads.</p>
+        </div>
+      </details>
+
+      <details class="quiz-item">
+        <summary>Câu 2: Một phiên truy cập website trên GA4 được coi là "Phiên tương tác (Engaged Session)" khi thoả mãn điều kiện nào?</summary>
+        <div class="quiz-ans">
+          <p><strong>Đáp án đúng:</strong> Kéo dài trên 10 giây, HOẶC xem từ 2 trang/màn hình trở lên, HOẶC phát sinh ít nhất 1 Key event (sự kiện chính).</p>
+          <p><em>Giải thích:</em> Khái niệm này giúp đo lường mức độ quan tâm thật sự của người dùng thay cho cách tính Bounce Rate cũ của Universal Analytics.</p>
+        </div>
+      </details>
+
+      <details class="quiz-item">
+        <summary>Câu 3: Chi 4.000.000đ tiền quảng cáo, thu về 16.000.000đ doanh thu bán hàng. Chỉ số ROAS của chiến dịch này là bao nhiêu?</summary>
+        <div class="quiz-ans">
+          <p><strong>Đáp án đúng:</strong> ROAS = 4,0 lần.</p>
+          <p><em>Giải thích:</em> ROAS = Doanh thu ÷ Chi phí quảng cáo = 16.000.000 ÷ 4.000.000 = 4,0 (mỗi 1 đồng quảng cáo thu về 4 đồng doanh thu).</p>
+        </div>
+      </details>
+
+      <details class="quiz-item">
+        <summary>Câu 4: Khi kiểm tra báo cáo Traffic Acquisition trong GA4, bạn thấy phần lớn lưu lượng truy cập rơi vào nhóm "Direct / None" dù bạn đang chi rất nhiều tiền cho quảng cáo Facebook. Lý do phổ biến nhất là gì?</summary>
+        <div class="quiz-ans">
+          <p><strong>Đáp án đúng:</strong> Đường link gắn trong quảng cáo bị quên không gắn các tham số theo dõi UTM (utm_source, utm_medium, utm_campaign).</p>
+          <p><em>Giải thích:</em> Khi thiếu tham số UTM, các lượt click từ trong app mạng xã hội mở ra trình duyệt web dễ bị hệ thống GA4 xếp nhầm vào nguồn Direct (truy cập trực tiếp).</p>
+        </div>
+      </details>
+
+      <details class="quiz-item">
+        <summary>Câu 5: Bốn tham số tín hiệu bắt buộc phải có trong Google Consent Mode v2 là gì?</summary>
+        <div class="quiz-ans">
+          <p><strong>Đáp án đúng:</strong> ad_storage, analytics_storage, ad_user_data, và ad_personalization.</p>
+          <p><em>Giải thích:</em> Đây là 4 cờ tín hiệu quy định quyền lưu trữ và sử dụng dữ liệu người dùng cho mục đích phân tích và cá nhân hoá quảng cáo theo chuẩn bảo vệ quyền riêng tư.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- NGUỒN CHÍNH THỐNG -->
+    <footer class="box box-source" aria-label="Nguồn chính thống và ngày đối chiếu">
+      <h3>📚 Nguồn chính thống &amp; Ngày đối chiếu (2026-11-01)</h3>
+      <ul>
+        <li>Google Analytics Help — Tài liệu chính thức về <em>[GA4] About key events and conversion modeling</em>: <a href="https://support.google.com/analytics/answer/13965727" target="_blank" rel="noopener">support.google.com/analytics (13965727)</a> — <code>VERIFIED</code>.</li>
+        <li>Google Analytics Help — Hướng dẫn <em>[GA4] About Google Consent Mode v2 parameters</em>: <a href="https://support.google.com/analytics/answer/14275483" target="_blank" rel="noopener">support.google.com/analytics (14275483)</a> — <code>VERIFIED</code>.</li>
+        <li>Chính phủ — <strong>Nghị định số 117/2025/NĐ-CP</strong> về thuế khấu trừ sàn TMĐT 1,5% (cơ sở tính Break-even ROAS): <a href="https://vanban.chinhphu.vn/?pageid=27160&amp;docid=213883" target="_blank" rel="noopener">vanban.chinhphu.vn (docid=213883)</a> — <code>VERIFIED</code>.</li>
+      </ul>
+    </footer>
+
+    <nav class="lesson-nav-footer" aria-label="Chuyển bài học">
+      <a class="nav-btn" href="m08.html">← Bài trước: Module 08 — Kênh Organic & Zalo OA</a>
+      <a class="nav-btn primary" href="m10.html">Bài tiếp theo: Module 10 — A/B Testing & Capstone Mini-Funnel →</a>
+    </nav>
+  </main>
+</body>
+</html>

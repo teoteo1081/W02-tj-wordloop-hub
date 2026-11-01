@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TOEIC 4 Kỹ Năng Thực Chiến · Speaking, Writing &amp; ETS Solo 2026</title>
+<meta name="description" content="Luyện thi TOEIC 4 kỹ năng: Speaking & Writing thực chiến theo chuẩn ETS, chế độ thi thử ETS Listening & Reading phòng solo an toàn và 600 từ vựng Barron.">
+<!-- Google tag (gtag.js) — GA4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-6X5S109XKM', {site:'toeic'});
+</script>
+<style>
+:root {
+  --bg: #f4f9fd;
+  --panel: #ffffff;
+  --card: #ffffff;
+  --ink: #0c1928;
+  --sub: #41566b;
+  --line: #d8e5f0;
+  --chip: #eaf3fa;
+  --accent: #0369a1;
+  --accent-soft: rgba(3, 105, 161, 0.1);
+  --accent2: #0f766e;
+  --accent2-soft: rgba(15, 118, 110, 0.1);
+  --gold: #b45309;
+  --shadow: 0 4px 18px rgba(12, 25, 40, 0.06);
+  --radius: 16px;
+}
+:root[data-theme="dark"] {
+  --bg: #0a1420;
+  --panel: #122031;
+  --card: #122031;
+  --ink: #ecf3f9;
+  --sub: #93abc2;
+  --line: #1c2e42;
+  --chip: #1c2e42;
+  --accent: #38bdf8;
+  --accent-soft: rgba(56, 189, 248, 0.15);
+  --accent2: #2dd4bf;
+  --accent2-soft: rgba(45, 212, 191, 0.15);
+  --gold: #fbbf24;
+  --shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0a1420;
+    --panel: #122031;
+    --card: #122031;
+    --ink: #ecf3f9;
+    --sub: #93abc2;
+    --line: #1c2e42;
+    --chip: #1c2e42;
+    --accent: #38bdf8;
+    --accent-soft: rgba(56, 189, 248, 0.15);
+    --accent2: #2dd4bf;
+    --accent2-soft: rgba(45, 212, 191, 0.15);
+    --gold: #fbbf24;
+    --shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; overflow-x: hidden; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+a { color: var(--accent); text-decoration: none; }
+button { font: inherit; color: inherit; cursor: pointer; }
+
+/* Navigation */
+.toc-head {
+  position: fixed; top: 0; left: 0; right: 0; height: 48px; z-index: 1000;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 12px; background: var(--panel); border-bottom: 1px solid var(--line);
+  box-shadow: 0 1px 4px rgba(0,0,0,.03);
+}
+.toc-head-left, .toc-head-right { display: flex; align-items: center; gap: 8px; }
+.toc-btn {
+  background: transparent; border: 1px solid var(--line); color: var(--ink);
+  border-radius: 8px; min-height: 44px; min-width: 44px; padding: 6px 12px;
+  font-weight: 600; display: inline-flex; align-items: center; justify-content: center;
+}
+.brand-title { font-size: 17px; font-weight: 800; color: var(--accent); white-space: nowrap; }
+
+/* Sidebar Drawer */
+.sidebar {
+  position: fixed; left: 0; top: 48px; bottom: 0; width: 320px; max-width: 86vw; z-index: 999;
+  background: var(--panel); border-right: 1px solid var(--line); padding: 16px; overflow-y: auto;
+  transform: translateX(-100%); visibility: hidden; transition: transform .22s ease, visibility 0s linear .22s;
+  box-shadow: 4px 0 24px rgba(0,0,0,.15);
+}
+body.toc-open .sidebar { transform: none; visibility: visible; transition: transform .22s ease; }
+#tocBackdrop {
+  position: fixed; inset: 0; z-index: 998; background: rgba(0,0,0,.4);
+  opacity: 0; pointer-events: none; transition: opacity .2s;
+}
+body.toc-open #tocBackdrop { opacity: 1; pointer-events: auto; }
+@media (min-width: 1024px) {
+  body.toc-pinned .sidebar { transform: none; visibility: visible; box-shadow: none; }
+  body.toc-pinned { padding-left: 320px; }
+  body.toc-pinned #tocBackdrop { display: none; }
+}
+
+.main-wrap { max-width: 900px; margin: 0 auto; padding: 64px 16px 80px; }
+
+/* Hero Banner D3 */
+.hero-box {
+  background: linear-gradient(135deg, var(--accent-soft) 0%, var(--chip) 100%);
+  border: 1.5px solid var(--line); border-radius: var(--radius);
+  padding: 24px 20px; margin-bottom: 24px; box-shadow: var(--shadow);
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--accent); color: #ffffff; padding: 4px 12px;
+  border-radius: 999px; font-size: 13px; font-weight: 700; margin-bottom: 12px;
+}
+.hero-title { font-size: clamp(22px, 5vw, 32px); font-weight: 800; margin: 0 0 10px; line-height: 1.25; }
+.hero-desc { color: var(--sub); font-size: 16px; margin: 0 0 16px; }
+
+.stats-strip {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 16px;
+}
+@media (min-width: 600px) {
+  .stats-strip { grid-template-columns: repeat(4, 1fr); }
+}
+.stat-item {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+  padding: 12px; text-align: center;
+}
+.stat-num { font-size: 22px; font-weight: 800; color: var(--accent); line-height: 1.2; }
+.stat-lbl { font-size: 12px; color: var(--sub); font-weight: 600; margin-top: 4px; }
+
+/* Action Cards */
+.card {
+  background: var(--card); border: 1.5px solid var(--line); border-radius: var(--radius);
+  padding: 20px; margin-bottom: 18px; box-shadow: var(--shadow);
+}
+.pill {
+  display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px;
+  font-size: 12px; font-weight: 700; background: var(--chip); color: var(--ink);
+}
+.pill.special { background: var(--accent-soft); color: var(--accent); }
+
+.play-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;
+}
+@media (max-width: 500px) {
+  .play-grid { grid-template-columns: 1fr; }
+}
+.play-tile {
+  background: var(--panel); border: 2px solid var(--line); border-radius: var(--radius);
+  padding: 18px; display: flex; flex-direction: column; justify-content: space-between;
+  min-height: 110px; transition: transform .15s ease, border-color .15s ease; cursor: pointer;
+}
+.play-tile:hover { transform: translateY(-2px); border-color: var(--accent); }
+.play-tile-title { font-size: 18px; font-weight: 800; margin: 8px 0 4px; }
+.play-tile-sub { font-size: 13.5px; color: var(--sub); }
+
+.btn-primary {
+  min-height: 48px; padding: 10px 18px; border-radius: 12px;
+  background: var(--accent); color: #ffffff; font-weight: 700; font-size: 15px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  border: none; cursor: pointer; text-align: center;
+}
+.btn-secondary {
+  min-height: 48px; padding: 10px 18px; border-radius: 12px;
+  background: var(--chip); color: var(--ink); font-weight: 600; font-size: 15px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  border: 1px solid var(--line); cursor: pointer; text-align: center;
+}
+.btn-primary:hover { opacity: .9; }
+.btn-secondary:hover { background: var(--line); }
+
+/* Notice Box */
+.notice-box {
+  background: var(--chip); border: 1px solid var(--line); border-radius: 12px;
+  padding: 14px 16px; margin: 12px 0; font-size: 14px; line-height: 1.5; color: var(--sub);
+}
+.notice-box.safe { border-left: 4px solid var(--accent2); }
+
+/* Accessibility */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<header class="toc-head">
+  <div class="toc-head-left">
+    <button class="toc-btn" id="tocBtn" aria-label="Mục lục khoá học">☰</button>
+    <a href="index.html" class="brand-title">🎯 TOEIC 2026</a>
+    <a href="../L00_PORTAL/index.html" class="toc-btn" style="min-height:36px;padding:4px 8px;font-size:13px;">🏠 Cổng khoá</a>
+  </div>
+  <div class="toc-head-right">
+    <span class="pill special" id="statStreak">🎯 4 Kỹ Năng</span>
+    <button class="toc-btn" id="themeBtn" aria-label="Đổi giao diện Sáng/Tối">🌙</button>
+  </div>
+</header>
+
+<div id="tocBackdrop"></div>
+<aside class="sidebar" id="tocDrawer" aria-label="Mục lục TOEIC">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+    <b>KHOÁ TOEIC 4 KỸ NĂNG</b>
+    <button class="toc-btn" id="tocPin" title="Ghim mục lục" style="min-height:36px;min-width:36px;padding:4px 8px;">📌</button>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:8px;">
+    <a href="#sw" style="padding:8px;border-radius:8px;background:var(--chip);">🎤✍️ Speaking &amp; Writing</a>
+    <a href="#ets" style="padding:8px;border-radius:8px;background:var(--chip);">🎧📖 ETS Listening &amp; Reading Solo</a>
+    <a href="#barron" style="padding:8px;border-radius:8px;background:var(--chip);">📘 Barron 600 Từ Vựng</a>
+    <a href="../../index.html" style="padding:8px;border-radius:8px;background:var(--chip);">🏠 Về WordLoop Vocabulary</a>
+  </div>
+</aside>
+
+<main class="main-wrap">
+
+  <section class="hero-box">
+    <div class="hero-badge">🎯 TOEIC 4 KỸ NĂNG THỰC CHIẾN 2026</div>
+    <h1 class="hero-title">Luyện Thi TOEIC Speaking, Writing &amp; ETS Solo</h1>
+    <p class="hero-desc">
+      Hệ thống luyện thi TOEIC độc lập: Luyện Nói &amp; Viết phản xạ 1 chạm theo chuẩn đề ETS, phòng luyện đề cá nhân ETS Listening &amp; Reading cô lập an toàn, và Sổ tay 600 từ vựng cốt lõi Barron.
+    </p>
+
+    <div class="stats-strip">
+      <div class="stat-item"><div class="stat-num">19</div><div class="stat-lbl">Bộ đề Speaking &amp; Writing</div></div>
+      <div class="stat-item"><div class="stat-num">10</div><div class="stat-lbl">Đề ETS L&amp;R Solo</div></div>
+      <div class="stat-item"><div class="stat-num">600</div><div class="stat-lbl">Từ vựng Barron</div></div>
+      <div class="stat-item"><div class="stat-num">1 Chạm</div><div class="stat-lbl">Vào thẳng câu 1</div></div>
+    </div>
+  </section>
+
+  <!-- Khối 1: Luyện ngay 1 chạm Speaking & Writing -->
+  <h2 style="font-size:20px;font-weight:800;margin:0 0 12px;" id="sw">1. 🎮 Luyện Ngay Speaking &amp; Writing (1 Chạm Vào Câu 1)</h2>
+  <div class="play-grid">
+    <div class="play-tile" id="btnSpeaking1Tap">
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-size:32px;">🎤</span>
+          <span class="pill special">Sẵn sàng 100%</span>
+        </div>
+        <div class="play-tile-title">TOEIC Speaking</div>
+        <div class="play-tile-sub">11 câu chuẩn format ETS: đọc to, tả ảnh, trả lời câu hỏi, đề xuất giải pháp &amp; nêu ý kiến.</div>
+      </div>
+      <div style="color:var(--accent);font-weight:700;margin-top:12px;">⚡ Vào luyện đề Nói ngay →</div>
+    </div>
+
+    <div class="play-tile" id="btnWriting1Tap">
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-size:32px;">✍️</span>
+          <span class="pill special">Sẵn sàng 100%</span>
+        </div>
+        <div class="play-tile-title">TOEIC Writing</div>
+        <div class="play-tile-sub">8 câu chuẩn format ETS: viết câu theo ảnh (Q1–5), phản hồi email (Q6–7) và bài luận ý kiến (Q8).</div>
+      </div>
+      <div style="color:var(--accent);font-weight:700;margin-top:12px;">⚡ Vào luyện đề Viết ngay →</div>
+    </div>
+  </div>
+
+  <!-- Khối 2: ETS Listening & Reading Solo an toàn -->
+  <h2 style="font-size:20px;font-weight:800;margin:28px 0 12px;" id="ets">2. 🎧📖 Luyện Đề ETS TOEIC Listening &amp; Reading (Phòng Solo)</h2>
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <span style="font-size:32px;">🎧</span>
+      <div>
+        <h3 style="margin:0;font-size:18px;">10 Bộ Đề ETS 2023 Listening &amp; Reading (2,000 Câu Hỏi)</h3>
+        <span style="font-size:13px;color:var(--sub);">Audio R2 tốc độ cao, lời giải song ngữ chi tiết</span>
+      </div>
+    </div>
+    <div class="notice-box safe">
+      <b>🛡️ Cơ chế cách ly phòng an toàn:</b> Nút bên dưới tự động tạo phòng luyện thi cá nhân riêng biệt (mã ngẫu nhiên), bảo đảm bạn tự làm bài thi mà <b>tuyệt đối không bị dẫn vào phòng học trực tuyến "TJ"</b> đang hoạt động.
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;">
+      <button class="btn-primary" id="btnEtsSolo" style="flex:1;">🎧 Mở Phòng Luyện Đề ETS Solo Cá Nhân ↗</button>
+    </div>
+  </div>
+
+  <!-- Khối 3: Barron 600 Essential Words (Nhãn trung thực) -->
+  <h2 style="font-size:20px;font-weight:800;margin:28px 0 12px;" id="barron">3. 📘 Sổ Từ Vựng &amp; Bộ Đọc Barron 600 (Gắn Nhãn Trung Thực)</h2>
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <span style="font-size:32px;">📘</span>
+      <div>
+        <h3 style="margin:0;font-size:18px;">Barron 600 Essential Words for the TOEIC</h3>
+        <span style="font-size:13px;color:var(--sub);">600 từ vựng cốt lõi theo 50 chủ đề kinh doanh thường gặp trong đề thi</span>
+      </div>
+    </div>
+    <div class="notice-box">
+      <b>ℹ️ Thông tin trung thực về bộ dữ liệu:</b><br>
+      • <b>Sổ từ vựng 600 từ:</b> Đã tích hợp đầy đủ công khai trên WordLoop Hub.<br>
+      • <b>Trình làm 50 bài đọc/nghe song ngữ:</b> Hiện là công cụ riêng tư trên máy học viên lớp TJ (cần nạp file JSON cá nhân do bản quyền âm thanh).
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;">
+      <a href="../../index.html" class="btn-primary" style="flex:1;">🔤 Học 600 Từ Vựng Barron Trên WordLoop</a>
+      <a href="../../learn/barron/index.html" class="btn-secondary" style="flex:1;">🔒 Mở Trình Đọc JSON Riêng Tư ↗</a>
+    </div>
+  </div>
+
+  <!-- Khối 4: Ngân hàng đề thi tự tạo Original -->
+  <div class="card" style="border-style:dashed;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="font-size:28px;">⏳</span>
+      <div>
+        <h3 style="margin:0;font-size:17px;">Bộ Đề TOEIC Listening &amp; Reading Tự Tạo Original 2026</h3>
+        <p style="font-size:13.5px;color:var(--sub);margin:4px 0 0;">
+          Đang biên soạn bộ đề thi độc quyền 100% không vướng bản quyền ETS. Sẽ được tích hợp trực tiếp trên trang độc lập này ở giai đoạn tiếp theo.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Khối 5: Tiến độ cá nhân -->
+  <h2 style="font-size:20px;font-weight:800;margin:28px 0 12px;">4. 📊 Lịch Sử Luyện Đề Speaking &amp; Writing</h2>
+  <div class="card">
+    <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:12px;text-align:center;">
+      <div style="background:var(--chip);padding:14px;border-radius:12px;">
+        <div style="font-size:24px;font-weight:800;color:var(--accent);" id="statSpeakingCount">0 bài</div>
+        <div style="font-size:13px;color:var(--sub);font-weight:600;">Speaking đã làm</div>
+      </div>
+      <div style="background:var(--chip);padding:14px;border-radius:12px;">
+        <div style="font-size:24px;font-weight:800;color:var(--accent2);" id="statWritingCount">0 bài</div>
+        <div style="font-size:13px;color:var(--sub);font-weight:600;">Writing đã làm</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script src="toeic-app.js"></script>
+
+<script>
+(function() {
+  var savedTheme = localStorage.getItem("tj_course_theme") || "";
+  if (savedTheme) document.documentElement.setAttribute("data-theme", savedTheme);
+  var themeBtn = document.getElementById("themeBtn");
+  if (themeBtn) {
+    themeBtn.textContent = (document.documentElement.getAttribute("data-theme") === "dark") ? "☀️" : "🌙";
+    themeBtn.addEventListener("click", function() {
+      var cur = document.documentElement.getAttribute("data-theme");
+      var next = (cur === "dark") ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      localStorage.setItem("tj_course_theme", next);
+      themeBtn.textContent = (next === "dark") ? "☀️" : "🌙";
+    });
+  }
+
+  var tocBtn = document.getElementById("tocBtn");
+  var tocPin = document.getElementById("tocPin");
+  var tocBackdrop = document.getElementById("tocBackdrop");
+  if (localStorage.getItem("tj_toc_pinned") === "1" && window.innerWidth >= 1024) {
+    document.body.classList.add("toc-pinned");
+  }
+  if (tocBtn) tocBtn.onclick = () => document.body.classList.toggle("toc-open");
+  if (tocBackdrop) tocBackdrop.onclick = () => document.body.classList.remove("toc-open");
+  if (tocPin) {
+    tocPin.onclick = () => {
+      var p = document.body.classList.toggle("toc-pinned");
+      localStorage.setItem("tj_toc_pinned", p ? "1" : "0");
+    };
+  }
+})();
+</script>
+</body>
+</html>

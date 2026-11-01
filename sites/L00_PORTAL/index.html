@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hệ Sinh Thái Khoá Học TJ 2026 · Course Showcase Portal</title>
+<meta name="description" content="Cổng tổng hợp các khoá học độc lập chuẩn thực chiến 2026 của TJ: IRS Enrolled Agent, Digital Marketing, IELTS Academic, TOEIC 4 Kỹ năng và 1000 câu ES-CN.">
+<!-- Google tag (gtag.js) — GA4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-6X5S109XKM', {site:'portal'});
+</script>
+<style>
+:root {
+  --bg: #fbfaf7;
+  --panel: #ffffff;
+  --card: #ffffff;
+  --ink: #1f2428;
+  --sub: #57606a;
+  --line: #e1dcd5;
+  --chip: #f4eee6;
+  --accent: #b93829;
+  --accent-soft: rgba(185, 56, 41, 0.1);
+  --accent2: #186a4f;
+  --accent2-soft: rgba(24, 106, 79, 0.1);
+  --gold: #b45309;
+  --shadow: 0 4px 18px rgba(0,0,0,.06);
+  --radius: 16px;
+}
+:root[data-theme="dark"] {
+  --bg: #0f1419;
+  --panel: #161d24;
+  --card: #161d24;
+  --ink: #e6edf3;
+  --sub: #9ca7b4;
+  --line: #30363d;
+  --chip: #212830;
+  --accent: #ff7b6b;
+  --accent-soft: rgba(255, 123, 107, 0.15);
+  --accent2: #4fd1a5;
+  --accent2-soft: rgba(79, 209, 165, 0.15);
+  --gold: #f5b942;
+  --shadow: 0 4px 18px rgba(0,0,0,.35);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1419;
+    --panel: #161d24;
+    --card: #161d24;
+    --ink: #e6edf3;
+    --sub: #9ca7b4;
+    --line: #30363d;
+    --chip: #212830;
+    --accent: #ff7b6b;
+    --accent-soft: rgba(255, 123, 107, 0.15);
+    --accent2: #4fd1a5;
+    --accent2-soft: rgba(79, 209, 165, 0.15);
+    --gold: #f5b942;
+    --shadow: 0 4px 18px rgba(0,0,0,.35);
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; overflow-x: hidden; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+a { color: var(--accent2); text-decoration: none; }
+button { font: inherit; color: inherit; cursor: pointer; }
+
+/* Thanh đầu cố định 48px theo mẫu L00_ES-CN */
+.toc-head {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 48px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 1px 4px rgba(0,0,0,.03);
+}
+.toc-head-left, .toc-head-right { display: flex; align-items: center; gap: 8px; }
+.toc-btn {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  border-radius: 8px;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 6px 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.brand-title { font-size: 17px; font-weight: 800; color: var(--accent); white-space: nowrap; }
+
+/* Ngăn kéo Mục lục */
+.sidebar {
+  position: fixed;
+  left: 0; top: 48px; bottom: 0;
+  width: 300px; max-width: 86vw;
+  z-index: 999;
+  background: var(--panel);
+  border-right: 1px solid var(--line);
+  padding: 16px;
+  overflow-y: auto;
+  transform: translateX(-100%);
+  visibility: hidden;
+  transition: transform .22s ease, visibility 0s linear .22s;
+  box-shadow: 4px 0 24px rgba(0,0,0,.15);
+}
+body.toc-open .sidebar { transform: none; visibility: visible; transition: transform .22s ease; }
+#tocBackdrop {
+  position: fixed; inset: 0; z-index: 998;
+  background: rgba(0,0,0,.4);
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s;
+}
+body.toc-open #tocBackdrop { opacity: 1; pointer-events: auto; }
+@media (min-width: 1024px) {
+  body.toc-pinned .sidebar { transform: none; visibility: visible; box-shadow: none; }
+  body.toc-pinned { padding-left: 300px; }
+  body.toc-pinned #tocBackdrop { display: none; }
+}
+
+.toc-menu-list { list-style: none; padding: 0; margin: 12px 0; }
+.toc-menu-list li { margin-bottom: 8px; }
+.toc-menu-list a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: var(--ink);
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+.toc-menu-list a:hover { background: var(--chip); border-color: var(--line); }
+
+/* Khung chính */
+.main-wrap { max-width: 960px; margin: 0 auto; padding: 68px 16px 80px; }
+
+/* Hero Commercial D3 */
+.hero-box {
+  background: linear-gradient(135deg, var(--accent-soft) 0%, var(--chip) 100%);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 24px 20px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--accent);
+  color: #ffffff;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.hero-title { font-size: clamp(22px, 5vw, 32px); font-weight: 800; margin: 0 0 10px; line-height: 1.25; }
+.hero-desc { color: var(--sub); font-size: 16px; margin: 0 0 16px; }
+
+/* Stats Strip */
+.stats-strip {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 16px;
+}
+@media (min-width: 600px) {
+  .stats-strip { grid-template-columns: repeat(4, 1fr); }
+}
+.stat-item {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+}
+.stat-num { font-size: 22px; font-weight: 800; color: var(--accent); line-height: 1.2; }
+.stat-lbl { font-size: 12px; color: var(--sub); font-weight: 600; margin-top: 4px; }
+
+/* Section Header */
+.section-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 28px 0 14px;
+}
+.section-hdr h2 { font-size: 20px; font-weight: 800; margin: 0; }
+
+/* Course Cards Grid */
+.course-grid { display: flex; flex-direction: column; gap: 16px; }
+.course-card {
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform .15s ease, border-color .15s ease;
+}
+.course-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+.card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.card-flag { font-size: 36px; line-height: 1; flex: none; }
+.card-meta { flex: 1; min-width: 0; }
+.card-title { font-size: 19px; font-weight: 800; margin: 0 0 4px; }
+.card-subtitle { font-size: 14px; color: var(--sub); font-weight: 500; }
+.card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin: 4px 0 0; }
+.tag-pill {
+  font-size: 12px; font-weight: 700;
+  padding: 3px 8px; border-radius: 6px;
+  background: var(--chip); color: var(--ink);
+}
+.tag-pill.special { background: var(--accent2-soft); color: var(--accent2); }
+
+.card-summary { font-size: 14.5px; color: var(--sub); line-height: 1.5; margin: 0; }
+.card-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.btn-primary {
+  flex: 1;
+  min-height: 48px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #ffffff;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: none;
+  font-size: 15px;
+  text-align: center;
+}
+.btn-secondary {
+  flex: 1;
+  min-height: 48px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: var(--chip);
+  color: var(--ink);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  font-size: 15px;
+  text-align: center;
+}
+.btn-primary:hover { opacity: .9; }
+.btn-secondary:hover { background: var(--line); }
+
+/* Progress overview card */
+.progress-card {
+  background: var(--panel);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-top: 24px;
+}
+.prog-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.prog-bar { height: 10px; background: var(--chip); border-radius: 999px; overflow: hidden; margin-bottom: 12px; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--accent2), var(--accent)); border-radius: 999px; width: 0%; transition: width .4s; }
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 28px 16px;
+  color: var(--sub);
+  font-size: 14px;
+  border-top: 1px solid var(--line);
+  margin-top: 40px;
+}
+
+/* Accessibility */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Thanh trên cùng cố định 48px -->
+<header class="toc-head">
+  <div class="toc-head-left">
+    <button class="toc-btn" id="tocBtn" aria-label="Mở mục lục khoá học" aria-expanded="false">☰ <span style="display:none;font-size:14px;" class="desktop-only">Mục lục</span></button>
+    <a href="index.html" class="brand-title">🎓 TJ Courses 2026</a>
+  </div>
+  <div class="toc-head-right">
+    <span class="tag-pill special" id="portalStreak">🔥 0 ngày</span>
+    <span class="tag-pill" id="portalXp">⭐ 0 XP</span>
+    <button class="toc-btn" id="themeBtn" aria-label="Đổi giao diện Sáng hoặc Tối">🌙</button>
+  </div>
+</header>
+
+<!-- Ngăn kéo mục lục -->
+<div id="tocBackdrop"></div>
+<aside class="sidebar" id="tocDrawer" aria-label="Mục lục các khoá học">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+    <b>📚 CÁC KHOÁ HỌC</b>
+    <button class="toc-btn" id="tocPin" title="Ghim mục lục bên trái" style="padding:4px 8px;min-height:36px;min-width:36px;">📌</button>
+  </div>
+  <ul class="toc-menu-list">
+    <li><a href="#ea">🇺🇸 IRS Enrolled Agent (EA 2026)</a></li>
+    <li><a href="#dm">🚀 Digital Marketing Thực Chiến</a></li>
+    <li><a href="#ielts">🇬🇧 IELTS Academic 4 Kỹ Năng</a></li>
+    <li><a href="#toeic">🎯 TOEIC 4 Kỹ Năng Thực Chiến</a></li>
+    <li><a href="#escn">🇪🇸🇨🇳 1000 Câu Giao Tiếp ES-CN</a></li>
+    <li><a href="../../index.html">🏠 Về WordLoop Vocabulary Hub</a></li>
+  </ul>
+</aside>
+
+<main class="main-wrap">
+
+  <!-- Hero Commercial Banner -->
+  <section class="hero-box">
+    <div class="hero-badge">✨ HỆ SINH THÁI HỌC THỰC CHIẾN TJ 2026</div>
+    <h1 class="hero-title">Học Chuyên Nghiệp · Vào Game 1 Chạm</h1>
+    <p class="hero-desc">
+      Toàn bộ 4 chương trình chuyên sâu được thiết kế độc lập, học liệu cập nhật 2026 chính xác từ nguồn cấp 1, tối ưu cho điện thoại và vào thẳng bài tập chỉ trong <b>≤ 2 chạm</b>.
+    </p>
+
+    <!-- Thống kê tổng quan -->
+    <div class="stats-strip">
+      <div class="stat-item">
+        <div class="stat-num">5</div>
+        <div class="stat-lbl">Chương trình riêng biệt</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">65+</div>
+        <div class="stat-lbl">Bài giảng chuẩn hoá</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">1,000+</div>
+        <div class="stat-lbl">Thuật ngữ &amp; Câu hỏi</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">1 chạm</div>
+        <div class="stat-lbl">Bấm là chơi ngay</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Danh mục 5 khoá học -->
+  <div class="section-hdr">
+    <h2>🎯 Chọn Khoá Học Của Bạn</h2>
+    <span style="font-size:14px;color:var(--sub)">Sẵn sàng chào hàng</span>
+  </div>
+
+  <div class="course-grid">
+
+    <!-- Khoá 1: EA -->
+    <article class="course-card" id="ea">
+      <div class="card-head">
+        <span class="card-flag">🇺🇸</span>
+        <div class="card-meta">
+          <h3 class="card-title">IRS Enrolled Agent (EA 2026) · Luyện Thi &amp; Hành Nghề</h3>
+          <div class="card-subtitle">Chứng chỉ đại diện thuế cao nhất trước Sở Thuế Vụ Hoa Kỳ (IRS)</div>
+          <div class="card-tags">
+            <span class="tag-pill special">Luật OBBBA 2026</span>
+            <span class="tag-pill">Part I–IV Đầy đủ</span>
+            <span class="tag-pill">24 Bài học</span>
+            <span class="tag-pill">15 Case tiếp khách</span>
+          </div>
+        </div>
+      </div>
+      <p class="card-summary">
+        Hệ thống ôn luyện toàn diện từ cá nhân (Part I), doanh nghiệp (Part II), đại diện giải trình (Part III) đến thực hành mở văn phòng &amp; tìm khách hàng kiếm tiền (Part IV). 100% đối chiếu nguồn luật cấp 1 IRS.
+      </p>
+      <div class="card-actions">
+        <a href="../L04_EA/index.html#play=quiz" class="btn-primary">⚡ Chơi trắc nghiệm 1 chạm</a>
+        <a href="../L04_EA/index.html" class="btn-secondary">📚 Vào khoá học đầy đủ →</a>
+      </div>
+    </article>
+
+    <!-- Khoá 2: Digital Marketing -->
+    <article class="course-card" id="dm">
+      <div class="card-head">
+        <span class="card-flag">🚀</span>
+        <div class="card-meta">
+          <h3 class="card-title">Digital Marketing Thực Chiến 2026 · Đa Kênh, AI &amp; Kiếm Tiền</h3>
+          <div class="card-subtitle">Chiến lược thực thi TikTok GMV Max, Meta CAPI, Google AI Overviews &amp; Pháp lý VN 2026</div>
+          <div class="card-tags">
+            <span class="tag-pill special">TikTok GMV Max &amp; AI</span>
+            <span class="tag-pill">16 Module HTML</span>
+            <span class="tag-pill">245 Thuật ngữ</span>
+            <span class="tag-pill">Part IV Kiếm tiền</span>
+          </div>
+        </div>
+      </div>
+      <p class="card-summary">
+        Giáo trình 6 phần chống văn mẫu: bài toán ROAS hoà vốn sàn TMĐT trừ thuế theo NĐ 117/2025, kịch bản Brief khách hàng, báo giá &amp; hợp đồng dịch vụ bảo vệ dữ liệu theo Luật BVDLCN số 91/2025/QH15.
+      </p>
+      <div class="card-actions">
+        <a href="../L02_DM/index.html#play=quiz" class="btn-primary">⚡ Chơi trắc nghiệm 1 chạm</a>
+        <a href="../L02_DM/index.html" class="btn-secondary">📚 Vào khoá học đầy đủ →</a>
+      </div>
+    </article>
+
+    <!-- Khoá 3: IELTS Academic -->
+    <article class="course-card" id="ielts">
+      <div class="card-head">
+        <span class="card-flag">🇬🇧</span>
+        <div class="card-meta">
+          <h3 class="card-title">IELTS Academic 4 Kỹ Năng 2026 · Bộ Đề Thi Original</h3>
+          <div class="card-subtitle">2 đề Listening &amp; 2 đề Reading đầy đủ (160 câu) + Speaking &amp; Writing độc lập</div>
+          <div class="card-tags">
+            <span class="tag-pill special">100% Original Độc quyền</span>
+            <span class="tag-pill">Listening Web Speech</span>
+            <span class="tag-pill">Reading Split-Pane</span>
+            <span class="tag-pill">Mặc định Academic</span>
+          </div>
+        </div>
+      </div>
+      <p class="card-summary">
+        Bộ đề thi học thuật độc quyền biên soạn theo chuẩn khảo thí quốc tế: giao diện chia đôi màn hình trên máy tính và chuyển tab trên điện thoại, máy phát kịch bản nghe đa giọng Web Speech API, giải thích chi tiết tiếng Việt và bảng quy đổi Band ước tính.
+      </p>
+      <div class="card-actions">
+        <a href="../L06_IELTS/index.html#play=reading" class="btn-primary">📖 Làm đề Reading 1 chạm</a>
+        <a href="../L06_IELTS/index.html" class="btn-secondary">📚 Vào khoá học đầy đủ →</a>
+      </div>
+    </article>
+
+    <!-- Khoá 4: TOEIC -->
+    <article class="course-card" id="toeic">
+      <div class="card-head">
+        <span class="card-flag">🎯</span>
+        <div class="card-meta">
+          <h3 class="card-title">TOEIC 4 Kỹ Năng Thực Chiến · Speaking, Writing &amp; ETS Solo</h3>
+          <div class="card-subtitle">Luyện phát âm, viết luận email, phòng thi ETS cô lập an toàn &amp; 600 từ Barron</div>
+          <div class="card-tags">
+            <span class="tag-pill special">Speaking &amp; Writing</span>
+            <span class="tag-pill">Phòng Solo An toàn</span>
+            <span class="tag-pill">Barron 600</span>
+          </div>
+        </div>
+      </div>
+      <p class="card-summary">
+        Luyện Nói &amp; Viết trực tiếp với đồng hồ chuẩn ETS, thu âm giọng nói và bộ đếm từ tự động. Lối vào chế độ thi thử ETS tự động cách ly phòng cá nhân (không ảnh hưởng phòng học chung) và tài liệu ôn tập Barron 600.
+      </p>
+      <div class="card-actions">
+        <a href="../L05_TOEIC/index.html#play=speaking" class="btn-primary">🎤 Luyện Speaking 1 chạm</a>
+        <a href="../L05_TOEIC/index.html" class="btn-secondary">📚 Vào khoá học đầy đủ →</a>
+      </div>
+    </article>
+
+    <!-- Khoá 5: 1000 Câu ES-CN -->
+    <article class="course-card" id="escn">
+      <div class="card-head">
+        <span class="card-flag">🇪🇸🇨🇳</span>
+        <div class="card-meta">
+          <h3 class="card-title">Operation 0 → Chunks · 1000 Survival Sentences</h3>
+          <div class="card-subtitle">Khoá học 4 ngôn ngữ Anh – Tây Ban Nha – Trung – Việt (Repo L00_ES-CN)</div>
+          <div class="card-tags">
+            <span class="tag-pill">4 Ngôn ngữ</span>
+            <span class="tag-pill">1000 Câu giao tiếp</span>
+            <span class="tag-pill">Audio đính kèm</span>
+          </div>
+        </div>
+      </div>
+      <p class="card-summary">
+        Mẫu site độc lập đầu tiên của hệ thống TJ: học phản xạ qua chunks câu thực chiến, hỗ trợ nghe phát âm, dark mode và mục lục ghim tiện lợi.
+      </p>
+      <div class="card-actions">
+        <a href="https://teoteo1081.github.io/L00_ES-CN/" target="_blank" rel="noopener" class="btn-primary">🌐 Mở khoá học ES-CN ↗</a>
+      </div>
+    </article>
+
+  </div>
+
+  <!-- Bảng Tiến Độ Cá Nhân Tổng Hợp -->
+  <section class="progress-card">
+    <div class="prog-row">
+      <b style="font-size:17px">📊 Tổng Tiến Độ Học Của Bạn</b>
+      <span style="font-size:13px;color:var(--sub)">Lưu trên trình duyệt này</span>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="progTotal"></div></div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:14px;color:var(--sub);">
+      <span>🇺🇸 EA: <b id="progEa">0%</b></span>
+      <span>🚀 DM: <b id="progDm">0%</b></span>
+      <span>🇬🇧 IELTS: <b id="progIelts">0%</b></span>
+      <span>🎯 TOEIC: <b id="progToeic">0%</b></span>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>© 2026 TJ WordLoop Learning Ecosystem · Sẵn sàng chào hàng thương mại.</p>
+  <p style="font-size:12px;margin-top:6px;">Mọi số liệu thuế, pháp lý và định dạng thi cử được dẫn chứng từ nguồn cấp 1 chính thức.</p>
+</footer>
+
+<script>
+(function() {
+  // Theme Manager
+  var savedTheme = localStorage.getItem("tj_course_theme") || "";
+  if (savedTheme) document.documentElement.setAttribute("data-theme", savedTheme);
+  var themeBtn = document.getElementById("themeBtn");
+  if (themeBtn) {
+    themeBtn.textContent = (document.documentElement.getAttribute("data-theme") === "dark") ? "☀️" : "🌙";
+    themeBtn.addEventListener("click", function() {
+      var cur = document.documentElement.getAttribute("data-theme");
+      var next = (cur === "dark") ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      localStorage.setItem("tj_course_theme", next);
+      themeBtn.textContent = (next === "dark") ? "☀️" : "🌙";
+    });
+  }
+
+  // TOC Drawer & Pin Manager
+  var tocBtn = document.getElementById("tocBtn");
+  var tocPin = document.getElementById("tocPin");
+  var tocBackdrop = document.getElementById("tocBackdrop");
+  var isPinned = localStorage.getItem("tj_toc_pinned") === "1";
+  if (isPinned && window.innerWidth >= 1024) document.body.classList.add("toc-pinned");
+
+  if (tocBtn) {
+    tocBtn.addEventListener("click", function() {
+      document.body.classList.toggle("toc-open");
+      tocBtn.setAttribute("aria-expanded", document.body.classList.contains("toc-open"));
+    });
+  }
+  if (tocBackdrop) {
+    tocBackdrop.addEventListener("click", function() {
+      document.body.classList.remove("toc-open");
+      if (tocBtn) tocBtn.setAttribute("aria-expanded", "false");
+    });
+  }
+  if (tocPin) {
+    tocPin.addEventListener("click", function() {
+      var pinned = document.body.classList.toggle("toc-pinned");
+      localStorage.setItem("tj_toc_pinned", pinned ? "1" : "0");
+    });
+  }
+  window.addEventListener("keydown", function(e) {
+    if (e.key === "Escape" && document.body.classList.contains("toc-open")) {
+      document.body.classList.remove("toc-open");
+      if (tocBtn) tocBtn.setAttribute("aria-expanded", "false");
+    }
+  });
+
+  // Calculate live progress from localStorage
+  try {
+    var ea = JSON.parse(localStorage.getItem("ea-quest-v1") || "{}");
+    var dm = JSON.parse(localStorage.getItem("dm-quest-v1") || "{}");
+    var ielts = JSON.parse(localStorage.getItem("ielts-lr-v1") || "{}");
+    var sw = JSON.parse(localStorage.getItem("sw-quest-v1") || "{}");
+
+    var totalXp = (ea.xp || 0) + (dm.xp || 0) + (ielts.xp || 0) + (sw.xp || 0);
+    var maxStreak = Math.max((ea.streak && ea.streak.count) || 0, (dm.streak && dm.streak.count) || 0, 0);
+
+    var elXp = document.getElementById("portalXp");
+    if (elXp) elXp.textContent = "⭐ " + totalXp + " XP";
+    var elStreak = document.getElementById("portalStreak");
+    if (elStreak) elStreak.textContent = "🔥 " + maxStreak + " ngày";
+
+    var eaPct = Math.min(100, Math.round(((ea.xp || 0) / 1000) * 100));
+    var dmPct = Math.min(100, Math.round(((dm.xp || 0) / 1000) * 100));
+    var ieltsPct = Math.min(100, Math.round(((ielts.xp || 0) / 1000) * 100));
+    var toeicPct = Math.min(100, Math.round(((sw.hist ? sw.hist.length * 10 : 0) / 100) * 100));
+
+    var elEa = document.getElementById("progEa"); if (elEa) elEa.textContent = eaPct + "%";
+    var elDm = document.getElementById("progDm"); if (elDm) elDm.textContent = dmPct + "%";
+    var elIelts = document.getElementById("progIelts"); if (elIelts) elIelts.textContent = ieltsPct + "%";
+    var elToeic = document.getElementById("progToeic"); if (elToeic) elToeic.textContent = toeicPct + "%";
+
+    var avg = Math.round((eaPct + dmPct + ieltsPct + toeicPct) / 4);
+    var elFill = document.getElementById("progTotal");
+    if (elFill) elFill.style.width = Math.max(5, avg) + "%";
+  } catch(e) {}
+})();
+</script>
+</body>
+</html>
