@@ -8,7 +8,7 @@
 window.EA_CASES = [
   {
     id: "c01", part: 1, emoji: "👩‍💼", title: "Lần đầu khai thuế",
-    client: "Chị Lan, 24 tuổi, nhân viên văn phòng",
+    client: "Chị Lan, 24 tuổi (TY2025), nhân viên văn phòng",
     story: "Chị Lan mới đi làm năm đầu tiên ở Mỹ, độc thân, chỉ có 1 công việc trả lương. Chị muốn khai thuế để lấy tiền hoàn (refund) càng sớm càng tốt.",
     quote: "This is my first time filing taxes. What do I need to bring?",
     focus: "Form W-2",
@@ -55,7 +55,7 @@ window.EA_CASES = [
   },
   {
     id: "c02", part: 1, emoji: "🚗", title: "Tài xế Uber tự làm chủ",
-    client: "Anh Minh, 31 tuổi, chạy Uber và DoorDash",
+    client: "Anh Minh, 31 tuổi (TY2025), chạy Uber và DoorDash",
     story: "Anh Minh chạy xe toàn thời gian cho Uber và DoorDash. Anh không nhận W-2, chỉ nhận vài mẫu 1099. Anh nói: 'Xăng xe tốn nhiều lắm, em trừ hết giùm anh nha'.",
     quote: "I drive for Uber full-time. Can I deduct all my gas and car costs?",
     focus: "Sổ ghi số dặm (mileage log)",
@@ -103,7 +103,7 @@ window.EA_CASES = [
   },
   {
     id: "c03", part: 1, emoji: "👩‍👧", title: "Mẹ đơn thân & tín dụng thuế",
-    client: "Chị Hoa, 35 tuổi, có 1 bé 4 tuổi",
+    client: "Chị Hoa, 35 tuổi (TY2025), có 1 bé 4 tuổi",
     story: "Chị Hoa ly thân từ đầu năm (chưa ly hôn xong), sống riêng với bé. Chị gửi bé đi nhà trẻ để đi làm. Chị muốn khai Head of Household và nhận các khoản credit cho con.",
     quote: "I take care of my daughter alone. Can I file as head of household?",
     focus: "Giấy tờ chứng minh bé sống cùng chị",
@@ -150,7 +150,7 @@ window.EA_CASES = [
   },
   {
     id: "c04", part: 1, emoji: "📈", title: "Bán cổ phiếu và crypto",
-    client: "Anh Tuấn, 28 tuổi, kỹ sư IT",
+    client: "Anh Tuấn, 28 tuổi (TY2025), kỹ sư IT",
     story: "Anh Tuấn bán một ít cổ phiếu trên Robinhood và đổi Bitcoin sang Ethereum vài lần trên một sàn crypto. Anh nghĩ 'đổi coin qua coin thì chưa rút tiền ra, không cần khai'.",
     quote: "I only swapped one coin for another. I didn't cash out, so it's not taxable, right?",
     focus: "Giấy tờ về giá mua (cost basis)",
@@ -197,7 +197,7 @@ window.EA_CASES = [
   },
   {
     id: "c05", part: 1, emoji: "🕯️", title: "Ba mất, con lo giấy tờ thuế",
-    client: "Chị Thảo, con gái của ông Sáu (mất tháng 5)",
+    client: "Chị Thảo (TY2025), con gái của ông Sáu (mất tháng 5)",
     story: "Ông Sáu mất tháng 5, để lại một căn nhà và một tài khoản ngân hàng. Chị Thảo được tòa chỉ định làm người thi hành di chúc (executor). Chị muốn bán căn nhà và hỏi phải khai thuế gì.",
     quote: "My father passed away in May. I'm the executor. What tax forms do I need to file?",
     focus: "Giấy định giá nhà vào ngày mất (date-of-death appraisal)",
@@ -245,7 +245,7 @@ window.EA_CASES = [
   },
   {
     id: "c06", part: 1, emoji: "🇻🇳", title: "Tài khoản ngân hàng ở Việt Nam",
-    client: "Anh Khoa, 40 tuổi, có thẻ xanh",
+    client: "Anh Khoa, 40 tuổi (TY2025), có thẻ xanh",
     story: "Anh Khoa có sổ tiết kiệm ở Việt Nam, có lúc số dư lên tới khoảng $30,000. Mỗi năm có tiền lãi khoảng $900. Anh nói: 'Tiền ở Việt Nam thì Mỹ đâu có biết, khỏi khai'.",
     quote: "My savings account is in Vietnam. The U.S. doesn't need to know about it, right?",
     focus: "Số dư cao nhất của từng tài khoản nước ngoài",
@@ -292,7 +292,7 @@ window.EA_CASES = [
   },
   {
     id: "c07", part: 2, emoji: "💅", title: "Hai bạn mở tiệm nail",
-    client: "Chị Vy và chị Ngọc, mở tiệm nail chung",
+    client: "Chị Vy và chị Ngọc (TY2025), mở tiệm nail chung",
     story: "Hai chị lập một LLC, mỗi người góp vốn 50%. Chị Vy góp $40,000 tiền mặt, chị Ngọc góp máy móc và đồ nghề. Hai chị không nộp đơn chọn loại hình thuế nào cả.",
     quote: "We opened an LLC together. Do we file our business taxes on our personal returns?",
     focus: "Operating agreement (thỏa thuận hoạt động)",
@@ -334,7 +334,7 @@ window.EA_CASES = [
   },
   {
     id: "c08", part: 2, emoji: "🏢", title: "Chủ S corp không trả lương",
-    client: "Anh Phúc, chủ duy nhất của một S corporation (công ty IT)",
+    client: "Anh Phúc (TY2025), chủ duy nhất của một S corporation (công ty IT)",
     story: "Công ty lời $200,000. Anh Phúc làm việc full-time nhưng không trả lương cho mình, chỉ rút tiền ra dưới dạng distribution để 'khỏi đóng payroll tax'. Năm nay anh muốn rút thêm nhiều hơn số lời.",
     quote: "I don't pay myself a salary. I just take distributions. That's legal, right?",
     focus: "Payroll và hồ sơ tính basis (Form 7203)",
@@ -381,7 +381,7 @@ window.EA_CASES = [
   },
   {
     id: "c09", part: 2, emoji: "🏠", title: "Cho thuê nhà lần đầu",
-    client: "Cô Mai, 50 tuổi, có thêm 1 căn nhà cho thuê",
+    client: "Cô Mai, 50 tuổi (TY2025), có thêm 1 căn nhà cho thuê",
     story: "Cô Mai mua thêm một căn nhà để cho thuê, tự tìm người thuê và quyết định sửa chữa. Năm đầu bị lỗ vì sửa nhiều. MAGI của cô khoảng $120,000. Cô hỏi có trừ được tiền lỗ vào lương không.",
     quote: "My rental house lost money this year. Can I use that loss to lower my taxes?",
     focus: "Closing Disclosure (giấy tờ mua nhà)",
@@ -423,7 +423,7 @@ window.EA_CASES = [
   },
   {
     id: "c10", part: 2, emoji: "🍜", title: "Nhà hàng mua máy móc mới",
-    client: "Anh Long, chủ nhà hàng phở (sole proprietor)",
+    client: "Anh Long (TY2025), chủ nhà hàng phở (sole proprietor)",
     story: "Cuối tháng 12, anh Long đặt mua bếp và tủ lạnh công nghiệp $60,000, nhưng tháng 1 năm sau mới giao và lắp xong. Năm nay nhà hàng chỉ lời $20,000. Anh muốn trừ hết $60,000 ngay năm nay bằng Section 179.",
     quote: "I bought new kitchen equipment in December. Can I write off the whole cost this year?",
     focus: "Hóa đơn có ngày giao và ngày bắt đầu sử dụng (placed in service)",
@@ -464,7 +464,7 @@ window.EA_CASES = [
   },
   {
     id: "c11", part: 3, emoji: "📬", title: "Nhận thư CP2000 của IRS",
-    client: "Bác Hùng, 62 tuổi, đã nghỉ hưu",
+    client: "Bác Hùng, 62 tuổi (TY2025), đã nghỉ hưu",
     story: "Bác Hùng hoảng hốt mang tới một lá thư CP2000. IRS nói bác quên khai $8,000 từ Form 1099-R (rút tiền hưu) và đề nghị bác đóng thêm thuế. Bác muốn em 'gọi IRS nói chuyện giùm bác'.",
     quote: "I got this scary letter from the IRS. Can you call them for me?",
     focus: "Form 2848 (giấy ủy quyền đại diện)",
@@ -511,7 +511,7 @@ window.EA_CASES = [
   },
   {
     id: "c12", part: 3, emoji: "💸", title: "Nợ thuế không đủ tiền trả",
-    client: "Chị Trang, làm tóc tự do, nợ IRS $38,000",
+    client: "Chị Trang (TY2025), làm tóc tự do, nợ IRS $38,000",
     story: "Chị Trang nợ $38,000 (gồm thuế, tiền phạt và tiền lãi) vì mấy năm không đóng estimated tax. Chị không đủ tiền trả một lần và sợ bị IRS lấy hết tiền trong tài khoản.",
     quote: "I owe the IRS money, but I can't pay it all at once. What can I do?",
     focus: "Tất cả tờ khai các năm đã nộp đủ (filing compliance)",
@@ -558,7 +558,7 @@ window.EA_CASES = [
   },
   {
     id: "c13", part: 3, emoji: "⚠️", title: "Thư dọa tịch thu (levy)",
-    client: "Anh Đạt, chủ tiệm sửa xe",
+    client: "Anh Đạt (TY2025), chủ tiệm sửa xe",
     story: "Anh Đạt nhận Letter 1058: 'Final Notice of Intent to Levy and Notice of Your Right to a Hearing', ghi ngày 1/3. Hôm nay là 20/3. Anh nghĩ số nợ bị tính sai vì có một khoản đã trả mà IRS chưa ghi nhận.",
     quote: "The IRS says they will take my money. I think their numbers are wrong. What should I do?",
     focus: "Form 12153 (xin buổi điều trần CDP)",
@@ -600,7 +600,7 @@ window.EA_CASES = [
   },
   {
     id: "c14", part: 3, emoji: "🔍", title: "Bị kiểm toán (audit)",
-    client: "Chị Phương, bán hàng online",
+    client: "Chị Phương (TY2025), bán hàng online",
     story: "Chị Phương nhận thư mời kiểm toán tại văn phòng IRS (office audit) cho Schedule C năm 2023, kèm Form 4564 (Information Document Request) yêu cầu chứng từ chi phí quảng cáo và hàng tồn kho. Sau buổi làm việc, IRS gửi '30-day letter'.",
     quote: "The IRS wants to audit my online business. What documents should I prepare?",
     focus: "Đúng những chứng từ mà Form 4564 yêu cầu",
@@ -647,8 +647,8 @@ window.EA_CASES = [
   },
   {
     id: "c15", part: 3, emoji: "⚖️", title: "Khách muốn giấu lỗi cũ",
-    client: "Anh Bình, khách mới chuyển từ preparer khác",
-    story: "Xem tờ khai năm ngoái của anh Bình (do người khác làm), bạn thấy họ đã trừ tiền đi du lịch gia đình như chi phí kinh doanh. Anh Bình nói: 'Năm nay em cứ làm giống năm ngoái, đừng nói gì hết nha'.",
+    client: "Anh Bình (TY2025), khách mới chuyển từ preparer khác",
+    story: "Xem tờ khai năm ngoái của anh Bình (do người khác làm), bạn thấy họ đã trừ $12,000 tiền đi du lịch gia đình như chi phí kinh doanh, đồng thời nộp trễ hạn 4 tháng và chưa nộp đủ thuế. Anh Bình nói: 'Năm nay em cứ làm giống năm ngoái, đừng nói gì hết nha. Với lại phạt nộp trễ hay chậm nộp tiền thì cũng như nhau thôi mà'.",
     quote: "Just do it the same way as last year. Nobody will notice.",
     focus: "Chứng từ chi phí kinh doanh thật",
     docs: [
@@ -665,7 +665,7 @@ window.EA_CASES = [
         "The practitioner may ignore errors on returns prepared by another preparer."
       ],
       a: 0,
-      exp: "§10.21: phải báo cho KHÁCH (không bắt báo IRS) về lỗi và hậu quả. Ngoài ra §10.22 (due diligence) và §10.34 (không ký tờ khai có vị trí không hợp lý) không cho phép làm sai năm nay."
+      exp: "§10.21: phải báo cho KHÁCH (không bắt báo IRS) về lỗi và hậu quả. Phạt nộp trễ (failure-to-file IRC §6651(a)(1): 5%/tháng, max 25%) nặng gấp 10 lần phạt chậm nộp tiền (failure-to-pay IRC §6651(a)(2): 0.5%/tháng, max 25%). Ngoài ra §10.22 (due diligence) và §10.34 không cho phép preparer tiếp tục ký tờ khai có sai phạm lặp lại."
     },
     plain: {
       q: "Chọn cách nói với anh Bình bằng NGÔN NGỮ CỦA KHÁCH:",
@@ -689,5 +689,275 @@ window.EA_CASES = [
       exp: "EA không bắt buộc báo IRS, nhưng cũng không được tham gia làm sai. Lưu lại hồ sơ tư vấn bằng văn bản để tự bảo vệ, và có thể ngừng nhận khách. Không ai được nộp tờ khai thay khách mà không có chữ ký và sự đồng ý của khách."
     },
     scriptEn: "I have to be honest with you. Family vacation costs are not business expenses. I recommend amending last year's return, and this year I can only deduct real business expenses."
+  }
+,
+  {
+    id: "c16", part: 4, emoji: "💅", title: "Tiệm Nail: Phân biệt Tip & POS",
+    client: "Chị Jenny, chủ tiệm Nails & Spa 10 thợ (TY2025/TY2026)",
+    story: "Chị Jenny vận hành tiệm nail với 4 thợ W-2 và 6 thợ thuê ghế 1099. Hệ thống POS của tiệm tự động cộng 18% phí phục vụ (gratuity) cho hóa đơn nhóm trên $100 và khách trả tip tự nguyện qua thẻ. Chị muốn biết cách khấu trừ $25,000 tip theo Đạo luật OBBBA 2025/2026 và khai báo mẫu 4070 / Form 941 sao cho an toàn, không bị phạt quỹ lương.",
+    quote: "Can we deduct twenty-five thousand dollars of tips for all workers, and does the 18% auto-gratuity count as tips?",
+    focus: "Phân biệt Tip tự nguyện vs Phí dịch vụ bắt buộc & OBBBA §70201",
+    docs: [
+      { name: "Báo cáo tổng kết POS (tách riêng tips thẻ và auto-gratuity)", need: "must", why: "Để phân loại chính xác giữa tip tự nguyện (voluntary tip) và phí dịch vụ bắt buộc (mandatory service charge)." },
+      { name: "Form 4070 (Employee's Report of Tips to Employer) hàng tháng", need: "must", why: "Bắt buộc thợ W-2 phải báo cáo tip hàng tháng trước ngày 10 của tháng kế tiếp nếu tip ≥ $20 để chủ trích nộp FICA." },
+      { name: "Mẫu W-9 của các thợ thuê ghế (booth renters)", need: "must", why: "Lưu giữ mã số thuế TIN hợp lệ của thợ 1099 để không bị áp dụng khấu trừ dự phòng 24% (backup withholding)." },
+      { name: "Báo cáo quỹ lương quý Form 941", need: "must", why: "Đối chiếu tổng tip khai báo và tiền lương đóng thuế Social Security / Medicare." },
+      { name: "Hợp đồng thuê ghế (booth rental agreement) bằng văn bản", need: "maybe", why: "Chứng minh quyền tự chủ kinh doanh của thợ 1099 để phòng vệ kiểm toán phân loại sai lao động (misclassification)." },
+      { name: "Bảng sao kê tài khoản tiết kiệm cá nhân của chủ tiệm", need: "no", why: "Không thuộc phạm vi đối chiếu chi phí tiệm nail." }
+    ],
+    legal: {
+      q: "Chọn lời giải thích bằng NGÔN NGỮ LUẬT về quy tắc tiền tip OBBBA và phí phục vụ bắt buộc:",
+      options: [
+        "Under Rev. Rul. 2012-18, mandatory gratuity added to a bill is a service charge treated as regular wages, not a tip. Under OBBBA Sec. 70201 (TY2025–TY2028), only voluntary tips qualify for the federal income tax deduction up to $25,000, and qualified tips remain fully subject to FICA taxes.",
+        "Under IRC Sec. 102, all tips and mandatory service charges are tax-free gifts excluded from gross income and payroll taxes.",
+        "Under OBBBA Sec. 70201, both tips and service charges are 100% exempt from federal income, Social Security, and Medicare taxes."
+      ],
+      a: 0,
+      exp: "Rev. Rul. 2012-18: phí dịch vụ bắt buộc (auto-gratuity) không thỏa mãn 4 tiêu chí tip tự nguyện nên được tính là lương thường W-2 (phải withholding ngay). OBBBA Sec. 70201 cho phép trừ tối đa $25,000 tip trên Form 1040, nhưng KHÔNG miễn thuế FICA (Social Security & Medicare)."
+    },
+    plain: {
+      q: "Chọn cách nói với chị Jenny bằng NGÔN NGỮ CỦA KHÁCH:",
+      options: [
+        "Chị cứ cộng hết tiền tip với 18% phí bàn đông lại rồi cho thợ trừ $25,000 miễn thuế hết.",
+        "Tiền khách tự nguyện cho thêm (tip) thợ được trừ tối đa $25,000 thuế thu nhập theo luật mới, nhưng tiền phí 18% bắt buộc trên máy POS thì IRS tính là tiền lương bình thường. Cả hai khoản này đều vẫn phải đóng tiền quỹ hưu và y tế (Social Security & Medicare) đầy đủ.",
+        "Chị không cần làm Form 4070 vì máy POS đã tự gửi số liệu lên IRS."
+      ],
+      a: 1,
+      exp: "Cách 2 phân biệt rành mạch, bảo vệ khách khỏi bị phạt quỹ lương (Trust Fund Recovery Penalty §6672) và hướng dẫn đúng quyền lợi khấu trừ $25,000 của luật OBBBA."
+    },
+    critical: {
+      q: "Chị Jenny quy định giờ làm việc cố định, bắt thợ thuê ghế 1099 mặc đồng phục tiệm và thu tiền dịch vụ trực tiếp từ khách rồi chia 60/40. Rủi ro pháp lý lớn nhất là gì?",
+      options: [
+        "Không có rủi ro gì nếu thợ đã ký cam kết tự nguyện làm 1099",
+        "IRS và Sở Lao động tiểu bang có thể kết luận đây là phân loại sai lao động (misclassification), truy thu 100% thuế quỹ lương FICA/FUTA, phạt tiền theo IRC §3509 và truy cứu trách nhiệm cá nhân chủ tiệm theo IRC §6672",
+        "Chỉ cần đổi tên hợp đồng sang 'partnership' là hợp lệ",
+        "Chị Jenny chỉ bị phạt $50"
+      ],
+      a: 1,
+      exp: "Kiểm soát thời gian, quy định đồng phục và kiểm soát dòng tiền là bằng chứng rõ ràng của quan hệ chủ - thợ (common-law employee). Việc phân loại sai thành 1099 sẽ bị truy thu thuế lương và phạt rất nặng."
+    },
+    scriptEn: "Voluntary tips are eligible for the new twenty-five thousand dollar deduction under OBBBA, but mandatory service charges are treated as regular wages. Both are subject to FICA taxes."
+  },
+  {
+    id: "c17", part: 4, emoji: "🛡️", title: "Thẩm định Form 8867 & SSN CTC",
+    client: "Anh David, 32 tuổi, thợ hàn cơ khí (TY2025/TY2026)",
+    story: "Anh David độc thân nuôi 2 con nhỏ (sinh tại Mỹ, có SSN hợp lệ). Anh David mới chuyển từ visa lao động sang thường trú nhân; anh có ITIN cũ nhưng đến tháng 11/2025 mới được cấp thẻ SSN chính thức. Anh mang giấy tờ đến nhờ bạn khai thuế và xin Child Tax Credit (CTC) cùng tư cách Head of Household.",
+    quote: "I just got my Social Security number in November 2025. Can I claim the Child Tax Credit and Head of Household for my two kids?",
+    focus: "Thẩm định bắt buộc Form 8867 & Quy tắc SSN người đứng đơn TY2025",
+    docs: [
+      { name: "Thẻ Social Security Card chính thức của bố và 2 con", need: "must", why: "Xác minh số SSN hợp lệ và ngày cấp. Quy tắc TY2025 bắt buộc người đứng đơn và con phụ thuộc phải có SSN hợp lệ được cấp trước ngày đến hạn nộp tờ khai." },
+      { name: "Giấy khai sinh của 2 con", need: "must", why: "Chứng minh quan hệ cha con hợp pháp (relationship test cho CTC và HOH)." },
+      { name: "Hồ sơ trường học / sổ khám bệnh ghi địa chỉ chung của bố và con", need: "must", why: "Chứng minh các con sống cùng bố trên 6 tháng trong năm (residency test) để đáp ứng knowledge requirement của Form 8867." },
+      { name: "Biên lai tiền thuê nhà, điện nước đứng tên anh David", need: "must", why: "Chứng minh anh David tự chi trả trên 50% chi phí duy trì hộ gia đình để đủ điều kiện Head of Household." },
+      { name: "Bản sao Form 8867 có ghi chú đương thời lưu trữ 3 năm", need: "must", why: "Nghĩa vụ của preparer theo Treas. Reg. §1.6695-2 để tránh phạt $650/lỗi năm nộp 2026." },
+      { name: "Bằng lái xe của người hàng xóm", need: "no", why: "Không có giá trị chứng minh quan hệ phụ thuộc." }
+    ],
+    legal: {
+      q: "Chọn lời giải thích bằng NGÔN NGỮ LUẬT về điều kiện SSN nhận CTC và trách nhiệm thẩm định Form 8867:",
+      options: [
+        "Under IRC §24(e) as amended for TY2025, both the qualifying child AND the taxpayer must have a valid Social Security Number issued on or before the due date of the return to claim the Child Tax Credit. Preparers must satisfy the four due diligence requirements on Form 8867 under Treas. Reg. §1.6695-2 or face a $650 penalty per failure (for returns filed in 2026).",
+        "A taxpayer with an ITIN may claim the full refundable Child Tax Credit as long as the children were born in the United States.",
+        "Form 8867 due diligence is purely optional if the client signs an affidavit taking full responsibility."
+      ],
+      a: 0,
+      exp: "Luật TY2025 yêu cầu người đứng đơn bắt buộc phải có SSN hợp lệ (không chấp nhận ITIN cho người đứng đơn khi lấy CTC/ACTC). Preparer vi phạm thẩm định Form 8867 bị phạt $650/lỗi trên mỗi credit (IRC §6695(g) & Rev. Proc. 2024-40) và phải lưu hồ sơ tối thiểu 3 năm."
+    },
+    plain: {
+      q: "Chọn cách nói với anh David bằng NGÔN NGỮ CỦA KHÁCH:",
+      options: [
+        "Anh mới có SSN cuối năm nên năm nay không được khai gì hết, đợi năm sau đi.",
+        "Chúc mừng anh đã có thẻ SSN chính thức trong năm 2025! Vì thẻ SSN của anh được cấp trước hạn nộp thuế và 2 bé đều có SSN từ nhỏ, anh đủ điều kiện nhận tiền Child Tax Credit và khai chủ hộ Head of Household. Em cần anh cung cấp học bạ hoặc hồ sơ bác sĩ của 2 bé để em lưu hồ sơ thẩm định 3 năm theo đúng luật IRS.",
+        "Em cứ khai đại cho anh, nếu IRS hỏi thì anh tự nộp giấy tờ sau."
+      ],
+      a: 1,
+      exp: "Cách 2 chính xác về luật (thẻ SSN cấp trong năm tính thuế hợp lệ), mang lại tin vui cho khách, đồng thời giải thích rõ lý do cần chứng từ cư trú để tuân thủ Form 8867."
+    },
+    critical: {
+      q: "Nếu anh David chỉ mang giấy viết tay tự cam đoan các con sống cùng, từ chối nộp học bạ hay hồ sơ y tế vì 'phiền phức', preparer nên xử lý thế nào?",
+      options: [
+        "Vẫn ký nộp tờ khai và tick vào Form 8867 rằng đã thẩm định đầy đủ",
+        "Từ chối claim CTC và HOH trên tờ khai cho đến khi nhận được tài liệu kiểm chứng độc lập hợp lý, vì ký tờ khai mà không có tài liệu chứng minh là vi phạm knowledge requirement và bị phạt $650/lỗi",
+        "Chuyển sang khai Single và vẫn lấy CTC",
+        "Tự làm giả giấy xác nhận của nhà trường"
+      ],
+      a: 1,
+      exp: "Knowledge requirement của Treas. Reg. §1.6695-2(b)(3) cấm preparer chấp nhận thông tin không đầy đủ hoặc không có căn cứ xác minh khi tình huống đòi hỏi chứng từ. Không được ký Form 8867 nếu khách từ chối cung cấp chứng từ tối thiểu."
+    },
+    scriptEn: "Under the 2025 rules, both you and your qualifying children must have valid Social Security numbers issued before the filing deadline to claim the Child Tax Credit. We must keep verification records on file for three years."
+  },
+  {
+    id: "c18", part: 4, emoji: "📬", title: "Xử lý Thư IRS CP2000 & Form 2848",
+    client: "Bác Tuấn, 58 tuổi, kinh doanh nhỏ (TY2025/TY2026)",
+    story: "Bác Tuấn nhận được thư Notice CP2000 từ IRS đề xuất tính bổ sung $42,500 tiền thuế, phạt và lãi cho năm thuế 2023. Lý do: sàn giao dịch chứng khoán/crypto gửi Form 1099-B ghi tổng doanh thu bán (gross proceeds) $150,000 nhưng trên tờ khai Form 1040 năm đó bác quên không nộp Form 8949 / Schedule D. Thư yêu cầu bác phản hồi trong vòng 30 ngày.",
+    quote: "The IRS says I owe forty-two thousand dollars on crypto sales, but I actually lost money! What can we do?",
+    focus: "Phản hồi Notice CP2000, Đại diện Form 2848 & Khôi phục Cost Basis",
+    docs: [
+      { name: "Thư Notice CP2000 đầy đủ tất cả các trang kèm phiếu phản hồi", need: "must", why: "Xem chi tiết bảng tính AUR, các khoản thu nhập bị lệch và thời hạn 30 ngày để gửi phản hồi." },
+      { name: "Form 2848 (Power of Attorney) có chữ ký của bác Tuấn", need: "must", why: "Bắt buộc để Enrolled Agent được quyền trao đổi, thương lượng và nộp văn bản bảo vệ khách hàng trước bộ phận IRS AUR." },
+      { name: "Báo cáo lịch sử giao dịch chi tiết từ sàn (trade history report)", need: "must", why: "Chứng minh ngày mua, ngày bán, giá mua ban đầu (cost basis) và các chi phí giao dịch hợp lệ." },
+      { name: "Form 8949 và Schedule D tính toán lại chính xác", need: "must", why: "Lập bảng kê khai điều chỉnh cost basis để thay thế con số mặc định cost basis = 0 của IRS." },
+      { name: "Form 8821 (Tax Information Authorization)", need: "maybe", why: "Chỉ cho phép xem thông tin; nếu đã ký Form 2848 thì không cần Form 8821 nữa." },
+      { name: "Hóa đơn mua sắm đồ dùng gia đình cá nhân", need: "no", why: "Không liên quan đến giao dịch chứng khoán/crypto." }
+    ],
+    legal: {
+      q: "Chọn lời giải thích bằng NGÔN NGỮ LUẬT về bản chất Notice CP2000 và quy trình giải quyết:",
+      options: [
+        "A Notice CP2000 is a proposed adjustment generated by the Automated Underreporter (AUR) unit, not a final statutory assessment or a bill. Under Circular 230 §10.3, an EA with a valid Form 2848 may represent the taxpayer, submit a signed response within 30 days along with Form 8949 substantiating cost basis under IRC §1012, and request that the proposed deficiency be reduced or eliminated.",
+        "A Notice CP2000 is an immediate tax lien that requires full payment within 10 days without any appeal rights.",
+        "Filing Form 1040-X is strictly required to respond to a CP2000 notice."
+      ],
+      a: 0,
+      exp: "Notice CP2000 chỉ là đề xuất điều chỉnh của hệ thống đối chiếu tự động AUR, IRS mặc định cost basis = $0 khi sàn không báo cáo basis. Không nộp 1040-X mà gửi thư giải trình kèm Form 8949 và chứng từ mua trong vòng 30 ngày để IRS điều chỉnh."
+    },
+    plain: {
+      q: "Chọn cách nói với bác Tuấn bằng NGÔN NGỮ CỦA KHÁCH:",
+      options: [
+        "Bác bị phạt $42,500 rồi, phải lo đi vay tiền trả gấp cho IRS trong 10 ngày kẻo bị phong tỏa tài khoản.",
+        "Bác đừng quá lo lắng, đây chưa phải là giấy đòi nợ cuối cùng mà chỉ là thư đề xuất vì IRS chỉ thấy số tiền bác bán ra mà không biết giá bác mua vào bao nhiêu nên họ tạm tính giá vốn bằng 0. Bác ký Form 2848 ủy quyền cho em, em sẽ lấy sao kê sàn, lập lại bảng tính Form 8949 ghi rõ giá vốn thật để gửi IRS trước hạn 30 ngày. Số thuế thật nếu có chỉ tính trên tiền lời thật sự.",
+        "Bác cứ xé thư vứt đi, khi nào IRS gửi trát hầu tòa hãy tính."
+      ],
+      a: 1,
+      exp: "Cách 2 chuyên nghiệp, trấn an tâm lý hoảng loạn của khách, giải thích rõ nguyên nhân (IRS thiếu cost basis) và vạch ra lộ trình giải quyết bằng Form 2848 và Form 8949."
+    },
+    critical: {
+      q: "Nếu bác Tuấn bỏ qua thư CP2000 và không gửi văn bản phản hồi trong thời hạn 30 ngày ghi trên thư, điều gì sẽ xảy ra tiếp theo?",
+      options: [
+        "IRS sẽ tự động hủy bỏ đề xuất vì quá hạn",
+        "IRS sẽ phát hành Statutory Notice of Deficiency (Thư 90 ngày) theo IRC §6212; nếu tiếp tục không nộp đơn lên Tax Court trong 90 ngày thì số nợ $42,500 sẽ chính thức bị khóa sổ và chuyển sang giai đoạn cưỡng chế thu nợ",
+        "IRS sẽ tự động trừ tiền vào tài khoản tiết kiệm của người thân",
+        "Bác Tuấn sẽ bị tước quốc tịch"
+      ],
+      a: 1,
+      exp: "Hết hạn CP2000 mà không phản hồi, IRS sẽ phát hành Thư 90 ngày (Notice of Deficiency). Quá 90 ngày không kiện ra U.S. Tax Court thì số thuế đề xuất sai sẽ trở thành số nợ chính thức (assessed liability) và IRS chuyển sang thu nợ cưỡng chế."
+    },
+    scriptEn: "The IRS CP2000 notice is not a final bill. They assumed your cost basis was zero because it was not reported. With Form 2848, I can represent you, calculate your real cost basis on Form 8949, and resolve this within the thirty-day window."
+  }
+];
+
+
+// ============================================================
+// 6 TÌNH HUỐNG THỰC CHIẾN END-TO-END (SYNTHETIC COMPREHENSIVE CASES)
+// Chuẩn Vòng 2: R2_BLUEPRINT.md Mục 4 & PLAN_ROUND2.md A4
+// Dữ liệu giả lập 100% (ANCHOR_WL2026 Điều 3)
+// ============================================================
+window.EA_COMPREHENSIVE_CASES = [
+  {
+    id: "comp_case_01",
+    part: 1,
+    title: "Gia đình đa nguồn thu, OBBBA Tips/Overtime, AOTC & Form 8867",
+    client: "David Tuấn Trần (Pha chế, W-2 $50k gồm $18k Tip) & Sarah Mai Nguyễn (Điều dưỡng, W-2 $80k gồm $12k Overtime)",
+    dependents: "Daniel Trần (20t, SV ĐH năm 2) & Emily Trần (10t)",
+    filingStatus: "MFJ",
+    taxYear: "TY2025",
+    grossIncome: 130450,
+    obbbaDeduction: 30000,
+    agi: 100450,
+    standardDeduction: 31500,
+    taxableIncome: 68950,
+    taxBeforeCredits: 7797,
+    credits: {
+      ctcNonrefundable: 2200,
+      aotcNonrefundable: 1500,
+      aotcRefundable: 1000
+    },
+    totalTax: 4097,
+    paymentsWithheld: 10000,
+    refundAmount: 6903,
+    forms: ["Form 1040", "Schedule 1", "Form 8863", "Form 8867"],
+    riskNotice: "Lỗi FICA: Khoản trừ Tips/Overtime chỉ giảm thuế TNCN, không giảm thuế FICA. Phạt Due Diligence $650/khoản (tổng $1,300)."
+  },
+  {
+    id: "comp_case_02",
+    part: 1,
+    title: "Tiệm Nail / Tự doanh cá thể Schedule C, Thiết bị §179 & QBI §199A",
+    client: "Lisa Phương Lê, chủ sở hữu tiệm nail LLC 1 thành viên (Disregarded Entity)",
+    filingStatus: "Single",
+    taxYear: "TY2025",
+    grossReceipts: 180000,
+    totalExpenses: 112200,
+    netProfit: 67800,
+    seTax: 9580,
+    halfSeTaxDeduction: 4790,
+    agi: 63010,
+    standardDeduction: 15750,
+    qbiDeduction: 9452,
+    taxableIncome: 37808,
+    incomeTax: 4298,
+    totalFederalTax: 13878,
+    forms: ["Schedule C", "Form 4562", "Schedule SE", "Form 8995", "Form 1040"],
+    riskNotice: "Circular 230 §10.21 & §10.34: Tuyệt đối cấm đồng lõa giấu $35k doanh thu tiền mặt. Khách không khai phải từ chối dịch vụ ngay."
+  },
+  {
+    id: "comp_case_03",
+    part: 1,
+    title: "Bán nhà chính kết hợp Home Office §121 & Treo lỗ cho thuê PAL §469",
+    client: "Robert Hùng Phạm, Kỹ sư phần mềm độc lập tại Austin, TX",
+    filingStatus: "Single",
+    taxYear: "TY2025",
+    realizedGainSale: 298000,
+    unrecaptured1250Gain: 18000,
+    section121Exclusion: 250000,
+    taxableLongTermGain: 30000,
+    totalRecognizedGainHome: 48000,
+    rentalLossOriginal: -18000,
+    rentalLossAllowed: 0,
+    suspendedRentalLoss: 18000,
+    agi: 163000,
+    taxableIncome: 147250,
+    forms: ["Form 8949", "Schedule D", "Schedule E", "Form 8582", "Form 1040"],
+    riskNotice: "Khấu hao văn phòng tại nhà $18k phải chịu thuế Unrecaptured §1250 ở mức trần 25%. Lỗ cho thuê bị treo vì MAGI > $150k."
+  },
+  {
+    id: "comp_case_04",
+    part: 2,
+    title: "Partnership Form 1065, Góp vốn §721, Guaranteed Payments & K-1",
+    client: "Công ty Hợp danh Vận tải An & Bình GP (Dallas, TX)",
+    partners: "Trần Văn An (50%) & Lê Văn Bình (50%)",
+    taxYear: "TY2025",
+    initialBasis: { an: 87500, binh: 27500 },
+    grossFreight: 420000,
+    operatingExpenses: 180000,
+    macrsDepreciation: 19000,
+    interestExpense: 6000,
+    guaranteedPaymentAn: 40000,
+    ordinaryBusinessIncome: 175000,
+    separatelyStatedCharity: 4000,
+    endingOutsideBasis: { an: 148000, binh: 88000 },
+    forms: ["Form 1065", "Schedule K", "Schedule K-1", "Form 4562"],
+    riskNotice: "Khoản từ thiện $4k bắt buộc tách riêng trên K-1, không trừ tại Trang 1. Bắt buộc chỉ định BBA Partnership Representative."
+  },
+  {
+    id: "comp_case_05",
+    part: 2,
+    title: "S Corporation Form 1120-S, Lương hợp lý & Thứ tự Basis Reg. §1.1367-1(f)",
+    client: "Golden Tech Inc. (S-Corp) • Cổ đông 100%: Kevin Cường Nguyễn",
+    taxYear: "TY2025",
+    grossRevenue: 240000,
+    reasonableCompW2: 70000,
+    employerFica: 5355,
+    serverAndOfficeExpenses: 35000,
+    ordinaryBusinessIncome: 129645,
+    nondeductiblePenalty: 1500,
+    distributionsPaid: 75000,
+    beginningBasis: 12000,
+    finalStockBasis: 69145,
+    qbiDeductionIndividual: 25929,
+    forms: ["Form 1120-S", "Form 1125-E", "Form 7203", "Schedule K-1", "Form 1040"],
+    riskNotice: "Circular 230 §10.51: Cấm trả lương $0 để trốn thuế FICA. Phải tuân thủ chuẩn 4 bước điều chỉnh Stock Basis của Treas. Reg. §1.1367-1(f)."
+  },
+  {
+    id: "comp_case_06",
+    part: 3,
+    title: "Đại diện IRS, Giải quyết Thư báo CP2000, Mã CAF & Đề nghị Giảm nợ OIC",
+    client: "Jennifer Thảo Vũ (Orlando, FL) • Thư CP2000 đòi $15,700 do 1099-B thiếu Cost Basis",
+    taxYear: "TY2023 / TY2025",
+    initialIrsClaim: 15700,
+    actualRobinhoodProceeds: 55000,
+    actualAdjustedCostBasis: 58000,
+    actualNetResult: -3000,
+    finalIrsAssessment: 0,
+    debtReductionAchieved: 15700,
+    forms: ["Form 2848", "CP2000 Response", "Form 8949", "Schedule D", "Form 656", "Form 433-A(OIC)"],
+    riskNotice: "Circular 230 §10.27: Nghiêm cấm thu phí theo tỷ lệ phần trăm tiền thuế tiết kiệm được (Contingent Fee) khi giải quyết tranh chấp."
   }
 ];

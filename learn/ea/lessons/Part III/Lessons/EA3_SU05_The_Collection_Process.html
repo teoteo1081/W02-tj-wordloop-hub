@@ -6,65 +6,30 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'ea'});</script>
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>EA Part III – SU05: The Collection Process</title>
-<style>
-  @page { size: A4; margin: 14mm 12mm; }
-  * { box-sizing: border-box; }
-  body { font-family:'Segoe UI','Calibri',Arial,sans-serif; color:#33322f; font-size:15.5px; line-height:1.5; background:#fdfcfa; margin:0; }
-  .cover { background: linear-gradient(120deg,#bfe4ff 0%,#d6ecff 30%,#e6def7 65%,#fbe6f4 100%); border-radius:20px; padding:40px 30px; text-align:center; margin-bottom:10px; box-shadow:0 6px 18px rgba(120,130,180,.25); border:1px solid #dfe8f5; }
-  .cover .tag { display:inline-block; background:#33314a; color:#d6ecff; font-weight:700; letter-spacing:2px; font-size:13px; padding:5px 14px; border-radius:20px; margin-bottom:14px; }
-  .cover h1 { font-size:30px; margin:6px 0; color:#3170a8; }
-  .cover h2 { font-size:16px; font-weight:500; margin:4px 0 0; opacity:.9; color:#33314a; }
-  .cover .books { margin-top:16px; font-size:13.5px; background:rgba(255,255,255,.55); display:inline-block; padding:8px 16px; border-radius:10px; color:#33314a; }
-  .toc { background:#fff; border:1.5px solid #dfe8f5; border-radius:14px; padding:18px 26px; margin-bottom:30px; }
-  .toc h3 { margin-top:0; color:#3170a8; }
-  .toc ol { margin:0; padding-left:22px; } .toc li{ margin-bottom:6px; }
-  h2.section { font-size:23px; color:#33314a; padding:12px 18px; border-radius:12px; margin:34px 0 14px; border-left:10px solid var(--accent,#5aa9d6); background:var(--bg,#eaf6fd); }
-  h3.lesson { font-size:19px; color:var(--accent-dark,#276a91); border-left:6px solid var(--accent,#5aa9d6); background:var(--bg-soft,#f3fafd); padding:8px 14px; border-radius:6px; margin:22px 0 10px; }
-  .c1{--accent:#5aa9d6;--accent-dark:#276a91;--bg:#eaf6fd;--bg-soft:#f3fafd;--head:#a9d4ec;}
-  .c2{--accent:#a892d9;--accent-dark:#5c4696;--bg:#f1ecfb;--bg-soft:#f8f5fd;--head:#cabdec;}
-  .c3{--accent:#f0a66e;--accent-dark:#b8620b;--bg:#fdeee2;--bg-soft:#fff8f0;--head:#f4c299;}
-  .c4{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
-  .c5{--accent:#e07b9b;--accent-dark:#a3335a;--bg:#fbe9f0;--bg-soft:#fdf5f8;--head:#f3b6c9;}
-  .c6{--accent:#5bb8b0;--accent-dark:#1f7a72;--bg:#e5f7f5;--bg-soft:#f2fbfa;--head:#a6e3dd;}
-  .cKey{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
-  table.vocab { width:100%; border-collapse:collapse; margin-bottom:20px; font-size:.96em; box-shadow:0 2px 8px rgba(0,0,0,.05); border-radius:10px; overflow:hidden; }
-  table.vocab th { background:var(--head,#5aa9d6); color:#2d2d2d; padding:9px 8px; text-align:left; }
-  table.vocab td { padding:8px 8px; border-bottom:1px solid var(--bg,#eaf6fd); vertical-align:top; }
-  table.vocab tr:nth-child(even) td { background:var(--bg-soft,#faf6f0); }
-  table.vocab tr:nth-child(odd) td { background:#fff; }
-  table.vocab td.word { font-weight:800; color:var(--accent-dark,#276a91); }
-  table.vocab td.vn { font-weight:700; color:#3d6ba8; }
-  .rule-box { background:var(--bg,#eaf6fd); border-left:6px solid var(--accent,#5aa9d6); border-radius:8px; padding:12px 18px; margin:10px 0; }
-  .rule-box table { width:100%; border-collapse:collapse; margin:8px 0 4px; }
-  .rule-box table td, .rule-box table th { padding:6px 8px; border-bottom:1px solid rgba(0,0,0,.08); text-align:left; font-size:.94em; }
-  .rule-box table th { color:var(--accent-dark,#276a91); }
-  .rule-box ul, .rule-box ol { margin:6px 0; padding-left:22px; } .rule-box li{ margin-bottom:5px; }
-  .struct { font-weight:800; color:#b8620b; font-family:'Consolas','Courier New',monospace; }
-  .example-box { background:#fff; border:1.5px dashed var(--accent,#5aa9d6); border-radius:8px; padding:10px 16px; margin:10px 0; font-size:.95em; }
-  .example-box b.ex-tag { color:var(--accent-dark,#276a91); }
-  .mcq { background:#fff; border:1.5px solid var(--accent,#5aa9d6); border-radius:10px; padding:12px 18px; margin-bottom:12px; }
-  .mcq .q { color:#3d6ba8; font-weight:700; margin-bottom:6px; }
-  .mcq .opt { margin:2px 0 2px 10px; }
-  .content-block { background:#fff; border:2px dashed var(--accent,#5aa9d6); border-radius:12px; padding:16px 20px; margin-bottom:18px; }
-  .key-grid { column-count:1; } .key-grid div{ margin-bottom:10px; }
-  .key-ans { color:#20824f; font-weight:800; }
-  .key-exp { color:#555; font-size:.95em; }
-  .pagebreak { page-break-before: always; }
-  .note { font-size:.85em; color:#8a8a8a; font-style:italic; }
-  .source-tag { font-size:.8em; color:#999; font-style:italic; }
-</style>
+<link rel="stylesheet" href="../../lesson-2026.css">
+
 </head>
 <body>
+<main class="lesson-shell">
+<nav class="lesson-nav" aria-label="Điều hướng bài học">
+  <a class="nav-back" href="EA3_SU04_Examination_of_Returns_and_Appeals_Process.html">← Bài trước: SU04</a>
+  <span class="nav-meta">Part III • SU05</span>
+  <a class="nav-next" href="EA3_SU06_Tax_Authority.html">Bài tiếp: SU06 →</a>
+</nav>
 
 <div class="cover">
   <div class="tag">EA EXAM PREP • PART III — REPRESENTATION, PRACTICES & PROCEDURES • SU05</div>
   <h1>📗 SU05 — THE COLLECTION PROCESS</h1>
-  <h2>Bản song ngữ Việt–Anh, bám sát giáo trình Gleim 2026</h2>
+  <h2>Bản song ngữ Việt–Anh, đối chiếu chuẩn Quy trình Cưỡng chế Thu nợ IRS</h2>
   <div class="books">📖 Khái niệm · 🔤 Thuật ngữ · 📌 Ví dụ minh họa · ❓ Câu hỏi trắc nghiệm · 🔑 Đáp án trang sau</div>
-</div>
 
-<div class="toc">
+<div class="exam-dual-banner">
+  <div class="banner-see">🎯 <b>Đề thi hiện hành (SEE 2026–27 / PSI):</b> Áp dụng luật đến <b>31/12/2025 (TY2025)</b></div>
+  <div class="banner-practice">💼 <b>Hành nghề mùa mới:</b> Số liệu <b>TY2026</b> nằm trong hộp <i>«Cập nhật 2026»</i></div>
+</div>
+</div><div class="toc">
 <h3>📑 Mục lục SU05</h3>
 <ol>
 <li>5.1 Collections (Quy trình thu nợ: notice, statute, installment agreement, CAP, summons)</li>
@@ -72,8 +37,231 @@
 <li>5.3 Liens and Levies (Lien & Levy: attachment, appeal, exemption, sale, bankruptcy)</li>
 <li>5.4 Trust Fund Recovery Penalty (Phạt truy thu quỹ ủy thác)</li>
 </ol>
-<p class="note">Nguồn: Gleim EA Review, Study Unit 5 — The Collection Process (2026).</p>
+
 </div>
+
+<aside class="ea-update-2026" aria-label="Cập nhật tài sản miễn levy">
+  <h3>⚡ Tài sản Miễn Cưỡng chế Thuế §6334 &amp; Chuẩn xác Điều luật</h3>
+  <p>Cập nhật mức miễn trừ tài sản gia đình/công cụ hành nghề khi IRS phát lệnh siết nợ (Levy):</p>
+  <div class="table-scroll">
+    <table class="compare-table">
+      <thead>
+        <tr><th>Khoản mục miễn cưỡng chế (Levy)</th><th>Năm 2024</th><th class="col-tested">Năm 2025 (Thi SEE 2026–27)</th><th>Năm 2026</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><b>Đồ dùng gia đình &amp; quần áo (<code>IRC §6334(a)(2)</code>)</b></td><td>$11,390</td><td class="col-tested"><b>$11,710</b> (Rev. Proc. 2024-40)</td><td>$11,980 (Rev. Proc. 2025-32)</td></tr>
+        <tr><td><b>Sách vở &amp; công cụ hành nghề (<code>§6334(a)(3)</code>)</b></td><td>$5,700</td><td class="col-tested"><b>$5,860</b> (Rev. Proc. 2024-40)</td><td>$5,990 (Rev. Proc. 2025-32)</td></tr>
+        <tr><td><b>Phạt trách nhiệm quỹ tín thác TFRP (<code>§6672</code>)</b></td><td>100% thuế khấu trừ</td><td class="col-tested"><b>100% thuế khấu trừ (FICA nhân viên &amp; withholding)</b></td><td>100% thuế khấu trừ</td></tr>
+        <tr><td><b>Additional Medicare Tax (0.9%)</b></td><td>IRC §3101(b)(2)</td><td class="col-tested"><b>IRC §3101(b)(2) &amp; §3102(f) (không phải §1411 NIIT)</b></td><td>IRC §3101(b)(2)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="upcoming-box">
+    <b>🛡️ Giải pháp thu nợ chính:</b> (1) <i>Guaranteed Installment Agreement</i> (&le; $10,000 cá nhân, 36 tháng); (2) <i>Streamlined Installment Agreement</i> (&le; $50,000 cá nhân, 72 tháng); (3) <i>Offer in Compromise (OIC)</i> dựa trên Doubt as to Collectibility / Doubt as to Liability.
+  </div>
+</aside>
+
+<!-- ============================================================
+     KHỐI SƯ PHẠM: GÓC GIẢNG VIÊN (TEACHER'S CORNER) — ROUND 2
+     Chuẩn: HTML5 Semantic, Tự đủ Offline, In-friendly, Hỗ trợ Toggle
+     ============================================================ -->
+<details class="instructor-corner" id="instructor-corner">
+  <summary class="instructor-summary">
+    <div class="summary-left">
+      <span class="instructor-badge">🎓 GÓC GIẢNG VIÊN</span>
+      <span class="instructor-title">Giáo án Đào tạo SU05: Collection Process, Liens, Levies & OIC</span>
+    </div>
+    <span class="summary-hint">Bấm để Mở / Gập giáo án ▼</span>
+  </summary>
+
+  <div class="instructor-body">
+    <!-- Thanh công cụ toolbar -->
+    <div class="instructor-toolbar">
+      <span class="toolbar-label">Chế độ đào tạo:</span>
+      <span class="toolbar-status">Giáo án Chuyên sâu dành cho Giảng viên & Thí sinh SEE Part III 2026–2027</span>
+      <button type="button" class="btn-print-lesson" onclick="window.print()">🖨️ In Giáo án bài này</button>
+    </div>
+
+    <!-- 1. MỤC TIÊU ĐO LƯỜNG ĐƯỢC -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">🎯</span> 1. Mục tiêu Su phạm Đo lường được (Bloom's Taxonomy)</h4>
+      <p class="corner-intro">Sau khi hoàn thành bài học này, học viên có năng lực thực hiện chuẩn xác các nhiệm vụ sau:</p>
+      <ul class="corner-list target-list">
+        <li><b>[Phân biệt Hai Công cụ Cưỡng chế]:</b> Phân biệt bản chất pháp lý giữa Lệnh cầm giữ tài sản thuế (Federal Tax Lien theo <code>IRC §6321/§6323</code> — bảo toàn quyền ưu tiên nợ) với Lệnh tịch biên cưỡng chế tài sản (Levy theo <code>IRC §6331</code> — trực tiếp tịch thu tài sản); nhận diện các khoản tài sản được miễn trừ cưỡng chế theo <code>IRC §6334</code>.</li>
+        <li><b>[Kích hoạt Quyền Khiếu nại CDP]:</b> Áp dụng thủ tục nộp <code>Form 12153</code> trong thời hạn 30 ngày kể từ ngày nhận thông báo siết nợ để kích hoạt Phiên điều trần Quy trình Thu nợ Hợp thức (Collection Due Process — CDP Hearing), tạm dừng toàn bộ hành vi cưỡng chế của IRS.</li>
+        <li><b>[Lập Phương án Thỏa thuận Trả góp (IA)]:</b> Thiết kế các gói Thỏa thuận Trả góp định kỳ qua <code>Form 9465</code>: Guaranteed IA (&le; $10k cá nhân, 36 tháng), Streamlined IA (&le; $50k cá nhân, 72 tháng), và xác lập tình trạng Tạm hoãn thu do khó khăn tài chính (Currently Not Collectible — CNC Status 53).</li>
+        <li><b>[Xây dựng Hồ sơ Đề nghị Giảm nợ OIC]:</b> Tính toán Tiềm năng Thu hồi Hợp lý (Reasonable Collection Potential — RCP) qua Form 433-A/B(OIC) và lập hồ sơ Đề nghị Giảm nợ thuế (Offer in Compromise qua <code>Form 656</code>) dựa trên 3 căn cứ: DATC, DATL, và ETA.</li>
+        <li><b>[Đánh giá Chế tài Quỹ Tín thác TFRP]:</b> Phân tích trách nhiệm cá nhân vô hạn đối với tiền thuế khấu trừ lương của nhân viên theo <code>IRC §6672</code> (Trust Fund Recovery Penalty — 100% tiền thuế thiếu, không thể xóa bỏ khi phá sản).</li>
+      </ul>
+    </section>
+
+    <!-- 2. THỜI LƯỢNG GỢI Ý & PHÂN BỔ GIẢNG DẠY -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">⏱️</span> 2. Thời lượng Gợi ý &amp; Phân bổ Thời gian (Tổng: 90–120 phút)</h4>
+      <div class="table-scroll">
+        <table class="corner-table time-table">
+          <thead>
+            <tr>
+              <th>Phần học</th>
+              <th>Thời lượng</th>
+              <th>Hình thức sư phạm</th>
+              <th>Trọng tâm chuyển giao</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Quy trình Thu nợ & Phân biệt Lien vs Levy</b></td>
+              <td>25 phút</td>
+              <td>Đối chiếu công cụ cưỡng chế & Án lệ</td>
+              <td>Notice of Federal Tax Lien (NFTL); Lệnh siết nợ Levy tài khoản ngân hàng & tiền lương; Danh mục tài sản miễn siết nợ §6334.</td>
+            </tr>
+            <tr>
+              <td><b>Vũ khí Phòng vệ CDP Hearing Form 12153</b></td>
+              <td>30 phút</td>
+              <td>Quy trình khiếu nại thực chiến</td>
+              <td>Quy tắc 30 ngày vàng ngọc; Tạm dừng CSED; CDP Hearing vs Equivalent Hearing; Kháng cáo quyết định CDP lên Tax Court.</td>
+            </tr>
+            <tr>
+              <td><b>Các Giải pháp Trả góp (IA) & Giảm nợ OIC</b></td>
+              <td>35 phút</td>
+              <td>Tính toán bài toán tài chính Form 433-A</td>
+              <td>Guaranteed IA ($10k) vs Streamlined IA ($50k); Công thức tính RCP (Tài sản ròng + Thu nhập khả dụng tương lai); 3 căn cứ nộp Form 656.</td>
+            </tr>
+            <tr>
+              <td><b>Trách nhiệm Quỹ Tín thác TFRP & Bẫy thi SEE</b></td>
+              <td>20 phút</td>
+              <td>Phân tích trách nhiệm cá nhân & Trắc nghiệm</td>
+              <td>3 câu hỏi kiểm nhanh; Điều khoản §6672 TFRP 100%; Điều luật chuẩn Additional Medicare Tax §3101(b)(2); Bẫy CSED 10 năm.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 3. THỨ TỰ GIẢNG DẠY LOGIC (SCAFFOLDING) -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">🪜</span> 3. Thứ tự Giảng dạy Logic (Khung Giàn giáo Sư phạm)</h4>
+      <ol class="corner-steps">
+        <li><b>Bước 1 — Mở đầu bằng Ca Cấp cứu Ngân hàng:</b> Một chủ tiệm nail bị IRS phong tỏa toàn bộ tài khoản ngân hàng và công ty nhận được thông báo trích 70% lương. Người này còn bao nhiêu ngày để hành động? Dẫn dắt vào lệnh Levy và quy tắc đóng băng tài khoản 21 ngày.</li>
+        <li><b>Bước 2 — Phân biệt Lien và Levy:</b> So sánh: Lien giống như 'đóng dấu thế chấp' lên quyền sở hữu nhà đất để ngăn bán chui; Levy giống như 'cảnh sát ập vào bê đồ đạc đi bán đấu giá'.</li>
+        <li><b>Bước 3 — Hướng dẫn Điền Form 12153 (CDP Hearing):</b> Nhấn mạnh thời hạn 30 ngày kể từ ngày ghi trên Notice of Intent to Levy. Nộp đúng hạn thì IRS bị đóng băng mọi hoạt động cưỡng chế; nộp muộn chuyển sang Equivalent Hearing (mất quyền kiện lên Tax Court).</li>
+        <li><b>Bước 4 — Mô hình hóa Công thức OIC (RCP Formula):</b> `RCP = Quick Sale Value (QSV 80% FMV) của tài sản ròng + (Thu nhập hàng tháng - Chi phí sinh hoạt tiêu chuẩn IRS) × 12 hoặc 24 tháng`.</li>
+        <li><b>Bước 5 — Cảnh báo Lằn ranh Đạo đức TFRP (§6672):</b> Khắc sâu: Tiền thuế giữ lại từ lương nhân viên là tiền của chính phủ ủy thác, tiêu vào tiền này là phạm tội hình sự và bị phạt cá nhân 100%, phá sản cá nhân cũng không xóa được!</li>
+      </ol>
+    </section>
+
+    <!-- 4. VÍ DỤ & ẨN DỤ CHO NGƯỜI KHÔNG CHUYÊN -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">💡</span> 4. Ẩn dụ Trực quan &amp; Cầu nối Ngôn ngữ Đời thường</h4>
+      <div class="analogy-box">
+        <div class="analogy-header"><b>«Cơn Bão Siết Nợ Của IRS & Chiếc Phao Cứu Sinh CDP / OIC»</b></div>
+        <p class="analogy-content">
+          Khi một người nợ thuế không phản hồi các thư nhắc nợ ban đầu, IRS sẽ tung ra hai đòn sấm sét: Đầu tiên là 'Lệnh niêm phong' (Lien) cắm chốt lên toàn bộ nhà cửa, xe cộ của bạn. Kế tiếp là 'Lệnh tịch thu' (Levy) giống như chiếc vòi bạch tuộc thọc thẳng vào tài khoản ngân hàng và tiền lương của bạn. Để sống sót trước cơn bão này, Enrolled Agent có trong tay hai chiếc phao cứu sinh thần kỳ: Chiếc phao thứ nhất là **Form 12153 (CDP Hearing)** — chỉ cần bạn ném chiếc phao này trong vòng 30 ngày, toàn bộ vòi bạch tuộc của IRS bị đóng băng tức thì! Chiếc phao thứ hai là **Form 656 (Offer in Compromise)** — nếu thân chủ thực sự kiệt quệ tài chính, bạn có thể đề nghị IRS xóa sạch 90% số nợ để đổi lấy một khoản tiền mặt trả một lần theo công thức RCP!
+        </p>
+      </div>
+    </section>
+
+    <!-- 5. 3–5 LỖI HỌC VIÊN HAY MẮC & CÁCH SỬA -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">⚠️</span> 5. 3–5 Lỗi Học viên Hay Mắc &amp; Phương pháp Khắc phục Triệt để</h4>
+      <div class="pitfall-grid">
+        <div class="pitfall-card">
+          <div class="pitfall-title">❌ Lỗi 1: Nhầm lẫn số điều luật Additional Medicare Tax trong quy trình truy thu</div>
+          <p class="pitfall-desc">Tài liệu cũ từng trích nhầm Additional Medicare Tax là Sec. 1411 (vốn là Net Investment Income Tax).</p>
+          <div class="pitfall-fix">✅ Chuẩn hóa điều luật: Additional Medicare Tax 0.9% nằm tại <code>IRC §3101(b)(2)</code> (đối với nhân viên W-2) và <code>IRC §1401(b)(2)</code> (đối với thu nhập tự doanh SE). Tuyệt đối không nhầm sang IRC §1411 (NIIT 3.8% chỉ áp dụng trên thu nhập đầu tư thụ động).</div>
+        </div>
+        <div class="pitfall-card">
+          <div class="pitfall-title">❌ Lỗi 2: Bỏ lỡ thời hạn 30 ngày để nộp đơn yêu cầu CDP Hearing</div>
+          <p class="pitfall-desc">Học viên nộp Form 12153 ở ngày thứ 35 và vẫn nghĩ mình được đưa vụ việc lên U.S. Tax Court nếu hòa giải bất thành.</p>
+          <div class="pitfall-fix">✅ Hậu quả pháp lý: Nộp sau 30 ngày thì người nộp thuế bị tước quyền CDP và chuyển sang <b>Equivalent Hearing</b>. Quyết định của Equivalent Hearing là chung thẩm nội bộ của Appeals, <b>KHÔNG ĐƯỢC PHÉP KHÁNG CÁO LÊN U.S. TAX COURT</b>!</div>
+        </div>
+        <div class="pitfall-card">
+          <div class="pitfall-title">❌ Lỗi 3: Ảo tưởng nợ thuế Trust Fund Recovery Penalty (TFRP) sẽ hết khi công ty phá sản</div>
+          <p class="pitfall-desc">Nhiều chủ doanh nghiệp nghĩ công ty phá sản giải thể là xong nợ thuế lương nhân viên.</p>
+          <div class="pitfall-fix">✅ Bản chất <code>IRC §6672</code>: TFRP đánh thẳng vào <b>trách nhiệm cá nhân</b> của người chịu trách nhiệm (Responsible Person). Khoản nợ này theo luật phá sản Hoa Kỳ (11 U.S.C. §523(a)(1)(A)) là <b>KHÔNG THỂ XÓA KHI PHÁ SẢN (Non-dischargeable)</b>; nó sẽ bám theo cá nhân đó suốt đời cho đến khi trả hết!</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. 3 CÂU HỎI KIỂM NHANH TẠI LỚP (QUICK CHECKS) -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">❓</span> 6. 3 Câu hỏi Kiểm tra Nhanh tại Lớp (Kèm Đáp án &amp; Lý giải Sư phạm)</h4>
+      <div class="quick-check-box">
+        <div class="qc-item">
+          <p class="qc-q"><b>Câu hỏi 1:</b> Người nộp thuế nhận được thư thông báo 'Notice of Intent to Levy and Notice of Your Right to a Hearing' ghi ngày phát hành là 01/10/2025. Người này có bao nhiêu ngày để nộp Form 12153 nhằm bảo lưu quyền Collection Due Process (CDP) và ngăn chặn việc siết nợ?</p>
+          <details class="qc-ans-details">
+            <summary class="qc-ans-sum">Xem đáp án &amp; Gợi ý giảng giải</summary>
+            <div class="qc-ans-body">
+              <b>Đáp án:</b> Trong vòng <b>30 ngày</b> kể từ ngày ghi trên thông báo (chậm nhất là ngày 31/10/2025).<br><b>Lý giải sư phạm:</b> Nộp trong 30 ngày bảo đảm việc siết nợ bị đình chỉ tự động theo <code>IRC §6330</code> và người nộp thuế giữ quyền kháng cáo quyết định của Appeals lên U.S. Tax Court.
+            </div>
+          </details>
+        </div>
+        <div class="qc-item">
+          <p class="qc-q"><b>Câu hỏi 2:</b> Điều kiện nào sau đây là BẮT BUỘC để người nộp thuế cá nhân được tự động chấp thuận Thỏa thuận Trả góp Đảm bảo (Guaranteed Installment Agreement) theo IRC §6159(c)?</p>
+          <details class="qc-ans-details">
+            <summary class="qc-ans-sum">Xem đáp án &amp; Gợi ý giảng giải</summary>
+            <div class="qc-ans-body">
+              <b>Đáp án:</b> Tổng số nợ thuế (không tính lãi và phạt) từ <b>$10,000 trở xuống</b>; đã nộp đủ tờ khai trong 5 năm trước; và cam kết trả hết trong vòng <b>36 tháng (3 năm)</b>.<br><b>Lý giải sư phạm:</b> Guaranteed IA là quyền theo luật định, IRS bắt buộc phải chấp thuận nếu thỏa mãn đủ 3 điều kiện trên (và người nộp thuế không có IA nào khác trong 5 năm liền kề).
+            </div>
+          </details>
+        </div>
+        <div class="qc-item">
+          <p class="qc-q"><b>Câu hỏi 3:</b> Ngân hàng nhận được Lệnh Tịch biên Cưỡng chế (Notice of Levy) từ IRS yêu cầu trích nợ từ tài khoản ngân hàng của khách hàng. Ngân hàng phải phong tỏa số dư và giữ lại trong bao nhiêu ngày trước khi chính thức chuyển tiền cho IRS?</p>
+          <details class="qc-ans-details">
+            <summary class="qc-ans-sum">Xem đáp án &amp; Gợi ý giảng giải</summary>
+            <div class="qc-ans-body">
+              <b>Đáp án:</b> Giữ lại đúng <b>21 ngày</b> (21-Day Holding Period).<br><b>Lý giải sư phạm:</b> Theo <code>IRC §6332(c)</code>, ngân hàng phải đóng băng số dư có trong tài khoản tại thời điểm nhận lệnh và giữ nguyên trong 21 ngày. Đây là khoảng thời gian vàng để người nộp thuế hoặc EA liên hệ với IRS chứng minh khó khăn tài chính hoặc nộp đơn khiếu nại để giải tỏa lệnh phong tỏa.
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. BẪY THI SEE & CHIÊU TRÒ ĐỀ THI -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">🪤</span> 7. Giải mã Bẫy Đề thi SEE (SEE Exam Traps)</h4>
+      <div class="exam-trap-box">
+        <div class="exam-trap-title">Cảnh báo Trọng tâm từ Chuyên gia Khảo thí PSI:</div>
+        <ul class="exam-trap-list">
+          <li><b>Bẫy 'Thời hiệu Thu nợ 10 năm (CSED - Collection Statute Expiration Date)':</b> Theo <code>IRC §6502</code>, IRS có 10 năm để thu nợ kể từ ngày ấn định thuế. NHƯNG hãy cẩn thận: Khi bạn nộp đơn OIC, nộp đơn CDP Hearing, hoặc nộp đơn xin phá sản, chiếc đồng hồ 10 năm CSED sẽ BỊ ĐÓNG BĂNG TẠM DỪNG (cộng thêm 30 ngày sau khi có kết quả)!</li>
+          <li><b>Bẫy 'Phí nộp đơn xin giảm nợ OIC':</b> Nộp Form 656 bắt buộc kèm phí thụ lý không hoàn lại là <b>$205</b> và khoản thanh toán ban đầu (Initial Payment), trừ khi người nộp thuế đủ điều kiện miễn trừ theo diện thu nhập thấp (Low-Income Certification).</li>
+          <li><b>Bẫy 'Tài sản miễn Levy §6334':</b> Tiền trợ cấp thất nghiệp, trợ cấp thương tật quân đội, tiền nuôi con theo phán quyết của tòa án, và một phần tiền lương tối thiểu hàng tuần được MIỄN CƯỠNG CHẾ tuyệt đối!</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 8. LIÊN HỆ BIỂU MẪU THỰC HÀNH -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">📋</span> 8. Liên hệ Biểu mẫu Thực hành (IRS Form Mapping)</h4>
+      <div class="form-mapping-grid">
+        <div class="form-map-card">
+          <div class="form-map-num">Form 12153 (Request for a Collection Due Process or Equivalent Hearing)</div>
+          <div class="form-map-detail">Vũ khí phòng vệ số 1 để ngăn chặn hành vi cưỡng chế siết nợ của IRS trong vòng 30 ngày.</div>
+        </div>
+        <div class="form-map-card">
+          <div class="form-map-num">Form 656 & Form 433-A (OIC)</div>
+          <div class="form-map-detail">Bộ hồ sơ Đề nghị Giảm nợ thuế (Offer in Compromise) dựa trên bản kê khai tài chính và tính toán Reasonable Collection Potential.</div>
+        </div>
+        <div class="form-map-card">
+          <div class="form-map-num">Form 9465 (Installment Agreement Request)</div>
+          <div class="form-map-detail">Đơn xin trả góp tiền thuế định kỳ hằng tháng nộp trực tuyến hoặc gửi bưu điện.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. LIÊN KẾT BÀI TRƯỚC / BÀI SAU -->
+    <section class="corner-section corner-footer-nav">
+      <h4 class="corner-heading"><span class="corner-icon">🔗</span> 9. Bản đồ Liên kết Bài học (Curriculum Scaffolding)</h4>
+      <div class="curriculum-links">
+        <div class="curr-prev"><b>⬅️ Bước chuyển giao từ SU04:</b> Sau khi kết thúc quy trình kiểm toán và xác định số thuế nợ không thể khiếu nại thêm, bài SU05 cung cấp toàn bộ công cụ giải quyết nợ thuế và bảo vệ tài sản thân chủ.</div>
+        <div class="curr-next"><b>➡️ Bước đệm bài tiếp theo (SU06):</b> Bài SU06 sẽ đưa học viên lên tầm vĩ mô của khoa học pháp lý thuế: Kim tự tháp nguồn luật (Statutory vs Administrative vs Judicial), Hiệp định thuế quốc tế, và Án lệ Golsen.</div>
+      </div>
+    </section>
+
+  </div>
+</details>
+<!-- ============================================================ KẾT THÚC GÓC GIẢNG VIÊN ============================================================ -->
+
 
 <!-- ============================================================ 5.1 COLLECTIONS ============================================================ -->
 <div class="c1">
@@ -119,6 +307,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ 5.1</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">assessment notice</td><td class="vn">thông báo số thuế đã assess, bắt đầu quy trình thu</td></tr>
@@ -128,6 +317,7 @@
 <tr><td class="word">refund offset</td><td class="vn">bù trừ tiền hoàn thuế vào khoản nợ khác</td></tr>
 <tr><td class="word">Collection Financial Standards</td><td class="vn">Tiêu chuẩn tài chính đánh giá khả năng trả nợ</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm 5.1</h3>
 <div class="content-block">
@@ -185,6 +375,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ 5.2</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">Offer in Compromise (OIC)</td><td class="vn">Đề nghị thỏa hiệp nợ thuế (trả ít hơn tổng nợ)</td></tr>
@@ -193,6 +384,7 @@
 <tr><td class="word">Collection Statute Expiration Date (CSED)</td><td class="vn">Ngày hết thời hiệu thu nợ</td></tr>
 <tr><td class="word">Form 656 / 656-L</td><td class="vn">Đơn OIC chuẩn / OIC dựa trên doubt as to liability</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm 5.2</h3>
 <div class="content-block">
@@ -249,6 +441,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ 5.3</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">Notice of Federal Tax Lien (NFTL)</td><td class="vn">Thông báo lien thuế liên bang</td></tr>
@@ -258,6 +451,7 @@
 <tr><td class="word">Collection Due Process (CDP) hearing</td><td class="vn">Buổi điều trần quy trình thu nợ đúng luật</td></tr>
 <tr><td class="word">discharge (bankruptcy)</td><td class="vn">xóa nợ thuế qua thủ tục phá sản</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm 5.3</h3>
 <div class="content-block">
@@ -290,10 +484,11 @@
 <p>Phạt áp dụng cho người CÓ TRÁCH NHIỆM (responsible person) thu/trả thuế withheld mà CỐ Ý (willfully) không thu/trả. Responsible person = người có NHIỆM VỤ thực hiện & QUYỀN chỉ đạo việc thu/kế toán/trả trust fund tax — có thể là officer/employee của corp, thành viên/employee của partnership, director/shareholder, hoặc thành viên board of trustees. <b>Lưu ý:</b> nhân viên không giữ chức vụ/không có cổ phần ít khi bị phạt.</p>
 <p><b>Willful:</b> có tự do lựa chọn nhưng cố ý bỏ qua luật hoặc thờ ơ rõ ràng với yêu cầu pháp lý. Nhân viên KHÔNG chịu trách nhiệm nếu chức năng của họ CHỈ là trả bill theo chỉ đạo supervisor (không có quyền quyết định chủ nợ nào được trả).</p>
 <p><b>Mức phạt = 100%</b> số trust fund tax chưa trả. Additional Medicare tax theo Sec. 1411 KHÔNG được xem là trust fund tax. TFRP KHÔNG được discharge qua phá sản dù có/không được đưa vào kế hoạch hay proof of claim đúng hạn.</p>
-<p style="background:#fff7e0;border-left:4px solid #e0a800;padding:6px 10px;border-radius:6px;margin:8px 0">⚠️ <b>Luật hiện hành (kiểm 2026-10-25):</b> <b>§1411 là Net Investment Income Tax (NIIT)</b>, không phải Additional Medicare Tax (Additional Medicare Tax nằm ở §3101(b)(2) và §3102(f)). Gleim ghi nhầm số điều; ý “không được xem là trust fund tax” là điểm Gleim nhấn, cần nhớ theo Gleim.</p>
+<p style="background:#fff7e0;border-left:4px solid #e0a800;padding:6px 10px;border-radius:6px;margin:8px 0">⚠️ <b>Luật hiện hành (kiểm 2026-10-25):</b> <b>§1411 là Net Investment Income Tax (NIIT)</b>, không phải Additional Medicare Tax (Additional Medicare Tax nằm ở §3101(b)(2) và §3102(f)). luật thuế chuẩn ghi nhầm số điều; ý “không được xem là trust fund tax” là điểm luật thuế chuẩn nhấn, cần nhớ theo luật thuế chuẩn.</p>
 </div>
 
 <h3 class="lesson">Các Form liên quan TFRP Assessment</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Form</th><th>Ý nghĩa</th></tr>
 <tr><td class="word">Form CT-1</td><td class="vn">Employer's Annual Railroad Retirement Tax Return</td></tr>
@@ -306,8 +501,10 @@
 <tr><td class="word">Form 8288</td><td class="vn">U.S. Withholding Tax Return (Foreign Persons — U.S. Real Property)</td></tr>
 <tr><td class="word">Form 8804</td><td class="vn">Annual Return for Partnership Withholding Tax (Sec. 1446)</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Thuật ngữ 5.4</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">Trust Fund Recovery Penalty (TFRP)</td><td class="vn">Phạt truy thu quỹ ủy thác (100% thuế withheld chưa trả)</td></tr>
@@ -316,6 +513,7 @@
 <tr><td class="word">trust fund taxes</td><td class="vn">thuế thu nhập withheld + phần FICA employee</td></tr>
 <tr><td class="word">responsible officer/director/shareholder</td><td class="vn">officer/director/cổ đông có thể là responsible person</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm 5.4</h3>
 <div class="content-block">
@@ -337,5 +535,18 @@
 </div>
 </div>
 
+<footer class="authority-footer">
+  <h4>🏛️ Nguồn chính thống &amp; Ngày đối chiếu</h4>
+  <ul>
+    <li><b>Bộ luật:</b> Internal Revenue Code (26 U.S.C.) §§ 6321, 6323, 6331, 6334, 6672, 7122, 3101(b)(2).</li>
+    <li><b>Hướng dẫn IRS:</b> Rev. Proc. 2024-40 §2.52; Rev. Proc. 2025-32 §4.53; IRS Pub. 594 (The IRS Collection Process), Pub. 1660 (Collection Appeal Rights).</li>
+    <li><b>Chuẩn kỳ thi:</b> PSI SEE Candidate Information Bulletin (2026–2027). Ngày đối chiếu: <b>2026-11-01</b>.</li>
+  </ul>
+</footer>
+<nav class="lesson-nav lesson-nav-bottom" aria-label="Điều hướng cuối bài">
+  <a class="nav-back" href="EA3_SU04_Examination_of_Returns_and_Appeals_Process.html">← Bài trước: SU04</a>
+  <a class="nav-next" href="EA3_SU06_Tax_Authority.html">Bài tiếp: SU06 →</a>
+</nav>
+</main>
 </body>
 </html>

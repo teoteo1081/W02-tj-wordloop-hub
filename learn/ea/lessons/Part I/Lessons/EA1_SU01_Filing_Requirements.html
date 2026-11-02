@@ -6,65 +6,30 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'ea'});</script>
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>EA Part I – SU01: Filing Requirements</title>
-<style>
-  @page { size: A4; margin: 14mm 12mm; }
-  * { box-sizing: border-box; }
-  body { font-family:'Segoe UI','Calibri',Arial,sans-serif; color:#33322f; font-size:15.5px; line-height:1.5; background:#fdfcfa; margin:0; }
-  .cover { background: linear-gradient(120deg,#bfe4ff 0%,#d6ecff 30%,#e6def7 65%,#fbe6f4 100%); border-radius:20px; padding:40px 30px; text-align:center; margin-bottom:10px; box-shadow:0 6px 18px rgba(120,130,180,.25); border:1px solid #dfe8f5; }
-  .cover .tag { display:inline-block; background:#33314a; color:#d6ecff; font-weight:700; letter-spacing:2px; font-size:13px; padding:5px 14px; border-radius:20px; margin-bottom:14px; }
-  .cover h1 { font-size:30px; margin:6px 0; color:#3170a8; }
-  .cover h2 { font-size:16px; font-weight:500; margin:4px 0 0; opacity:.9; color:#33314a; }
-  .cover .books { margin-top:16px; font-size:13.5px; background:rgba(255,255,255,.55); display:inline-block; padding:8px 16px; border-radius:10px; color:#33314a; }
-  .toc { background:#fff; border:1.5px solid #dfe8f5; border-radius:14px; padding:18px 26px; margin-bottom:30px; }
-  .toc h3 { margin-top:0; color:#3170a8; }
-  .toc ol { margin:0; padding-left:22px; } .toc li{ margin-bottom:6px; }
-  h2.section { font-size:23px; color:#33314a; padding:12px 18px; border-radius:12px; margin:34px 0 14px; border-left:10px solid var(--accent,#5aa9d6); background:var(--bg,#eaf6fd); }
-  h3.lesson { font-size:19px; color:var(--accent-dark,#276a91); border-left:6px solid var(--accent,#5aa9d6); background:var(--bg-soft,#f3fafd); padding:8px 14px; border-radius:6px; margin:22px 0 10px; }
-  .c1{--accent:#5aa9d6;--accent-dark:#276a91;--bg:#eaf6fd;--bg-soft:#f3fafd;--head:#a9d4ec;}
-  .c2{--accent:#a892d9;--accent-dark:#5c4696;--bg:#f1ecfb;--bg-soft:#f8f5fd;--head:#cabdec;}
-  .c3{--accent:#f0a66e;--accent-dark:#b8620b;--bg:#fdeee2;--bg-soft:#fff8f0;--head:#f4c299;}
-  .c4{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
-  .c5{--accent:#e07b9b;--accent-dark:#a3335a;--bg:#fbe9f0;--bg-soft:#fdf5f8;--head:#f3b6c9;}
-  .c6{--accent:#5bb8b0;--accent-dark:#1f7a72;--bg:#e5f7f5;--bg-soft:#f2fbfa;--head:#a6e3dd;}
-  .cKey{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
-  table.vocab { width:100%; border-collapse:collapse; margin-bottom:20px; font-size:.96em; box-shadow:0 2px 8px rgba(0,0,0,.05); border-radius:10px; overflow:hidden; }
-  table.vocab th { background:var(--head,#5aa9d6); color:#2d2d2d; padding:9px 8px; text-align:left; }
-  table.vocab td { padding:8px 8px; border-bottom:1px solid var(--bg,#eaf6fd); vertical-align:top; }
-  table.vocab tr:nth-child(even) td { background:var(--bg-soft,#faf6f0); }
-  table.vocab tr:nth-child(odd) td { background:#fff; }
-  table.vocab td.word { font-weight:800; color:var(--accent-dark,#276a91); }
-  table.vocab td.vn { font-weight:700; color:#3d6ba8; }
-  .rule-box { background:var(--bg,#eaf6fd); border-left:6px solid var(--accent,#5aa9d6); border-radius:8px; padding:12px 18px; margin:10px 0; }
-  .rule-box table { width:100%; border-collapse:collapse; margin:8px 0 4px; }
-  .rule-box table td, .rule-box table th { padding:6px 8px; border-bottom:1px solid rgba(0,0,0,.08); text-align:left; font-size:.94em; }
-  .rule-box table th { color:var(--accent-dark,#276a91); }
-  .rule-box ul, .rule-box ol { margin:6px 0; padding-left:22px; } .rule-box li{ margin-bottom:5px; }
-  .struct { font-weight:800; color:#b8620b; font-family:'Consolas','Courier New',monospace; }
-  .example-box { background:#fff; border:1.5px dashed var(--accent,#5aa9d6); border-radius:8px; padding:10px 16px; margin:10px 0; font-size:.95em; }
-  .example-box b.ex-tag { color:var(--accent-dark,#276a91); }
-  .mcq { background:#fff; border:1.5px solid var(--accent,#5aa9d6); border-radius:10px; padding:12px 18px; margin-bottom:12px; }
-  .mcq .q { color:#3d6ba8; font-weight:700; margin-bottom:6px; }
-  .mcq .opt { margin:2px 0 2px 10px; }
-  .content-block { background:#fff; border:2px dashed var(--accent,#5aa9d6); border-radius:12px; padding:16px 20px; margin-bottom:18px; }
-  .key-grid { column-count:1; } .key-grid div{ margin-bottom:10px; }
-  .key-ans { color:#20824f; font-weight:800; }
-  .key-exp { color:#555; font-size:.95em; }
-  .pagebreak { page-break-before: always; }
-  .note { font-size:.85em; color:#8a8a8a; font-style:italic; }
-  .source-tag { font-size:.8em; color:#999; font-style:italic; }
-</style>
+<link rel="stylesheet" href="../../lesson-2026.css">
+
 </head>
 <body>
+<main class="lesson-shell">
+<nav class="lesson-nav" aria-label="Điều hướng bài học">
+  <a class="nav-back" href="../../../index.html">← Danh mục EA Quest</a>
+  <span class="nav-meta">Part I • SU01</span>
+  <a class="nav-next" href="EA1_SU02_Gross_Income_I.html">Bài tiếp: SU02 →</a>
+</nav>
 
 <div class="cover">
   <div class="tag">EA EXAM PREP • PART I — INDIVIDUALS • SU01</div>
   <h1>📗 SU01 — FILING REQUIREMENTS</h1>
-  <h2>Bản song ngữ Việt–Anh, bám sát giáo trình Gleim 2026</h2>
+  <h2>Bản song ngữ Việt–Anh, đối chiếu chuẩn luật thuế Liên bang & kỳ thi SEE 2026–2027</h2>
   <div class="books">📖 Khái niệm · 🔤 Thuật ngữ · 📌 Ví dụ minh họa · ❓ Câu hỏi trắc nghiệm · 🔑 Đáp án trang sau</div>
-</div>
 
-<div class="toc">
+<div class="exam-dual-banner">
+  <div class="banner-see">🎯 <b>Đề thi hiện hành (SEE 2026–27 / PSI):</b> Áp dụng luật đến <b>31/12/2025 (TY2025)</b></div>
+  <div class="banner-practice">💼 <b>Hành nghề mùa mới:</b> Số liệu <b>TY2026</b> nằm trong hộp <i>«Cập nhật 2026»</i></div>
+</div>
+</div><div class="toc">
 <h3>📑 Mục lục SU01</h3>
 <ol>
 <li>1.1 Preliminary Work to Prepare Tax Returns (Công việc chuẩn bị trước khi khai thuế)</li>
@@ -74,8 +39,233 @@
 <li>1.5 Dependent's Unearned Income (Thu nhập không từ lao động của người phụ thuộc / Kiddie Tax)</li>
 <li>1.6 Nonresident and Dual-Status Aliens (Người nước ngoài không cư trú & tình trạng kép)</li>
 </ol>
-<p class="note">Nguồn: Gleim EA Review, Study Unit 1 — Filing Requirements (2026). Số liệu ($ threshold...) theo năm 2025, cần đối chiếu năm thi thực tế nếu có cập nhật.</p>
+
 </div>
+
+<aside class="ea-update-2026" aria-label="Cập nhật luật thuế 2026">
+  <h3>⚡ Cập nhật luật thuế 2026 &amp; So sánh năm</h3>
+  <p><b>Luật OBBBA (P.L. 119-21)</b> điều chỉnh tăng mạnh Standard Deduction từ năm thuế 2025. Thí sinh thi SEE chu kỳ 2026–2027 (chốt luật 31/12/2025) cần nắm vững các mức áp dụng TY2025, đồng thời lưu ý các ngưỡng điều chỉnh trượt giá cho TY2026 khi hành nghề thực tế:</p>
+  <div class="table-scroll">
+    <table class="compare-table">
+      <thead>
+        <tr><th>Chỉ tiêu / Tình trạng khai thuế</th><th>TY2024 (cũ)</th><th class="col-tested">TY2025 (Thi SEE 2026–27)</th><th>TY2026 (Sắp tới — Hành nghề)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><b>Single / MFS</b> (<code>IRC §63(c)(7)</code>)</td><td>$14,600</td><td class="col-tested"><b>$15,750</b></td><td>$16,100</td></tr>
+        <tr><td><b>MFJ / QSS</b> (<code>IRC §63(c)(7)</code>)</td><td>$29,200</td><td class="col-tested"><b>$31,500</b></td><td>$32,200</td></tr>
+        <tr><td><b>Head of Household (HOH)</b></td><td>$21,900</td><td class="col-tested"><b>$23,625</b></td><td>$24,150</td></tr>
+        <tr><td><b>Khấu trừ bổ sung người cao tuổi (≥65) / mù</b></td><td>$1,550 / $1,950</td><td class="col-tested"><b>$1,600 / $2,000</b></td><td>$1,650 / $2,050</td></tr>
+        <tr><td><b>Khấu trừ Senior mới (OBBBA Sec. 70103)</b></td><td>$0</td><td class="col-tested"><b>$6,000 / người ($12,000 MFJ)</b></td><td>$6,000 (phase-out >$75k/$150k)</td></tr>
+        <tr><td><b>Standard Deduction cho Dependent</b></td><td>$1,300 hoặc Earned+$450</td><td class="col-tested"><b>$1,350 hoặc Earned+$450</b></td><td>$1,350 hoặc Earned+$450</td></tr>
+        <tr><td><b>Thu nhập tối đa của Qualifying Relative</b></td><td>$5,050</td><td class="col-tested"><b>$5,200</b></td><td>$5,300</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="upcoming-box">
+    <b>⏳ Lưu ý kỳ thi SEE 2026–2027:</b> Đề thi kiểm tra theo năm luật <b>TY2025</b>. Số liệu <b>TY2026</b> chỉ dùng khi tư vấn lập tờ khai thuế năm 2026.
+  </div>
+</aside>
+
+<!-- ============================================================
+     KHỐI SƯ PHẠM: GÓC GIẢNG VIÊN (TEACHER'S CORNER) — ROUND 2
+     Chuẩn: HTML5 Semantic, Tự đủ Offline, In-friendly, Hỗ trợ Toggle
+     ============================================================ -->
+<details class="instructor-corner" id="instructor-corner">
+  <summary class="instructor-summary">
+    <div class="summary-left">
+      <span class="instructor-badge">🎓 GÓC GIẢNG VIÊN</span>
+      <span class="instructor-title">Giáo án Đào tạo SU01: Filing Requirements & Status (SEE Prep)</span>
+    </div>
+    <span class="summary-hint">Bấm để Mở / Gập giáo án ▼</span>
+  </summary>
+
+  <div class="instructor-body">
+    <!-- Thanh công cụ toolbar -->
+    <div class="instructor-toolbar">
+      <span class="toolbar-label">Chế độ đào tạo:</span>
+      <span class="toolbar-status">Giáo án Chuyên sâu dành cho Giảng viên &amp; Thí sinh SEE 2026–2027</span>
+      <button type="button" class="btn-print-lesson" onclick="window.print()">🖨️ In Giáo án bài này</button>
+    </div>
+
+    <!-- 1. MỤC TIÊU ĐO LƯỜNG ĐƯỢC -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">🎯</span> 1. Mục tiêu Sư phạm Đo lường được (Bloom's Taxonomy)</h4>
+      <p class="corner-intro">Sau khi hoàn thành bài học này, học viên có năng lực thực hiện chuẩn xác các nhiệm vụ sau:</p>
+      <ul class="corner-list target-list">
+        <li><b>[Nhận biết &amp; Hiểu]:</b> Xác định đúng 100% các ngưỡng thu nhập gộp (Gross Income thresholds) bắt buộc phải nộp Form 1040 theo từng tình trạng khai thuế cho năm thuế TY2025 (Single/MFS $15,750; MFJ/QSS $31,500; HOH $23,625 theo OBBBA Sec. 70102).</li>
+        <li><b>[Phân tích]:</b> So sánh và lựa chọn tình trạng khai thuế tối ưu nhất về mặt tài chính giữa Single, MFJ, MFS, HOH và Qualifying Surviving Spouse (QSS), đặc biệt phân biệt quy tắc 'Considered Unmarried' cho người vợ/chồng ly thân.</li>
+        <li><b>[Áp dụng]:</b> Phân loại chính xác người phụ thuộc theo hai nhánh Qualifying Child (QC) và Qualifying Relative (QR) theo <code>IRC §152</code>; tính đúng mức Standard Deduction cho người phụ thuộc theo công thức <code>Max($1,350; Earned Income + $450)</code>.</li>
+        <li><b>[Đánh giá]:</b> Tính toán số thuế Kiddie Tax (<code>Form 8615 / Form 8814</code>) đối với thu nhập thụ động chưa kiếm được (Unearned Income) vượt ngưỡng $2,700 của trẻ em và xác định tình trạng cư trú thuế qua Green Card Test và Substantial Presence Test (công thức 1 + 1/3 + 1/6).</li>
+      </ul>
+    </section>
+
+    <!-- 2. THỜI LƯỢNG GỢI Ý & PHÂN BỔ GIẢNG DẠY -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">⏱️</span> 2. Thời lượng Gợi ý &amp; Phân bổ Thời gian (Tổng: 90–120 phút)</h4>
+      <div class="table-scroll">
+        <table class="corner-table time-table">
+          <thead>
+            <tr>
+              <th>Phần học</th>
+              <th>Thời lượng</th>
+              <th>Hình thức sư phạm</th>
+              <th>Trọng tâm chuyển giao</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Khởi động & Cấu trúc Tờ khai Form 1040</b></td>
+              <td>20 phút</td>
+              <td>Dẫn chứng tình huống khách hàng thực tế</td>
+              <td>Sơ đồ phễu thuế; Phân biệt SSN vs ITIN; Khung thời gian nộp 15/04 và gia hạn Form 4868 đến 15/10.</td>
+            </tr>
+            <tr>
+              <td><b>Phân loại Filing Status & Khấu trừ Chuẩn OBBBA</b></td>
+              <td>35 phút</td>
+              <td>Thuyết trình đối chiếu + Cây quyết định</td>
+              <td>5 tình trạng khai thuế; Nhấn mạnh tác động tăng vọt của Standard Deduction TY2025 sau OBBBA P.L. 119-21; Khấu trừ Senior $6,000.</td>
+            </tr>
+            <tr>
+              <td><b>Quy tắc Người Phụ Thuộc (QC vs QR) & Kiddie Tax</b></td>
+              <td>35 phút</td>
+              <td>Bài tập phân vai & Mổ xẻ 5 bài toán khó</td>
+              <td>So sánh 4 bài test của QC vs 4 bài test của QR; Cạm bẫy Gross Income Test $5,200; Ngưỡng Kiddie Tax $2,700.</td>
+            </tr>
+            <tr>
+              <td><b>Giải mã Bẫy thi SEE & Đánh giá năng lực</b></td>
+              <td>20 phút</td>
+              <td>Giải đề trắc nghiệm phản xạ</td>
+              <td>3 câu hỏi kiểm nhanh; Phân tích 3 bẫy kinh điển của PSI; Thực hành kiểm tra Form 1040 Page 1.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 3. THỨ TỰ GIẢNG DẠY LOGIC (SCAFFOLDING) -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">🪜</span> 3. Thứ tự Giảng dạy Logic (Khung Giàn giáo Sư phạm)</h4>
+      <ol class="corner-steps">
+        <li><b>Bước 1 — Khơi gợi tò mò (Anchor):</b> Đặt câu hỏi: <i>'Một người cha sống riêng, chu cấp 100% tiền thuê nhà cho con sống với mẹ, người cha có được khai Head of Household không?'</i> Dẫn dắt vào bài toán thực tế của hàng triệu gia đình Mỹ.</li>
+        <li><b>Bước 2 — Xây dựng Cây quyết định (Decision Tree):</b> Hướng dẫn học viên vẽ sơ đồ 5 nhánh Filing Status từ Single -> MFJ -> MFS -> HOH -> QSS; làm rõ vì sao HOH luôn có lợi hơn Single.</li>
+        <li><b>Bước 3 — Lập bảng ma trận Dependents:</b> Tách đôi bảng trắng thành 2 cột: Qualifying Child (Tuổi, Cư trú, Quan hệ, Hỗ trợ) và Qualifying Relative (Quan hệ/Nhà ở, Gross Income < $5,200, Hỗ trợ > 50%).</li>
+        <li><b>Bước 4 — Mô hình hóa Kiddie Tax (Think-Aloud):</b> Minh họa bài toán trẻ 14 tuổi nhận cổ tức $4,000: $1,350 đầu miễn thuế, $1,350 tiếp theo chịu thuế suất của trẻ (10%), phần vượt $2,700 ($1,300) tính theo thuế suất của cha mẹ.</li>
+        <li><b>Bước 5 — Tự chủ & Rà soát chéo:</b> Học viên giải bài tập độc lập và kiểm tra chéo lẫn nhau về điều kiện Substantial Presence Test 183 ngày.</li>
+      </ol>
+    </section>
+
+    <!-- 4. VÍ DỤ & ẨN DỤ CHO NGƯỜI KHÔNG CHUYÊN -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">💡</span> 4. Ẩn dụ Trực quan &amp; Cầu nối Ngôn ngữ Đời thường</h4>
+      <div class="analogy-box">
+        <div class="analogy-header"><b>«Chiếc Vé Thông Hành Vào Cửa Thuế & Chiếc Xô Khấu Trừ Chuẩn»</b></div>
+        <p class="analogy-content">
+          Hãy hình dung Filing Status giống như 'Hạng vé máy bay' quyết định kích thước hành lý miễn cước bạn được mang lên máy bay thuế. Người độc thân (Single) chỉ được mang vali tiêu chuẩn ($15,750), nhưng khi kết hôn và khai chung (MFJ), hai vợ chồng được gộp thành một kiện hàng khổng lồ ($31,500). Nếu một người mẹ đơn thân phải gánh vác cả gia đình, IRS thưởng cho chiếc vé HOH với mức hành lý ưu đãi ($23,625). Bất kỳ ai có thu nhập vượt quá kích thước chiếc vali miễn cước này đều bắt buộc phải xuất trình vé và khai báo Form 1040!
+        </p>
+      </div>
+    </section>
+
+    <!-- 5. 3–5 LỖI HỌC VIÊN HAY MẮC & CÁCH SỬA -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">⚠️</span> 5. 3–5 Lỗi Học viên Hay Mắc &amp; Phương pháp Khắc phục Triệt để</h4>
+      <div class="pitfall-grid">
+        <div class="pitfall-card">
+          <div class="pitfall-title">❌ Lỗi 1: Nhầm điều kiện cư trú của HOH đối với Cha Mẹ</div>
+          <p class="pitfall-desc">Học viên thường nghĩ người phụ thuộc bắt buộc phải sống cùng nhà trên 6 tháng mới được khai HOH.</p>
+          <div class="pitfall-fix">✅ Khắc sâu ngoại lệ <code>IRC §2(b)(1)(B)</code>: Riêng đối với Cha hoặc Mẹ ruột là Qualifying Relative, người nộp thuế KHÔNG CẦN sống cùng nhà, chỉ cần chi trả trên 50% chi phí duy trì nơi ở của cha mẹ (kể cả viện dưỡng lão hoặc nhà riêng).</div>
+        </div>
+        <div class="pitfall-card">
+          <div class="pitfall-title">❌ Lỗi 2: Nhầm lẫn Gross Income Test của Qualifying Relative</div>
+          <p class="pitfall-desc">Học viên lấy thu nhập ròng sau thuế hoặc tính cả tiền trợ cấp An sinh Xã hội miễn thuế vào ngưỡng $5,200.</p>
+          <div class="pitfall-fix">✅ Cách khắc phục: Ngưỡng $5,200 (TY2025 theo Rev. Proc. 2024-40) CHỈ TÍNH thu nhập gộp chịu thuế (Gross Taxable Income). Các khoản trợ cấp không chịu thuế (Non-taxable Social Security, học bổng miễn phí) bị loại trừ khi xét mốc này.</div>
+        </div>
+        <div class="pitfall-card">
+          <div class="pitfall-title">❌ Lỗi 3: Áp dụng sai công thức Standard Deduction cho người phụ thuộc</div>
+          <p class="pitfall-desc">Học viên thường quên chặn trên của mức khấu trừ chuẩn thông thường.</p>
+          <div class="pitfall-fix">✅ Công thức chuẩn xác: <code>Min(Max($1,350, Earned Income + $450), $15,750)</code>. Ví dụ: con đi làm thêm W-2 kiếm $16,000 thì khấu trừ chuẩn tối đa chỉ là $15,750 (bằng mức Single thông thường).</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. 3 CÂU HỎI KIỂM NHANH TẠI LỚP (QUICK CHECKS) -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">❓</span> 6. 3 Câu hỏi Kiểm tra Nhanh tại Lớp (Kèm Đáp án &amp; Lý giải Sư phạm)</h4>
+      <div class="quick-check-box">
+        <div class="qc-item">
+          <p class="qc-q"><b>Câu hỏi 1:</b> Một người nộp thuế có chồng mất vào ngày 14/02/2025, chưa tái giá và không có con cái hay người phụ thuộc nào. Trong kỳ khai thuế TY2025 nộp vào tháng 4/2026, người này được sử dụng Filing Status nào?</p>
+          <details class="qc-ans-details">
+            <summary class="qc-ans-sum">Xem đáp án &amp; Gợi ý giảng giải</summary>
+            <div class="qc-ans-body">
+              <b>Đáp án:</b> Married Filing Jointly (MFJ) cho năm 2025.<br><b>Lý giải sư phạm:</b> Tình trạng hôn nhân được chốt vào ngày cuối cùng của năm thuế (31/12). Nếu vợ/chồng mất trong năm, người còn sống vẫn được coi là đã kết hôn cho toàn bộ năm đó và được khai MFJ cùng tờ khai cuối cùng của người quá cố. Lưu ý: Sang năm 2026, do không có con phụ thuộc, người này sẽ chuyển về Single chứ không được dùng QSS!
+            </div>
+          </details>
+        </div>
+        <div class="qc-item">
+          <p class="qc-q"><b>Câu hỏi 2:</b> Bé Lan (15 tuổi) được cha mẹ nuôi dưỡng toàn bộ. Trong năm 2025, Lan đi làm phục vụ tiệm bánh có lương W-2 là $3,200 và nhận lãi tiết kiệm ngân hàng Form 1099-INT là $600. Tính mức Standard Deduction của Lan trên tờ khai thuế cá nhân TY2025?</p>
+          <details class="qc-ans-details">
+            <summary class="qc-ans-sum">Xem đáp án &amp; Gợi ý giảng giải</summary>
+            <div class="qc-ans-body">
+              <b>Đáp án:</b> $3,650.<br><b>Lý giải sư phạm:</b> Áp dụng công thức <code>Earned Income ($3,200) + $450 = $3,650</code>. Vì $3,650 lớn hơn mức sàn $1,350 và nhỏ hơn mức trần $15,750, nên Lan được hưởng Standard Deduction là $3,650. Thu nhập chịu thuế của Lan = ($3,200 + $600) - $3,650 = $150.
+            </div>
+          </details>
+        </div>
+        <div class="qc-item">
+          <p class="qc-q"><b>Câu hỏi 3:</b> Khách hàng đến gặp bạn và yêu cầu khai Head of Household vì họ có chu cấp cho một người bạn thân sống cùng nhà trọn vẹn cả năm có thu nhập $3,000. Bạn giải thích thế nào theo Circular 230?</p>
+          <details class="qc-ans-details">
+            <summary class="qc-ans-sum">Xem đáp án &amp; Gợi ý giảng giải</summary>
+            <div class="qc-ans-body">
+              <b>Đáp án:</b> Người bạn thân có thể đủ điều kiện làm Qualifying Relative (thỏa Member of Household Test và thu nhập < $5,200), NHƯNG một người phụ thuộc không có quan hệ huyết thống/họ hàng trực hệ theo luật định thì TUYỆT ĐỐI KHÔNG giúp người nộp thuế đạt chuẩn Head of Household (<code>IRC §2(b)(3)(B)</code>). Người khai chỉ được dùng status Single. Người khai thuế phải từ chối khai HOH để tuân thủ Circular 230 §10.34.
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. BẪY THI SEE & CHIÊU TRÒ ĐỀ THI -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">🪤</span> 7. Giải mã Bẫy Đề thi SEE (SEE Exam Traps)</h4>
+      <div class="exam-trap-box">
+        <div class="exam-trap-title">Cảnh báo Trọng tâm từ Chuyên gia Khảo thí PSI:</div>
+        <ul class="exam-trap-list">
+          <li><b>Bẫy 'Tình trạng ly thân nhưng chưa ly dị':</b> Đề thi cho hai vợ chồng giận nhau sống riêng nhưng chưa có bản án ly hôn hợp pháp của tòa án. Họ KHÔNG THỂ khai Single. Họ chỉ có thể chọn MFJ, MFS, hoặc nếu nuôi con đủ điều kiện thì khai HOH theo diện 'Considered Unmarried'.</li>
+          <li><b>Bẫy 'Thứ tự ưu tiên quyền phụ thuộc (Tie-Breaker Rules)':</b> Khi cả cha và mẹ đều nhận con làm người phụ thuộc nhưng không khai chung, đề thi gài học viên bằng mức thu nhập. Thứ tự chuẩn: (1) Cha mẹ ruột thắng người không phải cha mẹ; (2) Người sống cùng con nhiều ngày hơn; (3) Nếu bằng ngày thì ai có AGI cao hơn sẽ thắng!</li>
+          <li><b>Bẫy 'Số liệu cũ TCJA vs OBBBA':</b> Đề thi đưa ra con số $14,600 (TY2024) hoặc $15,000 (dự thảo cũ) để làm phương án nhiễu. Thí sinh phải nhớ vững: Mức Standard Deduction Single TY2025 là $15,750!</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 8. LIÊN HỆ BIỂU MẪU THỰC HÀNH -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">📋</span> 8. Liên hệ Biểu mẫu Thực hành (IRS Form Mapping)</h4>
+      <div class="form-mapping-grid">
+        <div class="form-map-card">
+          <div class="form-map-num">Form 1040 — Trang 1 (Phần đầu)</div>
+          <div class="form-map-detail">Hộp kiểm Filing Status (Single, MFJ, MFS, HOH, QSS), Họ tên, SSN người phối ngẫu, Khấu trừ bổ sung Age/Blindness.</div>
+        </div>
+        <div class="form-map-card">
+          <div class="form-map-num">Form 1040 — Khối Dependents</div>
+          <div class="form-map-detail">Cột (1) Họ tên, (2) SSN, (3) Quan hệ, (4) Hộp kiểm Child Tax Credit hoặc Credit for Other Dependents.</div>
+        </div>
+        <div class="form-map-card">
+          <div class="form-map-num">Form 8615 & Form 8814</div>
+          <div class="form-map-detail">Tính toán Kiddie Tax cho trẻ em có Unearned Income > $2,700 hoặc bầu chọn khai gộp thu nhập đầu tư của con vào tờ khai cha mẹ.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. LIÊN KẾT BÀI TRƯỚC / BÀI SAU -->
+    <section class="corner-section corner-footer-nav">
+      <h4 class="corner-heading"><span class="corner-icon">🔗</span> 9. Bản đồ Liên kết Bài học (Curriculum Scaffolding)</h4>
+      <div class="curriculum-links">
+        <div class="curr-prev">Đây là bài học mở đầu chương trình EA Part I. Yêu cầu nắm vững nguyên tắc cơ bản về năm thuế (Calendar Year) và phương pháp kế toán tiền mặt (Cash Method).</div>
+        <div class="curr-next"><b>➡️ Bước đệm bài tiếp theo (SU02):</b> Sau khi xác định xong Filing Status và nghĩa vụ nộp đơn, bài SU02 sẽ đi sâu vào việc xác định tổng thu nhập gộp (Gross Income Part I - Tiền lương, Lợi tức, Tiền thưởng, Bồi thường).</div>
+      </div>
+    </section>
+
+  </div>
+</details>
+<!-- ============================================================ KẾT THÚC GÓC GIẢNG VIÊN ============================================================ -->
+
 
 <!-- ============================================================ 1.1 PRELIMINARY WORK ============================================================ -->
 <div class="c1">
@@ -88,6 +278,7 @@
 </div>
 
 <h3 class="lesson">Key Forms &amp; Due Dates (Mẫu đơn & hạn nộp quan trọng)</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Nếu chịu trách nhiệm về...</th><th>Dùng mẫu</th><th>Hạn nộp</th></tr>
 <tr><td class="word">Income tax</td><td>Form 1040 + Schedule C</td><td>Ngày 15 tháng thứ 4 sau khi kết thúc năm thuế</td></tr>
@@ -96,8 +287,10 @@
 <tr><td class="word">SS/Medicare tax & withholding</td><td>Form 941/944</td><td>30/4, 31/7, 31/10, 31/1</td></tr>
 <tr><td class="word">FUTA (thất nghiệp liên bang)</td><td>Form 940</td><td>31/1 (hoặc theo quý nếu nợ &gt;$500)</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Information Returns thường gặp (nguồn gốc thu nhập)</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Form</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">W-2</td><td class="vn">Bảng lương & thuế (nhân viên)</td></tr>
@@ -111,6 +304,7 @@
 <tr><td class="word">1099-S</td><td class="vn">Tiền thu từ giao dịch bất động sản</td></tr>
 <tr><td class="word">Schedule K-1 (1065/1120-S)</td><td class="vn">Phần chia thu nhập của partner/shareholder</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Nondeductible Personal Expenses (Chi phí cá nhân không được khấu trừ)</h3>
 <div class="rule-box">
@@ -118,6 +312,7 @@
 </div>
 
 <h3 class="lesson">Foreign Reporting Requirements (Yêu cầu báo cáo tài sản nước ngoài)</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Form</th><th>Mục đích</th><th>Ngưỡng khai báo</th></tr>
 <tr><td class="word">FinCEN 114 (FBAR)</td><td class="vn">Báo cáo tài khoản ngân hàng/tài chính nước ngoài</td><td>Tổng giá trị &gt;$10,000 bất kỳ lúc nào trong năm; hạn 15/4 (gia hạn 15/10)</td></tr>
@@ -126,6 +321,7 @@
 <tr><td class="word">Form 3520</td><td class="vn">Giao dịch với foreign trust, nhận quà tặng nước ngoài lớn</td><td>—</td></tr>
 <tr><td class="word">Form 8865</td><td class="vn">Lợi ích trong foreign partnership</td><td>4 category (50%+, 10%+, contributed property, reportable event)</td></tr>
 </table>
+</div>
 <div class="example-box"><b class="ex-tag">Ví dụ FBAR:</b> Ngày 1/1 gửi $5,000 vào tài khoản ở nước X. Ngày 1/7 gửi $5,001 vào tài khoản ở nước Y. Ngày 2/7 rút $5,000 từ X. Vì tổng >$10,000 tại một thời điểm bất kỳ trong năm (ngày 1/7: $10,001), taxpayer VẪN phải nộp FBAR năm đó dù sau đó đã rút bớt.</div>
 <p class="note">Lưu ý: Form 8938 và FBAR có mục đích tương tự nhưng KHÔNG thay thế nhau — nhiều người phải nộp cả hai.</p>
 
@@ -137,6 +333,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ 1.1</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">Individual Taxpayer Identification Number (ITIN)</td><td class="vn">Mã số thuế cá nhân (cho người không đủ điều kiện SSN)</td></tr>
@@ -145,6 +342,7 @@
 <tr><td class="word">FBAR</td><td class="vn">Báo cáo tài khoản ngân hàng & tài chính nước ngoài</td></tr>
 <tr><td class="word">effectively connected income</td><td class="vn">thu nhập liên kết thực sự với hoạt động kinh doanh tại Mỹ</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm 1.1</h3>
 <div class="content-block">
@@ -177,11 +375,13 @@
 </div>
 
 <h3 class="lesson">Injured Spouse vs. Innocent Spouse</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Loại</th><th>Áp dụng khi</th><th>Mẫu đơn & thời hạn</th></tr>
 <tr><td class="word">Injured Spouse</td><td class="vn">Refund chung bị giữ để trừ nợ RIÊNG của người kia (child support, nợ liên bang, thuế bang, unemployment debt)</td><td>Form 8379 — trong 3 năm từ hạn nộp hoặc 2 năm từ ngày nộp thuế, tùy cái nào sau</td></tr>
 <tr><td class="word">Innocent Spouse Relief</td><td class="vn">1 người không biết/không có lý do biết về việc khai sai của người kia trên MFJ</td><td>Form 8857 — trong 2 năm từ khi nhận IRS notice về audit/nợ thuế</td></tr>
 </table>
+</div>
 <div class="example-box"><b class="ex-tag">Lưu ý quan trọng:</b> Innocent spouse relief CHỈ áp dụng cho thuế phát sinh từ thu nhập lao động/tự doanh của NGƯỜI KIA — không áp dụng cho: thu nhập của chính người xin relief, household employment taxes, individual shared responsibility payments, business taxes, trust fund recovery penalties.</div>
 <div class="example-box"><b class="ex-tag">Ngoại lệ domestic abuse:</b> Vẫn được xin innocent spouse relief dù đã biết về sai sót, nếu là nạn nhân bạo hành gia đình, không dám phản đối vì sợ hãi, hoặc bị ép ký tờ khai.</div>
 
@@ -201,6 +401,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ 1.2</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">considered married / considered unmarried</td><td class="vn">được xem như đã/chưa kết hôn (theo quy tắc thuế, có thể khác thực tế pháp lý)</td></tr>
@@ -209,6 +410,7 @@
 <tr><td class="word">Request for Innocent Spouse Relief (Form 8857)</td><td class="vn">Đơn xin miễn trách nhiệm vợ/chồng vô can</td></tr>
 <tr><td class="word">qualifying person</td><td class="vn">người đủ điều kiện làm căn cứ tính HOH</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm 1.2</h3>
 <div class="content-block">
@@ -255,6 +457,7 @@
 </div>
 
 <h3 class="lesson">2025 Standard Deduction Amounts</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Filing Status</th><th>Basic</th><th>Additional (65+/blind, mỗi điều kiện)</th></tr>
 <tr><td class="word">MFJ / QSS</td><td>$31,500</td><td>$1,600</td></tr>
@@ -262,6 +465,7 @@
 <tr><td class="word">Single</td><td>$15,750</td><td>$2,000</td></tr>
 <tr><td class="word">MFS</td><td>$15,750</td><td>$1,600</td></tr>
 </table>
+</div>
 <div class="example-box"><b class="ex-tag">Ví dụ additional deduction:</b> Mike, 68 tuổi, mù hợp pháp, khai HOH → basic $23,625 + 2 khoản additional $2,000×2=$4,000 (1 cho 65+, 1 cho blind) = tổng $27,625.</div>
 <p><b>Dependent's basic standard deduction</b> (trẻ &lt;19 hoặc student &lt;24 là dependent người khác): giới hạn = số LỚN HƠN giữa $1,350 hoặc (earned income + $450), tối đa $15,750. Earned income KHÔNG bao gồm dividend/capital gains.</p>
 
@@ -285,6 +489,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ 1.3</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">Qualified Business Income Deduction (QBID)</td><td class="vn">Khấu trừ thu nhập kinh doanh đủ điều kiện</td></tr>
@@ -294,6 +499,7 @@
 <tr><td class="word">reasonable cause vs. willful neglect</td><td class="vn">lý do chính đáng vs. cố ý bỏ mặc (ảnh hưởng miễn/không miễn penalty)</td></tr>
 <tr><td class="word">Identity Protection PIN (IP PIN)</td><td class="vn">Mã PIN bảo vệ danh tính khi khai thuế</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm 1.3</h3>
 <div class="content-block">
@@ -367,6 +573,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ 1.4</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">Qualifying Child / Qualifying Relative</td><td class="vn">Con đủ điều kiện / Họ hàng đủ điều kiện (2 loại dependent)</td></tr>
@@ -376,6 +583,7 @@
 <tr><td class="word">Form 8332</td><td class="vn">Mẫu nhường quyền claim dependent cho noncustodial parent</td></tr>
 <tr><td class="word">Adoption Taxpayer Identification Number (ATIN)</td><td class="vn">Mã số thuế tạm cho con đang trong quá trình nhận nuôi</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm 1.4</h3>
 <div class="content-block">
@@ -411,10 +619,12 @@
 </div>
 
 <h3 class="lesson">Earned vs. Unearned Income (ví dụ)</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Earned (Thu nhập lao động)</th><th>Unearned (Thu nhập không từ lao động)</th></tr>
 <tr><td class="word">Salaries, Wages, Tips</td><td class="vn">Interest, Dividends, Capital gains, Trust distributions, Debt cancellation, Pension/Annuities, Social Security, Royalties, Taxable scholarships</td></tr>
 </table>
+</div>
 
 <div class="example-box"><b class="ex-tag">Ví dụ 1-15:</b> Chris, 5 tuổi, có $5,100 unearned income, không có earned income. NUI = $5,100 − $1,350 (first clause) − $1,350 (standard deduction) = <b>$2,400</b> bị đánh thuế theo mức cha/mẹ.</div>
 <div class="example-box"><b class="ex-tag">Ví dụ 1-16 (Kiddie Tax tổng hợp):</b> Melvin, 15 tuổi, dependent, có $6,450 earned income + $2,800 taxable interest. Taxable income = $9,250 − $6,900 (standard deduction = $6,450+$450) = $2,350. Phần bị đánh thuế theo mức cha/mẹ = $2,800 − $1,350 − $1,350 = $100. Phần còn lại $2,250 đánh thuế theo mức của Melvin.</div>
@@ -426,6 +636,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ 1.5</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">Net Unearned Income (NUI)</td><td class="vn">Thu nhập ròng không từ lao động (căn cứ tính kiddie tax)</td></tr>
@@ -433,6 +644,7 @@
 <tr><td class="word">first $1,350 clause</td><td class="vn">khoản miễn trừ đầu tiên khi tính NUI</td></tr>
 <tr><td class="word">proportioned NUI</td><td class="vn">NUI được phân bổ theo tỷ lệ giữa nhiều con</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm 1.5</h3>
 <div class="content-block">
@@ -450,7 +662,7 @@
 <div class="content-block key-grid">
 <div><b>1.</b> <span class="key-ans">B — $2,400</span><br><span class="key-exp">$5,100 − $1,350 − $1,350 = $2,400.</span></div>
 <div><b>2.</b> <span class="key-ans">C — 19</span><br><span class="key-exp">Dưới 19 (hoặc dưới 24 nếu full-time student) tại thời điểm cuối năm.</span></div>
-<div><b>3.</b> <span class="key-ans">C — Taxable scholarships</span><br><span class="key-exp">Wages/tips/salary đều là earned income; taxable scholarship là unearned income theo bảng phân loại của Gleim.</span></div>
+<div><b>3.</b> <span class="key-ans">C — Taxable scholarships</span><br><span class="key-exp">Wages/tips/salary đều là earned income; taxable scholarship là unearned income theo bảng phân loại của luật thuế chuẩn.</span></div>
 </div>
 </div>
 
@@ -479,6 +691,7 @@
 </div>
 
 <h3 class="lesson">Kết thúc "resident election" (Ending Resident Status)</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Cách kết thúc</th><th>Chi tiết</th></tr>
 <tr><td class="word">Revocation</td><td class="vn">Vợ/chồng nào cũng được thu hồi choice, phải làm trước hạn nộp thuế năm đó, kèm statement ký tên với thông tin cụ thể</td></tr>
@@ -486,8 +699,10 @@
 <tr><td class="word">Divorce/legal separation</td><td class="vn">Kết thúc từ ĐẦU năm thuế xảy ra ly thân hợp pháp</td></tr>
 <tr><td class="word">Inadequate records</td><td class="vn">IRS có thể tự chấm dứt nếu không giữ đủ sổ sách chứng minh thuế</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Thuật ngữ 1.6</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">Green Card Test</td><td class="vn">Kiểm tra thẻ xanh (thường trú nhân hợp pháp)</td></tr>
@@ -496,6 +711,7 @@
 <tr><td class="word">effectively connected income</td><td class="vn">thu nhập liên kết thực sự với hoạt động kinh doanh Mỹ</td></tr>
 <tr><td class="word">revocation (of resident election)</td><td class="vn">thu hồi lựa chọn được coi là resident</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm 1.6</h3>
 <div class="content-block">
@@ -520,5 +736,18 @@
 </div>
 </div>
 
+<footer class="authority-footer">
+  <h4>🏛️ Nguồn chính thống &amp; Ngày đối chiếu</h4>
+  <ul>
+    <li><b>Bộ luật &amp; Đạo luật:</b> Internal Revenue Code (26 U.S.C.) §§ 1, 2, 63, 151, 152, 6012, 6013; Public Law 119-21 (OBBBA, ban hành 04/07/2025, Sec. 70102, 70103).</li>
+    <li><b>Hướng dẫn IRS:</b> Rev. Proc. 2024-40 §2.15, §2.24 (TY2025); Rev. Proc. 2025-32 §3.01, §4.24 (TY2026); IRS Pub. 501 (Dependents, Standard Deduction, and Filing Information).</li>
+    <li><b>Chuẩn kỳ thi:</b> IRS Enrolled Agents FAQ (PSI SEE 2026–2027, chốt luật 31/12/2025). Ngày đối chiếu: <b>2026-11-01</b>.</li>
+  </ul>
+</footer>
+<nav class="lesson-nav lesson-nav-bottom" aria-label="Điều hướng cuối bài">
+  <a class="nav-back" href="../../../index.html">← Danh mục EA Quest</a>
+  <a class="nav-next" href="EA1_SU02_Gross_Income_I.html">Bài tiếp: SU02 →</a>
+</nav>
+</main>
 </body>
 </html>

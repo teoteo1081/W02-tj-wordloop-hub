@@ -6,72 +6,259 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'ea'});</script>
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>EA Part III – SU07: Recordkeeping and Electronic Filing</title>
-<style>
-  @page { size: A4; margin: 14mm 12mm; }
-  * { box-sizing: border-box; }
-  body { font-family:'Segoe UI','Calibri',Arial,sans-serif; color:#33322f; font-size:15.5px; line-height:1.5; background:#fdfcfa; margin:0; }
-  .cover { background: linear-gradient(120deg,#bfe4ff 0%,#d6ecff 30%,#e6def7 65%,#fbe6f4 100%); border-radius:20px; padding:40px 30px; text-align:center; margin-bottom:10px; box-shadow:0 6px 18px rgba(120,130,180,.25); border:1px solid #dfe8f5; }
-  .cover .tag { display:inline-block; background:#33314a; color:#d6ecff; font-weight:700; letter-spacing:2px; font-size:13px; padding:5px 14px; border-radius:20px; margin-bottom:14px; }
-  .cover h1 { font-size:30px; margin:6px 0; color:#3170a8; }
-  .cover h2 { font-size:16px; font-weight:500; margin:4px 0 0; opacity:.9; color:#33314a; }
-  .cover .books { margin-top:16px; font-size:13.5px; background:rgba(255,255,255,.55); display:inline-block; padding:8px 16px; border-radius:10px; color:#33314a; }
-  .toc { background:#fff; border:1.5px solid #dfe8f5; border-radius:14px; padding:18px 26px; margin-bottom:30px; }
-  .toc h3 { margin-top:0; color:#3170a8; }
-  .toc ol { margin:0; padding-left:22px; } .toc li{ margin-bottom:6px; }
-  h2.section { font-size:23px; color:#33314a; padding:12px 18px; border-radius:12px; margin:34px 0 14px; border-left:10px solid var(--accent,#5aa9d6); background:var(--bg,#eaf6fd); }
-  h3.lesson { font-size:19px; color:var(--accent-dark,#276a91); border-left:6px solid var(--accent,#5aa9d6); background:var(--bg-soft,#f3fafd); padding:8px 14px; border-radius:6px; margin:22px 0 10px; }
-  .c1{--accent:#5aa9d6;--accent-dark:#276a91;--bg:#eaf6fd;--bg-soft:#f3fafd;--head:#a9d4ec;}
-  .c2{--accent:#a892d9;--accent-dark:#5c4696;--bg:#f1ecfb;--bg-soft:#f8f5fd;--head:#cabdec;}
-  .c3{--accent:#f0a66e;--accent-dark:#b8620b;--bg:#fdeee2;--bg-soft:#fff8f0;--head:#f4c299;}
-  .c4{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
-  .c5{--accent:#e07b9b;--accent-dark:#a3335a;--bg:#fbe9f0;--bg-soft:#fdf5f8;--head:#f3b6c9;}
-  .c6{--accent:#5bb8b0;--accent-dark:#1f7a72;--bg:#e5f7f5;--bg-soft:#f2fbfa;--head:#a6e3dd;}
-  .cKey{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
-  table.vocab { width:100%; border-collapse:collapse; margin-bottom:20px; font-size:.96em; box-shadow:0 2px 8px rgba(0,0,0,.05); border-radius:10px; overflow:hidden; }
-  table.vocab th { background:var(--head,#5aa9d6); color:#2d2d2d; padding:9px 8px; text-align:left; }
-  table.vocab td { padding:8px 8px; border-bottom:1px solid var(--bg,#eaf6fd); vertical-align:top; }
-  table.vocab tr:nth-child(even) td { background:var(--bg-soft,#faf6f0); }
-  table.vocab tr:nth-child(odd) td { background:#fff; }
-  table.vocab td.word { font-weight:800; color:var(--accent-dark,#276a91); }
-  table.vocab td.vn { font-weight:700; color:#3d6ba8; }
-  .rule-box { background:var(--bg,#eaf6fd); border-left:6px solid var(--accent,#5aa9d6); border-radius:8px; padding:12px 18px; margin:10px 0; }
-  .rule-box table { width:100%; border-collapse:collapse; margin:8px 0 4px; }
-  .rule-box table td, .rule-box table th { padding:6px 8px; border-bottom:1px solid rgba(0,0,0,.08); text-align:left; font-size:.94em; }
-  .rule-box table th { color:var(--accent-dark,#276a91); }
-  .rule-box ul, .rule-box ol { margin:6px 0; padding-left:22px; } .rule-box li{ margin-bottom:5px; }
-  .struct { font-weight:800; color:#b8620b; font-family:'Consolas','Courier New',monospace; }
-  .example-box { background:#fff; border:1.5px dashed var(--accent,#5aa9d6); border-radius:8px; padding:10px 16px; margin:10px 0; font-size:.95em; }
-  .example-box b.ex-tag { color:var(--accent-dark,#276a91); }
-  .mcq { background:#fff; border:1.5px solid var(--accent,#5aa9d6); border-radius:10px; padding:12px 18px; margin-bottom:12px; }
-  .mcq .q { color:#3d6ba8; font-weight:700; margin-bottom:6px; }
-  .mcq .opt { margin:2px 0 2px 10px; }
-  .content-block { background:#fff; border:2px dashed var(--accent,#5aa9d6); border-radius:12px; padding:16px 20px; margin-bottom:18px; }
-  .key-grid { column-count:1; } .key-grid div{ margin-bottom:10px; }
-  .key-ans { color:#20824f; font-weight:800; }
-  .key-exp { color:#555; font-size:.95em; }
-  .pagebreak { page-break-before: always; }
-  .note { font-size:.85em; color:#8a8a8a; font-style:italic; }
-  .source-tag { font-size:.8em; color:#999; font-style:italic; }
-</style>
+<link rel="stylesheet" href="../../lesson-2026.css">
+
 </head>
 <body>
+<main class="lesson-shell">
+<nav class="lesson-nav" aria-label="Điều hướng bài học">
+  <a class="nav-back" href="EA3_SU06_Tax_Authority.html">← Bài trước: SU06</a>
+  <span class="nav-meta">Part III • SU07</span>
+  <a class="nav-next" href="../../Money/EA4_M01_Roadmap_Credentials_and_Practice_Rights.html">Học tiếp Part IV: Kiếm tiền & Hành nghề →</a>
+</nav>
 
 <div class="cover">
   <div class="tag">EA EXAM PREP • PART III — REPRESENTATION, PRACTICES & PROCEDURES • SU07</div>
   <h1>📗 SU07 — RECORDKEEPING AND ELECTRONIC FILING</h1>
-  <h2>Bản song ngữ Việt–Anh, bám sát giáo trình Gleim 2026</h2>
+  <h2>Bản song ngữ Việt–Anh, đối chiếu chuẩn E-File & Kế hoạch Bảo mật Dữ liệu WISP</h2>
   <div class="books">📖 Khái niệm · 🔤 Thuật ngữ · 📌 Ví dụ minh họa · ❓ Câu hỏi trắc nghiệm · 🔑 Đáp án trang sau</div>
-</div>
 
-<div class="toc">
+<div class="exam-dual-banner">
+  <div class="banner-see">🎯 <b>Đề thi hiện hành (SEE 2026–27 / PSI):</b> Áp dụng luật đến <b>31/12/2025 (TY2025)</b></div>
+  <div class="banner-practice">💼 <b>Hành nghề mùa mới:</b> Số liệu <b>TY2026</b> nằm trong hộp <i>«Cập nhật 2026»</i></div>
+</div>
+</div><div class="toc">
 <h3>📑 Mục lục SU07</h3>
 <ol>
 <li>7.1 Recordkeeping (Lưu trữ hồ sơ: thời hạn, transcript, FOIA, IP PIN)</li>
 <li>7.2 Electronic Filing (E-file: các loại provider, Form 8879/8453, sanctions, EFTPS)</li>
 </ol>
-<p class="note">Nguồn: Gleim EA Review, Study Unit 7 — Recordkeeping and Electronic Filing (2026).</p>
+
 </div>
+
+<aside class="ea-update-2026" aria-label="Cập nhật E-File và WISP">
+  <h3>⚡ Bãi bỏ Ngưỡng Cũ 250 Tờ khai &amp; Kế hoạch Bảo mật WISP Bắt buộc</h3>
+  <p>Cập nhật quy định bắt buộc nộp thuế điện tử và nghĩa vụ bảo mật dữ liệu văn phòng:</p>
+  <div class="table-scroll">
+    <table class="compare-table">
+      <thead>
+        <tr><th>Quy tắc E-File &amp; Bảo mật thông tin</th><th>Căn cứ pháp lý &amp; Phạm vi áp dụng</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><b>Quy tắc 1: Preparer cá nhân (<code>IRC §6011(e)(3)</code>)</b></td><td>Dự kiến nộp <b>&ge; 11 tờ khai 1040/1041</b> trong năm bắt buộc phải e-file; khách tự chọn nộp giấy phải ký <b>Form 8948</b>.</td></tr>
+        <tr><td><b>Quy tắc 2: Doanh nghiệp gộp (<code>T.D. 9972</code> từ 2024+)</b></td><td>Nộp <b>tổng gộp &ge; 10 tờ khai mọi loại</b> (W-2, 1099, 1120, 1065...) bắt buộc phải e-file. Ngưỡng cũ 250 tờ khai đã bị <b>bãi bỏ hoàn toàn</b>!</td></tr>
+        <tr><td><b>Kế hoạch bảo mật văn bản WISP (<code>Pub. 4557 / 5708</code>)</b></td><td>Mọi người khai thuế có PTIN/EFIN bắt buộc phải lập <b>Written Information Security Plan</b> theo <i>FTC Safeguards Rule</i> (16 CFR Part 314).</td></tr>
+        <tr><td><b>Phạt sai phạm Information Returns (<code>§6721/§6722</code>)</b></td><td>Mức phạt tối đa năm 2025 là $330; năm 2026 là <b>$340 / tờ khai</b>; năm 2027 là $350.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="upcoming-box">
+    <b>🔒 WISP là bắt buộc:</b> Khi gia hạn PTIN hoặc nộp đơn xin EFIN, người hành nghề phải tích xác nhận đã có bản kế hoạch bảo mật dữ liệu văn phòng (WISP). Không có WISP là vi phạm trực tiếp quy chuẩn bảo mật liên bang.
+  </div>
+</aside>
+
+<!-- ============================================================
+     KHỐI SƯ PHẠM: GÓC GIẢNG VIÊN (TEACHER'S CORNER) — ROUND 2
+     Chuẩn: HTML5 Semantic, Tự đủ Offline, In-friendly, Hỗ trợ Toggle
+     ============================================================ -->
+<details class="instructor-corner" id="instructor-corner">
+  <summary class="instructor-summary">
+    <div class="summary-left">
+      <span class="instructor-badge">🎓 GÓC GIẢNG VIÊN</span>
+      <span class="instructor-title">Giáo án Đào tạo SU07: Recordkeeping, E-File Mandates & WISP Security</span>
+    </div>
+    <span class="summary-hint">Bấm để Mở / Gập giáo án ▼</span>
+  </summary>
+
+  <div class="instructor-body">
+    <!-- Thanh công cụ toolbar -->
+    <div class="instructor-toolbar">
+      <span class="toolbar-label">Chế độ đào tạo:</span>
+      <span class="toolbar-status">Giáo án Chuyên sâu dành cho Giảng viên & Thí sinh SEE Part III 2026–2027</span>
+      <button type="button" class="btn-print-lesson" onclick="window.print()">🖨️ In Giáo án bài này</button>
+    </div>
+
+    <!-- 1. MỤC TIÊU ĐO LƯỜNG ĐƯỢC -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">🎯</span> 1. Mục tiêu Su phạm Đo lường được (Bloom's Taxonomy)</h4>
+      <p class="corner-intro">Sau khi hoàn thành bài học này, học viên có năng lực thực hiện chuẩn xác các nhiệm vụ sau:</p>
+      <ul class="corner-list target-list">
+        <li><b>[Xác định Thời hạn Lưu trữ Hồ sơ]:</b> Nắm vững các mốc thời gian lưu giữ chứng từ thuế theo <code>IRC §6001</code>: 3 năm thông thường, 6 năm nếu bỏ sót >25% Gross Income, 7 năm cho chứng khoán vô giá trị/nợ xấu, vô thời hạn cho tờ khai gian lận; đặc biệt chứng từ cơ sở tài sản (Basis) phải lưu giữ 3 năm sau năm BÁN tài sản.</li>
+        <li><b>[Phân biệt Hai Quy tắc E-File Mandates]:</b> Phân biệt rạch ròi Quy tắc Người khai thuế cá nhân (Specified Tax Return Preparer theo <code>IRC §6011(e)(3)</code>: dự kiến nộp &ge; 11 tờ khai Form 1040/1041; nếu khách nộp giấy phải ký <code>Form 8948</code>) với Quy tắc Gộp Doanh nghiệp (<code>T.D. 9972</code> từ 2024: tổng gộp &ge; 10 tờ khai mọi loại bắt buộc phải e-file; bãi bỏ hoàn toàn ngưỡng cũ 250 tờ khai).</li>
+        <li><b>[Vận hành Quy trình ERO Chuyên nghiệp]:</b> Nắm vững vai trò Electronic Return Originator (ERO), quản lý mã EFIN, bắt buộc nhận được <code>Form 8879</code> có chữ ký đầy đủ trước khi truyền dữ liệu e-file, và xử lý truyền lại tờ khai bị từ chối (Rejection transmission) trong vòng 24 giờ (hoặc 5 ngày nộp giấy).</li>
+        <li><b>[Triển khai Kế hoạch Bảo mật WISP]:</b> Soạn thảo và thực thi Kế hoạch An ninh Thông tin Văn bản (Written Information Security Plan — WISP) bắt buộc theo <i>FTC Safeguards Rule</i> (16 C.F.R. Part 314) và hướng dẫn của IRS (<code>Pub. 4557</code> & <code>Pub. 5708</code>); kích hoạt Quy trình Ứng phó Rò rỉ Dữ liệu (Data Theft Protocol).</li>
+      </ul>
+    </section>
+
+    <!-- 2. THỜI LƯỢNG GỢI Ý & PHÂN BỔ GIẢNG DẠY -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">⏱️</span> 2. Thời lượng Gợi ý &amp; Phân bổ Thời gian (Tổng: 90–120 phút)</h4>
+      <div class="table-scroll">
+        <table class="corner-table time-table">
+          <thead>
+            <tr>
+              <th>Phần học</th>
+              <th>Thời lượng</th>
+              <th>Hình thức sư phạm</th>
+              <th>Trọng tâm chuyển giao</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Quy chuẩn Lưu trữ Hồ sơ & Bẫy Chứng từ Cơ sở</b></td>
+              <td>25 phút</td>
+              <td>Mô hình hóa chu kỳ lưu trữ tài sản</td>
+              <td>Thời hạn 3 năm vs 6 năm vs 7 năm vs Vô thời hạn; Vì sao chứng từ sửa nhà phải lưu 30 năm; Tái tạo hồ sơ bất khả kháng.</td>
+            </tr>
+            <tr>
+              <td><b>Quy chế Bắt buộc Nộp Điện tử (E-File Mandates)</b></td>
+              <td>30 phút</td>
+              <td>Bảng đối chiếu 2 quy tắc luật</td>
+              <td>Luật 11 tờ khai 1040 của Preparer vs Luật gộp 10 tờ khai T.D. 9972; Xóa sổ ngưỡng 250; Ngoại lệ Form 8948 khi khách chọn nộp giấy.</td>
+            </tr>
+            <tr>
+              <td><b>Nghiệp vụ ERO, Form 8879 & Xử lý Lỗi Rejection</b></td>
+              <td>35 phút</td>
+              <td>Mô phỏng quy trình e-file phần mềm</td>
+              <td>Quy trình ký Form 8879; Cấm e-file trước khi có chữ ký; Quản lý mã EFIN; Khắc phục rejection trong 24 giờ; Chế tài kỷ luật ERO.</td>
+            </tr>
+            <tr>
+              <td><b>Kế hoạch Bảo mật WISP & Bẫy thi SEE</b></td>
+              <td>20 phút</td>
+              <td>Thực hành checklist WISP 6 bước & Trắc nghiệm</td>
+              <td>3 câu hỏi kiểm nhanh; 6 bước WISP Pub. 5708; FTC Safeguards Rule; Quy trình báo cáo rò rỉ dữ liệu IRS Stakeholder Liaison.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 3. THỨ TỰ GIẢNG DẠY LOGIC (SCAFFOLDING) -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">🪜</span> 3. Thứ tự Giảng dạy Logic (Khung Giàn giáo Sư phạm)</h4>
+      <ol class="corner-steps">
+        <li><b>Bước 1 — Mở đầu bằng Vụ Án Mất Mã EFIN:</b> Một văn phòng thuế bị hacker tấn công lấy cắp danh tính khách hàng để e-file hoàn thuế giả mạo. IRS khóa mã EFIN và công an ập vào điều tra. Văn phòng đó thiếu cái gì? Dẫn dắt vào nghĩa vụ pháp lý bắt buộc phải có bản kế hoạch WISP.</li>
+        <li><b>Bước 2 — Ma trận Thời hạn Lưu trữ Hồ sơ (§6001):</b> Lập bảng 4 cột: Loại hồ sơ -> Căn cứ kích hoạt -> Thời hạn bắt buộc -> Rủi ro khi tiêu hủy sớm (đặc biệt nhấn mạnh tài sản khấu hao và bất động sản).</li>
+        <li><b>Bước 3 — Đập tan Ngưỡng Cũ 250 Tờ khai:</b> Nhấn mạnh sự thay đổi mang tính cách mạng của T.D. 9972: Từ năm nộp 2024 trở đi, bất kỳ doanh nghiệp nào nộp tổng gộp từ 10 tờ khai trở lên (kể cả 6 cái W-2 + 4 cái 1099) đều bắt buộc phải e-file, không còn ngưỡng 250 riêng rẽ!</li>
+        <li><b>Bước 4 — Quy trình Chuẩn ERO 4 Bước:</b> (1) Nhận tài liệu -> (2) Lập tờ khai và in Form 8879 -> (3) Khách ký Form 8879 -> (4) Truyền dữ liệu sang IRS. Khắc sâu: Đảo lộn bước 3 và bước 4 là vi phạm kỷ luật đình chỉ EFIN!</li>
+        <li><b>Bước 5 — Checklist WISP 1 Trang theo Pub. 5708:</b> Cung cấp cho học viên mẫu kế hoạch an ninh bảo mật 6 trụ cột để sẵn sàng áp dụng ngay cho văn phòng dịch vụ thuế của chính mình.</li>
+      </ol>
+    </section>
+
+    <!-- 4. VÍ DỤ & ẨN DỤ CHO NGƯỜI KHÔNG CHUYÊN -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">💡</span> 4. Ẩn dụ Trực quan &amp; Cầu nối Ngôn ngữ Đời thường</h4>
+      <div class="analogy-box">
+        <div class="analogy-header"><b>«Két Sắt Kỷ Vật Chứng Từ & Pháo Đài Số WISP Của Người Khai Thuế»</b></div>
+        <p class="analogy-content">
+          Hãy hình dung công việc của một Enrolled Agent giống như người cai quản hai kho báu: Kho báu thứ nhất là 'Két sắt kỷ vật chứng từ' — nơi bạn cất giữ toàn bộ hóa đơn, biên lai và hồ sơ cơ sở của khách hàng. Bạn không thể vứt bỏ chiếc hóa đơn sửa mái nhà mua cách đây 25 năm chỉ vì nghĩ đã qua 3 năm; chiếc hóa đơn đó phải nằm im trong két sắt cho đến khi căn nhà được bán đi và thêm 3 năm nữa sau khi nộp tờ khai bán nhà! Kho báu thứ hai là 'Pháo đài số thông tin khách hàng' được bảo vệ bởi bức tường thành **WISP**. Trong thời đại tin tặc hoành hành, một tờ giấy kế hoạch WISP không chỉ là thủ tục hành chính đối phó với IRS, mà nó chính là tấm khiên giáp bảo vệ bạn khỏi những án phạt hàng triệu đô la của FTC và giữ cho mã EFIN hành nghề của bạn luôn luôn sáng đèn!
+        </p>
+      </div>
+    </section>
+
+    <!-- 5. 3–5 LỖI HỌC VIÊN HAY MẮC & CÁCH SỬA -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">⚠️</span> 5. 3–5 Lỗi Học viên Hay Mắc &amp; Phương pháp Khắc phục Triệt để</h4>
+      <div class="pitfall-grid">
+        <div class="pitfall-card">
+          <div class="pitfall-title">❌ Lỗi 1: Nhầm lẫn rằng ngưỡng bắt buộc e-file vẫn là 250 tờ khai</div>
+          <p class="pitfall-desc">Học viên ôn các bộ đề thi cũ vẫn ghi nhớ con số 250 tờ khai thông tin (W-2/1099) mới bắt buộc phải e-file.</p>
+          <div class="pitfall-fix">✅ Cập nhật quyết định <code>T.D. 9972</code>: Ngưỡng 250 tờ khai cũ ĐÃ BỊ XÓA BỎ HOÀN TOÀN từ năm 2024. Hiện tại, quy tắc áp dụng theo cơ chế <b>TỔNG GỘP (Aggregate Rule) &ge; 10 tờ khai</b> thuộc mọi chủng loại (W-2, 1099, 1042-S, 1065, 1120...). Đạt từ 10 tờ khai trở lên là bắt buộc phải nộp điện tử!</div>
+        </div>
+        <div class="pitfall-card">
+          <div class="pitfall-title">❌ Lỗi 2: Bấm lệnh truyền dữ liệu e-file trước khi khách hàng ký Form 8879</div>
+          <p class="pitfall-desc">Nhiều người khai thuế vì muốn khách được nhận tiền hoàn thuế sớm nên đã truyền e-file trước rồi bảo khách ghé ký tên sau.</p>
+          <div class="pitfall-fix">✅ Quy định nghiêm ngặt <code>IRS Pub. 1345</code>: ERO <b>BẮT BUỘC PHẢI CÓ Form 8879 đã ký đầy đủ</b> trong tay TRƯỚC KHI thực hiện thao tác truyền dữ liệu e-file sang IRS. Vi phạm điều này sẽ bị IRS thu hồi mã số EFIN ngay lập tức và đình chỉ quyền e-file!</div>
+        </div>
+        <div class="pitfall-card">
+          <div class="pitfall-title">❌ Lỗi 3: Tiêu hủy hồ sơ chứng từ bất động sản sau 3 năm kể từ ngày mua</div>
+          <p class="pitfall-desc">Khách hàng mua nhà năm 2010, sau 3 năm vứt hết hợp đồng mua bán và hóa đơn sửa chữa vì nghĩ đã hết thời hiệu 3 năm.</p>
+          <div class="pitfall-fix">✅ Quy tắc cơ sở tài sản <code>IRC §6001</code>: Thời hiệu lưu trữ chứng từ tài sản CHỈ BẮT ĐẦU CHẠY <b>TỪ NĂM BÁN TÀI SẢN</b>. Nếu giữ nhà 20 năm thì phải lưu giữ toàn bộ chứng từ suốt 20 năm đó CỘNG THÊM 3 năm sau khi đã nộp tờ khai báo cáo việc bán nhà!</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. 3 CÂU HỎI KIỂM NHANH TẠI LỚP (QUICK CHECKS) -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">❓</span> 6. 3 Câu hỏi Kiểm tra Nhanh tại Lớp (Kèm Đáp án &amp; Lý giải Sư phạm)</h4>
+      <div class="quick-check-box">
+        <div class="qc-item">
+          <p class="qc-q"><b>Câu hỏi 1:</b> Một công ty xây dựng tư nhân trong năm thuế phát hành 6 biểu mẫu Form W-2 cho công nhân và 5 biểu mẫu Form 1099-NEC cho nhà thầu phụ (tổng cộng 11 tờ khai thông tin). Công ty này có bắt buộc phải nộp các biểu mẫu này qua mạng điện tử cho IRS/SSA không?</p>
+          <details class="qc-ans-details">
+            <summary class="qc-ans-sum">Xem đáp án &amp; Gợi ý giảng giải</summary>
+            <div class="qc-ans-body">
+              <b>Đáp án:</b> BẮT BUỘC PHẢI NỘP ĐIỆN TỬ (E-FILE).<br><b>Lý giải sư phạm:</b> Theo quy định của <code>T.D. 9972</code> có hiệu lực từ năm 2024, người sử dụng lao động nộp tổng gộp từ <b>10 tờ khai thông tin trở lên</b> thuộc mọi loại biểu mẫu cộng lại bắt buộc phải e-file. Vì 6 + 5 = 11 (&ge; 10), công ty không còn được phép gửi biểu mẫu giấy qua đường bưu điện.
+            </div>
+          </details>
+        </div>
+        <div class="qc-item">
+          <p class="qc-q"><b>Câu hỏi 2:</b> Một tờ khai Form 1040 nộp qua hệ thống e-file bị IRS từ chối (Rejected) vào ngày 15/04 do sai số PIN/AGI. Để tờ khai không bị coi là nộp trễ hạn, người khai thuế điện tử (ERO) có thời hạn bao lâu để truyền lại tờ khai đã sửa lỗi sang IRS?</p>
+          <details class="qc-ans-details">
+            <summary class="qc-ans-sum">Xem đáp án &amp; Gợi ý giảng giải</summary>
+            <div class="qc-ans-body">
+              <b>Đáp án:</b> Trong vòng <b>5 ngày làm việc</b> (Transmission Grace Period).<br><b>Lý giải sư phạm:</b> Theo quy chế e-file của IRS (Pub. 1345), khi tờ khai nộp đúng hạn bị reject, ERO có thời gian ân hạn <b>5 ngày</b> để sửa lỗi và truyền lại thành công qua mạng (hoặc in ra giấy nộp kèm bản reject notice và nộp trong vòng 10 ngày) để vẫn được tính là nộp đúng ngày 15/04.
+            </div>
+          </details>
+        </div>
+        <div class="qc-item">
+          <p class="qc-q"><b>Câu hỏi 3:</b> Văn phòng khai thuế của bạn bắt buộc phải có tài liệu nào sau đây để tuân thủ quy định bảo mật của Ủy ban Thương mại Liên bang (FTC) và IRS?</p>
+          <details class="qc-ans-details">
+            <summary class="qc-ans-sum">Xem đáp án &amp; Gợi ý giảng giải</summary>
+            <div class="qc-ans-body">
+              <b>Đáp án:</b> Bản Kế hoạch An ninh Thông tin Văn bản (<b>Written Information Security Plan — WISP</b>).<br><b>Lý giải sư phạm:</b> Theo FTC Safeguards Rule (16 C.F.R. Part 314) và IRS Pub. 4557/5708, mọi người khai thuế có mã số PTIN/EFIN đều được pháp luật coi là định chế tài chính (financial institution) và bắt buộc phải lập, duy trì, và cập nhật thường niên bản WISP bằng văn bản.
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. BẪY THI SEE & CHIÊU TRÒ ĐỀ THI -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">🪤</span> 7. Giải mã Bẫy Đề thi SEE (SEE Exam Traps)</h4>
+      <div class="exam-trap-box">
+        <div class="exam-trap-title">Cảnh báo Trọng tâm từ Chuyên gia Khảo thí PSI:</div>
+        <ul class="exam-trap-list">
+          <li><b>Bẫy 'Khách hàng từ chối e-file và đòi nộp giấy':</b> Đề thi đưa ra tình huống người khai thuế đạt chuẩn Specified Preparer (nộp >10 tờ khai) nhưng khách hàng kiên quyết bắt nộp giấy. Người khai thuế xử lý thế nào? Đáp án: Người khai thuế được nộp giấy NHƯNG bắt buộc phải yêu cầu khách hàng ký tên vào <b>Form 8948</b> đính kèm theo tờ khai giấy để giải trình với IRS lý do không e-file!</li>
+          <li><b>Bẫy 'Nơi nộp Form 8879':</b> ERO tuyệt đối KHÔNG GỬI Form 8879 về cho IRS (trừ khi có yêu cầu kiểm tra văn phòng). Form 8879 phải được lưu trữ cẩn thận tại văn phòng của ERO trong thời hạn tối thiểu <b>3 năm</b> kể từ ngày đến hạn nộp tờ khai hoặc ngày thực nộp!</li>
+          <li><b>Bẫy 'Mức phạt không nộp Information Returns (§6721/§6722)':</b> Mức phạt cho mỗi biểu mẫu W-2 hoặc 1099 không e-file đúng luật năm nộp 2026 là <b>$340 / tờ khai</b> (tối đa lên đến hàng triệu đô la cho doanh nghiệp lớn)!</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 8. LIÊN HỆ BIỂU MẪU THỰC HÀNH -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">📋</span> 8. Liên hệ Biểu mẫu Thực hành (IRS Form Mapping)</h4>
+      <div class="form-mapping-grid">
+        <div class="form-map-card">
+          <div class="form-map-num">Form 8879 (IRS e-file Signature Authorization)</div>
+          <div class="form-map-detail">Văn bản ủy quyền chữ ký số bắt buộc phải được người nộp thuế ký trước khi ERO truyền dữ liệu e-file sang IRS.</div>
+        </div>
+        <div class="form-map-card">
+          <div class="form-map-num">Form 8948 (Preparer Explanation for Not Filing Electronically)</div>
+          <div class="form-map-detail">Mẫu đơn đính kèm tờ khai giấy giải trình lý do không thể nộp điện tử (do khách từ chối e-file hoặc do phần mềm gặp lỗi kỹ thuật).</div>
+        </div>
+        <div class="form-map-card">
+          <div class="form-map-num">IRS Publication 5708 & Publication 4557</div>
+          <div class="form-map-detail">Cẩm nang hướng dẫn chính thức của IRS về việc xây dựng Kế hoạch An ninh Thông tin Văn bản (WISP) cho các văn phòng dịch vụ thuế.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. LIÊN KẾT BÀI TRƯỚC / BÀI SAU -->
+    <section class="corner-section corner-footer-nav">
+      <h4 class="corner-heading"><span class="corner-icon">🔗</span> 9. Bản đồ Liên kết Bài học (Curriculum Scaffolding)</h4>
+      <div class="curriculum-links">
+        <div class="curr-prev"><b>⬅️ Bước chuyển giao từ SU06:</b> Sau khi nắm vững hệ thống nguồn luật và phương pháp nghiên cứu thuế, bài SU07 hoàn tất toàn bộ khối kiến thức nghiệp vụ hành nghề Part III.</div>
+        <div class="curr-next"><b>➡️ Chúc mừng bạn đã hoàn thành Part III:</b> Bạn đã nắm trọn vẹn toàn bộ quy chuẩn hành nghề, đạo đức và thủ tục trước IRS. Hãy tiếp tục tiến bước sang Part IV (Module Money M01–M06) để làm chủ kỹ năng tiếp khách, định giá dịch vụ và tạo thu nhập thực chiến!</div>
+      </div>
+    </section>
+
+  </div>
+</details>
+<!-- ============================================================ KẾT THÚC GÓC GIẢNG VIÊN ============================================================ -->
+
 
 <!-- ============================================================ 7.1 RECORDKEEPING ============================================================ -->
 <div class="c1">
@@ -105,6 +292,7 @@
 </div>
 
 <h3 class="lesson">Transcripts (Return / Account / Record of Account / Wage & Income)</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Loại Transcript</th><th>Nội dung & thời gian có sẵn</th></tr>
 <tr><td class="word">Return Transcript</td><td class="vn">Hầu hết dòng mục của return (KHÔNG phải bản copy return) — chỉ cho 1040 series, 1065, 1120, 1120-H, 1120-L, 1120-S</td></tr>
@@ -113,6 +301,7 @@
 <tr><td class="word">Wage and Income Transcript</td><td class="vn">Dữ liệu từ information return (W-2, 1099, 1098, 5498 series) — có thể lấy đến 10 năm; KHÔNG gồm thông tin state/local từ W-2</td></tr>
 <tr><td class="word">Non-Filing Transcript</td><td class="vn">Xác nhận IRS KHÔNG có record đã xử lý 1040-series — KHÔNG cho biết có nghĩa vụ khai thuế hay không</td></tr>
 </table>
+</div>
 <div class="rule-box">
 <p><b>e-Services & Transcript Delivery System (TDS):</b> bộ công cụ web cho phép tax practitioner giao dịch với IRS — gồm Registration Services, e-file Application, TDS, TIN Matching. Truy cập qua xác thực 2 yếu tố (Secure Access). TDS giúp practitioner nhận transcript trong VÀI PHÚT (thay vì paper request mất vài ngày/tuần). <b>e-Services đang bị thay thế dần bởi Tax Pro Account.</b></p>
 <p><b>Documentation thông thường</b> (receipt, W-2, 1099, canceled check...): có thể bỏ SAU 3 năm từ due date (trừ trường hợp đặc biệt kéo dài đến 6 năm nếu nghi underreport ≥25%). <b>Bản copy tax return chính thức nên giữ VĨNH VIỄN.</b></p>
@@ -128,6 +317,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ 7.1</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">contemporaneous written acknowledgment</td><td class="vn">xác nhận bằng văn bản đồng thời (bắt buộc cho donation ≥$250)</td></tr>
@@ -137,6 +327,7 @@
 <tr><td class="word">Freedom of Information Act (FOIA)</td><td class="vn">Đạo luật tự do thông tin</td></tr>
 <tr><td class="word">Identity Protection PIN (IP PIN)</td><td class="vn">Mã PIN 6 số bảo vệ danh tính khi khai thuế</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm 7.1</h3>
 <div class="content-block">
@@ -167,10 +358,11 @@
 <div class="rule-box">
 <p><b>Specified tax return preparer:</b> preparer chuẩn bị return cho cá nhân/trust/estate (Form 1040, 1041) và DỰ KIẾN nộp ≥<b>11 return</b>/năm → BẮT BUỘC e-file. Áp dụng cho preparer trong 1 firm nếu TỔNG số return của firm (aggregate) ≥11/năm. <b>KHÔNG áp dụng</b> nếu CLIENT (không phải preparer) chọn nộp bản giấy và TỰ NỘP — preparer phải ghi lại lựa chọn này bằng <b>Form 8948</b> (Preparer Explanation for Not Filing Electronically) nộp kèm bản giấy.</p>
 <p><b>Corporation</b> ≥$10 triệu tổng tài sản và nộp ≥10 return/năm → phải e-file. <b>Partnership</b> &gt;100 partners (Schedule K-1) → phải e-file.</p>
-<p style="background:#fff7e0;border-left:4px solid #e0a800;padding:6px 10px;border-radius:6px;margin:8px 0">⚠️ <b>Luật hiện hành (kiểm 2026-10-25):</b> Từ các return phải nộp trong năm <b>2024 trở đi</b> (T.D. 9972), ngưỡng e-file là <b>10 return gộp mọi loại</b> (information returns, partnership, corporate…) thay cho ngưỡng 250 tính riêng từng loại; riêng partnership &gt;100 partners vẫn phải e-file. Gleim 2026 vẫn nêu quy tắc cũ ở trên.</p>
+<p style="background:#fff7e0;border-left:4px solid #e0a800;padding:6px 10px;border-radius:6px;margin:8px 0">⚠️ <b>Luật hiện hành (kiểm 2026-10-25):</b> Từ các return phải nộp trong năm <b>2024 trở đi</b> (T.D. 9972), ngưỡng e-file là <b>10 return gộp mọi loại</b> (information returns, partnership, corporate…) thay cho ngưỡng 250 tính riêng từng loại; riêng partnership &gt;100 partners vẫn phải e-file. luật thuế chuẩn 2026 vẫn nêu quy tắc cũ ở trên.</p>
 </div>
 
 <h3 class="lesson">Các loại E-File Provider</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Loại Provider</th><th>Vai trò chính</th></tr>
 <tr><td class="word">Electronic Return Originator (ERO)</td><td class="vn">Khởi tạo việc nộp điện tử — thường là điểm liên hệ đầu tiên của taxpayer; chỉ được originate return mình đã CHUẨN BỊ hoặc THU THẬP từ taxpayer; phải có 1 EFIN/firm/địa điểm (trừ khi IRS cấp thêm)</td></tr>
@@ -181,6 +373,7 @@
 <tr><td class="word">Online Provider</td><td class="vn">Cho taxpayer TỰ chuẩn bị return qua phần mềm/website — phải tuân 6 tiêu chuẩn bảo mật (SSL, vulnerability scan, privacy policy, chống bulk-filing gian lận, public domain registration, báo cáo sự cố bảo mật)</td></tr>
 <tr><td class="word">ACA Provider</td><td class="vn">Tổ chức sản xuất/nhập thuốc kê đơn có nhãn hiệu hoặc bảo hiểm y tế báo cáo net premium — originate/transmit report riêng</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Điều kiện trở thành E-File Provider & Suitability Check</h3>
 <div class="rule-box">
@@ -215,6 +408,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ 7.2</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">Electronic Return Originator (ERO)</td><td class="vn">Người khởi tạo nộp return điện tử</td></tr>
@@ -224,6 +418,7 @@
 <tr><td class="word">Electronic Federal Tax Payment System (EFTPS)</td><td class="vn">Hệ thống thanh toán thuế liên bang điện tử</td></tr>
 <tr><td class="word">contingent fee</td><td class="vn">phí tính theo tỷ lệ kết quả (bị cấm cho e-file transmission)</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm 7.2</h3>
 <div class="content-block">
@@ -248,5 +443,18 @@
 </div>
 </div>
 
+<footer class="authority-footer">
+  <h4>🏛️ Nguồn chính thống &amp; Ngày đối chiếu</h4>
+  <ul>
+    <li><b>Bộ luật &amp; Quy định:</b> Internal Revenue Code (26 U.S.C.) §§ 6001, 6011(e), 6107, 6721, 6722; Treasury Decision 9972; 16 CFR Part 314 (FTC Safeguards Rule).</li>
+    <li><b>Hướng dẫn IRS:</b> IRS Pub. 1345 (Handbook for Authorized IRS e-file Providers), Pub. 4557 (Safeguarding Taxpayer Data), Pub. 5708 (Creating a Written Information Security Plan for your Tax Practice).</li>
+    <li><b>Chuẩn kỳ thi:</b> PSI SEE Candidate Information Bulletin (2026–2027). Ngày đối chiếu: <b>2026-11-01</b>.</li>
+  </ul>
+</footer>
+<nav class="lesson-nav lesson-nav-bottom" aria-label="Điều hướng cuối bài">
+  <a class="nav-back" href="EA3_SU06_Tax_Authority.html">← Bài trước: SU06</a>
+  <a class="nav-next" href="../../Money/EA4_M01_Roadmap_Credentials_and_Practice_Rights.html">Học tiếp Part IV: Kiếm tiền & Hành nghề →</a>
+</nav>
+</main>
 </body>
 </html>

@@ -6,65 +6,30 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'ea'});</script>
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>EA Part III – SU06: Tax Authority</title>
-<style>
-  @page { size: A4; margin: 14mm 12mm; }
-  * { box-sizing: border-box; }
-  body { font-family:'Segoe UI','Calibri',Arial,sans-serif; color:#33322f; font-size:15.5px; line-height:1.5; background:#fdfcfa; margin:0; }
-  .cover { background: linear-gradient(120deg,#bfe4ff 0%,#d6ecff 30%,#e6def7 65%,#fbe6f4 100%); border-radius:20px; padding:40px 30px; text-align:center; margin-bottom:10px; box-shadow:0 6px 18px rgba(120,130,180,.25); border:1px solid #dfe8f5; }
-  .cover .tag { display:inline-block; background:#33314a; color:#d6ecff; font-weight:700; letter-spacing:2px; font-size:13px; padding:5px 14px; border-radius:20px; margin-bottom:14px; }
-  .cover h1 { font-size:30px; margin:6px 0; color:#3170a8; }
-  .cover h2 { font-size:16px; font-weight:500; margin:4px 0 0; opacity:.9; color:#33314a; }
-  .cover .books { margin-top:16px; font-size:13.5px; background:rgba(255,255,255,.55); display:inline-block; padding:8px 16px; border-radius:10px; color:#33314a; }
-  .toc { background:#fff; border:1.5px solid #dfe8f5; border-radius:14px; padding:18px 26px; margin-bottom:30px; }
-  .toc h3 { margin-top:0; color:#3170a8; }
-  .toc ol { margin:0; padding-left:22px; } .toc li{ margin-bottom:6px; }
-  h2.section { font-size:23px; color:#33314a; padding:12px 18px; border-radius:12px; margin:34px 0 14px; border-left:10px solid var(--accent,#5aa9d6); background:var(--bg,#eaf6fd); }
-  h3.lesson { font-size:19px; color:var(--accent-dark,#276a91); border-left:6px solid var(--accent,#5aa9d6); background:var(--bg-soft,#f3fafd); padding:8px 14px; border-radius:6px; margin:22px 0 10px; }
-  .c1{--accent:#5aa9d6;--accent-dark:#276a91;--bg:#eaf6fd;--bg-soft:#f3fafd;--head:#a9d4ec;}
-  .c2{--accent:#a892d9;--accent-dark:#5c4696;--bg:#f1ecfb;--bg-soft:#f8f5fd;--head:#cabdec;}
-  .c3{--accent:#f0a66e;--accent-dark:#b8620b;--bg:#fdeee2;--bg-soft:#fff8f0;--head:#f4c299;}
-  .c4{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
-  .c5{--accent:#e07b9b;--accent-dark:#a3335a;--bg:#fbe9f0;--bg-soft:#fdf5f8;--head:#f3b6c9;}
-  .c6{--accent:#5bb8b0;--accent-dark:#1f7a72;--bg:#e5f7f5;--bg-soft:#f2fbfa;--head:#a6e3dd;}
-  .cKey{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
-  table.vocab { width:100%; border-collapse:collapse; margin-bottom:20px; font-size:.96em; box-shadow:0 2px 8px rgba(0,0,0,.05); border-radius:10px; overflow:hidden; }
-  table.vocab th { background:var(--head,#5aa9d6); color:#2d2d2d; padding:9px 8px; text-align:left; }
-  table.vocab td { padding:8px 8px; border-bottom:1px solid var(--bg,#eaf6fd); vertical-align:top; }
-  table.vocab tr:nth-child(even) td { background:var(--bg-soft,#faf6f0); }
-  table.vocab tr:nth-child(odd) td { background:#fff; }
-  table.vocab td.word { font-weight:800; color:var(--accent-dark,#276a91); }
-  table.vocab td.vn { font-weight:700; color:#3d6ba8; }
-  .rule-box { background:var(--bg,#eaf6fd); border-left:6px solid var(--accent,#5aa9d6); border-radius:8px; padding:12px 18px; margin:10px 0; }
-  .rule-box table { width:100%; border-collapse:collapse; margin:8px 0 4px; }
-  .rule-box table td, .rule-box table th { padding:6px 8px; border-bottom:1px solid rgba(0,0,0,.08); text-align:left; font-size:.94em; }
-  .rule-box table th { color:var(--accent-dark,#276a91); }
-  .rule-box ul, .rule-box ol { margin:6px 0; padding-left:22px; } .rule-box li{ margin-bottom:5px; }
-  .struct { font-weight:800; color:#b8620b; font-family:'Consolas','Courier New',monospace; }
-  .example-box { background:#fff; border:1.5px dashed var(--accent,#5aa9d6); border-radius:8px; padding:10px 16px; margin:10px 0; font-size:.95em; }
-  .example-box b.ex-tag { color:var(--accent-dark,#276a91); }
-  .mcq { background:#fff; border:1.5px solid var(--accent,#5aa9d6); border-radius:10px; padding:12px 18px; margin-bottom:12px; }
-  .mcq .q { color:#3d6ba8; font-weight:700; margin-bottom:6px; }
-  .mcq .opt { margin:2px 0 2px 10px; }
-  .content-block { background:#fff; border:2px dashed var(--accent,#5aa9d6); border-radius:12px; padding:16px 20px; margin-bottom:18px; }
-  .key-grid { column-count:1; } .key-grid div{ margin-bottom:10px; }
-  .key-ans { color:#20824f; font-weight:800; }
-  .key-exp { color:#555; font-size:.95em; }
-  .pagebreak { page-break-before: always; }
-  .note { font-size:.85em; color:#8a8a8a; font-style:italic; }
-  .source-tag { font-size:.8em; color:#999; font-style:italic; }
-</style>
+<link rel="stylesheet" href="../../lesson-2026.css">
+
 </head>
 <body>
+<main class="lesson-shell">
+<nav class="lesson-nav" aria-label="Điều hướng bài học">
+  <a class="nav-back" href="EA3_SU05_The_Collection_Process.html">← Bài trước: SU05</a>
+  <span class="nav-meta">Part III • SU06</span>
+  <a class="nav-next" href="EA3_SU07_Recordkeeping_and_Electronic_Filing.html">Bài tiếp: SU07 →</a>
+</nav>
 
 <div class="cover">
   <div class="tag">EA EXAM PREP • PART III — REPRESENTATION, PRACTICES & PROCEDURES • SU06</div>
   <h1>📗 SU06 — TAX AUTHORITY</h1>
-  <h2>Bản song ngữ Việt–Anh, bám sát giáo trình Gleim 2026</h2>
+  <h2>Bản song ngữ Việt–Anh, đối chiếu chuẩn Nguồn Luật Thuế & Hiệp định Thuế</h2>
   <div class="books">📖 Khái niệm · 🔤 Thuật ngữ · 📌 Ví dụ minh họa · ❓ Câu hỏi trắc nghiệm · 🔑 Đáp án trang sau</div>
-</div>
 
-<div class="toc">
+<div class="exam-dual-banner">
+  <div class="banner-see">🎯 <b>Đề thi hiện hành (SEE 2026–27 / PSI):</b> Áp dụng luật đến <b>31/12/2025 (TY2025)</b></div>
+  <div class="banner-practice">💼 <b>Hành nghề mùa mới:</b> Số liệu <b>TY2026</b> nằm trong hộp <i>«Cập nhật 2026»</i></div>
+</div>
+</div><div class="toc">
 <h3>📑 Mục lục SU06</h3>
 <ol>
 <li>6.1 Statutory Law (Legislative Law) — IRC, Committee Reports, Treaties</li>
@@ -72,8 +37,229 @@
 <li>6.3 The Court System (Judicial Law) — Tax Court, District Court, Supreme Court, Acquiescence</li>
 <li>6.4 Tax Research — Primary vs. Secondary Authority</li>
 </ol>
-<p class="note">Nguồn: Gleim EA Review, Study Unit 6 — Tax Authority (2026).</p>
+
 </div>
+
+<aside class="ea-update-2026" aria-label="Cập nhật nguồn luật và án lệ">
+  <h3>⚡ Quan hệ giữa Hiệp định Thuế và IRC &amp; Án lệ Loper Bright (2024)</h3>
+  <p>Chuẩn hóa căn cứ về địa vị pháp lý của Hiệp định thuế quốc tế và hiệu lực của Thông tư thuế:</p>
+  <div class="table-scroll">
+    <table class="compare-table">
+      <thead>
+        <tr><th>Nguồn luật thuế</th><th>Địa vị pháp lý &amp; Nguyên tắc giải quyết xung đột</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><b>Hiệp định thuế (Tax Treaty) vs. Bộ luật IRC</b></td><td>Theo <code>IRC §7852(d)(1)</code> &amp; Hiến pháp Mỹ (Art. VI), hai văn bản có <b>địa vị ngang hàng</b>. Khi xung đột trực tiếp, áp dụng <b>quy tắc văn bản ban hành sau có hiệu lực (Later-in-time rule)</b>.</td></tr>
+        <tr><td><b>Khai báo vị trí theo Treaty (<code>IRC §6114</code>)</b></td><td>Người nộp thuế khai vị trí dựa trên Treaty làm thay đổi luật nội địa IRC <b>bắt buộc phải công bố trên Form 8833</b>.</td></tr>
+        <tr><td><b>Hiệu lực của Treasury Regulations</b></td><td>Hậu án lệ Tối cao Pháp viện <i>Loper Bright Enterprises v. Raimondo</i> (2024) bãi bỏ <i>Chevron deference</i>; tòa án tự giải thích luật theo APA thay vì mặc nhiên phục tùng cơ quan hành pháp.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="upcoming-box">
+    <b>📚 Trọng tâm thứ bậc nguồn luật:</b> Bộ luật IRC &amp; Án lệ Tối cao Pháp viện &gt; Treasury Regulations (Legislative &gt; Interpretative) &gt; Án lệ Tòa Phúc thẩm Circuit &gt; Tòa Thuế U.S. Tax Court (Regular &gt; Memo) &gt; Revenue Rulings &amp; Rev. Procs.
+  </div>
+</aside>
+
+<!-- ============================================================
+     KHỐI SƯ PHẠM: GÓC GIẢNG VIÊN (TEACHER'S CORNER) — ROUND 2
+     Chuẩn: HTML5 Semantic, Tự đủ Offline, In-friendly, Hỗ trợ Toggle
+     ============================================================ -->
+<details class="instructor-corner" id="instructor-corner">
+  <summary class="instructor-summary">
+    <div class="summary-left">
+      <span class="instructor-badge">🎓 GÓC GIẢNG VIÊN</span>
+      <span class="instructor-title">Giáo án Đào tạo SU06: Tax Authorities, Judicial Hierarchy & Research</span>
+    </div>
+    <span class="summary-hint">Bấm để Mở / Gập giáo án ▼</span>
+  </summary>
+
+  <div class="instructor-body">
+    <!-- Thanh công cụ toolbar -->
+    <div class="instructor-toolbar">
+      <span class="toolbar-label">Chế độ đào tạo:</span>
+      <span class="toolbar-status">Giáo án Chuyên sâu dành cho Giảng viên & Thí sinh SEE Part III 2026–2027</span>
+      <button type="button" class="btn-print-lesson" onclick="window.print()">🖨️ In Giáo án bài này</button>
+    </div>
+
+    <!-- 1. MỤC TIÊU ĐO LƯỜNG ĐƯỢC -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">🎯</span> 1. Mục tiêu Su phạm Đo lường được (Bloom's Taxonomy)</h4>
+      <p class="corner-intro">Sau khi hoàn thành bài học này, học viên có năng lực thực hiện chuẩn xác các nhiệm vụ sau:</p>
+      <ul class="corner-list target-list">
+        <li><b>[Xếp hạng Hiệu lực Pháp lý]:</b> Thiết lập chính xác Kim tự tháp Thứ bậc Nguồn luật Thuế: Hiến pháp Hoa Kỳ > Bộ luật Thuế IRC (Title 26) & Hiệp định Tránh đánh thuế hai lần (Tax Treaties) > Quy chế Kho bạc (Treasury Regulations) > Phán quyết Tư pháp Liên bang > Hướng dẫn Hành chính IRS (Rev. Rul., Rev. Proc.).</li>
+        <li><b>[Giải quyết Xung đột Nguồn luật]:</b> Áp dụng chuẩn xác Quy tắc Văn bản Ban hành Sau (Later-in-time Rule) giữa Bộ luật IRC và Tax Treaties theo <code>IRC §7852(d)(1)</code>; thực thi nghĩa vụ công bố vị trí dựa trên hiệp định trên <code>Form 8833</code> theo <code>IRC §6114</code>.</li>
+        <li><b>[Áp dụng Án lệ Golsen]:</b> Nắm vững Án lệ Golsen (<i>Golsen v. Commissioner</i>, 54 T.C. 742): Tòa án Thuế U.S. Tax Court bắt buộc phải tuân theo phán quyết tiền lệ của Tòa Phúc thẩm Liên bang (U.S. Court of Appeals) có thẩm quyền địa lý trực tiếp trên người nộp thuế đó.</li>
+        <li><b>[Cập nhật Tư pháp Hậu Chevron]:</b> Phân tích tác động sâu rộng của phán quyết Tối cao Pháp viện <i>Loper Bright Enterprises v. Raimondo</i> (2024): bãi bỏ học thuyết <i>Chevron deference</i>, trao lại quyền cho tòa án độc lập giải thích các điều khoản luật thuế thay vì mặc nhiên phục tùng cơ quan hành pháp.</li>
+      </ul>
+    </section>
+
+    <!-- 2. THỜI LƯỢNG GỢI Ý & PHÂN BỔ GIẢNG DẠY -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">⏱️</span> 2. Thời lượng Gợi ý &amp; Phân bổ Thời gian (Tổng: 90–120 phút)</h4>
+      <div class="table-scroll">
+        <table class="corner-table time-table">
+          <thead>
+            <tr>
+              <th>Phần học</th>
+              <th>Thời lượng</th>
+              <th>Hình thức sư phạm</th>
+              <th>Trọng tâm chuyển giao</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Kim Tự Tháp Nguồn Luật Thuế Hoa Kỳ</b></td>
+              <td>25 phút</td>
+              <td>Sơ đồ phân cấp thứ bậc quyền lực</td>
+              <td>Statutory vs Administrative vs Judicial; Phân biệt Primary Authority (có giá trị bảo vệ) vs Secondary Authority (chỉ tham khảo).</td>
+            </tr>
+            <tr>
+              <td><b>Xung Đột IRC vs Tax Treaties & Form 8833</b></td>
+              <td>30 phút</td>
+              <td>Phân tích điều luật & Tình huống quốc tế</td>
+              <td>Later-in-time Rule (§7852(d)); Nghĩa vụ nộp Form 8833 (§6114); Mức phạt $1,000 / $10,000 khi không công bố vị trí hiệp định.</td>
+            </tr>
+            <tr>
+              <td><b>Hệ Thống Tiền Lệ Tòa Án & Án Lệ Golsen</b></td>
+              <td>35 phút</td>
+              <td>Mổ xẻ bản án Tax Court thực tế</td>
+              <td>Nguyên tắc Golsen Rule; Vì sao cùng 1 điều luật mà 2 bang khác nhau lại có phán quyết trái ngược; IRS Acquiescence vs Nonacquiescence.</td>
+            </tr>
+            <tr>
+              <td><b>Tư Pháp Mới Hậu Loper Bright & Bẫy thi SEE</b></td>
+              <td>20 phút</td>
+              <td>Thảo luận xu hướng cải cách & Trắc nghiệm</td>
+              <td>3 câu hỏi kiểm nhanh; Bẫy PLR không làm tiền lệ §6110(k)(3); Bẫy Legislative vs Interpretative Regulations; Bẫy IRS Pubs.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 3. THỨ TỰ GIẢNG DẠY LOGIC (SCAFFOLDING) -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">🪜</span> 3. Thứ tự Giảng dạy Logic (Khung Giàn giáo Sư phạm)</h4>
+      <ol class="corner-steps">
+        <li><b>Bước 1 — Đặt câu hỏi Nghịch lý:</b> Một ấn phẩm chính thức của IRS (Publication 17) in rõ một hướng dẫn, nhưng khi ra Tòa án Thuế thì Thẩm phán tuyên bố người nộp thuế thua kiện vì ấn phẩm đó giải thích sai luật! Tại sao? Dẫn dắt vào sự khác biệt giữa 'Ấn phẩm hướng dẫn đại chúng' và 'Nguồn luật có thẩm quyền'.</li>
+        <li><b>Bước 2 — Xây dựng Kim tự tháp Thứ bậc 5 Tầng:</b> Đỉnh tháp: Hiến pháp Mỹ -> Tầng 2: IRC & Tax Treaties -> Tầng 3: Treasury Regulations -> Tầng 4: Án lệ Tòa án -> Tầng đáy: Revenue Rulings, Procedures, Notices.</li>
+        <li><b>Bước 3 — Giải mã Bản đồ Địa lý Tư pháp (Circuit Map) & Án lệ Golsen:</b> Hướng dẫn học viên cách tra cứu 13 Tòa Phúc thẩm Liên bang (Circuits 1 đến 11, D.C. Circuit, Federal Circuit). Minh họa vì sao Tòa Tax Court tại Texas phải xử theo Án lệ của Circuit 5, còn tại California phải xử theo Circuit 9.</li>
+        <li><b>Bước 4 — Quy tắc Bình đẳng IRC vs Hiệp định Thuế:</b> Phân tích nguyên tắc Later-in-time: Văn bản nào được Quốc hội phê chuẩn sau sẽ có hiệu lực vượt lên, và bắt buộc phải gắn cờ báo hiệu bằng Form 8833.</li>
+        <li><b>Bước 5 — Kiểm tra Khả năng Tra cứu Luật (Tax Research Drill):</b> Học viên phân loại các tài liệu trích dẫn xem tài liệu nào đủ chuẩn Substantial Authority để bảo vệ thân chủ khỏi bị phạt.</li>
+      </ol>
+    </section>
+
+    <!-- 4. VÍ DỤ & ẨN DỤ CHO NGƯỜI KHÔNG CHUYÊN -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">💡</span> 4. Ẩn dụ Trực quan &amp; Cầu nối Ngôn ngữ Đời thường</h4>
+      <div class="analogy-box">
+        <div class="analogy-header"><b>«Kim Tự Tháp Quyền Lực Thuế & Bản Đồ Địa Lý Tư Pháp Golsen»</b></div>
+        <p class="analogy-content">
+          Hãy hình dung hệ thống luật thuế Hoa Kỳ giống như một Kim tự tháp đá tảng khổng lồ. Ở tầng cao nhất là Bộ luật IRC do Quốc hội ban hành — đây là mệnh lệnh vua ban, không ai được làm trái. Dưới đó là Quy chế Kho bạc (Treasury Regulations) giống như các thông tư hướng dẫn thi hành. Các ấn phẩm như IRS Publications hay hướng dẫn trên website IRS.gov chỉ giống như 'Tờ rơi giải thích của viên lính tuần tra' — chúng hoàn toàn KHÔNG CÓ GIÁ TRỊ PHÁP LÝ RÀNG BUỘC tại tòa án! Đặc biệt, khi bước vào Tòa án Thuế U.S. Tax Court, bạn phải cầm theo chiếc la bàn mang tên **Án lệ Golsen**: Vị thẩm phán liên bang dù ngồi ở Washington D.C. nhưng khi phán xử vụ việc của một cư dân California thì bắt buộc phải nghiêng mình tuân thủ phán quyết của Tòa Phúc thẩm Circuit 9 sở tại!
+        </p>
+      </div>
+    </section>
+
+    <!-- 5. 3–5 LỖI HỌC VIÊN HAY MẮC & CÁCH SỬA -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">⚠️</span> 5. 3–5 Lỗi Học viên Hay Mắc &amp; Phương pháp Khắc phục Triệt để</h4>
+      <div class="pitfall-grid">
+        <div class="pitfall-card">
+          <div class="pitfall-title">❌ Lỗi 1: Tin rằng Hiệp định Thuế (Treaty) luôn luôn cao hơn Bộ luật IRC</div>
+          <p class="pitfall-desc">Nhiều học viên học luật quốc tế thông thường cho rằng các công ước quốc tế mặc nhiên có hiệu lực tối cao vượt trên luật nội địa.</p>
+          <div class="pitfall-fix">✅ Căn cứ <code>IRC §7852(d)(1)</code> & Hiến pháp Mỹ: Bộ luật IRC và Tax Treaties có <b>ĐỊA VỊ NGANG HÀNG NHAU</b>. Khi có sự xung đột trực tiếp giữa một điều luật IRC mới và một điều khoản Treaty cũ, áp dụng nguyên tắc văn bản ban hành sau sẽ vượt lên (Later-in-time rule), trừ khi Quốc hội có quy định khác!</div>
+        </div>
+        <div class="pitfall-card">
+          <div class="pitfall-title">❌ Lỗi 2: Trích dẫn Private Letter Rulings (PLR) làm căn cứ pháp lý cho khách hàng khác</div>
+          <p class="pitfall-desc">Học viên thấy một phán quyết PLR của IRS có tình huống giống hệt thân chủ của mình và viện dẫn ra để bảo vệ.</p>
+          <div class="pitfall-fix">✅ Điều cấm <code>IRC §6110(k)(3)</code>: Private Letter Rulings hoặc Determination Letters <b>TUYỆT ĐỐI KHÔNG ĐƯỢC SỬ DỤNG HOẶC TRÍCH DẪN LÀM ÁN LỆ TIỀN LỆ</b> bởi bất kỳ người nộp thuế nào khác ngoài người đã nộp đơn xin phán quyết đó (chỉ có giá trị tham khảo lập luận nội bộ).</div>
+        </div>
+        <div class="pitfall-card">
+          <div class="pitfall-title">❌ Lỗi 3: Lấy ấn phẩm IRS Publications làm căn cứ bảo vệ lập trường thuế</div>
+          <p class="pitfall-desc">Thân chủ làm theo ví dụ trong IRS Pub. 502 và bị kiểm toán viên phạt vì ấn phẩm đó chưa kịp cập nhật luật mới.</p>
+          <div class="pitfall-fix">✅ Án lệ tư pháp: Tòa án liên bang nhiều lần khẳng định IRS Publications <b>KHÔNG PHẢI LÀ NGUỒN LUẬT CÓ THẨM QUYỀN (Not Authoritative)</b>. IRS không bị ràng buộc bởi các sai sót in ấn trong các ấn phẩm hướng dẫn đại chúng!</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. 3 CÂU HỎI KIỂM NHANH TẠI LỚP (QUICK CHECKS) -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">❓</span> 6. 3 Câu hỏi Kiểm tra Nhanh tại Lớp (Kèm Đáp án &amp; Lý giải Sư phạm)</h4>
+      <div class="quick-check-box">
+        <div class="qc-item">
+          <p class="qc-q"><b>Câu hỏi 1:</b> Tòa Phúc thẩm Liên bang Khu vực 5 (Fifth Circuit) đã ra phán quyết rằng một khoản chi phí cụ thể được phép khấu trừ toàn bộ. Tuy nhiên, Tòa Phúc thẩm Khu vực 9 (Ninth Circuit) lại ra phán quyết đối nghịch rằng khoản chi phí đó không được khấu trừ. Một người nộp thuế cư trú tại bang Texas (thuộc Fifth Circuit) đưa vụ việc ra Tòa án Thuế Hoa Kỳ (U.S. Tax Court). Theo Án lệ Golsen (Golsen Rule), Tòa Tax Court sẽ phán quyết thế nào?</p>
+          <details class="qc-ans-details">
+            <summary class="qc-ans-sum">Xem đáp án &amp; Gợi ý giảng giải</summary>
+            <div class="qc-ans-body">
+              <b>Đáp án:</b> Tòa Tax Court BẮT BUỘC PHẢI TUÂN THEO phán quyết của Fifth Circuit và tuyên cho người nộp thuế được khấu trừ khoản chi phí đó.<br><b>Lý giải sư phạm:</b> Theo Án lệ <i>Golsen v. Commissioner</i>, Tòa án Thuế U.S. Tax Court bắt buộc phải áp dụng phán quyết tiền lệ của Tòa Phúc thẩm Liên bang nơi mà vụ việc đó sẽ được kháng cáo lên (Texas thuộc quyền tài phán của Fifth Circuit).
+            </div>
+          </details>
+        </div>
+        <div class="qc-item">
+          <p class="qc-q"><b>Câu hỏi 2:</b> Người nộp thuế muốn áp dụng một điều khoản trong Hiệp định Tránh đánh thuế hai lần giữa Hoa Kỳ và Việt Nam để được miễn một khoản thuế thu nhập lẽ ra phải chịu theo Bộ luật IRC. Người này bắt buộc phải nộp biểu mẫu nào kèm theo tờ khai thuế?</p>
+          <details class="qc-ans-details">
+            <summary class="qc-ans-sum">Xem đáp án &amp; Gợi ý giảng giải</summary>
+            <div class="qc-ans-body">
+              <b>Đáp án:</b> Nộp <b>Form 8833 (Treaty-Based Return Position Disclosure Under Section 6114 or 7701(b))</b>.<br><b>Lý giải sư phạm:</b> Theo <code>IRC §6114</code>, bất kỳ người nộp thuế nào đưa ra lập trường thuế dựa trên Treaty làm thay đổi việc áp dụng Bộ luật IRC đều bắt buộc phải công bố công khai trên Form 8833. Không nộp mẫu này có thể bị phạt $1,000 đối với cá nhân hoặc $10,000 đối với công ty C-Corp (IRC §6712).
+            </div>
+          </details>
+        </div>
+        <div class="qc-item">
+          <p class="qc-q"><b>Câu hỏi 3:</b> Thông báo Acquiescence của IRS đối với một phán quyết bất lợi của Tòa án Thuế (Tax Court Regular Decision) có ý nghĩa pháp lý gì?</p>
+          <details class="qc-ans-details">
+            <summary class="qc-ans-sum">Xem đáp án &amp; Gợi ý giảng giải</summary>
+            <div class="qc-ans-body">
+              <b>Đáp án:</b> IRS chính thức chấp nhận phán quyết đó và các nhân viên IRS sẽ áp dụng nguyên tắc của phán quyết đó cho các vụ việc tương tự của những người nộp thuế khác.<br><b>Lý giải sư phạm:</b> Khi IRS thua kiện tại Tax Court, IRS có thể phát hành thông báo Acquiescence (Đồng thuận - tuân theo trên toàn quốc) hoặc Nonacquiescence (Không đồng thuận - IRS chỉ chấp hành cho đương sự đó, các trường hợp khác IRS vẫn tiếp tục xử phạt và kiện tiếp).
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. BẪY THI SEE & CHIÊU TRÒ ĐỀ THI -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">🪤</span> 7. Giải mã Bẫy Đề thi SEE (SEE Exam Traps)</h4>
+      <div class="exam-trap-box">
+        <div class="exam-trap-title">Cảnh báo Trọng tâm từ Chuyên gia Khảo thí PSI:</div>
+        <ul class="exam-trap-list">
+          <li><b>Bẫy 'Thứ tự hiệu lực giữa Revenue Ruling và Treasury Regulation':</b> Treasury Regulation (Quy chế Kho bạc) do Bộ trưởng Tài chính ký ban hành có hiệu lực pháp lý cao hơn rất nhiều so với Revenue Ruling (chỉ là văn bản áp dụng luật vào một tình huống cụ thể của IRS).</li>
+          <li><b>Bẫy 'Hiệu lực của Tax Court Memorandum Decisions':</b> Phán quyết Memo của Tòa Tax Court chỉ giải quyết các vụ việc liên quan đến thực tế số liệu (factual issues) mà không tạo ra tiền lệ pháp lý mới, khác với Tax Court Regular Decisions (xét xử các vấn đề pháp lý mới chưa từng có tiền lệ).</li>
+          <li><b>Bẫy 'Hậu án lệ Loper Bright (2024)':</b> Đề thi có thể hỏi về quyền lực giải thích luật của cơ quan hành pháp. Đáp án chuẩn xác: Tòa án liên bang hiện nay có quyền độc lập diễn giải luật theo Administrative Procedure Act (APA), không còn mặc nhiên bắt buộc phải tuân theo cách giải thích của IRS theo học thuyết Chevron cũ!</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 8. LIÊN HỆ BIỂU MẪU THỰC HÀNH -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">📋</span> 8. Liên hệ Biểu mẫu Thực hành (IRS Form Mapping)</h4>
+      <div class="form-mapping-grid">
+        <div class="form-map-card">
+          <div class="form-map-num">Form 8833 (Treaty-Based Return Position Disclosure)</div>
+          <div class="form-map-detail">Biểu mẫu bắt buộc nộp kèm tờ khai khi áp dụng điều khoản Hiệp định thuế làm thay đổi luật thuế nội địa theo IRC §6114.</div>
+        </div>
+        <div class="form-map-card">
+          <div class="form-map-num">Form 8275 (Disclosure Statement)</div>
+          <div class="form-map-detail">Biểu mẫu công bố vị trí thuế có căn cứ hợp lý (Reasonable Basis) dựa trên các nguồn luật cấp 1 để tránh bị phạt lỗi bất cẩn.</div>
+        </div>
+        <div class="form-map-card">
+          <div class="form-map-num">Internal Revenue Manual (IRM)</div>
+          <div class="form-map-detail">Sổ tay Hướng dẫn Nội bộ của IRS, quy định chi tiết quy trình thao tác nghiệp vụ cho kiểm tra viên và nhân viên thu nợ.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. LIÊN KẾT BÀI TRƯỚC / BÀI SAU -->
+    <section class="corner-section corner-footer-nav">
+      <h4 class="corner-heading"><span class="corner-icon">🔗</span> 9. Bản đồ Liên kết Bài học (Curriculum Scaffolding)</h4>
+      <div class="curriculum-links">
+        <div class="curr-prev"><b>⬅️ Bước chuyển giao từ SU05:</b> Sau khi nắm vững các công cụ giải quyết nợ thực tiễn, bài SU06 nâng tầm học viên trở thành một chuyên gia nghiên cứu thuế có khả năng tra cứu nguồn luật và tranh tụng vững chắc.</div>
+        <div class="curr-next"><b>➡️ Bước đệm bài tiếp theo (SU07):</b> Bài SU07 sẽ khép lại toàn bộ chương trình Part III với các quy định về Lưu trữ hồ sơ (Recordkeeping), Quy chế nộp thuế điện tử (E-file Mandates), và Kế hoạch bảo mật thông tin văn phòng thuế (WISP).</div>
+      </div>
+    </section>
+
+  </div>
+</details>
+<!-- ============================================================ KẾT THÚC GÓC GIẢNG VIÊN ============================================================ -->
+
 
 <!-- ============================================================ 6.1 STATUTORY LAW ============================================================ -->
 <div class="c1">
@@ -93,10 +279,11 @@
 <div class="rule-box">
 <p><b>Committee Reports:</b> công cụ hữu ích xác định Ý ĐỊNH của Quốc hội (Congressional intent) đằng sau 1 luật thuế — giúp examiner áp dụng luật đúng.</p>
 <p><b>Tax Treaty:</b> được xem TƯƠNG ĐƯƠNG statutory law và GHI ĐÈ (overrides) IRC. Mỹ có hiệp định thuế với nhiều nước — theo đó, RESIDENT (không nhất thiết là citizen) của nước ngoài bị đánh thuế mức GIẢM hoặc MIỄN thuế Mỹ với 1 số khoản thu nhập nguồn Mỹ. Mức giảm/miễn khác nhau theo từng nước/loại thu nhập. Treaty thường có tính HỖ TƯƠNG (reciprocal — áp dụng cho cả 2 nước & resident của họ).</p>
-<p style="background:#fff7e0;border-left:4px solid #e0a800;padding:6px 10px;border-radius:6px;margin:8px 0">⚠️ <b>Luật hiện hành (kiểm 2026-10-25):</b> Theo §7852(d), treaty và IRC <b>ngang hàng</b>; khi mâu thuẫn thì <b>văn bản ban hành sau</b> thắng (later-in-time rule). Gleim viết treaty “overrides the IRC” — đề thi theo cách viết của Gleim.</p>
+<p style="background:#fff7e0;border-left:4px solid #e0a800;padding:6px 10px;border-radius:6px;margin:8px 0">⚠️ <b>Luật hiện hành (kiểm 2026-10-25):</b> Theo §7852(d), treaty và IRC <b>ngang hàng</b>; khi mâu thuẫn thì <b>văn bản ban hành sau</b> thắng (later-in-time rule). luật thuế chuẩn viết treaty “overrides the IRC” — đề thi theo cách viết của luật thuế chuẩn.</p>
 </div>
 
 <h3 class="lesson">Thuật ngữ 6.1</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">Internal Revenue Code (IRC)</td><td class="vn">Bộ luật thuế thu nhập nội bộ (Title 26 U.S.C.)</td></tr>
@@ -105,6 +292,7 @@
 <tr><td class="word">tax treaty</td><td class="vn">hiệp định thuế song phương, tương đương statutory law</td></tr>
 <tr><td class="word">reciprocal</td><td class="vn">có tính hỗ tương (áp dụng 2 chiều)</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm 6.1</h3>
 <div class="content-block">
@@ -167,6 +355,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ 6.2</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">Treasury Regulation</td><td class="vn">Quy định của Bộ Tài chính diễn giải Code</td></tr>
@@ -176,6 +365,7 @@
 <tr><td class="word">Private Letter Ruling (PLR)</td><td class="vn">Phán quyết riêng cho 1 taxpayer cụ thể</td></tr>
 <tr><td class="word">Internal Revenue Manual (IRM)</td><td class="vn">Sổ tay quy trình nội bộ IRS</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm 6.2</h3>
 <div class="content-block">
@@ -227,6 +417,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ 6.3</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">writ of certiorari</td><td class="vn">lệnh Supreme Court yêu cầu chuyển vụ án lên xem xét</td></tr>
@@ -235,6 +426,7 @@
 <tr><td class="word">tax citator</td><td class="vn">công cụ tra cứu lịch sử/diễn biến 1 vụ án thuế</td></tr>
 <tr><td class="word">regular decision / memorandum decision</td><td class="vn">quyết định chính thức / quyết định ghi chú (ít giá trị tiền lệ)</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm 6.3</h3>
 <div class="content-block">
@@ -287,6 +479,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ 6.4</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">primary authority</td><td class="vn">nguồn luật chính thức (xuất phát từ 1 nhánh chính phủ)</td></tr>
@@ -295,6 +488,7 @@
 <tr><td class="word">tax service</td><td class="vn">dịch vụ tra cứu thuế thương mại (secondary authority)</td></tr>
 <tr><td class="word">Committee Report</td><td class="vn">Báo cáo ủy ban Quốc hội (1 loại primary authority)</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm 6.4</h3>
 <div class="content-block">
@@ -316,5 +510,18 @@
 </div>
 </div>
 
+<footer class="authority-footer">
+  <h4>🏛️ Nguồn chính thống &amp; Ngày đối chiếu</h4>
+  <ul>
+    <li><b>Bộ luật &amp; Hiến pháp:</b> U.S. Constitution Art. VI; Internal Revenue Code (26 U.S.C.) §§ 6114, 7805, 7852(d).</li>
+    <li><b>Án lệ Tối cao:</b> <i>Loper Bright Enterprises v. Raimondo</i>, 603 U.S. 369 (2024); <i>Whitney v. Robertson</i>, 124 U.S. 190 (1888 — later-in-time rule).</li>
+    <li><b>Chuẩn kỳ thi:</b> PSI SEE Candidate Information Bulletin (2026–2027). Ngày đối chiếu: <b>2026-11-01</b>.</li>
+  </ul>
+</footer>
+<nav class="lesson-nav lesson-nav-bottom" aria-label="Điều hướng cuối bài">
+  <a class="nav-back" href="EA3_SU05_The_Collection_Process.html">← Bài trước: SU05</a>
+  <a class="nav-next" href="EA3_SU07_Recordkeeping_and_Electronic_Filing.html">Bài tiếp: SU07 →</a>
+</nav>
+</main>
 </body>
 </html>

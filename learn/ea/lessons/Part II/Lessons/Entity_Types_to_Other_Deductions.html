@@ -6,63 +6,37 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'ea'});</script>
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>EA Part II – Businesses: Entity Types through Other Deductions (SU01-05)</title>
-<style>
-  @page { size: A4; margin: 14mm 12mm; }
-  * { box-sizing: border-box; }
-  body { font-family:'Segoe UI','Calibri',Arial,sans-serif; color:#33322f; font-size:15.5px; line-height:1.5; background:#fdfcfa; margin:0; }
-  .cover { background: linear-gradient(120deg,#bfe4ff 0%,#d6ecff 30%,#e6def7 65%,#fbe6f4 100%); border-radius:20px; padding:40px 30px; text-align:center; margin-bottom:10px; box-shadow:0 6px 18px rgba(120,130,180,.25); border:1px solid #dfe8f5; }
-  .cover .tag { display:inline-block; background:#33314a; color:#d6ecff; font-weight:700; letter-spacing:2px; font-size:13px; padding:5px 14px; border-radius:20px; margin-bottom:14px; }
-  .cover h1 { font-size:30px; margin:6px 0; color:#3170a8; }
-  .cover h2 { font-size:16px; font-weight:500; margin:4px 0 0; opacity:.9; color:#33314a; }
-  .cover .books { margin-top:16px; font-size:13.5px; background:rgba(255,255,255,.55); display:inline-block; padding:8px 16px; border-radius:10px; color:#33314a; }
-  .toc { background:#fff; border:1.5px solid #dfe8f5; border-radius:14px; padding:18px 26px; margin-bottom:30px; }
-  .toc h3 { margin-top:0; color:#3170a8; }
-  .toc ol { margin:0; padding-left:22px; } .toc li{ margin-bottom:6px; }
-  h2.section { font-size:23px; color:#33314a; padding:12px 18px; border-radius:12px; margin:34px 0 14px; border-left:10px solid var(--accent,#5aa9d6); background:var(--bg,#eaf6fd); }
-  h3.lesson { font-size:19px; color:var(--accent-dark,#276a91); border-left:6px solid var(--accent,#5aa9d6); background:var(--bg-soft,#f3fafd); padding:8px 14px; border-radius:6px; margin:22px 0 10px; }
-  .c1{--accent:#5aa9d6;--accent-dark:#276a91;--bg:#eaf6fd;--bg-soft:#f3fafd;--head:#a9d4ec;}
-  .c2{--accent:#a892d9;--accent-dark:#5c4696;--bg:#f1ecfb;--bg-soft:#f8f5fd;--head:#cabdec;}
-  .c3{--accent:#f0a66e;--accent-dark:#b8620b;--bg:#fdeee2;--bg-soft:#fff8f0;--head:#f4c299;}
-  .c4{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
-  .c5{--accent:#e07b9b;--accent-dark:#a3335a;--bg:#fbe9f0;--bg-soft:#fdf5f8;--head:#f3b6c9;}
-  .cKey{--accent:#6fc99a;--accent-dark:#20824f;--bg:#e6f9ef;--bg-soft:#f2fcf7;--head:#a6e3c3;}
-  table.vocab { width:100%; border-collapse:collapse; margin-bottom:20px; font-size:.96em; box-shadow:0 2px 8px rgba(0,0,0,.05); border-radius:10px; overflow:hidden; }
-  table.vocab th { background:var(--head,#5aa9d6); color:#2d2d2d; padding:9px 8px; text-align:left; }
-  table.vocab td { padding:8px 8px; border-bottom:1px solid var(--bg,#eaf6fd); vertical-align:top; }
-  table.vocab tr:nth-child(even) td { background:var(--bg-soft,#faf6f0); }
-  table.vocab tr:nth-child(odd) td { background:#fff; }
-  table.vocab td.word { font-weight:800; color:var(--accent-dark,#276a91); }
-  table.vocab td.vn { font-weight:700; color:#3d6ba8; }
-  .rule-box { background:var(--bg,#eaf6fd); border-left:6px solid var(--accent,#5aa9d6); border-radius:8px; padding:12px 18px; margin:10px 0; }
-  .rule-box table { width:100%; border-collapse:collapse; margin:8px 0 4px; }
-  .rule-box table td, .rule-box table th { padding:6px 8px; border-bottom:1px solid rgba(0,0,0,.08); text-align:left; font-size:.94em; }
-  .rule-box table th { color:var(--accent-dark,#276a91); }
-  .rule-box ul, .rule-box ol { margin:6px 0; padding-left:22px; } .rule-box li{ margin-bottom:5px; }
-  .struct { font-weight:800; color:#b8620b; font-family:'Consolas','Courier New',monospace; }
-  .example-box { background:#fff; border:1.5px dashed var(--accent,#5aa9d6); border-radius:8px; padding:10px 16px; margin:10px 0; font-size:.95em; }
-  .example-box b.ex-tag { color:var(--accent-dark,#276a91); }
-  .mcq { background:#fff; border:1.5px solid var(--accent,#5aa9d6); border-radius:10px; padding:12px 18px; margin-bottom:12px; }
-  .mcq .q { color:#3d6ba8; font-weight:700; margin-bottom:6px; }
-  .mcq .opt { margin:2px 0 2px 10px; }
-  .content-block { background:#fff; border:2px dashed var(--accent,#5aa9d6); border-radius:12px; padding:16px 20px; margin-bottom:18px; }
-  .key-grid { column-count:1; } .key-grid div{ margin-bottom:10px; }
-  .key-ans { color:#20824f; font-weight:800; }
-  .key-exp { color:#555; font-size:.95em; }
-  .pagebreak { page-break-before: always; }
-  .note { font-size:.85em; color:#8a8a8a; font-style:italic; }
-  .source-tag { font-size:.8em; color:#999; font-style:italic; }
-</style>
+<link rel="stylesheet" href="../../lesson-2026.css">
+
 </head>
 <body>
+<main class="lesson-shell">
+<nav class="lesson-nav" aria-label="Điều hướng bài học">
+  <a class="nav-back" href="../../Part I/Lessons/EA1_SU14_Estate_Tax.html">← Part I: SU14 Estate Tax</a>
+  <span class="nav-meta">Part II • SU01–SU05</span>
+  <a class="nav-next" href="Basis_to_Partnership_Operations.html">Bài tiếp: SU06–SU10 →</a>
+</nav>
 
 <div class="cover">
   <div class="tag">EA EXAM PREP • PART II — BUSINESSES • SU01-05</div>
   <h1>📗 EA PART II — BUSINESSES</h1>
   <h2>SU01–05: Entity Types đến Other Deductions (Song ngữ Việt–Anh)</h2>
   <div class="books">📖 Khái niệm luật thuế · 🔤 Thuật ngữ · 📌 Ví dụ minh họa · ❓ Câu hỏi trắc nghiệm · 🔑 Đáp án trang sau</div>
-</div>
 
+<div class="exam-dual-banner">
+  <div class="banner-see">🎯 <b>Đề thi hiện hành (SEE 2026–27 / PSI):</b> Áp dụng luật đến <b>31/12/2025 (TY2025)</b></div>
+  <div class="banner-practice">💼 <b>Hành nghề mùa mới:</b> Số liệu <b>TY2026</b> nằm trong hộp <i>«Cập nhật 2026»</i></div>
+</div>
+</div><nav class="su-pills" aria-label="Nhảy nhanh Study Unit">
+<div class="su-pills-label">⚡ Nhảy nhanh Study Unit:</div>
+<a href="#su01">SU01: Entity Types</a>
+<a href="#su02">SU02: Sole Prop & SE</a>
+<a href="#su03">SU03: Farmer Tax</a>
+<a href="#su04">SU04: Passive Loss & EBL</a>
+<a href="#su05">SU05: Business Deductions</a>
+</nav>
 <div class="toc">
 <h3>📑 Mục lục</h3>
 <ol>
@@ -72,8 +46,232 @@
 <li>SU04 — Business Expenses (Chi phí kinh doanh: lương, lãi vay, thuê, thuế)</li>
 <li>SU05 — Other Deductions (Các khoản khấu trừ khác: meals, travel, bad debts, QBID...)</li>
 </ol>
-<p class="note">Nguồn: Gleim EA Review Part II, Study Units 1–5 (2026 edition) + EA2 BookOnline Outlines. Số liệu $ theo năm thuế 2025 (bao gồm các thay đổi từ OBBBA – One Big Beautiful Bill Act). Cần đối chiếu năm thi thực tế nếu có cập nhật.</p>
+
 </div>
+
+<aside class="ea-update-2026" aria-label="Cập nhật luật thuế 2026">
+  <h3>⚡ Cập nhật luật thuế 2026 &amp; So sánh năm</h3>
+  <p><b>Đạo luật OBBBA</b> khôi phục khấu trừ R&amp;D 100% và cách tính lãi vay kinh doanh EBITDA cho doanh nghiệp:</p>
+  <div class="table-scroll">
+    <table class="compare-table">
+      <thead>
+        <tr><th>Chỉ tiêu doanh nghiệp</th><th>TY2024</th><th class="col-tested">TY2025 (Thi SEE 2026–27)</th><th>TY2026 (Sắp tới — Hành nghề)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><b>R&amp;D Nội địa (<code>IRC §174A</code> per Sec. 70302)</b></td><td>Phân bổ 5 năm</td><td class="col-tested"><b>Khấu trừ ngay 100%</b></td><td>Khấu trừ ngay 100%</td></tr>
+        <tr><td><b>Lãi vay kinh doanh <code>§163(j)</code> (Sec. 70303)</b></td><td>30% EBIT</td><td class="col-tested"><b>30% EBITDA (cộng khấu hao)</b></td><td>30% EBITDA</td></tr>
+        <tr><td><b>An toàn Doanh thu gộp (<code>IRC §448(c)</code>)</b></td><td>$30,000,000</td><td class="col-tested"><b>$31,000,000</b></td><td>$32,000,000</td></tr>
+        <tr><td><b>OASDI SE Tax Wage Base</b></td><td>$168,600</td><td class="col-tested"><b>$176,100</b></td><td>$184,500</td></tr>
+        <tr><td><b>Giới hạn EBL (<code>IRC §461(l)</code>)</b></td><td>$305k / $610k</td><td class="col-tested"><b>$313,000 / $626,000</b></td><td>$256,000 / $512,000</td></tr>
+        <tr><td><b>Khấu trừ QBI §199A Ngưỡng cơ sở</b></td><td>$191,950 / $383,900</td><td class="col-tested"><b>$197,300 / $394,600</b></td><td>$201,750 / $403,500 (+ min $400)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="upcoming-box">
+    <b>💡 Trọng tâm cải cách:</b> Doanh nghiệp nội địa Mỹ được trừ ngay 100% chi phí nghiên cứu nội địa từ năm thuế 2025, chấm dứt tình trạng bắt buộc phân bổ 5 năm của các năm 2022–2024.
+  </div>
+</aside>
+
+<!-- ============================================================
+     KHỐI SƯ PHẠM: GÓC GIẢNG VIÊN (TEACHER'S CORNER) — ROUND 2
+     Chuẩn: HTML5 Semantic, Tự đủ Offline, In-friendly, Hỗ trợ Toggle
+     ============================================================ -->
+<details class="instructor-corner" id="instructor-corner">
+  <summary class="instructor-summary">
+    <div class="summary-left">
+      <span class="instructor-badge">🎓 GÓC GIẢNG VIÊN</span>
+      <span class="instructor-title">Giáo án Đào tạo SU01–05: Entity Selection, Accounting Methods & Business Deductions</span>
+    </div>
+    <span class="summary-hint">Bấm để Mở / Gập giáo án ▼</span>
+  </summary>
+
+  <div class="instructor-body">
+    <!-- Thanh công cụ toolbar -->
+    <div class="instructor-toolbar">
+      <span class="toolbar-label">Chế độ đào tạo:</span>
+      <span class="toolbar-status">Giáo án Chuyên sâu dành cho Giảng viên & Thí sinh SEE Part II 2026–2027</span>
+      <button type="button" class="btn-print-lesson" onclick="window.print()">🖨️ In Giáo án bài này</button>
+    </div>
+
+    <!-- 1. MỤC TIÊU ĐO LƯỜNG ĐƯỢC -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">🎯</span> 1. Mục tiêu Sư phạm Đo lường được (Bloom's Taxonomy)</h4>
+      <p class="corner-intro">Sau khi hoàn thành bài học này, học viên có năng lực thực hiện chuẩn xác các nhiệm vụ sau:</p>
+      <ul class="corner-list target-list">
+        <li><b>[So sánh & Đánh giá]:</b> So sánh ưu/nhược điểm pháp lý và thuế giữa Hộ kinh doanh cá thể (Sole Prop - Sch C), Công ty Hợp danh (Partnership - 1065), Công ty S (1120-S) và Công ty C (1120); áp dụng quy tắc Check-the-box regulations (<code>Treas. Reg. §301.7701-3</code>, Form 8832).</li>
+        <li><b>[Áp dụng Kế toán Doanh nghiệp nhỏ]:</b> Kiểm tra bài test Doanh thu gộp của Doanh nghiệp nhỏ (Small Business Gross Receipts Test theo <code>IRC §448(c)</code>: $31,000,000 năm 2025; lên $32,000,000 năm 2026) để áp dụng phương pháp tiền mặt (Cash Method) và miễn trừ vốn hóa hàng tồn kho UNICAP <code>IRC §263A</code>.</li>
+        <li><b>[Tính toán Khấu trừ Mới OBBBA]:</b> Khấu trừ ngay 100% chi phí nghiên cứu và phát triển R&D nội địa theo <code>IRC §174A</code> mới (OBBBA Sec. 70302 từ TY2025); khôi phục công thức ATI tính theo EBITDA cho giới hạn lãi vay kinh doanh 30% <code>IRC §163(j)</code>.</li>
+        <li><b>[Xử lý Chi phí Khởi nghiệp & Tổ chức]:</b> Áp dụng công thức khấu trừ tối đa $5,000 trong năm đầu (bị giảm từng đô-la đối với phần tổng chi phí vượt quá $50,000) theo <code>IRC §195</code> & <code>IRC §248</code>; phần còn lại phân bổ đều trong 180 tháng (15 năm).</li>
+      </ul>
+    </section>
+
+    <!-- 2. THỜI LƯỢNG GỢI Ý & PHÂN BỔ GIẢNG DẠY -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">⏱️</span> 2. Thời lượng Gợi ý &amp; Phân bổ Thời gian (Tổng: 90–120 phút)</h4>
+      <div class="table-scroll">
+        <table class="corner-table time-table">
+          <thead>
+            <tr>
+              <th>Phần học</th>
+              <th>Thời lượng</th>
+              <th>Hình thức sư phạm</th>
+              <th>Trọng tâm chuyển giao</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Lựa chọn Loại hình Doanh nghiệp & Check-the-box</b></td>
+              <td>25 phút</td>
+              <td>Bảng đối chiếu 4 mô hình & Form 8832</td>
+              <td>Trách nhiệm hữu hạn vs vô hạn; Cơ chế Pass-through vs Double Taxation; LLC 1 thành viên mặc định Disregarded Entity.</td>
+            </tr>
+            <tr>
+              <td><b>Phương pháp Kế toán & Ngưỡng Doanh thu $31M</b></td>
+              <td>30 phút</td>
+              <td>Phân tích số liệu lạm phát & UNICAP</td>
+              <td>Quy tắc bình quân 3 năm $31,000,000 (TY2025); Cash Method vs Accrual Method; Miễn trừ vốn hóa UNICAP §263A.</td>
+            </tr>
+            <tr>
+              <td><b>Chi phí Kinh doanh, R&D §174A & Lãi vay §163(j)</b></td>
+              <td>35 phút</td>
+              <td>Mô hình hóa bài toán khấu trừ OBBBA</td>
+              <td>Khấu trừ ngay 100% R&D nội địa; Công thức tính 30% ATI theo EBITDA (cộng lại khấu hao); Chi phí khởi nghiệp §195.</td>
+            </tr>
+            <tr>
+              <td><b>Giải mã Bẫy thi SEE Part II & Đánh giá Nhanh</b></td>
+              <td>20 phút</td>
+              <td>Trắc nghiệm phản xạ</td>
+              <td>3 câu hỏi kiểm nhanh; Bẫy tổn thất thiên tai kinh doanh không bị trừ sàn 10% AGI; Bẫy R&D nước ngoài 15 năm; Bẫy QBI.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 3. THỨ TỰ GIẢNG DẠY LOGIC (SCAFFOLDING) -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">🪜</span> 3. Thứ tự Giảng dạy Logic (Khung Giàn giáo Sư phạm)</h4>
+      <ol class="corner-steps">
+        <li><b>Bước 1 — Khởi động bằng Tình huống Chuyển đổi:</b> Một chủ tiệm phở doanh thu $800k/năm hỏi: <i>'Tôi nên giữ Sole Prop, mở LLC, hay chuyển sang S-Corp để bớt thuế?'</i> Hướng dẫn học viên phân tích gánh nặng thuế tự doanh 15.3% SE Tax.</li>
+        <li><b>Bước 2 — Sơ đồ Phân nhánh Check-the-box:</b> Vẽ cây quyết định từ Entity thành lập theo luật bang -> Mặc định theo luật thuế liên bang -> Quyền nộp Form 8832 bầu chọn thành Corporation.</li>
+        <li><b>Bước 3 — Cập nhật Ngưỡng $31M và Cải cách OBBBA:</b> Hướng dẫn tính trung bình Gross Receipts 3 năm liền kề trước; giải thích sự giải phóng dòng tiền khi R&D nội địa được trừ 100% ngay theo §174A.</li>
+        <li><b>Bước 4 — Thuật toán Tính Chi phí Khởi nghiệp (§195/§248):</b> Công thức: `Khoản trừ năm 1 = $5,000 - Max(0, Tổng chi phí - $50,000) + Phần còn lại phân bổ cho số tháng hoạt động trong năm`.</li>
+        <li><b>Bước 5 — Kiểm tra Bẫy Tổn thất Tài sản Kinh doanh:</b> Làm rõ: Tài sản kinh doanh bị hư hỏng hoàn toàn được trừ đủ 100% Adjusted Basis (trừ bảo hiểm), tuyệt đối không bị trừ $100 và không có sàn 10% AGI!</li>
+      </ol>
+    </section>
+
+    <!-- 4. VÍ DỤ & ẨN DỤ CHO NGƯỜI KHÔNG CHUYÊN -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">💡</span> 4. Ẩn dụ Trực quan &amp; Cầu nối Ngôn ngữ Đời thường</h4>
+      <div class="analogy-box">
+        <div class="analogy-header"><b>«Chiếc Áo Doanh Nghiệp & Chiếc Phễu Kế Toán Doanh Thu Gộp $31M»</b></div>
+        <p class="analogy-content">
+          Hãy hình dung việc chọn loại hình doanh nghiệp giống như chọn chiếc áo giáp kinh doanh. Chiếc áo Sole Proprietorship mỏng manh nhất, IRS đánh thuế thẳng vào người bạn và khi gặp tai nạn thì chủ nợ siết sạch nhà cửa. Chiếc áo Corporation dầy dặn chống đạn trách nhiệm hữu hạn, nhưng IRS bắt bạn nộp hai lần vé vào cửa (Double Taxation). Khi bạn chọn chiếc áo Pass-through (S-Corp hay Partnership), IRS cho bạn hưởng lợi kép: vừa chống đạn vừa chỉ nộp thuế một lần. Đặc biệt, IRS dựng một chiếc phễu khổng lồ mang tên **Small Business Test $31M**: nếu doanh nghiệp của bạn chui lọt qua chiếc phễu này (doanh thu dưới $31,000,000), bạn được quyền dùng sổ sách kế toán tiền mặt giản đơn, vứt bỏ gánh nặng kiểm kê UNICAP phức tạp và tận hưởng khấu trừ 100% R&D nội địa ngay lập tức!
+        </p>
+      </div>
+    </section>
+
+    <!-- 5. 3–5 LỖI HỌC VIÊN HAY MẮC & CÁCH SỬA -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">⚠️</span> 5. 3–5 Lỗi Học viên Hay Mắc &amp; Phương pháp Khắc phục Triệt để</h4>
+      <div class="pitfall-grid">
+        <div class="pitfall-card">
+          <div class="pitfall-title">❌ Lỗi 1: Bỏ sót quy tắc mặc định của Check-the-box</div>
+          <p class="pitfall-desc">Học viên nghĩ rằng khi thành lập LLC tại tiểu bang thì IRS tự động đánh thuế như một Corporation.</p>
+          <div class="pitfall-fix">✅ Chuẩn hóa <code>Treas. Reg. §301.7701-3</code>: Mặc định của LLC 1 thành viên là <b>Disregarded Entity</b> (khai trên Schedule C của cá nhân); LLC từ 2 thành viên trở lên mặc định là <b>Partnership</b> (khai Form 1065). Muốn thành Corporation, BẮT BUỘC phải chủ động nộp <code>Form 8832</code>!</div>
+        </div>
+        <div class="pitfall-card">
+          <div class="pitfall-title">❌ Lỗi 2: Khấu trừ chi phí khởi nghiệp vượt $50,000 mà không tính phase-out</div>
+          <p class="pitfall-desc">Học viên có chi phí khởi nghiệp $53,000 và vẫn trừ ngay $5,000 trong năm đầu.</p>
+          <div class="pitfall-fix">✅ Công thức chuẩn <code>IRC §195(b)</code>: Khoản $5,000 bị giảm từng đô-la đối với phần vượt $50,000. Nếu chi phí là $53,000 thì phần vượt là $3,000 -> Mức được trừ ngay chỉ còn ($5,000 - $3,000) = $2,000; số tiền còn lại $51,000 phân bổ trong 180 tháng.</div>
+        </div>
+        <div class="pitfall-card">
+          <div class="pitfall-title">❌ Lỗi 3: Áp dụng nhầm sàn tổn thất thiên tai cá nhân vào tài sản kinh doanh</div>
+          <p class="pitfall-desc">Khi tài sản kinh doanh bị bão phá hủy, học viên trừ $100 và áp dụng sàn 10% AGI.</p>
+          <div class="pitfall-fix">✅ Bản chất <code>IRC §165</code>: Sàn $100 và sàn 10% AGI CHỈ ÁP DỤNG CHO TỔN THẤT CÁ NHÂN KHÔNG PHỤC VỤ KINH DOANH. Tổn thất tài sản phục vụ thương mại hoặc kinh doanh (Business Casualty) được khấu trừ 100% khoản lỗ thuần (Adjusted Basis trừ tiền bảo hiểm bồi thường), không có bất kỳ sàn hạn chế nào!</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. 3 CÂU HỎI KIỂM NHANH TẠI LỚP (QUICK CHECKS) -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">❓</span> 6. 3 Câu hỏi Kiểm tra Nhanh tại Lớp (Kèm Đáp án &amp; Lý giải Sư phạm)</h4>
+      <div class="quick-check-box">
+        <div class="qc-item">
+          <p class="qc-q"><b>Câu hỏi 1:</b> Anh Hoàng thành lập một công ty LLC một thành viên (Single-Member LLC) tại Texas để kinh doanh phụ tùng xe hơi. Trong năm đầu tiên, anh không nộp bất kỳ mẫu đơn bầu chọn thuế nào cho IRS. Thu nhập và chi phí kinh doanh của LLC này sẽ được kê khai trên biểu mẫu nào?</p>
+          <details class="qc-ans-details">
+            <summary class="qc-ans-sum">Xem đáp án &amp; Gợi ý giảng giải</summary>
+            <div class="qc-ans-body">
+              <b>Đáp án:</b> Kê khai trên <b>Schedule C (Form 1040)</b> của tờ khai thuế thu nhập cá nhân của anh Hoàng.<br><b>Lý giải sư phạm:</b> Theo Check-the-box regulations (<code>Treas. Reg. §301.7701-3</code>), LLC một thành viên mặc định là một thực thể bị bỏ qua (Disregarded Entity) cho mục đích thuế thu nhập liên bang, được xử lý như một Sole Proprietorship.
+            </div>
+          </details>
+        </div>
+        <div class="qc-item">
+          <p class="qc-q"><b>Câu hỏi 2:</b> Công ty TNHH Minh Phát bắt đầu hoạt động kinh doanh vào ngày 01/07/2025. Trong giai đoạn chuẩn bị trước khi mở cửa, công ty phát sinh chi phí khởi nghiệp (Start-up costs) hợp lệ là $52,000. Tính số tiền chi phí khởi nghiệp tối đa công ty được khấu trừ trên tờ khai thuế năm 2025?</p>
+          <details class="qc-ans-details">
+            <summary class="qc-ans-sum">Xem đáp án &amp; Gợi ý giảng giải</summary>
+            <div class="qc-ans-body">
+              <b>Đáp án:</b> $4,633.<br><b>Lý giải sư phạm:</b> Khoản trừ ngay: $5,000 - ($52,000 - $50,000) = $3,000. Số tiền còn lại = $52,000 - $3,000 = $49,000. Khấu hao phân bổ trong 180 tháng: ($49,000 / 180) × 6 tháng (từ tháng 7 đến tháng 12) = $1,633. Tổng khấu trừ năm 2025 = $3,000 + $1,633 = <b>$4,633</b>.
+            </div>
+          </details>
+        </div>
+        <div class="qc-item">
+          <p class="qc-q"><b>Câu hỏi 3:</b> Trong năm thuế 2025, ngưỡng doanh thu gộp bình quân 3 năm để một doanh nghiệp nhỏ (Small Business) được miễn áp dụng giới hạn chi phí lãi vay kinh doanh 30% ATI theo IRC §163(j) là bao nhiêu?</p>
+          <details class="qc-ans-details">
+            <summary class="qc-ans-sum">Xem đáp án &amp; Gợi ý giảng giải</summary>
+            <div class="qc-ans-body">
+              <b>Đáp án:</b> <b>$31,000,000 trở xuống</b> (Rev. Proc. 2024-40).<br><b>Lý giải sư phạm:</b> Doanh nghiệp có doanh thu gộp bình quân 3 năm liền kề từ $31M trở xuống được miễn trừ hoàn toàn khỏi giới hạn §163(j), được trừ toàn bộ chi phí lãi vay kinh doanh thực tế phát sinh.
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. BẪY THI SEE & CHIÊU TRÒ ĐỀ THI -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">🪤</span> 7. Giải mã Bẫy Đề thi SEE (SEE Exam Traps)</h4>
+      <div class="exam-trap-box">
+        <div class="exam-trap-title">Cảnh báo Trọng tâm từ Chuyên gia Khảo thí PSI:</div>
+        <ul class="exam-trap-list">
+          <li><b>Bẫy 'R&D nội địa vs R&D nước ngoài':</b> Theo điều khoản mới <code>IRC §174A</code> (OBBBA), chỉ có chi phí R&D phát sinh TRONG NƯỚC MỸ mới được khấu trừ 100% ngay. Chi phí R&D phát sinh ngoài nước Mỹ (Foreign Research) BẮT BUỘC VẪN PHẢI VỐN HÓA VÀ PHÂN BỔ TRONG 15 NĂM!</li>
+          <li><b>Bẫy 'Cách tính ATI theo EBITDA':</b> OBBBA khôi phục việc cộng lại chi phí khấu hao tài sản hữu hình (Depreciation) và khấu hao vô hình (Amortization) vào EBIT để tính Adjusted Taxable Income (ATI), giúp mức trần trừ lãi vay 30% tăng lên đáng kể từ TY2025.</li>
+          <li><b>Bẫy 'Kỳ tính thuế đầu tiên':</b> Doanh nghiệp mới thành lập có thể chọn kết thúc năm tài chính vào bất kỳ ngày cuối tháng nào trong năm đầu tiên, miễn là năm tính thuế đầu tiên không vượt quá 12 tháng.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 8. LIÊN HỆ BIỂU MẪU THỰC HÀNH -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">📋</span> 8. Liên hệ Biểu mẫu Thực hành (IRS Form Mapping)</h4>
+      <div class="form-mapping-grid">
+        <div class="form-map-card">
+          <div class="form-map-num">Schedule C (Form 1040)</div>
+          <div class="form-map-detail">Báo cáo lãi/lỗ từ hoạt động kinh doanh của Hộ cá thể (Sole Proprietorship) và Disregarded Entity LLC.</div>
+        </div>
+        <div class="form-map-card">
+          <div class="form-map-num">Form 8832 (Entity Classification Election)</div>
+          <div class="form-map-detail">Biểu mẫu bầu chọn phân loại thực thể để LLC đổi sang thành C-Corporation hoặc thay đổi trạng thái mặc định.</div>
+        </div>
+        <div class="form-map-card">
+          <div class="form-map-num">Form 3115 (Application for Change in Accounting Method)</div>
+          <div class="form-map-detail">Đơn xin phép thay đổi phương pháp kế toán (từ Cash sang Accrual hoặc ngược lại) gửi cho IRS.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. LIÊN KẾT BÀI TRƯỚC / BÀI SAU -->
+    <section class="corner-section corner-footer-nav">
+      <h4 class="corner-heading"><span class="corner-icon">🔗</span> 9. Bản đồ Liên kết Bài học (Curriculum Scaffolding)</h4>
+      <div class="curriculum-links">
+        <div class="curr-prev"><b>⬅️ Bước chuyển giao từ Part I:</b> Hoàn tất thuế thu nhập cá nhân, bài mở đầu Part II thiết lập nền tảng về bản chất pháp lý và phương pháp kế toán của mọi mô hình kinh doanh tại Mỹ.</div>
+        <div class="curr-next"><b>➡️ Bước đệm bài tiếp theo (SU06–10):</b> Bài tiếp theo sẽ đi sâu vào cấu trúc Công ty Hợp danh (Partnership Form 1065, Góp vốn §721, Outside Basis §722, và Phân định Tài sản nóng Hot Assets §751).</div>
+      </div>
+    </section>
+
+  </div>
+</details>
+<!-- ============================================================ KẾT THÚC GÓC GIẢNG VIÊN ============================================================ -->
+
 
 <!-- ============================================================ SU01 ============================================================ -->
 <div class="c1">
@@ -82,6 +280,7 @@
 <h3 class="lesson">Khái niệm chính</h3>
 <div class="rule-box">
 <p><b>Các loại hình doanh nghiệp (Business Entities):</b></p>
+<div class="table-scroll">
 <table>
 <tr><th>Entity</th><th>Liability của chủ</th><th>Cách đánh thuế</th></tr>
 <tr><td><b>Sole Proprietorship</b></td><td>Unlimited (không giới hạn)</td><td>Schedule C (Form 1040); không phải entity pháp lý riêng</td></tr>
@@ -92,6 +291,7 @@
 <tr><td><b>LLC (≥2 members)</b></td><td>Limited (state law)</td><td>Mặc định = partnership (flow-through); có thể elect corporation qua Form 8832</td></tr>
 <tr><td><b>Single-Member LLC</b></td><td>Limited</td><td>Mặc định = disregarded entity → Schedule C/E của chủ</td></tr>
 </table>
+</div>
 <p><b>Check-the-Box (Form 8832):</b> eligible entity tự chọn được đánh thuế là corporation, partnership, hay disregarded entity. Mặc định: domestic entity ≥2 chủ → partnership; 1 chủ → disregarded.</p>
 <p><b>EIN (Form SS-4):</b> bắt buộc cho partnership/corporation dù không có nhân viên; sole proprietor không nhân viên & không nộp excise/pension return thì KHÔNG bắt buộc EIN. Đổi entity (incorporate, join partnership) → cần EIN mới; chỉ đổi cách đánh thuế qua Form 8832 thì KHÔNG cần EIN mới.</p>
 <p><b>Accounting Methods:</b> Cash method — ghi nhận income khi thực nhận tiền/cash equivalent/constructive receipt; deduct khi thực trả. Accrual method — ghi nhận theo "all-events test" (quyền nhận đã cố định + số tiền xác định được) bất kể tiền đã về hay chưa. C corporations (trừ ngoại lệ farm/personal service corp/gross receipts ≤$31 triệu), partnership có corporate partner, và tax shelter BẮT BUỘC dùng accrual method. Taxpayer có inventory nói chung phải dùng accrual cho purchases/sales (trừ gross-receipts-test taxpayer ≤$31 triệu).</p>
@@ -101,6 +301,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ SU01</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">check-the-box regulations (Form 8832)</td><td class="vn">quy định tự chọn loại hình thuế cho entity</td></tr>
@@ -110,6 +311,7 @@
 <tr><td class="word">closely held corporation</td><td class="vn">công ty sở hữu tập trung (≤5 cá nhân sở hữu &gt;50% cuối năm)</td></tr>
 <tr><td class="word">Sec. 444 election (Form 8716)</td><td class="vn">lựa chọn năm thuế khác required year</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm SU01</h3>
 <div class="content-block">
@@ -152,6 +354,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ SU02</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">cancellation of debt (COD) income</td><td class="vn">thu nhập từ xóa nợ</td></tr>
@@ -161,6 +364,7 @@
 <tr><td class="word">Farm Optional Method</td><td class="vn">phương pháp tính SE tax tùy chọn cho nông dân thu nhập thấp</td></tr>
 <tr><td class="word">farm income averaging (Schedule J)</td><td class="vn">tính thuế thu nhập nông trại theo bình quân 3 năm</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm SU02</h3>
 <div class="content-block">
@@ -196,12 +400,14 @@
 <div class="rule-box">
 <p><b>Rental income:</b> báo cáo trên Schedule E (nếu không cung cấp dịch vụ đáng kể) hoặc Schedule C (nếu có significant services). Nhà cho thuê &lt;15 ngày/năm → KHÔNG cần báo cáo income (và cũng không được deduct expense tương ứng).</p>
 <p><b>Vacation Home Rules — 2 bài test:</b></p>
+<div class="table-scroll">
 <table>
 <tr><th>Rental-use test</th><th>Personal-use test</th><th>Kết quả</th></tr>
 <tr><td>Pass (&gt;14 ngày)</td><td>Pass (≤14 ngày HOẶC ≤10% số ngày cho thuê)</td><td>Full deduction, chịu passive loss rules</td></tr>
 <tr><td>Pass (&gt;14 ngày)</td><td>Fail (personal use lớn hơn)</td><td>"Vacation home" — deduction giới hạn = rental income (không lỗ)</td></tr>
 <tr><td>Fail (≤14 ngày)</td><td>—</td><td>Không cần khai income, KHÔNG được deduct expense</td></tr>
 </table>
+</div>
 <p><b>Thứ tự deduction khi vacation home bị giới hạn:</b> (1) lãi vay & property tax (deduct dù có income hay không) → (2) chi phí không ảnh hưởng basis (sửa chữa) → (3) chi phí ảnh hưởng basis (depreciation, luôn cuối cùng).</p>
 <p><b>3 giới hạn lỗ (theo thứ tự áp dụng):</b> (1) Basis trong hoạt động, (2) At-risk rules, (3) Passive activity loss (PAL) rules — deduction bị giới hạn ở mức NHỎ NHẤT trong 3.</p>
 <p><b>At-Risk:</b> gồm tiền/property đã bỏ vào + recourse debt (chịu trách nhiệm cá nhân) + Qualified Nonrecourse Financing (QNRF, riêng cho real estate). Nonrecourse debt thường KHÔNG tính vào at-risk (trừ QNRF).</p>
@@ -210,6 +416,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ SU03</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">vacation home rules</td><td class="vn">quy tắc giới hạn deduction cho nhà nghỉ dưỡng vừa ở vừa cho thuê</td></tr>
@@ -220,6 +427,7 @@
 <tr><td class="word">real estate professional</td><td class="vn">chuyên gia bất động sản (thoát PAL limitation)</td></tr>
 <tr><td class="word">excess business loss</td><td class="vn">lỗ kinh doanh vượt ngưỡng cho phép (sau at-risk/PAL)</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm SU03</h3>
 <div class="content-block">
@@ -263,6 +471,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ SU04</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">ordinary and necessary</td><td class="vn">thông thường và cần thiết (điều kiện để expense được deduct)</td></tr>
@@ -272,6 +481,7 @@
 <tr><td class="word">adjusted taxable income (ATI)</td><td class="vn">thu nhập chịu thuế điều chỉnh (căn cứ giới hạn business interest)</td></tr>
 <tr><td class="word">semi-weekly depositor</td><td class="vn">doanh nghiệp phải nộp employment tax deposit 2 lần/tuần (nếu &gt;$50,000 tax liability)</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm SU04</h3>
 <div class="content-block">
@@ -315,6 +525,7 @@
 </div>
 
 <h3 class="lesson">Thuật ngữ SU05</h3>
+<div class="table-scroll">
 <table class="vocab">
 <tr><th>Term</th><th>Nghĩa tiếng Việt</th></tr>
 <tr><td class="word">specific write-off method</td><td class="vn">phương pháp xóa nợ xấu cụ thể (bắt buộc dùng cho thuế)</td></tr>
@@ -324,6 +535,7 @@
 <tr><td class="word">Specified Service Trade or Business (SSTB)</td><td class="vn">ngành dịch vụ đặc thù (tài sản chính là danh tiếng/kỹ năng) — bị giới hạn QBID</td></tr>
 <tr><td class="word">accountable plan</td><td class="vn">kế hoạch hoàn phí có báo cáo đầy đủ (reimbursement không tính vào thu nhập nhân viên)</td></tr>
 </table>
+</div>
 
 <h3 class="lesson">Câu hỏi trắc nghiệm SU05</h3>
 <div class="content-block">
@@ -351,5 +563,18 @@
 </div>
 </div>
 
+<footer class="authority-footer">
+  <h4>🏛️ Nguồn chính thống &amp; Ngày đối chiếu</h4>
+  <ul>
+    <li><b>Bộ luật &amp; Đạo luật:</b> Internal Revenue Code (26 U.S.C.) §§ 162, 163(j), 174A, 179, 199A, 274, 448(c), 461(l), 1402; Public Law 119-21 (OBBBA Sec. 70302, 70303, 70412).</li>
+    <li><b>Hướng dẫn IRS:</b> Rev. Proc. 2024-40; Rev. Proc. 2025-32; IRS Pub. 334 (Tax Guide for Small Business), Pub. 535 (Business Expenses).</li>
+    <li><b>Chuẩn kỳ thi:</b> PSI SEE Candidate Information Bulletin (2026–2027). Ngày đối chiếu: <b>2026-11-01</b>.</li>
+  </ul>
+</footer>
+<nav class="lesson-nav lesson-nav-bottom" aria-label="Điều hướng cuối bài">
+  <a class="nav-back" href="../../Part I/Lessons/EA1_SU14_Estate_Tax.html">← Part I: SU14 Estate Tax</a>
+  <a class="nav-next" href="Basis_to_Partnership_Operations.html">Bài tiếp: SU06–SU10 →</a>
+</nav>
+</main>
 </body>
 </html>

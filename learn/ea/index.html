@@ -12,29 +12,75 @@
 <body>
 <!-- Mở thẳng (không nằm trong Góc tự học của game.html) thì có nút quay về phòng game. Trong iframe thì thanh của game.html lo việc này. -->
 <a class="quest-home" href="../../game.html" hidden>🎮 Về phòng game</a>
+<a class="quest-roadmap" href="lessons/Roadmap/from-zero-to-ea.html" style="display:inline-block;margin:8px;padding:6px 14px;background:#1a73e8;color:#fff;border-radius:20px;text-decoration:none;font-weight:700;font-size:0.88rem;">🗺️ Lộ trình Từ 0 Đến EA</a>
 <main id="app" aria-live="polite"></main>
 <div id="toast" role="status"></div>
 <noscript>Game cần bật JavaScript để chạy nha 🥺</noscript>
 <script>
 if (window.top === window) document.querySelector(".quest-home").hidden = false;
-window.QUEST_CONFIG = { lessonBase: "lessons/" };
+window.QUEST_CONFIG = {
+  lessonBase: "lessons/",
+  parts: {
+    1: { label: "Part I", name: "Individuals" },
+    2: { label: "Part II", name: "Businesses" },
+    3: { label: "Part III", name: "Representation" },
+    4: { label: "Part IV", name: "Kiếm tiền & Hành nghề" }
+  }
+};
 </script>
 <script>
-/* TJ 2026-10-25: dữ liệu game EA tải từ Supabase Storage (bucket "ea"); lỗi mạng/không tải được thì dùng bản chép trong data/.
-   lessons-data + research dùng chung với repo L04 (ea/data/); cases.js bản W02 (tên khách riêng) ở ea/data-w02/.
-   Cập nhật bucket: python3 tools/upload_ea_data.py trong repo L04-ea-2025 (2 file chung) + upload cases.js W02 vào ea/data-w02/. */
+/* TJ 2026-11-01 (WL2026 Audit): D5 local-first loader fallback.
+   Chạy local (file:, localhost, 127.0.0.1, ?local=1): ưu tiên nạp data/*.js cục bộ trước, lỗi thì fallback sang Supabase bucket 'ea'.
+   Chạy domain public (*.github.io...): nạp remote Supabase trước, lỗi mạng thì fallback sang data/*.js cục bộ. */
 (function () {
+  var isLocal = location.protocol === "file:" ||
+                location.hostname === "localhost" ||
+                location.hostname === "127.0.0.1" ||
+                location.search.indexOf("local=1") !== -1;
   var R = "https://pqarpszsipbdugrumhfy.supabase.co/storage/v1/object/public/ea/";
-  var DATA = [["data/lessons-data.js?v=4", R + "data/lessons-data.js"], ["data/cases.js?v=1", R + "data-w02/cases.js"], ["data/research.js?v=1", R + "data/research.js"]];
-  function add(src, ok, bad) { var s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = bad || ok; document.body.appendChild(s); }
-  function tail() { add("../quest.js?v=3", function () { window.QUEST_CLASS_ID = "ea"; add("../qclass.js?v=31"); }); }
-  function load(i, remote) {
-    if (i >= DATA.length) return tail();
-    var next = function () { load(i + 1, remote); };
-    if (remote) add(DATA[i][1], next, function () { load(0, false); });
-    else add(DATA[i][0], next);
+  var DATA = [
+    ["data/lessons-data.js?v=9", R + "data/lessons-data.js?v=9"],
+    ["data/cases.js?v=3", R + "data-w02/cases.js?v=3"],
+    ["data/research.js?v=3", R + "data/research.js?v=3"]
+  ];
+  function add(src, ok, bad) {
+    var s = document.createElement("script");
+    s.src = src;
+    s.onload = ok;
+    s.onerror = bad || ok;
+    document.body.appendChild(s);
   }
-  load(0, location.protocol !== "file:");
+  function tail() {
+    add("../quest.js?v=3", function () {
+      window.QUEST_CLASS_ID = "ea";
+      add("../qclass.js?v=31");
+    });
+  }
+  function loadLocal(i) {
+    if (i >= DATA.length) return tail();
+    add(DATA[i][0], function () {
+      loadLocal(i + 1);
+    }, function () {
+      add(DATA[i][1], function () {
+        loadLocal(i + 1);
+      }, function () {
+        loadLocal(i + 1);
+      });
+    });
+  }
+  function loadRemote(i) {
+    if (i >= DATA.length) return tail();
+    add(DATA[i][1], function () {
+      loadRemote(i + 1);
+    }, function () {
+      loadLocal(0);
+    });
+  }
+  if (isLocal) {
+    loadLocal(0);
+  } else {
+    loadRemote(0);
+  }
 })();
 </script>
 </body>
