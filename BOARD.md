@@ -19,6 +19,7 @@
 - Viền vàng bên trái bảng: cần ảnh khoanh đỏ.
 
 ## Đã xong (gần nhất, đã lên web thật)
+- 2026-11-02 · NGOẠI LỆ làn (Thảo quyết định D1): đưa site/UI trước luật làn. EA 2026 (Part IV Kiếm tiền, Góc giảng viên, Lộ trình), DM 16 bài, IELTS Listening/Reading, 5 site độc lập trong `sites/` (xuất ra repo công khai tj-courses, L04-ea-site, L02-dm-site, L07-toeic-site, L06-ielts-site), nút 🎓 Khoá học mở cổng qua lớp phủ. Neo: tag `anchor/wl2026-pre-audit` (457676b). Điều phối: `W02_COORDINATION`.
 - Bảng màu bút 10 màu và hộp thoại xác nhận thân thiện · board v94, css v193.
 - Nút Game mờ khi đọc sách/PDF · board v93. Chia sẻ màn hình hiện cho người xem + icon camera · board v92.
 - Pop-up Quản lý người chơi · game v249. Tra từ im lặng khi đang đọc, thử lại và báo lý do · board v90–v91.

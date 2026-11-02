@@ -6,11 +6,11 @@
   "use strict";
   var isLocal = location.protocol === "file:" || location.hostname === "localhost" || location.hostname === "127.0.0.1";
   var HUB_PAGES = {
-    courses_portal: { url: isLocal ? "sites/L00_PORTAL/index.html" : "https://teoteo1081.github.io/W02_TJHUB/sites/L00_PORTAL/", title: "🎓 Cổng Khoá Học TJ 2026" },
-    course_ea: { url: isLocal ? "sites/L04_EA/index.html" : "https://teoteo1081.github.io/L04_EA/", title: "🇺🇸 IRS Enrolled Agent 2026" },
-    course_dm: { url: isLocal ? "sites/L02_DM/index.html" : "https://teoteo1081.github.io/L02_DM/", title: "🚀 Digital Marketing Thực Chiến 2026" },
-    course_toeic: { url: isLocal ? "sites/L05_TOEIC/index.html" : "https://teoteo1081.github.io/L05_TOEIC/", title: "🎯 TOEIC 4 Kỹ Năng Thực Chiến" },
-    course_ielts: { url: isLocal ? "sites/L06_IELTS/index.html" : "https://teoteo1081.github.io/L06_IELTS/", title: "🇬🇧 IELTS Academic 4 Kỹ Năng 2026" },
+    courses_portal: { url: isLocal ? "sites/L00_PORTAL/index.html" : "https://teoteo1081.github.io/tj-courses/", title: "🎓 Cổng Khoá Học TJ 2026" },
+    course_ea: { url: isLocal ? "sites/L04_EA/index.html" : "https://teoteo1081.github.io/L04-ea-site/", title: "🇺🇸 IRS Enrolled Agent 2026" },
+    course_dm: { url: isLocal ? "sites/L02_DM/index.html" : "https://teoteo1081.github.io/L02-dm-site/", title: "🚀 Digital Marketing Thực Chiến 2026" },
+    course_toeic: { url: isLocal ? "sites/L05_TOEIC/index.html" : "https://teoteo1081.github.io/L07-toeic-site/", title: "🎯 TOEIC 4 Kỹ Năng Thực Chiến" },
+    course_ielts: { url: isLocal ? "sites/L06_IELTS/index.html" : "https://teoteo1081.github.io/L06-ielts-site/", title: "🇬🇧 IELTS Academic 4 Kỹ Năng 2026" },
     hub_cia: { url: "https://teoteo1081.github.io/L00_ES-CN/Operation_0-Chunks_1000_cau_EN_ES_CN_VN_v4.html", title: "🕵️ Operation 0→Chunks · 1000 câu" }
   };
   var tabs = w.$("#hub-tabs"); if (!tabs) return;
