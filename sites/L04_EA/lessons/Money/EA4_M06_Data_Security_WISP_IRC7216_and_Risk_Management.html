@@ -42,6 +42,184 @@
   </ol>
 </div>
 
+<!-- ============================================================
+     KHỐI SƯ PHẠM: GÓC GIẢNG VIÊN (TEACHER'S CORNER) — ROUND 2
+     Chuẩn: HTML5 Semantic, Tự đủ Offline, In-friendly, Hỗ trợ Toggle
+     ============================================================ -->
+<details class="instructor-corner" id="instructor-corner">
+  <summary class="instructor-summary">
+    <div class="summary-left">
+      <span class="instructor-badge">🎓 GÓC GIẢNG VIÊN</span>
+      <span class="instructor-title">Giáo án Đào tạo M06: An ninh Dữ liệu Mạng, Bản Kế hoạch WISP & Bí mật IRC §7216</span>
+    </div>
+    <span class="summary-hint">Bấm để Mở / Gập giáo án ▼</span>
+  </summary>
+
+  <div class="instructor-body">
+    <!-- Thanh công cụ toolbar -->
+    <div class="instructor-toolbar">
+      <span class="toolbar-label">Chế độ đào tạo:</span>
+      <span class="toolbar-status">Cẩm nang Thực chiến Hành nghề &amp; Tạo Thu nhập (Part IV)</span>
+      <button type="button" class="btn-print-lesson" onclick="window.print()">🖨️ In Giáo án bài này</button>
+    </div>
+
+    <!-- 1. MỤC TIÊU ĐO LƯỜNG ĐƯỢC -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">🎯</span> 1. Mục tiêu Sư phạm Đo lường được (Bloom's Taxonomy)</h4>
+      <p class="corner-intro">Sau khi hoàn thành bài học này, học viên có năng lực thực hiện chuẩn xác các nhiệm vụ sau:</p>
+      <ul class="corner-list target-list">
+        <li><b>[Lập Kế hoạch An ninh Bắt buộc]:</b> Nắm vững yêu cầu pháp lý bắt buộc của Ủy ban Thương mại Liên bang (FTC Safeguards Rule) và IRS: Mọi văn phòng khai thuế có trả tiền bắt buộc phải có một Bản Kế hoạch An ninh Thông tin bằng Văn bản (Written Information Security Plan - WISP theo <code>IRS Pub. 5708</code>) để được cấp và duy trì mã số EFIN.</li>\n        <li><b>[Tuân thủ Nghiêm ngặt IRC §7216]:</b> Hiểu rõ chế tài hình sự liên bang theo <code>IRC §7216</code> và quy chế <code>Treas. Reg. §301.7216</code>: Nghiêm cấm tiết lộ hoặc sử dụng bất kỳ thông tin nào trên tờ khai thuế của khách hàng cho mục đích khác (kể cả giới thiệu dịch vụ bảo hiểm, cho vay thế chấp) mà KHÔNG CÓ BẢN ĐỒNG THUẬN KÝ TRƯỚC (Signed Consent to Disclose / Consent to Use); cảnh báo mức phạt hình sự 1 năm tù và phạt tiền cho mỗi vi phạm.</li>\n        <li><b>[Triển khai Bộ 6 Biện pháp Bảo vệ (Security Six)]:</b> Vận dụng trọn vẹn 6 biện pháp an ninh mạng tối thiểu do IRS khuyến nghị: Phần mềm diệt virus chuyên dụng, Tường lửa (Firewall), Xác thực đa yếu tố (MFA / 2FA), Mã hóa dữ liệu lưu trữ và truyền gửi (Drive Encryption BitLocker), Bản sao lưu dự phòng độc lập (Offline Backups), và Mạng riêng ảo an toàn (VPN).</li>\n        <li><b>[Xây dựng Kế hoạch Ứng phó Sự cố (Data Breach Plan)]:</b> Thiết lập quy trình phản ứng khẩn cấp trong vòng 24–48 giờ khi phát hiện lộ lọt dữ liệu: Báo cáo cho IRS Stakeholder Liaison, Báo cáo cho Cảnh sát / FBI, Báo cáo cho Tổng Chưởng lý Tiểu bang (State Attorneys General), và gửi thông báo cảnh báo bảo vệ cho toàn bộ thân chủ bị ảnh hưởng.</li>
+      </ul>
+    </section>
+
+    <!-- 2. THỜI LƯỢNG GỢI Ý & PHÂN BỔ GIẢNG DẠY -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">⏱️</span> 2. Thời lượng Gợi ý &amp; Phân bổ Thời gian (Tổng: 90–120 phút)</h4>
+      <div class="table-scroll">
+        <table class="corner-table time-table">
+          <thead>
+            <tr>
+              <th>Phần học</th>
+              <th>Thời lượng</th>
+              <th>Hình thức sư phạm</th>
+              <th>Trọng tâm chuyển giao</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Khung Pháp lý An ninh Dữ liệu: FTC Safeguards Rule & IRS Pub. 5708</b></td>
+              <td>25 phút</td>
+              <td>Thuyết trình đối chiếu quy chế liên bang</td>
+              <td>Tại sao người làm thuế là mục tiêu số 1 của tin tặc; Nghĩa vụ pháp lý để giữ mã EFIN; Hậu quả khi không có WISP; Cấu trúc 5 phần của WISP.</td>
+            </tr>\n            <tr>
+              <td><b>Tội phạm Tiết lộ Thông tin Khách hàng IRC §7216</b></td>
+              <td>35 phút</td>
+              <td>Nghiên cứu án lệ hình sự & Mẫu đơn Consent</td>
+              <td>Bản chất IRC §7216; Tiết lộ (Disclosure) vs Sử dụng (Use); Mẫu văn bản đồng thuận riêng biệt khổ chữ 12pt; Bẫy bán dữ liệu cho công ty tài chính.</td>
+            </tr>\n            <tr>
+              <td><b>Bộ 6 Biện pháp Kỹ thuật (Security Six) & Thực hành WISP</b></td>
+              <td>35 phút</td>
+              <td>Thực hành thiết lập bảo mật máy tính & Cloud</td>
+              <td>MFA bắt buộc trên phần mềm thuế; Mã hóa ổ cứng BitLocker/FileVault; Email bảo mật mã hóa; Chính sách mật khẩu mạnh và phân quyền nhân viên.</td>
+            </tr>\n            <tr>
+              <td><b>Quy trình Ứng phó Sự cố Rò rỉ Dữ liệu & Kiểm tra phản xạ</b></td>
+              <td>25 phút</td>
+              <td>Xử lý kịch bản khủng hoảng an ninh mạng</td>
+              <td>3 câu hỏi kiểm nhanh; Các bước báo cáo Stakeholder Liaison; Bảo hiểm trách nhiệm an ninh mạng (Cyber Insurance); Bàn giao hoàn thành Part IV.</td>
+            </tr>\n          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 3. THỨ TỰ GIẢNG DẠY LOGIC (SCAFFOLDING) -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">🪜</span> 3. Thứ tự Giảng dạy Logic (Khung Giàn giáo Sư phạm)</h4>
+      <ol class="corner-steps">
+        <li><b>Bước 1 — Tình huống thực tế:</b> Một văn phòng khai thuế bị tin tặc tấn công lừa đảo (Phishing email), chiếm quyền điều khiển máy tính và nộp khống 50 tờ khai giả mạo để chiếm đoạt tiền hoàn thuế. IRS sẽ làm gì với văn phòng này và EA phải chịu trách nhiệm ra sao?</li>\n        <li><b>Bước 2 — Giảng giải Trách nhiệm Bắt buộc về WISP (Pub. 5708):</b> Chỉ ra quy định: Khi gia hạn mã EFIN hàng năm trên irs.gov, bạn phải đánh dấu tích cam kết 'Đã có bản kế hoạch WISP bằng văn bản'. Nếu tích có mà thực tế không có văn bản, bạn phạm tội khai man trước chính phủ liên bang!</li>\n        <li><b>Bước 3 — Mổ xẻ Quy tắc Thép của <code>IRC §7216</code>:</b> Khắc sâu: Bạn KHÔNG ĐƯỢC PHÉP dùng số liệu thu nhập trên Form 1040 của khách để nói: <i>'Anh chị năm nay kiếm nhiều tiền, mua bảo hiểm nhân thọ bên tôi đi'</i> trừ khi khách hàng đã ký vào một tờ giấy đồng thuận riêng biệt khổ chữ to trước khi bạn mở lời!</li>\n        <li><b>Bước 4 — Mô hình hóa Kế hoạch Ứng phó Khủng hoảng (Data Breach Checklist):</b> Liệt kê danh bạ khẩn cấp: (1) Ngắt kết nối internet ngay lập tức; (2) Gọi đường dây nóng IRS Stakeholder Liaison; (3) Báo cho FinCEN và FTC; (4) Thuê chuyên gia khám nghiệm an ninh mạng; (5) Mua gói bảo vệ danh tính 1 năm cho khách.</li>\n        <li><b>Bước 5 — Kiểm tra tổng kết Part IV:</b> Học viên kiểm tra chéo toàn bộ kiến thức kiếm tiền, tiếp nhận khách, tính phí và bảo mật dữ liệu.</li>
+      </ol>
+    </section>
+
+    <!-- 4. VÍ DỤ & ẨN DỤ CHO NGƯỜI KHÔNG CHUYÊN -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">💡</span> 4. Ẩn dụ Trực quan &amp; Cầu nối Ngôn ngữ Đời thường</h4>
+      <div class="analogy-box">
+        <div class="analogy-header"><b>«Chiếc Két Sắt Kỹ Thuật Số WISP & Lời Thề Bảo Mật IRC §7216»</b></div>
+        <p class="analogy-content">
+          Hãy hình dung dữ liệu thuế của khách hàng (SSN, ngày sinh của con cái, số tài khoản ngân hàng, toàn bộ bí mật tài chính) như một 'Khối vàng ròng nguyên khối': Bạn là người được thân chủ tin tưởng gửi gắm khối vàng đó vào tay. Bản kế hoạch WISP chính là 'Chiếc két sắt chống đạn kỹ thuật số' dày 5 lớp bảo vệ khối vàng khỏi những tên cướp tinh vi trên không gian mạng. Còn điều luật IRC §7216 giống như 'Lời thề Hippocrates của ngành thuế': Bạn tuyệt đối không được hé môi để lộ một thông tin nào, dù là một mảnh vụn nhỏ nhất, cho bất kỳ ai bước vào phòng nếu chưa được thân chủ gật đầu đồng ý bằng văn bản!
+        </p>
+      </div>
+    </section>
+
+    <!-- 5. 3–5 LỖI HỌC VIÊN HAY MẮC & CÁCH SỬA -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">⚠️</span> 5. 3–5 Lỗi Học viên Hay Mắc &amp; Phương pháp Khắc phục Triệt để</h4>
+      <div class="pitfall-grid">
+        <div class="pitfall-card">
+          <div class="pitfall-title">❌ Lỗi 1: Tải bản WISP mẫu trên mạng về cất vào ngăn kéo mà không áp dụng</div>
+          <p class="pitfall-desc">Kế toán tải file WISP mẫu từ trang irs.gov về in ra để đối phó nhưng trong văn phòng nhân viên dùng chung một mật khẩu và không bật bảo mật 2 lớp (MFA).</p>
+          <div class="pitfall-fix">✅ Hậu quả pháp lý: WISP là một TÀI LIỆU SỐNG (Living Document) bắt buộc phải được đào tạo cho toàn thể nhân viên, đánh giá rủi ro định kỳ và cập nhật hàng năm. Khi xảy ra sự cố rò rỉ dữ liệu, việc có WISP hình thức không triển khai thực tế sẽ khiến văn phòng bị FTC phạt nặng do cẩu thả nghiêm trọng!</div>
+        </div>\n        <div class="pitfall-card">
+          <div class="pitfall-title">❌ Lỗi 2: Dùng thông tin thuế của khách hàng để tiếp thị sản phẩm tài chính khác</div>
+          <p class="pitfall-desc">EA vừa làm thuế vừa bán bảo hiểm, tự ý lấy số liệu thu nhập của khách hàng khai thuế để chào mời gói bảo hiểm hưu trí.</p>
+          <div class="pitfall-fix">✅ Vi phạm hình sự <code>IRC §7216</code>: Sử dụng thông tin tờ khai thuế cho mục đích kinh doanh khác mà không có Bản Chấp thuận Sử dụng Thông tin (Consent to Use) ký trước bằng văn bản là tội phạm hình sự. Khách hàng có quyền tố cáo và EA có thể bị phạt $1,000 cho mỗi vi phạm và bị phạt tù lên đến 1 năm!</div>
+        </div>\n        <div class="pitfall-card">
+          <div class="pitfall-title">❌ Lỗi 3: Gửi hồ sơ thuế có chứa số SSN qua email thông thường không mã hóa</div>
+          <p class="pitfall-desc">Kế toán gửi file PDF bản khai thuế Form 1040 hoàn chỉnh cho khách hàng qua Gmail hoặc Yahoo mà không đặt mật khẩu bảo vệ.</p>
+          <div class="pitfall-fix">✅ Vi phạm nghiêm trọng chuẩn an ninh thông tin: Email thông thường truyền gửi dữ liệu dưới dạng văn bản thô (Plain text), rất dễ bị tin tặc đánh chặn giữa đường. Bắt buộc phải sử dụng Cổng thông tin khách hàng bảo mật (Secure Client Portal) hoặc đặt mật khẩu mã hóa mạnh cho file PDF trước khi gửi!</div>
+        </div>\n      </div>
+    </section>
+
+    <!-- 6. 3 CÂU HỎI KIỂM NHANH TẠI LỚP (QUICK CHECKS) -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">❓</span> 6. 3 Câu hỏi Kiểm tra Nhanh tại Lớp (Kèm Đáp án &amp; Lý giải Sư phạm)</h4>
+      <div class="quick-check-box">
+        <div class="qc-item">
+          <p class="qc-q"><b>Câu hỏi 1:</b> Một công ty dịch vụ thuế muốn gửi hồ sơ dữ liệu của khách hàng Mỹ cho một chi nhánh nhân viên gia công (Back-office) tại Việt Nam để nhập liệu. Theo quy định của Treas. Reg. §301.7216-3, công ty này bắt buộc phải làm gì trước khi chuyển dữ liệu?</p>
+          <details class="qc-ans-details">
+            <summary class="qc-ans-sum">Xem đáp án &amp; Gợi ý giảng giải</summary>
+            <div class="qc-ans-body">
+              <b>Đáp án:</b> Bắt buộc phải có Bản Chấp thuận Tiết lộ Thông tin ra nước ngoài (Consent to Disclose Tax Return Information Outside the United States) có chữ ký đồng thuận của khách hàng.<br><b>Lý giải sư phạm:</b> Việc chuyển dữ liệu thuế ra ngoài biên giới Hoa Kỳ phải tuân thủ quy chuẩn cực kỳ nghiêm ngặt: Văn bản đồng thuận phải nêu rõ quốc gia tiếp nhận dữ liệu và các rủi ro bảo mật đi kèm. Nếu không có văn bản này, hành vi chuyển dữ liệu là vi phạm hình sự liên bang!
+            </div>
+          </details>
+        </div>\n        <div class="qc-item">
+          <p class="qc-q"><b>Câu hỏi 2:</b> Mã số cấp phép nộp hồ sơ thuế điện tử (Electronic Filing Identification Number — EFIN) của một văn phòng EA có được phép đem bán, cho thuê hoặc chuyển nhượng cho người khác khi sang nhượng văn phòng không?</p>
+          <details class="qc-ans-details">
+            <summary class="qc-ans-sum">Xem đáp án &amp; Gợi ý giảng giải</summary>
+            <div class="qc-ans-body">
+              <b>Đáp án:</b> TUYỆT ĐỐI CẤM.<br><b>Lý giải sư phạm:</b> Theo IRS Pub. 3112, mã số EFIN được cấp riêng cho từng cá nhân hoặc thực thể pháp lý sau khi đã trải qua thẩm tra lý lịch tư pháp (Fingerprinting & Background Check). Mã EFIN KHÔNG PHẢI LÀ TÀI SẢN THƯƠNG MẠI, tuyệt đối không được chuyển nhượng, bán lại hoặc cho người khác mượn để e-file!
+            </div>
+          </details>
+        </div>\n        <div class="qc-item">
+          <p class="qc-q"><b>Câu hỏi 3:</b> Văn phòng của bạn bị phát hiện có một nhân viên làm rò rỉ dữ liệu của 15 khách hàng do bị cài mã độc gián điệp. Bước xử lý khẩn cấp đầu tiên liên hệ với cơ quan chức năng là liên hệ với ai?</p>
+          <details class="qc-ans-details">
+            <summary class="qc-ans-sum">Xem đáp án &amp; Gợi ý giảng giải</summary>
+            <div class="qc-ans-body">
+              <b>Đáp án:</b> Báo cáo ngay cho Chuyên viên Liên lạc Đối tác của IRS (IRS Stakeholder Liaison).<br><b>Lý giải sư phạm:</b> Theo Hướng dẫn Phản ứng Sự cố của IRS (IRS Pub. 5708), người khai thuế phải báo cáo ngay cho IRS Stakeholder Liaison tại địa phương. IRS sẽ lập tức gắn cờ bảo vệ trên tài khoản của các nạn nhân để ngăn chặn việc tin tặc nộp tờ khai giả mạo chiếm đoạt tiền hoàn thuế.
+            </div>
+          </details>
+        </div>\n      </div>
+    </section>
+
+    <!-- 7. BẪY THI SEE & CHIÊU TRÒ ĐỀ THI -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">🪤</span> 7. Cạm bẫy Hành nghề &amp; Trách nhiệm Pháp lý</h4>
+      <div class="exam-trap-box">
+        <div class="exam-trap-title">Cảnh báo Quản trị Rủi ro từ Chuyên gia EA:</div>
+        <ul class="exam-trap-list">
+          <li><b>Bẫy 'Quy cách văn bản đồng thuận Consent under IRC §7216':</b> Bản đồng thuận không được gộp chung vào hợp đồng dịch vụ thông thường! Nó phải là một TRANG RIÊNG BIỆT (Separate Document), cỡ chữ tối thiểu 12-point, có tiêu đề cảnh báo rõ ràng và phải được ký TRƯỚC KHI thông tin thuế được tiết lộ hoặc sử dụng.</li>\n          <li><b>Bẫy 'Bảo hiểm An ninh mạng (Cyber Liability Insurance)':</b> Bảo hiểm trách nhiệm nghề nghiệp thông thường (E&O Insurance) thường LOẠI TRỪ các thiệt hại do tấn công mạng hoặc lộ lọt dữ liệu! Văn phòng EA bắt buộc phải mua thêm phụ phí hoặc gói bảo hiểm Cyber Insurance riêng biệt để chi trả chi phí khám nghiệm pháp y số, chi phí thông báo và bồi thường thiệt hại cho khách.</li>\n          <li><b>Bẫy 'Thanh lý máy tính cũ':</b> Khi bán hoặc vứt bỏ máy tính, máy in hoặc ổ cứng cũ, việc xóa file thông thường (Delete/Empty Recycle Bin) hoặc format thông thường KHÔNG ĐỦ TIÊU CHUẨN. Phải sử dụng phần mềm xóa đè dữ liệu theo chuẩn quân sự (DoD 5220.22-M) hoặc tiêu hủy vật lý ổ đĩa (Degaussing/Shredding) để chống phục hồi dữ liệu!</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 8. LIÊN HỆ BIỂU MẪU THỰC HÀNH -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">📋</span> 8. Liên hệ Biểu mẫu Thực hành (IRS Form Mapping)</h4>
+      <div class="form-mapping-grid">
+        <div class="form-map-card">
+          <div class="form-map-num">Mẫu WISP (Written Information Security Plan)</div>
+          <div class="form-map-detail">Bản kế hoạch an ninh thông tin văn phòng chuẩn theo cấu trúc 5 phần của IRS Pub. 5708.</div>
+        </div>\n        <div class="form-map-card">
+          <div class="form-map-num">Mẫu Chấp thuận Tiết lộ / Sử dụng (§7216 Consent Forms)</div>
+          <div class="form-map-detail">Biểu mẫu riêng biệt chuẩn 12-point lấy chữ ký khách hàng trước khi chia sẻ dữ liệu cho bên thứ ba hoặc tiếp thị dịch vụ.</div>
+        </div>\n        <div class="form-map-card">
+          <div class="form-map-num">IRS Pub. 5708 & Pub. 4557</div>
+          <div class="form-map-detail">Cẩm nang hướng dẫn an ninh thông tin và các biện pháp bảo vệ dữ liệu khách hàng cho Người hành nghề thuế.</div>
+        </div>\n      </div>
+    </section>
+
+    <!-- 9. LIÊN KẾT BÀI TRƯỚC / BÀI SAU -->
+    <section class="corner-section corner-footer-nav">
+      <h4 class="corner-heading"><span class="corner-icon">🔗</span> 9. Bản đồ Liên kết Bài học (Curriculum Scaffolding)</h4>
+      <div class="curriculum-links">
+        <div class="curr-prev"><b>⬅️ Bài trước (M05):</b> Đã làm chủ kỹ năng đại diện tranh chấp và giải quyết nợ thuế.</div>
+        <div class="curr-next"><b>🎓 TỔNG KẾT HOÀN THÀNH TOÀN DIỆN KHỐI PART IV (KIẾM TIỀN & HÀNH NGHỀ THỰC CHIẾN):</b> Học viên đã trang bị trọn vẹn vũ khí từ lộ trình chứng chỉ, thị trường ngách tiệm nail/nhà hàng, quy trình mùa thuế, định giá dịch vụ, đại diện giải quyết nợ và an ninh dữ liệu văn phòng. Sẵn sàng tự tin bước ra thị trường tạo thu nhập bền vững!</div>
+      </div>
+    </section>
+
+  </div>
+</details>
+<!-- ============================================================ KẾT THÚC GÓC GIẢNG VIÊN ============================================================ -->
+
 <div class="c1">
   <h2 class="section">6.1 — MỤC TIÊU ĐẦU RA ĐO LƯỜNG ĐƯỢC</h2>
   <div class="rule-box">
@@ -221,5 +399,6 @@
   <a class="nav-next" href="../../index.html">Hoàn thành Module 4 • Về EA Quest Hub →</a>
 </nav>
 </main>
+<script src="../lesson-runtime.js"></script>
 </body>
 </html>

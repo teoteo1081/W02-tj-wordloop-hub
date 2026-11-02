@@ -6,18 +6,18 @@
 <title>EA Quest</title>
 <meta name="description" content="Game ôn thi Enrolled Agent: từ vựng, trắc nghiệm, research nhanh và tình huống tiếp khách.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦉</text></svg>">
-<link rel="stylesheet" href="../quest.css?v=3">
+<link rel="stylesheet" href="../quest.css?v=2">
 <link rel="stylesheet" href="../../css/game.css?v=276">
 </head>
 <body>
 <!-- Mở thẳng (không nằm trong Góc tự học của game.html) thì có nút quay về phòng game. Trong iframe thì thanh của game.html lo việc này. -->
 <a class="quest-home" href="../../game.html" hidden>🎮 Về phòng game</a>
-<a class="quest-home" href="../../sites/L04_EA/index.html" hidden style="margin-left:8px;color:#276a91">🌐 Mở trang khoá học đầy đủ ↗</a>
+<a class="quest-roadmap" href="lessons/Roadmap/from-zero-to-ea.html" style="display:inline-block;margin:8px;padding:6px 14px;background:#1a73e8;color:#fff;border-radius:20px;text-decoration:none;font-weight:700;font-size:0.88rem;">🗺️ Lộ trình Từ 0 Đến EA</a>
 <main id="app" aria-live="polite"></main>
 <div id="toast" role="status"></div>
 <noscript>Game cần bật JavaScript để chạy nha 🥺</noscript>
 <script>
-if (window.top === window) document.querySelectorAll(".quest-home").forEach(function(el){ el.hidden = false; });
+if (window.top === window) document.querySelector(".quest-home").hidden = false;
 window.QUEST_CONFIG = {
   lessonBase: "lessons/",
   parts: {
@@ -39,9 +39,9 @@ window.QUEST_CONFIG = {
                 location.search.indexOf("local=1") !== -1;
   var R = "https://pqarpszsipbdugrumhfy.supabase.co/storage/v1/object/public/ea/";
   var DATA = [
-    ["data/lessons-data.js?v=6", R + "data/lessons-data.js?v=6"],
-    ["data/cases.js?v=2", R + "data-w02/cases.js?v=2"],
-    ["data/research.js?v=2", R + "data/research.js?v=2"]
+    ["data/lessons-data.js?v=9", R + "data/lessons-data.js?v=9"],
+    ["data/cases.js?v=3", R + "data-w02/cases.js?v=3"],
+    ["data/research.js?v=3", R + "data/research.js?v=3"]
   ];
   function add(src, ok, bad) {
     var s = document.createElement("script");
@@ -51,7 +51,7 @@ window.QUEST_CONFIG = {
     document.body.appendChild(s);
   }
   function tail() {
-    add("../quest.js?v=4", function () {
+    add("../quest.js?v=3", function () {
       window.QUEST_CLASS_ID = "ea";
       add("../qclass.js?v=31");
     });

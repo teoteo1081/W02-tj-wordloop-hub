@@ -833,3 +833,131 @@ window.EA_CASES = [
     scriptEn: "The IRS CP2000 notice is not a final bill. They assumed your cost basis was zero because it was not reported. With Form 2848, I can represent you, calculate your real cost basis on Form 8949, and resolve this within the thirty-day window."
   }
 ];
+
+
+// ============================================================
+// 6 TÌNH HUỐNG THỰC CHIẾN END-TO-END (SYNTHETIC COMPREHENSIVE CASES)
+// Chuẩn Vòng 2: R2_BLUEPRINT.md Mục 4 & PLAN_ROUND2.md A4
+// Dữ liệu giả lập 100% (ANCHOR_WL2026 Điều 3)
+// ============================================================
+window.EA_COMPREHENSIVE_CASES = [
+  {
+    id: "comp_case_01",
+    part: 1,
+    title: "Gia đình đa nguồn thu, OBBBA Tips/Overtime, AOTC & Form 8867",
+    client: "David Tuấn Trần (Pha chế, W-2 $50k gồm $18k Tip) & Sarah Mai Nguyễn (Điều dưỡng, W-2 $80k gồm $12k Overtime)",
+    dependents: "Daniel Trần (20t, SV ĐH năm 2) & Emily Trần (10t)",
+    filingStatus: "MFJ",
+    taxYear: "TY2025",
+    grossIncome: 130450,
+    obbbaDeduction: 30000,
+    agi: 100450,
+    standardDeduction: 31500,
+    taxableIncome: 68950,
+    taxBeforeCredits: 7797,
+    credits: {
+      ctcNonrefundable: 2200,
+      aotcNonrefundable: 1500,
+      aotcRefundable: 1000
+    },
+    totalTax: 4097,
+    paymentsWithheld: 10000,
+    refundAmount: 6903,
+    forms: ["Form 1040", "Schedule 1", "Form 8863", "Form 8867"],
+    riskNotice: "Lỗi FICA: Khoản trừ Tips/Overtime chỉ giảm thuế TNCN, không giảm thuế FICA. Phạt Due Diligence $650/khoản (tổng $1,300)."
+  },
+  {
+    id: "comp_case_02",
+    part: 1,
+    title: "Tiệm Nail / Tự doanh cá thể Schedule C, Thiết bị §179 & QBI §199A",
+    client: "Lisa Phương Lê, chủ sở hữu tiệm nail LLC 1 thành viên (Disregarded Entity)",
+    filingStatus: "Single",
+    taxYear: "TY2025",
+    grossReceipts: 180000,
+    totalExpenses: 112200,
+    netProfit: 67800,
+    seTax: 9580,
+    halfSeTaxDeduction: 4790,
+    agi: 63010,
+    standardDeduction: 15750,
+    qbiDeduction: 9452,
+    taxableIncome: 37808,
+    incomeTax: 4298,
+    totalFederalTax: 13878,
+    forms: ["Schedule C", "Form 4562", "Schedule SE", "Form 8995", "Form 1040"],
+    riskNotice: "Circular 230 §10.21 & §10.34: Tuyệt đối cấm đồng lõa giấu $35k doanh thu tiền mặt. Khách không khai phải từ chối dịch vụ ngay."
+  },
+  {
+    id: "comp_case_03",
+    part: 1,
+    title: "Bán nhà chính kết hợp Home Office §121 & Treo lỗ cho thuê PAL §469",
+    client: "Robert Hùng Phạm, Kỹ sư phần mềm độc lập tại Austin, TX",
+    filingStatus: "Single",
+    taxYear: "TY2025",
+    realizedGainSale: 298000,
+    unrecaptured1250Gain: 18000,
+    section121Exclusion: 250000,
+    taxableLongTermGain: 30000,
+    totalRecognizedGainHome: 48000,
+    rentalLossOriginal: -18000,
+    rentalLossAllowed: 0,
+    suspendedRentalLoss: 18000,
+    agi: 163000,
+    taxableIncome: 147250,
+    forms: ["Form 8949", "Schedule D", "Schedule E", "Form 8582", "Form 1040"],
+    riskNotice: "Khấu hao văn phòng tại nhà $18k phải chịu thuế Unrecaptured §1250 ở mức trần 25%. Lỗ cho thuê bị treo vì MAGI > $150k."
+  },
+  {
+    id: "comp_case_04",
+    part: 2,
+    title: "Partnership Form 1065, Góp vốn §721, Guaranteed Payments & K-1",
+    client: "Công ty Hợp danh Vận tải An & Bình GP (Dallas, TX)",
+    partners: "Trần Văn An (50%) & Lê Văn Bình (50%)",
+    taxYear: "TY2025",
+    initialBasis: { an: 87500, binh: 27500 },
+    grossFreight: 420000,
+    operatingExpenses: 180000,
+    macrsDepreciation: 19000,
+    interestExpense: 6000,
+    guaranteedPaymentAn: 40000,
+    ordinaryBusinessIncome: 175000,
+    separatelyStatedCharity: 4000,
+    endingOutsideBasis: { an: 148000, binh: 88000 },
+    forms: ["Form 1065", "Schedule K", "Schedule K-1", "Form 4562"],
+    riskNotice: "Khoản từ thiện $4k bắt buộc tách riêng trên K-1, không trừ tại Trang 1. Bắt buộc chỉ định BBA Partnership Representative."
+  },
+  {
+    id: "comp_case_05",
+    part: 2,
+    title: "S Corporation Form 1120-S, Lương hợp lý & Thứ tự Basis Reg. §1.1367-1(f)",
+    client: "Golden Tech Inc. (S-Corp) • Cổ đông 100%: Kevin Cường Nguyễn",
+    taxYear: "TY2025",
+    grossRevenue: 240000,
+    reasonableCompW2: 70000,
+    employerFica: 5355,
+    serverAndOfficeExpenses: 35000,
+    ordinaryBusinessIncome: 129645,
+    nondeductiblePenalty: 1500,
+    distributionsPaid: 75000,
+    beginningBasis: 12000,
+    finalStockBasis: 69145,
+    qbiDeductionIndividual: 25929,
+    forms: ["Form 1120-S", "Form 1125-E", "Form 7203", "Schedule K-1", "Form 1040"],
+    riskNotice: "Circular 230 §10.51: Cấm trả lương $0 để trốn thuế FICA. Phải tuân thủ chuẩn 4 bước điều chỉnh Stock Basis của Treas. Reg. §1.1367-1(f)."
+  },
+  {
+    id: "comp_case_06",
+    part: 3,
+    title: "Đại diện IRS, Giải quyết Thư báo CP2000, Mã CAF & Đề nghị Giảm nợ OIC",
+    client: "Jennifer Thảo Vũ (Orlando, FL) • Thư CP2000 đòi $15,700 do 1099-B thiếu Cost Basis",
+    taxYear: "TY2023 / TY2025",
+    initialIrsClaim: 15700,
+    actualRobinhoodProceeds: 55000,
+    actualAdjustedCostBasis: 58000,
+    actualNetResult: -3000,
+    finalIrsAssessment: 0,
+    debtReductionAchieved: 15700,
+    forms: ["Form 2848", "CP2000 Response", "Form 8949", "Schedule D", "Form 656", "Form 433-A(OIC)"],
+    riskNotice: "Circular 230 §10.27: Nghiêm cấm thu phí theo tỷ lệ phần trăm tiền thuế tiết kiệm được (Contingent Fee) khi giải quyết tranh chấp."
+  }
+];
