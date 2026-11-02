@@ -1,6 +1,6 @@
 # 00_TOM_TAT_CHO_THAO — Kế Hoạch Mở Phòng Game TJ Cho Người Dùng Ngoài
 
-> **Dành cho:** Chị Thảo (Đọc nhanh 5–7 phút, ngôn ngữ bình dân, không cần biết lập trình)  
+> **Dành cho:** Thảo (Đọc nhanh 5–7 phút, ngôn ngữ bình dân, không cần biết lập trình)  
 > **Căn cứ kỹ thuật:** Tổng hợp và đối chiếu 100% từ 3 hồ sơ nghiên cứu kỹ thuật: `01_CURRENT_STATE_AND_ARCH.md`, `02_PRODUCT_UX_AND_ROLLOUT.md`, và `03_COST_TOKEN_MODEL.md`  
 > **Điểm neo an toàn (Anchor):** Commit `8d9b2fe` (Tag `anchor/rooms-plan-2026-11-02` trên `W02_TJHUB`)  
 > **Cam kết cốt lõi:** Đây là tài liệu NGHIÊN CỨU & KẾ HOẠCH. Tuyệt đối không sửa mã, không động Database, không làm hỏng phòng game hiện có của TJ.
