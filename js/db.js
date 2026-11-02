@@ -361,31 +361,60 @@
        "block_id" khi gọi cho bảng đó, không thì PostgREST báo lỗi
        "column ... does not exist". */
     var PAGE = 1000, PAR = 4;
-    function fetchPage(offset) {
-      var q = DB.sb.from(table).select("*").range(offset, offset + PAGE - 1).order(orderCol || "id");
+    function fetchPage(offset, withCount) {
+      var q = DB.sb.from(table).select("*", withCount ? { count: "exact" } : undefined).range(offset, offset + PAGE - 1).order(orderCol || "id");
       if (build) q = build(q);
       return q.then(function (r) {
+        /* A positive offset can become out of bounds if rows were deleted. */
+        if (offset > 0 && r.status === 416 && r.error && r.error.code === "PGRST103") return { rows: [], count: null };
         if (r.error) throw r.error;
-        return r.data || [];
+        return { rows: r.data || [], count: r.count };
       });
     }
-    /* Trang đầu 1 mình (bảng nhỏ chỉ tốn 1 request); nếu đầy thì lấy các
-       trang kế theo từng lượt PAR trang SONG SONG, ghép đúng thứ tự trang,
-       dừng ở trang ngắn đầu tiên. */
-    function more(out, nextOffset) {
+    /* Count rides on the first data request, avoiding speculative pages.
+       Without a count, retain bounded parallel batches and short-page stop. */
+    function more(out, nextOffset, count) {
       var jobs = [];
-      for (var i = 0; i < PAR; i++) jobs.push(fetchPage(nextOffset + i * PAGE));
+      for (var i = 0; i < PAR && (count == null || nextOffset + i * PAGE < count); i++) jobs.push(fetchPage(nextOffset + i * PAGE));
+      if (!jobs.length) return Promise.resolve(out);
       return Promise.all(jobs).then(function (pages) {
         for (var i = 0; i < pages.length; i++) {
-          out = out.concat(pages[i]);
-          if (pages[i].length < PAGE) return out;
+          out = out.concat(pages[i].rows);
+          if (pages[i].rows.length < PAGE) return out;
         }
-        return more(out, nextOffset + PAR * PAGE);
+        return more(out, nextOffset + PAR * PAGE, count);
       });
     }
-    return fetchPage(0).then(function (first) {
-      return first.length < PAGE ? first : more(first, PAGE);
+    return fetchPage(0, true).then(function (first) {
+      return first.rows.length < PAGE ? first.rows : more(first.rows, PAGE, first.count);
     });
+  }
+
+  /* Session-only promises share both completed and in-flight reads. Removing
+     an entry also detaches any older request; a failure remains retryable. */
+  var readCache = Object.create(null);
+  var META_TTL = 90 * 1000;   /* hub/notebook: tab khác đổi quyền xem thì tối đa ~90s sau tab này mới thấy (QA 2026-11-02) */
+  function cachedRead(key, load, ttl) {
+    var entry = readCache[key];
+    if (!entry || (ttl && Date.now() - entry.at >= ttl)) {
+      entry = { at: Date.now() };
+      readCache[key] = entry;
+      entry.promise = Promise.resolve().then(load).catch(function (e) {
+        if (readCache[key] === entry) delete readCache[key];
+        throw e;
+      });
+    }
+    return entry.promise;
+  }
+  DB.invalidateBootMetadata = function () {
+    delete readCache.hubs;
+    delete readCache.notebooks;
+  };
+  function copyRows(rows) { return rows.map(function (row) { return Object.assign({}, row); }); }
+  function allWordsLite() {
+    return cachedRead("words", function () {
+      return sbListAll("words", function (q) { return q.select("id,block_id,level,term"); });
+    }, 3 * 60 * 1000);
   }
 
   /* ══════════════ CÂY TOÀN APP (cho màn Journey > 🌳 Chi tiết) ══════════════
@@ -420,8 +449,8 @@
       };
     }
 
-    var hubs = await sbListAll("hubs");
-    var notebooks = await sbListAll("notebooks");
+    var hubs = copyRows(await cachedRead("hubs", function () { return sbListAll("hubs"); }, META_TTL));
+    var notebooks = await DB.getAllNotebooksLite();
     var sections = await sbListAll("sections");
     var pages = await sbListAll("pages");
     var batches = await sbListAll("batches");
@@ -438,7 +467,7 @@
     return { hubs: hubs, notebooks: notebooks, sections: sections, pages: pages, batches: batches, blocks: blocks, bp: bp };
   };
 
-  /* Bản NHẸ của toàn bộ bảng "words" (chỉ id/block_id/level) — dùng khi
+  /* Bản NHẸ của toàn bộ bảng "words" (trả id/block_id/level) — dùng khi
      cần tính đúng phạm vi Block/Word cho 1 Hub/Notebook BẤT KỲ, không chỉ
      Notebook đang mở trên UI (App.scopeIds/loadLeaderboardData trong
      app.js chỉ có S.words của nhánh đang xem, không đủ — bug thật TJ phát
@@ -447,27 +476,33 @@
     if (DB.mode === "local") {
       return local().words.map(function (x) { return { id: x.id, block_id: x.block_id, level: x.level }; });
     }
-    return await sbListAll("words", function (q) { return q.select("id,block_id,level"); });
+    return (await allWordsLite()).map(function (x) { return { id: x.id, block_id: x.block_id, level: x.level }; });
   };
 
   /* ══════════════ ĐỌC CÂY DỮ LIỆU ══════════════ */
   DB.getHubs = async function () {
     if (DB.mode === "local") return local().hubs.slice().sort(bySort);
-    return (await sbList("hubs", function (q) { return q.order("sort"); }));
+    return copyRows(await cachedRead("hubs", function () { return sbListAll("hubs"); }, META_TTL)).sort(byCloudSort);
   };
 
   DB.getNotebooks = async function (hubId) {
     if (DB.mode === "local") return where(local().notebooks, "hub_id", hubId).sort(bySort);
-    return (await sbList("notebooks", function (q) { return q.eq("hub_id", hubId).order("sort"); }));
+    return (await DB.getAllNotebooksLite()).filter(function (n) { return n.hub_id === hubId; }).sort(byCloudSort);
   };
+
+  /* Match the former cloud order("sort"): ascending, NULL values last. */
+  function byCloudSort(a, b) {
+    if (a.sort == null) return b.sort == null ? 0 : 1;
+    if (b.sort == null) return -1;
+    return a.sort - b.sort;
+  }
 
   /* MỌI Notebook của MỌI Hub (không lọc theo hub_id) — dùng để xét Hub nào
      nên ẨN vì user không được share Notebook nào trong đó (App.renderHubs
-     trong app.js). Bảng notebooks nhỏ (vài chục dòng), không cần phân
-     trang như sbListAll. */
+     trong app.js). Dùng chung cache với getNotebooks và getFullTree. */
   DB.getAllNotebooksLite = async function () {
     if (DB.mode === "local") return local().notebooks.slice();
-    return await sbList("notebooks");
+    return copyRows(await cachedRead("notebooks", function () { return sbListAll("notebooks"); }, META_TTL));
   };
 
   /* Nạp toàn bộ nội dung của 1 notebook (sections -> words) */
@@ -2061,16 +2096,13 @@
     words.forEach(function (x) { var k = w.normalizeAnswer(x.term); if (k) set[k] = 1; });
     return Object.keys(set).length;
   }
-  var distinctCache = null;
   async function distinctWordIndex() {
-    if (distinctCache && Date.now() - distinctCache.at < 10 * 60 * 1000) return distinctCache;
-    var all = await sbListAll("words", function (q) { return q.select("id,term"); });
+    var all = await allWordsLite();
     var termOf = {};
     all.forEach(function (x) { termOf[x.id] = w.normalizeAnswer(x.term); });
-    distinctCache = { at: Date.now(), total: distinctCount(all), termOf: termOf };
-    return distinctCache;
+    return { total: distinctCount(all), termOf: termOf };
   }
-  DB.invalidateDistinctWords = function () { distinctCache = null; };
+  DB.invalidateDistinctWords = function () { delete readCache.words; };
   async function distinctMastered(userId, termOf) {
     var rows = await sbListAll("word_progress", function (q) { return q.select("word_id").eq("user_id", userId).eq("mastered", true); }, "word_id");
     var set = {};
@@ -2232,6 +2264,28 @@
     mem = buildSeed();
     saveLocal();
   };
+
+  /* Invalidate at both edges: reads started during a write (including a
+     partially failed copy) must not stay cached after it settles. */
+  function invalidateMutation(table, cascade) {
+    if (table === "hubs" || table === "notebooks") DB.invalidateBootMetadata();
+    if (table === "words" || cascade) DB.invalidateDistinctWords();
+  }
+  function trackMutation(name, table, cascade) {
+    var write = DB[name];
+    DB[name] = async function () {
+      var target = table || arguments[0];
+      invalidateMutation(target, cascade && (table || target === "words" || CHILD[target]));
+      try { return await write.apply(this, arguments); }
+      finally { invalidateMutation(target, cascade && (table || target === "words" || CHILD[target])); }
+    };
+  }
+  ["rename", "patch", "remove"].forEach(function (name) { trackMutation(name, null, name === "remove"); });
+  ["insertHub", "ensureOnRieng"].forEach(function (name) { trackMutation(name, "hubs"); });
+  ["addNotebook", "setNotebookVisibility"].forEach(function (name) { trackMutation(name, "notebooks"); });
+  trackMutation("duplicateNotebook", "notebooks", true);
+  ["duplicatePage", "addBatchFromWords", "addBatchFromWordsWithFull", "addFrameworkBlockPair", "addWordsToBlock", "saveWordToExtra"]
+    .forEach(function (name) { trackMutation(name, "words"); });
 
   w.DB = DB;
 })(window);

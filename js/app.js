@@ -2244,8 +2244,31 @@
      lần gọi AI tốn quota + cần chờ đúng thứ tự để progress hiện đúng. */
   var bookChapters = [];   /* [{title, text}] — từ splitChapters(), đọc lại khi bấm "Xử lý" */
 
+  var pdfJsPromise = null;
+  function loadPdfJs() {
+    if (!pdfJsPromise) {
+      pdfJsPromise = new Promise(function (resolve, reject) {
+        function ready() {
+          w.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/legacy/build/pdf.worker.min.js";
+          resolve(w.pdfjsLib);
+        }
+        if (w.pdfjsLib) { ready(); return; }
+        var script = document.createElement("script");
+        script.src = "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/legacy/build/pdf.min.js";
+        function failed() {
+          script.remove();
+          reject(new Error("Chưa nạp được thư viện đọc PDF (pdf.js) — kiểm tra mạng/CDN"));
+        }
+        script.onload = function () { if (w.pdfjsLib) ready(); else failed(); };
+        script.onerror = failed;
+        document.head.appendChild(script);
+      }).catch(function (e) { pdfJsPromise = null; throw e; });
+    }
+    return pdfJsPromise;
+  }
+
   async function readPdfText(file) {
-    if (!w.pdfjsLib) throw new Error("Chưa nạp được thư viện đọc PDF (pdf.js) — kiểm tra mạng/CDN trong index.html");
+    await loadPdfJs();
     var buf = await file.arrayBuffer();
     var pdf = await w.pdfjsLib.getDocument({ data: buf }).promise;
     var pages = [];
@@ -3909,6 +3932,7 @@
 
   /* Nạp lại notebook đang mở rồi vẽ lại — dùng chung sau mọi thao tác quản lý */
   App.reloadCurrent = async function () {
+    w.DB.invalidateBootMetadata();
     S.hubs = await getHubsForUser();
     if (!S.hubs.some(function (h) { return h.id === S.hubId; })) {
       S.hubId = S.hubs.length ? S.hubs[0].id : null;
@@ -5313,6 +5337,8 @@
     }
 
     w.Auth.onChange(async function () {
+      w.DB.invalidateBootMetadata();
+      w.DB.invalidateDistinctWords();
       await App.ensureOnRieng();
       S.hubs = await getHubsForUser();
       await loadNotebookAccess();   /* đổi user -> myGrantedIds đổi theo -> phải nạp lại TRƯỚC khi lọc lại cây bên dưới */

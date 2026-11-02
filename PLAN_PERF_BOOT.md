@@ -73,3 +73,19 @@ Nên làm 1, 3, 4 trước; 2, 5, 6 làm sau khi đo lại.
 * [ ] Thử `sbListAll` trên Supabase thật: trang vượt cuối bảng có trả mảng rỗng không (QA nêu rủi ro 416; bảng 9.338 dòng tốn 13 request thay vì 10)
 * [ ] Bước 2, 5, 6: quyết sau khi đo lại
 * [ ] TJ xem thử rồi mới đưa lên `main`
+
+### Trạng thái — 2026-11-02 (`fix/perf-boot-2`, chưa commit/push)
+
+* Đã thực hiện bước 2, 5, 6 theo yêu cầu mới, thay cho mục chờ quyết ở trên: cache promise trong bộ nhớ cho hubs/notebooks (dùng chung cả getFullTree/getNotebooks/getAllNotebooksLite); trả bản sao dòng và giữ cách sắp xếp Cloud/Local trước đây. Xoá metadata cache khi đổi user, reload sau kéo-thả/quản lý, tạo/xoá/đổi tên/chuyển/nhân bản và ensureOnRieng/đổi visibility.
+* getAllWordsLite và distinctWordIndex dùng chung một lần tải `id,block_id,level,term`, kể cả request đang chạy; giữ TTL 10 phút. invalidateDistinctWords xoá cache chung khi đổi user, thêm từ (kể cả các đường thêm trực tiếp), sửa/chuyển/xoá từ, xoá cây con và nhân bản. Invalidation trước/sau thao tác ghi ngăn cache đang tải giữ dữ liệu cũ, kể cả khi thao tác lỗi giữa chừng. Local vẫn đọc trực tiếp, không dùng cache Cloud.
+* sbListAll lấy count exact cùng trang dữ liệu đầu, chỉ lên lịch các trang còn lại (tối đa 4 request song song); giữ thứ tự id/trang và projection. Nếu thiếu count thì dùng lượt song song như cũ; nhận mảng rỗng hoặc 416/PGRST103 ở offset dương là hết bảng, các lỗi khác vẫn báo lỗi. Chưa gọi Supabase thật để xác nhận cấu hình/version của project.
+* Bỏ script pdf.js/worker nạp sẵn trong index.html; readPdfText nạp CDN lần đầu, dùng chung promise, cấu hình worker cùng version 3.11.174 và cho thử lại khi tải lỗi. Bump `db.js?v=21`, `app.js?v=73`.
+* Kiểm tra: node --check cả hai JS, git diff --check và kiểm runtime mock bằng Node PASS (9.338 từ = 10 request dùng chung; bảng rỗng/đúng 1.000 dòng; fallback rỗng/416; retry/in-flight invalidation; metadata tạo/sửa/xoá/nhân bản; Local; lazy PDF lỗi/thử lại/đọc text). QA agent độc lập đã chạy lại checks và rà diff, không phát hiện regression; chưa kiểm trình duyệt/CDN/PDF thật, tài khoản restricted/Admin hoặc đo lại PERF-01/02. Cache metadata có thể cũ nếu dữ liệu được sửa từ tab/máy khác; count exact có thêm chi phí DB trong request đầu, chưa đo live. Không chạy SQL, không sửa DB/auth/RLS/nghiệp vụ.
+
+### Đo lại 2026-11-02 (máy local, Chrome/Playwright, chưa đăng nhập, mỗi bản 3 lần, cửa sổ đo 22 giây, Supabase thật)
+| Bản | Danh sách hiện (trung vị) | Request nền xong (trung vị) | Số request Supabase |
+|---|---|---|---|
+| `main` (v19) | ~11,2 giây (5,98–11,6) | >21,9 giây (bị cắt ở 22 s) | 58–79 |
+| `fix/perf-boot` (v20) | ~4,96 giây | ~15,2 giây | 103 |
+| `fix/perf-boot-2` (v22, có TTL 90 s) | ~5,89 giây (4,56–7,21) | ~16,7 giây | 67 |
+Kết luận: nhanh hơn `main` rõ rệt, ít request hơn `fix/perf-boot` (67 so với 103, request tới bảng words 26 so với 49), nhưng **chưa đạt PERF-01 (<2,5 s) và PERF-02 (<6 s)**. Sai số lớn giữa các lần chạy (mạng Supabase); chỉ 3 mẫu. Điểm nghẽn còn lại là kéo ~9.300 từ qua nhiều trang; cách triệt để là hàm đếm/RPC phía Supabase (đổi DB — chờ TJ quyết).
