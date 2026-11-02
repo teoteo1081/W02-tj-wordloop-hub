@@ -137,6 +137,19 @@ Nhằm ngăn chặn tình trạng quấy rối lớp học khi phòng mở công
 3. **Censor Tên bậy (Profanity Filter):** Hệ thống tích hợp bộ lọc từ khóa phản cảm (tiếng Việt & tiếng Anh) ngay tại client khi học viên nhập tên (`name_ph` tại `js/game.js:109`). Nếu tên chứa từ cấm, hệ thống tự động thay thế bằng Nickname dễ thương dạng `Học viên vui vẻ #X` hoặc `Panda #Y`.
 4. **Anti-Spam Answer Submissions:** Chặn học sinh bấm nút đáp án liên tục làm nghẽn kênh Realtime. Sau mỗi lần bấm chọn đáp án, nút bấm bị vô hiệu hóa (disabled) trong 500ms (`debounce`), chống flood broadcast `ans`.
 
+### 5.2. Trải nghiệm khi Host rớt mạng & Cơ chế chuyển giao Host (Host Interruption & Failover UX)
+Trong thiết kế hiện tại, Host là nguồn sự thật duy nhất (`js/game.js:16`). Nhằm bảo đảm lớp học không bị vỡ trận khi giáo viên gặp sự cố kết nối:
+1. **Cảnh báo trực quan tức thì (`#p-hostlost`):**
+   - Nếu Host không gửi nhịp tim trong `HOST_LOST_MS = 7000` (7 giây theo `js/game.js:103`), client học viên lập tức hiện thanh thông báo vàng ở đầu màn hình: `host_lost: "⚠ Host mất kết nối — chờ host quay lại…"` (`game.html:175`, `js/game.js:110`).
+   - Ở chế độ làm bài tự do (`mode: free`), hệ thống hiển thị: `host_lost_free: "⚠ Host mất kết nối — bạn cứ làm tiếp, đáp án sẽ tự gửi khi host quay lại"` (`js/game.js:110`). Học sinh tiếp tục làm bài độc lập, đáp án được lưu tạm trong bộ nhớ trình duyệt client.
+2. **Cơ chế dự phòng tiếp sóng ngang hàng (Peer Relay):**
+   - Khi Host vắng mặt quá 3 giây, client trong phòng tự động phát tán bản sao trạng thái gần nhất (`relay: 1` tại `js/game.js:1745`) để người mới vào sau không bị trắng màn hình.
+3. **Cửa sổ chờ phục hồi 30 giây (Grace Period Reconnect):**
+   - Host tải lại trang (reload) hoặc chuyển mạng (wifi sang 4G) sẽ được khôi phục toàn bộ trạng thái ván đấu từ `localStorage` (`LS_HOST = "tjwl_game_host_" + MÃ` tại `js/game.js:147`), không bị mất điểm số của học sinh.
+4. **Lộ trình chuyển giao Host (Host Failover / Co-host Handover ở Pha 2 & 3):**
+   - *Pha 1 (Alpha):* Áp dụng cửa sổ chờ 30s; nếu Host không quay lại sau 60s, phòng chuyển sang chế độ tự do xem lại kết quả đã nộp.
+   - *Pha 2-3 (Beta & GA):* Nếu phòng có chỉ định Co-host (Trợ giảng), quyền điều khiển Host được tự động chuyển giao cho Co-host sau 45s Host chính ngắt kết nối; điểm số tiếp tục được ghi nhận bình thường.
+
 ---
 
 ## 6. An toàn, Riêng tư & Tuân thủ COPPA / GDPR (Mức tóm tắt)
@@ -240,11 +253,26 @@ flowchart TD
 
 ---
 
-## 10. Bản phác thảo giao diện ASCII kích thước chuẩn 390px (Mobile Portrait)
+## 10. Ma trận đối chiếu 3 Phương án Kiến trúc kỹ thuật & Lộ trình Pha (Architectural Alignment Matrix)
+
+Nhằm bảo đảm sản phẩm và trải nghiệm người dùng gắn kết chặt chẽ với hạ tầng kỹ thuật, 3 phương án kiến trúc được đánh giá toàn diện theo 4 câu hỏi của Thảo trong ANCHOR_ROOMS:
+
+| Tiêu chí so sánh | 🏛️ Phương án A: 1 Supabase Project + Multi-tenant RLS | 🏢 Phương án B: Cô lập Supabase Project theo Tenant | ⚡ Phương án C: Host-ủy-quyền Gọn nhẹ / BYO Key |
+|---|---|---|---|
+| **Mô tả giải pháp** | Dùng chung 1 dự án Supabase hiện tại; bổ sung cột `tenant_id` / `host_profile_id` và viết lại toàn bộ chính sách Row Level Security (RLS). | Mỗi trường học / trung tâm được cấp 1 project Supabase độc lập (hoặc schema riêng biệt). | Game chạy ở chế độ Stateless; Host đóng vai trò game server cục bộ; dùng Realtime Broadcast thuần; AI dùng key riêng của Host. |
+| **Chi phí hạ tầng** | **Thấp nhất:** $0 ở Pha 1 (Free), $25/tháng ở Pha 2 (Pro) cho toàn hệ thống. | **Cao:** Mỗi đối tác tốn $25/tháng gói Pro; chi phí tăng tuyến tính theo số trường. | **Gần bằng $0:** Không tốn tiền DB; chi phí AI do từng Host tự trả qua key riêng. |
+| **Bảo vệ phòng TJ** | **Rất an toàn:** Giữ nguyên schema gốc của TJ, thêm điều kiện RLS bảo vệ phòng code `"TJ"`. | **Tuyệt đối an toàn:** Phòng TJ nằm trên project riêng biệt, người ngoài không thể chạm tới. | **Tuyệt đối an toàn:** Người ngoài không ghi dữ liệu vào DB chung của TJ. |
+| **Độ phức tạp triển khai** | Vừa phải: Cần audit kỹ lưỡng RLS policies để không hở dữ liệu giữa các phòng. | Cao: Phải viết script tự động hóa khởi tạo project (provisioning) và di chuyển schema. | Thấp: Không cần sửa DB; chỉ cần nâng cấp logic client và thêm ô nhập BYO Key. |
+| **Khả năng hoàn tác (Rollback)** | Rất dễ: Chỉ cần rollback các migration RLS và tắt cờ `ALLOW_EXTERNAL_HOST`. | Phức tạp: Phải gỡ bỏ kết nối project và chuyển dữ liệu người dùng. | Cực kỳ dễ: Tắt cờ tính năng client là xong. |
+| **Khuyến nghị & Pha áp dụng** | **KHUYẾN NGHỊ LÕI (Pha 1 & Pha 2):** Phù hợp với cộng đồng vừa và nhỏ, tối ưu ngân sách. | **Dự phòng mở rộng (Pha 3):** Chỉ áp dụng khi có hợp đồng B2B lớn từ các trung tâm ngoại ngữ. | **TÍNH NĂNG ĐI KÈM (Pha 1 -> 3):** Áp dụng ngay cho nhóm bạn tự học và giáo viên tự quản lý key. |
+
+---
+
+## 11. Bản phác thảo giao diện ASCII kích thước chuẩn 390px (Mobile Portrait)
 
 Dưới đây là 2 màn hình quan trọng nhất được thiết kế chuẩn xác theo chiều rộng màn hình điện thoại thông dụng (390px CSS / 39 cột văn bản ASCII):
 
-### 10.1. Màn hình Tạo phòng & Cấu hình ván đấu (Host View — 390px)
+### 11.1. Màn hình Tạo phòng & Cấu hình ván đấu (Host View — 390px)
 ```
 +-------------------------------------+
 | [<-]  TJ WORDLOOP - TAO PHONG   [X] |
@@ -281,7 +309,7 @@ Dưới đây là 2 màn hình quan trọng nhất được thiết kế chuẩn
 +-------------------------------------+
 ```
 
-### 10.2. Màn hình Sảnh chờ đa năng (Lobby / Player & Host View — 390px)
+### 11.2. Màn hình Sảnh chờ đa năng (Lobby / Player & Host View — 390px)
 ```
 +-------------------------------------+
 | TJ ROOM: KT89M        [🔊 Bat] [🌐VI] |

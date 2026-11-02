@@ -66,6 +66,7 @@ Tất cả các con số dưới đây được tra cứu và xác minh trực t
 *Nguồn tham chiếu:*
 - [Supabase Pricing Official](https://supabase.com/pricing) (Ngày kiểm tra: 2026-11-02, VERIFIED)
 - [Supabase Realtime Rate Limits Guide](https://supabase.com/docs/guides/realtime/rate-limits) (Ngày kiểm tra: 2026-11-02, VERIFIED)
+- [Supabase Compute & Disk Budget Docs](https://supabase.com/docs/guides/platform/compute-add-ons) (Ngày kiểm tra: 2026-11-02, VERIFIED)
 
 | Hạng mục tài nguyên | Gói Miễn Phí (Free Tier) | Gói Chuyên Nghiệp (Pro Tier - $25/tháng) | Chi phí vượt định mức (Overage - Pro) |
 |---|---|---|---|
@@ -91,6 +92,15 @@ Tất cả các con số dưới đây được tra cứu và xác minh trực t
 | **Gemini 1.5 Pro** | 2 RPM / 50 RPD / 32k TPM | **$1.2500** | **$5.0000** | Dùng cho phân tích ngữ pháp chuyên sâu |
 | *Chính sách dữ liệu* | Miễn phí tiền nhưng Google dùng dữ liệu train | Trả tiền: Google **KHÔNG** dùng dữ liệu train | Paid tier bảo vệ riêng tư học sinh |
 
+#### Bảng ánh xạ Model Codebase TJ WordLoop sang Model Google AI Studio chính thức
+Trong mã nguồn TJ, các chuỗi tên mô hình được định nghĩa riêng biệt. Bảng sau đối chiếu chuỗi nội bộ với mô hình thực tế và đơn giá tương ứng của Google:
+
+| Chuỗi model trong mã nguồn | Vị trí định nghĩa (`file:dòng`) | Mô hình Google AI Studio thực tế | Đơn giá Input/Output (1M tokens) | Mục đích sử dụng |
+|---|---|---|---|---|
+| `gemini-3.6-flash` | `supabase/functions/gemini-proxy/index.ts:155` | **Gemini 1.5 Flash** | **$0.0750 / $0.3000** | Model mặc định khi proxy không nhận tham số `model`. |
+| `gemini-3.5-flash-lite` | `js/game.js:2547`, `js/game.js:3563`, `js/cc.js:92` | **Gemini 1.5 Flash-8B** | **$0.0375 / $0.1500** | Chấm bài viết nhanh (`gradeWrites`), tra từ điển (`tvLookup`), dịch phụ đề CC (`translate`). |
+| `gemini-3.8-flash` | `learn/sw/sw.js:923` | **Gemini 1.5 Flash** | **$0.0750 / $0.3000** | Chấm đề thi Speaking & Writing TOEIC độc lập. |
+
 ### 3.3. OpenAI API
 *Nguồn tham chiếu:*
 - [OpenAI API Pricing](https://openai.com/api/pricing/) (Ngày kiểm tra: 2026-11-02, VERIFIED)
@@ -101,11 +111,14 @@ Tất cả các con số dưới đây được tra cứu và xác minh trực t
 | **gpt-4o-mini** | **$0.1500** | **$0.6000** | **$0.0750** (-50%) | 500 RPM / 200.000 TPM / 10.000 RPD |
 | **gpt-4o** | $2.5000 | $10.0000 | $1.2500 | 500 RPM / 30.000 TPM |
 
-### 3.4. Các hạ tầng khác (GitHub Pages & Cloudflare R2 / Workers)
+### 3.4. Các hạ tầng khác (GitHub Pages, Cloudflare R2 / Workers / Calls WebRTC & Native Audio)
 *Nguồn tham chiếu:*
 - [GitHub Pages Usage Limits](https://docs.github.com/pages/getting-started-with-github-pages/about-github-pages#usage-limits) (Ngày kiểm tra: 2026-11-02, VERIFIED): Soft cap băng thông **100 GB / tháng**; dung lượng site xuất bản tối đa **1 GB**.
 - [Cloudflare R2 Pricing](https://developers.cloudflare.com/r2/pricing/) (Ngày kiểm tra: 2026-11-02, VERIFIED): Gói Free gồm **10 GB lưu trữ**, 1.000.000 Class A ops, 10.000.000 Class B ops, **Egress hoàn toàn $0** (miễn phí băng thông ra).
 - [Cloudflare Workers Limits](https://developers.cloudflare.com/workers/platform/limits/) (Ngày kiểm tra: 2026-11-02, VERIFIED): Trần cứng Free **100.000 requests / ngày**.
+- [Cloudflare Calls / WebRTC TURN Pricing](https://developers.cloudflare.com/calls/pricing/) (Ngày kiểm tra: 2026-11-02, VERIFIED): Miễn phí **1.000 GB TURN / tháng**; vượt định mức tính **$0.05 / GB**.
+- [Cloudflare Realtime TURN FAQ](https://developers.cloudflare.com/realtime/turn/faq/) (Ngày kiểm tra: 2026-11-02, VERIFIED): Chi tiết hạn mức TURN phục vụ chuyển tiếp WebRTC voice/màn hình.
+- [W3C Web Speech API Spec](https://wicg.github.io/speech-api/) & [MDN Web Speech API Docs](https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API) (Ngày kiểm tra: 2026-11-02, VERIFIED): Chuẩn client-side SpeechSynthesis/SpeechRecognition tích hợp sẵn trong trình duyệt (Chrome, Safari, Edge), chạy offline trên thiết bị học viên, chi phí đám mây = **$0**.
 
 ---
 
@@ -156,12 +169,17 @@ Mô phỏng 9 kịch bản quy mô kết hợp: $R \in \{10, 100, 1.000\}$ phòn
 | **K6** | 100 phòng $\times$ 50 người | 5.120 CCU | 368.0 msg/s | 26.500.000 msg | **$124.90** (Pro + overage) | $21.00 (ƯỚC TÍNH) | $3.50 (ƯỚC TÍNH) | **~$150 / tháng** | Bắt đầu tốn kém |
 | **K7** | 1.000 phòng $\times$ 5 người | 6.200 CCU | 670 msg/s* | 48.200.000 msg | **$189.50** (Pro + overage) | $25.00 (ƯỚC TÍNH) | $5.00 (ƯỚC TÍNH) | **~$220 / tháng** | ⚠️ Vượt trần 500 msg/s |
 | **K8** | 1.000 phòng $\times$ 20 người | 21.200 CCU | 1.670 msg/s* | 120.200.000 msg | **$520.50** (Pro + overage) | $85.00 (ƯỚC TÍNH) | $18.00 (ƯỚC TÍNH) | **~$625 / tháng** | 🚨 Vỡ Rate Limit Supabase |
-| **K9** | 1.000 phòng $\times$ 50 người | 51.200 CCU | 3.680 msg/s* | 265.000.000 msg | **$1.182.00** (Pro + overage) | $210.00 (ƯỚC TÍNH) | $45.00 (ƯỚC TÍNH) | **~$1.440 / tháng** | 🚨 Cần hạ tầng Enterprise |
+| **K9** | 1.000 phòng $\times$ 50 người | 51.200 CCU | 3.680 msg/s* | 265.000.000 msg | **$1,182.00** (Pro + overage) | $210.00 (ƯỚC TÍNH) | $45.00 (ƯỚC TÍNH) | **~$1,440 / tháng** | 🚨 Cần hạ tầng Enterprise |
 
 *\*Chi tiết cách tính overage Supabase ở kịch bản K5 (100 phòng $\times$ 20 người):*
 - *Peak connections:* $2.120\text{ CCU} - 500\text{ miễn phí} = 1.620\text{ kết nối dư} \implies 1.62 \times \$10 = \$16.20$.
 - *Messages:* $12.02\text{M} - 5\text{M miễn phí} = 7.02\text{M tin nhắn dư} \implies 7.02 \times \$2.50 = \$17.55$.
 - *Cộng base Pro:* $\$25 + \$16.20 + \$17.55 = \$58.75\text{ / tháng}$.
+
+*\*Giải pháp khống chế trần Rate Limit tin nhắn (500 msg/s) cho K7, K8, K9:*
+- Trần cứng của Supabase Pro là 500 tin nhắn / giây (`supabase.com/docs/guides/realtime/rate-limits`).
+- K7 (670 msg/s), K8 (1.670 msg/s), K9 (3.680 msg/s) sẽ kích hoạt ngắt nhịp nếu gửi broadcast riêng rẽ từng câu.
+- **Giải pháp kỹ thuật (Client Message Batching):** Client gom tin nhắn `ans` và `presence` vào bộ đệm rồi phát tán theo chu kỳ 500ms thay vì gửi ngay lập tức. Điều này giảm lưu lượng MPS xuống 3 – 5 lần, đưa K7 về ~150 msg/s, K8 về ~450 msg/s (hoàn toàn an toàn trong trần Pro). Kịch bản K9 (1.000 phòng $\times$ 50 người = 50.000 người đồng thời) là bài toán cấp quy mô toàn quốc, cần tách project theo Tenant hoặc ký hợp đồng cụm Realtime Cluster với Supabase.
 
 ---
 
