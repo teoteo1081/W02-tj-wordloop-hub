@@ -35,7 +35,9 @@
     speaking: [{ k: "all", t: "Cả bộ 11 câu (~17 phút)", qs: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] }, { k: "read", t: "Q1–2 Đọc to", qs: [1, 2] }, { k: "desc", t: "Q3 Tả ảnh", qs: [3] }, { k: "resp", t: "Q4–6 Trả lời câu hỏi", qs: [4, 5, 6] }, { k: "info", t: "Q7–9 Dựa vào thông tin", qs: [7, 8, 9] }, { k: "sol", t: "Q10 Đề xuất giải pháp", qs: [10] }, { k: "opin", t: "Q11 Nêu ý kiến", qs: [11] }],
     writing: [{ k: "all", t: "Cả bộ 8 câu (~60 phút)", qs: [1, 2, 3, 4, 5, 6, 7, 8] }, { k: "sent", t: "Q1–5 Viết câu theo ảnh", qs: [1, 2, 3, 4, 5] }, { k: "mail", t: "Q6–7 Trả lời email", qs: [6, 7] }, { k: "essay", t: "Q8 Bài luận ý kiến", qs: [8] }]
   };
-  var SETS = { speaking: [], writing: [] }, ST = load(), S = { kind: QS.get("kind") === "writing" ? "writing" : "speaking", setId: "", group: "all", screen: "home" }, timerId = 0, rec = null, recOn = false, CTX = { inRoom: false, isHost: false, me: null, players: [] }, LIVE = null, liveTimer = 0, PENDING = null, KIND0 = QS.get("kind") || "", EX0 = QS.get("exam") === "ielts" ? "ielts" : "", EMBED = (function () { try { return window.parent !== window; } catch (e) { return true; } })();
+  var SETS = { speaking: [], writing: [] }, ST = load(), S = { kind: QS.get("kind") === "writing" ? "writing" : "speaking", setId: "", group: "all", screen: "home" }, timerId = 0, rec = null, recOn = false, CTX = { inRoom: false, isHost: false, me: null, players: [] }, LIVE = null, liveTimer = 0, PENDING = null, KIND0 = QS.get("kind") || "", EX0 = QS.get("exam") === "ielts" ? "ielts" : "";
+  var _isSolo = QS.get("solo") === "1" || QS.get("standalone") === "1" || !!QS.get("exam");
+  var EMBED = (function () { try { if (_isSolo) return false; return window.parent !== window; } catch (e) { return !_isSolo; } })();
 
   /* ---------- lưu ---------- */
   function load() { try { return JSON.parse(localStorage.getItem(KEY)) || { hist: [] }; } catch (e) { return { hist: [] }; } }
@@ -1097,7 +1099,15 @@
     var on = (S.screen === "live" && !!LIVE && LIVE.phase !== "end") || S.screen === "task";
     if (on !== focusOn) { focusOn = on; toParent({ type: "sw-focus", on: on }); }
   }, 300);
-  loadSets().then(function () { render(); maybeRestore(); toParent({ type: "sw-hello", kind: S.kind }); if (PENDING) { var d = PENDING; PENDING = null; applyStart(d); } });
+  loadSets().then(function () {
+    render();
+    maybeRestore();
+    toParent({ type: "sw-hello", kind: S.kind });
+    if (PENDING) { var d = PENDING; PENDING = null; applyStart(d); }
+    if (_isSolo && (QS.get("play") === "1" || QS.get("auto") === "1") && SETS[S.kind] && SETS[S.kind].length) {
+      setTimeout(function () { begin(S.kind, S.group); }, 80);
+    }
+  });
 })();
 
 /* chạm ra ngoài menu ⋯ -> đóng (iPhone: không có cách nào khác ngoài ✕) */

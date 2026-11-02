@@ -14,8 +14,8 @@
     dailyGoal: 60,
     unlock: { sprint: 100, cases: 200 },
     lessonBase: "../",
-    parts: { 1: { label: "Part I", name: "Individuals" }, 2: { label: "Part II", name: "Businesses" }, 3: { label: "Part III", name: "Representation" } },
-    mock: { perPart: { 1: 7, 2: 7, 3: 6 }, minutes: 40 },
+    parts: { 1: { label: "Part I", name: "Individuals · Cá nhân" }, 2: { label: "Part II", name: "Businesses · Doanh nghiệp" }, 3: { label: "Part III", name: "Representation · Đại diện" }, 4: { label: "Part IV", name: "Practice & Monetization · Kiếm tiền & Hành nghề" } },
+    mock: { perPart: { 1: 6, 2: 6, 3: 4, 4: 4 }, minutes: 40 },
     typeLabel: { form: "📄 Form nào?", pub: "📘 Tra ở đâu?", authority: "⚖️ Nguồn luật", flag: "🚩 Điểm bất thường" },
     text: {
       pathTitle: "🗺️ Lộ trình từ số 0 đến EA",
@@ -224,7 +224,7 @@
     PART_IDS.forEach((p) => {
       const ls = DATA.lessons.filter((l) => l.part === p);
       if (!ls.length) return;
-      html += `<h2 class="section-title"><span class="pill p${(p - 1) % 3 + 1}">${esc(partLabel(p))}</span> ${esc(CFG.parts[p].name)}</h2>`;
+      html += `<h2 class="section-title"><span class="pill p${(p - 1) % 4 + 1}">${esc(partLabel(p))}</span> ${esc(CFG.parts[p].name)}</h2>`;
       if (mode === "quiz" && DATA.questions.filter((q) => q.part === p).length > 10) html += `<button class="list-item" data-act="quizPart" data-arg="${p}"><span>🎲 <b>Đề trộn ${esc(partLabel(p))}</b><div class="meta">15 câu ngẫu nhiên từ mọi bài</div></span><span>›</span></button>`;
       ls.forEach((l) => {
         const meta = mode === "vocab" ? vocabStat(l.id) : quizStat(l.id);
@@ -292,7 +292,7 @@
         <div class="muted" style="margin-top:6px">📍 ${esc(v.section)}${(l && lessonLink(v.lesson)) ? ` · <a href="${lessonLink(v.lesson)}" target="_blank" rel="noopener">mở bài học</a>` : ""}</div>
         <div class="muted">Ôn lại sau: ${BOX_DAYS[st.box] === 0 ? "hôm nay" : BOX_DAYS[st.box] + " ngày"}</div>
       </div>
-      <button class="btn block" data-act="vocabNext">${V.i + 1 < V.items.length ? "Tiếp nha →" : "Xem kết quả 🎁"}</button>`;
+      <div class="sticky-act"><button class="btn block" data-act="vocabNext">${V.i + 1 < V.items.length ? "Tiếp nha →" : "Xem kết quả 🎁"}</button></div>`;
     if (ok) speak(v.en);
   };
   ACTIONS.vocabNext = () => {
@@ -362,7 +362,7 @@
       <div class="row spread" style="margin-bottom:8px"><small>${esc(Q.title)} · câu ${Q.i + 1}/${Q.items.length}</small>${Q.limit ? '<span class="timer" id="qtimer"></span>' : ""}</div>
       <div class="steps">${Q.items.map((_, i) => `<i class="${i <= Q.i ? "on" : ""}"></i>`).join("")}</div>
       <div class="card pop">
-        <div class="row"><span class="pill p${(q.part - 1) % 3 + 1}">${esc(partLabel(q.part))}</span><small>${esc(q.section)}</small></div>
+        <div class="row"><span class="pill p${(q.part - 1) % 4 + 1}">${esc(partLabel(q.part))}</span><small>${esc(q.section)}</small></div>
         <div class="question" style="margin-top:10px">${esc(q.q)}</div>
         <div id="opts">${q.opts.map((o, i) => `<button class="opt" data-act="quizAns" data-arg="${i}"><span class="letter">${"ABCD"[i]}.</span>${esc(o)}</button>`).join("")}</div>
         <div id="after"></div>
@@ -381,7 +381,7 @@
         ${q.exp ? `<div style="margin-top:6px">💡 ${esc(q.exp)}</div>` : ""}
         ${Q.lessonLink ? `<div class="muted" style="margin-top:6px">📖 <a href="${Q.lessonLink}" target="_blank" rel="noopener">Đọc lại bài: ${esc(q.section)}</a></div>` : ""}
       </div>
-      <button class="btn block" data-act="quizNext">${Q.i + 1 < Q.items.length ? "Câu tiếp →" : "Xem kết quả 🎁"}</button>`;
+      <div class="sticky-act"><button class="btn block" data-act="quizNext">${Q.i + 1 < Q.items.length ? "Câu tiếp →" : "Xem kết quả 🎁"}</button></div>`;
   };
   ACTIONS.quizNext = () => { Q.i++; if (Q.i < Q.items.length) quizQ(); else quizEnd(); };
   function quizEnd() {
@@ -460,7 +460,7 @@
     const oi = +btn.dataset.arg, q = R.cur.q, ok = oi === q.a;
     document.querySelectorAll("#opts .opt").forEach((b) => { b.disabled = true; const k = +b.dataset.arg; if (k === q.a) b.classList.add("right"); else if (k === oi) b.classList.add("wrong"); });
     if (ok) R.right++; else R.wrong.push(q);
-    document.getElementById("after").innerHTML = `<div class="feedback ${ok ? "ok" : "bad"}">${ok ? "✅" : "❌"} ${esc(q.exp)}</div><button class="btn block" data-act="sprintNext">Tiếp →</button>`;
+    document.getElementById("after").innerHTML = `<div class="feedback ${ok ? "ok" : "bad"}">${ok ? "✅" : "❌"} ${esc(q.exp)}</div><div class="sticky-act"><button class="btn block" data-act="sprintNext">Tiếp →</button></div>`;
   };
   ACTIONS.sprintNext = () => { if (R.over) return; R.i++; sprintQ(); };
   ACTIONS.sprintQuit = () => sprintEnd();
@@ -491,7 +491,7 @@
       prevDone = !!res;
       const stars = res ? "⭐".repeat(res.stars) + "☆".repeat(3 - res.stars) : open ? "Mới" : "🔒";
       return `<button class="list-item" data-act="caseOpen" data-arg="${c.id}" ${open ? "" : "disabled"}>
-        <span class="row" style="flex-wrap:nowrap"><span style="font-size:28px">${c.emoji}</span><span><b>${esc(c.title)}</b><div class="meta"><span class="pill p${(c.part - 1) % 3 + 1}">${esc(partLabel(c.part))}</span> ${esc(c.client)}</div></span></span>
+        <span class="row" style="flex-wrap:nowrap"><span style="font-size:28px">${c.emoji}</span><span><b>${esc(c.title)}</b><div class="meta"><span class="pill p${(c.part - 1) % 4 + 1}">${esc(partLabel(c.part))}</span> ${esc(c.client)}</div></span></span>
         <span class="pill">${stars}</span></button>`;
     }).join("");
     $app.innerHTML = back() + `
@@ -647,7 +647,7 @@
   function progress() {
     const rows = DATA.lessons.map((l) => {
       const v = vocabStat(l.id), q = quizStat(l.id);
-      return `<tr><td><span class="pill p${(l.part - 1) % 3 + 1}">${esc(partLabel(l.part))}</span> ${lessonLink(l.id) ? `<a href="${lessonLink(l.id)}" target="_blank" rel="noopener">${esc(shortTitle(l))}</a>` : esc(shortTitle(l))}</td><td class="num">📚 ${v.pct}%</td><td class="num">📝 ${q.pct}%</td></tr>`;
+      return `<tr><td><span class="pill p${(l.part - 1) % 4 + 1}">${esc(partLabel(l.part))}</span> ${lessonLink(l.id) ? `<a href="${lessonLink(l.id)}" target="_blank" rel="noopener">${esc(shortTitle(l))}</a>` : esc(shortTitle(l))}</td><td class="num">📚 ${v.pct}%</td><td class="num">📝 ${q.pct}%</td></tr>`;
     }).join("");
     const learned = DATA.vocab.filter((v) => (S.vocab[v.key] || {}).box >= 3).length;
     const qOk = DATA.questions.filter((q) => (S.quiz[q.key] || {}).last === 1).length;
@@ -739,5 +739,109 @@
   }
 
   const SCREENS = { home, vocabMenu, quizMenu, sprintMenu, caseMenu, notebook, progress, settings, guide };
-  go("home");
+  // ---------- ĐIỀU HƯỚNG 1 CHẠM TỪ URL / HASH (#play=...) ----------
+  function launchFromUrl(isHashChange) {
+    const qUrl = new URLSearchParams(location.search);
+    const rawHash = location.hash.replace(/^#\/?/, "");
+    const qHash = new URLSearchParams(rawHash.includes("=") ? rawHash : (rawHash ? "play=" + rawHash : ""));
+    const play = qHash.get("play") || qUrl.get("play");
+    const part = +(qHash.get("part") || qUrl.get("part") || 0);
+    const lesson = qHash.get("lesson") || qUrl.get("lesson");
+    if (!play && !lesson) {
+      if (isHashChange) go("home");
+      return false;
+    }
+    if (lesson && !play) {
+      const l = lessonById[lesson];
+      if (l && lessonLink(lesson)) {
+        window.open(lessonLink(lesson), "_blank");
+        go("home");
+        return true;
+      }
+    }
+    if (play === "vocab") {
+      let pool = DATA.vocab;
+      if (part) pool = pool.filter((v) => v.part === part);
+      if (lesson) pool = pool.filter((v) => v.lesson === lesson);
+      if (!pool.length) pool = DATA.vocab;
+      const t = today();
+      const due = shuffle(pool.filter((v) => S.vocab[v.key] && S.vocab[v.key].due <= t));
+      const freshWords = pool.filter((v) => !S.vocab[v.key]);
+      const rest = shuffle(pool.filter((v) => S.vocab[v.key] && S.vocab[v.key].due > t)).sort((a, b) => S.vocab[a.key].box - S.vocab[b.key].box);
+      const items = due.slice(0, 10);
+      items.push(...freshWords.slice(0, Math.min(5, 10 - items.length)));
+      items.push(...rest.slice(0, 10 - items.length));
+      items.push(...freshWords.slice(5, 5 + 10 - items.length));
+      const title = lesson ? shortTitle(lessonById[lesson]) : part ? "Từ vựng " + partLabel(part) : "Ôn nhanh 1 chạm";
+      startVocab(shuffle(items.length ? items : pool.slice(0, 10)), title, "home");
+      return true;
+    }
+    if (play === "quiz") {
+      let pool = DATA.questions;
+      if (part) pool = pool.filter((q) => q.part === part);
+      if (lesson) pool = pool.filter((q) => q.lesson === lesson);
+      if (!pool.length) pool = DATA.questions;
+      const picked = quizPick(pool, 10);
+      const title = lesson ? shortTitle(lessonById[lesson]) : part ? "Đấu trường " + partLabel(part) : "Đấu trường 1 chạm";
+      startQuiz(picked, title, { backTo: "home" });
+      return true;
+    }
+    if (play === "sprint") {
+      if (!RESEARCH.length) { toast("Chưa có câu hỏi tra cứu"); go("home"); return false; }
+      R = { pool: shuffle(RESEARCH), i: 0, right: 0, wrong: [], end: Date.now() + 90000, over: false };
+      sprintQ();
+      const tick = () => {
+        const left = Math.max(0, Math.ceil((R.end - Date.now()) / 1000));
+        const el = document.getElementById("stimer");
+        if (el) { el.textContent = "⏱️ " + left + "s"; el.classList.toggle("low", left <= 15); }
+        if (left <= 0) sprintEnd();
+      };
+      tick(); timer = setInterval(tick, 250);
+      return true;
+    }
+    if (play === "case") {
+      if (!CASES.length) { toast("Chưa có tình huống"); go("home"); return false; }
+      const c = CASES.find((x) => !S.cases[x.id]) || CASES[0];
+      ACTIONS.caseOpen({ dataset: { arg: c.id } });
+      return true;
+    }
+    if (play === "mock") {
+      ACTIONS.quizMock();
+      return true;
+    }
+    if (play === "wrong") {
+      const wrongQ = DATA.questions.filter((q) => (S.quiz[q.key] || {}).last === 0);
+      if (wrongQ.length) {
+        startQuiz(shuffle(wrongQ).slice(0, 15), "Làm lại câu sai", { backTo: "home" });
+      } else {
+        toast("Bạn chưa có câu sai nào — bắt đầu ván 10 câu mới!");
+        startQuiz(quizPick(DATA.questions, 10), "Đấu trường 1 chạm", { backTo: "home" });
+      }
+      return true;
+    }
+    go("home");
+    return false;
+  }
+
+  // Phím tắt bàn phím
+  document.addEventListener("keydown", (e) => {
+    if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")) return;
+    const key = e.key;
+    if (["1", "2", "3", "4"].includes(key)) {
+      const idx = parseInt(key, 10) - 1;
+      const opts = document.querySelectorAll("#opts .opt");
+      if (opts[idx] && !opts[idx].disabled) opts[idx].click();
+    }
+    if (key === "Enter" || key === " ") {
+      const nextBtn = document.querySelector("#after button[data-act], .sticky-act button[data-act]");
+      if (nextBtn && !nextBtn.disabled) {
+        e.preventDefault();
+        nextBtn.click();
+      }
+    }
+  });
+
+  window.addEventListener("hashchange", () => launchFromUrl(true));
+
+  if (!launchFromUrl(false)) go("home");
 })();

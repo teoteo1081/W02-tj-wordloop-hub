@@ -1065,8 +1065,38 @@ summary.qc-ans-sum {
   padding: 10px 14px;
 }
 
+
+/* Reading progress & Mode Switcher styles */
+.reading-progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  width: 0%;
+  background: #1d4ed8;
+  z-index: 9999;
+  transition: width 0.1s linear;
+}
+
+.mode-switch-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 8px 12px;
+  background: var(--card-bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin: 12px 0 20px;
+}
+
 /* Print Friendly */
 @media print {
+  @page {
+    size: A4 portrait;
+    margin: 15mm 15mm 20mm 15mm;
+  }
+
   details.instructor-corner {
     display: block !important;
     border: 2px solid #000000 !important;
@@ -1074,10 +1104,16 @@ summary.qc-ans-sum {
     color: #000000 !important;
     box-shadow: none !important;
     page-break-inside: avoid;
+    break-inside: avoid;
     margin: 20px 0;
   }
 
+  details.instructor-corner > * {
+    display: block !important;
+  }
+
   details.instructor-corner > summary {
+    display: block !important;
     background: #e2e8f0 !important;
     color: #000000 !important;
     border-bottom: 1px solid #000000;
@@ -1085,7 +1121,12 @@ summary.qc-ans-sum {
 
   .instructor-toolbar,
   .btn-print-lesson,
-  .summary-hint {
+  .summary-hint,
+  .reading-progress-bar,
+  .mode-switch-bar,
+  .lesson-nav,
+  button,
+  input {
     display: none !important;
   }
 
@@ -1095,12 +1136,49 @@ summary.qc-ans-sum {
   }
 
   details.qc-ans-details[open],
-  details.qc-ans-details {
+  details.qc-ans-details,
+  details.qc-ans-details > * {
     display: block !important;
   }
 
   .qc-ans-body {
     display: block !important;
+  }
+
+  .table-scroll,
+  table,
+  .corner-section,
+  .pitfall-card {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .table-scroll {
+    overflow: visible !important;
+    border: none !important;
+  }
+
+  table {
+    width: 100% !important;
+    min-width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 8.5pt;
+    font-style: italic;
+  }
+
+  .lesson-shell::before {
+    content: "GIÁO TRÌNH ĐÀO TẠO IRS ENROLLED AGENT 2026 · TJ WORDLOOP ACADEMY";
+    display: block;
+    font-size: 9pt;
+    text-align: center;
+    border-bottom: 1pt solid #999999;
+    padding-bottom: 4pt;
+    margin-bottom: 12pt;
+    font-style: italic;
   }
 }
 

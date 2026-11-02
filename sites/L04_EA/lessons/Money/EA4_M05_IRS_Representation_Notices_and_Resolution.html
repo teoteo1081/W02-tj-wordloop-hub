@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<!-- Google tag (gtag.js) — GA4 chung của TJ, nhãn site=ea -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'ea'});</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EA Part IV – M05: Đại Diện IRS, Xử Lý Thư Báo &amp; Giải Quyết Nợ Thuế</title>
+<link rel="stylesheet" href="../lesson-2026.css">
+</head>
+<body>
+<main class="lesson-shell">
+<nav class="lesson-nav" aria-label="Điều hướng bài học">
+  <a class="nav-back" href="EA4_M04_Pricing_Engagement_Letters_and_Billing_Ethics.html">← Bài trước: M04</a>
+  <span class="nav-meta">Part IV • M05</span>
+  <a class="nav-next" href="EA4_M06_Data_Security_WISP_IRC7216_and_Risk_Management.html">Bài tiếp: M06 →</a>
+</nav>
+
+<div class="cover">
+  <div class="tag">EA PRACTICE • PART IV — MONETIZATION &amp; PRACTICE • M05</div>
+  <h1>🛡️ M05 — ĐẠI DIỆN TRƯỚC IRS, XỬ LÝ THƯ BÁO &amp; GIẢI QUYẾT NỢ THUẾ</h1>
+  <h2>Đặc Quyền Của Thẻ EA, Đọc Transcripts, Thư CP2000, Xóa Phạt &amp; Thỏa Thuận Trả Góp</h2>
+  <div class="exam-dual-banner">
+    <div class="banner-see">🎯 <b>Phân biệt quyền hạn:</b> Form 2848 (Đại diện toàn quyền) vs. Form 8821 (Chỉ xem tin)</div>
+    <div class="banner-practice">💼 <b>Thu hồi hộ chiếu §7345:</b> Ngưỡng nợ nghiêm trọng <b>&gt; $64,000 (2025)</b> -> <b>&gt; $66,000 (2026)</b></div>
+  </div>
+</div>
+
+<div class="toc">
+  <h3>📑 Mục lục bài học M05</h3>
+  <ol>
+    <li>5.1 Mục tiêu đầu ra: Biến dịch vụ đại diện thuế thành nguồn thu quanh năm</li>
+    <li>5.2 Thuật ngữ &amp; Hệ thống mã giao dịch IRS Transcripts cốt lõi</li>
+    <li>5.3 Quy trình giải quyết nợ 2 giai đoạn (2-Phase Resolution) chống cạm bẫy hứa suông</li>
+    <li>5.4 Bảng phân biệt sống còn: Form 2848 vs. Form 8821</li>
+    <li>5.5 Xử lý thư CP2000, First-Time Abate (FTA) và các giải pháp thu nợ (IA, OIC, CNC)</li>
+    <li>5.6 Cạm bẫy xung đột lợi ích vợ chồng ly hôn (Circular 230 §10.29 — Xác nhận 30 ngày / Lưu 36 tháng)</li>
+    <li>5.7 Tình huống thực chiến mẫu: Thư CP2000 tính nhầm giá vốn cổ phiếu $0</li>
+    <li>5.8 Tóm tắt 1 trang &amp; 5 câu tự kiểm tra năng lực</li>
+  </ol>
+</div>
+
+<!-- ============================================================
+     KHỐI SƯ PHẠM: GÓC GIẢNG VIÊN (TEACHER'S CORNER) — ROUND 2
+     Chuẩn: HTML5 Semantic, Tự đủ Offline, In-friendly, Hỗ trợ Toggle
+     ============================================================ -->
+<details class="instructor-corner" id="instructor-corner">
+  <summary class="instructor-summary">
+    <div class="summary-left">
+      <span class="instructor-badge">🎓 GÓC GIẢNG VIÊN</span>
+      <span class="instructor-title">Giáo án Đào tạo M05: Xử lý Thư IRS, Đại diện Tranh chấp (Form 2848) & Xóa nợ Thuế</span>
+    </div>
+    <span class="summary-hint">Bấm để Mở / Gập giáo án ▼</span>
+  </summary>
+
+  <div class="instructor-body">
+    <!-- Thanh công cụ toolbar -->
+    <div class="instructor-toolbar">
+      <span class="toolbar-label">Chế độ đào tạo:</span>
+      <span class="toolbar-status">Cẩm nang Thực chiến Hành nghề &amp; Tạo Thu nhập (Part IV)</span>
+      <button type="button" class="btn-print-lesson" onclick="window.print()">🖨️ In Giáo án bài này</button>
+    </div>
+
+    <!-- 1. MỤC TIÊU ĐO LƯỜNG ĐƯỢC -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">🎯</span> 1. Mục tiêu Sư phạm Đo lường được (Bloom's Taxonomy)</h4>
+      <p class="corner-intro">Sau khi hoàn thành bài học này, học viên có năng lực thực hiện chuẩn xác các nhiệm vụ sau:</p>
+      <ul class="corner-list target-list">
+        <li><b>[Giải mã Hệ thống Thư tín IRS]:</b> Phân loại và giải mã chuẩn xác các thông báo thuế phổ biến: <code>Notice CP2000</code> (Chênh lệch thông tin đối chiếu bên thứ ba AUR), <code>CP2501</code>, <code>CP504</code> (Thông báo cuối cùng trước khi tịch thu), và <code>Letter 11 / LT11</code> (Thông báo về Quyền điều trần thủ tục thu nợ CDP theo <code>IRC §6330</code>).</li>\n        <li><b>[Lập Ủy Quyền Đại diện Chuẩn mực]:</b> Lập chính xác Giấy Ủy quyền Đại diện <code>Form 2848</code> (Power of Attorney and Declaration of Representative); phân biệt với <code>Form 8821</code> (Chỉ nhận thông tin, không có quyền tranh biện); nắm vững cách chỉ định loại thuế, mã biểu mẫu và năm tính thuế cụ thể.</li>\n        <li><b>[Bảo vệ Quyền Thân chủ qua CDP]:</b> Nộp đơn yêu cầu Điều trần Thủ tục Thu nợ (Collection Due Process - CDP qua <code>Form 12153</code>) trong thời hạn sinh tử <b>30 ngày</b> để lập tức đình chỉ mọi hành vi cưỡng chế, tịch thu tài khoản ngân hàng và lương của IRS.</li>\n        <li><b>[Thực thi 4 Giải pháp Xử lý Nợ (Tax Resolution)]:</b> Tính toán và đàm phán 4 phương án giải quyết nợ thuế: Kế hoạch trả góp (Installment Agreement <code>Form 9465</code>), Thỏa hiệp nộp thuế (Offer in Compromise - OIC <code>Form 656 / Form 433-A (OIC)</code> theo diện Nghi ngờ khả năng thu hồi nợ DATC), Tình trạng Tạm thời không thể thu hồi (Currently Not Collectible - CNC), và Miễn giảm tiền phạt do nguyên nhân chính đáng (First-Time Penalty Abatement / Reasonable Cause).</li>
+      </ul>
+    </section>
+
+    <!-- 2. THỜI LƯỢNG GỢI Ý & PHÂN BỔ GIẢNG DẠY -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">⏱️</span> 2. Thời lượng Gợi ý &amp; Phân bổ Thời gian (Tổng: 90–120 phút)</h4>
+      <div class="table-scroll">
+        <table class="corner-table time-table">
+          <thead>
+            <tr>
+              <th>Phần học</th>
+              <th>Thời lượng</th>
+              <th>Hình thức sư phạm</th>
+              <th>Trọng tâm chuyển giao</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Giải mã Thư IRS (CP2000, CP504, LT11) & Thời hạn Sinh tử</b></td>
+              <td>25 phút</td>
+              <td>Thuyết trình đối chiếu thư thực tế của IRS</td>
+              <td>Giải mã mã thư; Tại sao CP2000 chưa phải là hóa đơn thuế chính thức; Thời hạn 30 ngày kháng cáo; Khái niệm Statutory Notice of Deficiency (90-day letter).</td>
+            </tr>\n            <tr>
+              <td><b>Thiết lập Phòng tuyến: Form 2848 (POA) vs Form 8821</b></td>
+              <td>30 phút</td>
+              <td>Thực hành điền Form 2848 trên hồ sơ giả lập</td>
+              <td>Cấu trúc Form 2848; Mục tiêu khai Form 1040/941 các năm cụ thể; Chữ ký CAF number; Nộp qua cổng trực tuyến IRS Tax Pro Account; Phân biệt Form 8821.</td>
+            </tr>\n            <tr>
+              <td><b>Quyền Điều trần Thu nợ CDP (Form 12153) & Đình chỉ Thi hành án</b></td>
+              <td>30 phút</td>
+              <td>Nghiên cứu quy trình tranh biện trước Ban Kháng cáo</td>
+              <td>Căn cứ IRC §6320 & §6330; Nộp Form 12153 trong 30 ngày để kích hoạt Automatic Stay; Quyền Equivalent Hearing khi quá hạn 30 ngày.</td>
+            </tr>\n            <tr>
+              <td><b>Đàm phán Xóa nợ: OIC (Form 656), Trả góp & Xóa phạt</b></td>
+              <td>35 phút</td>
+              <td>Thực hành bài toán phân tích khả năng chi trả (RCP)</td>
+              <td>Offer in Compromise (Doubt as to Collectibility); Công thức Reasonable Collection Potential (RCP); Form 433-A (OIC); Xóa phạt First-Time Abatement; Kiểm tra phản xạ.</td>
+            </tr>\n          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 3. THỨ TỰ GIẢNG DẠY LOGIC (SCAFFOLDING) -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">🪜</span> 3. Thứ tự Giảng dạy Logic (Khung Giàn giáo Sư phạm)</h4>
+      <ol class="corner-steps">
+        <li><b>Bước 1 — Tình huống thực tế:</b> Một thân chủ hoảng loạn mang đến thư CP504 dọa phong tỏa tài khoản ngân hàng và trừ 100% lương sau 30 ngày. Là một EA, hành động đầu tiên trong 24 giờ tới của bạn là gì?</li>\n        <li><b>Bước 2 — Giảng giải Phép màu Form 2848:</b> Hướng dẫn học viên điền Form 2848 và tải lên cổng Tax Pro Account: Ngay khi Form 2848 được phê duyệt, IRS BẮT BUỘC PHẢI LIÊN LẠC QUA EA, không được phép gọi điện hay quấy rầy thân chủ!</li>\n        <li><b>Bước 3 — Mô hình hóa Đơn vị Kháng cáo Độc lập (IRS Independent Office of Appeals):</b> Giải thích vì sao không bao giờ nên tranh cãi đôi co với nhân viên kiểm toán cơ sở; hãy đưa vụ việc lên Ban Kháng cáo độc lập, nơi chuyên viên có quyền thương lượng dựa trên 'Rủi ro thua kiện tại tòa' (Hazards of Litigation)!</li>\n        <li><b>Bước 4 — Lập công thức RCP cho Offer in Compromise (OIC):</b> Công thức vàng: <code>RCP = Giá trị thanh lý tài sản ròng (Quick Sale Value) + Thu nhập khả dụng tương lai (Monthly Disposable Income × 12 hoặc 24 tháng)</code>. Nếu số nợ lớn hơn nhiều so với RCP, thân chủ có cơ hội xóa nợ 90%!</li>\n        <li><b>Bước 5 — Kiểm tra độc lập:</b> Học viên soạn thảo văn bản xin xóa tiền phạt (Penalty Abatement Request) dựa trên lý do chính đáng (bệnh tật nặng, thiên tai).</li>
+      </ol>
+    </section>
+
+    <!-- 4. VÍ DỤ & ẨN DỤ CHO NGƯỜI KHÔNG CHUYÊN -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">💡</span> 4. Ẩn dụ Trực quan &amp; Cầu nối Ngôn ngữ Đời thường</h4>
+      <div class="analogy-box">
+        <div class="analogy-header"><b>«Chiếc Áo Giáp Form 2848 & Chiếc Cầu Phao Cứu Sinh CDP»</b></div>
+        <p class="analogy-content">
+          Khi thân chủ nhận được những lá thư đe dọa tịch thu tài sản từ IRS, họ rơi vào trạng thái hoảng loạn tột cùng. Lúc này, Form 2848 giống như một 'Chiếc áo giáp sắt' bạn mặc lên cho thân chủ: Bạn bước ra phía trước giơ tấm thẻ EA và nói với nhân viên IRS: 'Kể từ giây phút này, mọi lời nói hãy nói với tôi!'. Còn lá đơn CDP Form 12153 chính là 'Chiếc cầu phao cứu sinh khẩn cấp': Bạn ném chiếc cầu phao này ra trong vòng 30 ngày, toàn bộ máy móc cưỡng chế, lệnh phong tỏa tài khoản và trát tịch thu nhà cửa của IRS lập tức bị đóng băng (Automatic Stay) để chờ bạn ngồi vào bàn đàm phán!
+        </p>
+      </div>
+    </section>
+
+    <!-- 5. 3–5 LỖI HỌC VIÊN HAY MẮC & CÁCH SỬA -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">⚠️</span> 5. 3–5 Lỗi Học viên Hay Mắc &amp; Phương pháp Khắc phục Triệt để</h4>
+      <div class="pitfall-grid">
+        <div class="pitfall-card">
+          <div class="pitfall-title">❌ Lỗi 1: Bỏ lỡ thời hạn 30 ngày nộp đơn điều trần CDP (Form 12153)</div>
+          <p class="pitfall-desc">Học viên để quá hạn 30 ngày kể từ ngày ghi trên thư LT11 / Letter 1058 mới nộp đơn yêu cầu điều trần.</p>
+          <div class="pitfall-fix">✅ Hậu quả pháp lý: Hạn 30 ngày là THỜI HẠN PHÁP LÝ BẮT BUỘC (Jurisdictional Deadline). Quá 30 ngày, thân chủ mất quyền khởi kiện lên Tòa án Thuế (Tax Court) và IRS có toàn quyền phong tỏa tài khoản ngay lập tức! (Lúc này chỉ còn xin được Equivalent Hearing nhưng không có quyền đình chỉ thi hành án).</div>
+        </div>\n        <div class="pitfall-card">
+          <div class="pitfall-title">❌ Lỗi 2: Nhầm lẫn thư CP2000 là hóa đơn nộp thuế bắt buộc</div>
+          <p class="pitfall-desc">Khách hàng nhận thư CP2000 báo chênh lệch thuế liền vội vàng rút tiền đóng ngay dù số liệu IRS tính sai.</p>
+          <div class="pitfall-fix">✅ Bản chất của Notice CP2000: CP2000 CHỈ LÀ THƯ ĐỀ XUẤT ĐIỀU CHỈNH (Proposed Adjustment), HOÀN TOÀN CHƯA PHẢI LÀ LỆNH TÍNH THUẾ CHÍNH THỨC! Rất nhiều trường hợp IRS tính thiếu giá vốn (ví dụ bán cổ phiếu $100k, IRS tính thu nhập $100k do thiếu 1099-B). EA chỉ cần gửi Form 8949 giải trình là số thuế tự động giảm về 0!</div>
+        </div>\n        <div class="pitfall-card">
+          <div class="pitfall-title">❌ Lỗi 3: Nộp Offer in Compromise (OIC) khi thân chủ chưa nộp đủ tờ khai các năm cũ</div>
+          <p class="pitfall-desc">Học viên nộp hồ sơ xin xóa nợ Form 656 cho khách hàng đang nợ tờ khai của 2 năm trước.</p>
+          <div class="pitfall-fix">✅ Điều kiện tiên quyết của OIC: IRS sẽ LẬP TỨC TRẢ LẠI HỒ SƠ VÀ TỊCH THU LỆ PHÍ NỘP ĐƠN ($205) nếu người nộp thuế chưa nộp đầy đủ toàn bộ tờ khai thuế của các năm quá khứ (Processable condition). Phải hoàn thành việc nộp tờ khai cũ trước khi nộp OIC!</div>
+        </div>\n      </div>
+    </section>
+
+    <!-- 6. 3 CÂU HỎI KIỂM NHANH TẠI LỚP (QUICK CHECKS) -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">❓</span> 6. 3 Câu hỏi Kiểm tra Nhanh tại Lớp (Kèm Đáp án &amp; Lý giải Sư phạm)</h4>
+      <div class="quick-check-box">
+        <div class="qc-item">
+          <p class="qc-q"><b>Câu hỏi 1:</b> Thân chủ nhận được Thư Thông báo Thiếu thuế Tối hậu (Notice of Deficiency — 90-day Letter / Ticket to Tax Court). Thời hạn để thân chủ nộp đơn khởi kiện lên Tòa án Thuế Hoa Kỳ (U.S. Tax Court) mà không cần phải nộp tiền thuế trước là bao nhiêu ngày?</p>
+          <details class="qc-ans-details">
+            <summary class="qc-ans-sum">Xem đáp án &amp; Gợi ý giảng giải</summary>
+            <div class="qc-ans-body">
+              <b>Đáp án:</b> ĐÚNG 90 NGÀY (150 ngày nếu thư gửi ra ngoài lãnh thổ Hoa Kỳ).<br><b>Lý giải sư phạm:</b> Căn cứ IRC §6213(a), thời hạn 90 ngày là thời hạn bất di bất dịch của luật định. Tòa án Thuế không có thẩm quyền gia hạn dù chỉ 1 ngày. Quá 90 ngày, IRS sẽ chính thức ghi sổ số thuế nợ (Assess the tax) và thân chủ bắt buộc phải nộp đủ tiền rồi mới được kiện đòi lại tại Tòa án Quận Liên bang!
+            </div>
+          </details>
+        </div>\n        <div class="qc-item">
+          <p class="qc-q"><b>Câu hỏi 2:</b> Một người nộp thuế cá nhân nợ IRS $42,000 tiền thuế thu nhập đã quá hạn và không có tranh chấp về số liệu. Người này muốn thiết lập một thỏa thuận trả góp tự động qua tài khoản ngân hàng trong vòng 72 tháng. Mẫu đơn nào được sử dụng và người này có cần nộp báo cáo tài sản Form 433 không?</p>
+          <details class="qc-ans-details">
+            <summary class="qc-ans-sum">Xem đáp án &amp; Gợi ý giảng giải</summary>
+            <div class="qc-ans-body">
+              <b>Đáp án:</b> Dùng Form 9465 (Streamlined Installment Agreement) và KHÔNG CẦN nộp báo cáo tài sản Form 433.<br><b>Lý giải sư phạm:</b> Với số nợ cá nhân dưới $50,000 (gồm cả phạt và lãi), người nộp thuế đủ điều kiện tham gia chương trình Trả góp Hợp lý hóa (Streamlined IA), thời gian trả tối đa 72 tháng. IRS không yêu cầu kê khai tài chính chi tiết hay thẩm định tài sản.
+            </div>
+          </details>
+        </div>\n        <div class="qc-item">
+          <p class="qc-q"><b>Câu hỏi 3:</b> Khách hàng bị phạt nộp muộn (Failure to File) và phạt nộp thiếu (Failure to Pay) $2,500 cho năm thuế 2024 do sơ suất quên hạn nộp. Biết rằng trong 3 năm 2021, 2022, 2023 khách hàng luôn nộp đúng hạn và chưa từng bị phạt. Biện pháp xóa phạt nào là nhanh nhất và tỷ lệ thành công cao nhất?</p>
+          <details class="qc-ans-details">
+            <summary class="qc-ans-sum">Xem đáp án &amp; Gợi ý giảng giải</summary>
+            <div class="qc-ans-body">
+              <b>Đáp án:</b> Áp dụng Chính sách Miễn giảm Phạt Lần đầu (First-Time Penalty Abatement — FTA).<br><b>Lý giải sư phạm:</b> Theo IRM 20.1.1.3.3.2.1, nếu người nộp thuế có lịch sử tuân thủ tốt trong 3 năm liền kề trước đó và đã nộp đủ tờ khai của năm hiện tại, IRS sẽ tự động xóa toàn bộ tiền phạt nộp muộn và trả muộn thông qua chính sách FTA chỉ bằng một cuộc gọi điện thoại của EA tới đường dây ưu tiên PPS (Practitioner Priority Service)!
+            </div>
+          </details>
+        </div>\n      </div>
+    </section>
+
+    <!-- 7. BẪY THI SEE & CHIÊU TRÒ ĐỀ THI -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">🪤</span> 7. Cạm bẫy Hành nghề &amp; Trách nhiệm Pháp lý</h4>
+      <div class="exam-trap-box">
+        <div class="exam-trap-title">Cảnh báo Quản trị Rủi ro từ Chuyên gia EA:</div>
+        <ul class="exam-trap-list">
+          <li><b>Bẫy 'Thời hiệu thu nợ 10 năm của IRS (CSED)':</b> Theo IRC §6502, IRS chỉ có đúng 10 NĂM để cưỡng chế thu nợ tính từ ngày ghi sổ thuế (Collection Statute Expiration Date - CSED). Sau 10 năm, số nợ TỰ ĐỘNG BỊ XÓA BỎ VĨNH VIỄN! Tuy nhiên: Việc nộp đơn xin OIC, đơn xin CDP hoặc nộp đơn phá sản SẼ TẠM DỪNG ĐỒNG HỒ 10 NĂM (Tolling the statute). EA giỏi phải kiểm tra ngày CSED trước khi nộp đơn!</li>\n          <li><b>Bẫy 'Thẩm quyền đại diện trên Form 2848':</b> Form 2848 không trao quyền cho EA ký thay tờ khai thuế Form 1040 của thân chủ (trừ trường hợp khẩn cấp bệnh tật được IRS chấp thuận riêng). EA cũng KHÔNG ĐƯỢC PHÉP ký séc hoàn thuế hoặc nhận tiền hoàn thuế vào tài khoản của mình!</li>\n          <li><b>Bẫy 'Trạng thái Tạm thời không thể thu nợ (CNC)':</b> Đưa thân chủ vào diện CNC (Currently Not Collectible / Status 53) giúp tạm dừng mọi hành vi siết nợ ngay lập tức mà không tốn tiền phí như OIC, đồng thời đồng hồ CSED 10 năm VẪN TIẾP TỤC CHẠY để hướng tới việc hết thời hiệu xóa nợ tự nhiên!</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 8. LIÊN HỆ BIỂU MẪU THỰC HÀNH -->
+    <section class="corner-section">
+      <h4 class="corner-heading"><span class="corner-icon">📋</span> 8. Liên hệ Biểu mẫu Thực hành (IRS Form Mapping)</h4>
+      <div class="form-mapping-grid">
+        <div class="form-map-card">
+          <div class="form-map-num">Form 2848</div>
+          <div class="form-map-detail">Power of Attorney and Declaration of Representative (Giấy ủy quyền đại diện pháp lý toàn diện trước IRS).</div>
+        </div>\n        <div class="form-map-card">
+          <div class="form-map-num">Form 8821</div>
+          <div class="form-map-detail">Tax Information Authorization (Chỉ ủy quyền nhận bản sao thông tin thuế, không có quyền tranh luận).</div>
+        </div>\n        <div class="form-map-card">
+          <div class="form-map-num">Form 12153</div>
+          <div class="form-map-detail">Request for a Collection Due Process or Equivalent Hearing (Đơn yêu cầu điều trần thu nợ để đình chỉ siết tài sản).</div>
+        </div>\n        <div class="form-map-card">
+          <div class="form-map-num">Form 656 & Form 433-A (OIC)</div>
+          <div class="form-map-detail">Hồ sơ Thỏa hiệp Nộp thuế (Offer in Compromise) và Bản kê khai tài chính cá nhân chi tiết.</div>
+        </div>\n      </div>
+    </section>
+
+    <!-- 9. LIÊN KẾT BÀI TRƯỚC / BÀI SAU -->
+    <section class="corner-section corner-footer-nav">
+      <h4 class="corner-heading"><span class="corner-icon">🔗</span> 9. Bản đồ Liên kết Bài học (Curriculum Scaffolding)</h4>
+      <div class="curriculum-links">
+        <div class="curr-prev"><b>⬅️ Bài trước (M04):</b> Đã thiết lập hợp đồng dịch vụ và đạo đức tính phí.</div>
+        <div class="curr-next"><b>➡️ Bước đệm bài tiếp theo (M06):</b> Khép lại Khối Part IV bằng bài học An toàn Dữ liệu, Lập Kế hoạch An ninh Thông tin bằng văn bản (WISP theo IRS Pub. 5708) và Bảo vệ bí mật thông tin khách hàng IRC §7216.</div>
+      </div>
+    </section>
+
+  </div>
+</details>
+<!-- ============================================================ KẾT THÚC GÓC GIẢNG VIÊN ============================================================ -->
+
+<div class="c1">
+  <h2 class="section">5.1 — MỤC TIÊU ĐẦU RA ĐO LƯỜNG ĐƯỢC</h2>
+  <div class="rule-box">
+    <p>Sau khi hoàn thành bài học này, học viên có khả năng:</p>
+    <ul>
+      <li><b>Triển khai quy trình Tax Resolution 2 giai đoạn:</b> Giai đoạn 1 Kéo Transcript chẩn đoán thu phí cố định → Giai đoạn 2 Ký Form 2848 đại diện xử lý.</li>
+      <li><b>Phân biệt và sử dụng chuẩn xác Form 8821 và Form 2848:</b> Nắm rõ cơ chế tự động hủy POA cũ của Form 2848 và mã số CAF.</li>
+      <li><b>Đọc hiểu 4 loại IRS Transcripts</b> (Account, Wage &amp; Income, Return, Record of Account), tính đúng thời hiệu thu nợ 10 năm (CSED per <code>IRC §6502</code>).</li>
+      <li><b>Lựa chọn đúng công cụ xử lý:</b> Phản hồi thư CP2000 trong 30 ngày, xin xóa phạt First-Time Abate (FTA), lập thỏa thuận trả góp Installment Agreement ($10,000 Guaranteed / $50,000 Streamlined), và tính chỉ số RCP cho Offer in Compromise.</li>
+      <li><b>Xử lý xung đột lợi ích khi đại diện vợ chồng ly hôn:</b> Ký văn bản đồng ý trong 30 ngày và lưu hồ sơ 36 tháng per <code>Circular 230 §10.29</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="c2">
+  <h2 class="section">5.2 — BẢNG THUẬT NGỮ ĐẠI DIỆN &amp; MÃ TRANSCRIPTS</h2>
+  <div class="table-scroll">
+    <table class="vocab">
+      <thead>
+        <tr><th>Thuật ngữ / Mã Transaction Code</th><th>Ý nghĩa chuyên môn</th><th>Ứng dụng trong Tax Resolution</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="word">Form 2848 (Power of Attorney)</td><td class="vn">Giấy ủy quyền đại diện pháp lý trước IRS</td><td>Chỉ EA, CPA, Attorney; cho phép tranh luận, điều trần, thương lượng thỏa thuận thay khách.</td></tr>
+        <tr><td class="word">Form 8821 (Tax Information Authorization)</td><td class="vn">Giấy ủy quyền nhận thông tin thuế</td><td>Chỉ cho phép xem thông tin và kéo transcript; tuyệt đối không có quyền đại diện tranh luận.</td></tr>
+        <tr><td class="word">Centralized Authorization File (CAF)</td><td class="vn">Hệ thống mã số ủy quyền tập trung IRS</td><td>Mã số định danh 9 chữ số cấp cho đại diện để truy cập hồ sơ khách hàng.</td></tr>
+        <tr><td class="word">Collection Statute Expiration Date (CSED)</td><td class="vn">Ngày hết thời hiệu thu nợ thuế 10 năm</td><td><code>IRC §6502</code>: IRS chỉ có 10 năm để thu nợ; nộp OIC sẽ làm tạm dừng (toll) thời hiệu CSED.</td></tr>
+        <tr><td class="word">Transaction Code 150 (TC 150)</td><td class="vn">Mã ghi nhận tờ khai gốc Form 1040</td><td>Đánh dấu ngày nộp tờ khai và số thuế tự khai báo ban đầu; kích hoạt thời hiệu CSED.</td></tr>
+        <tr><td class="word">First-Time Abate (FTA)</td><td class="vn">Chính sách xóa phạt vi phạm lần đầu</td><td>Áp dụng cho phạt trễ nộp, trễ trả nếu 3 năm liền kề trước đó không bị phạt và đã tuân thủ thuế.</td></tr>
+        <tr><td class="word">Reasonable Collection Potential (RCP)</td><td class="vn">Khả năng thu hồi nợ hợp lý của IRS</td><td>Công thức xét duyệt OIC: Tài sản thanh lý ròng + Thu nhập thặng dư trong tương lai.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="c3">
+  <h2 class="section">5.3 — QUY TRÌNH TAX RESOLUTION 2 GIAI ĐOẠN CHUẨN MỰC</h2>
+  <div class="rule-box">
+    <p><b>Quy tắc chống cạm bẫy "OIC Mill":</b> Tuyệt đối không hứa hẹn xóa nợ khi chưa đọc dữ liệu thật trên IRS Transcripts!</p>
+    <ul>
+      <li><b>Giai đoạn 1: Chẩn đoán Hồ sơ (Discovery &amp; Diagnosis — Thu phí cố định nhỏ $300 – $600):</b>
+        <ol>
+          <li>Khách hàng ký <b>Form 8821</b> (hoặc Form 2848 phạm vi hẹp).</li>
+          <li>Kéo 4 loại Transcripts qua hệ thống TDS hoặc đường dây Practitioner Priority Service (PPS).</li>
+          <li>Kiểm tra tính tuân thủ (Tax Compliance): Khách đã nộp đủ tờ khai 6 năm gần nhất chưa?</li>
+          <li>Tính toán ngày CSED, kiểm tra điều kiện xóa phạt FTA, đánh giá sơ bộ chỉ số RCP.</li>
+          <li>Xuất <i>Báo cáo Chẩn đoán Phương án Giải quyết Nợ</i> cho khách hàng bằng văn bản.</li>
+        </ol>
+      </li>
+      <li><b>Giai đoạn 2: Đại diện Thực thi (Execution &amp; Representation — Flat fee theo giai đoạn):</b>
+        <ol>
+          <li>Khách hàng ký Hợp đồng dịch vụ Giai đoạn 2 và ký <b>Form 2848</b> với các sắc thuế/năm cụ thể.</li>
+          <li>Tiến hành nộp đơn xin xóa phạt, lập thỏa thuận Installment Agreement, hoặc nộp hồ sơ OIC Form 656.</li>
+        </ol>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="c4">
+  <h2 class="section">5.4 — BẢNG PHÂN BIỆT SỐNG CÒN: FORM 2848 vs. FORM 8821</h2>
+  <div class="table-scroll">
+    <table class="compare-table">
+      <thead>
+        <tr><th>Tiêu chí so sánh</th><th>Form 8821 (Tax Information Authorization)</th><th class="col-tested">Form 2848 (Power of Attorney)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><b>Ai được đứng tên đại diện?</b></td><td>Bất kỳ ai (kể cả nhân viên văn phòng, người thân)</td><td class="col-tested"><b>Chỉ người đủ điều kiện (EA, CPA, Attorney, AFSP...)</b></td></tr>
+        <tr><td><b>Quyền hạn chính</b></td><td>Xem và nhận bản sao thông tin thuế, transcript</td><td class="col-tested"><b>Đại diện, tranh luận, ký gia hạn thời hiệu, thỏa thuận trả nợ</b></td></tr>
+        <tr><td><b>Hiệu lực đối với ủy quyền cũ</b></td><td>Không tự động thu hồi Form 8821/2848 cũ</td><td class="col-tested"><b>Mặc định TỰ ĐỘNG THU HỒI Form 2848 cũ của cùng năm/loại thuế</b></td></tr>
+        <tr><td><b>Ký tờ khai thuế thay khách</b></td><td>Tuyệt đối không</td><td class="col-tested">Chỉ trong ngoại lệ rất hẹp (bệnh nặng, vắng mặt ở Mỹ &ge;60 ngày)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="c5">
+  <h2 class="section">5.5 — XỬ LÝ THƯ CP2000, XÓA PHẠT FTA &amp; THỎA THUẬN TRẢ NỢ</h2>
+  <div class="rule-box">
+    <p><b>1. Thư CP2000 (Notice of Proposed Adjustment):</b></p>
+    <ul>
+      <li>Không phải là kiểm tra thuế chính thức mà là thông báo lệch khớp nối tự động (Automated Underreporter).</li>
+      <li>Hạn phản hồi: <b>30 ngày</b> kể từ ngày ghi trên thư. Cần lập thư giải trình kèm bảng tính Form 8949 (nếu thiếu cost basis 1099-B) để loại bỏ số thuế tính nhầm trước khi IRS phát hành Notice of Deficiency.</li>
+    </ul>
+    <p><b>2. Xin xóa phạt First-Time Abate (FTA):</b></p>
+    <ul>
+      <li>Áp dụng cho phạt Failure to File (FTF), Failure to Pay (FTP), Failure to Deposit (FTD).</li>
+      <li>Điều kiện: 3 năm liền kề trước đó không bị phạt, đã nộp đủ tờ khai đến hạn, và đã đóng hoặc có kế hoạch trả góp cho số thuế còn nợ.</li>
+    </ul>
+    <p><b>3. Thỏa thuận Thu nợ &amp; Cảnh báo Thu hồi Hộ chiếu (<code>IRC §7345</code>):</b></p>
+    <ul>
+      <li>Ngưỡng nợ nghiêm trọng (Seriously Delinquent Tax Debt): <b>&gt; $64,000 trong năm 2025</b> (tăng lên <b>&gt; $66,000 trong năm 2026</b>). Khi vượt ngưỡng này, IRS sẽ chứng thực lên Bộ Ngoại giao để từ chối hoặc thu hồi hộ chiếu Mỹ!</li>
+      <li><i>Cách hóa giải:</i> Ký thỏa thuận Installment Agreement, nộp hồ sơ OIC hợp lệ, hoặc kháng nghị <b>Collection Due Process (CDP) trong vòng 30 ngày</b> kể từ thư Final Notice of Intent to Levy (LT11 / Letter 1058).</li>
+    </ul>
+  </div>
+</div>
+
+<div class="c6">
+  <h2 class="section">5.6 — CẠM BẪY XUNG ĐỘT LỢI ÍCH VỢ CHỒNG LY HÔN (CIRCULAR 230 §10.29)</h2>
+  <div class="pitfall-box">
+    <h4>⚠️ XUNG ĐỘT LỢI ÍCH TRỰC TIẾP KHI VỢ CHỒNG TRANH CHẤP NỢ THUẾ</h4>
+    <p>Hai vợ chồng từng khai chung Form 1040 MFJ nay đã ly hôn và cùng bị IRS truy thu thuế. Nếu một bên muốn xin <i>Innocent Spouse Relief (Form 8857)</i> để đổ toàn bộ trách nhiệm nợ sang người kia, đây là <b>xung đột lợi ích đối kháng không thể hòa giải</b> → EA <b>bắt buộc phải từ chối hoặc rút lui</b> khỏi việc đại diện một hoặc cả hai bên!</p>
+    <p>Trong trường hợp xung đột có thể hòa giải được hợp pháp, theo <code>Circular 230 §10.29(b)–(c)</code>:</p>
+    <ul>
+      <li>Từng khách hàng phải ký <b>văn bản đồng ý được thông tin đầy đủ (Informed Consent Confirmed in Writing)</b> trong vòng <b>30 ngày</b>.</li>
+      <li>EA bắt buộc phải lưu giữ bản văn bản đồng ý đó trong thời gian tối thiểu <b>36 tháng</b> sau khi kết thúc việc đại diện.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="cKey">
+  <h2 class="section">5.7 — TÌNH HUỐNG THỰC CHIẾN MẪU (100% DỮ LIỆU GIẢ LẬP)</h2>
+  <div class="example-box">
+    <b class="ex-tag">Tình huống 5-1: Thư CP2000 tính nhầm giá vốn cổ phiếu $0</b><br>
+    <b>Nhân vật:</b> Anh Hùng Trương (SSN: <code>XXX-XX-9034</code>, kỹ sư phần mềm tại Seattle, WA, email: <code>hung.truong.dev@example.com</code>, ĐT: <code>(206) 555-0164</code>) nhận được thư <b>CP2000</b> cho năm 2024 đòi nộp bổ sung $48,000 do sàn chứng khoán báo 1099-B doanh thu bán cổ phiếu $140,000 mà IRS tính cost basis bằng $0 (thực tế anh Hùng mua hết $128,000, lãi thực chỉ $12,000). Một công ty radio gạ anh đóng $5,500 để làm Offer in Compromise xóa nợ dù anh có $180,000 tiền gửi ngân hàng.<br>
+    <b>Cách xử lý chuẩn xác của EA:</b><br>
+    1. Ký hợp đồng Phase 1 Discovery + <b>Form 8821</b>, kéo Wage &amp; Income Transcript và Account Transcript để kiểm tra chi tiết các giao dịch 1099-B.<br>
+    2. Giải thích cho anh Hùng: Với $180,000 tiền mặt, chỉ số RCP vượt xa số nợ nên đơn OIC chắc chắn bị bác bỏ. Hơn nữa, số nợ $48,000 trên CP2000 là số tính sai do thiếu giá vốn, chưa phải là nợ thực tế!<br>
+    3. Chuyển sang Phase 2 (ký <b>Form 2848</b>): Soạn công văn phản hồi thư CP2000 trong hạn 30 ngày kèm Form 8949 / Schedule D và sao kê mua gốc chứng minh giá vốn $128,000. Kết quả: hạ số thuế phải nộp từ $48,000 xuống chỉ còn khoảng ~$1,800 trên số lãi thực $12,000.
+  </div>
+
+  <div class="content-block">
+    <h3>❓ 5 Câu hỏi trắc nghiệm tự kiểm tra (Kèm giải thích chi tiết)</h3>
+
+    <div class="mcq">
+      <div class="q">Câu 1 [Form 8821 vs. Form 2848 | SEE 2026–27]: Trong Giai đoạn 1 của quy trình Tax Resolution, một Enrolled Agent cho khách hàng ký Form 8821 (Tax Information Authorization) cho tờ khai Form 1040 các năm 2022–2025. EA ĐƯỢC PHÉP thực hiện hành động nào sau đây khi CHỈ CÓ Form 8821?</div>
+      <div class="opt">A. Thương lượng thỏa thuận trả góp Streamlined Installment Agreement thay khách hàng</div>
+      <div class="opt">B. Kiểm tra và nhận bản sao Account Transcripts và Wage &amp; Income Transcripts bảo mật để chẩn đoán hồ sơ, KHÔNG có quyền tranh luận hay ký văn bản thỏa thuận thay người nộp thuế</div>
+      <div class="opt">C. Đại diện khách hàng tham dự buổi điều trần tại IRS Appeals</div>
+      <div class="opt">D. Ký gia hạn thời hiệu ấn định thuế (Form 872) thay khách hàng</div>
+    </div>
+
+    <div class="mcq">
+      <div class="q">Câu 2 [Form 2848 Rules | SEE 2026–27]: Khi Enrolled Agent nộp Form 2848 (Power of Attorney) mới lên bộ phận CAF của IRS cho tờ khai Form 1040 năm 2024 của khách hàng, điều gì sẽ xảy ra với Form 2848 do một người khai thuế khác đã nộp trước đó cho cùng năm 2024 nếu Dòng 6 (Retention/revocation) để trống?</div>
+      <div class="opt">A. Cả hai Form 2848 cùng có hiệu lực song song</div>
+      <div class="opt">B. Form 2848 mới mặc định TỰ ĐỘNG THU HỒI Form 2848 đã nộp trước đó cho cùng sắc thuế và kỳ thuế (nhưng KHÔNG làm thu hồi Form 8821)</div>
+      <div class="opt">C. IRS từ chối Form 2848 mới cho đến khi người đại diện cũ ký giấy đồng ý chuyển giao</div>
+      <div class="opt">D. Nó thu hồi toàn bộ Form 8821 và mọi Form 2848 của tất cả các năm trước đó</div>
+    </div>
+
+    <div class="mcq">
+      <div class="q">Câu 3 [Circular 230 §10.29 — Conflict of Interest]: Một Enrolled Agent được đề nghị đại diện cho hai vợ chồng vừa mới ly hôn trong một cuộc kiểm tra thuế Form 1040 MFJ năm trước. Nếu EA tin tưởng hợp lý rằng mình có thể đại diện công tâm và việc đại diện không bị luật cấm, quy định về văn bản đồng ý theo Circular 230 §10.29 là gì?</div>
+      <div class="opt">A. Đồng ý bằng lời nói qua điện thoại là đủ</div>
+      <div class="opt">B. Từng khách hàng bị ảnh hưởng phải ký văn bản đồng ý (Informed Consent) được xác nhận bằng văn bản trong vòng 30 ngày, và EA phải lưu giữ bản văn bản đồng ý tối thiểu 36 tháng sau khi kết thúc việc đại diện</div>
+      <div class="opt">C. Chỉ cần người đứng tên đầu tiên trên Form 1040 ký trong vòng 90 ngày</div>
+      <div class="opt">D. Phải có chữ ký của kiểm toán viên IRS</div>
+    </div>
+
+    <div class="mcq">
+      <div class="q">Câu 4 [TY2025 vs. TY2026 | SEE 2026–27 | IRC §7345 Passport Certification]: Trong năm dương lịch 2025, khoản nợ thuế liên bang quá hạn nghiêm trọng (Seriously Delinquent Tax Debt) có nguy cơ bị Bộ Ngoại giao từ chối hoặc thu hồi hộ chiếu Mỹ khi vượt quá ngưỡng điều chỉnh lạm phát nào, và hành động nào giúp ngăn chặn hoặc hủy bỏ lệnh thu hồi hộ chiếu?</div>
+      <div class="opt">A. Vượt quá $25,000; ngăn chặn bằng cách nộp Form 8821</div>
+      <div class="opt">B. Vượt quá $64,000 trong năm 2025 (tăng lên $66,000 năm 2026); ngăn chặn hoặc hủy bỏ nếu người nộp thuế ký Installment Agreement được duyệt, có đơn OIC đang xử lý/chấp thuận, hoặc kháng nghị CDP đúng hạn 30 ngày</div>
+      <div class="opt">C. Vượt quá $10,000; chỉ có cách trả hết 100% bằng tiền mặt</div>
+      <div class="opt">D. Vượt quá $100,000; ngăn chặn tự động bằng Form 4868</div>
+    </div>
+
+    <div class="mcq">
+      <div class="q">Câu 5 [IRC §6330 — CDP Hearing Deadline]: Khách hàng nhận được thư thông báo cưỡng chế Letter 1058 / LT11 (Final Notice of Intent to Levy and Notice of Your Right to a Hearing). Trong vòng bao nhiêu ngày kể từ ngày ghi trên thư Enrolled Agent phải nộp Form 12153 để đảm bảo quyền điều trần Collection Due Process (CDP) và bảo lưu quyền kiện lên Tòa án Thuế U.S. Tax Court?</div>
+      <div class="opt">A. Trong vòng 10 ngày làm việc</div>
+      <div class="opt">B. Trong vòng 30 ngày theo lịch (Calendar Days)</div>
+      <div class="opt">C. Trong vòng 90 ngày</div>
+      <div class="opt">D. Trong vòng 1 năm</div>
+    </div>
+
+    <div class="key-grid">
+      <h4>🔑 ĐÁP ÁN &amp; CĂN CỨ PHÁP LÝ</h4>
+      <div><b>Câu 1:</b> <span class="key-ans">B — Nhận bản sao transcript để chẩn đoán, không có quyền đại diện tranh luận</span>. <span class="key-exp">Căn cứ quy chế Form 8821. Form 8821 chỉ là ủy quyền nhận thông tin thuế, không trao quyền đại diện đàm phán hay ký kết với IRS.</span></div>
+      <div><b>Câu 2:</b> <span class="key-ans">B — Tự động thu hồi Form 2848 cũ của cùng năm/loại thuế (không ảnh hưởng Form 8821)</span>. <span class="key-exp">Căn cứ <code>Instructions for Form 2848</code>. Việc nộp Form 2848 mới mặc định tự động hủy POA cũ của cùng sắc thuế trừ khi đánh dấu giữ lại ở Line 6.</span></div>
+      <div><b>Câu 3:</b> <span class="key-ans">B — Từng khách hàng xác nhận bằng văn bản trong 30 ngày, lưu hồ sơ 36 tháng</span>. <span class="key-exp">Căn cứ <code>Circular 230 §10.29(b)–(c)</code>. Văn bản Informed Consent phải được xác nhận trong 30 ngày và lưu tối thiểu 36 tháng.</span></div>
+      <div><b>Câu 4:</b> <span class="key-ans">B — Vượt quá $64,000 năm 2025 ($66,000 năm 2026); ngăn chặn bằng Installment Agreement hoặc CDP</span>. <span class="key-exp">Căn cứ <code>IRC §7345</code> và <code>Rev. Proc. 2024-40 §2.59</code>. Ngưỡng năm 2025 là $64,000; tham gia trả góp hợp lệ hoặc kháng nghị CDP sẽ tạm dừng thủ tục chặn hộ chiếu.</span></div>
+      <div><b>Câu 5:</b> <span class="key-ans">B — Trong vòng 30 ngày theo lịch (Calendar Days)</span>. <span class="key-exp">Căn cứ <code>IRC §6330(a)(3)(B)</code>. Người nộp thuế có đúng 30 ngày để nộp Form 12153 yêu cầu điều trần CDP nhằm giữ quyền kiện ra U.S. Tax Court.</span></div>
+    </div>
+  </div>
+</div>
+
+<footer class="authority-footer">
+  <h4>🏛️ Nguồn chính thống &amp; Ngày đối chiếu</h4>
+  <ul>
+    <li><b>Quy chế Hành nghề Liên bang:</b> Treasury Department Circular No. 230 (31 CFR Part 10) §§ 10.3, 10.7, 10.29.</li>
+    <li><b>Bộ luật:</b> Internal Revenue Code (26 U.S.C.) §§ 6159, 6213, 6320, 6330, 6502, 7122, 7345.</li>
+    <li><b>Hướng dẫn IRS:</b> Rev. Proc. 2024-40 §2.59; Rev. Proc. 2025-32 §4.60; Instructions for Form 2848; Instructions for Form 8821; IRS Pub. 594. Ngày đối chiếu: <b>2026-11-01</b>.</li>
+  </ul>
+</footer>
+
+<nav class="lesson-nav lesson-nav-bottom" aria-label="Điều hướng cuối bài">
+  <a class="nav-back" href="EA4_M04_Pricing_Engagement_Letters_and_Billing_Ethics.html">← Bài trước: M04</a>
+  <a class="nav-next" href="EA4_M06_Data_Security_WISP_IRC7216_and_Risk_Management.html">Học tiếp M06: Bảo mật WISP, IRC §7216 &amp; Quản trị rủi ro →</a>
+</nav>
+</main>
+<script src="../lesson-runtime.js"></script>
+</body>
+</html>

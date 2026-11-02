@@ -25,7 +25,7 @@
   --text:#f5f4ef;
   --text-1:#dedad2;
   --text-2:#a8a296;
-  --text-3:#77726b;
+  --text-3:#9e9890;
   --blue:#d97757;
   --blue-l:#e2916f;
   --blue-hi:#c2663f;
@@ -2514,3 +2514,20 @@ body.game-focus .game-layer,body.game-focus .game-layer.board-fit{top:0 !importa
 .crumb a.crumb-nav:hover,.crumb a.crumb-nav:focus-visible{color:var(--amber-l);text-decoration:underline;outline:none}
 .lbd-close{margin-left:auto;background:#3a2c26;color:#ffd0bf;border:1px solid #5a4632;border-radius:8px;padding:.35rem .8rem;font-weight:700;cursor:pointer}
 .lbd-close:hover{background:#4a3830}
+
+/* S10 UX 2026: Nút Cổng Khoá học công khai cho mọi học viên */
+#btn-courses{background:var(--blue-sub);color:var(--blue-l);border:1px solid var(--blue);font-weight:700;}
+#mnav-courses{color:var(--blue-l);font-weight:600;}
+
+/* Khả năng tiếp cận */
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid var(--blue, #c96442);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
