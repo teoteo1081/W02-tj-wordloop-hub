@@ -149,6 +149,10 @@ Trong thiết kế hiện tại, Host là nguồn sự thật duy nhất (`js/ga
 4. **Lộ trình chuyển giao Host (Host Failover / Co-host Handover ở Pha 2 & 3):**
    - *Pha 1 (Alpha):* Áp dụng cửa sổ chờ 30s; nếu Host không quay lại sau 60s, phòng chuyển sang chế độ tự do xem lại kết quả đã nộp.
    - *Pha 2-3 (Beta & GA):* Nếu phòng có chỉ định Co-host (Trợ giảng), quyền điều khiển Host được tự động chuyển giao cho Co-host sau 45s Host chính ngắt kết nối; điểm số tiếp tục được ghi nhận bình thường.
+5. **Xử lý học viên tải lại trang hoặc thiết bị tắt màn hình (Mobile Sleep & Tab Reconnect):**
+   - Khi học viên tắt màn hình hoặc chuyển sang ứng dụng khác (Zalo, gọi điện), trình duyệt trên điện thoại tự ngắt kết nối WebSocket Realtime nhằm tiết kiệm pin.
+   - Khi mở lại trình duyệt, client tự động gửi broadcast `join` kèm `player_id` cũ được lưu bền vững trong `localStorage` (`tjwl_game_player` tại `js/game.js:147`).
+   - Host nhận sự kiện `join`, nhận diện lại `player_id`, đối chiếu bảng điểm hiện tại `G.st.scores` (`js/game.js:1754`), giữ nguyên toàn bộ điểm số cũ và gửi ngay gói trạng thái `state` mới nhất về client. Học viên tiếp tục ván đấu ngay lập tức mà không bị reset điểm hay bị văng khỏi lớp.
 
 ---
 
@@ -341,6 +345,29 @@ Dưới đây là 2 màn hình quan trọng nhất được thiết kế chuẩn
 | >>> [ BAT DAU VAN DAU (HOST) ] <<<  |
 |     (Hoc vien: "Cho host bat dau")  |
 +-------------------------------------+
+```
+
+### 11.3. Màn hình Màn hình chung Máy chiếu / TV (Screen View — Chế độ 16:9 Projector Mode)
+```
++-----------------------------------------------------------------------+
+|  TJ WORDLOOP - PHONG: KT89M  [=== THE THUC: KAHOOT ===]  [⏰ CON: 08s] |
++-----------------------------------------------------------------------+
+| CAU 04 / 20: Choose the correct word to complete the sentence:        |
+|                                                                       |
+| "The marketing team submitted the annual _______ before the deadline."|
++-----------------------------------+-----------------------------------+
+| [A] proposal                      | [B] propose                       |
+|     (📊 62% - 18 ban chon)        |     (📊  7% -  2 ban chon)        |
++-----------------------------------+-----------------------------------+
+| [C] proposing                     | [D] proposed                      |
+|     (📊 10% -  3 ban chon)        |     (📊 21% -  6 ban chon)        |
++-----------------------------------+-----------------------------------+
+| BANG XEP HANG TOP 5 (29/29 da tra loi):                               |
+| 1. 🦊 Minh Tuan (3.420d)   2. 🐼 Lan Anh (3.150d)  3. 🐯 Hoang Nam (2.980d)|
+| 4. 🐱 Mai Huong (2.840d)   5. 🦁 Duc Huy (2.710d)                      |
++-----------------------------------------------------------------------+
+| Quet QR de vao choi: [ █▀█ █ █▀█ ] game.html?room=KT89M&view=screen   |
++-----------------------------------------------------------------------+
 ```
 
 ---

@@ -151,6 +151,16 @@ Giả sử ván đấu có chế độ chấm bài viết (`qwrite` tại `js/ga
 - Chi phí 1 lượt chấm bài viết ($Cost_{batch}$):
   $$Cost_{batch} = \frac{(500 + 40P) \times \$0.075 + (100 + 35P) \times \$0.30}{10^6}$$
 
+### 4.3. Công thức Băng thông WebRTC Voice qua Cloudflare TURN
+Khi phòng kích hoạt đàm thoại nhóm qua Cloudflare WebRTC TURN (`supabase/functions/turn-creds/index.ts:1-36`):
+- Mỗi luồng âm thanh nén Opus chiếm bitrate trung bình: $32\text{ kbps} = 4\text{ KB/giây} = 14.4\text{ MB / người / giờ}$.
+- Băng thông TURN chuyển tiếp cho $P$ người chơi trong $R$ phòng trong $H$ giờ hoạt động:
+  $$BW_{TURN} = R \times P \times 14.4\text{ MB} \times H$$
+- Ở kịch bản K8 (1.000 phòng $\times$ 20 người $\times$ 20 giờ/tháng): $BW_{TURN} = 1.000 \times 20 \times 14.4\text{ MB} \times 20 \approx 5.760\text{ GB/tháng}$.
+  - Hạn mức miễn phí: 1.000 GB TURN/tháng (VERIFIED: `developers.cloudflare.com/calls/pricing/`).
+  - Phần vượt định mức: $4.760\text{ GB} \times \$0.05/\text{GB} \approx \$238.00\text{/tháng}$.
+  - Cơ chế khống chế: Chỉ cấp TURN relay cho tài khoản Pro; người dùng Free ưu tiên kết nối ngang hàng P2P mesh qua STUN ($0 chi phí TURN).
+
 ---
 
 ## 5. Bảng ma trận kịch bản mô phỏng tải & dự toán chi phí (10, 100, 1.000 phòng)
@@ -233,10 +243,28 @@ Nếu ngày mai mở link cho công chúng sử dụng tự do mà **chưa có c
 ### Đòn bẩy 2: Vá lỗ hổng `user_id: null` & Hạn mức chặt theo Phòng
 - **Cơ chế:** Sửa đổi `checkQuota()` trong `gemini-proxy` và `openai-proxy`. Tuyệt đối không cho phép `user_id: null` đi qua tự do. Nếu không có `user_id`, bắt buộc phải có `room_id` hợp lệ và kiểm tra hạn mức của phòng đó:
   - Mỗi phòng Free chỉ được tối đa **10 lượt gọi AI / ngày**. Hết lượt, hệ thống chuyển sang chế độ câu hỏi tĩnh không AI.
+- **Đặc tả mã nguồn đề xuất (Pseudocode Patch cho `supabase/functions/gemini-proxy/index.ts`):**
+  ```typescript
+  // Thay thế logic kiểm tra lỏng lẻo tại dòng 81-82
+  if (!userId && !roomId) {
+    return new Response(JSON.stringify({ error: "Unauthorized: Missing user_id or room_id" }), { status: 401 });
+  }
+  if (!userId && roomId) {
+    const { count } = await sb.from("room_ai_usage_daily")
+      .select("call_count", { count: "exact" })
+      .eq("room_code", roomId).eq("date", today);
+    if ((count ?? 0) >= FREE_ROOM_DAILY_AI_CAP) { // FREE_ROOM_DAILY_AI_CAP = 10
+      return new Response(JSON.stringify({ error: "Daily room AI limit reached. Please upgrade to Pro or BYO Key." }), { status: 429 });
+    }
+  }
+  ```
 
 ### Đòn bẩy 3: Cơ chế "Tự mang chìa khóa" (Bring Your Own Key - BYO Key)
 - **Cơ chế:** Trong phần cài đặt phòng của Host, bổ sung ô nhập: *"Google Gemini API Key của bạn"* hoặc *"OpenAI Key"*.
-- **Bảo mật:** Key lưu trực tiếp trong `localStorage` của trình duyệt Host (hoặc mã hóa gửi trong header), client gọi thẳng Google/OpenAI hoặc proxy dùng key của chính Host.
+- **Kiến trúc phân luồng 2 cấp:**
+  1. *Direct Client-to-Provider (Khuyến nghị ưu tiên):* Trình duyệt của Host gọi thẳng Google AI Studio API (`https://generativelanguage.googleapis.com/...`) sử dụng API Key lưu an toàn trong `localStorage` máy Host. Bỏ qua hoàn toàn Supabase Edge Function: **chi phí invocation = $0, độ trễ proxy trung gian = 0ms**.
+  2. *Proxy Pass-through (Dự phòng):* Nếu client gặp hạn chế môi trường mạng, gửi kèm header `x-byo-api-key`. Proxy sử dụng key này gọi upstream thay vì dùng key trả phí của TJ.
+- **Bảo mật:** Key không bao giờ lưu vào Database Supabase, không bị lộ cho học viên trong phòng.
 - **Hiệu quả:** TJ chi trả 0 VNĐ cho các lớp học có nhu cầu chấm bài viết/nói số lượng lớn.
 
 ### Đòn bẩy 4: Chỉ gọi AI khi Host chủ động kích hoạt (Opt-in AI Features)
