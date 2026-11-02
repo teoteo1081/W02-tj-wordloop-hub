@@ -432,9 +432,53 @@ table.band-table tr:nth-child(even) {
   color: var(--sub);
   font-size: 14px;
 }
+
+/* Mobile Bottom Navigation 56px & Print CSS */
+body {
+  padding-bottom: max(72px, calc(56px + env(safe-area-inset-bottom))) !important;
+  overflow-x: hidden;
+}
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 56px;
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--panel);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 1000;
+}
+.bottom-nav-item {
+  flex: 1;
+  height: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: var(--sub);
+  background: transparent;
+  border: none;
+  font-size: 11px;
+  font-weight: 700;
+  touch-action: manipulation;
+  cursor: pointer;
+}
+.bottom-nav-item.active, .bottom-nav-item:hover { color: var(--accent); }
+.bottom-nav-ico { font-size: 18px; line-height: 1; }
+
+@media print {
+  .top-bar, .bottom-nav, button { display: none !important; }
+  body { background: #fff !important; color: #000 !important; font-size: 11pt !important; }
+  .table-wrap, table { page-break-inside: avoid; break-inside: avoid; }
+}
+
 </style>
 </head>
-<body>
+<body id="top">
 
 <header class="top-bar">
   <a href="../L00_PORTAL/index.html" class="brand-link" title="Về Danh mục 5 Đại Đề Án">
@@ -738,5 +782,30 @@ function toggleTheme() {
   }
 })();
 </script>
+
+<!-- Bottom Navigation Bar 56px (RUBRIC B.3) -->
+<nav class="bottom-nav" aria-label="Điều hướng nhanh di động">
+  <a href="#top" class="bottom-nav-item active">
+    <span class="bottom-nav-ico">🏠</span>
+    <span>Trang chủ</span>
+  </a>
+  <button type="button" class="bottom-nav-item" onclick="window.IeltsApp.openReading(1)">
+    <span class="bottom-nav-ico">📖</span>
+    <span>Reading</span>
+  </button>
+  <button type="button" class="bottom-nav-item" onclick="window.IeltsApp.openListening(1)">
+    <span class="bottom-nav-ico">🎧</span>
+    <span>Listening</span>
+  </button>
+  <button type="button" class="bottom-nav-item" onclick="window.IeltsApp.openSpeaking()">
+    <span class="bottom-nav-ico">🗣</span>
+    <span>Speaking</span>
+  </button>
+  <button type="button" class="bottom-nav-item" onclick="window.IeltsApp.openWriting()">
+    <span class="bottom-nav-ico">✍️</span>
+    <span>Writing</span>
+  </button>
+</nav>
+
 </body>
 </html>
