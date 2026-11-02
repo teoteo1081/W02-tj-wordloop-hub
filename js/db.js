@@ -479,6 +479,32 @@
     return (await allWordsLite()).map(function (x) { return { id: x.id, block_id: x.block_id, level: x.level }; });
   };
 
+  /* Thống kê từ theo Block do Supabase tính (hàm wl_block_stats, tools/perf_rpc.sql): {block_id: {n, wsum}}.
+     Thay cho việc tải cả bảng words chỉ để cộng điểm. Trả null (Local, chưa có hàm, lỗi) -> nơi gọi tự quay về cách cũ. */
+  var rpcBroken = false;
+  DB.getBlockStats = async function () {
+    if (DB.mode === "local" || rpcBroken) return null;
+    try {
+      return await cachedRead("blockstats", async function () {
+        var r = await DB.sb.rpc("wl_block_stats");
+        if (r.error || !Array.isArray(r.data)) throw (r.error || new Error("wl_block_stats: không có dữ liệu"));
+        var m = {};
+        r.data.forEach(function (x) { m[x.block_id] = { n: +x.n, wsum: +x.wsum }; });
+        return m;
+      }, 3 * 60 * 1000);
+    } catch (e) { rpcBroken = true; return null; }
+  };
+  /* {total, mastered} từ khác nhau của user do Supabase đếm (wl_word_stats); null nếu không dùng được -> cách cũ. */
+  async function wordStatsRpc(userId) {
+    if (rpcBroken) return null;
+    try {
+      var r = await DB.sb.rpc("wl_word_stats", { p_user: userId });
+      var row = !r.error && Array.isArray(r.data) ? r.data[0] : null;
+      if (!row) throw (r.error || new Error("wl_word_stats: không có dữ liệu"));
+      return { total: +row.total_distinct, mastered: +row.mastered_distinct };
+    } catch (e) { rpcBroken = true; return null; }
+  }
+
   /* ══════════════ ĐỌC CÂY DỮ LIỆU ══════════════ */
   DB.getHubs = async function () {
     if (DB.mode === "local") return local().hubs.slice().sort(bySort);
@@ -2102,7 +2128,7 @@
     all.forEach(function (x) { termOf[x.id] = w.normalizeAnswer(x.term); });
     return { total: distinctCount(all), termOf: termOf };
   }
-  DB.invalidateDistinctWords = function () { delete readCache.words; };
+  DB.invalidateDistinctWords = function () { delete readCache.words; delete readCache.blockstats; };
   async function distinctMastered(userId, termOf) {
     var rows = await sbListAll("word_progress", function (q) { return q.select("word_id").eq("user_id", userId).eq("mastered", true); }, "word_id");
     var set = {};
@@ -2155,7 +2181,8 @@
       /* Tổng từ + đã thuộc đếm theo CHỮ KHÁC NHAU (không đếm trùng: cùng 1 từ
          ở nhiều Block, Block "full_" chép lại cả Batch, từ lưu 2 lần) —
          tải id+term toàn kho (~12k dòng) nên cache 10 phút. */
-      var dw = await distinctWordIndex();
+      var ws = await wordStatsRpc(userId);   /* Supabase đếm sẵn -> khỏi tải cả bảng words */
+      var dw = ws ? null : await distinctWordIndex();
       var qBlocks = await DB.sb.from("blocks").select("id", { count: "exact", head: true });
       var qDone = await DB.sb.from("block_progress").select("block_id", { count: "exact", head: true })
         .eq("user_id", userId).or("passed.eq.true,meaning_passed.eq.true");
@@ -2172,7 +2199,7 @@
       });
 
       return {
-        totalWords: dw.total, mastered: await distinctMastered(userId, dw.termOf),
+        totalWords: ws ? ws.total : dw.total, mastered: ws ? ws.mastered : await distinctMastered(userId, dw.termOf),
         learnedWords: (qDone.count || 0) * perBlock,   /* ước tính, chưa có số từ chính xác/block */
         totalBlocks: qBlocks.count || 0, blocksDone: qDone.count || 0,
         overdueWords: overdueWords2, overdueByDate: overdueByDate2

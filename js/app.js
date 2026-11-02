@@ -3075,7 +3075,7 @@
      đang xem. Giờ 2 case này tải riêng cây đầy đủ (DB.getFullTree +
      DB.getAllWordsLite), không phụ thuộc S.* nữa -> luôn đúng bất kể đang
      mở nhánh nào. Vì vậy hàm này giờ LÀ ASYNC — mọi nơi gọi phải await. */
-  App.scopeIds = async function (table, id) {
+  App.scopeIds = async function (table, id, opts) {
     var blocks;
     if (table === "blocks") blocks = S.blocks.filter(function (b) { return b.id === id; });
     else if (table === "batches") blocks = App.blocksOf(id);
@@ -3113,6 +3113,7 @@
     var bIds = blocks.map(function (b) { return b.id; });
 
     if (table === "notebooks" || table === "hubs") {
+      if (opts && opts.noWords) return { blocks: bIds, words: [] };   /* bảng xếp hạng chỉ cần Block -> khỏi tải cả bảng words */
       /* S.words chỉ có từ của nhánh đang mở -> không đủ, lấy từ toàn app. */
       var allWords = await w.DB.getAllWordsLite();
       var wIds2 = allWords.filter(function (x) { return bIds.indexOf(x.block_id) >= 0; }).map(function (x) { return x.id; });
@@ -3339,7 +3340,7 @@
   var LB_CACHE = null;
 
   async function loadLeaderboardData(table, id) {
-    var scope = await App.scopeIds(table, id);
+    var scope = await App.scopeIds(table, id, { noWords: true });
     if (!scope.blocks.length) return null;
     /* Trọng số của TỪNG Block = tổng độ khó các từ trong nó — tính 1 lần,
        dùng lại cho mọi user (không đổi theo ai học). Dùng
@@ -3349,10 +3350,15 @@
        chú dài ở App.scopeIds). */
     var blockWeight = {};
     scope.blocks.forEach(function (bid) { blockWeight[bid] = 0; });
-    var allWords = await w.DB.getAllWordsLite();
-    allWords.forEach(function (x) {
-      if (blockWeight.hasOwnProperty(x.block_id)) blockWeight[x.block_id] += levelWeight(x.level);
-    });
+    var bStats = await w.DB.getBlockStats();   /* Supabase cộng sẵn trọng số mỗi Block; null -> cách cũ */
+    if (bStats) {
+      scope.blocks.forEach(function (bid) { if (bStats[bid]) blockWeight[bid] = bStats[bid].wsum; });
+    } else {
+      var allWords = await w.DB.getAllWordsLite();
+      allWords.forEach(function (x) {
+        if (blockWeight.hasOwnProperty(x.block_id)) blockWeight[x.block_id] += levelWeight(x.level);
+      });
+    }
     var bpRows = await w.DB.getLeaderboardProgress(scope.blocks);
     var profiles = await w.DB.listProfiles();
     var profileById = {};
