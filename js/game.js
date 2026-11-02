@@ -4127,12 +4127,20 @@
      hoặc "<năm>-<số>" cho bộ mới (vd "2025-3", id ets25_t3_p5_101). */
   function tBook(t) { t = String(t); return t.indexOf("-") > 0 ? t.split("-")[0] : "2024"; }
   function tNum(t) { t = String(t); return +(t.indexOf("-") > 0 ? t.split("-")[1] : t); }
-  function tName(t) { return "ETS " + tBook(t) + " · Test " + tNum(t); }
+  /* nhãn thương hiệu đúng từng bộ đề: 2023-2024 ETS, 2025 AnhLe, 2026 Siwon */
+  function tBrand(book) {
+    var b = String(book || "");
+    if (b.indexOf("-") > 0) b = b.split("-")[0];
+    if (b === "2025") return "AnhLe 2025";
+    if (b === "2026") return "Siwon 2026";
+    return "ETS " + (b || "2024");
+  }
+  function tName(t) { return tBrand(tBook(t)) + " · Test " + tNum(t); }
   function tPartsOf(test) { return (G.tKeys || []).filter(function (k) { return k.split("|")[0] === String(test); }).map(function (k) { return +k.split("|")[1]; }); }
   function paintBooks() {
     var bs = {}; (G.tKeys || []).forEach(function (k) { bs[tBook(k.split("|")[0])] = 1; });
     var bsel = $("#t-book"); if (!bsel) return;
-    var keep = bsel.value; bsel.innerHTML = Object.keys(bs).sort().reverse().map(function (b) { return '<option value="' + b + '">ETS ' + b + "</option>"; }).join("") || '<option value="">Chưa có đề nào</option>';
+    var keep = bsel.value; bsel.innerHTML = Object.keys(bs).sort().reverse().map(function (b) { return '<option value="' + b + '">' + tBrand(b) + "</option>"; }).join("") || '<option value="">Chưa có đề nào</option>';
     if (keep && bs[keep]) bsel.value = keep;
     paintTests();
   }
