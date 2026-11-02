@@ -12,6 +12,7 @@
 <body>
 <!-- Mở thẳng (không nằm trong Góc tự học của game.html) thì có nút quay về phòng game. Trong iframe thì thanh của game.html lo việc này. -->
 <a class="quest-home" href="../../game.html" hidden>🎮 Về phòng game</a>
+<a class="quest-roadmap" href="lessons/Roadmap/from-zero-to-ea.html" style="display:inline-block;margin:8px;padding:6px 14px;background:#1a73e8;color:#fff;border-radius:20px;text-decoration:none;font-weight:700;font-size:0.88rem;">🗺️ Lộ trình Từ 0 Đến EA</a>
 <main id="app" aria-live="polite"></main>
 <div id="toast" role="status"></div>
 <noscript>Game cần bật JavaScript để chạy nha 🥺</noscript>
@@ -39,7 +40,7 @@ window.QUEST_CONFIG = {
   var R = "https://pqarpszsipbdugrumhfy.supabase.co/storage/v1/object/public/ea/";
   var DATA = [
     ["data/lessons-data.js?v=9", R + "data/lessons-data.js?v=9"],
-    ["data/cases.js?v=2", R + "data-w02/cases.js?v=2"],
+    ["data/cases.js?v=3", R + "data-w02/cases.js?v=3"],
     ["data/research.js?v=3", R + "data/research.js?v=3"]
   ];
   function add(src, ok, bad) {
