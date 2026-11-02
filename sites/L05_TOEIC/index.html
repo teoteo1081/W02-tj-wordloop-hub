@@ -2,9 +2,9 @@
 <html lang="vi">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>TOEIC 4 Kỹ Năng Thực Chiến · Speaking, Writing &amp; ETS Solo 2026</title>
-<meta name="description" content="Luyện thi TOEIC 4 kỹ năng: Speaking & Writing thực chiến theo chuẩn ETS, chế độ thi thử ETS Listening & Reading phòng solo an toàn và 600 từ vựng Barron.">
+<meta name="description" content="Luyện thi TOEIC 4 kỹ năng: Speaking &amp; Writing thực chiến theo chuẩn ETS, chế độ thi thử ETS Listening &amp; Reading phòng solo an toàn và 600 từ vựng Barron.">
 <!-- Google tag (gtag.js) — GA4 -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
 <script>
@@ -14,92 +14,137 @@
   gtag('config', 'G-6X5S109XKM', {site:'toeic'});
 </script>
 <style>
+/* Hệ thiết kế Token chuẩn R2_UI_SPEC.md & WCAG AAA/AA */
 :root {
-  --bg: #f4f9fd;
-  --panel: #ffffff;
-  --card: #ffffff;
-  --ink: #0c1928;
-  --sub: #41566b;
-  --line: #d8e5f0;
-  --chip: #eaf3fa;
-  --accent: #0369a1;
-  --accent-soft: rgba(3, 105, 161, 0.1);
-  --accent2: #0f766e;
-  --accent2-soft: rgba(15, 118, 110, 0.1);
-  --gold: #b45309;
-  --shadow: 0 4px 18px rgba(12, 25, 40, 0.06);
-  --radius: 16px;
+  --bg-canvas: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-soft: #f1f5f9;
+  --bg-surface-hover: #e2e8f0;
+
+  --ink-primary: #0f172a;
+  --ink-secondary: #334155;
+  --ink-muted: #475569;
+  --ink-inverse: #ffffff;
+
+  --line-subtle: #e2e8f0;
+  --line-strong: #cbd5e1;
+  --line-focus: #0369a1;
+
+  --accent-base: #0369a1; /* Blue 700 cho TOEIC */
+  --accent-hover: #075985;
+  --accent-soft: rgba(3, 105, 161, 0.10);
+  --accent-contrast: #ffffff;
+
+  --accent2-base: #0f766e;
+  --accent2-soft: rgba(15, 118, 110, 0.12);
+
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 10px 25px rgba(15, 23, 42, 0.12);
+  --shadow-bottom-nav: 0 -2px 10px rgba(15, 23, 42, 0.08);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
 }
+
 :root[data-theme="dark"] {
-  --bg: #0a1420;
-  --panel: #122031;
-  --card: #122031;
-  --ink: #ecf3f9;
-  --sub: #93abc2;
-  --line: #1c2e42;
-  --chip: #1c2e42;
-  --accent: #38bdf8;
-  --accent-soft: rgba(56, 189, 248, 0.15);
-  --accent2: #2dd4bf;
-  --accent2-soft: rgba(45, 212, 191, 0.15);
-  --gold: #fbbf24;
-  --shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  --bg-canvas: #0b1120;
+  --bg-surface: #131c31;
+  --bg-surface-soft: #1e293b;
+  --bg-surface-hover: #334155;
+
+  --ink-primary: #f8fafc;
+  --ink-secondary: #cbd5e1;
+  --ink-muted: #94a3b8;
+  --ink-inverse: #0f172a;
+
+  --line-subtle: #1e293b;
+  --line-strong: #334155;
+  --line-focus: #38bdf8;
+
+  --accent-base: #38bdf8;
+  --accent-hover: #7dd3fc;
+  --accent-soft: rgba(56, 189, 248, 0.16);
+  --accent-contrast: #0b1120;
+
+  --accent2-base: #2dd4bf;
+  --accent2-soft: rgba(45, 212, 191, 0.16);
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.6);
+  --shadow-bottom-nav: 0 -2px 12px rgba(0, 0, 0, 0.5);
 }
+
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0a1420;
-    --panel: #122031;
-    --card: #122031;
-    --ink: #ecf3f9;
-    --sub: #93abc2;
-    --line: #1c2e42;
-    --chip: #1c2e42;
-    --accent: #38bdf8;
-    --accent-soft: rgba(56, 189, 248, 0.15);
-    --accent2: #2dd4bf;
-    --accent2-soft: rgba(45, 212, 191, 0.15);
-    --gold: #fbbf24;
-    --shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+    --bg-canvas: #0b1120;
+    --bg-surface: #131c31;
+    --bg-surface-soft: #1e293b;
+    --bg-surface-hover: #334155;
+    --ink-primary: #f8fafc;
+    --ink-secondary: #cbd5e1;
+    --ink-muted: #94a3b8;
+    --ink-inverse: #0f172a;
+    --line-subtle: #1e293b;
+    --line-strong: #334155;
+    --line-focus: #38bdf8;
+    --accent-base: #38bdf8;
+    --accent-hover: #7dd3fc;
+    --accent-soft: rgba(56, 189, 248, 0.16);
+    --accent-contrast: #0b1120;
+    --accent2-base: #2dd4bf;
+    --accent2-soft: rgba(45, 212, 191, 0.16);
   }
 }
+
 * { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; overflow-x: hidden; }
+html {
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
 body {
   margin: 0;
-  background: var(--bg);
-  color: var(--ink);
+  background: var(--bg-canvas);
+  color: var(--ink-primary);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   font-size: 16px;
   line-height: 1.6;
+  padding-bottom: max(72px, calc(56px + env(safe-area-inset-bottom)));
+  overflow-x: hidden;
 }
-a { color: var(--accent); text-decoration: none; }
+a { color: var(--accent-base); text-decoration: none; }
 button { font: inherit; color: inherit; cursor: pointer; }
 
 /* Navigation */
 .toc-head {
   position: fixed; top: 0; left: 0; right: 0; height: 48px; z-index: 1000;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 12px; background: var(--panel); border-bottom: 1px solid var(--line);
-  box-shadow: 0 1px 4px rgba(0,0,0,.03);
+  padding: 0 12px; background: var(--bg-surface); border-bottom: 1px solid var(--line-subtle);
+  box-shadow: var(--shadow-sm);
 }
 .toc-head-left, .toc-head-right { display: flex; align-items: center; gap: 8px; }
 .toc-btn {
-  background: transparent; border: 1px solid var(--line); color: var(--ink);
-  border-radius: 8px; min-height: 44px; min-width: 44px; padding: 6px 12px;
+  background: transparent; border: 1px solid var(--line-strong); color: var(--ink-primary);
+  border-radius: var(--radius-sm); min-height: 44px; min-width: 44px; padding: 6px 12px;
   font-weight: 600; display: inline-flex; align-items: center; justify-content: center;
+  touch-action: manipulation;
 }
-.brand-title { font-size: 17px; font-weight: 800; color: var(--accent); white-space: nowrap; }
+.brand-title { font-size: 17px; font-weight: 800; color: var(--accent-base); white-space: nowrap; }
 
 /* Sidebar Drawer */
 .sidebar {
   position: fixed; left: 0; top: 48px; bottom: 0; width: 320px; max-width: 86vw; z-index: 999;
-  background: var(--panel); border-right: 1px solid var(--line); padding: 16px; overflow-y: auto;
+  background: var(--bg-surface); border-right: 1px solid var(--line-strong); padding: 16px; overflow-y: auto;
   transform: translateX(-100%); visibility: hidden; transition: transform .22s ease, visibility 0s linear .22s;
   box-shadow: 4px 0 24px rgba(0,0,0,.15);
 }
 body.toc-open .sidebar { transform: none; visibility: visible; transition: transform .22s ease; }
 #tocBackdrop {
-  position: fixed; inset: 0; z-index: 998; background: rgba(0,0,0,.4);
+  position: fixed; inset: 0; z-index: 998; background: rgba(0,0,0,.45);
   opacity: 0; pointer-events: none; transition: opacity .2s;
 }
 body.toc-open #tocBackdrop { opacity: 1; pointer-events: auto; }
@@ -109,21 +154,21 @@ body.toc-open #tocBackdrop { opacity: 1; pointer-events: auto; }
   body.toc-pinned #tocBackdrop { display: none; }
 }
 
-.main-wrap { max-width: 900px; margin: 0 auto; padding: 64px 16px 80px; }
+.main-wrap { max-width: 900px; margin: 0 auto; padding: 60px 16px 40px; }
 
 /* Hero Banner D3 */
 .hero-box {
-  background: linear-gradient(135deg, var(--accent-soft) 0%, var(--chip) 100%);
-  border: 1.5px solid var(--line); border-radius: var(--radius);
-  padding: 24px 20px; margin-bottom: 24px; box-shadow: var(--shadow);
+  background: linear-gradient(135deg, var(--accent-soft) 0%, var(--bg-surface-soft) 100%);
+  border: 1.5px solid var(--line-strong); border-radius: var(--radius-lg);
+  padding: 24px 20px; margin-bottom: 24px; box-shadow: var(--shadow-md);
 }
 .hero-badge {
   display: inline-flex; align-items: center; gap: 6px;
-  background: var(--accent); color: #ffffff; padding: 4px 12px;
-  border-radius: 999px; font-size: 13px; font-weight: 700; margin-bottom: 12px;
+  background: var(--accent-base); color: var(--ink-inverse); padding: 4px 12px;
+  border-radius: var(--radius-full); font-size: 13px; font-weight: 700; margin-bottom: 12px;
 }
-.hero-title { font-size: clamp(22px, 5vw, 32px); font-weight: 800; margin: 0 0 10px; line-height: 1.25; }
-.hero-desc { color: var(--sub); font-size: 16px; margin: 0 0 16px; }
+.hero-title { font-size: clamp(22px, 5vw, 32px); font-weight: 800; margin: 0 0 10px; line-height: 1.25; color: var(--ink-primary); }
+.hero-desc { color: var(--ink-secondary); font-size: 16px; margin: 0 0 16px; }
 
 .stats-strip {
   display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 16px;
@@ -132,22 +177,22 @@ body.toc-open #tocBackdrop { opacity: 1; pointer-events: auto; }
   .stats-strip { grid-template-columns: repeat(4, 1fr); }
 }
 .stat-item {
-  background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
-  padding: 12px; text-align: center;
+  background: var(--bg-surface); border: 1px solid var(--line-subtle); border-radius: var(--radius-md);
+  padding: 12px; text-align: center; box-shadow: var(--shadow-sm);
 }
-.stat-num { font-size: 22px; font-weight: 800; color: var(--accent); line-height: 1.2; }
-.stat-lbl { font-size: 12px; color: var(--sub); font-weight: 600; margin-top: 4px; }
+.stat-num { font-size: 22px; font-weight: 800; color: var(--accent-base); line-height: 1.2; }
+.stat-lbl { font-size: 12px; color: var(--ink-muted); font-weight: 600; margin-top: 4px; }
 
 /* Action Cards */
 .card {
-  background: var(--card); border: 1.5px solid var(--line); border-radius: var(--radius);
-  padding: 20px; margin-bottom: 18px; box-shadow: var(--shadow);
+  background: var(--bg-surface); border: 1.5px solid var(--line-strong); border-radius: var(--radius-lg);
+  padding: 20px; margin-bottom: 18px; box-shadow: var(--shadow-sm);
 }
 .pill {
-  display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px;
-  font-size: 12px; font-weight: 700; background: var(--chip); color: var(--ink);
+  display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: var(--radius-full);
+  font-size: 12px; font-weight: 700; background: var(--bg-surface-soft); color: var(--ink-primary);
 }
-.pill.special { background: var(--accent-soft); color: var(--accent); }
+.pill.special { background: var(--accent-soft); color: var(--accent-base); }
 
 .play-grid {
   display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;
@@ -156,38 +201,69 @@ body.toc-open #tocBackdrop { opacity: 1; pointer-events: auto; }
   .play-grid { grid-template-columns: 1fr; }
 }
 .play-tile {
-  background: var(--panel); border: 2px solid var(--line); border-radius: var(--radius);
+  background: var(--bg-surface); border: 2px solid var(--line-strong); border-radius: var(--radius-lg);
   padding: 18px; display: flex; flex-direction: column; justify-content: space-between;
   min-height: 110px; transition: transform .15s ease, border-color .15s ease; cursor: pointer;
+  box-shadow: var(--shadow-sm); touch-action: manipulation;
 }
-.play-tile:hover { transform: translateY(-2px); border-color: var(--accent); }
-.play-tile-title { font-size: 18px; font-weight: 800; margin: 8px 0 4px; }
-.play-tile-sub { font-size: 13.5px; color: var(--sub); }
+.play-tile:hover { transform: translateY(-2px); border-color: var(--accent-base); }
+.play-tile-title { font-size: 18px; font-weight: 800; margin: 8px 0 4px; color: var(--ink-primary); }
+.play-tile-sub { font-size: 13.5px; color: var(--ink-muted); }
 
 .btn-primary {
-  min-height: 48px; padding: 10px 18px; border-radius: 12px;
-  background: var(--accent); color: #ffffff; font-weight: 700; font-size: 15px;
+  min-height: 48px; padding: 10px 18px; border-radius: var(--radius-md);
+  background: var(--accent-base); color: var(--accent-contrast); font-weight: 700; font-size: 15px;
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  border: none; cursor: pointer; text-align: center;
+  border: none; cursor: pointer; text-align: center; touch-action: manipulation;
 }
 .btn-secondary {
-  min-height: 48px; padding: 10px 18px; border-radius: 12px;
-  background: var(--chip); color: var(--ink); font-weight: 600; font-size: 15px;
+  min-height: 48px; padding: 10px 18px; border-radius: var(--radius-md);
+  background: var(--bg-surface-soft); color: var(--ink-primary); font-weight: 600; font-size: 15px;
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  border: 1px solid var(--line); cursor: pointer; text-align: center;
+  border: 1px solid var(--line-strong); cursor: pointer; text-align: center; touch-action: manipulation;
 }
 .btn-primary:hover { opacity: .9; }
-.btn-secondary:hover { background: var(--line); }
+.btn-secondary:hover { background: var(--bg-surface-hover); }
 
 /* Notice Box */
 .notice-box {
-  background: var(--chip); border: 1px solid var(--line); border-radius: 12px;
-  padding: 14px 16px; margin: 12px 0; font-size: 14px; line-height: 1.5; color: var(--sub);
+  background: var(--bg-surface-soft); border: 1px solid var(--line-strong); border-radius: var(--radius-md);
+  padding: 14px 16px; margin: 12px 0; font-size: 14px; line-height: 1.5; color: var(--ink-secondary);
 }
-.notice-box.safe { border-left: 4px solid var(--accent2); }
+.notice-box.safe { border-left: 4px solid var(--accent2-base); }
 
-/* Accessibility */
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* Mobile Bottom Navigation 56px (RUBRIC B.3) */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 56px;
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--bg-surface);
+  border-top: 1px solid var(--line-strong);
+  box-shadow: var(--shadow-bottom-nav);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 1000;
+}
+.bottom-nav-item {
+  flex: 1;
+  height: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: var(--ink-muted);
+  font-size: 11px;
+  font-weight: 700;
+  touch-action: manipulation;
+}
+.bottom-nav-item.active, .bottom-nav-item:hover { color: var(--accent-base); }
+.bottom-nav-ico { font-size: 18px; line-height: 1; }
+
+/* Accessibility & Print */
+:focus-visible { outline: 2px solid var(--line-focus); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -195,15 +271,19 @@ body.toc-open #tocBackdrop { opacity: 1; pointer-events: auto; }
     transition-duration: 0.01ms !important;
   }
 }
+@media print {
+  .toc-head, .bottom-nav, button { display: none !important; }
+  body { background: #fff !important; color: #000 !important; }
+}
 </style>
 </head>
-<body>
+<body id="top">
 
 <header class="toc-head">
   <div class="toc-head-left">
-    <button class="toc-btn" id="tocBtn" aria-label="Mục lục khoá học">☰</button>
+    <button class="toc-btn" id="tocBtn" aria-label="Mục lục khoá học TOEIC">☰</button>
     <a href="index.html" class="brand-title">🎯 TOEIC 2026</a>
-    <a href="../L00_PORTAL/index.html" class="toc-btn" style="min-height:36px;padding:4px 8px;font-size:13px;">🏠 Cổng khoá</a>
+    <a href="../L00_PORTAL/index.html" class="toc-btn" style="min-height:36px;padding:4px 8px;font-size:13px;">🏠 Cổng</a>
   </div>
   <div class="toc-head-right">
     <span class="pill special" id="statStreak">🎯 4 Kỹ Năng</span>
@@ -218,10 +298,10 @@ body.toc-open #tocBackdrop { opacity: 1; pointer-events: auto; }
     <button class="toc-btn" id="tocPin" title="Ghim mục lục" style="min-height:36px;min-width:36px;padding:4px 8px;">📌</button>
   </div>
   <div style="display:flex;flex-direction:column;gap:8px;">
-    <a href="#sw" style="padding:8px;border-radius:8px;background:var(--chip);">🎤✍️ Speaking &amp; Writing</a>
-    <a href="#ets" style="padding:8px;border-radius:8px;background:var(--chip);">🎧📖 ETS Listening &amp; Reading Solo</a>
-    <a href="#barron" style="padding:8px;border-radius:8px;background:var(--chip);">📘 Barron 600 Từ Vựng</a>
-    <a href="../../index.html" style="padding:8px;border-radius:8px;background:var(--chip);">🏠 Về WordLoop Vocabulary</a>
+    <a href="#sw" style="padding:10px 12px;border-radius:8px;background:var(--bg-surface-soft);color:var(--ink-primary);font-weight:600;">🎤✍️ Speaking &amp; Writing</a>
+    <a href="#ets" style="padding:10px 12px;border-radius:8px;background:var(--bg-surface-soft);color:var(--ink-primary);font-weight:600;">🎧📖 ETS Listening &amp; Reading Solo</a>
+    <a href="#barron" style="padding:10px 12px;border-radius:8px;background:var(--bg-surface-soft);color:var(--ink-primary);font-weight:600;">📘 Barron 600 Từ Vựng</a>
+    <a href="../../index.html" style="padding:10px 12px;border-radius:8px;background:var(--bg-surface-soft);color:var(--ink-primary);font-weight:600;">🏠 Về WordLoop Hub</a>
   </div>
 </aside>
 
@@ -243,7 +323,7 @@ body.toc-open #tocBackdrop { opacity: 1; pointer-events: auto; }
   </section>
 
   <!-- Khối 1: Luyện ngay 1 chạm Speaking & Writing -->
-  <h2 style="font-size:20px;font-weight:800;margin:0 0 12px;" id="sw">1. 🎮 Luyện Ngay Speaking &amp; Writing (1 Chạm Vào Câu 1)</h2>
+  <h2 style="font-size:20px;font-weight:800;margin:0 0 12px;color:var(--ink-primary);" id="sw">1. 🎮 Luyện Ngay Speaking &amp; Writing (1 Chạm Vào Câu 1)</h2>
   <div class="play-grid">
     <div class="play-tile" id="btnSpeaking1Tap">
       <div>
@@ -254,7 +334,7 @@ body.toc-open #tocBackdrop { opacity: 1; pointer-events: auto; }
         <div class="play-tile-title">TOEIC Speaking</div>
         <div class="play-tile-sub">11 câu chuẩn format ETS: đọc to, tả ảnh, trả lời câu hỏi, đề xuất giải pháp &amp; nêu ý kiến.</div>
       </div>
-      <div style="color:var(--accent);font-weight:700;margin-top:12px;">⚡ Vào luyện đề Nói ngay →</div>
+      <div style="color:var(--accent-base);font-weight:700;margin-top:12px;">⚡ Vào luyện đề Nói ngay →</div>
     </div>
 
     <div class="play-tile" id="btnWriting1Tap">
@@ -266,18 +346,18 @@ body.toc-open #tocBackdrop { opacity: 1; pointer-events: auto; }
         <div class="play-tile-title">TOEIC Writing</div>
         <div class="play-tile-sub">8 câu chuẩn format ETS: viết câu theo ảnh (Q1–5), phản hồi email (Q6–7) và bài luận ý kiến (Q8).</div>
       </div>
-      <div style="color:var(--accent);font-weight:700;margin-top:12px;">⚡ Vào luyện đề Viết ngay →</div>
+      <div style="color:var(--accent-base);font-weight:700;margin-top:12px;">⚡ Vào luyện đề Viết ngay →</div>
     </div>
   </div>
 
   <!-- Khối 2: ETS Listening & Reading Solo an toàn -->
-  <h2 style="font-size:20px;font-weight:800;margin:28px 0 12px;" id="ets">2. 🎧📖 Luyện Đề ETS TOEIC Listening &amp; Reading (Phòng Solo)</h2>
+  <h2 style="font-size:20px;font-weight:800;margin:28px 0 12px;color:var(--ink-primary);" id="ets">2. 🎧📖 Luyện Đề ETS TOEIC Listening &amp; Reading (Phòng Solo)</h2>
   <div class="card">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
       <span style="font-size:32px;">🎧</span>
       <div>
-        <h3 style="margin:0;font-size:18px;">10 Bộ Đề ETS 2023 Listening &amp; Reading (2,000 Câu Hỏi)</h3>
-        <span style="font-size:13px;color:var(--sub);">Audio R2 tốc độ cao, lời giải song ngữ chi tiết</span>
+        <h3 style="margin:0;font-size:18px;color:var(--ink-primary);">10 Bộ Đề ETS 2023 Listening &amp; Reading (2,000 Câu Hỏi)</h3>
+        <span style="font-size:13px;color:var(--ink-muted);">Audio R2 tốc độ cao, lời giải song ngữ chi tiết</span>
       </div>
     </div>
     <div class="notice-box safe">
@@ -289,13 +369,13 @@ body.toc-open #tocBackdrop { opacity: 1; pointer-events: auto; }
   </div>
 
   <!-- Khối 3: Barron 600 Essential Words (Nhãn trung thực) -->
-  <h2 style="font-size:20px;font-weight:800;margin:28px 0 12px;" id="barron">3. 📘 Sổ Từ Vựng &amp; Bộ Đọc Barron 600 (Gắn Nhãn Trung Thực)</h2>
+  <h2 style="font-size:20px;font-weight:800;margin:28px 0 12px;color:var(--ink-primary);" id="barron">3. 📘 Sổ Từ Vựng &amp; Bộ Đọc Barron 600 (Gắn Nhãn Trung Thực)</h2>
   <div class="card">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
       <span style="font-size:32px;">📘</span>
       <div>
-        <h3 style="margin:0;font-size:18px;">Barron 600 Essential Words for the TOEIC</h3>
-        <span style="font-size:13px;color:var(--sub);">600 từ vựng cốt lõi theo 50 chủ đề kinh doanh thường gặp trong đề thi</span>
+        <h3 style="margin:0;font-size:18px;color:var(--ink-primary);">Barron 600 Essential Words for the TOEIC</h3>
+        <span style="font-size:13px;color:var(--ink-muted);">600 từ vựng cốt lõi theo 50 chủ đề kinh doanh thường gặp trong đề thi</span>
       </div>
     </div>
     <div class="notice-box">
@@ -314,8 +394,8 @@ body.toc-open #tocBackdrop { opacity: 1; pointer-events: auto; }
     <div style="display:flex;align-items:center;gap:10px;">
       <span style="font-size:28px;">⏳</span>
       <div>
-        <h3 style="margin:0;font-size:17px;">Bộ Đề TOEIC Listening &amp; Reading Tự Tạo Original 2026</h3>
-        <p style="font-size:13.5px;color:var(--sub);margin:4px 0 0;">
+        <h3 style="margin:0;font-size:17px;color:var(--ink-primary);">Bộ Đề TOEIC Listening &amp; Reading Tự Tạo Original 2026</h3>
+        <p style="font-size:13.5px;color:var(--ink-muted);margin:4px 0 0;">
           Đang biên soạn bộ đề thi độc quyền 100% không vướng bản quyền ETS. Sẽ được tích hợp trực tiếp trên trang độc lập này ở giai đoạn tiếp theo.
         </p>
       </div>
@@ -323,21 +403,45 @@ body.toc-open #tocBackdrop { opacity: 1; pointer-events: auto; }
   </div>
 
   <!-- Khối 5: Tiến độ cá nhân -->
-  <h2 style="font-size:20px;font-weight:800;margin:28px 0 12px;">4. 📊 Lịch Sử Luyện Đề Speaking &amp; Writing</h2>
+  <h2 style="font-size:20px;font-weight:800;margin:28px 0 12px;color:var(--ink-primary);" id="historySec">4. 📊 Lịch Sử Luyện Đề Speaking &amp; Writing</h2>
   <div class="card">
     <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:12px;text-align:center;">
-      <div style="background:var(--chip);padding:14px;border-radius:12px;">
-        <div style="font-size:24px;font-weight:800;color:var(--accent);" id="statSpeakingCount">0 bài</div>
-        <div style="font-size:13px;color:var(--sub);font-weight:600;">Speaking đã làm</div>
+      <div style="background:var(--bg-surface-soft);padding:14px;border-radius:12px;">
+        <div style="font-size:24px;font-weight:800;color:var(--accent-base);" id="statSpeakingCount">0 bài</div>
+        <div style="font-size:13px;color:var(--ink-muted);font-weight:600;">Speaking đã làm</div>
       </div>
-      <div style="background:var(--chip);padding:14px;border-radius:12px;">
-        <div style="font-size:24px;font-weight:800;color:var(--accent2);" id="statWritingCount">0 bài</div>
-        <div style="font-size:13px;color:var(--sub);font-weight:600;">Writing đã làm</div>
+      <div style="background:var(--bg-surface-soft);padding:14px;border-radius:12px;">
+        <div style="font-size:24px;font-weight:800;color:var(--accent2-base);" id="statWritingCount">0 bài</div>
+        <div style="font-size:13px;color:var(--ink-muted);font-weight:600;">Writing đã làm</div>
       </div>
     </div>
   </div>
 
 </main>
+
+<!-- Bottom Navigation Bar 56px (RUBRIC B.3) -->
+<nav class="bottom-nav" aria-label="Điều hướng nhanh di động">
+  <a href="#top" class="bottom-nav-item active">
+    <span class="bottom-nav-ico">🏠</span>
+    <span>Trang chủ</span>
+  </a>
+  <a href="#sw" class="bottom-nav-item">
+    <span class="bottom-nav-ico">🎤</span>
+    <span>Speaking</span>
+  </a>
+  <a href="#sw" class="bottom-nav-item">
+    <span class="bottom-nav-ico">✍️</span>
+    <span>Writing</span>
+  </a>
+  <a href="#ets" class="bottom-nav-item">
+    <span class="bottom-nav-ico">🎧</span>
+    <span>ETS Solo</span>
+  </a>
+  <a href="#historySec" class="bottom-nav-item">
+    <span class="bottom-nav-ico">📊</span>
+    <span>Tiến độ</span>
+  </a>
+</nav>
 
 <script src="toeic-app.js"></script>
 
