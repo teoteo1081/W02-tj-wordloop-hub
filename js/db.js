@@ -479,7 +479,7 @@
     return (await allWordsLite()).map(function (x) { return { id: x.id, block_id: x.block_id, level: x.level }; });
   };
 
-  /* Thống kê từ theo Block do Supabase tính (hàm wl_block_stats, tools/perf_rpc.sql): {block_id: {n, wsum}}.
+  /* Thống kê từ theo Block do Supabase tính (hàm wl_block_stats, tools/perf_rpc.sql): {block_id: {wsum}}.
      Thay cho việc tải cả bảng words chỉ để cộng điểm. Trả null (Local, chưa có hàm, lỗi) -> nơi gọi tự quay về cách cũ. */
   var rpcBroken = false;
   DB.getBlockStats = async function () {
@@ -487,9 +487,9 @@
     try {
       return await cachedRead("blockstats", async function () {
         var r = await DB.sb.rpc("wl_block_stats");
-        if (r.error || !Array.isArray(r.data)) throw (r.error || new Error("wl_block_stats: không có dữ liệu"));
+        if (r.error || !r.data || typeof r.data !== "object" || Array.isArray(r.data)) throw (r.error || new Error("wl_block_stats: không có dữ liệu"));
         var m = {};
-        r.data.forEach(function (x) { m[x.block_id] = { n: +x.n, wsum: +x.wsum }; });
+        Object.keys(r.data).forEach(function (bid) { m[bid] = { wsum: +r.data[bid] }; });
         return m;
       }, 3 * 60 * 1000);
     } catch (e) { rpcBroken = true; return null; }
