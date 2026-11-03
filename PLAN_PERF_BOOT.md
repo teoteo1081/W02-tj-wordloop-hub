@@ -89,3 +89,9 @@ Nên làm 1, 3, 4 trước; 2, 5, 6 làm sau khi đo lại.
 | `fix/perf-boot` (v20) | ~4,96 giây | ~15,2 giây | 103 |
 | `fix/perf-boot-2` (v22, có TTL 90 s) | ~5,89 giây (4,56–7,21) | ~16,7 giây | 67 |
 Kết luận: nhanh hơn `main` rõ rệt, ít request hơn `fix/perf-boot` (67 so với 103, request tới bảng words 26 so với 49), nhưng **chưa đạt PERF-01 (<2,5 s) và PERF-02 (<6 s)**. Sai số lớn giữa các lần chạy (mạng Supabase); chỉ 3 mẫu. Điểm nghẽn còn lại là kéo ~9.300 từ qua nhiều trang; cách triệt để là hàm đếm/RPC phía Supabase (đổi DB — chờ TJ quyết).
+
+### Hàm đếm phía Supabase (2026-11-02, đã áp dụng lên DB bằng token ghi 24 giờ)
+- Thêm 2 hàm (tools/perf_rpc.sql, chỉ thêm, gỡ bằng `drop function`): `wl_block_stats()` (JSON {block_id: trọng số}) và `wl_word_stats(p_user)` (tổng từ khác nhau + đã thuộc).
+- **Lỗi phát hiện khi kiểm**: bản đầu trả nhiều dòng nên bị Supabase cắt ở 1.000 dòng (có 2.404 block) → đã đổi sang trả 1 JSON.
+- **Đối chiếu với cách tính cũ trong JS**: 2.404/2.404 block khớp, tổng từ khác nhau 10.748 = 10.748, đã thuộc (1 user) 205 = 205. Mỗi hàm ~0,4–1,1 giây (tải cả bảng words ~17–21 giây).
+- Đo lại 3 lần/bản (mạng dao động mạnh, vòng cuối chậm với mọi bản): số request Supabase `main` 53–79 → `fix/perf-boot-2` 48; request tới bảng words 42 → 7. Request nền xong: 14,5/16,7/22,6 s so với `main` 21,1/21,5/22,8 s. Danh sách hiện chưa cải thiện rõ (còn phụ thuộc request `sections?...words(*)`). Chưa đạt PERF-01/02; cần đo lại khi mạng ổn định và có đăng nhập thật.
