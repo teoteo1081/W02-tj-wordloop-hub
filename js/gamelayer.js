@@ -270,7 +270,7 @@
     } else {
       try { layer.firstChild.contentWindow.postMessage({ type: "tjwl-game-board", scope: sc }, location.origin); } catch (e) {}
     }
-    enterBoard();   /* Learning luôn hiện; lớp game chỉ lộ ra đúng vùng giữa khi bảng có Block */
+    if (!(boardOnState && fitOn)) enterBoard();   /* Learning luôn hiện; lớp game chỉ lộ ra đúng vùng giữa khi bảng có Block. Bảng đang có bài (fitOn): giữ nguyên lớp game, KHÔNG ẩn rồi chờ tin báo (bấm Page/Mở bảng lúc đang có bài bị kẹt ở danh sách Block) */
   }
 
   /* TJ 2026-10-06: thẻ Game có 2 cột Notebooks (trái) + Pages (phải) y như Bảng, thay cho "Mở cây chủ đề"/📚 trong game.
