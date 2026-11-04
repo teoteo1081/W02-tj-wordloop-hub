@@ -1971,6 +1971,7 @@
     var sc = (e.data.scope || []).filter(function (p) { return p && p.table && p.id; });
     if (!sc.length) return;
     if (!G.isHost || !G.st) { G.pendingScope = sc; G.pendingBoard = true; return; }
+    if (window.Board && Board.resetNotify) Board.resetNotify();
     openBoardScope(sc);
   });
   /* 🖤 nút "Bảng" của Learning: mở / đóng bảng ở màn DANH SÁCH Block (chưa chọn Block) */

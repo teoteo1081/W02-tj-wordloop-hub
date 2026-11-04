@@ -2141,6 +2141,7 @@
     noSound: function () { if (!noSoundAt || Date.now() - noSoundAt > 20000) { noSoundAt = Date.now(); feedNote("🔇 Máy này chưa phát được tiếng đọc — kiểm tra loa / âm lượng máy và quyền âm thanh của trình duyệt, rồi bấm đọc lại."); } },
     /* 🖤 từ cây chủ đề của game (⋯ › Mở lên bảng): list = [[blockId, tên], …], parts = "vw" | "w" | "v" */
     /* TJ 2026-10-05: bảng là TỪNG BLOCK — 1 Block thì mở thẳng (bài đọc trước); nhiều Block (Batch/Page/…) thì mở bảng ở màn DANH SÁCH để TJ chọn */
+    resetNotify: function () { notifyParent._k = ""; },   /* TJ 2026-11-04: Learning vừa ẩn lớp game (enterBoard) -> lần báo kế KHÔNG được bị coi là "giống lần trước", nếu không bảng đã đổi bài mà lớp game vẫn ẩn */
     openBlocks: function (list, parts) {
       if (!api.isHost()) return;
       if (list && (list.length === 1 || (list.length > 1 && curDoc()))) openQueue(list, "wv");   /* bảng đang có bài: bấm Page/Section khác = nhảy thẳng sang bài đầu của mục đó (có ←/→ qua các Block), không dừng ở danh sách Block */
