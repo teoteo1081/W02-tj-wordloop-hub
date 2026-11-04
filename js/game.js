@@ -1891,6 +1891,12 @@
     picked = (G.st.scope || []).map(function (p) { return { table: p.table, id: p.id, title: p.title || p.id }; });
     try { await ensurePool(G.st.scope); } catch (e) {}   /* cần kho từ để ra câu tiếp */
     if (G.st.mode === "kahoot" && G.st.q && !G.st.q.revealed && G.qUntil && Date.now() > G.qUntil) G.qUntil = Date.now() + 3000;   /* câu đang dở đã quá giờ lúc tải lại -> cho thêm 3 giây */
+    try {   /* TJ 2026-11-03: host tải lại giữa ván đề nghe -> KHÔNG phát lại audio câu đang dở từ đầu, KHÔNG đọc lại cả hội thoại ở câu kế của cùng nhóm */
+      var rq = G.st.q; if (rq && G.st.test) {
+        G.tPlayedQn = (G.st.matchId || "") + ":" + rq.num + ":" + (rq.qn || ""); G.tMatchG = G.st.matchId;
+        var rc = tCue(rq); G.tLastG = rc && rc.g ? rc.g.join("-") : "";
+      }
+    } catch (e) {}
     clearInterval(G.hostTimer); G.hostTimer = setInterval(hostTick, 250);
     push();
     if (G.st.mode === "free" && !$("#s-play").hidden) freeNext();
@@ -4122,6 +4128,23 @@
   }
   /* danh sách đề + Part đã có câu trong test_items */
   var T_SEC = { 1: 30, 2: 22, 3: 26, 4: 29, 5: 20, 6: 30, 7: 60 };   /* giây/câu mặc định theo nhịp đề thật (bảng TOEIC ở trên) */
+  /* TJ 2026-11-03: "host refresh thì đứng đâu đứng đó, không chạy về Barron" — nhớ Bộ đề / Đề / Phạm vi / Part host đã chọn ở phòng chờ TOEIC (chỉ ghi khi host tự bấm) */
+  var T_SELK = "tjwl_game_tsel_v1";
+  function tSelSave() {
+    if (!G.isHost || !$("#t-tnum") || !$("#t-tnum").value) return;
+    try { localStorage.setItem(T_SELK, JSON.stringify({ test: $("#t-tnum").value, scope: $("#t-scope").value, part: +String($("#t-test").value).split("|")[1] || 0 })); } catch (e) {}
+  }
+  function tSelRestore() {
+    var s = null; try { s = JSON.parse(localStorage.getItem(T_SELK) || "null"); } catch (e) {}
+    if (!s || !s.test || !(G.tKeys || []).some(function (k) { return k.split("|")[0] === s.test; })) return;
+    $("#t-book").value = tBook(s.test); paintTests();
+    $("#t-tnum").value = s.test; paintParts();
+    var so = s.scope && $('#t-scope option[value="' + s.scope + '"]');
+    if (so && !so.disabled) { $("#t-scope").value = s.scope; paintScope(); }
+    if (s.part && $('#t-test option[value="' + s.test + "|" + s.part + '"]')) { $("#t-test").value = s.test + "|" + s.part; $("#t-test").dispatchEvent(new Event("change", { bubbles: true })); }
+    $("#t-scope").dispatchEvent(new Event("change", { bubbles: true }));
+  }
+  document.addEventListener("change", function (e) { var id = e.target && e.target.id; if (e.isTrusted && (id === "t-book" || id === "t-tnum" || id === "t-scope" || id === "t-test")) setTimeout(tSelSave, 0); });
   async function loadTestList() {
     var sel = $("#t-test"); if (!sel) return;
     var r = { data: [] }, from = 0;   /* > 1000 câu (nhiều đề) -> tải theo trang */
@@ -4132,7 +4155,7 @@
     (r.data || []).forEach(function (x) { var test = x.exam === "barron600" ? "barron600-" + x.test : x.test; var k = test + "|" + x.part; cnt[k] = (cnt[k] || 0) + 1; if (x.answer_src === "claude") cl[k] = 1; if (!x.answer_src) nk[k] = 1;
       var m = G.tMeta[k] = G.tMeta[k] || { min: 999, max: 0, tags: {} }; m.min = Math.min(m.min, x.num); m.max = Math.max(m.max, x.num); if (x.tag) m.tags[x.tag] = (m.tags[x.tag] || 0) + 1; });
     var keys = Object.keys(cnt).sort(function (a, b) { var A = a.split("|"), B = b.split("|"); return tNum(A[0]) - tNum(B[0]) || (+A[1] - +B[1]); });
-    G.tCnt = cnt; G.tCl = cl; G.tNk = nk; G.tKeys = keys; paintBooks();   /* chọn Bộ đề -> Đề -> Phạm vi (paintBooks/paintTests/paintParts) */
+    G.tCnt = cnt; G.tCl = cl; G.tNk = nk; G.tKeys = keys; paintBooks(); tSelRestore();   /* chọn Bộ đề -> Đề -> Phạm vi (paintBooks/paintTests/paintParts) */
   }
   /* 📚 BỘ ĐỀ (TJ 2026-10-04: "đề sau này có năm 2023, 24, 25, 26"): test_items.test = "<số>" (bộ ETS 2024 có sẵn, giữ mã cũ khỏi đổi dữ liệu)
      hoặc "<năm>-<số>" cho bộ mới (vd "2025-3", id ets25_t3_p5_101). */
@@ -4145,7 +4168,7 @@
   function paintBooks() {
     var bs = {}; (G.tKeys || []).forEach(function (k) { bs[tBook(k.split("|")[0])] = 1; });
     var bsel = $("#t-book"); if (!bsel) return;
-    var keep = bsel.value; bsel.innerHTML = Object.keys(bs).sort().reverse().map(function (b) { return '<option value="' + b + '">' + (b === "barron600" ? "Barron 600 TOEIC" : "ETS " + b) + "</option>"; }).join("") || '<option value="">Chưa có đề nào</option>';
+    var keep = bsel.value; bsel.innerHTML = Object.keys(bs).sort().reverse().sort(function (a, c) { return (a === "barron600") - (c === "barron600"); }).map(function (b) { return '<option value="' + b + '">' + (b === "barron600" ? "Barron 600 TOEIC" : "ETS " + b) + "</option>"; }).join("") || '<option value="">Chưa có đề nào</option>';
     if (keep && bs[keep]) bsel.value = keep;
     paintTests();
   }

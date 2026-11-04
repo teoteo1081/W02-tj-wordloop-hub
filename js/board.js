@@ -2143,7 +2143,7 @@
     /* TJ 2026-10-05: bảng là TỪNG BLOCK — 1 Block thì mở thẳng (bài đọc trước); nhiều Block (Batch/Page/…) thì mở bảng ở màn DANH SÁCH để TJ chọn */
     openBlocks: function (list, parts) {
       if (!api.isHost()) return;
-      if (list && list.length === 1) openQueue(list, "wv");
+      if (list && (list.length === 1 || (list.length > 1 && curDoc()))) openQueue(list, "wv");   /* bảng đang có bài: bấm Page/Section khác = nhảy thẳng sang bài đầu của mục đó (có ←/→ qua các Block), không dừng ở danh sách Block */
       else { if (!open) api.setBoard(true); mini = false; if (curDoc()) docSet(null); else notifyParent(true); }
     }
   };
