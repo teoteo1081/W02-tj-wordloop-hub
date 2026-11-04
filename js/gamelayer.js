@@ -275,8 +275,8 @@
 
   /* TJ 2026-10-06: thẻ Game có 2 cột Notebooks (trái) + Pages (phải) y như Bảng, thay cho "Mở cây chủ đề"/📚 trong game.
      Đang ở thẻ Game: bấm 1 Notebook / Section / Page = chọn làm chủ đề ván (không chuyển trang Learning bên dưới). */
-  function pickScope(e) {
-    if (!(gameOpened && fitOn) || document.body.classList.contains("board-skin") || e.target.closest("[data-menu], .dots")) return;   /* màn danh sách Block của Bảng (board-skin): bấm Notebook/Page = DUYỆT sang mục khác bình thường để chọn Block (trước: bị chặn thành "chọn chủ đề ván" nên không đi đâu được) */
+  function pickScope(e) {   /* TJ 2026-11-04: vào Bảng bằng nút Bảng thì gameOpened=false -> trước đây bấm Page khác lọt xuống điều hướng Learning (bảng không đổi); nay boardOnState + có bài (fitOn) cũng tính */
+    if (!((gameOpened || boardOnState) && fitOn) || document.body.classList.contains("board-skin") || e.target.closest("[data-menu], .dots")) return;   /* màn danh sách Block của Bảng (board-skin): bấm Notebook/Page = DUYỆT sang mục khác bình thường để chọn Block (trước: bị chặn thành "chọn chủ đề ván" nên không đi đâu được) */
     var el = e.target.closest("[data-nb],[data-sec],[data-page]"); if (!el) return;
     var t = el.dataset.nb ? "notebooks" : el.dataset.sec ? "sections" : "pages", id = el.dataset.nb || el.dataset.sec || el.dataset.page;
     var nm = String(el.getAttribute("title") || el.textContent || "").replace(/[⋯s]+$/g, "").replace(/s+/g, " ").trim().slice(0, 60);
