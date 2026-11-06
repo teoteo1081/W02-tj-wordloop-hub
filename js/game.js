@@ -4164,12 +4164,14 @@
   function tDbTest(t) { return tExam(t) === "barron600" ? String(t).slice(10) : String(t); }
   function tBook(t) { t = String(t); return tExam(t) === "barron600" ? "barron600" : t.indexOf("-") > 0 ? t.split("-")[0] : "2024"; }
   function tNum(t) { t = String(t); return +(t.indexOf("-") > 0 ? t.split("-")[1] : t); }
-  function tName(t) { return tExam(t) === "barron600" ? "Barron 600 · Lesson " + tNum(t) : "ETS " + tBook(t) + " · Test " + tNum(t); }
+  /* 990English (đề luyện, nhãn nguồn chưa xác minh): test "e990_<năm>-<n>" — không gọi là "ETS" */
+  function tBookLabel(b) { var m = /^e990_(\d{4})$/.exec(String(b)); return b === "barron600" ? "Barron 600 TOEIC" : m ? "990English " + m[1] + " (chưa xác minh)" : "ETS " + b; }
+  function tName(t) { var m = /^e990_(\d{4})-/.exec(String(t)); return tExam(t) === "barron600" ? "Barron 600 · Lesson " + tNum(t) : m ? "990English " + m[1] + " · Test " + tNum(t) + " (chưa xác minh)" : "ETS " + tBook(t) + " · Test " + tNum(t); }
   function tPartsOf(test) { return (G.tKeys || []).filter(function (k) { return k.split("|")[0] === String(test); }).map(function (k) { return +k.split("|")[1]; }); }
   function paintBooks() {
     var bs = {}; (G.tKeys || []).forEach(function (k) { bs[tBook(k.split("|")[0])] = 1; });
     var bsel = $("#t-book"); if (!bsel) return;
-    var keep = bsel.value; bsel.innerHTML = Object.keys(bs).sort().reverse().sort(function (a, c) { return (a === "barron600") - (c === "barron600"); }).map(function (b) { return '<option value="' + b + '">' + (b === "barron600" ? "Barron 600 TOEIC" : "ETS " + b) + "</option>"; }).join("") || '<option value="">Chưa có đề nào</option>';
+    var keep = bsel.value; bsel.innerHTML = Object.keys(bs).sort().reverse().sort(function (a, c) { return (a === "barron600") - (c === "barron600"); }).map(function (b) { return '<option value="' + b + '">' + tBookLabel(b) + "</option>"; }).join("") || '<option value="">Chưa có đề nào</option>';
     if (keep && bs[keep]) bsel.value = keep;
     paintTests();
   }
