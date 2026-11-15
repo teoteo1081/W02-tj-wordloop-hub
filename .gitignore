@@ -29,3 +29,12 @@ TJ_CongViec.xlsx
 .env
 .env.*
 !.env.example
+
+
+# DevOps Standard Rules (Added)
+~$*
+*.tmp
+logs/
+private/
+Private/
+
