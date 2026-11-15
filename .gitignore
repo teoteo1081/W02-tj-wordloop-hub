@@ -30,3 +30,18 @@ TJ_CongViec.xlsx
 .env
 .env.*
 !.env.example
+
+
+# ==========================================
+# DevOps Standard Ignore Rules (Added)
+# ==========================================
+*.py[cod]
+~$*
+*.tmp
+*.log
+logs/
+private/
+Private/
+Thumbs.db
+desktop.ini
+
