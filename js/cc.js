@@ -10,6 +10,11 @@
   if (/[?&]usersonly=1/.test(location.search)) return;
   var api = null, size = 0, lines = [], interim = {}, built = false, rec = null, recWant = false, lastSend = 0, noSupport = false, helloT = 0;
   var hold = false, MAXL = 60, SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  /* 2026-11-18: Safari (Mac + iPhone) dùng dictation của hệ thống cho SpeechRecognition -> tranh mic với 🎤 voice (WebRTC): tiếng gửi đi chập chờn / câm.
+     Trên Safari KHÔNG nhận giọng -> phụ đề (người khác vẫn XEM được). Chrome/Edge giữ nguyên. */
+  var IS_SAFARI = /^((?!chrome|chromium|crios|fxios|edg|edgios|android|opr).)*safari/i.test(navigator.userAgent || "");
+  if (IS_SAFARI) SR = null;
+  var quickEnds = 0, startedAt = 0;
   var LS_LANG = "tjwl_cc_lang_v1";
   var LANGS = [["en-US", "EN"], ["vi-VN", "VI"], ["zh-CN", "ZH"], ["es-ES", "ES"]];   /* ngôn ngữ MÌNH nói (để trình duyệt nhận giọng đúng) — nói tiếng Việt mà để EN thì chữ ra lung tung */
   var openKey = "", trans = {}, TRANS_MAX = 80;
@@ -131,7 +136,7 @@
       return '<div class="cc-l cc-f' + (m.mine ? " me" : "") + (open ? " open" : "") + '" data-k="' + esc(m.k) + '" data-l="' + esc(lg) + '" data-x="' + esc(m.x) + '"><b class="cc-n" style="color:' + nameColor(m.n) + '">' + esc(m.n || "?") + "</b> " + body +
         (open ? '<div class="cc-d"><button type="button" class="cc-say" data-say="1" title="Nghe lại cả câu">🔊</button><span class="cc-tr">' + (tr && typeof tr === "object" ? "<b>" + esc(wd) + "</b>" + (tr.w ? " = " + esc(tr.w) : "") + "<br>" + esc(tr.t) : bad ? "Chưa dịch được lúc này" : "<b>" + esc(wd) + "</b> — đang dịch…") + "</span></div>" : "") + "</div>";
     }).join("") : '<div class="cc-empty">Chưa có ai nói. Khi có người bật 🎤 và nói, phụ đề sẽ hiện ở đây. Bấm vào 1 TỪ để xem nghĩa của từ và của câu đó, nghe phát âm.</div>';
-    var note = $("#cc-me"); if (note) note.textContent = noSupport && window.Voice && Voice.isOn() ? "⚠ Máy bạn không tạo được phụ đề từ giọng của bạn" : "";
+    var note = $("#cc-me"); if (note) note.textContent = (noSupport || !SR) && window.Voice && Voice.isOn() ? (IS_SAFARI ? "ℹ Safari không tạo phụ đề từ giọng bạn (để mic nói chuyện ổn định) — vẫn xem được phụ đề người khác" : "⚠ Máy bạn không tạo được phụ đề từ giọng của bạn") : "";
     if (atEnd) l.scrollTop = l.scrollHeight;
   }
 
@@ -156,8 +161,11 @@
       }
     };
     r.onerror = function (e) { if (e && (e.error === "not-allowed" || e.error === "service-not-allowed" || e.error === "language-not-supported")) { noSupport = true; recWant = false; } };
-    r.onend = function () { rec = null; if (recWant && wantRec()) setTimeout(startRec, 250); };   /* Chrome tự dừng sau lúc im lặng -> mở lại khi mic còn bật */
-    rec = r; try { r.start(); } catch (e) { rec = null; }
+    r.onend = function () {   /* Chrome tự dừng sau lúc im lặng -> mở lại khi mic còn bật. Dừng liên tục < 2 giây = vòng lặp giật mic -> giãn nhịp để không ngắt tiếng voice */
+      rec = null; quickEnds = Date.now() - startedAt < 2000 ? quickEnds + 1 : 0;
+      if (recWant && wantRec()) setTimeout(startRec, quickEnds >= 3 ? 8000 : 250);
+    };
+    rec = r; startedAt = Date.now(); try { r.start(); } catch (e) { rec = null; }
   }
   function stopRec() { clearTimeout(interTimer); recWant = false; if (rec) { try { rec.onend = null; rec.stop(); } catch (e) {} rec = null; } }
   window.addEventListener("resize", function () { dock(); });

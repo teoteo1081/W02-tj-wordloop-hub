@@ -38,6 +38,8 @@
     var b = document.createElement("button"); b.type = "button"; b.id = "vc-btn"; b.className = "vc-btn off"; b.hidden = true; b.title = "Bật / tắt mic của bạn (mặc định đang tắt)";
     b.innerHTML = '<svg class="cb-ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 14.5a3.2 3.2 0 0 0 3.2-3.2V6.2a3.2 3.2 0 0 0-6.4 0v5.1A3.2 3.2 0 0 0 12 14.5z" fill="currentColor"/><path d="M6.2 11.2a5.8 5.8 0 0 0 11.6 0M12 17.2v3.3M8.8 20.5h6.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><g class="vcs"><path d="M4.5 4.5l15 15" style="stroke:var(--cb-btn,#34332f)" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M4.5 4.5l15 15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></g></svg>'; bar().appendChild(b);
     var p = document.createElement("div"); p.id = "vc-who"; p.className = "vc-who"; p.hidden = true; document.body.appendChild(p);
+    p.addEventListener("pointerdown", function () { pressing = true; clearTimeout(pressT); pressT = setTimeout(function () { pressing = false; }, 3000); });
+    ["pointerup", "pointercancel"].forEach(function (ev) { p.addEventListener(ev, function () { clearTimeout(pressT); pressT = setTimeout(function () { pressing = false; }, 250); }); });   /* chờ 250ms để 'click' kịp chạy trên nút cũ */
     p.addEventListener("click", function (e) { if (e.target.closest && !e.target.closest("[data-vcraw],[data-vcmon]")) { dbgOn = !dbgOn; paint(); } });   /* chạm nhãn = bật/tắt số chẩn đoán */
     p.addEventListener("click", function (e) {   /* nút "🎧 Nghe giọng mình" (TJ 2026-10-09): bật/tắt nghe lại CHÍNH MÌNH khi đang nói — riêng máy mình */
       var t = e.target.closest && e.target.closest("[data-vcmon]"); if (!t) return;
@@ -62,7 +64,7 @@
     setInterval(tick, 700);
   }
   var flashT = 0;
-  function flash(txt) { var wh = $("#vc-who"); if (!wh) return; wh.hidden = false; wh.textContent = txt; clearTimeout(flashT); flashT = setTimeout(paint, 3500); }
+  function flash(txt) { var wh = $("#vc-who"); if (!wh) return; wh.hidden = false; wh.textContent = txt; lastHtml = ""; clearTimeout(flashT); flashT = setTimeout(paint, 3500); }
   function place() {   /* nút 🎤 nằm trong thanh đáy; chỉ đặt ô "ai đang nói" ngay trên thanh, sát bên phải */
     var wh = $("#vc-who"), br = $("#cb-bar"); if (!wh) return;
     wh.style.left = "auto"; wh.style.right = "10px"; wh.style.bottom = ((br && br.offsetHeight ? br.offsetHeight : 56) + 8) + "px";
@@ -74,24 +76,40 @@
     var names = Object.keys(talkers).map(function (k) {
       var n = esc(talkers[k].n), i = inc[k], st = i && i.pc ? i.pc.connectionState : "", age = i ? Date.now() - i.at : 0;
       if (st === "connected") return (i.blocked ? "🔈 " + n + " — <b>chạm vào màn hình để nghe</b>" : "🎙 " + n) + dbgText(i);
-      if (st === "failed" || st === "disconnected" || (st !== "connected" && age > 8000)) return "⚠ " + n + " (chưa nghe được — mạng có thể chặn)";
+      if (st === "failed" || st === "disconnected" || (st !== "connected" && age > 8000)) return "⚠ " + n + " (chưa nối được" + (st === "failed" ? " — mạng 2 máy chặn nhau (cùng wifi có cô lập, 4G/5G, mạng công ty)" : " — đang thử lại") + ")";
       return "⏳ " + n + " (đang nối…)";
     });
-    if (stream) names.unshift("🎙 " + esc(myName()) + " (bạn)<br><span id=\"vc-lv\" style=\"font-size:11px;opacity:.9\">mic đang gửi: …</span><br>" + '<button type="button" data-vcraw="1" style="margin-top:3px;border:0;border-radius:999px;padding:4px 10px;font:700 11px/1.2 inherit;font-family:inherit;cursor:pointer;background:' + (rawMode() ? "#ffd84d;color:#2b2420" : "rgba(255,255,255,.22);color:#fff") + '">🎧 ' + (rawMode() ? "Âm thanh máy tính: BẬT" : "Phát âm thanh máy tính? Bấm bật") + "</button>" +
+    if (stream) names.unshift("🎙 " + esc(myName()) + " (bạn)" + (micMuted ? "<br><b>⚠ mic đang bị hệ thống tắt tiếng (app khác chiếm mic?)</b>" : "") + "<br><span id=\"vc-lv\" style=\"font-size:11px;opacity:.9\">mic đang gửi: …</span><br>" + '<button type="button" data-vcraw="1" style="margin-top:3px;border:0;border-radius:999px;padding:4px 10px;font:700 11px/1.2 inherit;font-family:inherit;cursor:pointer;background:' + (rawMode() ? "#ffd84d;color:#2b2420" : "rgba(255,255,255,.22);color:#fff") + '">🎧 ' + (rawMode() ? "Âm thanh máy tính: BẬT" : "Phát âm thanh máy tính? Bấm bật") + "</button>" +
       ' <button type="button" data-vcmon="1" style="margin-top:3px;border:0;border-radius:999px;padding:4px 10px;font:700 11px/1.2 inherit;font-family:inherit;cursor:pointer;background:' + (monOn() ? "#3a86ff;color:#fff" : "rgba(255,255,255,.22);color:#fff") + '">🎧 ' + (monOn() ? "Đang nghe giọng mình" : "Nghe lại giọng mình") + "</button>");
-    var wh = $("#vc-who"); if (wh) { wh.hidden = !names.length; wh.innerHTML = names.join("<br>"); }
+    var wh = $("#vc-who"); if (!wh) return;
+    wh.hidden = !names.length;
+    /* 2026-11-18: trước đây ghi lại innerHTML mỗi 700ms -> nút bị thay mới giữa lúc bấm (mousedown ở nút cũ, mouseup ở nút mới) => cú bấm mất.
+       Giờ: chỉ ghi khi nội dung ĐỔI, và không ghi khi đang giữ chuột/ngón tay trong nhãn. */
+    var html = names.join("<br>"); if (pressing || html === lastHtml) return;
+    lastHtml = html; wh.innerHTML = html;
   }
+  var lastHtml = "", pressing = false, pressT = 0;
   /* chẩn đoán tiếng (hiện cạnh tên người nói): KB đã nhận, mức âm, loa đang phát/dừng -> biết tiếng KHÔNG TỚI máy hay TỚI mà loa im */
   function dbgText(i) {
     if (!i || !i.dbg) return ""; var d = i.dbg, el = i.el;
     if (!dbgOn && el && !el.paused && !i.blocked) return "";   /* ổn thì chỉ hiện tên cho gọn (khỏi che phụ đề); chạm vào nhãn để xem số chẩn đoán */
-    return '<br><span style="opacity:.85;font-size:11px">' + (d.kb >= 0 ? "nhận " + d.kb + "KB" : "") + (d.lv != null ? " · mức " + d.lv : "") + " · loa " + (!el ? "chưa có" : el.paused ? "DỪNG" : "phát") + (el && el.muted ? " (tắt tiếng)" : "") + "</span>";
+    return '<br><span style="opacity:.85;font-size:11px">' + (d.kb >= 0 ? "nhận " + d.kb + "KB" : "") + (d.lv != null ? " · mức " + d.lv : "") + " · loa " + (!el ? "chưa có" : el.paused ? "DỪNG" : "phát") + (el && el.muted ? " (tắt tiếng)" : "") + (d.route ? " · đường " + d.route : "") + "</span>";
   }
   var dbgOn = false;
   function probe() {
     Object.keys(inc).forEach(function (k) {
       var i = inc[k]; if (!i || !i.pc || !i.pc.getStats || i.pc.connectionState !== "connected") return;
-      i.pc.getStats().then(function (r) { r.forEach(function (x) { if (x.type === "inbound-rtp" && (x.kind === "audio" || x.mediaType === "audio")) { i.dbg = { kb: Math.round((x.bytesReceived || 0) / 1024), lv: x.audioLevel != null ? Math.round(x.audioLevel * 100) / 100 : null }; } }); }).catch(function () {});
+      i.pc.getStats().then(function (r) {
+        var kb = null, lv = null, pair = null, loc = {}, rem = {};
+        r.forEach(function (x) {
+          if (x.type === "inbound-rtp" && (x.kind === "audio" || x.mediaType === "audio")) { kb = Math.round((x.bytesReceived || 0) / 1024); lv = x.audioLevel != null ? Math.round(x.audioLevel * 100) / 100 : null; }
+          else if (x.type === "candidate-pair" && (x.selected || (x.nominated && x.state === "succeeded"))) pair = x;
+          else if (x.type === "local-candidate") loc[x.id] = x.candidateType; else if (x.type === "remote-candidate") rem[x.id] = x.candidateType;
+        });
+        /* đường nối thật: host = cùng mạng nội bộ · srflx = qua internet trực tiếp (STUN) · relay = qua TURN. Cặp máy nào hỏng thì nhìn đây là biết vì sao */
+        var route = pair ? (loc[pair.localCandidateId] || "?") + "↔" + (rem[pair.remoteCandidateId] || "?") : "";
+        if (kb != null) i.dbg = { kb: kb, lv: lv, route: route };
+      }).catch(function () {});
     });
   }
   function tick() {
@@ -103,7 +121,8 @@
     });   /* tiếng đã nối mà <audio> đang dừng -> thử phát lại */
     if (Object.keys(talkers).length) paint();   /* cập nhật trạng thái nối (đang nối / nghe được / bị chặn) */
     var now = Date.now(), ch = false;
-    Object.keys(talkers).forEach(function (k) { if (now - talkers[k].at > 13000) { delete talkers[k]; closeIn(k); ch = true; } });
+    /* 2026-11-18: đang nghe được (connected) thì chịu mất tin "on" lâu hơn (30s) — kênh Supabase dùng chung với bảng vẽ/chat, rớt vài tin báo là bị cắt oan => chập chờn. "off" vẫn cắt ngay; mất kết nối thì quay về 13s. */
+    Object.keys(talkers).forEach(function (k) { var ic = inc[k], lim = ic && ic.pc && ic.pc.connectionState === "connected" ? 30000 : 13000; if (now - talkers[k].at > lim) { delete talkers[k]; closeIn(k); ch = true; } });
     if (ch) paint();
   }
 
@@ -132,16 +151,30 @@
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.RTCPeerConnection) { alert("Trình duyệt này không hỗ trợ nói chuyện bằng mic. Thử Chrome, Edge hoặc Safari mới."); return; }
     try { stream = await navigator.mediaDevices.getUserMedia({ audio: rawMode() ? { echoCancellation: false, noiseSuppression: false, autoGainControl: false, channelCount: 1 } : { echoCancellation: true, noiseSuppression: true, autoGainControl: true }, video: false }); }
     catch (e) { stream = null; alert((e && e.name === "NotAllowedError") ? "Bạn chưa cho phép dùng micro. Bấm vào biểu tượng ổ khoá cạnh thanh địa chỉ để cho phép, rồi bấm 🎤 lại." : "Không mở được micro: " + (e && (e.message || e.name))); paint(); return; }
-    stream.getAudioTracks().forEach(function (t) { t.onended = micOff; });
+    stream.getAudioTracks().forEach(function (t) {
+      t.onended = micOff;
+      /* 2026-11-18: macOS/Safari/Chrome có thể làm track mic "muted" (app khác chiếm mic, AirPods đổi chế độ, nhận giọng chiếm mic) mà KHÔNG kết thúc track -> trước đây tiếng gửi đi im lặng mà nhãn vẫn báo 'đang gửi'.
+         Giờ: báo trong nhãn; nếu vẫn câm sau 4 giây thì tự mở lại mic (tối đa 1 lần / 15 giây). */
+      t.onmute = function () {
+        micMuted = true; paint(); clearTimeout(muteT);
+        muteT = setTimeout(function () {
+          if (!stream || !micMuted || Date.now() - lastRestart < 15000) return;
+          lastRestart = Date.now(); micOff(); micOn(); flash("🎙 Mic bị hệ thống tắt tiếng — đã tự mở lại mic");
+        }, 4000);
+      };
+      t.onunmute = function () { micMuted = false; clearTimeout(muteT); paint(); };
+    });
+    micMuted = false;
     announce(); clearInterval(annT); annT = setInterval(announce, 5000);
     paint(); meterStart(); monStart();
   }
   /* đo mức tiếng mic CỦA MÌNH đang gửi đi (hiện trong nhãn): ▁▂▃▄▅▆▇ + số; 0 mãi khi đang nói = tiếng gửi đi bị câm ở máy này */
-  var meter = null;
+  var meter = null, micMuted = false, muteT = 0, lastRestart = 0;
   function meterStart() {
     meterStop(); try {
       var AC = window.AudioContext || window.webkitAudioContext; if (!AC || !stream) return;
       var c = new AC(), src = c.createMediaStreamSource(stream), an = c.createAnalyser(); an.fftSize = 1024; src.connect(an);
+      if (c.state === "suspended") c.resume().catch(function () {});   /* Safari: AudioContext tạo sau await (hết cú chạm) nằm ở 'suspended' -> đồng hồ mức luôn 0 */
       var buf = new Float32Array(1024), peak = 0, t = setInterval(function () {
         an.getFloatTimeDomainData(buf); var m = 0; for (var k = 0; k < buf.length; k++) { var a = Math.abs(buf[k]); if (a > m) m = a; } peak = Math.max(m, peak * 0.85);
         var el = document.getElementById("vc-lv"); if (!el) return; var n = Math.min(7, Math.round(Math.sqrt(peak) * 9)), bars = "▁▂▃▄▅▆▇".slice(0, n) || "·";
@@ -152,7 +185,7 @@
   }
   function meterStop() { if (!meter) return; clearInterval(meter.t); try { meter.c.close(); } catch (e) {} meter = null; }
   function micOff() {
-    if (!stream) return; meterStop(); monStop();
+    if (!stream) return; meterStop(); monStop(); clearTimeout(muteT); micMuted = false;
     var s = stream; stream = null; clearInterval(annT);
     s.getTracks().forEach(function (t) { t.onended = null; t.stop(); });
     Object.keys(out).forEach(closeOut); send({ t: "off" });
@@ -222,6 +255,7 @@
   }
   function onTouch() {
     unlock();
+    [meter && meter.c, mon && mon.c].forEach(function (c) { if (c && c.state === "suspended") c.resume().catch(function () {}); });
     Object.keys(inc).forEach(function (k) { var i = inc[k]; if (i && i.el && (i.blocked || i.el.paused)) tryPlay(i); });
   }
   ["touchend", "click", "pointerdown", "keydown"].forEach(function (ev) { document.addEventListener(ev, onTouch, true); });
