@@ -13,7 +13,8 @@
   document.body.appendChild(layer);
   var frames = {};
   var curKey = "", hist = [], backing = false;   /* thẻ đang mở + lịch sử các thẻ đã chọn trước đó (nút ← của thanh ngữ cảnh) */
-  function curToken() { return curKey ? curKey : (hub === "test" ? "toeic" : ""); }
+  var dictOn = false;   /* 🎧 Dictation (TJ 2026-11-22: thẻ riêng sau Từ vựng, trước TOEIC) = hub từ vựng + dạng câu nghe chép; game.js báo qua tjwl-dictchanged */
+  function curToken() { return curKey ? curKey : (hub === "test" ? "toeic" : dictOn ? "dict" : ""); }
   /* TJ 2026-10-15: điện thoại — hàng 8 thẻ chủ đề (Từ vựng/TOEIC/Speaking…) chiếm ~4 dòng. Chọn xong thì THU GỌN còn 1 nút "đang chọn ▾"; bấm nút để mở lại, chọn thẻ khác thì tự thu. */
   var cur = document.createElement("button");
   cur.type = "button"; cur.id = "g-learn-cur"; cur.className = "g-learn-cur"; cur.setAttribute("aria-expanded", "false");
@@ -31,10 +32,11 @@
   var hub = window.TJ_HUB || "vocab";
   function paintHub() {
     if (!layer.hidden) return;   /* đang ở EA / Marketing: giữ tô sáng của chúng */
-    nav.querySelectorAll("[data-learn]").forEach(function (b) { var k = b.dataset.learn; b.classList.toggle("on", (k === "" && hub !== "test") || (k === "toeic" && hub === "test")); });
+    nav.querySelectorAll("[data-learn]").forEach(function (b) { var k = b.dataset.learn; b.classList.toggle("on", (k === "" && hub !== "test" && !dictOn) || (k === "dict" && hub !== "test" && dictOn) || (k === "toeic" && hub === "test")); });
     paintCur();
   }
   document.addEventListener("tjwl-hubchanged", function (e) { hub = e.detail === "test" ? "test" : "vocab"; paintHub(); });
+  document.addEventListener("tjwl-dictchanged", function (e) { dictOn = !!e.detail; paintHub(); });
   /* TJ 2026-10-15: lúc làm bài thanh trên bị đẩy khỏi màn hình -> mép dưới của nó ÂM, khung lớp bị đặt lên trên, mất khúc đầu.
      Nay: đang chơi (body.g-playing) hoặc mép âm -> khung bắt đầu từ mép trên màn hình (0). */
   function place() { var b = top.getBoundingClientRect().bottom, bc = document.body.classList; layer.style.top = (bc.contains("g-playing") ? 0 : bc.contains("g-tidy") ? 46 : Math.max(0, Math.round(b))) + "px"; }
@@ -82,7 +84,7 @@
     closeBarron();
     var k = b.dataset.learn, before = curToken();
     try { if (k === "sp" || k === "wr" || k === "ielts" || k === "ielw" || k === "dm" || k === "ea") sessionStorage.setItem("tjwl_sw_keep", k); else sessionStorage.removeItem("tjwl_sw_keep"); } catch (e) {}   /* chỉ host bấm thẻ (thanh thẻ chỉ có ở host) -> F5 quay lại đúng Speaking/Writing; người chơi bị lớp tự mở thì KHÔNG nhớ */
-    if (k === "" || k === "toeic") { hub = k === "toeic" ? "test" : "vocab"; show(""); document.dispatchEvent(new CustomEvent("tjwl-sethub", { detail: k === "toeic" ? "test" : "vocab" })); }   /* cập nhật hub NGAY (nhãn thanh ngữ cảnh không chờ tín hiệu trễ từ game) */
+    if (k === "" || k === "toeic" || k === "dict") { hub = k === "toeic" ? "test" : "vocab"; show(""); document.dispatchEvent(new CustomEvent("tjwl-sethub", { detail: k === "toeic" ? "test" : "vocab" })); if (k !== "toeic") { dictOn = k === "dict"; document.dispatchEvent(new CustomEvent("tjwl-dictmode", { detail: dictOn })); paintHub(); } }   /* cập nhật hub NGAY (nhãn thanh ngữ cảnh không chờ tín hiệu trễ từ game) */
     else show(k);
     if (!backing && k !== before) { hist.push(before); if (hist.length > 12) hist.shift(); }
     paintCur();

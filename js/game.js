@@ -551,7 +551,15 @@
     $("#n-avatars").innerHTML = html;
   }
   function isDictQ(t) { return isDict(t) || t === "dictm"; }
+  /* thẻ 🎧 Dictation ở thanh trên (learn.js): host bấm -> dạng Nghe từ; bấm 🎮 Từ vựng -> về dạng Nghĩa. Báo lại để tô sáng đúng thẻ */
+  document.addEventListener("tjwl-dictmode", function (e) {
+    if (!G.isHost || !G.st || G.st.phase !== "lobby") return;
+    var want = !!e.detail; if (want === isDictQ(G.st.qtype)) return;
+    var sel = $("#l-qtype"); sel.value = want ? "dictm" : "meaning"; sel.dispatchEvent(new Event("change"));
+  });
+  function tellDict() { var on = !!(G.st && G.st.hub !== "test" && isDictQ(G.st.qtype)); if (on !== G._dOn) { G._dOn = on; try { document.dispatchEvent(new CustomEvent("tjwl-dictchanged", { detail: on })); } catch (e) {} } }
   function paintMyTgt() {
+    tellDict();
     var c = $("#l-tgtcard"); if (!c) return;
     var qt = G.st && G.st.qtype, on = !!G.st && G.st.phase === "lobby" && isDictQ(qt) && G.view !== "screen";
     c.hidden = !on; $("#l-langs").hidden = on; $("#l-langs-h").hidden = on;   /* đang Dictation: chọn cả 2 tiếng trong 1 thẻ (khỏi rối) */
@@ -2245,7 +2253,7 @@
     var S = G.st || G.bst; if (!G.ch || !S || Date.now() - (G._bmAt || 0) < 5000) return; G._bmAt = Date.now();
     G.ch.send({ type: "broadcast", event: "bmeta", payload: { bts: S.bts, board: S.board, bdoc: S.bdoc } });
   }
-  function push() { if (G.isHost && G.st && G.hub && G.st.phase === "lobby") G.st.hub = G.hub; G.lastPush = Date.now(); if (G.ch) G.ch.send({ type: "broadcast", event: "state", payload: pub() }); saveHost(); if (window.Board) Board.onState(G.st); }
+  function push() { if (G.isHost && G.st && G.hub && G.st.phase === "lobby") G.st.hub = G.hub; G.lastPush = Date.now(); tellDict(); if (G.ch) G.ch.send({ type: "broadcast", event: "state", payload: pub() }); saveHost(); if (window.Board) Board.onState(G.st); }
   /* 🖤 bảng vẽ chung (js/board.js) — host mở/đóng cho cả phòng + cấp quyền từng người (st.board / st.bperm) */
   if (window.CC) CC.attach({ ch: function () { return G.ch; }, me: function () { return G.me; } });
   if (window.SWClass) SWClass.attach({ ch: function () { return G.ch; }, me: function () { return G.me; }, isHost: function () { return !!G.isHost; }, room: function () { return G.room ? G.room.code : ""; }, players: function () { return (G.online || []).filter(function (p) { return p.play !== false; }).map(function (p) { return { id: p.id, name: p.name, avatar: p.avatar }; }); } });   /* chế độ lớp Speaking/Writing (js/swclass.js) */
@@ -5057,7 +5065,8 @@
   function readLSraw(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   /* 🔊 đọc to từ tiếng Anh: "1"/"0" = người này tự chọn trên máy; chưa chọn -> theo mặc định của phòng (host đặt) */
   var LS_SOUND = "tjwl_game_sound_v1";
-  function soundOn() { var o = readLSraw(LS_SOUND); return o === "1" ? true : o === "0" ? false : !(G.st && G.st.sound === false); }
+  /* 🎧 Dictation LUÔN có tiếng (không nghe thì không làm được) — trừ khi CHÍNH máy này tự bấm tắt. Trước: host tắt âm thanh phòng (đang nói qua HelloTalk) thì máy người chơi cũng câm (TJ 2026-11-22) */
+  function soundOn() { var o = readLSraw(LS_SOUND); return o === "1" ? true : o === "0" ? false : G.st && isDictQ(G.st.qtype) ? true : !(G.st && G.st.sound === false); }
   /* 🔉 âm lượng đọc (0–100, nhớ theo máy; mặc định 100). iPhone/Safari có thể bỏ qua volume của giọng máy -> dùng nút âm lượng của máy */
   var LS_VOL = "tjwl_game_volume_v1";
   function volLevel() { var v = parseInt(readLSraw(LS_VOL), 10); return isNaN(v) ? 1 : Math.max(0, Math.min(100, v)) / 100; }
