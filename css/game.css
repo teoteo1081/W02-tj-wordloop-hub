@@ -1537,9 +1537,9 @@ body.big .g-learnlayer{display:none}
 /* TJ 2026-10-06: giao diện người chơi (điện thoại) — bỏ thanh 5 thẻ (chỉ host); âm thanh + âm lượng chung 1 hàng; người chơi = vòng tròn avatar dễ thương (như dải avatar dưới Bảng) */
 body.g-viewer .g-learn{display:none}
 @media (max-width:560px){
-  .g-sndrow{flex-wrap:nowrap;gap:6px}
+  .g-sndrow{flex-wrap:wrap;gap:6px}
   .g-sndrow > .g-sub:first-child{display:none}
-  .g-sndrow .g-volbox{flex:1 1 auto;min-width:0}
+  .g-sndrow .g-volbox{flex:1 1 100%;min-width:0}   /* thêm nút 🎵/🔔 (v424): thanh âm lượng xuống hàng riêng */
   .g-sndrow .g-vol{flex:1 1 auto;width:auto;min-width:48px}
   .g-sndrow .g-volval{min-width:0;font-size:11px}
 }

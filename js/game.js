@@ -5088,12 +5088,17 @@
   }
   /* iPhone gạt IM LẶNG (nút chuông): Safari/Chrome iOS câm giọng đọc, chỉ tai nghe mới nghe (TJ 2026-11-23).
      Audio Session API (iOS 17+): "playback" = phát như app nhạc, bỏ qua nút im lặng. Mic đang bật thì voice.js giữ "play-and-record". */
-  function audioPlayback() { try { var as = navigator.audioSession; if (!as || (window.Voice && Voice.isOn && Voice.isOn())) return; if (as.type !== "playback") as.type = "playback"; } catch (e) {} }
+  /* iOS: "bỏ qua nút im lặng" và "phát CHUNG với YouTube/app khác" không có cùng lúc được (trang web không xin được chế độ trộn tiếng).
+     TJ 2026-11-23: mặc định PHÁT CHUNG (giọng đọc đè lên YouTube, không dừng app khác); máy nào muốn nghe cả khi gạt im lặng thì tự bật nút 🔔 (sẽ dừng nhạc app khác). */
+  var LS_RING = "tjwl_game_ring_v1";
+  function ringOn() { return readLSraw(LS_RING) === "1"; }
+  function audioPlayback() { try { var as = navigator.audioSession; if (!as || (window.Voice && Voice.isOn && Voice.isOn())) return; var w = ringOn() ? "playback" : "auto"; if (as.type !== w) as.type = w; } catch (e) {} }
   /* Chrome iOS (WKWebView) không có navigator.audioSession -> giữ 1 thẻ <audio> im lặng phát lặp: trang thành "đang phát nhạc",
      iOS bỏ qua nút im lặng cho cả giọng đọc. Chỉ iPhone/iPad (máy tính khỏi hiện biểu tượng loa trên tab). TJ: "cứ phát, không care chế độ và app khác" */
   var IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1), KEEP = null;
   function audioKeep() {
     audioPlayback(); if (!IOS) return;
+    if (!ringOn()) { if (KEEP && !KEEP.paused) try { KEEP.pause(); } catch (e) {} return; }
     try { if (!KEEP) { KEEP = new Audio(T_SILENT); KEEP.loop = true; KEEP.setAttribute("playsinline", ""); } if (KEEP.paused) { var p = KEEP.play(); if (p && p.catch) p.catch(function () {}); } } catch (e) {}
   }
   ["pointerdown", "touchend", "click"].forEach(function (ev) { document.addEventListener(ev, audioKeep, true); });
@@ -5219,6 +5224,7 @@
   }
   function paintSoundBtn() {
     var on = soundOn();
+    $$(".js-ring").forEach(function (b) { var r = ringOn(); b.hidden = !IOS; b.textContent = r ? "🔔 Gạt im lặng vẫn phát" : "🎵 Phát chung với app khác"; b.classList.toggle("off", false); b.title = r ? "Đang bỏ qua nút im lặng (YouTube/nhạc app khác sẽ bị dừng). Bấm để phát chung với app khác." : "Đang phát chung với YouTube/app khác (gạt im lặng thì game câm). Bấm để luôn phát kể cả khi gạt im lặng."; });
     $$(".js-snd").forEach(function (b) {
       b.textContent = T(on ? "snd_on" : "snd_off");
       b.classList.toggle("off", !on);
@@ -5234,6 +5240,11 @@
     try { localStorage.setItem(LS_SOUND, c.checked ? "1" : "0"); } catch (er) {}
     if (!c.checked && window.speechSynthesis) window.speechSynthesis.cancel();
     paintSoundBtn();
+  });
+  document.addEventListener("click", function (e) {
+    if (!e.target.closest(".js-ring")) return;
+    try { localStorage.setItem(LS_RING, ringOn() ? "0" : "1"); } catch (er) {}
+    audioKeep(); paintSoundBtn();
   });
   document.addEventListener("click", function (e) {
     if (!e.target.closest(".js-snd")) return;
