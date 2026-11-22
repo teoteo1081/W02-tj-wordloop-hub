@@ -5022,6 +5022,7 @@
   }
   var AUD = null;
   function playFile(url, text, now, rt, lg) {
+    audioPlayback();
     if (!AUD) { AUD = new Audio(); AUD.preload = "auto"; }
     if (!now && !AUD.paused && !AUD.ended) { G.nextSay = text; return true; }
     try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) {}
@@ -5057,6 +5058,7 @@
     return (ctxP = new Promise(function (ok, no) { var sc = document.createElement("script"); sc.src = "js/context.js?v=" + CTX_VER; sc.onload = ok; sc.onerror = function () { ctxP = null; no(new Error("Không tải được bộ tạo bài đọc")); }; document.head.appendChild(sc); }));
   }
   function speakP(text, lang, rate, onB, silent) {
+    if (!silent) audioPlayback();
     return new Promise(function (ok) {
       var done = false, wd = 0, fin = function () { if (!done) { done = true; clearTimeout(wd); ok(); } };
       try {
@@ -5083,7 +5085,12 @@
       } catch (e) { fin(); }
     });
   }
+  /* iPhone gạt IM LẶNG (nút chuông): Safari/Chrome iOS câm giọng đọc, chỉ tai nghe mới nghe (TJ 2026-11-23).
+     Audio Session API (iOS 17+): "playback" = phát như app nhạc, bỏ qua nút im lặng. Mic đang bật thì voice.js giữ "play-and-record". */
+  function audioPlayback() { try { var as = navigator.audioSession; if (!as || (window.Voice && Voice.isOn && Voice.isOn())) return; if (as.type !== "playback") as.type = "playback"; } catch (e) {} }
+  ["pointerdown", "touchend", "click"].forEach(function (ev) { document.addEventListener(ev, audioPlayback, true); });
   function sayIt(text, now) {
+    audioPlayback();
     try {
       var fl = sayIt._lang || tgt(), url = sayIt._nofile === text || (G.fileFails || 0) >= 2 ? null : G.audioMap[fl + "|" + String(text || "").trim()];
       sayIt._nofile = null;

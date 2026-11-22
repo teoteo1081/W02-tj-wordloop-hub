@@ -149,6 +149,7 @@
   async function micOn() {
     if (stream) return;
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.RTCPeerConnection) { alert("Trình duyệt này không hỗ trợ nói chuyện bằng mic. Thử Chrome, Edge hoặc Safari mới."); return; }
+    try { if (navigator.audioSession) navigator.audioSession.type = "play-and-record"; } catch (e) {}   /* game đặt "playback" (iPhone gạt im lặng vẫn có tiếng) -> bật mic phải đổi lại */
     try { stream = await navigator.mediaDevices.getUserMedia({ audio: rawMode() ? { echoCancellation: false, noiseSuppression: false, autoGainControl: false, channelCount: 1 } : { echoCancellation: true, noiseSuppression: true, autoGainControl: true }, video: false }); }
     catch (e) { stream = null; alert((e && e.name === "NotAllowedError") ? "Bạn chưa cho phép dùng micro. Bấm vào biểu tượng ổ khoá cạnh thanh địa chỉ để cho phép, rồi bấm 🎤 lại." : "Không mở được micro: " + (e && (e.message || e.name))); paint(); return; }
     stream.getAudioTracks().forEach(function (t) {
