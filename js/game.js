@@ -80,6 +80,7 @@
   /* đang xem kết quả / 📖 xem lại đáp án / 📜 lịch sử -> KHÔNG tự tải lại (TJ 2026-10-02: "đang xem review mà web tự
      chuyển về màn hình chính" — bản mới lên đúng lúc đó, trang tải lại, mất luôn phần xem lại). Về phòng chờ mới cập nhật. */
   function busyReading() { return !!G.inHist || ["#s-end", "#s-review", "#s-hist"].some(function (id) { var el = $(id); return el && !el.hidden; }); }
+  function updGo(u) { try { sessionStorage.setItem("tjwl_game_keep_since", "1"); } catch (e) {} location.replace(u.toString()); }   /* tải lại để cập nhật: giữ mốc vào phòng (không giành host) */
   function checkVersion() {
     if (G.st && G.st.phase === "play") return;
     if (busyReading()) return;
@@ -90,12 +91,12 @@
       if (G.isHost) {   /* v212: CHỈ máy đang làm host thật giữ nguyên trang; máy khác dù cùng hồ sơ TJ (Anti_TJ, Thảo…) vẫn tự cập nhật — trước đây kẹt bản cũ vì bảng che nút
         /* TJ 2026-10-05: "tự cập nhật cho website chứ" -> máy host tự tải lại khi RẢNH: tab đang ẩn (TJ không nhìn), không giữa ván, không mở bảng, không xem lại. Còn lại giữ nút để TJ tự bấm. */
         updPending = true;
-        if (document.hidden && !boardOpen()) { location.replace(u.toString()); return; }
+        if (document.hidden && !boardOpen()) { updGo(u); return; }
         if (document.getElementById("g-upd")) return;
         var b = document.createElement("button"); b.id = "g-upd"; b.type = "button"; b.className = "g-btn g-upd"; b.textContent = "🔄 Có bản mới — bấm để cập nhật";
-        b.onclick = function () { location.replace(u.toString()); }; document.body.appendChild(b); return;
+        b.onclick = function () { updGo(u); }; document.body.appendChild(b); return;
       }
-      location.replace(u.toString());
+      updGo(u);
     }).catch(function () {});
   }
   setTimeout(checkVersion, 3000); setInterval(checkVersion, 30000);
@@ -1716,7 +1717,11 @@
        hồ sơ TJ cũng KHÔNG được làm host: chỉ người chơi tên "TJ" (trên máy hồ sơ TJ). Trước: 2 máy cùng hồ sơ TJ giành host
        -> màn hình cả phòng giật liên tục. */
     G.cand = G.view !== "screen" && isTJ() && G.profile.id === G.room.host_id && isTJPlayer();
-    G.since = Date.now();
+    /* tự tải lại để cập nhật bản mới thì GIỮ mốc vào phòng cũ — không thì máy để quên (vd máy tính) tự cập nhật xong thành "vào sau" và giành host */
+    var ksn = "tjwl_game_since_" + code, keep = null;
+    try { if (sessionStorage.getItem("tjwl_game_keep_since")) { sessionStorage.removeItem("tjwl_game_keep_since"); keep = +sessionStorage.getItem(ksn) || null; } } catch (e) {}
+    G.since = keep || Date.now();
+    try { sessionStorage.setItem(ksn, String(G.since)); } catch (e) {}
     /* KHÔNG tự nhận host ngay: chờ presence xem có tab/máy TJ nào vào trước không (onPresence -> setHost).
        Trước đây tab TJ mới tự làm host rồi gửi "phòng chờ" ngay -> cả phòng đang chơi bị giật về phòng chờ. */
     G.isHost = false;
@@ -1765,7 +1770,7 @@
       if (d.relay && (G.isHost || G.st)) return;   /* bản sao do người chơi gửi khi host vắng: chỉ cho máy CHƯA có trạng thái; PHẢI chặn TRƯỚC khối nhường host (QA: host tải lại giữa ván bị hạ vai) */
       /* so theo TAB (htab), không theo người chơi: 2 tab cùng trình duyệt chung hid -> trước đây không tab nào nhường */
       var other = d.htab ? d.htab !== G.tab : !!(d.hid && G.me && d.hid !== G.me.id);
-      if (G.isHost && other && (d.hsince || 0) < G.since) { setHost(false); }   /* có host vào trước -> nhường */
+      if (G.isHost && other && (d.hsince || 0) > G.since) { setHost(false); }   /* 2 máy cùng làm host -> máy vào TRƯỚC nhường máy vào sau (TJ 2026-11-22) */
       if (G.isHost && other) return;   /* host không nhận trạng thái của host khác */
       var S0 = G.st || G.bst; if (!G.isHost && S0 && (S0.bts || 0) > (d.bts || 0)) { d.board = S0.board; d.bdoc = S0.bdoc; d.bts = S0.bts; bmetaSoon(); }   /* TJ 2026-10-08: bảng/bài do NGƯỜI CHƠI đặt (mới hơn bản host) không bị host đè lại */
       onState(d);
@@ -1856,14 +1861,16 @@
     });
     G.online = list;
     if (list.some(function (p) { return +p.ver > GAME_VER; })) { clearTimeout(G.verT); G.verT = setTimeout(checkVersion, 800); }   /* TJ 2026-10-06: có máy trong phòng chạy bản MỚI HƠN -> không đợi 2 phút, kiểm tra + cập nhật ngay (tránh 3 máy 3 bản khác nhau) */
-    if (G.cand) {   /* nhiều máy/tab TJ: tab vào sớm nhất làm host */
+    if (G.cand) {   /* nhiều máy/tab TJ: tab VÀO SAU CÙNG làm host (TJ 2026-11-22: "web nào vô sau thì ưu tiên" — trước là tab vào sớm nhất) */
       var ctrl = cands.filter(function (p) { return p.pf === G.room.host_id; })
-        .sort(function (a, b) { return (a.since || 0) - (b.since || 0) || ((a.tab || a.id) < (b.tab || b.id) ? -1 : 1); })[0];
-      var want = !!(ctrl && ctrl.tab === G.tab);
-      /* giữa ván mà host cũ VẪN gửi trạng thái (chỉ nhịp presence trễ, vd tab bị trình duyệt cho "ngủ") -> không giành,
-         giành là cả phòng bị kéo về phòng chờ */
-      if (ctrl && want && !G.isHost && G.st && G.st.phase === "play" && now - G.lastState < HOST_LOST_MS) return;
-      if (ctrl && want !== G.isHost) return setHost(want);
+        .sort(function (a, b) { return (b.since || 0) - (a.since || 0) || ((a.tab || a.id) < (b.tab || b.id) ? -1 : 1); })[0];
+      var want = !!(ctrl && ctrl.tab === G.tab), busy = !!(G.st && G.st.phase === "play");
+      if (ctrl && want && !G.isHost) {
+        /* vừa vào, chưa nhận trạng thái của host cũ -> đợi chút (giành ngay khi chưa biết phòng đang chơi = cả phòng bị kéo về phòng chờ) */
+        if (!G.st && now - G.since < 4000) { clearTimeout(G.candT); G.candT = setTimeout(onPresence, 4200); }
+        /* giữa ván mà host cũ VẪN gửi trạng thái -> không giành; hết ván mới nhận quyền */
+        else if (!(busy && now - G.lastState < HOST_LOST_MS)) return setHost(true);
+      } else if (ctrl && !want && G.isHost && !busy) return setHost(false);   /* có máy TJ vào sau -> nhường (đang giữa ván thì chơi nốt ván rồi nhường) */
     }
     if (G.isHost && G.st) {
       if (G.st.phase === "play") {   /* ai đang trong phòng mà chưa có trong ván (vào muộn / lúc bấm Bắt đầu bị lỡ) -> cho chơi luôn */
