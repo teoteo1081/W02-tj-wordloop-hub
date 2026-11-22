@@ -1152,7 +1152,13 @@
     G.pool = G.tItems.map(function (x) { return { wid: x.id, term: String(x.num), m: { vi: "-", en: "-", es: "-", zh: "-" } }; });   /* để các chỗ kiểm "kho có câu chưa" chạy đúng */
     G.gaps = []; G.sheets = []; G.dicts = []; G.dictW = []; G.dictD = [];
   }
-  async function ensurePool(scope) {
+  async function ensurePool(scope) {   /* bọc: đang tải đúng kho này thì chờ nó, lỗi thì xoá khoá để lần sau tải lại (audit vòng 3) */
+    var k = scopeKey(scope);
+    if (G.poolKey === k && G.poolP) return G.poolP;
+    var pr = ensurePool0(scope); G.poolP = pr;
+    try { return await pr; } catch (e) { if (G.poolKey === k) G.poolKey = null; throw e; }
+  }
+  async function ensurePool0(scope) {
     if (G.st && G.st.qtype === "toeic") {
       if (G.st.test && G.st.test.test) return ensureTest(G.st.test);
       G.st.qtype = (G.vSnap && G.vSnap.qtype) || "meaning";   /* QA v98 T5: host tải lại trang sau ván đề thi — phòng chỉ nhớ qtype "toeic", mất đề -> về dạng từ vựng */
@@ -1841,7 +1847,8 @@
       if (d.relay && (G.isHost || G.st)) return;   /* bản sao do người chơi gửi khi host vắng: chỉ cho máy CHƯA có trạng thái; PHẢI chặn TRƯỚC khối nhường host (QA: host tải lại giữa ván bị hạ vai) */
       /* so theo TAB (htab), không theo người chơi: 2 tab cùng trình duyệt chung hid -> trước đây không tab nào nhường */
       var other = d.htab ? d.htab !== G.tab : !!(d.hid && G.me && d.hid !== G.me.id);
-      if (G.isHost && other && (d.hsince || 0) > G.since && !G.ending && !(G.st && G.st.phase !== "lobby" && d.phase === "lobby")) { setHost(false); }   /* ván đang chạy không nhường cho máy chỉ có phòng chờ (audit) */   /* 2 máy cùng làm host -> máy vào TRƯỚC nhường máy vào sau (TJ 2026-11-22) */
+      if (G.isHost && other && (d.hsince || 0) > G.since && G.ending) G.yieldTo = Math.max(G.yieldTo || 0, d.hsince);   /* đang lưu: nhớ để nhường sau */
+      if (G.isHost && other && (d.hsince || 0) > G.since && !G.ending && !(G.st && G.st.phase === "play" && d.phase !== "play")) { setHost(false); }   /* chỉ ván ĐANG CHẠY mới không nhường cho máy chưa có ván */   /* ván đang chạy không nhường cho máy chỉ có phòng chờ (audit) */   /* 2 máy cùng làm host -> máy vào TRƯỚC nhường máy vào sau (TJ 2026-11-22) */
       if (G.isHost && other) return;   /* host không nhận trạng thái của host khác */
       var S0 = G.st || G.bst; if (!G.isHost && S0 && (S0.bts || 0) > (d.bts || 0)) { d.board = S0.board; d.bdoc = S0.bdoc; d.bts = S0.bts; bmetaSoon(); }   /* TJ 2026-10-08: bảng/bài do NGƯỜI CHƠI đặt (mới hơn bản host) không bị host đè lại */
       onState(d);
@@ -1963,7 +1970,7 @@
   function paintTake() { var on = !!(G.cand && !G.isHost && G.room && !(G.st && G.st.phase === "play")); $$(".g-takehost").forEach(function (b) { b.hidden = !on; b.disabled = false; }); if (G.st && G.st.saved) $$("#s-end .g-takehost").forEach(function (b) { b.hidden = true; }); }
   function takeHost() {
     if (!G.cand || G.isHost || !G.ch || (G.st && G.st.phase === "play")) return;
-    G.since = Date.now(); G.forceTake = true;   /* thành máy "vào sau" -> theo luật máy vào sau làm host; ở màn kết quả cũng nhận ngay */
+    G.since = Date.now(); G.forceTake = !!(G.st && G.st.phase === "end");   /* thành máy "vào sau" -> theo luật máy vào sau làm host; ở màn kết quả cũng nhận ngay */
     try { sessionStorage.setItem("tjwl_game_since_" + G.room.code, String(G.since)); } catch (e) {}
     $$(".g-takehost").forEach(function (b) { b.disabled = true; });
     track(); setTimeout(onPresence, 400);
@@ -1981,7 +1988,7 @@
       return;
     }
     var sn = G.snap; G.snap = null; G.forceTake = false;
-    if (!(sn && sn.st) && G.st && G.st.phase === "end") {   /* nhận host đúng lúc đang xem kết quả -> GIỮ màn kết quả, không đẩy cả phòng về phòng chờ (audit agy) */
+    if (G.st && G.st.phase === "end" && !(sn && sn.st && sn.st.matchId && sn.st.matchId === G.st.matchId)) {   /* nhận host đúng lúc đang xem kết quả -> GIỮ màn kết quả, không đẩy cả phòng về phòng chờ (audit agy) */
       G.st = Object.assign({}, G.st); G.endAt = 0; G.qUntil = 0; clearInterval(G.hostTimer); push(); renderEnd(G.st); return;
     }
     if (sn && sn.st && sn.st.phase === "play" && Date.now() < (sn.endAt || 0) + 30000) return resumeHost(sn);
@@ -2815,27 +2822,28 @@
     if (G.tSheet) { G.st.tsheet = G.tSheet; writeLS("tjwl_game_tsheet_" + G.st.matchId, G.tSheet); }   /* phiếu trả lời câu chưa có đáp án -> cả phòng xem, host chấm */
     push();
     saveHost();   /* nhớ màn kết quả (trước: xoá -> tải lại trang là mất) */
-    var st0 = G.st; G.ending = true;   /* lưu kết quả bằng bản chụp; đang lưu thì không nhường host (audit agy) */
+    var st0 = Object.assign({}, G.st), rid = G.room.id, ans0 = (G.answers || []).slice(); G.ending = true;   /* lưu kết quả bằng bản chụp; đang lưu thì không nhường host (audit agy) */
     try {
       var ranked = rankList(st0.scores);
       if (ranked.length) {
         var rr = await sb.from("game_results").upsert(ranked.map(function (x) {
-          return { room_id: G.room.id, match_id: st0.matchId, player_id: x.pid, team: st0.teams ? (st0.teamOf[x.pid] || null) : null, score: x.s, correct: x.c, wrong: x.w, best_streak: x.best, rank: x.rank };
+          return { room_id: rid, match_id: st0.matchId, player_id: x.pid, team: st0.teams ? (st0.teamOf[x.pid] || null) : null, score: x.s, correct: x.c, wrong: x.w, best_streak: x.best, rank: x.rank };
         }), { onConflict: "match_id,player_id" });
         if (rr.error) console.warn("game_results", rr.error);
       }
-      for (var i = 0; i < G.answers.length; i += 500) {
-        var ra = await sb.from("game_answers").insert(G.answers.slice(i, i + 500).map(function (a) {
-          return { room_id: G.room.id, match_id: st0.matchId, player_id: a.pid, word_id: a.wid, term: a.term, correct: a.ok, ms: a.ms || null,
+      for (var i = 0; i < ans0.length; i += 500) {
+        var ra = await sb.from("game_answers").insert(ans0.slice(i, i + 500).map(function (a) {
+          return { room_id: rid, match_id: st0.matchId, player_id: a.pid, word_id: a.wid, term: a.term, correct: a.ok, ms: a.ms || null,
                    target: a.tl || roomTgt(), choice: a.c != null ? String(Array.isArray(a.c) ? a.c.join(" | ") : a.c).slice(0, 300) : null };
         }));
         if (ra.error) console.warn("game_answers", ra.error);
       }
       if (st0.matchId) await sb.from("game_matches").update({ ended_at: new Date().toISOString() }).eq("id", st0.matchId);
       await srsAfterMatch();
-      await sb.from("game_rooms").update({ status: "lobby", ended_at: new Date().toISOString() }).eq("id", G.room.id);
+      await sb.from("game_rooms").update({ status: "lobby", ended_at: new Date().toISOString() }).eq("id", rid);
     } catch (e) { console.warn("lưu kết quả lỗi", e); }
     G.ending = false;
+    if (G.isHost && G.yieldTo && G.yieldTo > G.since) { G.yieldTo = 0; setHost(false); }   /* có máy TJ đã nhận host trong lúc mình lưu -> lưu xong thì nhường (audit vòng 3) */
   }
   /* 🔁 Đẩy chu kỳ Tony Buzan sau ván (TJ 2026-10-01: "chơi game xong thì đẩy vào chu trình Tony Buzan nếu đúng hẹn").
      CÙNG luật với bài thi WordLoop (detail.js srsAdvanceIfDue + PASS_MARK 80): Block phải ĐANG trong chu kỳ (passed),
@@ -2966,6 +2974,7 @@
   /* ---------- MỌI NGƯỜI: nhận trạng thái ---------- */
   function onState(s) {
     setTimeout(paintTIntro, 0);
+    if (s && s.phase !== "end") G.forceTake = false;   /* rời màn kết quả: bỏ lệnh nhận host cũ (audit vòng 3) */
     if (s && (s.target === "zh" || (!s.tforce && isListenQ(s.qtype) && G.myTgt === "zh"))) loadPinyin();
     setTimeout(paintForce, 0);
     if (G.outbox && G.outbox.length) setTimeout(flushOutbox, 300);   /* host đã quay lại -> gửi bù đáp án đang giữ */
@@ -4918,7 +4927,7 @@
   /* host CHẤM LUÔN câu của chính mình (không đi vòng qua mạng): trước đây host gửi rồi tự nhận lại qua kênh —
      kênh rớt là host bấm không ăn ("Host ko chơi được", TJ 2026-09-30) */
   function sendAns(p) {
-    if (G.st && G.st.mode === "free" && !p.pend && !p.batch) G.freeAns = (G.freeAns || 0) + 1;   /* đếm câu đã làm (Tự do) */
+    if (G.st && G.st.mode === "free" && !p.pend && !p.batch) G.freeAns = (G.freeAns || 0) + (p.t === "sheet" ? (+p.n || 1) : 1);   /* đếm câu đã làm (Tự do) */
     if (G.isHost) return hostOnAnswer(p);
     p.aid = p.aid || (G.me.id + ":" + Date.now() + ":" + Math.random().toString(36).slice(2, 7));   /* host bỏ trùng khi gửi lại */
     /* host đang mất kết nối (Tự do / ⚡ Đua): giữ đáp án trên máy, host quay lại thì gửi bù — người chơi KHÔNG phải dừng chờ */
@@ -5396,7 +5405,7 @@
   function freeNext() {
     clearTimeout(G.nextT);
     if (!G.st || G.st.phase !== "play" || G.st.mode !== "free" || !iPlay()) return;
-    if (+G.st.total && !G.st.race && G.st.qtype !== "toeic" && (G.freeAns || 0) >= +G.st.total) {   /* làm hết số câu: dừng, chờ kết thúc (audit agy: trước ra thêm câu lặp) */
+    if (+G.st.total && !G.st.race && G.st.qtype !== "toeic" && Math.max(G.freeAns || 0, (function () { var x = (G.st.scores || {})[G.me && G.me.id] || {}; return (x.c || 0) + (x.w || 0) + (x.m || 0); })()) >= +G.st.total) {   /* làm hết số câu: dừng, chờ kết thúc (audit agy: trước ra thêm câu lặp) */
       $("#p-next").hidden = true; $("#p-type").hidden = true; $("#p-hintrow").hidden = true; $("#p-saywrap").hidden = true; $("#p-opts").innerHTML = ""; $("#p-vi").textContent = "🏁"; $("#p-msg").textContent = T("t_alldone"); return;
     }
     $("#p-next").hidden = true;
@@ -5569,9 +5578,9 @@
     push(); renderLobby();
     setTimeout(function () { $("#l-start").click(); }, 400);
   }
-  document.addEventListener("click", function (e) { if (e.target.closest && e.target.closest("#e-replay, #rv-replay")) { var rmid = G.rvMatch && G.rvMatch.id; if (rmid) replayMatch(rmid); else replayMatchObj(null); } });
+  document.addEventListener("click", function (e) { if (e.target.closest && e.target.closest("#e-replay, #rv-replay") && !G.ending) { var rmid = G.rvMatch && G.rvMatch.id; if (rmid) replayMatch(rmid); else replayMatchObj(null); } });
   $("#e-again").addEventListener("click", function () {
-    if (!G.isHost || !G.st) return;
+    if (!G.isHost || !G.st || G.ending) return;   /* đang lưu kết quả ván vừa rồi */
     G.st.phase = "lobby"; G.st.scores = {}; G.st.q = null; G.st.matchId = null;
     G.answers = []; G.endAt = 0; G.qUntil = 0; G.lastN = -1; G.srsHtml = "";
     push(); renderLobby();
