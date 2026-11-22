@@ -2271,3 +2271,10 @@ body.g-tidyok #g-toppin.on{opacity:1;background:var(--accent);border-color:var(-
 .g-barron button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:200px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:14px;color:var(--text);cursor:pointer}
 .g-barron button:hover{border-color:var(--accent)}
 .g-barron small{font-size:11px;color:var(--text-2)}
+
+/* 🎧 nghe chép: báo đúng/sai từng chữ (TJ 2026-11-22) */
+.g-qmsg.ok{color:var(--green);font-weight:700} .g-qmsg.bad{color:var(--red);font-weight:700}
+.g-input.ok{border-color:var(--green);background:var(--green-sub)} .g-input.bad{border-color:var(--red);background:var(--red-sub)}
+.g-dmine{border:2px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:8px;text-align:left;font-size:15px;line-height:1.6;overflow-wrap:break-word;hyphens:none}
+.g-dmine.ok{border-color:var(--green)} .g-dmine.bad{border-color:var(--red)} .g-dmine .g-dlab{color:var(--text-2);font-size:13px;margin-right:4px}
+.g-dw-ok{color:var(--green);font-weight:600} .g-dw-bad{color:var(--red);text-decoration:line-through;font-weight:600} .g-dw-miss{color:var(--amber,#d9a03c);font-weight:700;text-decoration:underline}
