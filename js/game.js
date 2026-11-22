@@ -2500,6 +2500,7 @@
     },
     togglePerm: function (pid) { if (!G.isHost || !G.st) return; var p = G.st.bperm = Object.assign({}, G.st.bperm || {}); if (p[pid]) delete p[pid]; else p[pid] = 1; push(); }
   });
+  $("#l-start0").addEventListener("click", function () { var b = $("#l-start"); if (b && !b.disabled) b.click(); });   /* ▶ ở đầu phòng chờ: cài xong khỏi cuộn xuống (TJ 2026-11-23) */
   $("#l-start").addEventListener("click", async function () {
     if (!G.isHost) return;
     if (G.st && G.st.qtype === "toeic" && !G.tStarting) G.st.qtype = $("#l-qtype").value || "meaning";   /* ▶ của Hub từ vựng không được chạy đề thi còn sót */
@@ -4484,7 +4485,7 @@
   var LS_VSET = "tjwl_game_vset_v1";
   function vocabSave() {
     var st = G.st; if (!G.isHost || !st || G.hub === "test" || st.qtype === "toeic") return;
-    try { localStorage.setItem(LS_VSET, JSON.stringify({ qtype: st.qtype, mode: st.mode, qs: st.qs, race: !!st.race, calm: !!st.calm, scoring: st.scoring, teams: st.teams || 0, hostplay: hostPlays(), auto: st.auto !== false, minutes: st.minutes })); } catch (e) {}
+    try { localStorage.setItem(LS_VSET, JSON.stringify({ qtype: st.qtype, mode: st.mode, qs: st.qs, race: !!st.race, calm: !!st.calm, scoring: st.scoring, teams: st.teams || 0, hostplay: hostPlays(), auto: st.auto !== false, minutes: st.minutes, hintMax: st.hintMax })); } catch (e) {}
   }
   function vocabApplyLS() {   /* áp lại cài đặt đã nhớ vào phòng chờ hiện tại (chỉ Hub từ vựng) */
     if (!G.isHost || !G.st || G.hub === "test" || G.st.phase !== "lobby") return;
@@ -4498,7 +4499,7 @@
   }
   function vocabRestore() {
     var v = G.vSnap, st = G.st; if (!v || !st) return;
-    st.qtype = v.qtype || "meaning"; st.hostpace = false; st.auto = v.auto !== false; if (v.minutes) { st.minutes = v.minutes; $("#l-min").value = v.minutes; } $("#l-auto").checked = st.auto;
+    st.qtype = v.qtype || "meaning"; st.hostpace = false; if (v.hintMax != null) st.hintMax = v.hintMax; st.auto = v.auto !== false; if (v.minutes) { st.minutes = v.minutes; $("#l-min").value = v.minutes; } $("#l-auto").checked = st.auto;
     ["exam", "tplay", "taud", "test"].forEach(function (k) { delete st[k]; });   /* bỏ cài đặt riêng của đề thi (QA: ván từ vựng sau đó chạy 120 phút) */ if (v.title !== undefined) st.title = v.title; if (v.mode) st.mode = v.mode; if (v.qs) st.qs = v.qs; st.race = !!v.race; st.calm = !!v.calm; if (v.scoring) st.scoring = v.scoring; if (v.teams != null) st.teams = v.teams;
     $("#l-qtype").value = st.qtype; $("#l-mode").value = st.race ? "race" : st.calm ? "calm" : st.mode; $("#l-qs").value = st.qs; $("#l-scoring").value = st.scoring || "q";
     $("#l-teamn").value = String(st.teams || 0); $("#l-hostplay").checked = v.hostplay !== false;
@@ -5030,7 +5031,7 @@
        đọc bằng giọng máy; hỏng 2 lần thì cả phiên bỏ qua file, bấm loa đọc giọng máy NGAY trong lúc chạm (iPhone cần vậy) */
     var tok = (playFile._tok = (playFile._tok || 0) + 1), started = false;
     function fail() { if (tok !== playFile._tok || started) return; playFile._tok++; G.fileFails = (G.fileFails || 0) + 1; try { AUD.pause(); } catch (e) {} sayIt._nofile = text; sayIt._rate = rt; sayIt._lang = lg; sayIt(text, true); }
-    AUD.onended = function () { if (G.nextSay) { var t = G.nextSay; G.nextSay = null; setTimeout(function () { sayIt(t); }, 60); } };
+    AUD.onended = function () { audioKeep(); if (G.nextSay) { var t = G.nextSay; G.nextSay = null; setTimeout(function () { sayIt(t); }, 60); } };
     AUD.onplaying = function () { started = true; G.fileFails = 0; };
     AUD.onerror = fail;
     AUD.src = url; AUD.volume = volLevel(); AUD.defaultPlaybackRate = AUD.playbackRate = rt || 1;
@@ -5058,7 +5059,7 @@
     return (ctxP = new Promise(function (ok, no) { var sc = document.createElement("script"); sc.src = "js/context.js?v=" + CTX_VER; sc.onload = ok; sc.onerror = function () { ctxP = null; no(new Error("Không tải được bộ tạo bài đọc")); }; document.head.appendChild(sc); }));
   }
   function speakP(text, lang, rate, onB, silent) {
-    if (!silent) audioPlayback();
+    if (!silent) audioKeep();
     return new Promise(function (ok) {
       var done = false, wd = 0, fin = function () { if (!done) { done = true; clearTimeout(wd); ok(); } };
       try {
@@ -5088,9 +5089,17 @@
   /* iPhone gạt IM LẶNG (nút chuông): Safari/Chrome iOS câm giọng đọc, chỉ tai nghe mới nghe (TJ 2026-11-23).
      Audio Session API (iOS 17+): "playback" = phát như app nhạc, bỏ qua nút im lặng. Mic đang bật thì voice.js giữ "play-and-record". */
   function audioPlayback() { try { var as = navigator.audioSession; if (!as || (window.Voice && Voice.isOn && Voice.isOn())) return; if (as.type !== "playback") as.type = "playback"; } catch (e) {} }
-  ["pointerdown", "touchend", "click"].forEach(function (ev) { document.addEventListener(ev, audioPlayback, true); });
+  /* Chrome iOS (WKWebView) không có navigator.audioSession -> giữ 1 thẻ <audio> im lặng phát lặp: trang thành "đang phát nhạc",
+     iOS bỏ qua nút im lặng cho cả giọng đọc. Chỉ iPhone/iPad (máy tính khỏi hiện biểu tượng loa trên tab). TJ: "cứ phát, không care chế độ và app khác" */
+  var IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1), KEEP = null;
+  function audioKeep() {
+    audioPlayback(); if (!IOS) return;
+    try { if (!KEEP) { KEEP = new Audio(T_SILENT); KEEP.loop = true; KEEP.setAttribute("playsinline", ""); } if (KEEP.paused) { var p = KEEP.play(); if (p && p.catch) p.catch(function () {}); } } catch (e) {}
+  }
+  ["pointerdown", "touchend", "click"].forEach(function (ev) { document.addEventListener(ev, audioKeep, true); });
+  document.addEventListener("visibilitychange", function () { if (!document.hidden && KEEP) audioKeep(); });
   function sayIt(text, now) {
-    audioPlayback();
+    audioKeep();
     try {
       var fl = sayIt._lang || tgt(), url = sayIt._nofile === text || (G.fileFails || 0) >= 2 ? null : G.audioMap[fl + "|" + String(text || "").trim()];
       sayIt._nofile = null;
