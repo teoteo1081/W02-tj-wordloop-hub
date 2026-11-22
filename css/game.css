@@ -2281,3 +2281,7 @@ body.g-tidyok #g-toppin.on{opacity:1;background:var(--accent);border-color:var(-
 
 /* 🌐 hướng dẫn gõ theo tiếng đang học (TJ 2026-11-22) */
 .g-typehelp{margin:4px 0 0;font-size:13px;text-align:center}
+/* 🔊 nghe lại từng đáp án + nghĩa tiếng mẹ đẻ (TJ 2026-11-22) */
+.g-sayw{background:none;border:0;cursor:pointer;font-size:16px;padding:0 4px;line-height:1;vertical-align:middle}
+.g-whead{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px;margin-bottom:8px}
+.g-mymean{color:var(--text-2);font-size:15px}
