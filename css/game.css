@@ -2278,3 +2278,6 @@ body.g-tidyok #g-toppin.on{opacity:1;background:var(--accent);border-color:var(-
 .g-dmine{border:2px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:8px;text-align:left;font-size:15px;line-height:1.6;overflow-wrap:break-word;hyphens:none}
 .g-dmine.ok{border-color:var(--green)} .g-dmine.bad{border-color:var(--red)} .g-dmine .g-dlab{color:var(--text-2);font-size:13px;margin-right:4px}
 .g-dw-ok{color:var(--green);font-weight:600} .g-dw-bad{color:var(--red);text-decoration:line-through;font-weight:600} .g-dw-miss{color:var(--amber,#d9a03c);font-weight:700;text-decoration:underline}
+
+/* 🌐 hướng dẫn gõ theo tiếng đang học (TJ 2026-11-22) */
+.g-typehelp{margin:4px 0 0;font-size:13px;text-align:center}
