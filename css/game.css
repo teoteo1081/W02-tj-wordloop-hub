@@ -2294,3 +2294,4 @@ body.g-tidyok #g-toppin.on{opacity:1;background:var(--accent);border-color:var(-
 .g-hm{font-size:18px;flex:none} .g-hm.x{color:var(--red)} .g-hm.v{color:var(--green)}
 .g-dcardh{font-weight:700;margin-bottom:6px} .g-dnote{color:var(--amber,#d9a03c)}
 .g-langs button:disabled{opacity:.35}
+#l-tforce-wrap{grid-column:1/-1}

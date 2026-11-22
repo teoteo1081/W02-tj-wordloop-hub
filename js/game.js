@@ -1196,7 +1196,7 @@
     $("#l-min-wrap").hidden = !!G.st.calm;
     $("#l-min").disabled = on;
     if (on) $("#l-min").value = Math.max(1, Math.ceil(a.sec / 60));
-    $("#l-autohint").textContent = on ? (a.n ? "→ " + a.n + (G.st.qtype === "sheet" ? " chỗ trống" : CHUNK_Q[G.st.qtype] ? " câu" : " từ") + " × " + a.qs + " giây" + (G.st.mode === "kahoot" ? " (+" + REVEAL_MS / 1000 + " giây xem đáp án)" : "") + " = " + fmtSec(a.sec) : "→ chọn chủ đề trước") : "";
+    $("#l-autohint").textContent = on ? (a.n ? "→ " + a.n + (G.st.qtype === "sheet" ? " chỗ trống" : CHUNK_Q[G.st.qtype] ? " câu" : " từ") + " × " + a.qs + " giây" + (G.st.mode === "kahoot" || (isDictQ(G.st.qtype) && !G.st.race) ? " (+" + (isDictQ(G.st.qtype) ? DICT_HOLD : REVEAL_MS) / 1000 + " giây xem đáp án)" : "") + " = " + fmtSec(a.sec) : "→ chọn chủ đề trước") : "";
   }
   function paintPoolInfo() {
     paintLevels(); paintAutoTime(); paintQtypes();
@@ -4642,7 +4642,7 @@
     return wordHead(q) + ids.map(function (pid) {
       var p = ro[pid], c = (q.picks || {})[pid], tl = (q.tls || {})[pid] || (q.tt ? "en" : tgt()), a = q.tt && q.tt[tl] ? q.tt[tl] : q.ans;
       var ok = (q.oks || []).indexOf(pid) >= 0, pa = tl === "zh" ? py(a) : "";
-      return '<div class="g-resrow"><div class="g-rhead">' + avatar(p.avatar, "g-av-sm") + label(p) + (q.tt ? ' <span class="g-sub">🎯' + FLAG[tl] + "</span>" : "") + '<b class="' + (ok ? "g-dw-ok" : "g-dw-bad") + '">' + (ok ? "✓" : "✗") + "</b></div>" +
+      return '<div class="g-resrow"><div class="g-rhead">' + avatar(p.avatar, "g-av-sm") + label(p) + (q.tt ? ' <span class="g-sub">🎯' + FLAG[tl] + "</span>" : "") + "</div>" +   /* ✓/✗ đã nằm cuối từng dòng (kiểu HelloTalk) */
         '<div class="g-rtext">' + hlLines(c, a, ok, tl) + "</div></div>";
     }).join("");
   }
