@@ -117,7 +117,7 @@
     </div>
     <!-- người chơi: CHỈ thẻ chào + chọn "Nghĩa hiển thị bằng" + danh sách người chơi (TJ 2026-09-30) -->
     <div class="g-card g-mecard" id="l-mecard" hidden>
-      <div class="g-mehead"><span id="l-meav"></span><div><div class="g-mename" id="l-mename"></div><div class="g-sub g-waitdots" id="l-wait2" data-t="wait_host">Chờ host bắt đầu</div></div></div>
+      <div class="g-mehead"><span id="l-meav"></span><div><div class="g-mename" id="l-mename"></div><div class="g-sub g-waitdots" id="l-wait2" data-t="wait_host">Chờ host bắt đầu</div><button type="button" class="g-btn g-btn-soft g-btn-sm g-takehost" hidden data-t="take_host">👑 Lấy quyền host về máy này</button></div></div>
       <div class="g-sub" data-t="mother_h">Nghĩa hiển thị bằng (tiếng mẹ đẻ)</div>
       <div class="g-langs" id="l-langs"><button data-ml="vi">🇻🇳 Tiếng Việt</button><button data-ml="en">🇺🇸 English</button><button data-ml="es">🇪🇸 Español</button><button data-ml="zh">🇨🇳 中文</button></div>
     </div>
@@ -200,7 +200,7 @@
     <ol class="g-board g-board-end" id="e-board"></ol>
     <div class="g-card g-srs" id="e-srs" hidden></div>
     <div class="g-row"><button class="g-btn" id="e-again" hidden>🔁 Ván mới (cả phòng về phòng chờ)</button><button class="g-btn" id="e-replay" hidden data-t="replay_btn">🔁 Chơi lại ván này</button></div>
-    <p class="g-sub g-wait" id="e-wait" data-t="wait_next">Chờ host mở ván mới…</p>
+    <p class="g-sub g-wait" id="e-wait" data-t="wait_next">Chờ host mở ván mới…</p><button type="button" class="g-btn g-btn-soft g-btn-sm g-takehost" hidden data-t="take_host">👑 Lấy quyền host về máy này</button>
     <div class="g-row" id="e-hostnav"><button class="g-btn" id="e-review" data-t="review_btn" hidden>📖 Xem lại đáp án</button><button class="g-btn" id="e-hist" data-t="hist_btn">📜 Lịch sử & Xếp hạng</button><button class="g-btn" id="e-tstats" data-t="tstats_btn">📊 Điểm TOEIC</button><button class="g-btn" id="e-ttips" data-t="tips_btn">🧠 Chiến thuật</button></div>
   </section>
 
@@ -273,7 +273,7 @@
 <script src="js/voice.js?v=14"></script>
 <script src="js/chat.js?v=16"></script>
 <script src="js/swclass.js?v=84"></script>
-<script src="js/game.js?v=408"></script>
+<script src="js/game.js?v=409"></script>
 <script src="js/learn.js?v=127"></script>
 </body>
 </html>
