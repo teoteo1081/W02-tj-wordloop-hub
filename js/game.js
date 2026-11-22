@@ -4433,7 +4433,7 @@
 
   /* ---------- sang câu bằng tay + tự nộp khi hết giờ ---------- */
   /* tự sang câu sau ít giây (TJ 2026-10-01: phải tự nhảy, xem lại đáp án SAU KHI kết thúc bằng 📖) */
-  function showNext(ms) { setTimeout(freeNext, ms); }
+  function showNext(ms) { clearTimeout(G.nextT); G.nextT = setTimeout(freeNext, ms); }   /* 1 hẹn giờ duy nhất: bấm Tiếp trước thì huỷ (không nhảy 2 câu) */
   $("#p-next").addEventListener("click", function () {
     var s = G.st; if (!s || s.phase !== "play") return;
     this.hidden = true;
@@ -5169,6 +5169,7 @@
   }
   /* kiểu tự do: mỗi máy tự sinh câu từ cùng kho, báo đúng/sai cho host chấm điểm */
   function freeNext() {
+    clearTimeout(G.nextT);
     if (!G.st || G.st.phase !== "play") return;
     $("#p-next").hidden = true;
     if (G.st.qtype === "toeic" && G.tMatch !== G.st.matchId) tPosLoad();   /* ván mới (hoặc tải lại giữa ván -> làm tiếp đúng câu) */
@@ -5212,7 +5213,9 @@
       lockAll(); revealRich(q, {}, "#p-msg", "#p-res", "#p-vi");
       logQ(q, choice, dictOk(q.type, acc.r));
       sendAns({ pid: G.me.id, t: q.type, r: acc.r, wid: q.wid, term: q.term, ms: ms0 });
-      showNext(dictOk(q.type, acc.r) && acc.k === acc.n ? 3000 : Math.min(15000, 7000 + 300 * acc.n));   /* sai -> giữ lâu để kịp xem chữ nào sai (TJ 2026-11-22) */
+      var dAll = dictOk(q.type, acc.r) && acc.k === acc.n;
+      showNext(G.st && G.st.race ? (dAll ? 600 : 2500) : dAll ? 3000 : Math.min(15000, 7000 + 300 * acc.n));   /* sai -> giữ lâu để kịp xem chữ nào sai (TJ 2026-11-22); ⚡ Đua: ngắn */
+      if (!dAll) $("#p-next").hidden = false;   /* xem xong thì bấm Tiếp, khỏi chờ */
       return;
     }
     if (q.type === "write") {
