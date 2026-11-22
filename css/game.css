@@ -2285,3 +2285,12 @@ body.g-tidyok #g-toppin.on{opacity:1;background:var(--accent);border-color:var(-
 .g-sayw{background:none;border:0;cursor:pointer;font-size:16px;padding:0 4px;line-height:1;vertical-align:middle}
 .g-whead{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px;margin-bottom:8px}
 .g-mymean{color:var(--text-2);font-size:15px}
+/* ✍️ sửa kiểu HelloTalk + thẻ 🎧 Dictation của bạn (TJ 2026-11-22) */
+.g-hl{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 0;overflow-wrap:break-word;hyphens:none}
+.g-hl+.g-hl{border-top:1px dashed var(--line);margin-top:2px;padding-top:4px}
+.g-hlt{flex:1;min-width:0}
+.g-hx{color:var(--red);text-decoration:line-through;text-decoration-thickness:2px}
+.g-hv{color:var(--green);font-weight:700}
+.g-hm{font-size:18px;flex:none} .g-hm.x{color:var(--red)} .g-hm.v{color:var(--green)}
+.g-dcardh{font-weight:700;margin-bottom:6px} .g-dnote{color:var(--amber,#d9a03c)}
+.g-langs button:disabled{opacity:.35}
