@@ -2322,10 +2322,10 @@ body.g-tidyok #g-toppin.on{opacity:1;background:var(--accent);border-color:var(-
 .g-input.g-done{caret-color:transparent}
 .g-q:has(#p-type:not([hidden])) #p-next{display:none}   /* nút phải của ô gõ đã là "Câu tiếp" */
 @media (max-width:520px){
-  .g-statbar{grid-template-columns:repeat(6,1fr);gap:3px;margin:4px 0}
-  .g-stat{padding:3px 1px 2px;border-radius:8px}
-  .g-stat b{font-size:14px}
-  .g-stat span{font-size:9px;overflow:hidden;text-overflow:ellipsis}
+  .g-play .g-statbar{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:3px;margin:4px 0}   /* QA v425: đè luật ≤600px flex 30%; 6–7 ô đều 1 hàng */
+  .g-play .g-stat{flex:none;padding:3px 1px 2px;border-radius:8px;min-width:0}
+  .g-play .g-stat b{font-size:14px}
+  .g-play .g-stat span{font-size:9px;overflow:hidden;text-overflow:ellipsis}
   #p-type{position:sticky;bottom:calc(var(--kb,0px) + 4px);z-index:6;background:var(--bg);padding:6px 0;margin-top:8px}
   #p-saywrap .g-sub{display:none}   /* dòng "Dùng tai nghe…" chiếm 1 hàng */
 }

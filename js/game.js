@@ -5338,7 +5338,7 @@
     e.preventDefault();
     if ($("#p-typein").dataset.done === "1") {   /* đã gửi: Enter = Câu tiếp (giữ focus -> bàn phím không sập, câu sau gõ luôn) */
       var s0 = G.st; if (!s0 || s0.phase !== "play") return;
-      if (s0.mode === "kahoot") { if (!$("#p-next").hidden) $("#p-next").click(); }
+      if (s0.mode === "kahoot") { if (G.isHost && s0.q && s0.q.revealed) hostNextQ(); else if (!$("#p-next").hidden) $("#p-next").click(); }   /* QA v425: Gõ từ/write host không có #p-next */
       else { $("#p-next").hidden = true; clearTimeout(G.nextT); freeNext(); }
       return;
     }
