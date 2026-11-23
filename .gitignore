@@ -45,3 +45,6 @@ Private/
 Thumbs.db
 desktop.ini
 
+
+# Temporary agent/test scratch folder
+scratch/
