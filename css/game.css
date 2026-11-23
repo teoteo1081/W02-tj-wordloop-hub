@@ -2315,3 +2315,17 @@ body.g-tidyok #g-toppin.on{opacity:1;background:var(--accent);border-color:var(-
 .g-slots{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:20px;letter-spacing:2px;white-space:pre-wrap;text-align:center;overflow-wrap:anywhere}
 .g-hintbtn{color:#e7c27a}
 .g-hchip{font-size:11px;padding:1px 6px;border-radius:99px;border:1px solid rgba(231,194,122,.5);color:#e7c27a;margin-left:6px;font-weight:600}
+
+/* ⌨️ Ô gõ kiểu HelloTalk (TJ 2026-11-22): 🔊 trái · ô gõ · Gửi/Tiếp phải — trong tầm 2 ngón cái; bỏ phần lặp lại để vừa 1 màn hình */
+.g-type .g-input{flex:1;min-width:0}
+.g-tsay{flex:none;padding-left:12px;padding-right:12px}
+.g-input.g-done{caret-color:transparent}
+.g-q:has(#p-type:not([hidden])) #p-next{display:none}   /* nút phải của ô gõ đã là "Câu tiếp" */
+@media (max-width:520px){
+  .g-statbar{grid-template-columns:repeat(6,1fr);gap:3px;margin:4px 0}
+  .g-stat{padding:3px 1px 2px;border-radius:8px}
+  .g-stat b{font-size:14px}
+  .g-stat span{font-size:9px;overflow:hidden;text-overflow:ellipsis}
+  #p-type{position:sticky;bottom:calc(var(--kb,0px) + 4px);z-index:6;background:var(--bg);padding:6px 0;margin-top:8px}
+  #p-saywrap .g-sub{display:none}   /* dòng "Dùng tai nghe…" chiếm 1 hàng */
+}

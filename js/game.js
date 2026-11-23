@@ -1537,10 +1537,29 @@
      "xào bài": hỏi lần lượt hết (thứ tự ngẫu nhiên) rồi mới lặp lại.
      Đáp án nhiễu KHÓ: ưu tiên từ CÙNG Block, rồi cùng loại từ (pos), rồi mới tới từ bất kỳ. */
   var decks = {};
+  /* 🧠 Lịch sử từ THEO MÁY (TJ 2026-11-22: "mỗi lần chơi bị lặp từ", "từ hay sai hiện nhiều hơn"): wid -> {d: số lần ra, w: điểm sai, t: lần cuối}.
+     Bộ bài mới: từ CHƯA ra lần nào lên trước (ngẫu nhiên), cứ 3 từ mới chen 1 từ hay sai; hết từ mới thì từ sai (nặng hơn) rồi từ cũ lâu chưa gặp. */
+  var WH_KEY = "tjg_wordhist_v1", WH = null;
+  function wh() { if (!WH) { try { WH = JSON.parse(localStorage.getItem(WH_KEY) || "{}") || {}; } catch (e) { WH = {}; } } return WH; }
+  function whSave() { try { localStorage.setItem(WH_KEY, JSON.stringify(WH)); } catch (e) {} }
+  function whId(x) { return x && (x.wid || x.block || x.term) || null; }
+  function whSeen(x) { var id = whId(x); if (!id) return; var h = wh(), r = h[id] || (h[id] = { d: 0, w: 0, t: 0 }); r.d++; r.t = Date.now(); whSave(); }
+  function whNote(wid, ok) { if (!wid) return; var h = wh(), r = h[wid] || (h[wid] = { d: 1, w: 0, t: Date.now() }); r.w = ok ? Math.max(0, r.w - 0.5) : r.w + 1; whSave(); }
+  function deckOrder(list) {
+    var h = wh(), now = Date.now(), fresh = [], wrong = [], old = [];
+    list.forEach(function (x) { var r = h[whId(x)]; if (!r || !r.d) fresh.push(x); else if (r.w > 0) wrong.push(x); else old.push(x); });
+    var key = function (x) { var r = h[whId(x)] || {}, wt = 1 + 3 * (r.w || 0) + Math.min(30, (now - (r.t || 0)) / 864e5) / 3; return Math.pow(Math.random(), 1 / wt); };   /* rút ngẫu nhiên có trọng số */
+    var byW = function (a) { return a.map(function (x) { return [key(x), x]; }).sort(function (p, q) { return q[0] - p[0]; }).map(function (p) { return p[1]; }); };
+    fresh = shuffle(fresh); wrong = byW(wrong); old = byW(old);
+    var out = [];
+    while (fresh.length) { out.push(fresh.shift()); if (out.length % 4 === 3 && wrong.length) out.push(wrong.shift()); }
+    out = out.concat(wrong, old);
+    return out.reverse();   /* pop() lấy từ cuối */
+  }
   function draw(key, list) {
     var d = decks[key];
-    if (!d || d.n !== list.length || !d.list.length) d = decks[key] = { n: list.length, list: shuffle(list.slice()) };
-    return d.list.pop();
+    if (!d || d.n !== list.length || !d.list.length) d = decks[key] = { n: list.length, list: deckOrder(list) };
+    var x = d.list.pop(); whSeen(x); return x;
   }
   /* 🪤 ĐÁP ÁN BẪY (TJ duyệt 2026-10-05): bảng word_traps (status=approved) — mỗi từ có vài đáp án sai "dễ nhầm" do AI soạn + TJ duyệt:
      look 🔤 giống mặt chữ · family 👪 cùng họ từ · syn 🔀 gần nghĩa · false ⚠️ bạn giả. Dùng tối đa 2 bẫy / câu, còn lại lấy như cũ;
@@ -3573,7 +3592,7 @@
       $(textEl).textContent = q.type === "dict" ? "🎧" : q.type === "dictw" ? "🎧 " + q.def : q.type === "dictf" ? "🎧" : q.type === "dictd" ? "🎧 " + q.term : "✍️ " + q.term + "  —  " + myText(q);
       if (q.type === "write" || q.type === "dictw" || q.type === "dictd" || q.type === "dictf") $(textEl).insertAdjacentHTML("beforeend", lvBadge(q.lv));
       $(optsEl).innerHTML = "";
-      if (mine) { $("#p-type").hidden = false; var ti = $("#p-typein"); ti.value = ""; ti.disabled = false; $("#p-typego").disabled = false; ti.placeholder = T(isDict(q.type) ? q.type + "_ph" : "write_ph"); if (iPlay()) ti.focus(); }
+      if (mine) { $("#p-type").hidden = false; var ti = $("#p-typein"); ti.value = ""; ti.disabled = false; typeDone(false); ti.placeholder = T(isDict(q.type) ? q.type + "_ph" : "write_ph"); if (iPlay()) ti.focus(); }
       if (mine && isDict(q.type)) dictAuto(q);
       if (mine) paintHint(q);   /* 🎧 nghe chép: tự phát 1 lần khi câu hiện, nghe lại bằng nút 🔊 */
       return;
@@ -3628,7 +3647,7 @@
     if (q.type === "recall") {
       $(optsEl).innerHTML = "";
       if (optsEl === "#p-opts") { var th = $("#p-typehelp"); if (th) { th.textContent = T("th_" + tgt()); th.hidden = false; } }
-      if (optsEl === "#p-opts") { $("#p-type").hidden = false; var inp = $("#p-typein"); inp.value = ""; inp.disabled = false; $("#p-typego").disabled = false; if (iPlay()) inp.focus(); paintHint(q); }
+      if (optsEl === "#p-opts") { $("#p-type").hidden = false; var inp = $("#p-typein"); inp.value = ""; inp.disabled = false; typeDone(false); if (iPlay()) inp.focus(); paintHint(q); }
     } else {
       if (optsEl === "#p-opts") $("#p-type").hidden = true;
       var zh = tgt() === "zh";
@@ -4579,7 +4598,7 @@
   /* hết giờ mà chưa bấm Enter/Nộp -> tự nộp chữ đang gõ / các ô đã chọn (TJ 2026-10-01) */
   function autoSubmit() {
     var s = G.st; if (!s || s.phase !== "play" || !iPlay() || untimed(s)) return;
-    var now = Date.now(), typed = $("#p-typein").value.trim(), typeOpen = !$("#p-type").hidden && !$("#p-typein").disabled;
+    var now = Date.now(), typed = $("#p-typein").value.trim(), typeOpen = !$("#p-type").hidden && !tinOff();
     var picks = $$("#p-vi .g-sel").sort(function (a, b) { return a.dataset.gi - b.dataset.gi; }).map(function (x) { return x.value; });
     var sheetOpen = !!$("#p-sheetgo") && !$("#p-sheetgo").disabled && picks.some(Boolean);
     if (s.mode === "kahoot") {
@@ -4596,7 +4615,7 @@
   function lockAll(msg) {
     var ae = document.activeElement; if (ae && ae.classList && ae.classList.contains("g-opt")) ae.blur();   /* không để ô vừa bấm giữ focus sang câu sau */
     $$(".g-opt, .g-sel, #p-sheetgo, .g-tile, #p-ordreset").forEach(function (x) { x.disabled = true; });
-    $("#p-typein").disabled = true; $("#p-typego").disabled = true; var hr0 = $("#p-hintrow"); if (hr0) hr0.hidden = true;   /* đã gửi: ẩn gợi ý */
+    typeDone(true); var hr0 = $("#p-hintrow"); if (hr0) hr0.hidden = true;   /* đã gửi: ẩn gợi ý */
     if (msg) $("#p-msg").textContent = msg;
   }
 
@@ -4649,7 +4668,7 @@
     if (fast) msg += "  ·  " + T("fastest", { n: plain(fast) });
     if (!G.isHost) msg += "  ·  " + T("wait_nextq");
     $("#p-msg").textContent = msg;
-    if (q.type === "recall") { $("#p-typein").value = G.myChoice || ""; $("#p-res").innerHTML = recallRows(q, s); }   /* ai đúng ai sai, gõ gì (TJ 2026-11-22) */
+    if (q.type === "recall") { $("#p-typein").value = G.myChoice || ""; $("#p-res").innerHTML = Object.keys(q.res || {}).length > 1 ? recallRows(q, s) : ""; }   /* 1 mình: ô gõ đã tô xanh/đỏ, khỏi lặp */   /* ai đúng ai sai, gõ gì (TJ 2026-11-22) */
     logQ(q, G.myChoice, ok);
     if (iPlay()) recordMyProgress(q.wid, ok);   /* bỏ lỡ (chưa chọn) = sai -> vào ❌ Fix lỗi sai + xét chu kỳ */
   }
@@ -4688,14 +4707,14 @@
     var n = hintUsed(q), b = $("#p-hintbtn");
     $("#p-slots").textContent = hintMask(hintAns(q), n);
     b.textContent = T("hint_btn", { n: n, m: m }) + (n ? T("hint_left", { p: Math.round(POINTS * hintMul(n)) }) : "");
-    b.disabled = n >= m || $("#p-typein").disabled;
+    b.disabled = n >= m || tinOff();
   }
   $("#p-hintbtn").addEventListener("click", function () {
     var q = G.st && G.st.mode === "kahoot" ? G.st.q : G.myQ; if (!q || !hintable(q) || $("#p-typein").disabled) return;
     hintReset(q); if (G.hintN >= hintMax()) return;
     G.hintN++; paintHint(q);
     if (q.listen || isDict(q.type)) { var sw = sayOf(q); if (sw) sayDict(sw, sayLangOf(q)); }   /* bấm gợi ý = nghe lại phần NGHE; Gõ từ thường không đọc (đọc = lộ đáp án, audit agy) */
-    var ti = $("#p-typein"); if (ti && !ti.disabled) ti.focus();
+    var ti = $("#p-typein"); if (ti && !tinOff()) ti.focus();
   });
   function hintChip(n) { n = parseInt(n, 10) || 0; return n > 0 ? ' <span class="g-hchip" title="💡">💡' + Math.min(4, n) + "</span>" : ""; }
   /* 🎧 THẺ CHỌN DẠNG DICTATION cho host (cách A, TJ 2026-11-22): NGHE / THẤY / GÕ + ví dụ thật từ Block đang chọn */
@@ -5297,8 +5316,32 @@
     else if (q && q.type === "en2m" && q.word) sayIt(baseTerm(q.word), true);   /* nghe lại từ tiếng Anh (luôn được, kể cả khi đang tắt tự đọc) */
   });
   $("#p-typein").addEventListener("keydown", function (e) { if (e.key === "Enter" && (e.isComposing || e.keyCode === 229)) { e.preventDefault(); e.stopPropagation(); } }, true);   /* Safari: Enter lúc đang chọn chữ trong bộ gõ tiếng Trung không được nộp bài */
+  /* ⌨️ Ô gõ kiểu HelloTalk (TJ 2026-11-22): gửi xong bàn phím GIỮ NGUYÊN, Enter / nút phải = Câu tiếp, 🔊 bên trái = nghe lại */
+  (function () {   /* thanh gõ dính ngay trên bàn phím iPhone; bàn phím đóng thì nằm trên thanh chat đáy (#cb-bar) */
+    var vv = window.visualViewport; if (!vv) return;
+    var f = function () { var kb = Math.max(0, innerHeight - vv.height - vv.offsetTop), cb = document.getElementById("cb-bar"); document.documentElement.style.setProperty("--kb", (kb > 60 ? kb : (cb ? cb.offsetHeight : 0)) + "px"); };
+    vv.addEventListener("resize", f); vv.addEventListener("scroll", f); setTimeout(f, 1500);
+  })();
+  function tinOff() { var t = $("#p-typein"); return t.disabled || t.dataset.done === "1"; }
+  function typeDone(on) {
+    var t = $("#p-typein"), b = $("#p-typego"), k = G.st && G.st.mode === "kahoot";
+    t.dataset.done = on ? "1" : ""; t.classList.toggle("g-done", !!on);
+    b.textContent = on ? T("next_q") : T("submit");
+    b.disabled = !!on && k && !G.isHost;   /* Kahoot: chỉ host chuyển câu */
+  }
+  $("#p-typein").addEventListener("beforeinput", function (e) { if (this.dataset.done === "1") e.preventDefault(); });
+  $("#p-tsay").addEventListener("click", function () {
+    if (!$("#p-saywrap").hidden) $("#p-say").click(); else if (!$("#p-replay").disabled) $("#p-replay").click();
+    var t = $("#p-typein"); if (t && !$("#p-type").hidden) t.focus();   /* giữ bàn phím */
+  });
   $("#p-type").addEventListener("submit", function (e) {
     e.preventDefault();
+    if ($("#p-typein").dataset.done === "1") {   /* đã gửi: Enter = Câu tiếp (giữ focus -> bàn phím không sập, câu sau gõ luôn) */
+      var s0 = G.st; if (!s0 || s0.phase !== "play") return;
+      if (s0.mode === "kahoot") { if (!$("#p-next").hidden) $("#p-next").click(); }
+      else { $("#p-next").hidden = true; clearTimeout(G.nextT); freeNext(); }
+      return;
+    }
     var v = $("#p-typein").value.trim(), s = G.st;
     if (!v || !s || s.phase !== "play" || !iPlay()) return;
     if (s.mode === "kahoot") { if (G.myChoice == null && s.q && !s.q.revealed) sendAnswer(v); }
@@ -5520,6 +5563,7 @@
 
   /* Tiến trình học — CHỈ hồ sơ admin (TJ). "Học chung" vẫn tách được qua game_answers (có room_id). */
   async function recordMyProgress(wid, ok) {
+    whNote(wid, ok);   /* 🧠 từ hay sai ra nhiều hơn (mọi người chơi, nhớ theo máy) */
     var uid = progUid();
     if (!uid || !wid || tgt() !== "en") return;   /* tiến trình WordLoop gắn với từ TIẾNG ANH */
     if (trial()) return;   /* 🧪 Ván thử: không ghi gì cho TJ */
