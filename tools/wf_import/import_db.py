@@ -52,10 +52,15 @@ def rest_get(sb_url, sb_key, path):
         }
     )
     with urllib.request.urlopen(req) as resp:
-        return json.loads(resp.read().decode("utf-8"))
+        body = resp.read().decode("utf-8")
+        return json.loads(body) if body else []
 
 def rest_post_chunk(sb_url, sb_key, table, rows):
     url = f"{sb_url}/rest/v1/{table}"
+    prefer = "return=representation"
+    if table == "word_traps":  # kho bẫy cũ có thể đã có cặp (word_term, trap_term) -> bỏ qua, không lỗi cả lô
+        url += "?on_conflict=word_term,trap_term"
+        prefer = "return=minimal,resolution=ignore-duplicates"
     data = json.dumps(rows, ensure_ascii=False).encode("utf-8")
     req = urllib.request.Request(
         url,
@@ -64,7 +69,7 @@ def rest_post_chunk(sb_url, sb_key, table, rows):
             "apikey": sb_key,
             "Authorization": f"Bearer {sb_key}",
             "Content-Type": "application/json",
-            "Prefer": "return=representation"
+            "Prefer": prefer
         },
         method="POST"
     )
