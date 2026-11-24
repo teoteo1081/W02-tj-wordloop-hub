@@ -1343,7 +1343,7 @@
       if (!k || seen[k] || !(m.vi || m.en || m.es || m.zh)) return;
       seen[k] = 1;
       regAudio(w);
-      var it = { wid: w.id, term: clean(w.term), block: w.block_id, pos: norm(w.pos), lv: lvKey(w.level), m: m, sent: isSent(w.pos), ch: w.chunks || null };
+      var it = { wid: w.id, term: clean(w.term), block: w.block_id, pos: norm(w.pos), lv: lvKey(w.level), ipa: w.ipa || "", m: m, sent: isSent(w.pos), ch: w.chunks || null };
       pool.push(it); byTerm[k] = it;
     });
     /* câu có chỗ trống: tách câu trong bài đọc giống Context.gapSentences (js/context.js) */
@@ -1687,6 +1687,7 @@
   /* câu hỏi mang theo link FILE ÂM THANH của từ/câu đang hỏi (Kahoot: máy người chơi không tải kho từ) */
   function makeQ(qtype, lang, langs) {
     var q = makeQ0(qtype, lang, langs), aud = {}, n = 0;
+    if (q && q.wid && q.type !== "sheet" && q.type !== "dict" && roomTgt() === "en") { var ipw = G.pool.find(function (x) { return x.wid === q.wid && !x.en; }); if (ipw && ipw.ipa) q.ip = ipw.ipa; }   /* 🔤 phiên âm (TJ 2026-11-24: "sao hong có phiên âm") — chỉ khi học tiếng Anh */
     [q.ans, q.word, q.full].forEach(function (t) {
       if (typeof t !== "string") return;
       [t.trim(), baseTerm(t)].forEach(function (x) { var k = tgt() + "|" + x; if (G.audioMap[k]) { aud[k] = G.audioMap[k]; n++; } });
@@ -2316,7 +2317,7 @@
       var q = s.q, rev = !!q.revealed;
       s.q = { qn: q.qn, n: q.n, wids: q.wids, word: q.word, lv: q.lv, aud: q.aud, tiles: q.tiles, sep: q.sep, reg: q.reg, ctx: q.ctx, full: q.full, optTexts: q.optTexts, type: q.type, listen: q.listen, lmode: q.lmode, tt: q.tt, hw: !rev && hintMax() > 0 && (q.type === "recall" || oneWord(q.type)) ? q.ans : undefined, texts: q.texts, sent: q.sent, opts: q.opts, len: q.len, wid: q.wid, term: q.term, text: q.text, bank: q.bank, say: q.say, def: q.def, limit: q.limit, lead: q.lead || 0, grading: !!q.grading, num: q.num, passage: q.passage, tag: rev ? q.tag : null, expl: rev ? q.expl : null, vi: rev ? q.vi : null, i18n: rev ? q.i18n : null, vocab: rev ? q.vocab : null, test: q.test, part: q.part, asrc: q.asrc, pend: q.pend, gEnd: q.gEnd, nxt: q.nxt,
               subs: q.subs ? q.subs.map(function (x) { return { num: x.num, part: x.part, test: x.test, sent: x.sent, opts: x.opts, ans: rev ? x.ans : null }; }) : null,
-              res: rev ? q.res : null, traps: rev ? q.traps : null, revealed: rev, ans: rev ? q.ans : null, cnt: Object.keys(q.got).length,
+              res: rev ? q.res : null, traps: rev ? q.traps : null, ip: rev ? q.ip : null, revealed: rev, ans: rev ? q.ans : null, cnt: Object.keys(q.got).length,
               picks: rev ? Object.keys(q.got).reduce(function (o, pid) { o[pid] = q.got[pid].c; return o; }, {}) : null,
               oks: rev ? Object.keys(q.got).filter(function (pid) { return q.got[pid].ok; }) : null, tls: rev && q.tt ? Object.keys(q.got).reduce(function (o, pid) { o[pid] = q.got[pid].tl; return o; }, {}) : null, hns: rev ? Object.keys(q.got).reduce(function (o, pid) { if (q.got[pid].hn) o[pid] = q.got[pid].hn; return o; }, {}) : null, fast: rev ? q.fast : null };
     }
@@ -2560,6 +2561,8 @@
     },
     togglePerm: function (pid) { if (!G.isHost || !G.st) return; var p = G.st.bperm = Object.assign({}, G.st.bperm || {}); if (p[pid]) delete p[pid]; else p[pid] = 1; push(); }
   });
+  /* nút ▶ dính mép dưới chỉ hiện khi nút ▶ trên cùng đã cuộn khuất (TJ 2026-11-24: đừng 2 nút cùng lúc) */
+  try { new IntersectionObserver(function (es) { var h = $("#l-host"); if (h) h.classList.toggle("g-s0vis", es[0].isIntersecting); }).observe($("#l-start0")); } catch (e) {}
   $("#l-start0").addEventListener("click", function () { var b = $("#l-start"); if (b && !b.disabled) b.click(); });   /* ▶ ở đầu phòng chờ: cài xong khỏi cuộn xuống (TJ 2026-11-23) */
   $("#l-start").addEventListener("click", async function () {
     if (!G.isHost) return;
@@ -3932,7 +3935,7 @@
     $("#rv-pos").textContent = wl ? (wp >= 0 ? wp + 1 : "–") + " / " + wl.length + " ❌" : (rvI + 1) + " / " + R.length;
     $("#rv-prev").disabled = wl ? !wl.some(function (x) { return x < rvI; }) : rvI === 0;
     $("#rv-next").disabled = wl ? !wl.some(function (x) { return x > rvI; }) : rvI === R.length - 1;
-    var rw = $("#rv-wrong"); if (rw) { rw.hidden = !R.some(function (x) { return x.tq; }); rw.classList.toggle("on", !!G.rvOnlyWrong); rw.classList.toggle("g-btn-soft", !G.rvOnlyWrong); rw.textContent = "❌ Câu sai" + (wl ? " (" + wl.length + ")" : ""); }
+    var rw = $("#rv-wrong"); if (rw) { rw.hidden = !R.length; rw.classList.toggle("on", !!G.rvOnlyWrong); rw.classList.toggle("g-btn-soft", !G.rvOnlyWrong); rw.textContent = "❌ Câu sai" + (wl ? " (" + wl.length + ")" : ""); }
     paintStar(L);
     $("#rv-back").textContent = G.rvFrom === "hist" ? T("back_hist") : T("back_res");
     $("#rv-back").classList.toggle("g-back-hist", G.rvFrom === "hist"); $("#rv-back").classList.toggle("g-back-res", G.rvFrom !== "hist");   /* TJ 2026-10-08: nút Về có MÀU theo nơi quay về (Lịch sử = vàng như "Ôn ngay", kết quả = xanh dương) */
@@ -3974,12 +3977,12 @@
     if (b.hidden) return;
     b.dataset.wid = L.wid;
     if (G.stars[L.wid] == null) {
-      b.textContent = "☆ …";
+      b.classList.add("g-ldg");   /* TJ 2026-11-24 "nhảy giật": giữ nguyên chữ cũ lúc chờ tải (trước đổi thành "☆ …" làm cả hàng nút xê dịch) */
       var r = await sb.from("word_progress").select("bookmarked").eq("user_id", uid).eq("word_id", L.wid).maybeSingle();
       G.stars[L.wid] = !!(r.data && r.data.bookmarked);
       if (b.dataset.wid !== L.wid) return;   /* đã sang câu khác */
     }
-    var on = G.stars[L.wid];
+    var on = G.stars[L.wid]; b.classList.remove("g-ldg");
     b.textContent = on ? "⭐ Đã để dành (Ôn riêng)" : "☆ Để dành học lại";
     b.classList.toggle("on", on);
   }
@@ -3998,7 +4001,7 @@
      đã chọn — chỉ biết đúng/sai. */
   /* thẻ xem lại 1 từ trong LỊCH SỬ theo đúng ngôn ngữ đã học ván đó (game_answers.target; null = English):
      từ = quiz_/meaning_<target> (tiếng Trung kèm pinyin), nghĩa = tiếng mẹ đẻ, đọc bằng giọng của tiếng đó */
-  var HIST_COLS = "id,term,level,pos,meaning_vi,meaning_zh,meaning_es,def_en,quiz_vi,quiz_zh,quiz_es,audio";
+  var HIST_COLS = "id,term,ipa,level,pos,meaning_vi,meaning_zh,meaning_es,def_en,quiz_vi,quiz_zh,quiz_es,audio";
   function histCard(w, tg, extra) {
     tg = tg || "en";
     regAudio(w);
@@ -4007,7 +4010,7 @@
     delete mean[tg];
     var ml = G.myLang && G.myLang !== "room" ? G.myLang : "vi"; if (ml === tg) ml = "en";
     var word = tg === "zh" ? '<span class="g-zhw" data-zh="' + esc(t) + '"><span>' + esc(t) + "</span></span>" : esc(t);
-    return Object.assign({ vi: word + (tg === "en" ? lvBadge(w.level) : "") + (tg !== "en" ? ' <span class="g-sub">' + FLAG[tg] + "</span>" : ""), res: "", msg: "",
+    return Object.assign({ vi: word + (tg === "en" && w.ipa ? ' <span class="g-ipa">' + esc(w.ipa) + "</span>" : "") + (tg === "en" ? lvBadge(w.level) : "") + (tg !== "en" ? ' <span class="g-sub">' + FLAG[tg] + "</span>" : ""), res: "", msg: "",
              opts: '<div class="g-rvmean">' + esc(mean[ml] || mean.vi || mean.en || "") + "</div>", ans: t, say: tg === "zh" || tg === "en" ? baseTerm(t) : t, sl: tg,
              tg: tg !== "en" ? tg : null, wid: w.id, typed: false, played: true }, extra);
   }
@@ -4146,7 +4149,7 @@
     if (G.rvOnlyWrong) { G.rvOnlyWrong = false; return renderReview(rvI); }
     var mid = G.rvMid || G.logMatch; this.textContent = "⏳"; var M = mid && /^[0-9a-f-]{20,}$/i.test(String(mid)) ? await tqPickMap(mid) : null, idx = [];   /* không có matchId -> dùng L.pk chụp lúc làm (cùng tqWho với Xem lại) */
     R.forEach(function (L, i) {
-      if (!L.tq) return;
+      if (!L.tq) { if (L.ok === false && (L.played || L.note)) idx.push(i); return; }   /* TJ 2026-11-24: Từ vựng/Dictation cũng lọc được câu sai (câu của CHÍNH MÌNH) */
       var d = document.createElement("div"); d.innerHTML = L.opts; var bad = false;
       d.querySelectorAll(".g-opt").forEach(function (b) {
         if (tqWho(L, M, b).length && !b.classList.contains("ok")) bad = true;
@@ -4804,7 +4807,8 @@
     var word = ex ? ex.say : pi ? baseTerm(pi.term) : "warehouse", def = ex ? ex.def : (pi && pi.m && pi.m.en) || "", mean = (pi && pi.m && (pi.m[ml === "en" ? "vi" : ml] || pi.m.vi)) || "";
     var sent = (G.dicts || [])[0] ? G.dicts[0].sent : "";
     var key = [st.qtype, t0, hintMax(), word, ml, G.poolKey].join("|"); if (key === G.dcKey) return; G.dcKey = key;
-    var V = { w: word, m: "“" + mean + "”", d: "“" + def + "”", s: "“" + sent + "”" }, S = { w: word, m: mean, d: def, s: sent };
+    var q2 = function (x) { return x ? "“" + x + "”" : ""; };   /* chưa có câu/nghĩa mẫu -> "không", đừng hiện ngoặc rỗng */
+    var V = { w: word, m: q2(mean), d: q2(def), s: q2(sent) }, S = { w: word, m: mean, d: def, s: sent };
     var cell = function (k, txt, col) { return '<span class="g-dcc"><i style="color:' + col + '">' + k + "</i>" + (txt ? esc(txt) : '<em class="g-sub">không</em>') + "</span>"; };   /* TJ 2026-11-24: 1 dòng NGHE · THẤY · GÕ (kiểu đang chọn mới hiện đủ chữ) */
     box.innerHTML = '<div class="g-dclist">' + DCARDS.map(function (c) {
       var dis = !c.all && t0 !== "en", sel = st.qtype === c.t, typ = c.type === "d" ? S.d : c.type === "s" ? S.s : word;
@@ -4820,10 +4824,11 @@
     var h = e.target.closest("[data-hm]"); if (h) { G.st.hintMax = +h.dataset.hm; vocabSave(); push(); G.dcKey = null; paintDCards(); }
   });
   /* 🔊 nút nghe 1 từ (giọng đúng tiếng) — ai cũng bấm được, đúng hay sai đều có (TJ 2026-11-22) */
+  function ipaTag(ip) { return ip && tgt() === "en" ? ' <span class="g-ipa">' + esc(ip) + "</span>" : ""; }
   function sayBtn(text, lang) { return text ? ' <button type="button" class="g-sayw" data-say="' + esc(baseTerm(text)) + '" data-sl="' + esc(lang || "en") + '" title="🔊">🔊</button>' : ""; }
   /* nghĩa bằng tiếng mẹ đẻ (hoặc tiếng chung của phòng) + 🔊 Nghe tất cả */
-  function wordHead(q) { var mt = myText(q); return '<div class="g-whead">' + (mt ? '<span class="g-mymean">' + FLAG[effLang(G.myLang, G.st, q.type)] + " " + esc(mt) + "</span>" : "") + ' <button type="button" class="g-btn g-btn-soft g-btn-sm" data-sayall="1">🔊 ' + esc(T("say_all")) + "</button></div>"; }
-  function wordBox(q, a, tl, typed, ok) { var mt = myText(q); return '<div class="g-dmine ' + (ok ? "ok" : "bad") + '">' + hlLines(typed, a, ok, tl) + (mt ? '<div class="g-mymean">' + FLAG[effLang(G.myLang, G.st, q.type)] + " " + esc(mt) + "</div>" : "") + "</div>"; }
+  function wordHead(q) { var mt = myText(q); return '<div class="g-whead">' + ipaTag(q.ip) + (mt ? '<span class="g-mymean">' + FLAG[effLang(G.myLang, G.st, q.type)] + " " + esc(mt) + "</span>" : "") + ' <button type="button" class="g-btn g-btn-soft g-btn-sm" data-sayall="1">🔊 ' + esc(T("say_all")) + "</button></div>"; }
+  function wordBox(q, a, tl, typed, ok) { var mt = myText(q); return '<div class="g-dmine ' + (ok ? "ok" : "bad") + '">' + hlLines(typed, a, ok, tl) + (tl === "en" ? ipaTag(q.ip) : "") + (mt ? '<div class="g-mymean">' + FLAG[effLang(G.myLang, G.st, q.type)] + " " + esc(mt) + "</div>" : "") + "</div>"; }
   document.addEventListener("click", function (e) {
     var b = e.target.closest && e.target.closest("[data-say],[data-sayall]"); if (!b) return;
     e.preventDefault(); e.stopPropagation();
@@ -4857,7 +4862,7 @@
       });
       if (msgEl) $(msgEl).textContent = me ? T("r_sheet", { k: me.k, n: me.n }) + gainTail(me.p) : T("timeout", { a: "" });
     } else if (isDict(q.type)) {
-      $(textEl).innerHTML = q.type === "dict" ? "🎧 <b>" + esc(q.ans) + "</b>" : "🎧 <b>" + esc(q.term) + "</b>" + sayBtn(q.term, "en") + lvBadge(q.lv) + '<span class="g-qmean">' + esc(q.def || "") + "</span>" + (function () { var mt = q.texts ? myText(q) : ""; return mt && mt !== q.def ? '<span class="g-qmean g-mymean">' + FLAG[effLang(G.myLang, G.st, q.type)] + " " + esc(mt) + "</span>" : ""; })();
+      $(textEl).innerHTML = q.type === "dict" ? "🎧 <b>" + esc(q.ans) + "</b>" : "🎧 <b>" + esc(q.term) + "</b>" + sayBtn(q.term, "en") + ipaTag(q.ip) + lvBadge(q.lv) + '<span class="g-qmean">' + esc(q.def || "") + "</span>" + (function () { var mt = q.texts ? myText(q) : ""; return mt && mt !== q.def ? '<span class="g-qmean g-mymean">' + FLAG[effLang(G.myLang, G.st, q.type)] + " " + esc(mt) + "</span>" : ""; })();
       if (msgEl) $(msgEl).textContent = me ? (oneWord(q.type) ? (me.ok ? T("right") : T("wrong", { a: q.ans })) : T("r_dict", { k: me.k, n: me.n })) + gainTail(me.p) : T("timeout", { a: q.ans });
       var dok = me ? (me.ok != null ? !!me.ok : me.k / me.n >= 0.8) : false;
       if (msgEl) { $(msgEl).classList.remove("ok", "bad"); if (me || iPlay()) $(msgEl).classList.add(dok ? "ok" : "bad"); if (me && !dok) $(msgEl).textContent = $(msgEl).textContent.replace(/^✓/, "✗"); }

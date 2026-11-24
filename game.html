@@ -9,7 +9,7 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6X5S109XKM"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6X5S109XKM',{site:'wordloop'});</script>
 <script>window.ga4=function(n,p){try{if(window.gtag)gtag('event',n,p||{});}catch(e){}};</script>
-<link rel="stylesheet" href="css/game.css?v=300">
+<link rel="stylesheet" href="css/game.css?v=301">
 </head>
 <body>
 <!-- 🎮 Phòng game chơi chung — xem README.md "Việc còn dang dở" > PHÒNG GAME, bảng: tools/game_schema.sql.
@@ -171,10 +171,10 @@
       </div></div>
       <div class="g-grp"><div class="g-grph">🏆 Tính điểm</div>
       <div class="g-settings">
-        <div class="g-fld"><span class="g-fldl">Cách tính điểm</span><div class="g-seg g-segw" data-seg="l-scoring"></div>
+        <div class="g-fld g-full"><span class="g-fldl">Cách tính điểm</span><div class="g-seg g-segw" data-seg="l-scoring"></div>
           <select id="l-scoring" class="g-segsel"><option value="q" data-s="Theo câu (+100)">Theo câu — đúng +100</option><option value="speed" data-s="Theo tốc độ">Theo tốc độ — đúng 100 → 50 (chậm bị trừ)</option></select>
           <span class="g-sub g-segdesc" data-segdesc="l-scoring"></span></div>
-        <div class="g-fld"><span class="g-fldl">Hình thức thi đấu</span><div class="g-seg g-segw" data-seg="l-teamn"></div>
+        <div class="g-fld g-full"><span class="g-fldl">Hình thức thi đấu</span><div class="g-seg g-segw" data-seg="l-teamn"></div>
           <select id="l-teamn" class="g-segsel"><option value="0">Chơi lẻ</option><option value="2">2 đội</option><option value="3">3 đội</option><option value="4">4 đội</option></select></div>
         <label class="g-check"><input type="checkbox" id="l-hostplay" checked> Host cũng chơi</label>
       </div></div>
@@ -191,7 +191,7 @@
       </div></details>
       <div class="g-row" id="l-teambtns" hidden><button class="g-btn g-btn-soft" id="l-auto">🔀 Chia đều tự động</button><span class="g-sub">hoặc bấm vào tên từng người để đổi đội</span></div>
       <p class="g-sub" id="l-pool"></p>
-      <div class="g-row g-startrow" hidden><button class="g-btn" id="l-start">▶ Bắt đầu</button></div><!-- ẩn: chỉ còn 1 nút ▶ ở đầu (#l-start0 bấm hộ nút này) — TJ 2026-11-24 -->
+      <div class="g-row g-startrow"><button class="g-btn" id="l-start">▶ Bắt đầu</button></div><!-- nút ▶ DÍNH mép dưới màn hình khi cuộn phần cài đặt (giữ như v426; TJ 2026-11-24 hỏi lại) -->
     </div>
     <div class="g-blocks" id="l-blocks" hidden></div><!-- khung RIÊNG dưới khung cài đặt (trước nằm trong #l-host nên tràn viền) — TJ 2026-11-24 -->
     <p class="g-sub g-wait" id="l-wait" hidden data-t="wait_host">Chờ host bắt đầu</p>
@@ -301,7 +301,7 @@
 <script src="js/voice.js?v=15"></script>
 <script src="js/chat.js?v=16"></script>
 <script src="js/swclass.js?v=84"></script>
-<script src="js/game.js?v=427"></script>
+<script src="js/game.js?v=428"></script>
 <script src="js/learn.js?v=128"></script>
 </body>
 </html>
