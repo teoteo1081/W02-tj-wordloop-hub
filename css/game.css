@@ -2329,3 +2329,50 @@ body.g-tidyok #g-toppin.on{opacity:1;background:var(--accent);border-color:var(-
   #p-type{position:sticky;bottom:calc(var(--kb,0px) + 4px);z-index:6;background:var(--bg);padding:6px 0;margin-top:8px}
   #p-saywrap .g-sub{display:none}   /* dòng "Dùng tai nghe…" chiếm 1 hàng */
 }
+/* ===== Phòng chờ gọn lại (TJ 2026-11-24): thẻ phòng gộp · Dictation của bạn tường minh · 7 kiểu Dictation dạng danh sách · cài đặt chia nhóm · danh sách Block thành khung riêng ===== */
+/* thẻ Mã phòng của host chứa luôn "Người chơi (n)" + nút Xem lại/Lịch sử + "Âm thanh của bạn" */
+#l-roomcard .g-h2row{margin:10px 0 6px;padding-top:10px;border-top:1px solid var(--line)}
+#l-roomcard .g-h2row h2{font-size:15px}
+#l-roomcard .g-sndrow{margin:8px 0 0}
+/* 🎧 Dictation của bạn: nhãn rõ + 4 nút / 1 hàng + dòng tóm tắt */
+.g-dpriv{font-weight:400}
+.g-dlh{font-size:13px;color:var(--text)} .g-dlh .g-sub{font-weight:400}
+.g-langs4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g-langs4 button{padding:8px 4px;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#l-mytgt button:disabled::before{content:"🔒 ";font-size:11px}
+.g-dnote{font-size:12px;margin-top:-4px}
+.g-dsum{padding:8px 10px;border-radius:10px;background:var(--deep);font-size:13px} .g-dsum:empty{display:none} .g-dsum b{color:var(--green)}
+@media (max-width:420px){ .g-langs4{grid-template-columns:repeat(2,minmax(0,1fr))} }
+/* 7 kiểu Dictation: 1 cột, mỗi kiểu 2 dòng (tên + NGHE · THẤY · GÕ); kiểu đang chọn mở đủ chữ */
+.g-dclist{display:flex;flex-direction:column;gap:5px}
+.g-dclist .g-dcard{padding:7px 10px 8px;border-width:1.5px;border-radius:10px;gap:3px;background:var(--deep)}
+.g-dclist .g-dch{justify-content:flex-start;align-items:center;gap:7px} .g-dclist .g-dch b{font-size:13.5px}
+.g-dclist .g-dctag{margin-left:auto}
+.g-dcr{flex:none;width:12px;height:12px;border-radius:50%;border:2px solid var(--text-2)}
+.g-dcard.on .g-dcr{border-color:var(--accent,#e08a62);background:radial-gradient(var(--accent,#e08a62) 45%,transparent 50%)}
+.g-dcdef{flex:none;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:6px;background:var(--accent,#e08a62);color:#fff}
+.g-dcex{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-left:19px;font-size:12px}
+.g-dcc{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.g-dcc i{font-style:normal;font-weight:800;font-size:10px;letter-spacing:.04em;margin-right:5px}
+.g-dcc em{font-style:italic}
+.g-dcard.on .g-dcex{grid-template-columns:minmax(0,1fr);gap:2px}
+.g-dcard.on .g-dcc{white-space:normal;overflow:visible;overflow-wrap:break-word;hyphens:none}
+.g-dcard.on .g-dcc i{display:inline-block;width:40px}
+.g-dcdis{margin-left:19px;font-size:11px}
+@media (max-width:420px){ .g-dcex{grid-template-columns:minmax(0,1fr);gap:1px} }
+/* ⚙ cài đặt chia nhóm */
+.g-grp{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:10px;background:var(--deep)}
+.g-grph{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px;color:var(--text)}
+.g-grpsv{margin-left:auto;font-weight:400;font-size:11.5px;color:var(--green)}
+.g-grp > .g-settings{margin-top:8px}
+details.g-adv > summary{cursor:pointer;list-style:none} details.g-adv > summary::before{content:"▸";font-size:12px} details.g-adv[open] > summary::before{content:"▾"}
+details.g-adv > summary::-webkit-details-marker{display:none}
+.g-fld{display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--text-2);min-width:0}
+.g-full{grid-column:1/-1}
+.g-segsel{display:none!important}
+.g-segw{display:flex;flex-wrap:wrap;width:100%;background:var(--card)}
+.g-segw button{flex:1 1 auto;text-align:center;color:var(--text);padding:8px 10px;white-space:nowrap}
+.g-segdesc{font-size:12px} .g-segdesc:empty{display:none}
+.g-new{display:inline-block;margin-left:4px;padding:0 5px;border-radius:5px;background:var(--accent);color:#fff;font-size:10.5px;font-weight:700;vertical-align:1px}
+/* 📦 Chọn Batch / Block: khung riêng dưới khung cài đặt (trước nằm trong #l-host -> tràn qua viền 2 bên) */
+.g-blocks{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
