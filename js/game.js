@@ -4804,7 +4804,8 @@
     var word = ex ? ex.say : pi ? baseTerm(pi.term) : "warehouse", def = ex ? ex.def : (pi && pi.m && pi.m.en) || "", mean = (pi && pi.m && (pi.m[ml === "en" ? "vi" : ml] || pi.m.vi)) || "";
     var sent = (G.dicts || [])[0] ? G.dicts[0].sent : "";
     var key = [st.qtype, t0, hintMax(), word, ml, G.poolKey].join("|"); if (key === G.dcKey) return; G.dcKey = key;
-    var V = { w: word, m: "“" + mean + "”", d: "“" + def + "”", s: "“" + sent + "”" }, S = { w: word, m: mean, d: def, s: sent };
+    var q2 = function (x) { return x ? "“" + x + "”" : ""; };   /* chưa có câu/nghĩa mẫu -> "không", đừng hiện ngoặc rỗng */
+    var V = { w: word, m: q2(mean), d: q2(def), s: q2(sent) }, S = { w: word, m: mean, d: def, s: sent };
     var cell = function (k, txt, col) { return '<span class="g-dcc"><i style="color:' + col + '">' + k + "</i>" + (txt ? esc(txt) : '<em class="g-sub">không</em>') + "</span>"; };   /* TJ 2026-11-24: 1 dòng NGHE · THẤY · GÕ (kiểu đang chọn mới hiện đủ chữ) */
     box.innerHTML = '<div class="g-dclist">' + DCARDS.map(function (c) {
       var dis = !c.all && t0 !== "en", sel = st.qtype === c.t, typ = c.type === "d" ? S.d : c.type === "s" ? S.s : word;
