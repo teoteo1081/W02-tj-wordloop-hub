@@ -2387,3 +2387,11 @@ details.g-adv > summary::-webkit-details-marker{display:none}
 /* dòng ⏱ Tự tính: phần "→ n từ × …" xuống hàng riêng (điện thoại từng bị chia 2 cột lệch) */
 #l-auto-wrap{flex-wrap:wrap} #l-autohint{flex:1 1 100%;padding-left:26px}
 #l-host.g-s0vis .g-startrow{visibility:hidden}   /* nút ▶ trên cùng đang thấy -> ẩn nút dính (vẫn giữ chỗ, khỏi nhảy bố cục) */
+/* QA Codex + agy (v429) */
+.g-revnav{flex-direction:column;gap:8px} .g-rvpn,.g-rvtools{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap} .g-rvtools:not(:has(button:not([hidden]))){display:none}   /* Trước · n/N · Sau ở hàng riêng -> không xê dịch khi nút khác ẩn/hiện */
+.g-qword{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px}   /* lộ đáp án Dictation: 🎧 từ 🔊 /ipa/ B2 trên 1 dòng */
+body.has-cbar .g-startrow{bottom:calc(58px + env(safe-area-inset-bottom,0px))}   /* nút ▶ dính không bị thanh chat/mic/CC che */
+body.side-pinned .g-blocks{width:min(1180px,calc(100vw - var(--sidew,280px) - 32px))}   /* cây chủ đề đang ghim: khung Block không chui dưới cột trái */
+.g-startrow{justify-content:center} .g-startrow .g-btn{min-width:60%}   /* nút dính giống nút trên cùng */
+#l-langs2 button:disabled{opacity:.3;cursor:not-allowed}
+@media (max-width:420px){ .g-dcc i{display:inline-block;min-width:38px} }
