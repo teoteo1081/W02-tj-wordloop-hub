@@ -14,7 +14,7 @@ const LOCALE = { en: "en-US", es: "es-ES", zh: "zh-CN", vi: "vi-VN" };
 const NPCS = [
   {
     id: "cafe", icon: "☕", title: "Gọi cà phê ở quán", name: "Linh", role: "chủ quán cà phê",
-    pos: [-26.6, -3], face: Math.PI / 2,
+    pos: [-27.2, -6], face: Math.PI / 2,
     look: { skin: "#f1c7a5", shirt: "#ffffff", pants: "#3a3f5c", hair: "#2b1d16", hairStyle: "bun", apron: "#7a4b2a", skirt: false, female: true },
     steps: [
       { npc: { en: "Hi! What would you like to drink?", es: "¡Hola! ¿Qué te gustaría tomar?", zh: "你好！你想喝点什么？", vi: "Chào bạn! Bạn muốn uống gì?" },
@@ -56,7 +56,7 @@ const NPCS = [
   },
   {
     id: "tourist", icon: "🗺", title: "Chỉ đường cho du khách", name: "Emma", role: "du khách bị lạc",
-    pos: [6.5, 5.5], face: -2.4,
+    pos: [0, 8.2], face: 0,
     look: { skin: "#f6d9c4", shirt: "#f2c14e", pants: "#5b7fb5", hair: "#c9893b", hairStyle: "long", female: true, bag: "#8a5a3c" },
     steps: [
       { npc: { en: "Excuse me, where is the train station?", es: "Perdone, ¿dónde está la estación de tren?", zh: "请问，火车站在哪儿？", vi: "Xin lỗi, ga tàu ở đâu vậy?" },
@@ -67,6 +67,62 @@ const NPCS = [
         py: "Bù yuǎn, zǒulù zhǐ yào wǔ fēnzhōng." },
     ],
     end: { en: "Great, thanks a lot!", es: "¡Genial, muchas gracias!", zh: "太好了，非常感谢！", vi: "Tuyệt quá, cảm ơn nhiều!" },
+  },
+  {
+    id: "food", icon: "🍜", title: "Gọi món ở nhà hàng", name: "Nam", role: "phục vụ nhà hàng",
+    pos: [-8, 32.2], face: Math.PI,
+    look: { skin: "#e0ac83", shirt: "#1d1d1d", pants: "#1d1d1d", hair: "#161010", hairStyle: "short", apron: "#ffffff", female: false },
+    steps: [
+      { npc: { en: "Welcome! Do you have a reservation?", es: "¡Bienvenido! ¿Tiene una reserva?", zh: "欢迎光临！您有预订吗？", vi: "Chào mừng! Bạn có đặt bàn trước không?" },
+        say: { en: "Yes, a table for two at seven.", es: "Sí, una mesa para dos a las siete.", zh: "有，七点，两个人。", vi: "Có, một bàn hai người lúc bảy giờ." },
+        py: "Yǒu, qī diǎn, liǎng ge rén." },
+      { npc: { en: "Here is the menu. What would you like?", es: "Aquí tiene el menú. ¿Qué le gustaría?", zh: "这是菜单。您想吃什么？", vi: "Thực đơn đây ạ. Bạn muốn dùng gì?" },
+        say: { en: "I will have the chicken soup, please.", es: "Para mí, la sopa de pollo, por favor.", zh: "我要一碗鸡汤，谢谢。", vi: "Cho tôi một bát phở gà nhé." },
+        py: "Wǒ yào yì wǎn jī tāng, xièxie." },
+    ],
+    end: { en: "Great choice! It will be ready soon.", es: "¡Buena elección! Enseguida está lista.", zh: "好的！马上就来。", vi: "Ngon lắm! Có ngay ạ." },
+  },
+  {
+    id: "pharmacy", icon: "💊", title: "Mua thuốc ở nhà thuốc", name: "Sofia", role: "dược sĩ",
+    pos: [8, 32.2], face: Math.PI,
+    look: { skin: "#d9a27a", shirt: "#ffffff", pants: "#3a6ea5", hair: "#3a2416", hairStyle: "bun", female: true, long: true },
+    steps: [
+      { npc: { en: "Hello! How can I help you?", es: "¡Hola! ¿En qué puedo ayudarle?", zh: "你好！有什么可以帮你？", vi: "Xin chào! Tôi giúp gì được cho bạn?" },
+        say: { en: "I have a headache and a sore throat.", es: "Me duele la cabeza y la garganta.", zh: "我头疼，嗓子也疼。", vi: "Tôi bị đau đầu và đau họng." },
+        py: "Wǒ tóu téng, sǎngzi yě téng." },
+      { npc: { en: "Take this medicine twice a day.", es: "Tome este medicamento dos veces al día.", zh: "这个药一天吃两次。", vi: "Bạn uống thuốc này ngày hai lần nhé." },
+        say: { en: "Should I take it after meals?", es: "¿Lo tomo después de comer?", zh: "饭后吃吗？", vi: "Tôi uống sau bữa ăn phải không?" },
+        py: "Fàn hòu chī ma?" },
+    ],
+    end: { en: "Yes, after meals. Get well soon!", es: "Sí, después de comer. ¡Que se mejore!", zh: "对，饭后吃。早日康复！", vi: "Đúng rồi, sau bữa ăn. Mau khỏe nhé!" },
+  },
+  {
+    id: "hotel", icon: "🏨", title: "Nhận phòng khách sạn", name: "Aiko", role: "lễ tân khách sạn",
+    pos: [31.8, 30], face: -Math.PI / 2,
+    look: { skin: "#f4d6bd", shirt: "#6d58a6", pants: "#2b2b3a", hair: "#0f0f12", hairStyle: "long", female: true, skirt: true, long: true },
+    steps: [
+      { npc: { en: "Good evening! Welcome to Sunny Hotel.", es: "¡Buenas noches! Bienvenido al Hotel Sol.", zh: "晚上好！欢迎来到阳光酒店。", vi: "Chào buổi tối! Chào mừng đến khách sạn Nắng." },
+        say: { en: "I have a reservation under the name Tran.", es: "Tengo una reserva a nombre de Tran.", zh: "我预订了房间，名字是陈。", vi: "Tôi đã đặt phòng, tên là Trần." },
+        py: "Wǒ yùdìng le fángjiān, míngzi shì Chén." },
+      { npc: { en: "Here is your key. Your room is on the third floor.", es: "Aquí tiene su llave. Su habitación está en el tercer piso.", zh: "这是您的钥匙。房间在三楼。", vi: "Chìa khóa của bạn đây. Phòng ở tầng ba." },
+        say: { en: "What time is breakfast?", es: "¿A qué hora es el desayuno?", zh: "早餐几点开始？", vi: "Mấy giờ có bữa sáng?" },
+        py: "Zǎocān jǐ diǎn kāishǐ?" },
+    ],
+    end: { en: "From six to ten. Enjoy your stay!", es: "De seis a diez. ¡Disfrute su estancia!", zh: "六点到十点。祝您入住愉快！", vi: "Từ sáu đến mười giờ. Chúc bạn nghỉ ngơi vui vẻ!" },
+  },
+  {
+    id: "office", icon: "🏢", title: "Phỏng vấn xin việc", name: "David", role: "người phỏng vấn",
+    pos: [-31.8, 30], face: Math.PI / 2,
+    look: { skin: "#b97a56", shirt: "#33415c", pants: "#22283a", hair: "#1b1b1b", hairStyle: "short", female: false, long: true },
+    steps: [
+      { npc: { en: "Thank you for coming. Please tell me about yourself.", es: "Gracias por venir. Hábleme de usted.", zh: "谢谢你来。请介绍一下你自己。", vi: "Cảm ơn bạn đã đến. Bạn giới thiệu về bản thân nhé." },
+        say: { en: "I have three years of experience in sales.", es: "Tengo tres años de experiencia en ventas.", zh: "我有三年的销售经验。", vi: "Tôi có ba năm kinh nghiệm bán hàng." },
+        py: "Wǒ yǒu sān nián de xiāoshòu jīngyàn." },
+      { npc: { en: "Why do you want to work here?", es: "¿Por qué quiere trabajar aquí?", zh: "你为什么想在这里工作？", vi: "Tại sao bạn muốn làm việc ở đây?" },
+        say: { en: "I want to learn and grow with your team.", es: "Quiero aprender y crecer con su equipo.", zh: "我想和你们的团队一起学习和成长。", vi: "Tôi muốn học hỏi và phát triển cùng đội của anh." },
+        py: "Wǒ xiǎng hé nǐmen de tuánduì yìqǐ xuéxí hé chéngzhǎng." },
+    ],
+    end: { en: "Excellent! We will call you next week.", es: "¡Excelente! Le llamaremos la próxima semana.", zh: "很好！我们下周给你打电话。", vi: "Tuyệt vời! Tuần sau chúng tôi sẽ gọi cho bạn." },
   },
 ];
 
@@ -320,7 +376,7 @@ function door(x, z, ry, col = "#6b4428") {
   door(-28.45, -6, Math.PI / 2);
   awning(-27.9, 3.2, -6, 10, Math.PI / 2, "#ffffff", "#2f7d5b");
   signPlane("☕ Café Linh", "#2f7d5b", "#fff", 5, 1.25, -28.42, 4.9, -6, Math.PI / 2);
-  for (const zz of [-10, -2]) { /* bàn ghế ngoài trời */
+  for (const zz of [-10.8, -1.2]) { /* bàn ghế ngoài trời */
     add(new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.06, 20), mat("#ffffff")), -26, 0.78, zz);
     add(new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.78, 8), mat("#333")), -26, 0.39, zz);
     const um = new THREE.Mesh(new THREE.ConeGeometry(1.4, 0.6, 8), new THREE.MeshStandardMaterial({ map: stripeTex("#ffffff", "#e55a4e", 8), roughness: 0.8 }));
@@ -367,8 +423,8 @@ function door(x, z, ry, col = "#6b4428") {
   signPlane("🍊 Chợ Mei · Market", "#e63946", "#fff", 6, 1.3, 33.95, 3.6, -6, -Math.PI / 2);
   /* nhà ở xung quanh */
   const houses = [
-    [-38, 30, 9, 9, 6, "#f7d6e0", "#9c4f6b"], [-30, 40, 9, 9, 8, "#c7dbf2", "#4a6e9a"], [-8, 38, 10, 8, 5, "#fff1c1", "#b56f3a"], [8, 38, 10, 8, 9.6, "#d4e7c5", "#56794a"],
-    [30, 40, 9, 9, 6.4, "#ffd8b1", "#b3543c"], [38, 30, 9, 9, 7, "#e2d3f5", "#6d58a6"], [-38, -28, 9, 9, 10, "#d9e4ea", "#5b6f7a"], [38, -28, 9, 9, 8, "#f9e0a8", "#9b6b2f"],
+    [-38, 30, 9, 9, 9.6, "#cfd9e6", "#33415c"], [-30, 40, 9, 9, 8, "#c7dbf2", "#4a6e9a"], [-8, 38, 10, 8, 6.4, "#fff1c1", "#b56f3a"], [8, 38, 10, 8, 6.4, "#e3f3e6", "#2f8f5b"],
+    [30, 40, 9, 9, 6.4, "#ffd8b1", "#b3543c"], [38, 30, 9, 9, 12.8, "#e2d3f5", "#6d58a6"], [-38, -28, 9, 9, 10, "#d9e4ea", "#5b6f7a"], [38, -28, 9, 9, 8, "#f9e0a8", "#9b6b2f"],
     [-52, -6, 10, 14, 13, "#cfd8e3", null], [52, -6, 10, 14, 15, "#efe6da", null], [-31, -38, 10, 8, 12, "#e8d5c4", null], [31, -38, 10, 8, 11, "#d5e3e0", null],
   ];
   for (const [x, z, w, d, h, wall, roof] of houses) {
@@ -378,6 +434,13 @@ function door(x, z, ry, col = "#6b4428") {
     door(off[0], off[1], toCenter);
   }
 }
+
+/* biển hiệu 4 nơi mới (nhà hàng, nhà thuốc, khách sạn, văn phòng) */
+signPlane("🍜 Nhà hàng Nam · Restaurant", "#b56f3a", "#fff", 6, 1.3, -8, 4.3, 33.9, Math.PI);
+awning(-8, 2.9, 33.4, 8, Math.PI, "#ffffff", "#c0392b");
+signPlane("💊 Pharmacy · 药店", "#2f8f5b", "#fff", 5.4, 1.2, 8, 3.4, 33.9, Math.PI);
+signPlane("🏨 Sunny Hotel", "#6d58a6", "#fff", 5.4, 1.3, 33.45, 4.2, 30, -Math.PI / 2);
+signPlane("🏢 Office · Phỏng vấn", "#33415c", "#fff", 5.6, 1.2, -33.45, 4.2, 30, Math.PI / 2);
 
 /* cây ven đường (ngoài vòng) — trồng SAU khi có nhà, bỏ chỗ trùng nhà / đường ray */
 {
@@ -639,8 +702,8 @@ function esc(s) { return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<
 
 let dlgNpc = null, near = null, busy = false;
 function cur() { const pr = prog[dlgNpc.id] || (prog[dlgNpc.id] = { step: 0, done: false }); return pr; }
-function openDlg(n) { dlgNpc = n; $("#dlg").hidden = false; $("#talk").hidden = true; showStep(); }
-function closeDlg() { stopMic(); dlgNpc = null; $("#dlg").hidden = true; try { speechSynthesis.cancel(); } catch (e) {} }
+function openDlg(n) { dlgNpc = n; document.body.classList.add("talking"); $("#dlg").hidden = false; $("#talk").hidden = true; showStep(); }
+function closeDlg() { stopMic(); dlgNpc = null; document.body.classList.remove("talking"); $("#dlg").hidden = true; try { speechSynthesis.cancel(); } catch (e) {} }
 function showStep() {
   const n = dlgNpc, pr = cur(), ml = meanLang();
   $("#dlg-name").textContent = n.icon + " " + n.name; $("#dlg-role").textContent = n.role;
@@ -670,7 +733,7 @@ function check(said) {
     pr.step++; if (pr.step >= n.steps.length) { pr.done = true; stars += 3; paintStars(); n.mark.visible = false; n.markDone.visible = true; }
     save(); showStep(); paintQuests();
     if (pr.done) $("#dlg-res").innerHTML = '<span class="score" style="background:var(--ok)">+3 ⭐</span> Hoàn thành nhiệm vụ! Đi tìm người tiếp theo nha 🚶';
-  }, 1400);
+  }, 2200);
 }
 $("#dlg-x").onclick = closeDlg;
 $("#talk").onclick = () => { if (near) openDlg(near); };
@@ -699,6 +762,33 @@ $("#dlg-mic").onclick = () => {
   rec.onend = () => { if (rec) stopMic(); };
   try { rec.start(); } catch (e) { stopMic(); }
 };
+
+
+/* ───────────────────────── Bản đồ nhỏ (góc phải) ───────────────────────── */
+const mini = $("#mini"), mg = mini.getContext("2d"), MS = 320, MW = 62; /* MW: nửa chiều rộng thế giới hiện trên bản đồ (mét) */
+const m2 = (x, z) => [MS / 2 + (x / MW) * (MS / 2), MS / 2 + (z / MW) * (MS / 2)];
+function drawMini() {
+  const pp = player.root.position;
+  mg.fillStyle = "#8cc06a"; mg.fillRect(0, 0, MS, MS);
+  mg.fillStyle = "#575c66";
+  for (const s of [-1, 1]) {
+    let [x0, z0] = m2(-75, s * RING - RW / 2), [x1, z1] = m2(75, s * RING + RW / 2); mg.fillRect(x0, z0, x1 - x0, z1 - z0);
+    [x0, z0] = m2(s * RING - RW / 2, -24); [x1, z1] = m2(s * RING + RW / 2, 75); mg.fillRect(x0, z0, x1 - x0, z1 - z0);
+  }
+  mg.fillStyle = "#e3d6c0"; mg.beginPath(); const [cx, cz] = m2(0, 0); mg.arc(cx, cz, 13 / MW * MS / 2, 0, 7); mg.fill();
+  mg.fillStyle = "#4fb3e0"; mg.beginPath(); mg.arc(cx, cz, 3.6 / MW * MS / 2, 0, 7); mg.fill();
+  mg.fillStyle = "rgba(255,255,255,.75)";
+  for (const c of colliders) if (!c.circle) { const [a, b] = m2(c.x0, c.z0), [d, e] = m2(c.x1, c.z1); mg.fillRect(a, b, d - a, e - b); }
+  mg.font = "26px system-ui, sans-serif"; mg.textAlign = "center"; mg.textBaseline = "middle";
+  for (const n of NPCS) {
+    const [x, z] = m2(n.pos[0], n.pos[1]), done = prog[n.id] && prog[n.id].done;
+    mg.fillStyle = done ? "#20a86b" : "#ff7a59"; mg.beginPath(); mg.arc(x, z, 17, 0, 7); mg.fill();
+    mg.fillText(done ? "✅" : n.icon, x, z + 1);
+  }
+  const [px, pz] = m2(pp.x, pp.z); const a = player.root.rotation.y;
+  mg.save(); mg.translate(px, pz); mg.rotate(-a); mg.fillStyle = "#1d2340"; mg.strokeStyle = "#fff"; mg.lineWidth = 4;
+  mg.beginPath(); mg.moveTo(0, 16); mg.lineTo(11, -10); mg.lineTo(0, -4); mg.lineTo(-11, -10); mg.closePath(); mg.stroke(); mg.fill(); mg.restore();
+}
 
 /* ───────────────────────── Vòng lặp ───────────────────────── */
 const clock = new THREE.Clock();
@@ -768,7 +858,7 @@ function frame() {
   else { camera.position.lerp(camPos, Math.min(1, dt * 6)); camera.lookAt(camTarget); }
   sunLight.position.copy(tmp.copy(sun).multiplyScalar(80).add(camTarget)); sunLight.target.position.copy(camTarget);
 
-  if ((qTick += dt) > 0.5) { qTick = 0; paintQuests(); }
+  if ((qTick += dt) > 0.2) { qTick = 0; paintQuests(); drawMini(); }
   renderer.render(scene, camera);
   requestAnimationFrame(frame);
 }

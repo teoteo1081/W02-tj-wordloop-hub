@@ -22,6 +22,7 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #9cc8ef; fon
 #quests li.done span { text-decoration: line-through; }
 #quests .dist { margin-left: auto; color: #7a809a; font-size: 12px; }
 
+#mini { position: fixed; right: 14px; top: 66px; width: 160px; height: 160px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 6px 18px rgba(0,0,0,.22); z-index: 9; background: #8cc06a; }
 #talk { position: fixed; left: 50%; bottom: 120px; transform: translateX(-50%); z-index: 11; font: 800 18px system-ui, sans-serif; color: #fff; background: var(--accent); border: 0; border-radius: 99px; padding: 12px 22px; box-shadow: 0 8px 22px rgba(255, 122, 89, .45); cursor: pointer; animation: bob 1.4s ease-in-out infinite; }
 #talk kbd { background: rgba(255, 255, 255, .3); border-radius: 6px; padding: 1px 6px; font-size: 13px; }
 @keyframes bob { 50% { transform: translateX(-50%) translateY(-4px); } }
@@ -71,7 +72,10 @@ body.touch #talk kbd { display: none; }
   .stars { padding: 6px 9px; font-size: 13px; }
   #quests { top: auto; bottom: 156px; left: 10px; width: 180px; font-size: 12px; padding: 8px 10px; }
   #quests .dist { display: none; }
-  #talk { bottom: 160px; left: auto; right: 14px; transform: none; animation: none; }
+  #talk { bottom: 46px; left: auto; right: 12px; transform: none; animation: none; font-size: 15px; padding: 10px 16px; }
   #dlg { bottom: 10px; padding: 12px; }
   .task .target { font-size: 18px; }
+  body.talking #quests, body.talking #joy, body.talking #mini { display: none; }
+  #mini { width: 104px; height: 104px; top: 104px; right: 10px; }
+  #quests ul { max-height: 118px; overflow: auto; }
 }
