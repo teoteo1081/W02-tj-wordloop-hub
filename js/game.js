@@ -568,6 +568,8 @@
     var want = !!e.detail; if (want === isDictQ(G.st.qtype)) return;
     vocabSave(); vocabApplyLS(want ? "dict" : "vocab"); G._dOn = null; tellDict();   /* TJ 2026-11-24: trả lại đúng cài đặt đã nhớ của nhóm đó (không ép về kiểu 1) */
   });
+  /* nút 🎮 Chơi game → / 🎧 Dictation → trên thẻ Block (TJ 2026-11-27): chuyển phòng chờ sang đúng loại, lấy cài đặt đã nhớ của loại đó */
+  function wantMode(m) { if (m === "dict" || m === "vocab") document.dispatchEvent(new CustomEvent("tjwl-dictmode", { detail: m === "dict" })); }
   function tellDict() { try { paintDCards(); } catch (e) {} var on = !!(G.st && G.st.hub !== "test" && isDictQ(G.st.qtype)); if (on !== G._dOn) { G._dOn = on; try { document.dispatchEvent(new CustomEvent("tjwl-dictchanged", { detail: on })); } catch (e) {} } }
   function paintMyTgt() {
     tellDict();
@@ -1037,9 +1039,9 @@
       var doc = '<!doctype html><html class="' + esc(d.documentElement.className) + '" data-theme="' + esc(d.documentElement.getAttribute("data-theme") || "") + '"><head><meta charset="utf-8"><link rel="stylesheet" href="' + esc(href) + '"><style>' +
         'html,body{margin:0;background:transparent!important;min-height:0!important;height:auto!important;overflow:hidden} body{padding:4px} .dots,.vchip-del{display:none!important} .block-card{cursor:pointer} .block-card.sel{background-image:linear-gradient(rgba(217,119,106,.10),rgba(217,119,106,.10));box-shadow:inset 0 0 0 1px rgba(217,119,106,.40)}   /* chọn: chỉ ánh hồng nhạt + viền mảnh trong (không đậm) */ ' +
         '.bp-batchrow{margin:12px 0 2px} .bp-batch{border:0;border-radius:999px;padding:6px 14px;background:#d9684b;color:#fff;font:700 14px/1 system-ui,sans-serif;cursor:pointer} .bp-batch.on{box-shadow:0 0 0 2px rgba(217,104,75,.55)}</style></head><body class="' + esc(d.body.className) + '">' + body +
-        '<script>document.addEventListener("click",function(e){var q=e.target.closest("[data-quicktab]");if(q){parent.__tjBpQuick(q.dataset.open,q.dataset.quicktab);return;}var g=e.target.closest("[data-gameblock]"),m=e.target.closest("[data-boardblock]"),t=e.target.closest("[data-bt]"),k=e.target.closest(".block-card[data-block]");if(g)parent.__tjBp("play",g.dataset.gameblock);else if(m)parent.__tjBp("board",m.dataset.boardblock);else if(t)parent.__tjBp("bt",t.dataset.bt);else if(k)parent.__tjBp("bk",k.dataset.block);});' +
+        '<script>document.addEventListener("click",function(e){var q=e.target.closest("[data-quicktab]");if(q){parent.__tjBpQuick(q.dataset.open,q.dataset.quicktab);return;}var dc=e.target.closest("[data-dictblock]");if(dc){parent.__tjBp("dict",dc.dataset.dictblock);return;}var g=e.target.closest("[data-gameblock]"),m=e.target.closest("[data-boardblock]"),t=e.target.closest("[data-bt]"),k=e.target.closest(".block-card[data-block]");if(g)parent.__tjBp("play",g.dataset.gameblock);else if(m)parent.__tjBp("board",m.dataset.boardblock);else if(t)parent.__tjBp("bt",t.dataset.bt);else if(k)parent.__tjBp("bk",k.dataset.block);});' +
         'function rep(){parent.__tjBpH&&parent.__tjBpH(document.documentElement.scrollHeight);}new ResizeObserver(rep).observe(document.body);setTimeout(rep,300);setTimeout(rep,1200);<\/script></body></html>';
-      box.innerHTML = '<h3 class="g-bph">📦 Chọn Batch / Block <span class="g-sub">(nút 🎮 Chơi game → trên thẻ = vào chơi ngay với thiết lập ở trên)</span></h3><iframe id="l-bpframe" class="g-bpframe" title="Chọn Batch / Block" scrolling="no"></iframe>';
+      box.innerHTML = '<h3 class="g-bph">📦 Chọn Batch / Block <span class="g-sub">(🎮 Chơi game → = game Từ vựng · 🎧 Dictation → = nghe rồi gõ lại — vào chơi ngay, mỗi loại dùng cài đặt đã nhớ của nó)</span></h3><iframe id="l-bpframe" class="g-bpframe" title="Chọn Batch / Block" scrolling="no"></iframe>';
       var fr = $("#l-bpframe"); fr.srcdoc = doc; box.hidden = false;
       return true;
     } catch (e) { return false; }
@@ -1051,7 +1053,7 @@
     var R = bpGroups(); if (!R || !R.groups.length) { box.hidden = true; box.innerHTML = ""; return; }
     var sel = bpSel();
     if (bpLearningCards(box, R, sel)) return;   /* thẻ Block y hệt Learning (khung riêng, CSS của app) */
-    var h = '<h3 class="g-bph">📦 Chọn Batch / Block <span class="g-sub">(nút 🎮 Chơi game → trên thẻ = vào chơi ngay với thiết lập ở trên)</span></h3>', ids = [];
+    var h = '<h3 class="g-bph">📦 Chọn Batch / Block <span class="g-sub">(🎮 Chơi game → = game Từ vựng · 🎧 Dictation → = nghe rồi gõ lại — vào chơi ngay, mỗi loại dùng cài đặt đã nhớ của nó)</span></h3>', ids = [];
     R.groups.forEach(function (g) {
       var all = g.blocks.every(function (b) { return sel[b.id]; });
       h += '<div class="g-bpb"><button type="button" class="g-bpbatch' + (all ? " on" : "") + '" data-bt="' + esc(g.batch.id) + '">' + esc(g.batch.name) + "</button>";
@@ -1062,7 +1064,7 @@
         h += '<div class="g-bcard' + (sel[b.id] ? " on" : "") + '" data-bk="' + esc(b.id) + '" role="button" tabindex="0"><div class="g-bpath">' + esc(pathOf({ table: "blocks", id: b.id, title: b.name })) + "</div>" +
           '<div class="g-bhead"><b>' + esc(b.name) + "</b>" + chips + (BPD.star[b.id] ? '<span class="g-blv star">⭐ ' + BPD.star[b.id] + "</span>" : "") + (BPD.wrong[b.id] ? '<span class="g-blv bad">❌ ' + BPD.wrong[b.id] + "</span>" : "") + bpStatus(b.id) + (sel[b.id] ? '<span class="g-bsel">✓ Đã chọn</span>' : "") + "</div>" +
           /* TJ 2026-10-15: danh sách đơn giản này (Block ở Notebook KHÁC màn Learning đang mở) trước đây KHÔNG có nút — nay có 🎮/🖤 như thẻ Learning */
-          '<div class="g-bbtns"><button type="button" class="g-btn g-btn-sm" data-bpplay="' + esc(b.id) + '">🎮 Chơi game →</button><button type="button" class="g-btn g-btn-soft g-btn-sm" data-bpboard="' + esc(b.id) + '">🖤 Mở bảng</button></div>' +
+          '<div class="g-bbtns"><button type="button" class="g-btn g-btn-soft g-btn-sm" data-bpboard="' + esc(b.id) + '">🖤 Mở bảng</button><button type="button" class="g-btn g-btn-sm" data-bpplay="' + esc(b.id) + '">🎮 Chơi game →</button><button type="button" class="g-btn g-btn-sm g-bpdict" data-bpdict="' + esc(b.id) + '">🎧 Dictation →</button></div>' +
           '<div class="g-bwords">' + (ws.length ? ws.map(function (w) { return '<span class="g-bw">' + esc(w.term) + "</span>"; }).join("") : '<span class="g-sub">' + (BPD.loaded[b.id] ? "Chưa có từ" : "Đang tải từ…") + "</span>") + "</div></div>";
       });
       h += "</div>";
@@ -1080,7 +1082,7 @@
     if (!G.isHost || !TREE || !G.st) return;
     if (G.st.phase !== "lobby") return;
     if (kind === "bt") { var bt = bpById(TREE.batches, id); if (!bt) return; picked = [{ table: "batches", id: bt.id, title: bt.name }]; }
-    else if (kind === "play") {   /* 🎮 Chơi game → : vào chơi ngay với Block này + thiết lập ở trên (TJ 2026-10-15) */
+    else if (kind === "play" || kind === "dict") {   /* 🎮 Chơi game → (Từ vựng) / 🎧 Dictation → : vào chơi ngay với Block này, mỗi loại lấy cài đặt đã nhớ của nó (TJ 2026-10-15, 2026-11-27) */
       var blk = bpById(TREE.blocks, id); if (!blk || G.bpStarting) return;
       picked = [{ table: "blocks", id: id, title: blk.name }]; G.bpStarting = true;
       setTimeout(function () { G.bpStarting = false; if (G.st && G.st.phase === "lobby") $("#l-start").click(); }, 600);
@@ -1091,6 +1093,7 @@
       picked = cur;
     } else return;
     G.bpInternal = true; paintTree(); hostSetScope(); G.bpInternal = true; paintBlockPicker();
+    if (kind === "play" || kind === "dict") wantMode(kind === "dict" ? "dict" : "vocab");   /* sau khi đã đổi chủ đề -> kho từ tải theo chủ đề mới */
   }
   window.__tjBp = bpPick;
   window.__tjBpQuick = function (bid, tab) {   /* icon tab nhanh trên thẻ (Từ vựng / Bài đọc…): về Learning rồi mở Block ở tab đó (game giữ nguyên chạy nền) */
@@ -1098,8 +1101,8 @@
   };
   window.__tjBpH = function (h) { var f = $("#l-bpframe"); if (f) f.style.height = Math.max(60, h + 6) + "px"; };
   $("#l-blocks").addEventListener("click", function (e) {
-    var t = e.target.closest("[data-bt]"), k = e.target.closest("[data-bk]"), pl = e.target.closest("[data-bpplay]"), bd = e.target.closest("[data-bpboard]");
-    if (pl) bpPick("play", pl.dataset.bpplay); else if (bd) bpPick("board", bd.dataset.bpboard);   /* nút trong thẻ: không kèm việc chọn thẻ */
+    var t = e.target.closest("[data-bt]"), k = e.target.closest("[data-bk]"), pl = e.target.closest("[data-bpplay]"), bd = e.target.closest("[data-bpboard]"), dc = e.target.closest("[data-bpdict]");
+    if (dc) bpPick("dict", dc.dataset.bpdict); else if (pl) bpPick("play", pl.dataset.bpplay); else if (bd) bpPick("board", bd.dataset.bpboard);   /* nút trong thẻ: không kèm việc chọn thẻ */
     else if (t) bpPick("bt", t.dataset.bt); else if (k) bpPick("bk", k.dataset.bk);
   });
   /* PHÒNG CỐ ĐỊNH của host: lấy phòng mới nhất của host, chưa có thì tạo — mã/link dùng mãi */
@@ -2107,12 +2110,12 @@
     if (e.origin !== location.origin || !e.data || e.data.type !== "tjwl-game-scope") return;
     var sc = (e.data.scope || []).filter(function (p) { return p && p.table && p.id; });
     if (!sc.length) return;
-    if (!G.isHost || !G.st) { G.pendingScope = sc; return; }   /* chưa vào phòng xong -> initHostLobby áp sau */
+    if (!G.isHost || !G.st) { G.pendingScope = sc; G.pendingMode = e.data.mode || ""; return; }   /* chưa vào phòng xong -> initHostLobby áp sau */
     if (!(await hostPrepLobby())) return;
     toVocabHub(); vocabApplyLS();
     picked = sc.map(function (p) { return { table: p.table, id: p.id, title: p.title || p.id }; });
     if (TREE) paintTree(); else paintPicked();
-    hostSetScope();
+    hostSetScope(); wantMode(e.data.mode);
   });
   /* 🖤 các Block nằm dưới 1 mục của cây (Hub/Notebook/Section/Page/Batch/Block) — tối đa 60 (giới hạn của bảng) */
   function blocksUnder(table, id) {
@@ -2170,7 +2173,7 @@
   async function initHostLobby() {
     var wantIdle = param("boardidle") === "1" || !!G.pendingIdle; G.pendingIdle = false;
     var wantBoard = param("board") === "1" || !!G.pendingBoard; G.pendingBoard = false;
-    var sc = param("scope");
+    var sc = param("scope"), dmode = param("dmode") || G.pendingMode || ""; G.pendingMode = "";
     if (!sc && G.pendingScope) { var ps = G.pendingScope[0]; sc = ps.table + ":" + ps.id; G.pendingTitle = ps.title; G.pendingScope = null; }
     if (sc) toVocabHub();   /* từ bài học bấm Chơi game: về Hub từ vựng, không kẹt ở TOEIC */
     if (!G.prefSnap) vocabApplyLS();   /* host mới vào / tải lại không có trạng thái từ máy khác -> lấy lại kiểu chơi đã chọn */
@@ -2178,7 +2181,7 @@
       var i = sc.indexOf(":");
       picked = [{ table: sc.slice(0, i), id: sc.slice(i + 1), title: param("title") || G.pendingTitle || sc }];
       history.replaceState(null, "", "?room=" + G.room.code + embQ());
-      hostSetScope();
+      hostSetScope(); wantMode(dmode);
     } else {
       picked = (G.st.scope || []).map(function (p) { return { table: p.table, id: p.id, title: p.title || p.id }; });
       await ensurePool(G.st.scope);

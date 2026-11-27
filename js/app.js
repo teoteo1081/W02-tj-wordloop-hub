@@ -926,7 +926,8 @@
   function gameBtnHtml(b) {
     if (!(w.DB.mode === "cloud" && w.Auth.user && w.Auth.user.id === "f3fd95c9-06e8-4d39-b6f2-efc113d436cf" && !w.Auth.viewAsUserId)) return "";
     return '<button class="btn-board-block" data-boardblock="' + b.id + '" data-title="' + w.esc(b.name || "") + '" title="Mở bảng chung với Block này (bài đọc + bảng từ), người chơi cùng xem và vẽ">🖤 Mở bảng</button>' +
-      '<button class="btn-game-block" data-gameblock="' + b.id + '" data-title="' + w.esc(b.name || "") + '" title="Chơi game với Block này (đạt ≥ 80% là pass, vào chu kỳ Tony Buzan)">🎮 Chơi game →</button>';
+      '<button class="btn-game-block" data-gameblock="' + b.id + '" data-title="' + w.esc(b.name || "") + '" title="Chơi game với Block này (đạt ≥ 80% là pass, vào chu kỳ Tony Buzan)">🎮 Chơi game →</button>' +
+      '<button class="btn-dict-block" data-dictblock="' + b.id + '" data-title="' + w.esc(b.name || "") + '" title="🎧 Dictation với Block này (nghe rồi gõ lại), dùng cài đặt Dictation đã nhớ">🎧 Dictation →</button>';   /* TJ 2026-11-27: thêm Dictation, dồn bên phải */
   }
   function quickTabsHtml(blockId) {
     return '<div class="block-quick-tabs">' + QUICK_TABS.map(function (t) {
@@ -4404,9 +4405,11 @@
     w.$("#blocks-list").onclick = async function (e) {
       if (e.target.closest("[data-menu]")) return;
       /* 🖤 chế độ bảng (chưa chọn Block): bấm 1 Block card = đưa Block đó lên bảng (TJ 2026-10-05). TJ 2026-10-06: nút 🎮 Chơi game / Mở bảng trong khung Block có xử lý RIÊNG (không bị nuốt thành "mở Block lên bảng"). */
-      if (document.body.classList.contains("board-skin") && !e.target.closest("[data-gameblock],[data-boardblock]")) { var bsc = e.target.closest(".block-card[data-block]"); if (bsc && w.GameLayer) { w.GameLayer.openBoard("blocks", bsc.dataset.block, ""); return; } }
+      if (document.body.classList.contains("board-skin") && !e.target.closest("[data-gameblock],[data-boardblock],[data-dictblock]")) { var bsc = e.target.closest(".block-card[data-block]"); if (bsc && w.GameLayer) { w.GameLayer.openBoard("blocks", bsc.dataset.block, ""); return; } }
       var gameBtn = e.target.closest("[data-gameblock]");
-      if (gameBtn) { if (w.GameLayer) w.GameLayer.openScope("blocks", gameBtn.dataset.gameblock, gameBtn.dataset.title); return; }
+      if (gameBtn) { if (w.GameLayer) w.GameLayer.openScope("blocks", gameBtn.dataset.gameblock, gameBtn.dataset.title, "vocab"); return; }
+      var dictBtn = e.target.closest("[data-dictblock]");   /* 🎧 Dictation → : mở game với Block này, phòng chờ chuyển sang Dictation (TJ 2026-11-27) */
+      if (dictBtn) { if (w.GameLayer) w.GameLayer.openScope("blocks", dictBtn.dataset.dictblock, dictBtn.dataset.title, "dict"); return; }
       var boardBtn = e.target.closest("[data-boardblock]");
       if (boardBtn) { if (w.GameLayer) w.GameLayer.openBoard("blocks", boardBtn.dataset.boardblock, boardBtn.dataset.title); return; }
 

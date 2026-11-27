@@ -230,16 +230,16 @@
 
   /* Mở game với chủ đề chọn sẵn (nút 🎮 trên Block card / chuột phải "🎮 Mở phòng game"). Game chưa mở -> tạo iframe
      với ?scope=; đã mở -> gửi postMessage để game đổi chủ đề tại chỗ (không tải lại, giữ phòng/người chơi). */
-  function openScope(table, id, title) {
+  function openScope(table, id, title, mode) {   /* mode: "vocab" | "dict" (nút 🎮 / 🎧 trên thẻ Block) — bỏ trống = giữ loại đang chọn */
     if (boardMode || boardOnState) { closeBoardMode(); leaveBoardAny(); }   /* đang ở chế độ Bảng (từ nút Bảng của WordLoop HOẶC nút Bảng trong game): rời Bảng để thấy trang game (lớp game đang bị ẩn) */
     if (!layer.firstChild) {
       var f = document.createElement("iframe");
-      f.src = "game.html?embed=1&t=" + Date.now() + "&scope=" + encodeURIComponent(table + ":" + id) + "&title=" + encodeURIComponent(title || "");
+      f.src = "game.html?embed=1&t=" + Date.now() + "&scope=" + encodeURIComponent(table + ":" + id) + "&title=" + encodeURIComponent(title || "") + (mode ? "&dmode=" + mode : "");
       f.title = "WordLoop Game";
       f.allow = "clipboard-write; autoplay";
       layer.appendChild(f);
     } else {
-      try { layer.firstChild.contentWindow.postMessage({ type: "tjwl-game-scope", scope: [{ table: table, id: id, title: title || id }] }, location.origin); } catch (e) {}
+      try { layer.firstChild.contentWindow.postMessage({ type: "tjwl-game-scope", scope: [{ table: table, id: id, title: title || id }], mode: mode || "" }, location.origin); } catch (e) {}
     }
     if (!isOpen()) open();
   }
