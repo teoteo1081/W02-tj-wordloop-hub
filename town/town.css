@@ -1,0 +1,77 @@
+:root { --ink: #1d2340; --card: rgba(255, 255, 255, .92); --accent: #ff7a59; --ok: #20a86b; --bad: #e0475b; --sun: #ffb84d; }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #9cc8ef; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); -webkit-tap-highlight-color: transparent; }
+#view { position: fixed; inset: 0; }
+#view canvas { display: block; touch-action: none; }
+#loading { position: fixed; inset: 0; display: grid; place-items: center; font-size: 22px; font-weight: 700; color: #fff; background: linear-gradient(#6fa8dc, #f6c38b); z-index: 50; transition: opacity .5s; }
+#loading.off { opacity: 0; pointer-events: none; }
+
+#hud { position: fixed; top: 0; left: 0; right: 0; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding: 10px 14px; padding-top: max(10px, env(safe-area-inset-top)); pointer-events: none; z-index: 10; }
+#hud > * { pointer-events: auto; }
+.brand { background: var(--card); padding: 8px 12px; border-radius: 14px; font-weight: 800; box-shadow: 0 4px 14px rgba(0, 0, 0, .12); }
+.tag { font-size: 11px; font-weight: 700; background: var(--sun); color: #5a3300; padding: 2px 7px; border-radius: 99px; margin-left: 4px; vertical-align: 2px; }
+.langs { display: flex; gap: 6px; background: var(--card); padding: 6px 10px; border-radius: 14px; box-shadow: 0 4px 14px rgba(0, 0, 0, .12); font-size: 13px; font-weight: 600; }
+.langs select { font: inherit; border: 1px solid #d3d8ea; border-radius: 8px; padding: 3px 4px; background: #fff; }
+.stars { margin-left: auto; background: var(--card); padding: 8px 12px; border-radius: 14px; font-weight: 800; box-shadow: 0 4px 14px rgba(0, 0, 0, .12); }
+
+#quests { position: fixed; left: 14px; top: 70px; width: 230px; background: var(--card); border-radius: 16px; padding: 10px 12px; box-shadow: 0 6px 20px rgba(0, 0, 0, .14); z-index: 9; font-size: 13px; }
+#quests h4 { margin: 0 0 6px; font-size: 14px; }
+#quests li { list-style: none; padding: 5px 0; border-top: 1px dashed #e1e4f0; display: flex; gap: 6px; align-items: center; }
+#quests ul { margin: 0; padding: 0; }
+#quests li.done { color: var(--ok); }
+#quests li.done span { text-decoration: line-through; }
+#quests .dist { margin-left: auto; color: #7a809a; font-size: 12px; }
+
+#talk { position: fixed; left: 50%; bottom: 120px; transform: translateX(-50%); z-index: 11; font: 800 18px system-ui, sans-serif; color: #fff; background: var(--accent); border: 0; border-radius: 99px; padding: 12px 22px; box-shadow: 0 8px 22px rgba(255, 122, 89, .45); cursor: pointer; animation: bob 1.4s ease-in-out infinite; }
+#talk kbd { background: rgba(255, 255, 255, .3); border-radius: 6px; padding: 1px 6px; font-size: 13px; }
+@keyframes bob { 50% { transform: translateX(-50%) translateY(-4px); } }
+
+#dlg { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); width: min(620px, calc(100% - 24px)); max-height: calc(100% - 90px); overflow: auto; background: var(--card); backdrop-filter: blur(8px); border-radius: 20px; padding: 14px 16px; box-shadow: 0 12px 34px rgba(0, 0, 0, .25); z-index: 20; }
+#dlg .who { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+#dlg .who b { font-size: 17px; }
+#dlg .who span { color: #7a809a; font-size: 13px; }
+#dlg-x { margin-left: auto; border: 0; background: #eef0f7; border-radius: 99px; width: 30px; height: 30px; cursor: pointer; font-size: 14px; }
+.npc-line { display: flex; gap: 10px; align-items: flex-start; background: #f3f5fb; border-radius: 14px; padding: 10px 12px; }
+.npc-line p { margin: 0; font-size: 17px; font-weight: 600; }
+.say { border: 0; background: #fff; border-radius: 99px; width: 36px; height: 36px; flex: none; cursor: pointer; box-shadow: 0 2px 6px rgba(0, 0, 0, .1); font-size: 16px; }
+.mean { color: #6b7190; font-size: 14px !important; font-weight: 500 !important; margin-top: 3px !important; }
+.task { margin-top: 10px; }
+.task .ask { margin: 0 0 4px; font-size: 13px; font-weight: 700; color: var(--accent); }
+.task .target { margin: 0; font-size: 20px; font-weight: 800; }
+.task .py { margin: 2px 0 0; color: #5160a8; font-size: 15px; }
+.task .py:empty { display: none; }
+.row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.row button { font: 700 15px system-ui, sans-serif; border: 0; border-radius: 12px; padding: 10px 14px; cursor: pointer; }
+.row .ghost { background: #eef0f7; color: var(--ink); }
+.row .mic { flex: 1; background: var(--accent); color: #fff; }
+.row .mic.on { background: var(--bad); animation: pulse 1s infinite; }
+@keyframes pulse { 50% { opacity: .75; } }
+.row.type input { flex: 1; min-width: 0; font: 15px system-ui, sans-serif; padding: 10px 12px; border: 1px solid #d3d8ea; border-radius: 12px; }
+.row.type button { background: #5160a8; color: #fff; }
+.result { margin: 10px 0 0; font-size: 15px; min-height: 1em; }
+.result:empty { display: none; }
+.result .w-ok { color: var(--ok); font-weight: 700; }
+.result .w-bad { color: var(--bad); font-weight: 700; text-decoration: underline wavy; }
+.result .score { display: inline-block; padding: 2px 9px; border-radius: 99px; color: #fff; font-weight: 800; margin-right: 6px; }
+
+#joy { position: fixed; left: 22px; bottom: 22px; width: 120px; height: 120px; border-radius: 50%; background: rgba(255, 255, 255, .25); border: 2px solid rgba(255, 255, 255, .6); z-index: 8; display: none; touch-action: none; }
+#joy i { position: absolute; left: 50%; top: 50%; width: 52px; height: 52px; margin: -26px 0 0 -26px; border-radius: 50%; background: rgba(255, 255, 255, .85); box-shadow: 0 4px 12px rgba(0, 0, 0, .2); }
+#help { position: fixed; right: 14px; bottom: 10px; margin: 0; font-size: 12px; color: #fff; text-shadow: 0 1px 3px rgba(0, 0, 0, .6); z-index: 8; }
+#help kbd { background: rgba(0, 0, 0, .35); border-radius: 5px; padding: 1px 5px; }
+
+body.touch #joy { display: block; }
+body.touch #help { display: none; }
+body.touch #talk kbd { display: none; }
+
+@media (max-width: 640px) {
+  #hud { gap: 6px; padding: 8px; padding-top: max(8px, env(safe-area-inset-top)); }
+  .brand { font-size: 13px; padding: 6px 9px; }
+  .brand .tag { display: none; }
+  .langs { font-size: 12px; padding: 5px 7px; }
+  .stars { padding: 6px 9px; font-size: 13px; }
+  #quests { top: auto; bottom: 156px; left: 10px; width: 180px; font-size: 12px; padding: 8px 10px; }
+  #quests .dist { display: none; }
+  #talk { bottom: 160px; left: auto; right: 14px; transform: none; animation: none; }
+  #dlg { bottom: 10px; padding: 12px; }
+  .task .target { font-size: 18px; }
+}

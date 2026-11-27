@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Thành phố WordLoop</title>
+<link rel="stylesheet" href="town.css?v=1">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<!-- BẢN MẪU (TJ 2026-11-27): thành phố 3D luyện nói. Chỉ trên nhánh riêng, chưa nối với phòng game / Supabase. -->
+<div id="view"></div>
+
+<div id="loading">🏙 Đang dựng thành phố…</div>
+
+<header id="hud">
+  <div class="brand">🏙 Thành phố WordLoop <span class="tag">bản mẫu</span></div>
+  <div class="langs">
+    <label>🎯 Học <select id="sel-learn">
+      <option value="en">English</option><option value="es">Español</option><option value="zh">中文</option><option value="vi">Tiếng Việt</option>
+    </select></label>
+    <label>💬 Nghĩa <select id="sel-mean">
+      <option value="vi">Tiếng Việt</option><option value="en">English</option><option value="es">Español</option><option value="zh">中文</option>
+    </select></label>
+  </div>
+  <div class="stars" id="stars">⭐ 0</div>
+</header>
+
+<aside id="quests"></aside>
+
+<button id="talk" type="button" hidden>💬 Nói chuyện <kbd>E</kbd></button>
+
+<section id="dlg" hidden>
+  <div class="who"><b id="dlg-name"></b><span id="dlg-role"></span><button type="button" id="dlg-x" aria-label="Đóng">✕</button></div>
+  <div class="npc-line"><button type="button" class="say" id="dlg-hear" aria-label="Nghe">🔊</button><div><p id="dlg-npc"></p><p class="mean" id="dlg-npc-m"></p></div></div>
+  <div class="task" id="dlg-task">
+    <p class="ask">🎯 Nhiệm vụ: nói câu này</p>
+    <p class="target" id="dlg-target"></p>
+    <p class="py" id="dlg-py"></p>
+    <p class="mean" id="dlg-target-m"></p>
+    <div class="row">
+      <button type="button" id="dlg-model" class="ghost">🔊 Nghe mẫu</button>
+      <button type="button" id="dlg-mic" class="mic">🎤 Bấm để nói</button>
+    </div>
+    <div class="row type"><input id="dlg-type" placeholder="Hoặc gõ câu trả lời…" autocomplete="off"><button type="button" id="dlg-send">Gửi</button></div>
+    <p class="result" id="dlg-res"></p>
+  </div>
+</section>
+
+<div id="joy"><i></i></div>
+<p id="help">Đi: <kbd>W A S D</kbd> / mũi tên · Xoay: kéo chuột · Nói chuyện: <kbd>E</kbd></p>
+
+<script type="module" src="town.js?v=1"></script>
+</body>
+</html>
