@@ -835,9 +835,9 @@ function onRpMsg(m, pr) {
   } else if (m.t === "rp-no" && pendingInv && pendingInv.sid === m.sid) {
     $("#dlg-pair").innerHTML = `<p class="sub">${esc(pendingInv.name)} để sau nha. Thử lại sau cũng được 😊</p>`; pendingInv = null;
   } else if (rp && m.sid === rp.sid) {
-    if (m.t === "rp-adv" && m.i === rp.i) {
-      const ln = rp.lines[rp.i]; speak(ln.text, rp.lang, rp.npc.look.female); bubble(pr, ln.text);
-      rp.i++; paintRp();
+    if (m.t === "rp-adv" && m.i >= rp.i && m.i < rp.lines.length) {   /* >= : không mất lượt nếu tin tới sớm */
+      const ln = rp.lines[m.i]; speak(ln.text, rp.lang, rp.npc.look.female); bubble(pr, ln.text);
+      rp.i = m.i + 1; if (!busy) paintRp();
     } else if (m.t === "rp-swap") { startRp({ sid: m.nsid, npc: rp.npc, lang: rp.lang, myRole: 1 - rp.myRole, partner: rp.partner }); }
     else if (m.t === "rp-quit") { $("#rp-turn").textContent = `${rp.partnerName} đã thoát nhập vai.`; $("#rp-task").hidden = true; $("#rp-end").hidden = false; $("#rp-swap").hidden = true; }
   }
@@ -875,8 +875,8 @@ function rpCheck(said) {
   if (!pass) return;
   busy = true; stars += 1; paintStars(); bubbleMe(ln.text);
   net.send("rp-adv", { sid: rp.sid, to: rp.partner, i: rp.i, pct: Math.round(g.score * 100) });
-  const sid = rp.sid;
-  setTimeout(() => { busy = false; if (!rp || rp.sid !== sid) return; rp.i++; save(); paintRp(); }, 1500);
+  const sid = rp.sid; rp.i++;   /* tăng NGAY để tin của bạn tới trong lúc chờ không bị bỏ qua; chỉ vẽ lại sau 1,5 giây */
+  setTimeout(() => { busy = false; if (!rp || rp.sid !== sid) return; save(); paintRp(); }, 1500);
 }
 $("#rp-send").onclick = () => { const v = $("#rp-type").value.trim(); if (v) rpCheck(v); };
 $("#rp-mic").onclick = () => startMic($("#rp-mic"), rp.lang, () => rp.lines[rp.i].text, $("#rp-res"), rpCheck);
