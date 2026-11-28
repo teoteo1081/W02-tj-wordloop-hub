@@ -142,3 +142,10 @@ body.menu #hud, body.menu #quests, body.menu #mini, body.menu #talk, body.menu #
   #roomchip { padding: 6px 9px; font-size: 12px; }
 }
 [hidden] { display: none !important; }
+/* bấm tên địa điểm / bản đồ nhỏ để nhảy tới (2026-11-28) */
+#quests li[data-npc] { cursor: pointer; border-radius: 8px; transition: background .15s; }
+#quests li[data-npc]:hover { background: #fff1ec; }
+#quests h4 small { font-weight: 600; color: #ff7a59; font-size: 11px; }
+#mini { cursor: pointer; }
+body:not(.menu) #view canvas { cursor: crosshair; }
+body.talking #help { display: none; }

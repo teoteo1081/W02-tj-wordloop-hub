@@ -553,14 +553,18 @@ let camYaw = 0, camPitch = 0.3, camDist = 6.5;
 { /* kéo để xoay camera */
   let drag = null;
   const cv = renderer.domElement;
-  cv.addEventListener("pointerdown", (e) => { drag = { id: e.pointerId, x: e.clientX, y: e.clientY }; cv.setPointerCapture(e.pointerId); });
+  cv.addEventListener("pointerdown", (e) => { drag = { id: e.pointerId, x: e.clientX, y: e.clientY, x0: e.clientX, y0: e.clientY, t0: performance.now() }; cv.setPointerCapture(e.pointerId); });
   cv.addEventListener("pointermove", (e) => {
     if (!drag || drag.id !== e.pointerId) return;
     if (phase === "menu") { player.root.rotation.y += (e.clientX - drag.x) * 0.012; drag.x = e.clientX; return; }
     camYaw -= (e.clientX - drag.x) * 0.006; camPitch = THREE.MathUtils.clamp(camPitch + (e.clientY - drag.y) * 0.004, 0.08, 1.1);
     drag.x = e.clientX; drag.y = e.clientY;
   });
-  cv.addEventListener("pointerup", () => { drag = null; });
+  cv.addEventListener("pointerup", (e) => {
+    /* bấm nhanh, không kéo = BẤM CHỌN chỗ đi tới (TJ 2026-11-28: "sử dụng chuột ko đi vào được nơi cần đi") */
+    if (drag && Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0) < 7 && performance.now() - drag.t0 < 700) clickWorld(e.clientX, e.clientY);
+    drag = null;
+  });
   cv.addEventListener("wheel", (e) => { camDist = THREE.MathUtils.clamp(camDist + e.deltaY * 0.01, 3.5, 14); }, { passive: true });
 }
 const joy = { x: 0, y: 0 };
@@ -590,6 +594,49 @@ function collide(pos) {
   pos.x = THREE.MathUtils.clamp(pos.x, -70, 70); pos.z = THREE.MathUtils.clamp(pos.z, -42, 70);
 }
 
+/* ───────────────────────── Đi bằng chuột + nhảy tới địa điểm ───────────────────────── */
+let goTo = null;   /* { x, z, npc, best, stuckT } — đang tự đi tới chỗ đã bấm */
+const ray = new THREE.Raycaster(), groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), hitV = new THREE.Vector3();
+const goMark = new THREE.Mesh(new THREE.RingGeometry(0.32, 0.5, 28), new THREE.MeshBasicMaterial({ color: 0xff7a59, transparent: true, opacity: 0.9, depthWrite: false }));
+goMark.rotation.x = -Math.PI / 2; goMark.position.y = 0.06; goMark.visible = false; scene.add(goMark);
+function setGoTo(x, z, npc) {
+  goTo = { x, z, npc: npc || null, best: Infinity, stuckT: 0 };
+  goMark.position.set(x, 0.06, z); goMark.visible = !npc;
+}
+function clickWorld(cx, cy) {
+  if (phase !== "play" || dlgNpc || rp) return;
+  ray.setFromCamera({ x: (cx / innerWidth) * 2 - 1, y: -(cy / innerHeight) * 2 + 1 }, camera);
+  /* bấm trúng người dân -> đi tới rồi tự mở nói chuyện */
+  const hits = ray.intersectObjects(NPCS.map((n) => n.p.root), true);
+  if (hits.length) {
+    let o = hits[0].object; const n = NPCS.find((m) => { let q = o; while (q) { if (q === m.p.root) return true; q = q.parent; } return false; });
+    if (n) { setGoTo(n.pos[0] + Math.sin(n.face) * 1.8, n.pos[1] + Math.cos(n.face) * 1.8, n); return; }
+  }
+  if (ray.ray.intersectPlane(groundPlane, hitV)) setGoTo(hitV.x, hitV.z, null);
+}
+/* nhảy thẳng tới trước mặt người dân và mở nói chuyện (bấm tên trong danh sách nhiệm vụ / bấm bản đồ nhỏ) */
+function jumpTo(n) {
+  if (phase !== "play" || rp) return;
+  if (dlgNpc) closeDlg();
+  const pp = player.root.position;
+  pp.set(n.pos[0] + Math.sin(n.face) * 1.9, 0, n.pos[1] + Math.cos(n.face) * 1.9); collide(pp);
+  player.root.rotation.y = n.face + Math.PI; camYaw = n.face; camPitch = 0.42;
+  camera.position.set(pp.x + Math.sin(camYaw) * camDist, 3.5, pp.z + Math.cos(camYaw) * camDist);
+  goTo = null; goMark.visible = false;
+  openDlg(n);
+}
+$("#quests").addEventListener("pointerdown", (e) => { const li = e.target.closest("[data-npc]"); if (li) jumpTo(NPCS.find((n) => n.id === li.dataset.npc)); });
+$("#mini").addEventListener("click", (e) => {
+  if (phase !== "play" || rp) return;
+  const r = mini.getBoundingClientRect(), mx = (e.clientX - r.left) / r.width * MS, my = (e.clientY - r.top) / r.height * MS;
+  const x = (mx - MS / 2) / (MS / 2) * MW, z = (my - MS / 2) / (MS / 2) * MW;
+  let best = null, bd = 9;
+  for (const n of NPCS) { const d = Math.hypot(n.pos[0] - x, n.pos[1] - z); if (d < bd) { bd = d; best = n; } }
+  if (best) { jumpTo(best); return; }
+  if (dlgNpc) closeDlg();
+  const pp = player.root.position; pp.set(x, 0, z); collide(pp); goTo = null; goMark.visible = false;
+});
+
 /* ───────────────────────── Tiếng, sao, giọng đọc, chấm điểm ───────────────────────── */
 const prog = store.get("tjwl_town_prog_v1", {});
 let stars = store.get("tjwl_town_stars_v1", 0);
@@ -604,11 +651,13 @@ function markNpcDone(n) { const pr = prog[n.id] || (prog[n.id] = { step: 0 }); p
 
 function paintQuests() {
   const pp = player.root.position;
-  $("#quests").innerHTML = "<h4>📜 Nhiệm vụ nói</h4><ul>" + NPCS.map((n) => {
+  const html = "<h4>📜 Nhiệm vụ nói <small>· bấm để tới</small></h4><ul>" + NPCS.map((n) => {
     const done = prog[n.id] && prog[n.id].done, d = Math.round(Math.hypot(pp.x - n.pos[0], pp.z - n.pos[1]));
-    return `<li class="${done ? "done" : ""}">${done ? "✅" : n.icon}<span>${n.title}</span><em class="dist">${done ? "" : d + " m"}</em></li>`;
+    return `<li data-npc="${n.id}" title="Bấm để tới chỗ ${n.name}" class="${done ? "done" : ""}">${done ? "✅" : n.icon}<span>${n.title}</span><em class="dist">${done ? "" : d + " m"}</em></li>`;
   }).join("") + "</ul>";
+  if (html !== lastQuestHtml) { lastQuestHtml = html; $("#quests").innerHTML = html; }   /* không vẽ lại khi không đổi -> bấm không bị mất */
 }
+let lastQuestHtml = "";
 
 let voices = [];
 function loadVoices() { try { voices = speechSynthesis.getVoices(); } catch (e) {} }
@@ -997,7 +1046,24 @@ function frame() {
       f = (keys.KeyW || keys.ArrowUp ? 1 : 0) - (keys.KeyS || keys.ArrowDown ? 1 : 0) - joy.y;
       r = (keys.KeyD || keys.ArrowRight ? 1 : 0) - (keys.KeyA || keys.ArrowLeft ? 1 : 0) + joy.x;
     }
-    const mag = Math.min(1, Math.hypot(f, r));
+    let mag = Math.min(1, Math.hypot(f, r));
+    if (mag > 0.05 || dlgNpc || rp) { if (goTo) { goTo = null; goMark.visible = false; } }   /* tự bấm phím = thôi tự đi */
+    if (goTo && mag <= 0.05) {
+      const gx = goTo.x - pp.x, gz = goTo.z - pp.z, gd = Math.hypot(gx, gz);
+      if (gd < 0.35) {
+        const n = goTo.npc; goTo = null; goMark.visible = false;
+        if (n) { player.root.rotation.y = Math.atan2(n.pos[0] - pp.x, n.pos[1] - pp.z); openDlg(n); }
+      } else {
+        /* kẹt (vướng nhà/cây) quá 1 giây -> dừng */
+        if (gd < goTo.best - 0.05) { goTo.best = gd; goTo.stuckT = 0; } else if ((goTo.stuckT += dt) > 1) { const n = goTo.npc; goTo = null; goMark.visible = false; if (n && Math.hypot(n.pos[0] - pp.x, n.pos[1] - pp.z) < 3) openDlg(n); }
+        if (goTo) {
+          const run = gd > 4 ? 5 : 3.2; speed = run;
+          const st = Math.min(gd, run * dt); pp.x += gx / gd * st; pp.z += gz / gd * st;
+          const want = Math.atan2(gx, gz); let d = want - player.root.rotation.y; d = Math.atan2(Math.sin(d), Math.cos(d));
+          player.root.rotation.y += d * Math.min(1, dt * 12);
+        }
+      }
+    }
     if (mag > 0.05) {
       const fx = -Math.sin(camYaw), fz = -Math.cos(camYaw);
       const dx = (fx * f - fz * r), dz = (fz * f + fx * r), L = Math.hypot(dx, dz) || 1;
@@ -1098,5 +1164,5 @@ window.__town = {
   cam(p, l) { freeCam = p ? { pos: new THREE.Vector3(...p), look: new THREE.Vector3(...l) } : null; },
   lang(a, b) { $("#sel-learn").value = a; $("#sel-learn").onchange({ target: { value: a } }); if (b) { $("#sel-mean").value = b; $("#sel-mean").onchange({ target: { value: b } }); } },
   play() { if (!me.name) me.name = "Test"; enterGame(); },
-  state() { return { phase, room: roomCode, peers: [...peers.values()].map((p) => p.name), rp: rp && { i: rp.i, myRole: rp.myRole, n: rp.lines.length }, net: net && net.mode }; },
+  state() { const P = player.root.position; return { pos: [+P.x.toFixed(1), +P.z.toFixed(1)], goTo: goTo && [+goTo.x.toFixed(1), +goTo.z.toFixed(1)], phase, room: roomCode, peers: [...peers.values()].map((p) => p.name), rp: rp && { i: rp.i, myRole: rp.myRole, n: rp.lines.length }, net: net && net.mode }; },
 };
