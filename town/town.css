@@ -27,11 +27,11 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #9cc8ef; fon
 #talk kbd { background: rgba(255, 255, 255, .3); border-radius: 6px; padding: 1px 6px; font-size: 13px; }
 @keyframes bob { 50% { transform: translateX(-50%) translateY(-4px); } }
 
-#dlg { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); width: min(620px, calc(100% - 24px)); max-height: calc(100% - 90px); overflow: auto; background: var(--card); backdrop-filter: blur(8px); border-radius: 20px; padding: 14px 16px; box-shadow: 0 12px 34px rgba(0, 0, 0, .25); z-index: 20; }
-#dlg .who { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
-#dlg .who b { font-size: 17px; }
-#dlg .who span { color: #7a809a; font-size: 13px; }
-#dlg-x { margin-left: auto; border: 0; background: #eef0f7; border-radius: 99px; width: 30px; height: 30px; cursor: pointer; font-size: 14px; }
+.panel { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); width: min(620px, calc(100% - 24px)); max-height: calc(100% - 90px); overflow: auto; background: var(--card); backdrop-filter: blur(8px); border-radius: 20px; padding: 14px 16px; box-shadow: 0 12px 34px rgba(0, 0, 0, .25); z-index: 20; }
+.panel .who { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+.panel .who b { font-size: 17px; }
+.panel .who span { color: #7a809a; font-size: 13px; }
+.panel .x { margin-left: auto; border: 0; background: #eef0f7; border-radius: 99px; width: 30px; height: 30px; cursor: pointer; font-size: 14px; }
 .npc-line { display: flex; gap: 10px; align-items: flex-start; background: #f3f5fb; border-radius: 14px; padding: 10px 12px; }
 .npc-line p { margin: 0; font-size: 17px; font-weight: 600; }
 .say { border: 0; background: #fff; border-radius: 99px; width: 36px; height: 36px; flex: none; cursor: pointer; box-shadow: 0 2px 6px rgba(0, 0, 0, .1); font-size: 16px; }
@@ -73,9 +73,72 @@ body.touch #talk kbd { display: none; }
   #quests { top: auto; bottom: 156px; left: 10px; width: 180px; font-size: 12px; padding: 8px 10px; }
   #quests .dist { display: none; }
   #talk { bottom: 46px; left: auto; right: 12px; transform: none; animation: none; font-size: 15px; padding: 10px 16px; }
-  #dlg { bottom: 10px; padding: 12px; }
+  .panel { bottom: 10px; padding: 12px; }
   .task .target { font-size: 18px; }
   body.talking #quests, body.talking #joy, body.talking #mini { display: none; }
   #mini { width: 104px; height: 104px; top: 104px; right: 10px; }
   #quests ul { max-height: 118px; overflow: auto; }
 }
+
+/* ───── Màn bắt đầu: tạo nhân vật / chọn cách chơi / phòng chờ (2026-11-28) ───── */
+#menu { position: fixed; inset: 0; z-index: 30; display: none; align-items: center; justify-content: flex-end; padding: 16px max(16px, 5vw); pointer-events: none; }
+body.menu #menu { display: flex; }
+body.menu #hud, body.menu #quests, body.menu #mini, body.menu #talk, body.menu #joy, body.menu #help { display: none !important; }
+.card { pointer-events: auto; width: min(400px, 100%); max-height: calc(100% - 8px); overflow: auto; background: var(--card); backdrop-filter: blur(10px); border-radius: 22px; padding: 18px 18px 16px; box-shadow: 0 14px 40px rgba(0, 0, 0, .25); }
+.card h2 { margin: 0 0 10px; font-size: 21px; }
+.card h3 { margin: 14px 0 6px; font-size: 15px; }
+.card .sub { margin: 4px 0; font-size: 13px; color: #6b7190; }
+.lbl { display: block; font-size: 13px; font-weight: 700; margin: 10px 0 5px; color: #5160a8; }
+#c-name, .join input { width: 100%; font: 600 16px system-ui, sans-serif; padding: 10px 12px; border: 2px solid #d3d8ea; border-radius: 12px; }
+.opts { display: flex; flex-wrap: wrap; gap: 6px; }
+.opts button { font: 700 13px system-ui, sans-serif; border: 2px solid #e1e4f0; background: #fff; border-radius: 12px; padding: 6px 9px; cursor: pointer; }
+.opts button .e { font-size: 20px; display: block; line-height: 1.2; }
+.opts button.on { border-color: var(--accent); background: #fff1ec; }
+.opts.sw button { width: 32px; height: 32px; border-radius: 50%; padding: 0; box-shadow: inset 0 0 0 2px rgba(0,0,0,.06); }
+.opts.sw button.on { box-shadow: 0 0 0 3px var(--accent); border-color: #fff; }
+.go { width: 100%; margin-top: 14px; font: 800 17px system-ui, sans-serif; color: #fff; background: var(--accent); border: 0; border-radius: 14px; padding: 12px; cursor: pointer; box-shadow: 0 6px 16px rgba(255, 122, 89, .35); }
+.back { width: 100%; margin-top: 8px; font: 600 14px system-ui, sans-serif; background: none; border: 0; color: #6b7190; cursor: pointer; padding: 6px; }
+.big { display: block; width: 100%; text-align: left; border: 2px solid #e1e4f0; background: #fff; border-radius: 16px; padding: 12px 14px; margin-bottom: 8px; cursor: pointer; }
+.big b { display: block; font-size: 17px; }
+.big span { font-size: 13px; color: #6b7190; }
+.big:hover { border-color: var(--accent); }
+.join { display: flex; gap: 8px; margin-top: 4px; }
+.join input { flex: 1; min-width: 0; text-transform: uppercase; }
+#w-link { text-transform: none; font-size: 13px; }
+.join button { font: 700 14px system-ui, sans-serif; border: 0; border-radius: 12px; padding: 0 14px; background: #5160a8; color: #fff; cursor: pointer; }
+.err { color: var(--bad); font-size: 13px; margin: 6px 0 0; min-height: 0; }
+.err:empty { display: none; }
+#w-code { color: var(--accent); letter-spacing: 2px; }
+#w-list { list-style: none; margin: 0; padding: 0; }
+#w-list li { display: flex; align-items: center; gap: 8px; padding: 7px 10px; background: #f3f5fb; border-radius: 12px; margin-bottom: 5px; font-weight: 700; }
+#w-list li .e { font-size: 22px; }
+#w-list li em { margin-left: auto; font-style: normal; font-size: 12px; color: #6b7190; font-weight: 600; }
+#roomchip { background: #5160a8; color: #fff; border: 0; padding: 8px 12px; border-radius: 14px; font: 800 13px system-ui, sans-serif; box-shadow: 0 4px 14px rgba(0, 0, 0, .12); cursor: pointer; }
+#roomchip:not([hidden]) + .stars { margin-left: 0; }
+#roomchip { margin-left: auto; }
+
+/* nhập vai cặp đôi */
+#dlg-pair:empty { display: none; }
+#dlg-pair { margin-top: 10px; padding-top: 10px; border-top: 1px dashed #e1e4f0; }
+#dlg-pair button { width: 100%; font: 800 15px system-ui, sans-serif; border: 0; border-radius: 12px; padding: 10px; background: #5160a8; color: #fff; cursor: pointer; }
+#rp-lines { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+#rp-lines li { padding: 8px 11px; border-radius: 14px; background: #f3f5fb; max-width: 88%; font-size: 15px; opacity: .55; }
+#rp-lines li.r1 { align-self: flex-end; background: #fff1ec; }
+#rp-lines li.cur { opacity: 1; box-shadow: 0 0 0 2px var(--accent); }
+#rp-lines li.done { opacity: 1; }
+#rp-lines li .who { display: block; font-size: 11px; font-weight: 800; color: #5160a8; margin-bottom: 2px; }
+#rp-lines li .m { display: block; font-size: 12px; color: #6b7190; }
+#rp-lines li .py { display: block; font-size: 12px; color: #5160a8; }
+#rp-turn { margin: 10px 0 0; font-weight: 800; color: var(--accent); }
+#toast { position: fixed; left: 50%; top: 74px; transform: translateX(-50%); z-index: 40; width: min(420px, calc(100% - 24px)); background: #fff; border-radius: 18px; padding: 12px 14px; box-shadow: 0 12px 34px rgba(0, 0, 0, .25); font-size: 15px; }
+#toast .row button { flex: 1; }
+#toast .yes { background: var(--accent); color: #fff; }
+#toast .no { background: #eef0f7; }
+
+@media (max-width: 640px) {
+  #menu { align-items: flex-end; justify-content: center; padding: 10px; }
+  .card { max-height: 62%; padding: 14px; }
+  .card h2 { font-size: 18px; }
+  #roomchip { padding: 6px 9px; font-size: 12px; }
+}
+[hidden] { display: none !important; }

@@ -5,17 +5,23 @@
      để nói chuyện. Mỗi người có 1 nhiệm vụ 2 câu: nghe câu của họ, rồi NÓI câu trả lời vào micro.
    · Nhận giọng = Web Speech API của trình duyệt (miễn phí, giống cc.js / readalong.js). Không có thì gõ.
    · Chấm điểm = so từng từ (không gọi AI, không tốn tiền). 4 thứ tiếng: en / es / zh / vi.
-   · CHƯA nối phòng game nhiều người / Supabase — chỉ là bản cho TJ xem thử, nằm riêng ở nhánh của luồng này. */
+   · 2026-11-28 (TJ): người chơi + người dân đều là THÚ CUTE (animals.js). Vào là màn TẠO NHÂN VẬT (tên, con vật,
+     màu lông, áo, quần/váy, phụ kiện — nhớ theo máy). Chọn chơi 1 mình, hoặc tạo/vào PHÒNG (net.js, kênh Supabase
+     "town:<mã>", không lưu database). Trong phòng: thấy nhau đi lại, mời nhau NHẬP VAI theo kịch bản của từng người dân.
+*/
 import * as THREE from "three";
 import { Sky } from "three/addons/objects/Sky.js";
+import { makeAnimal, animateAnimal, SPECIES, FURS, SHIRTS, PANTS, ACCS } from "./animals.js?v=2";
+import { createNet } from "./net.js?v=2";
 
-/* ───────────────────────── Nội dung: 4 người, mỗi người 2 câu, 4 thứ tiếng ───────────────────────── */
+/* ───────────────────────── Nội dung: 8 người dân, mỗi người 2 lượt hỏi-đáp, 4 thứ tiếng. roles = [vai người dân, vai khách] cho nhập vai cặp đôi ───────────────────────── */
 const LOCALE = { en: "en-US", es: "es-ES", zh: "zh-CN", vi: "vi-VN" };
 const NPCS = [
   {
     id: "cafe", icon: "☕", title: "Gọi cà phê ở quán", name: "Linh", role: "chủ quán cà phê",
     pos: [-27.2, -6], face: Math.PI / 2,
-    look: { skin: "#f1c7a5", shirt: "#ffffff", pants: "#3a3f5c", hair: "#2b1d16", hairStyle: "bun", apron: "#7a4b2a", skirt: false, female: true },
+    look: { species: "cat", fur: "#f3b46a", shirt: "#ffffff", pants: "#3a3f5c", apron: "#7a4b2a", acc: "bow", accColor: "#ff4f7b", female: true },
+    roles: ["Chủ quán", "Khách gọi món"],
     steps: [
       { npc: { en: "Hi! What would you like to drink?", es: "¡Hola! ¿Qué te gustaría tomar?", zh: "你好！你想喝点什么？", vi: "Chào bạn! Bạn muốn uống gì?" },
         say: { en: "Can I have an iced coffee, please?", es: "Quiero un café con hielo, por favor.", zh: "请给我一杯冰咖啡。", vi: "Cho tôi một ly cà phê đá nhé." },
@@ -29,7 +35,8 @@ const NPCS = [
   {
     id: "station", icon: "🚉", title: "Mua vé tàu ở nhà ga", name: "Carlos", role: "nhân viên bán vé",
     pos: [0, -30.2], face: 0,
-    look: { skin: "#c98e63", shirt: "#2f4f8f", pants: "#1f2433", hair: "#1a1310", hairStyle: "cap", hat: "#2f4f8f", female: false },
+    look: { species: "dog", fur: "#c48a5a", shirt: "#2f4f8f", pants: "#1f2433", acc: "cap", accColor: "#2f4f8f", female: false },
+    roles: ["Nhân viên bán vé", "Hành khách"],
     steps: [
       { npc: { en: "Good morning! Where are you going?", es: "¡Buenos días! ¿Adónde va?", zh: "早上好！你要去哪儿？", vi: "Chào buổi sáng! Bạn đi đâu vậy?" },
         say: { en: "One ticket to the beach, please.", es: "Un billete a la playa, por favor.", zh: "一张去海边的票，谢谢。", vi: "Cho tôi một vé đi biển." },
@@ -43,7 +50,8 @@ const NPCS = [
   {
     id: "market", icon: "🍊", title: "Mua trái cây ở chợ", name: "Mei", role: "người bán trái cây",
     pos: [26.4, -6], face: -Math.PI / 2,
-    look: { skin: "#f3d2b3", shirt: "#e46f5b", pants: "#4a6b3c", hair: "#121212", hairStyle: "long", female: true, skirt: true },
+    look: { species: "panda", shirt: "#e46f5b", pants: "#4a6b3c", skirt: true, female: true },
+    roles: ["Người bán", "Người mua"],
     steps: [
       { npc: { en: "Fresh fruit today! What do you need?", es: "¡Fruta fresca hoy! ¿Qué necesita?", zh: "今天的水果很新鲜！你要什么？", vi: "Trái cây tươi đây! Bạn cần gì?" },
         say: { en: "I would like two mangoes.", es: "Quiero dos mangos.", zh: "我想要两个芒果。", vi: "Tôi muốn mua hai quả xoài." },
@@ -57,7 +65,8 @@ const NPCS = [
   {
     id: "tourist", icon: "🗺", title: "Chỉ đường cho du khách", name: "Emma", role: "du khách bị lạc",
     pos: [0, 8.2], face: 0,
-    look: { skin: "#f6d9c4", shirt: "#f2c14e", pants: "#5b7fb5", hair: "#c9893b", hairStyle: "long", female: true, bag: "#8a5a3c" },
+    look: { species: "bunny", fur: "#ffffff", shirt: "#f2c14e", pants: "#5b7fb5", acc: "bag", accColor: "#8a5a3c", female: true },
+    roles: ["Du khách", "Người chỉ đường"],
     steps: [
       { npc: { en: "Excuse me, where is the train station?", es: "Perdone, ¿dónde está la estación de tren?", zh: "请问，火车站在哪儿？", vi: "Xin lỗi, ga tàu ở đâu vậy?" },
         say: { en: "Go straight and turn left.", es: "Siga recto y gire a la izquierda.", zh: "一直走，然后左转。", vi: "Đi thẳng rồi rẽ trái." },
@@ -71,7 +80,8 @@ const NPCS = [
   {
     id: "food", icon: "🍜", title: "Gọi món ở nhà hàng", name: "Nam", role: "phục vụ nhà hàng",
     pos: [-8, 32.2], face: Math.PI,
-    look: { skin: "#e0ac83", shirt: "#1d1d1d", pants: "#1d1d1d", hair: "#161010", hairStyle: "short", apron: "#ffffff", female: false },
+    look: { species: "bear", fur: "#9b6a43", shirt: "#1d1d1d", pants: "#1d1d1d", apron: "#ffffff", female: false },
+    roles: ["Phục vụ", "Thực khách"],
     steps: [
       { npc: { en: "Welcome! Do you have a reservation?", es: "¡Bienvenido! ¿Tiene una reserva?", zh: "欢迎光临！您有预订吗？", vi: "Chào mừng! Bạn có đặt bàn trước không?" },
         say: { en: "Yes, a table for two at seven.", es: "Sí, una mesa para dos a las siete.", zh: "有，七点，两个人。", vi: "Có, một bàn hai người lúc bảy giờ." },
@@ -85,7 +95,8 @@ const NPCS = [
   {
     id: "pharmacy", icon: "💊", title: "Mua thuốc ở nhà thuốc", name: "Sofia", role: "dược sĩ",
     pos: [8, 32.2], face: Math.PI,
-    look: { skin: "#d9a27a", shirt: "#ffffff", pants: "#3a6ea5", hair: "#3a2416", hairStyle: "bun", female: true, long: true },
+    look: { species: "fox", fur: "#e8803a", shirt: "#ffffff", pants: "#3a6ea5", acc: "glasses", female: true, long: true },
+    roles: ["Dược sĩ", "Người mua thuốc"],
     steps: [
       { npc: { en: "Hello! How can I help you?", es: "¡Hola! ¿En qué puedo ayudarle?", zh: "你好！有什么可以帮你？", vi: "Xin chào! Tôi giúp gì được cho bạn?" },
         say: { en: "I have a headache and a sore throat.", es: "Me duele la cabeza y la garganta.", zh: "我头疼，嗓子也疼。", vi: "Tôi bị đau đầu và đau họng." },
@@ -99,7 +110,8 @@ const NPCS = [
   {
     id: "hotel", icon: "🏨", title: "Nhận phòng khách sạn", name: "Aiko", role: "lễ tân khách sạn",
     pos: [31.8, 30], face: -Math.PI / 2,
-    look: { skin: "#f4d6bd", shirt: "#6d58a6", pants: "#2b2b3a", hair: "#0f0f12", hairStyle: "long", female: true, skirt: true, long: true },
+    look: { species: "bunny", fur: "#f6c9d6", shirt: "#6d58a6", pants: "#2b2b3a", skirt: true, acc: "scarf", accColor: "#ffd23f", female: true, long: true },
+    roles: ["Lễ tân", "Khách nhận phòng"],
     steps: [
       { npc: { en: "Good evening! Welcome to Sunny Hotel.", es: "¡Buenas noches! Bienvenido al Hotel Sol.", zh: "晚上好！欢迎来到阳光酒店。", vi: "Chào buổi tối! Chào mừng đến khách sạn Nắng." },
         say: { en: "I have a reservation under the name Tran.", es: "Tengo una reserva a nombre de Tran.", zh: "我预订了房间，名字是陈。", vi: "Tôi đã đặt phòng, tên là Trần." },
@@ -113,7 +125,8 @@ const NPCS = [
   {
     id: "office", icon: "🏢", title: "Phỏng vấn xin việc", name: "David", role: "người phỏng vấn",
     pos: [-31.8, 30], face: Math.PI / 2,
-    look: { skin: "#b97a56", shirt: "#33415c", pants: "#22283a", hair: "#1b1b1b", hairStyle: "short", female: false, long: true },
+    look: { species: "dog", fur: "#a9abb8", shirt: "#33415c", pants: "#22283a", acc: "glasses", female: false, long: true },
+    roles: ["Người phỏng vấn", "Ứng viên"],
     steps: [
       { npc: { en: "Thank you for coming. Please tell me about yourself.", es: "Gracias por venir. Hábleme de usted.", zh: "谢谢你来。请介绍一下你自己。", vi: "Cảm ơn bạn đã đến. Bạn giới thiệu về bản thân nhé." },
         say: { en: "I have three years of experience in sales.", es: "Tengo tres años de experiencia en ventas.", zh: "我有三年的销售经验。", vi: "Tôi có ba năm kinh nghiệm bán hàng." },
@@ -465,111 +478,44 @@ const clouds = [];
   }
 }
 
-/* ───────────────────────── Nhân vật người ───────────────────────── */
-function capsule(r, len, m) { return new THREE.Mesh(new THREE.CapsuleGeometry(r, len, 6, 14), m); }
-function sph(r, m, ws = 20, hs = 14) { return new THREE.Mesh(new THREE.SphereGeometry(r, ws, hs), m); }
-function makePerson(o) {
-  const s = o.scale || 1;
-  const skin = mat(o.skin, { roughness: 0.65 }), shirt = mat(o.shirt, { roughness: 0.8 }), pants = mat(o.pants, { roughness: 0.85 });
-  const hairM = mat(o.hair, { roughness: 0.55 }), shoe = mat(o.shoe || "#2a2522", { roughness: 0.5 });
-  const root = new THREE.Group(), body = new THREE.Group(); root.add(body); body.scale.setScalar(s);
-  const LEG = 0.86;
-  const legs = [], arms = [];
-  for (const side of [-1, 1]) {
-    const hip = new THREE.Group(); hip.position.set(side * 0.095, LEG, 0); body.add(hip);
-    const up = capsule(0.078, 0.3, pants); up.position.y = -0.21; hip.add(up);
-    const knee = new THREE.Group(); knee.position.y = -0.43; hip.add(knee);
-    const lo = capsule(0.066, 0.3, o.skirt ? skin : pants); lo.position.y = -0.19; knee.add(lo);
-    const sh = box(0.12, 0.08, 0.24, shoe); sh.position.set(0, -0.39, 0.045); knee.add(sh);
-    legs.push({ hip, knee, side });
-  }
-  const torso = capsule(0.165, 0.3, shirt); torso.scale.set(1.12, 1, 0.74); torso.position.y = LEG + 0.29; body.add(torso);
-  if (o.female) { const hipsW = capsule(0.15, 0.06, pants); hipsW.scale.set(1.15, 1, 0.8); hipsW.position.y = LEG + 0.02; body.add(hipsW); }
-  else { const belt = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.17, 0.12, 18), pants); belt.scale.z = 0.78; belt.position.y = LEG + 0.03; body.add(belt); }
-  if (o.skirt) { const sk = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.46, 20, 1, true), mat(o.pants, { side: THREE.DoubleSide })); sk.position.y = LEG - 0.1; body.add(sk); }
-  if (o.apron) { const ap = box(0.26, 0.5, 0.02, mat(o.apron)); ap.position.set(0, LEG + 0.12, 0.13); body.add(ap); }
-  if (o.bag) { const bg = box(0.2, 0.26, 0.1, mat(o.bag)); bg.position.set(0, LEG + 0.3, -0.16); body.add(bg); }
-  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.06, 0.1, 10), skin); neck.position.y = LEG + 0.6; body.add(neck);
-  const head = new THREE.Group(); head.position.y = LEG + 0.77; body.add(head);
-  const skull = sph(0.135, skin, 28, 20); skull.scale.set(0.95, 1.08, 1); head.add(skull);
-  const eyeW = mat("#ffffff", { roughness: 0.3 }), eyeB = mat("#2b2320", { roughness: 0.2 });
-  for (const sd of [-1, 1]) {
-    const ew = sph(0.024, eyeW, 12, 8); ew.scale.z = 0.5; ew.position.set(sd * 0.048, 0.015, 0.122); head.add(ew);
-    const eb = sph(0.014, eyeB, 10, 8); eb.position.set(sd * 0.048, 0.013, 0.134); head.add(eb);
-    const brow = box(0.045, 0.009, 0.01, hairM); brow.position.set(sd * 0.05, 0.055, 0.128); brow.rotation.z = -sd * 0.12; head.add(brow);
-    const ear = sph(0.028, skin, 10, 8); ear.scale.set(0.5, 1, 0.8); ear.position.set(sd * 0.128, 0.0, 0); head.add(ear);
-  }
-  const nose = sph(0.018, skin, 10, 8); nose.position.set(0, -0.015, 0.135); head.add(nose);
-  const mouth = new THREE.Mesh(new THREE.TorusGeometry(0.025, 0.006, 6, 12, Math.PI), mat("#a8524f")); mouth.rotation.z = Math.PI; mouth.position.set(0, -0.055, 0.124); head.add(mouth);
-  /* tóc */
-  const cap = new THREE.Mesh(new THREE.SphereGeometry(0.146, 28, 16, 0, Math.PI * 2, 0, Math.PI * 0.52), hairM);
-  cap.scale.set(0.98, 1.1, 1.05); cap.rotation.x = -0.32; cap.position.set(0, 0.012, -0.008); head.add(cap);
-  if (o.hairStyle === "long") { const lh = capsule(0.12, 0.2, hairM); lh.scale.set(1.15, 1, 0.55); lh.position.set(0, -0.11, -0.07); head.add(lh); }
-  if (o.hairStyle === "bun") { const bn = sph(0.07, hairM); bn.position.set(0, 0.1, -0.12); head.add(bn); }
-  if (o.hairStyle === "cap") {
-    const hc = new THREE.Mesh(new THREE.SphereGeometry(0.152, 24, 12, 0, Math.PI * 2, 0, Math.PI * 0.45), mat(o.hat || "#333")); hc.position.y = 0.03; head.add(hc);
-    const brim = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.015, 18, 1, false, -Math.PI / 2, Math.PI), mat(o.hat || "#333")); brim.position.set(0, 0.06, 0.1); brim.scale.z = 1.3; head.add(brim);
-  }
-  for (const side of [-1, 1]) {
-    const sh = new THREE.Group(); sh.position.set(side * 0.215, LEG + 0.47, 0); sh.rotation.z = side * 0.09; body.add(sh);
-    const ball = sph(0.07, shirt, 14, 10); sh.add(ball);
-    const up = capsule(0.056, 0.22, shirt); up.position.y = -0.15; sh.add(up);
-    const el = new THREE.Group(); el.position.y = -0.3; sh.add(el);
-    const lo = capsule(0.048, 0.2, o.long ? shirt : skin); lo.position.y = -0.13; el.add(lo);
-    const hand = sph(0.052, skin, 12, 10); hand.scale.set(0.8, 1.1, 0.9); hand.position.y = -0.28; el.add(hand);
-    arms.push({ sh, el, side });
-  }
-  root.traverse((m) => { if (m.isMesh) { m.castShadow = true; m.receiveShadow = true; } });
-  return { root, body, legs, arms, head, torso, phase: R() * 6, blend: 0 };
-}
-function animatePerson(p, speed, dt, t) {
-  const moving = speed > 0.05;
-  p.blend += ((moving ? 1 : 0) - p.blend) * Math.min(1, dt * 8);
-  p.phase += dt * (2.2 + speed * 2.4);
-  const k = p.blend;
-  for (let i = 0; i < 2; i++) {
-    const L = p.legs[i], ph = p.phase + i * Math.PI, a = Math.sin(ph);
-    L.hip.rotation.x = a * 0.55 * k;
-    L.knee.rotation.x = Math.max(0, -Math.cos(ph)) * 0.9 * k;
-    const A = p.arms[i];
-    A.sh.rotation.x = -a * 0.5 * k + Math.sin(t * 1.6 + i) * 0.03 * (1 - k);
-    A.el.rotation.x = -0.25 - 0.25 * k;
-  }
-  p.body.position.y = Math.abs(Math.sin(p.phase)) * 0.045 * k + Math.sin(t * 2) * 0.004 * (1 - k);
-  p.torso.rotation.y = Math.sin(p.phase) * 0.08 * k;
-}
-
-/* Bảng tên + dấu nhiệm vụ trên đầu */
+/* ───────────────────────── Nhân vật: thú cute (animals.js) ───────────────────────── */
+const store = { get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
 function spriteTex(text, bg, fg, font = 46) {
   const t = labelTex(text, bg, fg, 512, 112, font); return new THREE.SpriteMaterial({ map: t, depthTest: true, transparent: true });
 }
+function nameTag(text, bg = "rgba(29,35,64,.78)") { const s = new THREE.Sprite(spriteTex(text, bg, "#fff", 40)); s.scale.set(2.1, 0.46, 1); return s; }
 
-/* Người chơi */
-const player = makePerson({ skin: "#e8b48f", shirt: "#ff7a59", pants: "#2f3a5c", hair: "#2c1c12", hairStyle: "short", shoe: "#f5f5f5" });
+/* hồ sơ nhân vật của máy này (chỉ lưu trong trình duyệt) */
+const me = Object.assign({ name: "", species: "cat", fur: SPECIES[0].fur, shirt: SHIRTS[0], pants: PANTS[0], skirt: false, acc: "none" }, store.get("tjwl_town_me_v1", {}));
+function lookOf(o) { return { species: o.species, fur: o.fur, shirt: o.shirt, pants: o.pants, skirt: !!o.skirt, acc: o.acc, accColor: o.shirt === "#ffffff" ? "#ff7a59" : undefined }; }
+const lookKey = (l) => JSON.stringify(l);
+
+let player = makeAnimal(lookOf(me));
 player.root.position.set(0, 0, 15); player.root.rotation.y = Math.PI; scene.add(player.root);
+function rebuildPlayer() {
+  const old = player; player = makeAnimal(lookOf(me));
+  player.root.position.copy(old.root.position); player.root.rotation.copy(old.root.rotation);
+  scene.remove(old.root); scene.add(player.root);
+}
 
-/* Người có nhiệm vụ */
+/* người dân có nhiệm vụ */
 for (const n of NPCS) {
-  n.p = makePerson(n.look); n.p.root.position.set(n.pos[0], 0.0, n.pos[1]); n.p.root.rotation.y = n.face; scene.add(n.p.root);
-  const tag = new THREE.Sprite(spriteTex(n.name + " · " + n.role, "rgba(29,35,64,.78)", "#fff", 40)); tag.scale.set(2.3, 0.5, 1); tag.position.y = 2.15; n.p.root.add(tag);
-  n.mark = new THREE.Sprite(spriteTex("!", "#ff7a59", "#fff", 90)); n.mark.scale.set(0.5, 0.5 * 112 / 512 * 4.6, 1); n.mark.position.y = 2.65; n.p.root.add(n.mark);
-  n.markDone = new THREE.Sprite(spriteTex("✓", "#20a86b", "#fff", 90)); n.markDone.scale.copy(n.mark.scale); n.markDone.position.y = 2.65; n.markDone.visible = false; n.p.root.add(n.markDone);
+  n.p = makeAnimal(n.look); n.p.root.position.set(n.pos[0], 0, n.pos[1]); n.p.root.rotation.y = n.face; scene.add(n.p.root);
+  const tag = nameTag(n.name + " · " + n.role); tag.position.y = 1.72; n.p.root.add(tag);
+  n.mark = new THREE.Sprite(spriteTex("!", "#ff7a59", "#fff", 90)); n.mark.scale.set(0.5, 0.5 * 112 / 512 * 4.6, 1); n.mark.position.y = 2.2; n.p.root.add(n.mark);
+  n.markDone = new THREE.Sprite(spriteTex("✓", "#20a86b", "#fff", 90)); n.markDone.scale.copy(n.mark.scale); n.markDone.position.y = 2.2; n.markDone.visible = false; n.p.root.add(n.markDone);
   colliders.push({ circle: true, x: n.pos[0], z: n.pos[1], r: 0.45, npc: n });
 }
 
-/* Người đi đường + xe chạy quanh vòng */
+/* thú đi dạo + xe chạy quanh vòng */
 const walkers = [];
-const LOOKS = [
-  ["#f1c7a5", "#4f86c6", "#2d2d2d", "#3b2415", "short"], ["#8d5a3b", "#f4d35e", "#38404f", "#121212", "short"], ["#f6d9c4", "#9b5de5", "#e9e3d5", "#d9a441", "long"],
-  ["#c98e63", "#2a9d8f", "#444", "#222", "bun"], ["#e8b48f", "#e63946", "#1d3557", "#5a3a22", "long"], ["#f3d2b3", "#ffffff", "#4a4e69", "#111", "short"],
-  ["#a86a45", "#ffb703", "#264653", "#1b1b1b", "cap"], ["#f1c7a5", "#06d6a0", "#3a3a3a", "#8b5a2b", "short"],
-];
-LOOKS.forEach((l, i) => {
-  const p = makePerson({ skin: l[0], shirt: l[1], pants: l[2], hair: l[3], hairStyle: l[4], hat: l[1], female: l[4] !== "short" && l[4] !== "cap", scale: 0.94 + R() * 0.1 });
+for (let i = 0; i < 10; i++) {
+  const sp = SPECIES[i % SPECIES.length];
+  const p = makeAnimal({ species: sp.id, fur: i > 5 ? FURS[(i * 3) % FURS.length] : sp.fur, shirt: SHIRTS[(i * 5 + 1) % SHIRTS.length], pants: PANTS[i % PANTS.length], skirt: i % 4 === 1, acc: ACCS[(i * 7) % ACCS.length].id, scale: 0.92 + R() * 0.14 });
   const inner = i % 2 === 0, r = inner ? RING - RW / 2 - 1 : RING + RW / 2 + 1;
   walkers.push({ p, r, u: R() * 4, dir: i % 3 === 0 ? -1 : 1, v: 1.1 + R() * 0.5 });
   scene.add(p.root);
-});
+}
 function loopPoint(r, u) { /* u: 0..4 quanh hình vuông bán kính r */
   u = ((u % 4) + 4) % 4; const s = Math.floor(u), f = u - s, a = -r + 2 * r * f;
   return [[a, -r], [r, a], [-a, r], [-r, -a]][s];
@@ -590,27 +536,32 @@ function makeCar(col) {
 
 /* ───────────────────────── Điều khiển ───────────────────────── */
 const keys = {};
+let phase = "menu";   /* menu | play */
 addEventListener("keydown", (e) => {
-  if (e.target.tagName === "INPUT") { if (e.key === "Enter") $("#dlg-send").click(); return; }
+  if (e.target.tagName === "INPUT") {
+    if (e.key === "Enter") { if (e.target.id === "dlg-type") $("#dlg-send").click(); else if (e.target.id === "rp-type") $("#rp-send").click(); else if (e.target.id === "m-code") $("#m-join").click(); else if (e.target.id === "c-name") $("#c-next").click(); }
+    return;
+  }
   keys[e.code] = true;
-  if (e.code === "KeyE" && near && dlgNpc === null) openDlg(near);
-  if (e.code === "Escape") closeDlg();
+  if (phase === "play" && e.code === "KeyE" && near && !dlgNpc && !rp) openDlg(near);
+  if (e.code === "Escape") { closeDlg(); }
 });
 addEventListener("keyup", (e) => { keys[e.code] = false; });
 const isTouch = matchMedia("(pointer: coarse)").matches || "ontouchstart" in window;
 if (isTouch) document.body.classList.add("touch");
-let camYaw = 0, camPitch = 0.34, camDist = 8;
+let camYaw = 0, camPitch = 0.3, camDist = 6.5;
 { /* kéo để xoay camera */
   let drag = null;
   const cv = renderer.domElement;
   cv.addEventListener("pointerdown", (e) => { drag = { id: e.pointerId, x: e.clientX, y: e.clientY }; cv.setPointerCapture(e.pointerId); });
   cv.addEventListener("pointermove", (e) => {
     if (!drag || drag.id !== e.pointerId) return;
+    if (phase === "menu") { player.root.rotation.y += (e.clientX - drag.x) * 0.012; drag.x = e.clientX; return; }
     camYaw -= (e.clientX - drag.x) * 0.006; camPitch = THREE.MathUtils.clamp(camPitch + (e.clientY - drag.y) * 0.004, 0.08, 1.1);
     drag.x = e.clientX; drag.y = e.clientY;
   });
   cv.addEventListener("pointerup", () => { drag = null; });
-  cv.addEventListener("wheel", (e) => { camDist = THREE.MathUtils.clamp(camDist + e.deltaY * 0.01, 4, 16); }, { passive: true });
+  cv.addEventListener("wheel", (e) => { camDist = THREE.MathUtils.clamp(camDist + e.deltaY * 0.01, 3.5, 14); }, { passive: true });
 }
 const joy = { x: 0, y: 0 };
 {
@@ -625,7 +576,6 @@ const joy = { x: 0, y: 0 };
   const end = () => { id = null; joy.x = joy.y = 0; knob.style.transform = ""; };
   el.addEventListener("pointerup", end); el.addEventListener("pointercancel", end);
 }
-
 function collide(pos) {
   for (const c of colliders) {
     if (c.circle) {
@@ -640,17 +590,17 @@ function collide(pos) {
   pos.x = THREE.MathUtils.clamp(pos.x, -70, 70); pos.z = THREE.MathUtils.clamp(pos.z, -42, 70);
 }
 
-/* ───────────────────────── Hội thoại + nhiệm vụ nói ───────────────────────── */
-const store = { get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
+/* ───────────────────────── Tiếng, sao, giọng đọc, chấm điểm ───────────────────────── */
 const prog = store.get("tjwl_town_prog_v1", {});
 let stars = store.get("tjwl_town_stars_v1", 0);
 let learn = store.get("tjwl_town_learn_v1", "en"), mean = store.get("tjwl_town_mean_v1", "vi");
 $("#sel-learn").value = learn; $("#sel-mean").value = mean;
-const meanLang = () => (mean !== learn ? mean : learn === "en" ? "vi" : "en");
+const meanOf = (l) => (mean !== l ? mean : l === "en" ? "vi" : "en");
 $("#sel-learn").onchange = (e) => { learn = e.target.value; store.set("tjwl_town_learn_v1", learn); if (dlgNpc) showStep(); };
-$("#sel-mean").onchange = (e) => { mean = e.target.value; store.set("tjwl_town_mean_v1", mean); if (dlgNpc) showStep(); };
+$("#sel-mean").onchange = (e) => { mean = e.target.value; store.set("tjwl_town_mean_v1", mean); if (dlgNpc) showStep(); if (rp) paintRp(); };
 function save() { store.set("tjwl_town_prog_v1", prog); store.set("tjwl_town_stars_v1", stars); }
 function paintStars() { $("#stars").textContent = "⭐ " + stars; }
+function markNpcDone(n) { const pr = prog[n.id] || (prog[n.id] = { step: 0 }); pr.done = true; n.mark.visible = false; n.markDone.visible = true; }
 
 function paintQuests() {
   const pp = player.root.position;
@@ -664,24 +614,22 @@ let voices = [];
 function loadVoices() { try { voices = speechSynthesis.getVoices(); } catch (e) {} }
 if ("speechSynthesis" in window) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
 function speak(text, lang, female) {
-  if (!("speechSynthesis" in window)) return;
+  if (!("speechSynthesis" in window) || !text) return;
   try {
     speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text); u.lang = LOCALE[lang]; u.rate = 0.92;
+    const u = new SpeechSynthesisUtterance(text); u.lang = LOCALE[lang]; u.rate = 0.92; u.pitch = 1.15;
     const pool = voices.filter((v) => v.lang && v.lang.toLowerCase().startsWith(lang));
     const pick = pool.find((v) => (female ? /female|samantha|zira|linh|mei|google/i : /male|daniel|david|carlos|google/i).test(v.name)) || pool[0];
     if (pick) u.voice = pick;
     speechSynthesis.speak(u);
   } catch (e) {}
 }
-
-/* chấm điểm: so từng từ (tiếng Trung: từng chữ) */
 const NUM = { en: ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"], es: ["cero", "uno", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve", "diez"], zh: "零一二三四五六七八九十".split(""), vi: ["không", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín", "mười"] };
 function normTok(s, lang) {
   s = s.toLowerCase().replace(/[\p{P}\p{S}]/gu, " ");
   s = s.replace(/\b(10|[0-9])\b/g, (m) => " " + NUM[lang][+m] + " ");
   if (lang === "vi" || lang === "es") s = s.normalize("NFD").replace(/\p{M}/gu, "").replace(/đ/g, "d");
-  if (lang === "en") s = s.replace(/\bi'?d\b/g, "i would").replace(/\bwhat's\b/g, "what is").replace(/\bit's\b/g, "it is");
+  if (lang === "en") s = s.replace(/\bi'?d\b/g, "i would").replace(/\bwhat's\b/g, "what is").replace(/\bit's\b/g, "it is").replace(/\bthat's\b/g, "that is");
   if (lang === "zh") return s.replace(/[0-9]/g, (d) => NUM.zh[+d]).replace(/\s+/g, "").split("").filter(Boolean);
   return s.split(/\s+/).filter(Boolean);
 }
@@ -690,7 +638,6 @@ function grade(target, said, lang) {
   const bag = new Map(); got.forEach((w) => bag.set(w, (bag.get(w) || 0) + 1));
   const ok = want.map((w) => { const n = bag.get(w) || 0; if (n) { bag.set(w, n - 1); return true; } return false; });
   const score = want.length ? ok.filter(Boolean).length / want.length : 0;
-  /* tô màu theo câu gốc */
   const pieces = lang === "zh" ? [...target] : target.split(/(\s+)/);
   let j = 0; const html = pieces.map((p) => {
     const toks = normTok(p, lang); if (!toks.length) return esc(p);
@@ -699,13 +646,41 @@ function grade(target, said, lang) {
   return { score, html };
 }
 function esc(s) { return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+function resultHtml(g, said, pass) {
+  return `<span class="score" style="background:${pass ? "var(--ok)" : "var(--bad)"}">${Math.round(g.score * 100)}%</span>` +
+    (pass ? "Giỏi quá! 🎉 " : "Gần được rồi, thử lại nhé! ") + `<br>Bạn nói: <i>${esc(said || "…")}</i><br>${g.html}`;
+}
 
+/* micro dùng chung cho nói 1 mình và nhập vai */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec = null, recBtn = null;
+function stopMic() { if (rec) { try { rec.abort(); } catch (e) {} rec = null; } for (const b of ["#dlg-mic", "#rp-mic"]) { $(b).classList.remove("on"); if (SR) $(b).textContent = "🎤 Bấm để nói"; } }
+function startMic(btn, lang, target, resEl, onFinal) {
+  if (!SR) return;
+  if (rec) { stopMic(); return; }
+  try { speechSynthesis.cancel(); } catch (e) {}
+  rec = new SR(); rec.lang = LOCALE[lang]; rec.interimResults = true; rec.maxAlternatives = 3;
+  btn.classList.add("on"); btn.textContent = "● Đang nghe… bấm để dừng";
+  rec.onresult = (e) => {
+    const r = e.results[e.results.length - 1];
+    if (!r.isFinal) { resEl.innerHTML = "🎧 <i>" + esc(r[0].transcript) + "</i>"; return; }
+    let best = r[0].transcript, bs = -1;
+    for (let i = 0; i < r.length; i++) { const s = grade(target(), r[i].transcript, lang).score; if (s > bs) { bs = s; best = r[i].transcript; } }
+    stopMic(); onFinal(best);
+  };
+  rec.onerror = (e) => { stopMic(); if (e.error === "not-allowed") resEl.textContent = "🎤 Chưa cho phép dùng micro — bấm biểu tượng ổ khoá trên thanh địa chỉ để bật nhé."; };
+  rec.onend = () => { if (rec) stopMic(); };
+  try { rec.start(); } catch (e) { stopMic(); }
+}
+if (!SR) for (const b of ["#dlg-mic", "#rp-mic"]) { $(b).textContent = "🎤 Máy này chưa nghe được giọng — gõ bên dưới nhé"; $(b).disabled = true; }
+
+/* ───────────────────────── Nói chuyện một mình với người dân ───────────────────────── */
 let dlgNpc = null, near = null, busy = false;
-function cur() { const pr = prog[dlgNpc.id] || (prog[dlgNpc.id] = { step: 0, done: false }); return pr; }
-function openDlg(n) { dlgNpc = n; document.body.classList.add("talking"); $("#dlg").hidden = false; $("#talk").hidden = true; showStep(); }
+function cur() { return prog[dlgNpc.id] || (prog[dlgNpc.id] = { step: 0, done: false }); }
+function openDlg(n) { dlgNpc = n; document.body.classList.add("talking"); $("#dlg").hidden = false; $("#talk").hidden = true; showStep(); paintPair(); }
 function closeDlg() { stopMic(); dlgNpc = null; document.body.classList.remove("talking"); $("#dlg").hidden = true; try { speechSynthesis.cancel(); } catch (e) {} }
 function showStep() {
-  const n = dlgNpc, pr = cur(), ml = meanLang();
+  const n = dlgNpc, pr = cur(), ml = meanOf(learn);
   $("#dlg-name").textContent = n.icon + " " + n.name; $("#dlg-role").textContent = n.role;
   $("#dlg-res").innerHTML = ""; $("#dlg-type").value = "";
   if (pr.done) {
@@ -723,14 +698,13 @@ function showStep() {
 function check(said) {
   if (!dlgNpc || busy) return;
   const n = dlgNpc, pr = cur(); if (pr.done) return;
-  const st = n.steps[pr.step], g = grade(st.say[learn], said, learn), pct = Math.round(g.score * 100), pass = g.score >= 0.7;
-  $("#dlg-res").innerHTML = `<span class="score" style="background:${pass ? "var(--ok)" : "var(--bad)"}">${pct}%</span>` +
-    (pass ? "Giỏi quá! 🎉 " : "Gần được rồi, thử lại nhé! ") + `<br>Bạn nói: <i>${esc(said || "…")}</i><br>${g.html}`;
+  const st = n.steps[pr.step], g = grade(st.say[learn], said, learn), pass = g.score >= 0.7;
+  $("#dlg-res").innerHTML = resultHtml(g, said, pass);
   if (!pass) return;
-  busy = true; stars += 1; paintStars();
+  busy = true; stars += 1; paintStars(); bubbleMe(st.say[learn]);
   setTimeout(() => {
     busy = false; if (dlgNpc !== n) return;
-    pr.step++; if (pr.step >= n.steps.length) { pr.done = true; stars += 3; paintStars(); n.mark.visible = false; n.markDone.visible = true; }
+    pr.step++; if (pr.step >= n.steps.length) { markNpcDone(n); stars += 3; paintStars(); }
     save(); showStep(); paintQuests();
     if (pr.done) $("#dlg-res").innerHTML = '<span class="score" style="background:var(--ok)">+3 ⭐</span> Hoàn thành nhiệm vụ! Đi tìm người tiếp theo nha 🚶';
   }, 2200);
@@ -740,32 +714,245 @@ $("#talk").onclick = () => { if (near) openDlg(near); };
 $("#dlg-hear").onclick = () => { const pr = cur(); speak(pr.done ? dlgNpc.end[learn] : dlgNpc.steps[pr.step].npc[learn], learn, dlgNpc.look.female); };
 $("#dlg-model").onclick = () => speak(dlgNpc.steps[cur().step].say[learn], learn, false);
 $("#dlg-send").onclick = () => { const v = $("#dlg-type").value.trim(); if (v) check(v); };
+$("#dlg-mic").onclick = () => startMic($("#dlg-mic"), learn, () => dlgNpc.steps[cur().step].say[learn], $("#dlg-res"), check);
 
-const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-let rec = null;
-if (!SR) { $("#dlg-mic").textContent = "🎤 Máy này chưa nghe được giọng — gõ bên dưới nhé"; $("#dlg-mic").disabled = true; }
-function stopMic() { if (rec) { try { rec.abort(); } catch (e) {} rec = null; } $("#dlg-mic").classList.remove("on"); if (SR) $("#dlg-mic").textContent = "🎤 Bấm để nói"; }
-$("#dlg-mic").onclick = () => {
-  if (!SR) return;
-  if (rec) { stopMic(); return; }
-  try { speechSynthesis.cancel(); } catch (e) {}
-  rec = new SR(); rec.lang = LOCALE[learn]; rec.interimResults = true; rec.maxAlternatives = 3;
-  const btn = $("#dlg-mic"); btn.classList.add("on"); btn.textContent = "● Đang nghe… bấm để dừng";
-  rec.onresult = (e) => {
-    const r = e.results[e.results.length - 1];
-    if (!r.isFinal) { $("#dlg-res").innerHTML = "🎧 <i>" + esc(r[0].transcript) + "</i>"; return; }
-    let best = r[0].transcript, bs = -1; const st = dlgNpc.steps[cur().step];
-    for (let i = 0; i < r.length; i++) { const s = grade(st.say[learn], r[i].transcript, learn).score; if (s > bs) { bs = s; best = r[i].transcript; } }
-    stopMic(); check(best);
-  };
-  rec.onerror = (e) => { stopMic(); if (e.error === "not-allowed") $("#dlg-res").textContent = "🎤 Chưa cho phép dùng micro — bấm biểu tượng ổ khoá trên thanh địa chỉ để bật nhé."; };
-  rec.onend = () => { if (rec) stopMic(); };
-  try { rec.start(); } catch (e) { stopMic(); }
+/* ───────────────────────── Phòng chơi chung ───────────────────────── */
+let net = null, roomCode = "", started = false;
+const peers = new Map();   /* id -> { name, look, key, p, tag, x, z, ry, mv, seen, bub, bubT } */
+const ROOM_CH = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+const newCode = () => Array.from({ length: 4 }, () => ROOM_CH[Math.floor(Math.random() * ROOM_CH.length)]).join("");
+const spIcon = (sp) => (SPECIES.find((s) => s.id === sp) || SPECIES[0]).icon;
+function myHi() { const p = player.root.position; return { name: me.name, look: lookOf(me), x: p.x, z: p.z, ry: player.root.rotation.y, st: phase === "play" ? 1 : 0 }; }
+function joinRoom(code) {
+  roomCode = code.toUpperCase();
+  net = createNet(roomCode, onNet);
+  net.send("hi", Object.assign(myHi(), { hello: 1 }));
+  showScreen("wait"); paintWait();
+  try { history.replaceState(null, "", location.pathname + "?room=" + roomCode + (/[?&]net=local\b/.test(location.search) ? "&net=local" : "")); } catch (e) {}
+}
+function leaveRoom() {
+  if (net) net.leave(); net = null; roomCode = "";
+  for (const id of [...peers.keys()]) dropPeer(id);
+  try { history.replaceState(null, "", location.pathname); } catch (e) {}
+}
+function onNet(m) {
+  let pr = peers.get(m.from);
+  if (m.t === "bye") { dropPeer(m.from); return; }
+  if (!pr && m.t !== "hi") { if (net) net.send("hi", Object.assign(myHi(), { hello: 1 })); return; }
+  if (m.t === "hi") {
+    const isNew = !pr;
+    if (!pr) { pr = { x: m.x, z: m.z, ry: m.ry || 0 }; peers.set(m.from, pr); }
+    pr.name = m.name || "Bạn"; pr.st = m.st; const k = lookKey(m.look);
+    if (pr.key !== k) {
+      if (pr.p) scene.remove(pr.p.root);
+      pr.key = k; pr.look = m.look; pr.p = makeAnimal(m.look); pr.p.root.position.set(pr.x, 0, pr.z); scene.add(pr.p.root);
+      pr.tag = nameTag(spIcon(m.look.species) + " " + pr.name, "rgba(81,96,168,.85)"); pr.tag.position.y = 1.72; pr.p.root.add(pr.tag);
+    }
+    if (m.x != null && !pr.mv) { pr.x = m.x; pr.z = m.z; pr.ry = m.ry; }
+    if (isNew || m.hello) { net.send("hi", myHi()); if (phase === "play") toast(`${spIcon(m.look.species)} <b>${esc(pr.name)}</b> vừa vào phòng!`, 3500); }
+    if (m.st && phase === "menu" && curScreen === "wait") enterGame();   /* phòng đã chơi rồi -> vào chung luôn */
+  }
+  if (pr) pr.seen = performance.now();
+  if (m.t === "pos") { pr.x = m.x; pr.z = m.z; pr.ry = m.ry; pr.mv = m.mv; }
+  if (m.t === "start" && phase === "menu" && curScreen === "wait") enterGame();
+  if (m.t === "bub") bubble(pr, m.text);
+  if (m.t.startsWith("rp-")) onRpMsg(m, pr);
+  if (curScreen === "wait") paintWait();
+  paintRoomChip();
+}
+function dropPeer(id) {
+  const pr = peers.get(id); if (!pr) return;
+  if (pr.p) scene.remove(pr.p.root); peers.delete(id);
+  if (rp && rp.partner === id) { $("#rp-turn").textContent = `😢 ${pr.name} đã rời phòng.`; $("#rp-task").hidden = true; $("#rp-end").hidden = false; }
+  if (curScreen === "wait") paintWait(); paintRoomChip();
+}
+function paintWait() {
+  $("#w-code").textContent = roomCode;
+  $("#w-link").value = location.origin + location.pathname + "?room=" + roomCode;
+  const rows = [`<li><span class="e">${spIcon(me.species)}</span>${esc(me.name)} <em>bạn</em></li>`];
+  for (const pr of peers.values()) rows.push(`<li><span class="e">${spIcon(pr.look.species)}</span>${esc(pr.name)} <em>${pr.st ? "đang chơi" : "đang chờ"}</em></li>`);
+  $("#w-list").innerHTML = rows.join(""); $("#w-count").textContent = rows.length;
+  $("#w-hint").textContent = peers.size ? "Đủ người rồi thì bấm Bắt đầu nha. Ai vào sau vẫn chơi chung được." : "Đang đợi bạn vào… Bạn cũng có thể bắt đầu luôn, ai vào sau vẫn chơi chung được.";
+}
+function paintRoomChip() {
+  const c = $("#roomchip");
+  if (!net) { c.hidden = true; return; }
+  c.hidden = false; c.textContent = `👫 ${roomCode} · ${peers.size + 1} bạn`;
+}
+$("#roomchip").onclick = () => { try { navigator.clipboard.writeText(location.origin + location.pathname + "?room=" + roomCode); toast("📋 Đã chép link phòng, gửi cho bạn nha!", 2500); } catch (e) {} };
+
+/* bong bóng chữ trên đầu */
+function bubble(pr, text) {
+  if (!pr || !pr.p) return;
+  if (pr.bub) pr.p.root.remove(pr.bub);
+  const short = String(text).slice(0, 42);
+  pr.bub = new THREE.Sprite(spriteTex("💬 " + short, "rgba(255,255,255,.95)", "#1d2340", 34)); pr.bub.scale.set(2.8, 0.6, 1); pr.bub.position.y = 2.25;
+  pr.p.root.add(pr.bub); pr.bubT = performance.now() + 4500;
+}
+const meBub = { p: null };
+function bubbleMe(text) { meBub.p = player; bubble(meBub, text); if (net) net.send("bub", { text }); }
+
+/* ───────────────────────── Nhập vai cặp đôi theo kịch bản từng nhân vật ───────────────────────── */
+let rp = null;   /* { sid, npc, lang, myRole, partner, partnerName, i, lines } */
+function scriptOf(n, lang) {
+  const L = [];
+  n.steps.forEach((st) => { L.push({ r: 0, text: st.npc[lang], m: st.npc }); L.push({ r: 1, text: st.say[lang], m: st.say, py: lang === "zh" ? st.py : "" }); });
+  L.push({ r: 0, text: n.end[lang], m: n.end });
+  return L;
+}
+function nearPeers() {
+  const pp = player.root.position, out = [];
+  for (const [id, pr] of peers) if (pr.p && pr.st && Math.hypot(pr.x - pp.x, pr.z - pp.z) < 9) out.push([id, pr]);
+  return out;
+}
+let pendingInv = null;
+function paintPair() {
+  const box = $("#dlg-pair"); if (!dlgNpc) return;
+  if (!net) { box.innerHTML = ""; return; }
+  if (pendingInv) { box.innerHTML = `<p class="sub">⏳ Đang mời ${esc(pendingInv.name)} nhập vai…</p>`; return; }
+  const list = nearPeers();
+  box.innerHTML = list.length ? list.map(([id, pr]) => `<button type="button" data-inv="${id}">👫 Nhập vai cùng ${esc(pr.name)} · bạn đóng ${dlgNpc.roles[1]}, ${esc(pr.name)} đóng ${dlgNpc.roles[0]}</button>`).join("")
+    : `<p class="sub">👫 Rủ bạn trong phòng đứng gần đây để nhập vai cùng nhau (một người đóng ${dlgNpc.roles[0]}, một người đóng ${dlgNpc.roles[1]}).</p>`;
+}
+$("#dlg-pair").onclick = (e) => {
+  const b = e.target.closest("[data-inv]"); if (!b || !dlgNpc) return;
+  const id = b.dataset.inv, pr = peers.get(id); if (!pr) return;
+  const sid = net.id + "-" + Date.now().toString(36);
+  pendingInv = { sid, to: id, name: pr.name, npc: dlgNpc.id, lang: learn, myRole: 1 };
+  net.send("rp-inv", { sid, to: id, npc: dlgNpc.id, lang: learn, toRole: 0 }); paintPair();
+  setTimeout(() => { if (pendingInv && pendingInv.sid === sid) { pendingInv = null; paintPair(); } }, 25000);
+};
+function onRpMsg(m, pr) {
+  if (m.to && m.to !== net.id) return;
+  if (m.t === "rp-inv") {
+    const n = NPCS.find((x) => x.id === m.npc); if (!n || rp) return;
+    toast(`${spIcon(pr.look.species)} <b>${esc(pr.name)}</b> mời bạn nhập vai ở ${n.icon} <b>${n.title}</b>: bạn đóng <b>${n.roles[m.toRole]}</b>.
+      <div class="row"><button type="button" class="yes" data-rpok>Đồng ý</button><button type="button" class="no" data-rpno>Để sau</button></div>`, 20000,
+      (ok) => { net.send(ok ? "rp-ok" : "rp-no", { sid: m.sid, to: m.from }); if (ok) startRp({ sid: m.sid, npc: n, lang: m.lang, myRole: m.toRole, partner: m.from }); });
+  } else if (m.t === "rp-ok" && pendingInv && pendingInv.sid === m.sid) {
+    const n = NPCS.find((x) => x.id === pendingInv.npc); const p = pendingInv; pendingInv = null;
+    closeDlg(); startRp({ sid: p.sid, npc: n, lang: p.lang, myRole: p.myRole, partner: m.from });
+  } else if (m.t === "rp-no" && pendingInv && pendingInv.sid === m.sid) {
+    $("#dlg-pair").innerHTML = `<p class="sub">${esc(pendingInv.name)} để sau nha. Thử lại sau cũng được 😊</p>`; pendingInv = null;
+  } else if (rp && m.sid === rp.sid) {
+    if (m.t === "rp-adv" && m.i === rp.i) {
+      const ln = rp.lines[rp.i]; speak(ln.text, rp.lang, rp.npc.look.female); bubble(pr, ln.text);
+      rp.i++; paintRp();
+    } else if (m.t === "rp-swap") { startRp({ sid: m.nsid, npc: rp.npc, lang: rp.lang, myRole: 1 - rp.myRole, partner: rp.partner }); }
+    else if (m.t === "rp-quit") { $("#rp-turn").textContent = `${rp.partnerName} đã thoát nhập vai.`; $("#rp-task").hidden = true; $("#rp-end").hidden = false; $("#rp-swap").hidden = true; }
+  }
+}
+function startRp(o) {
+  closeDlg(); stopMic();
+  const pr = peers.get(o.partner);
+  rp = Object.assign(o, { i: 0, lines: scriptOf(o.npc, o.lang), partnerName: pr ? pr.name : "Bạn", rewarded: false });
+  document.body.classList.add("talking"); $("#rp").hidden = false; $("#talk").hidden = true; $("#rp-swap").hidden = false;
+  paintRp();
+}
+function paintRp() {
+  if (!rp) return;
+  const n = rp.npc, ml = meanOf(rp.lang), roleName = (r) => n.roles[r] + (r === rp.myRole ? " (bạn)" : ` (${rp.partnerName})`);
+  $("#rp-title").textContent = n.icon + " " + n.title; $("#rp-roles").textContent = `Bạn đóng ${n.roles[rp.myRole]}`;
+  $("#rp-lines").innerHTML = rp.lines.map((ln, k) => `<li class="r${ln.r === rp.myRole ? 1 : 0}${k === rp.i ? " cur" : k < rp.i ? " done" : ""}"><span class="who">${roleName(ln.r)}${k < rp.i ? " ✓" : ""}</span>${esc(ln.text)}${ln.py ? `<span class="py">${esc(ln.py)}</span>` : ""}<span class="m">${esc(ln.m[ml])}</span></li>`).join("");
+  const curLi = $("#rp-lines .cur"); if (curLi) curLi.scrollIntoView({ block: "nearest" });
+  $("#rp-res").innerHTML = ""; $("#rp-type").value = "";
+  if (rp.i >= rp.lines.length) {
+    $("#rp-task").hidden = true; $("#rp-end").hidden = false;
+    $("#rp-turn").textContent = "🎉 Hai bạn diễn xong cả kịch bản! +3 ⭐";
+    if (!rp.rewarded) { rp.rewarded = true; stars += 3; markNpcDone(n); save(); paintStars(); paintQuests(); }
+    return;
+  }
+  $("#rp-end").hidden = true;
+  const mine = rp.lines[rp.i].r === rp.myRole;
+  $("#rp-task").hidden = !mine;
+  $("#rp-turn").textContent = mine ? `🎤 Tới lượt bạn (${n.roles[rp.myRole]}): nói câu đang sáng` : `⏳ Đang chờ ${rp.partnerName} (${n.roles[1 - rp.myRole]}) nói…`;
+}
+function rpCheck(said) {
+  if (!rp || busy) return;
+  const ln = rp.lines[rp.i]; if (!ln || ln.r !== rp.myRole) return;
+  const g = grade(ln.text, said, rp.lang), pass = g.score >= 0.7;
+  $("#rp-res").innerHTML = resultHtml(g, said, pass);
+  if (!pass) return;
+  busy = true; stars += 1; paintStars(); bubbleMe(ln.text);
+  net.send("rp-adv", { sid: rp.sid, to: rp.partner, i: rp.i, pct: Math.round(g.score * 100) });
+  const sid = rp.sid;
+  setTimeout(() => { busy = false; if (!rp || rp.sid !== sid) return; rp.i++; save(); paintRp(); }, 1500);
+}
+$("#rp-send").onclick = () => { const v = $("#rp-type").value.trim(); if (v) rpCheck(v); };
+$("#rp-mic").onclick = () => startMic($("#rp-mic"), rp.lang, () => rp.lines[rp.i].text, $("#rp-res"), rpCheck);
+$("#rp-model").onclick = () => { if (rp && rp.lines[rp.i]) speak(rp.lines[rp.i].text, rp.lang, me.species === "bunny" || me.species === "cat"); };
+function endRp(tell) { if (rp && tell && net) net.send("rp-quit", { sid: rp.sid, to: rp.partner }); rp = null; stopMic(); $("#rp").hidden = true; document.body.classList.remove("talking"); }
+$("#rp-x").onclick = () => endRp(rp && rp.i < rp.lines.length);
+$("#rp-done").onclick = () => endRp(false);
+$("#rp-swap").onclick = () => {
+  if (!rp || !peers.has(rp.partner)) return;
+  const nsid = net.id + "-" + Date.now().toString(36);
+  net.send("rp-swap", { sid: rp.sid, to: rp.partner, nsid });
+  startRp({ sid: nsid, npc: rp.npc, lang: rp.lang, myRole: 1 - rp.myRole, partner: rp.partner });
 };
 
+/* thông báo nổi */
+let toastT = 0, toastCb = null;
+function toast(html, ms, cb) {
+  const t = $("#toast"); t.innerHTML = html; t.hidden = false; toastCb = cb || null;
+  clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; if (toastCb) { toastCb(false); toastCb = null; } }, ms || 3000);
+}
+$("#toast").onclick = (e) => {
+  const ok = e.target.closest("[data-rpok]"), no = e.target.closest("[data-rpno]");
+  if (!ok && !no) return;
+  const cb = toastCb; toastCb = null; $("#toast").hidden = true; clearTimeout(toastT); if (cb) cb(!!ok);
+};
+
+/* ───────────────────────── Màn bắt đầu: tạo nhân vật → chọn cách chơi → phòng chờ ───────────────────────── */
+let curScreen = "create";
+function showScreen(id) { curScreen = id; for (const s of ["create", "mode", "wait"]) $("#scr-" + s).hidden = s !== id; }
+function paintCreator() {
+  const opt = (arr, sel, f) => arr.map((x) => f(x, sel)).join("");
+  $("#c-name").value = me.name;
+  $("#c-species").innerHTML = opt(SPECIES, me.species, (s, v) => `<button type="button" data-k="species" data-v="${s.id}" class="${s.id === v ? "on" : ""}"><span class="e">${s.icon}</span>${s.name}</button>`);
+  $("#c-fur").innerHTML = opt(FURS, me.fur, (c, v) => `<button type="button" data-k="fur" data-v="${c}" class="${c === v ? "on" : ""}" style="background:${c}" aria-label="màu lông ${c}"></button>`);
+  $("#c-fur").style.opacity = me.species === "panda" ? 0.35 : 1;
+  $("#c-shirt").innerHTML = opt(SHIRTS, me.shirt, (c, v) => `<button type="button" data-k="shirt" data-v="${c}" class="${c === v ? "on" : ""}" style="background:${c}" aria-label="màu áo ${c}"></button>`);
+  $("#c-pants").innerHTML = opt(PANTS, me.pants, (c, v) => `<button type="button" data-k="pants" data-v="${c}" class="${c === v ? "on" : ""}" style="background:${c}" aria-label="màu quần ${c}"></button>`);
+  $("#c-bottom").innerHTML = `<button type="button" data-k="skirt" data-v="0" class="${!me.skirt ? "on" : ""}">👖 Quần</button><button type="button" data-k="skirt" data-v="1" class="${me.skirt ? "on" : ""}">👗 Váy</button>`;
+  $("#c-acc").innerHTML = opt(ACCS, me.acc, (a, v) => `<button type="button" data-k="acc" data-v="${a.id}" class="${a.id === v ? "on" : ""}"><span class="e">${a.icon}</span>${a.name}</button>`);
+}
+$("#scr-create").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-k]"); if (!b) return;
+  const k = b.dataset.k; let v = b.dataset.v;
+  if (k === "skirt") v = v === "1";
+  if (k === "species") { const sp = SPECIES.find((s) => s.id === v); if (sp && !FURS.includes(me.fur)) me.fur = sp.fur; if (sp && me.species !== v) me.fur = sp.fur; }
+  me[k] = v; store.set("tjwl_town_me_v1", me); rebuildPlayer(); paintCreator();
+});
+$("#c-name").addEventListener("input", (e) => { me.name = e.target.value.trim().slice(0, 16); store.set("tjwl_town_me_v1", me); });
+$("#c-next").onclick = () => {
+  if (!me.name) { $("#c-err").textContent = "Đặt tên cho nhân vật trước nha 😊"; $("#c-name").focus(); return; }
+  $("#c-err").textContent = "";
+  const q = new URLSearchParams(location.search).get("room");
+  if (q && /^[A-Za-z0-9]{3,6}$/.test(q) && !net) joinRoom(q); else showScreen(net ? "wait" : "mode");
+};
+$("#m-back").onclick = () => showScreen("create");
+$("#m-solo").onclick = () => { leaveRoom(); enterGame(); };
+$("#m-new").onclick = () => joinRoom(newCode());
+$("#m-join").onclick = () => {
+  const c = $("#m-code").value.trim().toUpperCase();
+  if (!/^[A-Z0-9]{3,6}$/.test(c)) { $("#m-err").textContent = "Mã phòng gồm 3–6 chữ hoặc số nha."; return; }
+  $("#m-err").textContent = ""; joinRoom(c);
+};
+$("#w-copy").onclick = () => { try { navigator.clipboard.writeText($("#w-link").value); $("#w-copy").textContent = "✓ Đã chép"; } catch (e) { $("#w-link").select(); } };
+$("#w-start").onclick = () => { if (net) net.send("start", {}); enterGame(); };
+$("#w-back").onclick = () => { leaveRoom(); showScreen("mode"); };
+function enterGame() {
+  if (phase === "play") return;
+  phase = "play"; document.body.classList.remove("menu");
+  player.root.position.set((Math.random() - 0.5) * 4, 0, 15 + Math.random() * 2); player.root.rotation.y = Math.PI; camYaw = 0;
+  camera.position.set(player.root.position.x, 4, player.root.position.z + 7);
+  paintRoomChip(); paintQuests();
+  if (net) net.send("hi", myHi());
+}
 
 /* ───────────────────────── Bản đồ nhỏ (góc phải) ───────────────────────── */
-const mini = $("#mini"), mg = mini.getContext("2d"), MS = 320, MW = 62; /* MW: nửa chiều rộng thế giới hiện trên bản đồ (mét) */
+const mini = $("#mini"), mg = mini.getContext("2d"), MS = 320, MW = 62;
 const m2 = (x, z) => [MS / 2 + (x / MW) * (MS / 2), MS / 2 + (z / MW) * (MS / 2)];
 function drawMini() {
   const pp = player.root.position;
@@ -785,6 +972,7 @@ function drawMini() {
     mg.fillStyle = done ? "#20a86b" : "#ff7a59"; mg.beginPath(); mg.arc(x, z, 17, 0, 7); mg.fill();
     mg.fillText(done ? "✅" : n.icon, x, z + 1);
   }
+  for (const pr of peers.values()) { if (!pr.st) continue; const [x, z] = m2(pr.x, pr.z); mg.fillStyle = "#5160a8"; mg.strokeStyle = "#fff"; mg.lineWidth = 4; mg.beginPath(); mg.arc(x, z, 10, 0, 7); mg.stroke(); mg.fill(); }
   const [px, pz] = m2(pp.x, pp.z); const a = player.root.rotation.y;
   mg.save(); mg.translate(px, pz); mg.rotate(-a); mg.fillStyle = "#1d2340"; mg.strokeStyle = "#fff"; mg.lineWidth = 4;
   mg.beginPath(); mg.moveTo(0, 16); mg.lineTo(11, -10); mg.lineTo(0, -4); mg.lineTo(-11, -10); mg.closePath(); mg.stroke(); mg.fill(); mg.restore();
@@ -793,56 +981,80 @@ function drawMini() {
 /* ───────────────────────── Vòng lặp ───────────────────────── */
 const clock = new THREE.Clock();
 const tmp = new THREE.Vector3(), camTarget = new THREE.Vector3(), camPos = new THREE.Vector3();
-let qTick = 0, freeCam = null;
+/* "hi" đều đặn bằng hẹn giờ (không theo khung hình: tab ẩn / máy yếu vẽ chậm vẫn gửi được) */
+setInterval(() => { if (net) net.send("hi", myHi()); }, 2000);
+document.addEventListener("visibilitychange", () => { if (net && !document.hidden) net.send("hi", myHi()); });
+let qTick = 0, netTick = 0, freeCam = null, lastSent = "";
 function frame() {
-  const dt = Math.min(clock.getDelta(), 0.05), t = clock.elapsedTime;
-  /* người chơi */
-  let f = 0, r = 0;
-  if (!dlgNpc) {
-    f = (keys.KeyW || keys.ArrowUp ? 1 : 0) - (keys.KeyS || keys.ArrowDown ? 1 : 0) - joy.y;
-    r = (keys.KeyD || keys.ArrowRight ? 1 : 0) - (keys.KeyA || keys.ArrowLeft ? 1 : 0) + joy.x;
-  }
-  const mag = Math.min(1, Math.hypot(f, r));
+  const dt = Math.min(clock.getDelta(), 0.05), t = clock.elapsedTime, now = performance.now();
   const pp = player.root.position;
   let speed = 0;
-  if (mag > 0.05) {
-    const fx = -Math.sin(camYaw), fz = -Math.cos(camYaw);
-    const dx = (fx * f - fz * r), dz = (fz * f + fx * r), L = Math.hypot(dx, dz) || 1;
-    const run = keys.ShiftLeft || keys.ShiftRight || mag > 0.95 ? 5.2 : 3.4;
-    speed = run * mag;
-    pp.x += dx / L * speed * dt; pp.z += dz / L * speed * dt;
-    const want = Math.atan2(dx, dz); let d = want - player.root.rotation.y; d = Math.atan2(Math.sin(d), Math.cos(d));
-    player.root.rotation.y += d * Math.min(1, dt * 12);
+  if (phase === "menu") {
+    if (!freeCam) player.root.rotation.y += dt * 0.5;
+  } else {
+    let f = 0, r = 0;
+    if (!dlgNpc && !rp) {
+      f = (keys.KeyW || keys.ArrowUp ? 1 : 0) - (keys.KeyS || keys.ArrowDown ? 1 : 0) - joy.y;
+      r = (keys.KeyD || keys.ArrowRight ? 1 : 0) - (keys.KeyA || keys.ArrowLeft ? 1 : 0) + joy.x;
+    }
+    const mag = Math.min(1, Math.hypot(f, r));
+    if (mag > 0.05) {
+      const fx = -Math.sin(camYaw), fz = -Math.cos(camYaw);
+      const dx = (fx * f - fz * r), dz = (fz * f + fx * r), L = Math.hypot(dx, dz) || 1;
+      const run = keys.ShiftLeft || keys.ShiftRight || mag > 0.95 ? 5 : 3.2;
+      speed = run * mag;
+      pp.x += dx / L * speed * dt; pp.z += dz / L * speed * dt;
+      const want = Math.atan2(dx, dz); let d = want - player.root.rotation.y; d = Math.atan2(Math.sin(d), Math.cos(d));
+      player.root.rotation.y += d * Math.min(1, dt * 12);
+    }
+    collide(pp);
   }
-  collide(pp);
-  animatePerson(player, speed / 3.4, dt, t);
+  animateAnimal(player, speed / 3.2, dt, t);
+  if (meBub.bub && now > meBub.bubT) { player.root.remove(meBub.bub); meBub.bub = null; }
 
-  /* ai đang ở gần */
-  near = null; let nd = 3.2;
+  /* gửi vị trí cho bạn cùng phòng */
+  if (net && phase === "play") {
+    netTick += dt;
+    const key = pp.x.toFixed(2) + "," + pp.z.toFixed(2) + "," + player.root.rotation.y.toFixed(2);
+    if (netTick > 0.15 && key !== lastSent) { netTick = 0; lastSent = key; net.send("pos", { x: +pp.x.toFixed(2), z: +pp.z.toFixed(2), ry: +player.root.rotation.y.toFixed(2), mv: speed > 0.05 ? 1 : 0 }); }
+    else if (netTick > 0.6 && speed === 0) { netTick = 0; }
+  }
+  /* bạn cùng phòng: đi mượt tới vị trí mới */
+  for (const [id, pr] of peers) {
+    if (!pr.p) continue;
+    if (now - (pr.seen || now) > 15000) { dropPeer(id); continue; }
+    pr.p.root.visible = phase === "play" && !!pr.st;   /* bạn còn ở màn chờ / mình còn ở màn chờ -> chưa hiện trong phố */
+    const R0 = pr.p.root.position, dx = pr.x - R0.x, dz = pr.z - R0.z, d = Math.hypot(dx, dz);
+    if (d > 8) R0.set(pr.x, 0, pr.z); else { const k = Math.min(1, dt * 8); R0.x += dx * k; R0.z += dz * k; }
+    let dr = (pr.ry || 0) - pr.p.root.rotation.y; dr = Math.atan2(Math.sin(dr), Math.cos(dr)); pr.p.root.rotation.y += dr * Math.min(1, dt * 10);
+    animateAnimal(pr.p, d > 0.05 || pr.mv ? Math.min(1.5, d * 4 + 0.6) : 0, dt, t);
+    if (pr.bub && now > pr.bubT) { pr.p.root.remove(pr.bub); pr.bub = null; }
+  }
+
+  /* người dân ở gần */
+  near = null; let nd = 3;
   for (const n of NPCS) {
     const d = Math.hypot(pp.x - n.pos[0], pp.z - n.pos[1]);
-    if (d < nd) { nd = d; near = n; }
-    const lookAt = d < 6 ? Math.atan2(pp.x - n.pos[0], pp.z - n.pos[1]) : n.face;
+    if (phase === "play" && d < nd) { nd = d; near = n; }
+    const lookAt = d < 6 && phase === "play" ? Math.atan2(pp.x - n.pos[0], pp.z - n.pos[1]) : n.face;
     let dd = lookAt - n.p.root.rotation.y; dd = Math.atan2(Math.sin(dd), Math.cos(dd)); n.p.root.rotation.y += dd * Math.min(1, dt * 4);
-    animatePerson(n.p, 0, dt, t);
-    n.mark.position.y = 2.65 + Math.sin(t * 3 + n.pos[0]) * 0.08;
+    animateAnimal(n.p, 0, dt, t);
+    n.mark.position.y = 2.2 + Math.sin(t * 3 + n.pos[0]) * 0.08;
   }
-  $("#talk").hidden = !near || !!dlgNpc;
+  $("#talk").hidden = !near || !!dlgNpc || !!rp;
   if (near && !dlgNpc) $("#talk").firstChild.textContent = `💬 Nói chuyện với ${near.name} `;
 
-  /* người đi đường */
   for (const w of walkers) {
     const a = loopPoint(w.r, w.u); w.u += (w.v * w.dir * dt) / (2 * w.r);
     const b = loopPoint(w.r, w.u);
     w.p.root.position.set(b[0], 0.16, b[1]);
     w.p.root.rotation.y = Math.atan2(b[0] - a[0], b[1] - a[1]);
-    animatePerson(w.p, w.v / 3.4, dt, t);
+    animateAnimal(w.p, w.v / 3.2, dt, t);
   }
-  /* xe: chậm lại khi người chơi đứng trước mũi xe */
   for (const c of cars) {
-    const a = loopPoint(RING + 1.7, c.u);
-    const ahead = loopPoint(RING + 1.7, c.u + 0.06);
-    const blocked = Math.hypot(pp.x - ahead[0], pp.z - ahead[1]) < 3.2;
+    const a = loopPoint(RING + 1.7, c.u), ahead = loopPoint(RING + 1.7, c.u + 0.06);
+    let blocked = Math.hypot(pp.x - ahead[0], pp.z - ahead[1]) < 3.2;
+    for (const pr of peers.values()) if (Math.hypot(pr.x - ahead[0], pr.z - ahead[1]) < 3.2) blocked = true;
     c.v += ((blocked ? 0 : 0.09) - c.v) * Math.min(1, dt * 3);
     c.u += c.v * dt * 0.25;
     const b = loopPoint(RING + 1.7, c.u + 0.002);
@@ -851,31 +1063,40 @@ function frame() {
   for (const c of clouds) { c.position.x += dt * 1.5; if (c.position.x > 220) c.position.x = -220; }
   waterJet.scale.y = 1 + Math.sin(t * 6) * 0.08; waterTop.material.opacity = 0.82 + Math.sin(t * 3) * 0.05;
 
-  /* camera bám sau lưng */
-  camTarget.set(pp.x, 1.5, pp.z);
-  camPos.set(pp.x + Math.sin(camYaw) * Math.cos(camPitch) * camDist, 1.5 + Math.sin(camPitch) * camDist, pp.z + Math.cos(camYaw) * Math.cos(camPitch) * camDist);
-  if (freeCam) { camera.position.copy(freeCam.pos); camera.lookAt(freeCam.look); }
-  else { camera.position.lerp(camPos, Math.min(1, dt * 6)); camera.lookAt(camTarget); }
+  /* camera */
+  if (freeCam) { camera.position.copy(freeCam.pos); camera.lookAt(freeCam.look); camTarget.copy(freeCam.look); }
+  else if (phase === "menu") {
+    const narrow = innerWidth < 640;
+    camTarget.set(pp.x + (narrow ? 0 : 0.85), narrow ? -0.35 : 0.65, pp.z);
+    camera.position.lerp(tmp.set(pp.x + (narrow ? 0 : 0.85), narrow ? 1.25 : 1.15, pp.z + (narrow ? 3.6 : 3.3)), Math.min(1, dt * 5)); camera.lookAt(camTarget);
+  } else {
+    camTarget.set(pp.x, 1.0, pp.z);
+    camPos.set(pp.x + Math.sin(camYaw) * Math.cos(camPitch) * camDist, 1.0 + Math.sin(camPitch) * camDist, pp.z + Math.cos(camYaw) * Math.cos(camPitch) * camDist);
+    camera.position.lerp(camPos, Math.min(1, dt * 6)); camera.lookAt(camTarget);
+  }
   sunLight.position.copy(tmp.copy(sun).multiplyScalar(80).add(camTarget)); sunLight.target.position.copy(camTarget);
 
-  if ((qTick += dt) > 0.2) { qTick = 0; paintQuests(); drawMini(); }
+  if ((qTick += dt) > 0.25) { qTick = 0; if (phase === "play") { paintQuests(); drawMini(); if (dlgNpc && !pendingInv) paintPair(); } }
   renderer.render(scene, camera);
   requestAnimationFrame(frame);
 }
 for (const n of NPCS) if (prog[n.id] && prog[n.id].done) { n.mark.visible = false; n.markDone.visible = true; }
-paintStars(); paintQuests();
-camera.position.set(0, 5, 24);
+paintStars(); paintCreator(); showScreen("create");
+{ const q = new URLSearchParams(location.search).get("room"); if (q) $("#m-code").value = q.toUpperCase(); }
+camera.position.set(0, 1.2, 18.3);
 addEventListener("resize", () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
 requestAnimationFrame(frame);
 setTimeout(() => $("#loading").classList.add("off"), 300);
 
 /* cho kiểm thử / chụp demo */
 window.__town = {
-  go(x, z, yaw, pitch, dist) { player.root.position.set(x, 0, z); if (yaw != null) camYaw = yaw; if (pitch != null) camPitch = pitch; if (dist != null) camDist = dist; camera.position.set(x + Math.sin(camYaw) * camDist, 4, z + Math.cos(camYaw) * camDist); },
+  go(x, z, yaw, pitch, dist) { player.root.position.set(x, 0, z); if (yaw != null) camYaw = yaw; if (pitch != null) camPitch = pitch; if (dist != null) camDist = dist; camera.position.set(x + Math.sin(camYaw) * camDist, 3, z + Math.cos(camYaw) * camDist); },
   face(a) { player.root.rotation.y = a; },
   camera, THREE,
   talk(id) { openDlg(NPCS.find((n) => n.id === id)); },
-  say(text) { check(text); },
+  say(text) { if (rp) rpCheck(text); else check(text); },
   cam(p, l) { freeCam = p ? { pos: new THREE.Vector3(...p), look: new THREE.Vector3(...l) } : null; },
   lang(a, b) { $("#sel-learn").value = a; $("#sel-learn").onchange({ target: { value: a } }); if (b) { $("#sel-mean").value = b; $("#sel-mean").onchange({ target: { value: b } }); } },
+  play() { if (!me.name) me.name = "Test"; enterGame(); },
+  state() { return { phase, room: roomCode, peers: [...peers.values()].map((p) => p.name), rp: rp && { i: rp.i, myRole: rp.myRole, n: rp.lines.length }, net: net && net.mode }; },
 };

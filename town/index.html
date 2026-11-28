@@ -4,7 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>Thành phố WordLoop</title>
-<link rel="stylesheet" href="town.css?v=1">
+<link rel="stylesheet" href="town.css?v=2">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="../js/config.js"></script>
 <script type="importmap">
 { "imports": {
   "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
@@ -12,14 +14,13 @@
 } }
 </script>
 </head>
-<body>
-<!-- BẢN MẪU (TJ 2026-11-27): thành phố 3D luyện nói. Chỉ trên nhánh riêng, chưa nối với phòng game / Supabase. -->
+<body class="menu">
+<!-- Thành phố 3D luyện nói (TJ 2026-11-27/28). Trang riêng, chưa nối với app chính. Phòng chơi chung dùng kênh Supabase "town:<mã>", không lưu database. -->
 <div id="view"></div>
-
 <div id="loading">🏙 Đang dựng thành phố…</div>
 
 <header id="hud">
-  <div class="brand">🏙 Thành phố WordLoop <span class="tag">bản mẫu</span></div>
+  <div class="brand">🏙 Thành phố WordLoop <span class="tag">bản thử</span></div>
   <div class="langs">
     <label>🎯 Học <select id="sel-learn">
       <option value="en">English</option><option value="es">Español</option><option value="zh">中文</option><option value="vi">Tiếng Việt</option>
@@ -28,16 +29,17 @@
       <option value="vi">Tiếng Việt</option><option value="en">English</option><option value="es">Español</option><option value="zh">中文</option>
     </select></label>
   </div>
+  <button type="button" id="roomchip" hidden></button>
   <div class="stars" id="stars">⭐ 0</div>
 </header>
 
 <aside id="quests"></aside>
 <canvas id="mini" width="320" height="320" aria-label="Bản đồ nhỏ"></canvas>
-
 <button id="talk" type="button" hidden>💬 Nói chuyện <kbd>E</kbd></button>
 
-<section id="dlg" hidden>
-  <div class="who"><b id="dlg-name"></b><span id="dlg-role"></span><button type="button" id="dlg-x" aria-label="Đóng">✕</button></div>
+<!-- Nói chuyện một mình với người dân -->
+<section id="dlg" class="panel" hidden>
+  <div class="who"><b id="dlg-name"></b><span id="dlg-role"></span><button type="button" class="x" id="dlg-x" aria-label="Đóng">✕</button></div>
   <div class="npc-line"><button type="button" class="say" id="dlg-hear" aria-label="Nghe">🔊</button><div><p id="dlg-npc"></p><p class="mean" id="dlg-npc-m"></p></div></div>
   <div class="task" id="dlg-task">
     <p class="ask">🎯 Nhiệm vụ: nói câu này</p>
@@ -51,11 +53,67 @@
     <div class="row type"><input id="dlg-type" placeholder="Hoặc gõ câu trả lời…" autocomplete="off"><button type="button" id="dlg-send">Gửi</button></div>
     <p class="result" id="dlg-res"></p>
   </div>
+  <div id="dlg-pair"></div>
 </section>
+
+<!-- Nhập vai cặp đôi: mỗi người đóng 1 nhân vật trong kịch bản -->
+<section id="rp" class="panel" hidden>
+  <div class="who"><b id="rp-title"></b><span id="rp-roles"></span><button type="button" class="x" id="rp-x" aria-label="Đóng">✕</button></div>
+  <ol id="rp-lines"></ol>
+  <div id="rp-turn"></div>
+  <div class="task" id="rp-task">
+    <div class="row">
+      <button type="button" id="rp-model" class="ghost">🔊 Nghe mẫu</button>
+      <button type="button" id="rp-mic" class="mic">🎤 Bấm để nói</button>
+    </div>
+    <div class="row type"><input id="rp-type" placeholder="Hoặc gõ câu của bạn…" autocomplete="off"><button type="button" id="rp-send">Gửi</button></div>
+  </div>
+  <p class="result" id="rp-res"></p>
+  <div class="row" id="rp-end" hidden><button type="button" id="rp-swap" class="mic">🔁 Đổi vai chơi lại</button><button type="button" id="rp-done" class="ghost">Xong</button></div>
+</section>
+
+<div id="toast" hidden></div>
+
+<!-- Màn hình bắt đầu -->
+<div id="menu">
+  <section class="card" id="scr-create">
+    <h2>🐾 Tạo nhân vật của bạn</h2>
+    <label class="lbl">Tên của bạn</label>
+    <input id="c-name" maxlength="16" placeholder="Nhập tên…" autocomplete="off">
+    <label class="lbl">Con vật</label><div class="opts" id="c-species"></div>
+    <label class="lbl">Màu lông</label><div class="opts sw" id="c-fur"></div>
+    <label class="lbl">Áo</label><div class="opts sw" id="c-shirt"></div>
+    <label class="lbl">Quần / váy</label><div class="opts sw" id="c-pants"></div>
+    <div class="opts" id="c-bottom"></div>
+    <label class="lbl">Phụ kiện</label><div class="opts" id="c-acc"></div>
+    <p class="err" id="c-err"></p>
+    <button type="button" class="go" id="c-next">Tiếp tục →</button>
+  </section>
+
+  <section class="card" id="scr-mode" hidden>
+    <h2>Chơi thế nào nè?</h2>
+    <button type="button" class="big" id="m-solo"><b>🧸 Chơi một mình</b><span>Vào thành phố ngay, nói chuyện với người dân</span></button>
+    <button type="button" class="big" id="m-new"><b>👫 Tạo phòng chơi chung</b><span>Nhận mã phòng, gửi cho bạn bè vào cùng</span></button>
+    <div class="join"><input id="m-code" maxlength="6" placeholder="Mã phòng (vd: MEO7)" autocomplete="off"><button type="button" id="m-join">Vào phòng</button></div>
+    <p class="err" id="m-err"></p>
+    <button type="button" class="back" id="m-back">← Sửa nhân vật</button>
+  </section>
+
+  <section class="card" id="scr-wait" hidden>
+    <h2>🏠 Phòng <span id="w-code"></span></h2>
+    <p class="sub">Gửi mã này hoặc link cho bạn để vào chơi chung:</p>
+    <div class="join"><input id="w-link" readonly><button type="button" id="w-copy">📋 Chép</button></div>
+    <h3>Trong phòng (<span id="w-count">1</span>)</h3>
+    <ul id="w-list"></ul>
+    <p class="sub" id="w-hint">Đang đợi bạn vào… Bạn cũng có thể bắt đầu luôn, ai vào sau vẫn chơi chung được.</p>
+    <button type="button" class="go" id="w-start">▶ Bắt đầu chơi</button>
+    <button type="button" class="back" id="w-back">← Rời phòng</button>
+  </section>
+</div>
 
 <div id="joy"><i></i></div>
 <p id="help">Đi: <kbd>W A S D</kbd> / mũi tên · Xoay: kéo chuột · Nói chuyện: <kbd>E</kbd></p>
 
-<script type="module" src="town.js?v=1"></script>
+<script type="module" src="town.js?v=2"></script>
 </body>
 </html>
